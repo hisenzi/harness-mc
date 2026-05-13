@@ -1,0 +1,94 @@
+{
+  "tasks": [
+    {
+      "id": "w1-1",
+      "title": "目標客群畫像 + 獲客管道確認",
+      "status": "done",
+      "track": "wave-1",
+      "note": "HC #rightProblem 修正新增；5-30 人中小企業，四管道設計已完成"
+    },
+    {
+      "id": "w1-2",
+      "title": "客戶旅程模板（問卷→提案→合約）",
+      "status": "todo",
+      "track": "wave-1"
+    },
+    {
+      "id": "w1-3",
+      "title": "合約模板（2 週建構 + 優化期 + 退場條款）",
+      "status": "todo",
+      "track": "wave-1"
+    },
+    {
+      "id": "w1-4",
+      "title": "每週優化會議模板（議程 + 問題追蹤 + 教學紀錄）",
+      "status": "todo",
+      "track": "wave-1"
+    },
+    {
+      "id": "w1-5",
+      "title": "品牌策略 SOP + 模板（含最小可用版本快速出法）",
+      "status": "todo",
+      "track": "wave-1",
+      "note": "HC #constraints 修正：品牌先行出 MVP，完整版放優化期"
+    },
+    {
+      "id": "w1-6",
+      "title": "月費價值報告模板",
+      "status": "todo",
+      "track": "wave-1"
+    },
+    {
+      "id": "w1-7",
+      "title": "結案 checklist（脫敏 + 模板抽取 + 定價紀錄 + Layer 3）",
+      "status": "todo",
+      "track": "wave-1",
+      "note": "HC #confirmationBias 修正：硬性步驟，每案 1-2 小時不可跳過"
+    },
+    {
+      "id": "w2-1",
+      "title": "Notion 模組庫（CRM / 專案管理 / 內容排程）",
+      "status": "todo",
+      "track": "wave-2"
+    },
+    {
+      "id": "w2-2",
+      "title": "網站 starter template + 元件庫",
+      "status": "todo",
+      "track": "wave-2"
+    },
+    {
+      "id": "w3-1",
+      "title": "AI Agent 模式庫 + prompt 庫",
+      "status": "todo",
+      "track": "wave-3"
+    },
+    {
+      "id": "w3-2",
+      "title": "品牌語氣 prompt 工具（簡易版）",
+      "status": "todo",
+      "track": "wave-3"
+    },
+    {
+      "id": "og-1",
+      "title": "每案結案整理（脫敏 + 模板抽取 + 定價紀錄）",
+      "status": "todo",
+      "track": "ongoing",
+      "note": "每案 1-2 小時，不可跳過"
+    },
+    {
+      "id": "og-2",
+      "title": "每週五 Layer 3 + 產品化固定時段",
+      "status": "todo",
+      "track": "ongoing",
+      "note": "HC #systemDynamics 修正：不排客戶會議"
+    },
+    {
+      "id": "v-1",
+      "title": "前 3 個客戶追蹤實際工時，驗證定價與產能",
+      "status": "todo",
+      "track": "validation",
+      "note": "驗證：基礎包 6-8h、進階包 12-16h、2 週建構期是否足夠、自然轉月費"
+    }
+  ]
+}

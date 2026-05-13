@@ -14,7 +14,7 @@
 ## 目錄結構
 
 ```
-mission-control/                  ← 獨立 git repo
+harness-mc/                       ← 獨立 git repo（GitHub: hisenzi/harness-mc）
 ├── ARCHITECTURE.md               ← 本文件
 ├── app/
 │   ├── layout.tsx                ← 暗色主題 layout

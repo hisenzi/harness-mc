@@ -12,7 +12,7 @@ Mission Control（共享 MC）是 agent 無關的專案追蹤儀表板。資料�
 
 | 項目 | 值 |
 |------|---|
-| 路徑 | `/Users/somedesign/Downloads/Claude_協作/mission-control/` |
+| 路徑 | `/Users/somedesign/Downloads/Claude_協作/harness-mc/` |
 | 性質 | 獨立 git repo（不在 notyet-harness 內） |
 | 技術棧 | Next.js 16 + React 19 + Tailwind v4 + TypeScript |
 | Port | 3001（`.claude/launch.json` name: `mc`） |
@@ -73,7 +73,7 @@ CC 唯讀，需要有寫入權限的 session 處理。
 
 ## [P1] Mission Control（共享）
 - status: active（2026-05-13 開案）
-- 位置: Claude_協作/mission-control/（獨立 git repo）
+- 位置: Claude_協作/harness-mc/（獨立 git repo，hisenzi/harness-mc）
 - Harness Engineering 四大支柱，HC 驗證為首個專案
 ```
 

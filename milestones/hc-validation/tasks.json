@@ -1,0 +1,225 @@
+{
+  "project": "hc-validation",
+  "tasks": [
+    {
+      "id": "fallacies",
+      "title": "#fallacies 邏輯謬誤",
+      "status": "needs_fix",
+      "track": "formal-logic",
+      "foundation": "極強",
+      "issues_found": 2,
+      "issues_fixed": 0,
+      "verdict": "可用需修",
+      "note": "循環論證/乞題重複；倖存者偏誤歸類錯誤"
+    },
+    {
+      "id": "optimization",
+      "title": "#optimization 最佳化",
+      "status": "not_started",
+      "track": "formal-logic",
+      "foundation": null,
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "id": "confirmationBias",
+      "title": "#confirmationBias 確認偏誤",
+      "status": "needs_fix",
+      "track": "cognitive-science",
+      "foundation": "極強",
+      "issues_found": 2,
+      "issues_fixed": 0,
+      "verdict": "可用需修",
+      "note": "信心量表反向強化偏誤；缺 base rate neglect"
+    },
+    {
+      "id": "systemDynamics",
+      "title": "#systemDynamics 系統動力學",
+      "status": "not_started",
+      "track": "cognitive-science",
+      "foundation": null,
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "id": "multipleCauses",
+      "title": "#multipleCauses 多重因果",
+      "status": "not_started",
+      "track": "cognitive-science",
+      "foundation": null,
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "id": "analogies",
+      "title": "#analogies 類比推理",
+      "status": "not_started",
+      "track": "cognitive-science",
+      "foundation": null,
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "id": "negotiate",
+      "title": "#negotiate 談判協商",
+      "status": "not_started",
+      "track": "cognitive-science",
+      "foundation": null,
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "id": "powerDynamics",
+      "title": "#powerDynamics 權力動態",
+      "status": "not_started",
+      "track": "cognitive-science",
+      "foundation": null,
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "id": "breakItDown",
+      "title": "#breakItDown 拆解問題",
+      "status": "needs_fix",
+      "track": "methodology",
+      "foundation": "中",
+      "issues_found": 2,
+      "issues_fixed": 0,
+      "verdict": "可用需修",
+      "note": "MECE 指令 vs 反模式矛盾；5W 缺 How"
+    },
+    {
+      "id": "rightProblem",
+      "title": "#rightProblem 問對問題",
+      "status": "not_started",
+      "track": "methodology",
+      "foundation": null,
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "id": "infoNeeded",
+      "title": "#infoNeeded 資訊需求界定",
+      "status": "not_started",
+      "track": "methodology",
+      "foundation": null,
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "id": "constraints",
+      "title": "#constraints 限制條件求解",
+      "status": "not_started",
+      "track": "methodology",
+      "foundation": null,
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "id": "designThinking",
+      "title": "#designThinking 設計思考",
+      "status": "not_started",
+      "track": "methodology",
+      "foundation": null,
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "id": "hypothesisDriven",
+      "title": "#hypothesisDriven 假說驅動研究",
+      "status": "not_started",
+      "track": "methodology",
+      "foundation": null,
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "id": "audience",
+      "title": "#audience 受眾適配",
+      "status": "not_started",
+      "track": "methodology",
+      "foundation": null,
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "id": "thesis",
+      "title": "#thesis 論點陳述",
+      "status": "not_started",
+      "track": "methodology",
+      "foundation": null,
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "id": "organization",
+      "title": "#organization 組織結構",
+      "status": "not_started",
+      "track": "methodology",
+      "foundation": null,
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "id": "presentation",
+      "title": "#presentation 專業呈現",
+      "status": "not_started",
+      "track": "methodology",
+      "foundation": null,
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "id": "medium",
+      "title": "#medium 媒介選擇",
+      "status": "not_started",
+      "track": "methodology",
+      "foundation": null,
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "id": "ethicalFraming",
+      "title": "#ethicalFraming 倫理框架",
+      "status": "not_started",
+      "track": "methodology",
+      "foundation": null,
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": null,
+      "note": ""
+    }
+  ]
+}

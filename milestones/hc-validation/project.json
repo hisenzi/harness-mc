@@ -1,0 +1,42 @@
+{
+  "id": "hc-validation",
+  "name": "HC 思考習慣驗證",
+  "description": "驗證 20 個 priority HC 的底層學科根據與操作手冊準確度",
+  "type": "internal",
+  "status": "in_progress",
+  "priority": "high",
+  "owner": "Vincent",
+  "created": "2026-05-13",
+  "estimated_completion": "TBD",
+  "tags": ["hc", "validation", "thinking-framework"],
+  "goals": [
+    "驗證 20 個 priority HC 的操作手冊是否準確反映底層學科概念",
+    "辨識操作手冊中的簡化、遺漏、或內部矛盾",
+    "對每個 HC 給出明確結論：可用 / 可用需修 / 不建議用",
+    "修正已驗出問題的 HC 操作手冊"
+  ],
+  "risks": [
+    {
+      "risk": "方法論類 HC 無法用溯源驗證對錯，只能驗內部一致性",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "方法論類改用內部一致性 + 實際案例測試作為驗證標準"
+    },
+    {
+      "risk": "驗證過程本身帶有確認偏誤（傾向驗證 HC 有效）",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "每個 HC 刻意搜尋反證，優先找操作手冊的問題而非優點"
+    }
+  ],
+  "success_criteria": [
+    "20 個 priority HC 全部完成驗證，每個有明確結論",
+    "所有標為「需修」的 HC 完成修正並回驗",
+    "產出驗證方法論，可套用在 skeleton → priority 升級時的品質把關"
+  ],
+  "tracks": {
+    "formal-logic": "形式邏輯/數學類：有明確學術定義，可逐項比對對錯",
+    "cognitive-science": "認知科學/行為經濟類：溯源原始研究 + 檢查複製狀態",
+    "methodology": "方法論/流程框架類：驗內部一致性 + 步驟完整性"
+  }
+}

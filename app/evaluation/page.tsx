@@ -74,12 +74,12 @@ export default function EvaluationPage() {
     <main className="min-h-screen p-4 md:p-8 max-w-4xl mx-auto">
       <div className="mb-6">
         <div className="flex items-center gap-2">
-          <Link href="/" className="text-[var(--text-muted)] hover:text-[var(--text)] text-sm">
+          <Link href="/" className="text-[var(--text-muted)] hover:text-[var(--text)] text-small">
             ← MC
           </Link>
-          <h1 className="text-2xl font-bold">評估</h1>
+          <h1 className="text-title font-bold">評估</h1>
         </div>
-        <p className="text-[var(--text-muted)] text-sm mt-1">
+        <p className="text-[var(--text-muted)] text-small mt-1">
           HC 驗證進度 · {validated.length}/{allTasks.length} 已驗
         </p>
       </div>
@@ -87,19 +87,19 @@ export default function EvaluationPage() {
       {/* Summary stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 text-center">
-          <div className="text-2xl font-bold">{validated.length}<span className="text-sm font-normal text-[var(--text-muted)]">/{allTasks.length}</span></div>
+          <div className="text-title font-bold">{validated.length}<span className="text-small font-normal text-[var(--text-muted)]">/{allTasks.length}</span></div>
           <div className="text-[11px] text-[var(--text-muted)] mt-1">已驗證</div>
         </div>
         <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 text-center">
-          <div className="text-2xl font-bold text-green-400">{byVerdict["可用"]?.length || 0}</div>
+          <div className="text-title font-bold text-green-400">{byVerdict["可用"]?.length || 0}</div>
           <div className="text-[11px] text-[var(--text-muted)] mt-1">✅ 可用</div>
         </div>
         <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 text-center">
-          <div className="text-2xl font-bold text-yellow-400">{byVerdict["可用需修"]?.length || 0}</div>
+          <div className="text-title font-bold text-yellow-400">{byVerdict["可用需修"]?.length || 0}</div>
           <div className="text-[11px] text-[var(--text-muted)] mt-1">⚠️ 可用需修</div>
         </div>
         <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 text-center">
-          <div className={`text-2xl font-bold ${issuesOpen > 0 ? "text-yellow-400" : "text-[var(--text-muted)]"}`}>{issuesOpen}</div>
+          <div className={`text-title font-bold ${issuesOpen > 0 ? "text-yellow-400" : "text-[var(--text-muted)]"}`}>{issuesOpen}</div>
           <div className="text-[11px] text-[var(--text-muted)] mt-1">待修問題</div>
         </div>
       </div>
@@ -111,7 +111,7 @@ export default function EvaluationPage() {
         const cfg = verdictConfig[verdict];
         return (
           <div key={verdict} className={`rounded-xl border border-[var(--border)] ${cfg.bg} p-4 mb-4`}>
-            <div className={`text-sm font-semibold ${cfg.color} mb-3`}>
+            <div className={`text-small font-semibold ${cfg.color} mb-3`}>
               {cfg.icon} {cfg.label} ({tasks.length})
             </div>
             <div className="space-y-2">
@@ -138,7 +138,7 @@ export default function EvaluationPage() {
                   </div>
                   {(t.issues_found || 0) > 0 && (
                     <div className="text-right shrink-0">
-                      <div className={`text-sm font-medium ${(t.issues_found! - (t.issues_fixed || 0)) > 0 ? "text-yellow-400" : "text-green-400"}`}>
+                      <div className={`text-small font-medium ${(t.issues_found! - (t.issues_fixed || 0)) > 0 ? "text-yellow-400" : "text-green-400"}`}>
                         {t.issues_fixed || 0}/{t.issues_found}
                       </div>
                       <div className="text-[10px] text-[var(--text-muted)]">已修/發現</div>
@@ -154,7 +154,7 @@ export default function EvaluationPage() {
       {/* Unvalidated */}
       {unvalidated.length > 0 && (
         <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4">
-          <div className="text-sm font-semibold text-[var(--text-muted)] mb-3">
+          <div className="text-small font-semibold text-[var(--text-muted)] mb-3">
             ⬜ 未驗證 ({unvalidated.length})
           </div>
           <div className="space-y-1">

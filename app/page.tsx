@@ -46,14 +46,14 @@ function EvaluationCard({ projects }: { projects: Project[] }) {
       className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5 hover:border-[var(--accent)]/50 transition cursor-pointer"
     >
       <div className="flex items-center gap-3 mb-3">
-        <span className="text-2xl">🔍</span>
+        <span className="text-title">🔍</span>
         <div>
-          <div className="font-semibold text-sm">評估</div>
+          <div className="font-semibold text-small">評估</div>
           <div className="text-[11px] text-[var(--text-muted)]">Evaluation</div>
         </div>
       </div>
 
-      <div className="text-xs text-[var(--text-muted)] mb-3">
+      <div className="text-caption text-[var(--text-muted)] mb-3">
         HC 驗證 {validated.length}/{total} 已驗
       </div>
 
@@ -104,8 +104,8 @@ export default function HomePage() {
   return (
     <main className="min-h-screen p-6 md:p-10 max-w-4xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold">Mission Control</h1>
-        <p className="text-sm text-[var(--text-muted)] mt-1">
+        <h1 className="text-title font-bold">Mission Control</h1>
+        <p className="text-small text-[var(--text-muted)] mt-1">
           Harness Engineering 四大支柱
         </p>
       </div>
@@ -117,13 +117,13 @@ export default function HomePage() {
           className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5 hover:border-[var(--accent)]/50 transition cursor-pointer"
         >
           <div className="flex items-center gap-3 mb-2">
-            <span className="text-2xl">📋</span>
+            <span className="text-title">📋</span>
             <div>
-              <div className="font-semibold text-sm">規劃與執行</div>
+              <div className="font-semibold text-small">規劃與執行</div>
               <div className="text-[11px] text-[var(--text-muted)]">Planning & Execution</div>
             </div>
           </div>
-          <div className="text-xs text-[var(--text-muted)] mt-3">
+          <div className="text-caption text-[var(--text-muted)] mt-3">
             {projects.length} 專案 · {doneTasks}/{totalTasks} 完成
           </div>
         </Link>
@@ -134,25 +134,25 @@ export default function HomePage() {
         {/* 記憶 */}
         <div className="rounded-xl border border-[var(--border)]/50 bg-[var(--card)] p-5 opacity-40">
           <div className="flex items-center gap-3 mb-2">
-            <span className="text-2xl">🧠</span>
+            <span className="text-title">🧠</span>
             <div>
-              <div className="font-semibold text-sm">記憶</div>
+              <div className="font-semibold text-small">記憶</div>
               <div className="text-[11px] text-[var(--text-muted)]">Memory</div>
             </div>
           </div>
-          <div className="text-xs text-[var(--text-muted)] mt-3">Phase 2</div>
+          <div className="text-caption text-[var(--text-muted)] mt-3">Phase 2</div>
         </div>
 
         {/* 工具 */}
         <div className="rounded-xl border border-[var(--border)]/50 bg-[var(--card)] p-5 opacity-40">
           <div className="flex items-center gap-3 mb-2">
-            <span className="text-2xl">🔧</span>
+            <span className="text-title">🔧</span>
             <div>
-              <div className="font-semibold text-sm">工具</div>
+              <div className="font-semibold text-small">工具</div>
               <div className="text-[11px] text-[var(--text-muted)]">Tool Use</div>
             </div>
           </div>
-          <div className="text-xs text-[var(--text-muted)] mt-3">Phase 3</div>
+          <div className="text-caption text-[var(--text-muted)] mt-3">Phase 3</div>
         </div>
       </div>
     </main>

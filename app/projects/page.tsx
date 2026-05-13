@@ -120,12 +120,12 @@ export default function ProjectsPage() {
       <div className="flex flex-col gap-3 mb-6 md:flex-row md:items-center md:justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <Link href="/" className="text-[var(--text-muted)] hover:text-[var(--text)] text-sm">
+            <Link href="/" className="text-[var(--text-muted)] hover:text-[var(--text)] text-small">
               ← MC
             </Link>
-            <h1 className="text-2xl font-bold">專案</h1>
+            <h1 className="text-title font-bold">專案</h1>
           </div>
-          <p className="text-[var(--text-muted)] text-sm mt-1">
+          <p className="text-[var(--text-muted)] text-small mt-1">
             共 {projects.length} 個專案 · {doneTasks}/{totalTasks} tasks 完成
           </p>
         </div>
@@ -136,7 +136,7 @@ export default function ProjectsPage() {
               key={f}
               type="button"
               onClick={() => setTrackFilter(f)}
-              className={`px-3 py-1.5 text-xs font-medium rounded-md transition whitespace-nowrap ${
+              className={`px-3 py-1.5 text-caption font-medium rounded-md transition whitespace-nowrap ${
                 trackFilter === f
                   ? "bg-[var(--accent)] text-white shadow-sm"
                   : "text-[var(--text-muted)] hover:text-[var(--text)]"
@@ -165,12 +165,12 @@ export default function ProjectsPage() {
               className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 hover:border-[var(--accent)]/50 transition text-left cursor-pointer"
             >
               <div className="flex items-start justify-between mb-2">
-                <span className="font-semibold text-sm">{proj.name}</span>
+                <span className="font-semibold text-small">{proj.name}</span>
                 <span className="text-[10px] text-[var(--text-muted)]">
                   {new Date(proj.lastModified).toISOString().slice(0, 10)}
                 </span>
               </div>
-              <p className="text-xs text-[var(--text-muted)] line-clamp-2 mb-1">{proj.description}</p>
+              <p className="text-caption text-[var(--text-muted)] line-clamp-2 mb-1">{proj.description}</p>
               <ProgressBar done={filteredDone} total={filteredTasks.length} />
               <div className="flex flex-wrap gap-1.5 mt-2">
                 {[...new Set(filteredTasks.map((t) => t.track))].map((key) => {
@@ -194,15 +194,15 @@ export default function ProjectsPage() {
           <div className="absolute inset-4 md:inset-y-6 md:inset-x-auto md:w-full md:max-w-3xl md:left-1/2 md:-translate-x-1/2 rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-2xl flex flex-col overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--border)] flex items-center justify-between gap-3">
               <div className="min-w-0">
-                <div className="text-sm font-semibold truncate">{selected.name}</div>
-                <div className="text-xs text-[var(--text-muted)]">
+                <div className="text-small font-semibold truncate">{selected.name}</div>
+                <div className="text-caption text-[var(--text-muted)]">
                   {selected.done}/{selected.total} 完成
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setSelected(null)}
-                className="px-3 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--bg)] text-sm hover:border-[var(--accent)] transition"
+                className="px-3 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--bg)] text-small hover:border-[var(--accent)] transition"
               >
                 關閉
               </button>
@@ -221,7 +221,7 @@ export default function ProjectsPage() {
                   const m = trackMeta[key] || { icon: "📋", bg: "", text: "" };
                   return (
                     <div key={key} className="mt-4">
-                      <div className="text-xs text-[var(--text-muted)] font-medium mb-2">
+                      <div className="text-caption text-[var(--text-muted)] font-medium mb-2">
                         {m.icon} {key} ({doneCount}/{tasks.length})
                       </div>
                       {tasks.map((task) => (

@@ -48,7 +48,7 @@ function EvaluationCard({ projects }: { projects: Project[] }) {
       <div className="flex items-center gap-3 mb-3">
         <span className="text-title">🔍</span>
         <div>
-          <div className="font-semibold text-small">評估</div>
+          <div className="font-semibold text-heading">評估</div>
           <div className="text-[11px] text-[var(--text-muted)]">Evaluation</div>
         </div>
       </div>
@@ -105,7 +105,7 @@ export default function HomePage() {
     <main className="min-h-screen p-6 md:p-10 max-w-4xl mx-auto">
       <div className="mb-8">
         <h1 className="text-title font-bold">Mission Control</h1>
-        <p className="text-small text-[var(--text-muted)] mt-1">
+        <p className="text-body text-[var(--text-muted)] mt-1">
           Harness Engineering 四大支柱
         </p>
       </div>
@@ -119,11 +119,11 @@ export default function HomePage() {
           <div className="flex items-center gap-3 mb-2">
             <span className="text-title">📋</span>
             <div>
-              <div className="font-semibold text-small">規劃與執行</div>
+              <div className="font-semibold text-heading">規劃與執行</div>
               <div className="text-[11px] text-[var(--text-muted)]">Planning & Execution</div>
             </div>
           </div>
-          <div className="text-caption text-[var(--text-muted)] mt-3">
+          <div className="text-body text-[var(--text-muted)] mt-3">
             {projects.length} 專案 · {doneTasks}/{totalTasks} 完成
           </div>
         </Link>
@@ -136,11 +136,11 @@ export default function HomePage() {
           <div className="flex items-center gap-3 mb-2">
             <span className="text-title">🧠</span>
             <div>
-              <div className="font-semibold text-small">記憶</div>
+              <div className="font-semibold text-heading">記憶</div>
               <div className="text-[11px] text-[var(--text-muted)]">Memory</div>
             </div>
           </div>
-          <div className="text-caption text-[var(--text-muted)] mt-3">Phase 2</div>
+          <div className="text-body text-[var(--text-muted)] mt-3">Phase 2</div>
         </div>
 
         {/* 工具 */}
@@ -148,11 +148,11 @@ export default function HomePage() {
           <div className="flex items-center gap-3 mb-2">
             <span className="text-title">🔧</span>
             <div>
-              <div className="font-semibold text-small">工具</div>
+              <div className="font-semibold text-heading">工具</div>
               <div className="text-[11px] text-[var(--text-muted)]">Tool Use</div>
             </div>
           </div>
-          <div className="text-caption text-[var(--text-muted)] mt-3">Phase 3</div>
+          <div className="text-body text-[var(--text-muted)] mt-3">Phase 3</div>
         </div>
       </div>
     </main>

@@ -1,0 +1,28 @@
+{
+  "name": "第二間房產購置評估",
+  "description": "單頁 HTML 8 步互動引導，讓有二房需求的人自助完成財務評估並匯出 PDF 報告",
+  "status": "active",
+  "created": "2026-04-29",
+  "tracks": {
+    "dev": "功能開發",
+    "content": "內容與資料",
+    "deploy": "部署與維護"
+  },
+  "goals": [
+    "8 步引導覆蓋完整購屋評估流程（家庭→貸款→風險→報告）",
+    "PDF 匯出涵蓋全部使用者輸入，閱讀動線清晰",
+    "GitHub Pages 部署，免後端"
+  ],
+  "risks": [
+    {
+      "risk": "單頁 HTML 複雜度上升難維護",
+      "impact": "medium",
+      "mitigation": "功能穩定後考慮拆模組"
+    }
+  ],
+  "success_criteria": [
+    "8 步全部可互動填寫",
+    "PDF 報告涵蓋 Steps 1-7 全欄位",
+    "GitHub Pages 可正常存取"
+  ]
+}

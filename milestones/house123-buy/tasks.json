@@ -1,0 +1,52 @@
+{
+  "tasks": [
+    {
+      "id": "t1",
+      "title": "8 步互動引導 UI（單頁 HTML）",
+      "status": "done",
+      "track": "dev"
+    },
+    {
+      "id": "t2",
+      "title": "Step 1-2：家庭現況 + 收入評估表單",
+      "status": "done",
+      "track": "content"
+    },
+    {
+      "id": "t3",
+      "title": "Step 3-4：現有房產 + 貸款狀態表單",
+      "status": "done",
+      "track": "content"
+    },
+    {
+      "id": "t4",
+      "title": "Step 5-6：目標物件 + 貸款策略表單",
+      "status": "done",
+      "track": "content"
+    },
+    {
+      "id": "t5",
+      "title": "Step 7：風險準備評估",
+      "status": "done",
+      "track": "content"
+    },
+    {
+      "id": "t6",
+      "title": "Step 8：PDF 報告匯出",
+      "status": "done",
+      "track": "dev"
+    },
+    {
+      "id": "t7",
+      "title": "PDF 排版修正（Card 3 改列點、全欄位補齊、閱讀動線優化）",
+      "status": "done",
+      "track": "dev"
+    },
+    {
+      "id": "t8",
+      "title": "GitHub Pages 部署",
+      "status": "done",
+      "track": "deploy"
+    }
+  ]
+}

@@ -50,7 +50,7 @@ function verdictBadge(v: string | null | undefined) {
     "不建議用": "bg-red-500/20 text-red-400",
   };
   return (
-    <span className={`text-[10px] px-1.5 py-0.5 rounded ${colors[v] || "bg-gray-500/20 text-gray-400"}`}>
+    <span className={`text-caption px-1.5 py-0.5 rounded ${colors[v] || "bg-gray-500/20 text-gray-400"}`}>
       {v}
     </span>
   );
@@ -64,7 +64,7 @@ function foundationBadge(f: string | null | undefined) {
     "中": "text-yellow-400",
     "弱": "text-red-400",
   };
-  return <span className={`text-[10px] ${colors[f] || "text-gray-400"}`}>根據:{f}</span>;
+  return <span className={`text-caption ${colors[f] || "text-gray-400"}`}>根據:{f}</span>;
 }
 
 function ProgressBar({ done, total }: { done: number; total: number }) {
@@ -80,7 +80,7 @@ function ProgressBar({ done, total }: { done: number; total: number }) {
           }}
         />
       </div>
-      <span className="text-[11px] text-[var(--text-muted)]">
+      <span className="text-caption text-[var(--text-muted)]">
         {done}/{total}
       </span>
     </div>
@@ -117,26 +117,23 @@ export default function ProjectsPage() {
 
   return (
     <main className="min-h-screen p-4 md:p-8 max-w-6xl mx-auto">
-      <div className="flex flex-col gap-3 mb-6 md:flex-row md:items-center md:justify-between">
-        <div>
-          <div className="flex items-center gap-2">
-            <Link href="/" className="text-[var(--text-muted)] hover:text-[var(--text)] text-small">
-              ← MC
-            </Link>
-            <h1 className="text-title font-bold">專案</h1>
-          </div>
-          <p className="text-[var(--text-muted)] text-small mt-1">
-            共 {projects.length} 個專案 · {doneTasks}/{totalTasks} tasks 完成
-          </p>
+      <div className="mb-6">
+        <div className="flex items-center gap-2">
+          <Link href="/" className="text-[var(--text-muted)] hover:text-[var(--text)] text-body">
+            ← MC
+          </Link>
+          <h1 className="text-title font-bold">專案</h1>
         </div>
-
-        <div className="flex gap-1 bg-[var(--border)]/30 rounded-lg p-0.5 flex-wrap">
+        <p className="text-[var(--text-muted)] text-body mt-1">
+          共 {projects.length} 個專案 · {doneTasks}/{totalTasks} tasks 完成
+        </p>
+        <div className="flex gap-1 bg-[var(--border)]/30 rounded-lg p-0.5 flex-wrap mt-4">
           {["all", ...allTracks].map((f) => (
             <button
               key={f}
               type="button"
               onClick={() => setTrackFilter(f)}
-              className={`px-3 py-1.5 text-caption font-medium rounded-md transition whitespace-nowrap ${
+              className={`px-3 py-1.5 text-small font-medium rounded-md transition whitespace-nowrap ${
                 trackFilter === f
                   ? "bg-[var(--accent)] text-white shadow-sm"
                   : "text-[var(--text-muted)] hover:text-[var(--text)]"
@@ -165,19 +162,19 @@ export default function ProjectsPage() {
               className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 hover:border-[var(--accent)]/50 transition text-left cursor-pointer"
             >
               <div className="flex items-start justify-between mb-2">
-                <span className="font-semibold text-small">{proj.name}</span>
-                <span className="text-[10px] text-[var(--text-muted)]">
+                <span className="font-semibold text-heading">{proj.name}</span>
+                <span className="text-caption text-[var(--text-muted)]">
                   {new Date(proj.lastModified).toISOString().slice(0, 10)}
                 </span>
               </div>
-              <p className="text-caption text-[var(--text-muted)] line-clamp-2 mb-1">{proj.description}</p>
+              <p className="text-small text-[var(--text-muted)] line-clamp-2 mb-1">{proj.description}</p>
               <ProgressBar done={filteredDone} total={filteredTasks.length} />
               <div className="flex flex-wrap gap-1.5 mt-2">
                 {[...new Set(filteredTasks.map((t) => t.track))].map((key) => {
                   const count = filteredTasks.filter((t) => t.track === key).length;
                   const m = trackMeta[key] || { icon: "📋", bg: "bg-gray-500/15", text: "text-gray-400" };
                   return (
-                    <span key={key} className={`text-[10px] px-1.5 py-0.5 rounded ${m.bg} ${m.text}`}>
+                    <span key={key} className={`text-caption px-1.5 py-0.5 rounded ${m.bg} ${m.text}`}>
                       {m.icon} {count} {key}
                     </span>
                   );
@@ -194,15 +191,15 @@ export default function ProjectsPage() {
           <div className="absolute inset-4 md:inset-y-6 md:inset-x-auto md:w-full md:max-w-3xl md:left-1/2 md:-translate-x-1/2 rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-2xl flex flex-col overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--border)] flex items-center justify-between gap-3">
               <div className="min-w-0">
-                <div className="text-small font-semibold truncate">{selected.name}</div>
-                <div className="text-caption text-[var(--text-muted)]">
+                <div className="text-heading font-semibold truncate">{selected.name}</div>
+                <div className="text-body text-[var(--text-muted)]">
                   {selected.done}/{selected.total} 完成
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setSelected(null)}
-                className="px-3 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--bg)] text-small hover:border-[var(--accent)] transition"
+                className="px-3 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--bg)] text-body hover:border-[var(--accent)] transition"
               >
                 關閉
               </button>
@@ -221,13 +218,13 @@ export default function ProjectsPage() {
                   const m = trackMeta[key] || { icon: "📋", bg: "", text: "" };
                   return (
                     <div key={key} className="mt-4">
-                      <div className="text-caption text-[var(--text-muted)] font-medium mb-2">
+                      <div className="text-small text-[var(--text-muted)] font-medium mb-2">
                         {m.icon} {key} ({doneCount}/{tasks.length})
                       </div>
                       {tasks.map((task) => (
                         <div
                           key={task.id}
-                          className="flex items-center gap-2 py-1.5 text-[13px] flex-wrap"
+                          className="flex items-center gap-2 py-1.5 text-body flex-wrap"
                         >
                           <span>{statusIcon(task.status)}</span>
                           <span
@@ -242,11 +239,11 @@ export default function ProjectsPage() {
                           {foundationBadge(task.foundation)}
                           {verdictBadge(task.verdict)}
                           {task.issues_found && task.issues_found > 0 ? (
-                            <span className="text-[10px] text-[var(--text-muted)]">
+                            <span className="text-caption text-[var(--text-muted)]">
                               問題:{task.issues_fixed}/{task.issues_found}
                             </span>
                           ) : null}
-                          <span className="text-[10px] text-[var(--text-muted)] ml-auto">{task.id}</span>
+                          <span className="text-caption text-[var(--text-muted)] ml-auto">{task.id}</span>
                         </div>
                       ))}
                     </div>

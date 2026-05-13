@@ -88,19 +88,19 @@ export default function EvaluationPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 text-center">
           <div className="text-title font-bold">{validated.length}<span className="text-small font-normal text-[var(--text-muted)]">/{allTasks.length}</span></div>
-          <div className="text-[11px] text-[var(--text-muted)] mt-1">已驗證</div>
+          <div className="text-caption text-[var(--text-muted)] mt-1">已驗證</div>
         </div>
         <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 text-center">
           <div className="text-title font-bold text-green-400">{byVerdict["可用"]?.length || 0}</div>
-          <div className="text-[11px] text-[var(--text-muted)] mt-1">✅ 可用</div>
+          <div className="text-caption text-[var(--text-muted)] mt-1">✅ 可用</div>
         </div>
         <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 text-center">
           <div className="text-title font-bold text-yellow-400">{byVerdict["可用需修"]?.length || 0}</div>
-          <div className="text-[11px] text-[var(--text-muted)] mt-1">⚠️ 可用需修</div>
+          <div className="text-caption text-[var(--text-muted)] mt-1">⚠️ 可用需修</div>
         </div>
         <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 text-center">
           <div className={`text-title font-bold ${issuesOpen > 0 ? "text-yellow-400" : "text-[var(--text-muted)]"}`}>{issuesOpen}</div>
-          <div className="text-[11px] text-[var(--text-muted)] mt-1">待修問題</div>
+          <div className="text-caption text-[var(--text-muted)] mt-1">待修問題</div>
         </div>
       </div>
 
@@ -118,8 +118,8 @@ export default function EvaluationPage() {
               {tasks.map((t) => (
                 <div key={t.id} className="flex items-start gap-3 rounded-lg bg-[var(--card)] border border-[var(--border)] p-3">
                   <div className="flex-1 min-w-0">
-                    <div className="text-[13px] font-medium">{t.title}</div>
-                    <div className="flex flex-wrap items-center gap-2 mt-1.5 text-[11px]">
+                    <div className="text-small font-medium">{t.title}</div>
+                    <div className="flex flex-wrap items-center gap-2 mt-1.5 text-caption">
                       <span className="text-[var(--text-muted)]">{t.id}</span>
                       <span className="text-[var(--text-muted)]">·</span>
                       <span className="text-[var(--text-muted)]">{t.track}</span>
@@ -133,7 +133,7 @@ export default function EvaluationPage() {
                       )}
                     </div>
                     {t.note && (
-                      <div className="text-[11px] text-[var(--text-muted)] mt-1.5 leading-relaxed">{t.note}</div>
+                      <div className="text-caption text-[var(--text-muted)] mt-1.5 leading-relaxed">{t.note}</div>
                     )}
                   </div>
                   {(t.issues_found || 0) > 0 && (
@@ -141,7 +141,7 @@ export default function EvaluationPage() {
                       <div className={`text-small font-medium ${(t.issues_found! - (t.issues_fixed || 0)) > 0 ? "text-yellow-400" : "text-green-400"}`}>
                         {t.issues_fixed || 0}/{t.issues_found}
                       </div>
-                      <div className="text-[10px] text-[var(--text-muted)]">已修/發現</div>
+                      <div className="text-caption text-[var(--text-muted)]">已修/發現</div>
                     </div>
                   )}
                 </div>
@@ -159,10 +159,10 @@ export default function EvaluationPage() {
           </div>
           <div className="space-y-1">
             {unvalidated.map((t) => (
-              <div key={t.id} className="flex items-center gap-2 py-1.5 text-[13px]">
+              <div key={t.id} className="flex items-center gap-2 py-1.5 text-small">
                 <span className="text-[var(--text-muted)]">⬜</span>
                 <span>{t.title}</span>
-                <span className="text-[10px] text-[var(--text-muted)] ml-auto">{t.track}</span>
+                <span className="text-caption text-[var(--text-muted)] ml-auto">{t.track}</span>
               </div>
             ))}
           </div>

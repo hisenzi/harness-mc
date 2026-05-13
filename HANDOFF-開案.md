@@ -15,6 +15,8 @@ Harness MC 是 agent 無關的共享儀表板。資料屬於 Vincent，CC 和 Hi
 | 路徑 | `/Users/somedesign/Downloads/Claude_協作/harness-mc/` |
 | GitHub | `hisenzi/harness-mc`（private） |
 | 技術棧 | Next.js 16 + React 19 + Tailwind v4 + TypeScript |
+| 部署 | GitHub Pages（靜態輸出），push main 自動部署 |
+| 線上 | `hisenzi.github.io/harness-mc/` |
 | Port | 3001（`package.json` 內建，`.claude/launch.json` name: `mc`） |
 
 ## Harness Engineering 四大支柱

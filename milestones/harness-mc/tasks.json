@@ -1,0 +1,107 @@
+{
+  "tasks": [
+    {
+      "id": "p1-1",
+      "title": "首頁四支柱卡片 + API route",
+      "status": "done",
+      "track": "phase-1"
+    },
+    {
+      "id": "p1-2",
+      "title": "專案列表頁（/projects）+ 詳情 modal",
+      "status": "done",
+      "track": "phase-1"
+    },
+    {
+      "id": "p1-3",
+      "title": "評估頁（/evaluation）獨立 verdict 分組視圖",
+      "status": "done",
+      "track": "phase-1"
+    },
+    {
+      "id": "p1-4",
+      "title": "Typography 5-tier semantic tokens 全頁面統一",
+      "status": "done",
+      "track": "phase-1"
+    },
+    {
+      "id": "p2-1",
+      "title": "記憶支柱 spec 定義",
+      "status": "todo",
+      "track": "phase-2"
+    },
+    {
+      "id": "p2-2",
+      "title": "記憶頁面（/memory）實作",
+      "status": "todo",
+      "track": "phase-2"
+    },
+    {
+      "id": "p3-1",
+      "title": "工具支柱 spec 定義",
+      "status": "todo",
+      "track": "phase-3"
+    },
+    {
+      "id": "p3-2",
+      "title": "工具頁面（/tools）實作",
+      "status": "todo",
+      "track": "phase-3"
+    },
+    {
+      "id": "inf-1",
+      "title": "GitHub repo 建立 + 初始 commit",
+      "status": "done",
+      "track": "infra"
+    },
+    {
+      "id": "inf-2",
+      "title": "ARCHITECTURE.md + HANDOFF-開案.md",
+      "status": "done",
+      "track": "infra"
+    },
+    {
+      "id": "inf-3",
+      "title": "CSS 暗色主題 + 變數系統",
+      "status": "done",
+      "track": "infra"
+    },
+    {
+      "id": "dat-1",
+      "title": "hc-validation 開案（20 tasks）",
+      "status": "done",
+      "track": "data"
+    },
+    {
+      "id": "dat-2",
+      "title": "dual-blade 開案（19 tasks）",
+      "status": "done",
+      "track": "data"
+    },
+    {
+      "id": "dat-3",
+      "title": "house123-buy 開案（8 tasks）",
+      "status": "done",
+      "track": "data"
+    },
+    {
+      "id": "dat-4",
+      "title": "digital-ops-sub 開案（14 tasks）",
+      "status": "done",
+      "track": "data"
+    },
+    {
+      "id": "dat-5",
+      "title": "harness-mc 自身開案",
+      "status": "done",
+      "track": "data"
+    },
+    {
+      "id": "inf-4",
+      "title": "GitHub Pages 靜態部署",
+      "status": "done",
+      "track": "infra",
+      "note": "next.config output:export + build 時打包 milestones JSON + 移除 API route 依賴 + GitHub Actions CI"
+    }
+  ]
+}

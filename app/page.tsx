@@ -92,7 +92,7 @@ export default function HomePage() {
   const [projects, setProjects] = useState<Project[]>([]);
 
   useEffect(() => {
-    fetch("/api/projects")
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/projects.json`)
       .then((r) => r.json())
       .then(setProjects)
       .catch(() => {});

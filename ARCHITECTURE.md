@@ -22,23 +22,45 @@ harness-mc/                       ← 獨立 git repo（GitHub: hisenzi/harness-
 │   ├── globals.css               ← CSS 變數 + 暗色主題
 │   ├── evaluation/
 │   │   └── page.tsx              ← 評估頁（按 verdict 分組，聚焦驗證結果）
-│   ├── projects/
-│   │   └── page.tsx              ← 專案列表 + 詳情 modal（按 track 分組）
-│   └── api/
-│       └── projects/
-│           └── route.ts          ← 讀 milestones/ 回傳 JSON
-├── lib/
-│   ├── json.ts                   ← JSON parse 工具
-│   └── paths.ts                  ← 路徑設定（指向 milestones/）
+│   └── projects/
+│       └── page.tsx              ← 專案列表 + 詳情 modal（按 track 分組）
+├── scripts/
+│   └── generate-data.mjs         ← build 時讀 milestones/ 打包成靜態 JSON
+├── public/
+│   └── data/
+│       └── projects.json         ← generate-data 產出（git 不追蹤）
 ├── milestones/                   ← 專案資料（agents 共寫）
-│   └── hc-validation/
-│       ├── project.json          ← 專案 metadata
-│       └── tasks.json            ← 20 個 HC 驗證任務
+│   ├── harness-mc/               ← MC 自身
+│   ├── hc-validation/            ← HC 驗證（20 tasks）
+│   ├── dual-blade/               ← 雙刀流系統
+│   ├── house123-buy/             ← 第二間房產購置評估
+│   └── digital-ops-sub/          ← 數位營運架構師訂閱制
+├── .github/
+│   └── workflows/
+│       └── deploy.yml            ← push main → GitHub Actions → GitHub Pages
 ├── package.json
 ├── tsconfig.json
 ├── next.config.mjs
 └── postcss.config.js
 ```
+
+## 部署架構
+
+**靜態輸出**（`output: "export"`），無 API route、無 server-side code。
+
+```
+milestones/*.json
+    ↓ prebuild（node scripts/generate-data.mjs）
+public/data/projects.json
+    ↓ next build
+out/                              ← 純靜態 HTML/JS/CSS
+    ↓ GitHub Actions
+hisenzi.github.io/harness-mc/
+```
+
+- `basePath: "/harness-mc"`（production only）
+- 前端 fetch 讀 `/data/projects.json`（build 時 inline basePath）
+- 本機 dev：`npm run dev`（port 3001），prebuild 自動跑 generate-data
 
 ## 資料格式
 

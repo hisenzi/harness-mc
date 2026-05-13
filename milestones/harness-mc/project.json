@@ -1,0 +1,35 @@
+{
+  "name": "Mission Control 共享儀表板",
+  "description": "Agent 無關的專案追蹤系統 — Harness Engineering 四大支柱（規劃與執行、評估、記憶、工具），CC 和 HiSenzi 共讀寫",
+  "status": "active",
+  "created": "2026-05-13",
+  "tracks": {
+    "phase-1": "Phase 1（規劃與執行 + 評估）",
+    "phase-2": "Phase 2（記憶）",
+    "phase-3": "Phase 3（工具）",
+    "infra": "基礎建設",
+    "data": "資料與開案"
+  },
+  "goals": [
+    "四大支柱各有獨立頁面，首頁為入口",
+    "milestones 資料格式相容 OC，agents 共寫",
+    "GitHub Pages 或 Vercel 部署，免後端"
+  ],
+  "risks": [
+    {
+      "risk": "專案數量增加後首頁 / 專案頁效能下降",
+      "impact": "low",
+      "mitigation": "milestones 為靜態 JSON，量級小"
+    },
+    {
+      "risk": "記憶支柱範圍不明確",
+      "impact": "medium",
+      "mitigation": "Phase 2 前先定義 spec"
+    }
+  ],
+  "success_criteria": [
+    "Phase 1 四頁面可用（首頁/專案/評估/詳情 modal）",
+    "所有活躍專案都有 milestones 資料",
+    "新 session（CC/HiSenzi）能透過 HANDOFF 文件獨立操作 MC"
+  ]
+}

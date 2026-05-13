@@ -94,7 +94,7 @@ export default function ProjectsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/projects")
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/projects.json`)
       .then((r) => r.json())
       .then((data) => {
         setProjects(data);

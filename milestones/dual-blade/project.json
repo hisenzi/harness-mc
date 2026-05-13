@@ -1,0 +1,51 @@
+{
+  "id": "dual-blade",
+  "name": "雙刀流系統",
+  "description": "CC（Claude Code，小未）+ OC（OpenClaw，HiSenzi）兩台 Mac 透過 git 同步 brain 的 AI agent 協作系統。brain 內容、同步機制、備份、跨 agent 標準的整體治理。",
+  "type": "internal",
+  "status": "in_progress",
+  "priority": "high",
+  "owner": "Vincent",
+  "created": "2026-04-22",
+  "estimated_completion": "TBD",
+  "tags": ["dual-blade", "brain", "infrastructure", "multi-agent", "git", "ai-agent"],
+  "goals": [
+    "兩台 Mac brain 即時可用、資料屬於 Vincent",
+    "任何 AI agent（CC / OC / Codex / 未來工具）可快速 onboard 使用 brain",
+    "架構變動可追蹤（ADR 紀錄系統）",
+    "完整備份體系（多層、可演練）"
+  ],
+  "risks": [
+    {
+      "risk": "雙機 git 衝突頻率未知，可能影響 cc-log 寫入流暢度",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "M5 觀察 1 週，必要時加 hook 自動處理"
+    },
+    {
+      "risk": "4/24 同步機制（591 行 sync-cc-claude.sh + alert state machine）標 deprecated 後，對外 starter kit 用戶仍需用，文件邊界模糊",
+      "impact": "low",
+      "probability": "high",
+      "mitigation": "_pending/notyet-md-cc-sync-pack-260424.md 對外保留 GD 路線，內部 brain 標 deprecated 不刪檔"
+    },
+    {
+      "risk": "客戶分享結構（submodule / 拆 repo / branch）未定，未來客戶 onboard 可能臨時改架構",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "ADR-002 觸發條件 #2 寫客戶 onboarding 出現時重啟評估"
+    }
+  ],
+  "success_criteria": [
+    "MBA-1 + MBA-2 brain 從 GD 完全切到 git，兩台都驗證可用",
+    "任何架構決策進 000_Agent/decisions/ 走 ADR pattern",
+    "MEMORY.md / SOUL.md / CORE.md 內容 agent-neutral",
+    "8 層備份體系健全可演練"
+  ],
+  "tracks": {
+    "migration": "brain 大遷移（GD → git）M1-M5 + 後續路徑切換",
+    "infrastructure": "備份體系（8 層）、launchd、git workflow",
+    "standards": "ADR 紀錄系統、跨 agent portability、Codex / 客戶分享",
+    "knowledge": "Obsidian 知識庫、skills、MEMORY 維護",
+    "outreach": "對外 starter kit、公開發布"
+  }
+}

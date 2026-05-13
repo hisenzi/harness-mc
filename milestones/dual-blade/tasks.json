@@ -1,0 +1,138 @@
+{
+  "project": "dual-blade",
+  "tasks": [
+    {
+      "id": "brain-migration-m1",
+      "title": "M1 brain 內容驗證 + or/ gitignore + 加 plan/SOP/Obsidian",
+      "status": "completed",
+      "track": "migration",
+      "note": "5/13 commit f8ac0e6 / 40804c3 / c668afd。或 21M 移出 git tracking 本機保留"
+    },
+    {
+      "id": "brain-migration-m2",
+      "title": "M2 cc-claude-md.md 切 source path + 本機 cp",
+      "status": "completed",
+      "track": "migration",
+      "note": "5/13 commit ab00657 + 77a5119。md5 94ec331c... 驗證一致"
+    },
+    {
+      "id": "brain-migration-m2-cleanup",
+      "title": "M2 漏項補：skills symlink / plansDirectory / launchctl unload",
+      "status": "completed",
+      "track": "migration",
+      "note": "5/13 MBA-1 完成。M2.6 skills symlink → notyet-harness / M2.7 plansDirectory 改路徑 / M2.8 launchctl unload + plist 移 _deprecated/ + 刪 ~/.local/bin/cc-claude-sync。教訓：phase scope 寫完成條件不寫動作清單"
+    },
+    {
+      "id": "brain-migration-m3",
+      "title": "M3 4/24 同步機制標 deprecated（檔案保留）",
+      "status": "not_started",
+      "track": "migration",
+      "note": "scripts/sync-cc-claude.sh + plist + _alerts/ + MBA-2-sync-setup.md。MIGRATION.md 加 superseded banner"
+    },
+    {
+      "id": "brain-migration-m4",
+      "title": "M4 MBA-2 跑 SOP 完成切換",
+      "status": "blocked",
+      "track": "migration",
+      "note": "200_Reference/MBA-2-migration-sop-260513.md 已寫好待 MBA-2 執行"
+    },
+    {
+      "id": "brain-migration-m5",
+      "title": "M5 git workflow 雙機觀察 1 週",
+      "status": "not_started",
+      "track": "migration",
+      "note": "觀察衝突頻率，決定是否加自動化"
+    },
+    {
+      "id": "adr-system",
+      "title": "ADR 決策紀錄系統建立",
+      "status": "completed",
+      "track": "standards",
+      "note": "5/13 commit de1cfca。000_Agent/decisions/ + ADR-001 (brain migration) + ADR-002 (portability)"
+    },
+    {
+      "id": "portability-evaluation",
+      "title": "AGENTS.md / OpenAgentSkills / MCP 標準採納評估",
+      "status": "deferred",
+      "track": "standards",
+      "note": "ADR-002 Deferred。觸發條件：Codex 真用 / 客戶 onboarding / vendor 變動 / 半年重檢"
+    },
+    {
+      "id": "codex-prototype",
+      "title": "Codex 30 min prototype 驗證 brain 可讀性",
+      "status": "deferred",
+      "track": "standards",
+      "note": "ADR-002 觸發條件之一。Vincent 真用 Codex 那天再做"
+    },
+    {
+      "id": "client-share-structure",
+      "title": "客戶分享結構（submodule vs 拆 repo vs branch）",
+      "status": "deferred",
+      "track": "standards",
+      "note": "等實際客戶 case 才定。FP3 客戶分享動機核心"
+    },
+    {
+      "id": "backup-phase-7",
+      "title": "L7 GD 冷備層重評估",
+      "status": "not_started",
+      "track": "infrastructure",
+      "note": "5/13 brain 撤 GD 後 L7 意義變小。重評是否撤掉或改型"
+    },
+    {
+      "id": "backup-phase-8",
+      "title": "L8 SSD→HDD 物理備份",
+      "status": "blocked",
+      "track": "infrastructure",
+      "note": "等 Seagate 4TB 到貨"
+    },
+    {
+      "id": "mba-2-status-bar",
+      "title": "MBA-2 status bar 安裝",
+      "status": "not_started",
+      "track": "infrastructure",
+      "note": "5/3 寫的 setup doc：000_Agent/docs/MBA-2-statusline-setup.md"
+    },
+    {
+      "id": "mba-2-cc-token-count",
+      "title": "MBA-2 cc-token-count 工具安裝",
+      "status": "not_started",
+      "track": "infrastructure",
+      "note": "5/3 寫好 GD 共用，MBA-2 待 install"
+    },
+    {
+      "id": "obsidian-integration",
+      "title": "300_Obsidian_brain HC 路由器跟 000_Agent/skills 整合",
+      "status": "not_started",
+      "track": "knowledge",
+      "note": "HC vault 已進 repo，跟現有 skills 的呼叫關係待梳理"
+    },
+    {
+      "id": "or-archive-decision",
+      "title": "or/ 學習資源處置：搬 or-archive/ 還是留 working tree",
+      "status": "deferred",
+      "track": "knowledge",
+      "note": "5/13 暫不搬。.gitignore 已排除"
+    },
+    {
+      "id": "memory-md-trim",
+      "title": "MEMORY.md 28 個 P1 專案瘦身",
+      "status": "blocked",
+      "track": "knowledge",
+      "note": "HiSenzi 管 MEMORY.md，CC 唯讀。HiSenzi 自行處理"
+    },
+    {
+      "id": "heptabase-notion-sync",
+      "title": "Heptabase × Notion 同步腳本 whiteboard_id 改動搬 MBA-2",
+      "status": "not_started",
+      "track": "knowledge",
+      "note": "5/3 在 .openclaw_260418 snapshot 改動，需搬 live workspace"
+    },
+    {
+      "id": "starter-kit-publish",
+      "title": "對外 starter kit 公開發布",
+      "status": "not_started",
+      "track": "outreach",
+      "note": "4/24 寫的 591 行教學包：_pending/notyet-md-cc-sync-pack-260424.md。發 notyet.md / GitHub / 雷蒙 PR 待 Vincent 決定"
+    }
+  ]
+}

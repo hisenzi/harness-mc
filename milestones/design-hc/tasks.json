@@ -142,9 +142,11 @@
     {
       "id": "p0-ref-library",
       "title": "設計參考資料庫分類（Sample/）",
-      "status": "todo",
+      "status": "completed",
       "track": "foundation",
-      "done_condition": "(1) 資料夾結構對齊 cascade 架構（brand-identity / kv-print / web-ui）+ 媒材維度（illustration / photography / fine-art / typography）(2) 現有 13 資料夾內容遷移完成 (3) _index.yaml schema 定義完成，VLM Triage 可查詢",
+      "done_condition": "(1) 資料夾結構對齊 cascade 架構（brand-identity / kv-print / web-ui）+ 媒材維度（illustration / photography / fine-art / typography）(2) 現有 13 資料夾內容遷移完成 (3) _index.md schema 定義完成，VLM Triage 可查詢",
+      "completed_at": "2026-05-14",
+      "summary": "22,997 檔遷移完成：7 大類資料夾對齊 cascade 架構，132 檔 VLM 逐張分類歸位，_index.md 含 project.type / imagery.style / HC 三路查詢。Phase 2（spatial 細分 + 全庫機讀索引）待 VLM Triage v2",
       "note": "詳細規格見 ref-library-spec.md。前置：VLM Triage v2 參考圖風格提取的資料來源。看展覽 14,268 檔為最大遷移工程，需分批處理"
     },
     {

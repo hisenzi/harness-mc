@@ -1,0 +1,95 @@
+{
+  "name": "設計版 HC 系統",
+  "description": "設計師的 power tool：設計案 brief → 結構化規格 → Design Token → AI prompt → 生成 → VLM 評估 → 迭代。Designer-in-the-loop，不取代設計師",
+  "type": "internal",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-05-14",
+  "estimated_completion": "TBD",
+  "tracks": {
+    "foundation": "基礎建設（HC + Brand DNA + 參考資源）",
+    "pipeline": "生成 Pipeline（Spec → Token → Prompt → 生成 → 評估 → 迭代）",
+    "validation": "驗證（真案 demo + Benchmark + 人類抽檢）"
+  },
+  "phases": {
+    "0": "基礎知識庫 + 真案 demo（1 週）",
+    "1": "KV 生成 pipeline + VLM triage + Adobe UXP + Benchmark（1 月）",
+    "2": "加 UI HC (+8)，靜態畫面，a11y 程式可驗",
+    "3": "Brand Identity 完整生成器（高風險，需獨立評估）"
+  },
+  "architecture": {
+    "cascade": "Brand Identity（根 → 產 tokens）→ KV/平面（消費 tokens，單畫面）→ UI（消費 tokens + components + a11y）",
+    "core-object": "Design Spec (JSON) 是核心物件，不是圖。圖可丟，spec 才迭代",
+    "middleware": "格式中立中間層（Design Token JSON / W3C DTCG），不綁 Adobe"
+  },
+  "goals": [
+    "14 條 Design HC（base 8 + KV 6），每條有理論依據、觸發條件、VLM 可檢查項",
+    "Brand DNA YAML 模板：設計案 brief → 可機讀品牌規格",
+    "Design Spec Generator：Brand DNA + HC 選配 → W3C DTCG Design Token JSON（核心物件是 spec 不是圖）",
+    "Prompt Builder：Design Token → AI prompt（Midjourney / Firefly / DALL-E），整合 GARYTU 風格參考庫 + prompt 詞彙表",
+    "VLM Triage：參考圖風格提取 + 生成結果評估 + 生成瑕疵檢查 + 迭代回饋 + 停損機制",
+    "硬規則程式檢查：contrast / palette / 字級等合規項用程式算，不靠 VLM",
+    "Adobe UXP 接口：Design Token JSON → Adobe 消費端，格式中立不綁平台",
+    "Benchmark 驗證：證明 HC pipeline 比純 prompt 生成更好，否則系統不值得存在"
+  ],
+  "risks": [
+    {
+      "risk": "14 條 HC 的粒度不一致，部分太抽象無法落地為 VLM 檢查項",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "每條 HC 必須有 vlm-check 欄位，寫不出具體檢查項的 HC 需拆解或合併。顆粒度甜蜜點：2-3 條具體規則 + 跨 ≥3 案例適用"
+    },
+    {
+      "risk": "Runaway VLM loop：VLM 自評過樂觀，迭代不收斂",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "設停損（最多 N 輪）+ 人類抽檢節點。合規分層：硬規則用程式算，主觀層級才用 VLM"
+    },
+    {
+      "risk": "科技解決法偏誤：系統吃掉本該由設計師做的客戶溝通和判斷",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "定位為 designer-in-the-loop power tool，不取代設計師。系統產出是建議不是定案"
+    },
+    {
+      "risk": "完美 catalog 陷阱：追求 200 條完美 HC 庫而不是跑通 14 條",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "第一版嚴格控在 ~14 條。9-14 條跑通 > 200 條沒人用"
+    },
+    {
+      "risk": "Brand DNA 模板過度結構化，限制設計師創意空間",
+      "impact": "medium",
+      "probability": "low",
+      "mitigation": "約束引導不是規格填空，填不出來的留空不編造"
+    },
+    {
+      "risk": "Phase 3（Brand Identity 完整生成器）可能不該進這套系統",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "VLM 對 logo 品質判斷弱，Phase 3 需獨立評估可行性再決定是否進入"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "Phase 0：14 條 HC + Brand DNA + Planner + Triage 齊全，真案 demo 跑通",
+      "verify_cmd": "schema 驗證 + 一個真實設計案端到端 demo",
+      "expected": "brief → Brand DNA → HC 選配 → VLM 評估，全程可追溯"
+    },
+    {
+      "criterion": "Phase 1：Design Token JSON 為核心物件，串通生成 pipeline",
+      "verify_cmd": "Brand DNA → Design Token → AI prompt → 生成 → 評估 → 迭代",
+      "expected": "Design Token 合法、prompt 可用、生成結果可被 VLM + 程式雙軌檢查"
+    },
+    {
+      "criterion": "Phase 1：Benchmark 證明比純 prompt 好",
+      "verify_cmd": "同一 brief (A) 純 prompt vs (B) HC pipeline，VLM + 人工雙盲評估",
+      "expected": "B 優於 A，否則系統不值得存在"
+    },
+    {
+      "criterion": "Phase 1：Adobe UXP 可消費 Design Token",
+      "verify_cmd": "Design Token JSON → UXP plugin PoC",
+      "expected": "至少一個 Adobe 工具能讀取 token 並套用"
+    }
+  ]
+}

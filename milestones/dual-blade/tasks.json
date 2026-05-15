@@ -6,6 +6,9 @@
       "title": "M1 brain 內容驗證 + or/ gitignore + 加 plan/SOP/Obsidian",
       "status": "completed",
       "track": "migration",
+      "completed_at": "2026-05-13",
+      "commits": ["f8ac0e6", "40804c3", "c668afd"],
+      "summary": "notyet-harness git repo 建立，000_Agent 內容驗證通過。or/ 21M 移出 git tracking（.gitignore），plan/SOP/Obsidian 加入 repo",
       "note": "5/13 commit f8ac0e6 / 40804c3 / c668afd。或 21M 移出 git tracking 本機保留"
     },
     {
@@ -13,6 +16,9 @@
       "title": "M2 cc-claude-md.md 切 source path + 本機 cp",
       "status": "completed",
       "track": "migration",
+      "completed_at": "2026-05-13",
+      "commits": ["ab00657", "77a5119"],
+      "summary": "cc-claude-md.md source path 從 GD 切到 notyet-harness。本機 cp 到 ~/.claude/CLAUDE.md，md5 驗證一致",
       "note": "5/13 commit ab00657 + 77a5119。md5 94ec331c... 驗證一致"
     },
     {
@@ -20,14 +26,30 @@
       "title": "M2 漏項補：skills symlink / plansDirectory / launchctl unload",
       "status": "completed",
       "track": "migration",
+      "completed_at": "2026-05-13",
+      "commits": [],
+      "summary": "本機手動操作：skills symlink 指向 notyet-harness、plansDirectory 改路徑、舊 launchd plist unload + 移 _deprecated/。無對應 git commit（純本機設定）",
       "note": "5/13 MBA-1 完成。M2.6 skills symlink → notyet-harness / M2.7 plansDirectory 改路徑 / M2.8 launchctl unload + plist 移 _deprecated/ + 刪 ~/.local/bin/cc-claude-sync。教訓：phase scope 寫完成條件不寫動作清單"
     },
     {
       "id": "brain-migration-m3",
-      "title": "M3 4/24 同步機制標 deprecated（檔案保留）",
-      "status": "not_started",
+      "title": "M3 sync-cc-claude.sh 改相對路徑恢復使用",
+      "status": "completed",
       "track": "migration",
-      "note": "scripts/sync-cc-claude.sh + plist + _alerts/ + MBA-2-sync-setup.md。MIGRATION.md 加 superseded banner"
+      "completed_at": "2026-05-14",
+      "commits": ["8c6add1"],
+      "summary": "原定 deprecated，改為保留並更新路徑。GD_AGENT 硬編碼改為 SCRIPT_DIR 相對路徑，MBA-2 git pull 即可用",
+      "note": "5/14 原定 deprecated，改為更新路徑後恢復。GD_AGENT → SCRIPT_DIR 相對路徑，MBA-2 git pull 即可用"
+    },
+    {
+      "id": "brain-migration-m3b",
+      "title": "M3b 全腳本 GD 硬編碼路徑改相對路徑",
+      "status": "completed",
+      "track": "migration",
+      "completed_at": "2026-05-14",
+      "commits": ["8c6add1"],
+      "summary": "4 支腳本全面改相對路徑：heptabase-to-notion.py（GD_AGENT → AGENT_DIR）、update-skills-index.py、multi_project_backup_v4.sh、gd_mirror.sh（GD_ALERT_* → ALERT_*）",
+      "note": "5/14 改 4 檔：heptabase-to-notion.py / update-skills-index.py / multi_project_backup_v4.sh / gd_mirror.sh。全部用 Path(__file__) 或 SCRIPT_DIR 取代 ~/我的雲端硬碟/ 硬編碼"
     },
     {
       "id": "brain-migration-m4",
@@ -35,6 +57,64 @@
       "status": "blocked",
       "track": "migration",
       "note": "200_Reference/MBA-2-migration-sop-260513.md 已寫好待 MBA-2 執行"
+    },
+    {
+      "id": "migration-verify-mba1",
+      "title": "MBA-1 遷移驗收",
+      "status": "not_started",
+      "track": "migration",
+      "note": "驗收清單：000_Agent/docs/migration-verification-checklist.md § MBA-1。涵蓋 S1-S5 腳本 / K1-K3 skills / D1-D6 文件 / E1-E5 環境 / V1-V3 變數名"
+    },
+    {
+      "id": "migration-verify-mba2",
+      "title": "MBA-2 遷移驗收",
+      "status": "blocked",
+      "track": "migration",
+      "note": "依賴 M4。驗收清單：000_Agent/docs/migration-verification-checklist.md § MBA-2。git pull → S1-S5 / E1-E5 / OC cron 確認"
+    },
+    {
+      "id": "migration-backup-config",
+      "title": "backup_config.sh 從 .example 建立本機版",
+      "status": "not_started",
+      "track": "migration",
+      "note": "5/14 驗證發現：腳本改了相對路徑但 config 不存在（只有 .example），備份功能失效。MBA-1 + MBA-2 各自需建立"
+    },
+    {
+      "id": "migration-oc-cron-path",
+      "title": "MBA-2 OC cron job 路徑確認（是否引用 GD）",
+      "status": "blocked",
+      "track": "migration",
+      "note": "5/14 MBA-1 查不到 cron 設定，但 MBA-2 OC Gateway 可能有排程呼叫舊 GD 路徑的腳本。需 MBA-2 上 openclaw cron list 確認"
+    },
+    {
+      "id": "migration-gd-residual",
+      "title": "GD 殘留 config 清理（heptabase-clients.json 仍是 notyet.md）",
+      "status": "completed",
+      "track": "migration",
+      "completed_at": "2026-05-14",
+      "commits": ["e0a6ac1"],
+      "summary": "heptabase-clients.json notyet client name 從 \"notyet.md\" 修正為 \"notyet\"。GD 上的舊檔不再被讀取（腳本已改用 repo 內 config）",
+      "note": "5/14 GD 上 heptabase-clients.json 的 notyet name 仍是 notyet.md。確認不被讀取後可刪或更新"
+    },
+    {
+      "id": "migration-skills-gd-path",
+      "title": "Skills GD 路徑更新（cc-log / capture-insight / marker-based-auto-doc）",
+      "status": "completed",
+      "track": "migration",
+      "completed_at": "2026-05-14",
+      "commits": ["8c6add1"],
+      "summary": "3 個 skill SKILL.md 的 GD 硬編碼路徑改為 notyet-harness：cc-log daily memory 路徑、capture-insight 根路徑、marker-based-auto-doc TARGET_DOC",
+      "note": "3 個 skill 的 SKILL.md 裡硬編碼 GD 路徑。改為相對路徑或 notyet-harness 路徑"
+    },
+    {
+      "id": "migration-docs-gd-path",
+      "title": "文件 GD 路徑更新（ARCHITECTURE / BACKUP-PLAN / MBA-2-sync-setup 等 6 份）",
+      "status": "completed",
+      "track": "migration",
+      "completed_at": "2026-05-14",
+      "commits": ["8c6add1"],
+      "summary": "7 份文件 GD 路徑更新：ARCHITECTURE.md symlink 表 + Layer 1 改 Git、BACKUP-PLAN/RESTORE Layer 1 改 Git、MBA-2-sync-setup 加 DEPRECATED、MBA-2-statusline-setup cp 路徑、cross-machine-sync-design 加歷史標記、BACKUP-SCRIPTS.md 執行路徑",
+      "note": "D1-D6：ARCHITECTURE.md symlink 表 / BACKUP-PLAN / BACKUP-RESTORE / MBA-2-sync-setup / MBA-2-statusline-setup / BACKUP-SCRIPTS.md"
     },
     {
       "id": "brain-migration-m5",
@@ -48,6 +128,9 @@
       "title": "ADR 決策紀錄系統建立",
       "status": "completed",
       "track": "standards",
+      "completed_at": "2026-05-13",
+      "commits": ["de1cfca"],
+      "summary": "建立 000_Agent/decisions/ ADR 系統。ADR-001 記錄 brain migration 決策，ADR-002 記錄 portability 評估（deferred）",
       "note": "5/13 commit de1cfca。000_Agent/decisions/ + ADR-001 (brain migration) + ADR-002 (portability)"
     },
     {
@@ -121,6 +204,26 @@
       "note": "HiSenzi 管 MEMORY.md，CC 唯讀。HiSenzi 自行處理"
     },
     {
+      "id": "cc-boundary-mc-write",
+      "title": "CLAUDE.md 邊界規則更新：CC 可寫 harness-mc + tasks.json",
+      "status": "completed",
+      "track": "migration",
+      "completed_at": "2026-05-14",
+      "commits": ["57c8b3a"],
+      "summary": "cc-claude-md.md 邊界表新增 harness-mc/ 為 CC 讀寫範圍。MEMORY.md/CORE.md 改為「需授權才寫」。已 cp 到本機，MBA-2 待 git pull + cp",
+      "note": "5/14 拆 tasks.json 從唯讀行獨立，harness-mc/ 新增為 CC 讀/寫範圍。MEMORY.md/CORE.md 維持唯讀需授權。已 cp 到 ~/.claude/CLAUDE.md，⚠️ MBA-2 待 git pull + cp"
+    },
+    {
+      "id": "mc-auto-rebuild-hook",
+      "title": "MC 儀表板 PostToolUse hook：改 tasks.json 自動 rebuild",
+      "status": "completed",
+      "track": "infrastructure",
+      "completed_at": "2026-05-14",
+      "commits": [],
+      "summary": ".claude/settings.json 加 PostToolUse hook：Edit/Write tasks.json 後自動執行 generate-data.mjs 重建 MC 資料。純設定檔，無對應 repo commit",
+      "note": "5/14 設定 .claude/settings.json PostToolUse hook。Edit|Write tasks.json 後自動跑 generate-data.mjs"
+    },
+    {
       "id": "heptabase-notion-sync",
       "title": "Heptabase × Notion 同步腳本 whiteboard_id 改動搬 MBA-2",
       "status": "not_started",
@@ -133,6 +236,34 @@
       "status": "not_started",
       "track": "outreach",
       "note": "4/24 寫的 591 行教學包：_pending/notyet-md-cc-sync-pack-260424.md。發 notyet.md / GitHub / 雷蒙 PR 待 Vincent 決定"
+    },
+    {
+      "id": "collab-path-convention",
+      "title": "$COLLAB 路徑規範 — 共享文件禁硬編絕對路徑 + commit 前 grep 驗收",
+      "status": "completed",
+      "track": "standards",
+      "completed_at": "2026-05-14",
+      "commits": ["4fb9b6a"],
+      "summary": "CORE.md 新增路徑規範 + 路徑檢查。cc-claude-md.md 硬編路徑全改 $COLLAB/。project-init skill 路徑改 $COLLAB/。雙端通用",
+      "note": "5/14 commit 4fb9b6a。CORE.md 路徑規範 + 路徑檢查 + Task 完成紀錄規範。cc-claude-md.md Step 0 $COLLAB resolve + 4 處硬編修正"
+    },
+    {
+      "id": "path-check-cc-hook",
+      "title": "$COLLAB 路徑檢查自動化 — CC PreToolUse hook",
+      "status": "todo",
+      "track": "standards",
+      "done_condition": ".claude/settings.json 加 PreToolUse hook，git commit 前自動 grep 硬編路徑，命中則 block",
+      "note": "CORE.md 規範已寫（2026-05-14）。git pre-commit hook 等 MBA-2 上線或 HiSenzi commit 再加"
+    },
+    {
+      "id": "worktree-commit-skill",
+      "title": "worktree-commit 防呆 skill + project-init v3.0 + skills symlink 遷移",
+      "status": "completed",
+      "track": "infrastructure",
+      "completed_at": "2026-05-14",
+      "commits": ["2f172a3"],
+      "summary": "建立 worktree-commit skill（7 步防呆流程 + auto-task 機制）。project-init v3.0 路徑改 $COLLAB/。.claude/skills/ 39 個全部 symlink 到 000_Agent/skills/",
+      "note": "auto-task：commit 時無對應 task，自動建立"
     }
   ]
 }

@@ -39,14 +39,22 @@
     {
       "id": "p3-1",
       "title": "工具支柱 spec 定義",
-      "status": "todo",
-      "track": "phase-3"
+      "status": "done",
+      "track": "phase-3",
+      "completed_at": "2026-05-15",
+      "commits": ["3bb29a4"],
+      "summary": "三類資料源定義：skills（YAML frontmatter）、scripts（.py/.sh/.mjs/.js）、hooks（settings.json）+ git log 變更紀錄",
+      "note": "三類資料源：skills（YAML frontmatter）、scripts（.py/.sh/.mjs/.js）、hooks（settings.json）+ git log 變更紀錄"
     },
     {
       "id": "p3-2",
       "title": "工具頁面（/tools）實作",
-      "status": "todo",
-      "track": "phase-3"
+      "status": "done",
+      "track": "phase-3",
+      "completed_at": "2026-05-15",
+      "commits": ["3bb29a4"],
+      "summary": "generate-tools-data.mjs 掃描產出 tools.json。/tools 頁 4 tabs + 搜尋。首頁工具卡片即時摘要 + 可點擊",
+      "note": "generate-tools-data.mjs 掃描產出 tools.json。/tools 頁 4 tabs（Skills/Scripts/Hooks/變更紀錄）+ 搜尋。首頁工具卡片顯示即時摘要"
     },
     {
       "id": "inf-1",
@@ -97,11 +105,52 @@
       "track": "data"
     },
     {
+      "id": "inf-5",
+      "title": "PostToolUse hook：改 tasks.json 自動 rebuild 儀表板",
+      "status": "done",
+      "track": "infra",
+      "note": "5/14 .claude/settings.json PostToolUse hook。Edit|Write tasks.json → generate-data.mjs 自動重建 public/data/projects.json"
+    },
+    {
       "id": "inf-4",
       "title": "GitHub Pages 靜態部署",
       "status": "done",
       "track": "infra",
       "note": "next.config output:export + build 時打包 milestones JSON + 移除 API route 依賴 + GitHub Actions CI"
+    },
+    {
+      "id": "inf-6",
+      "title": "new-project.py 搬到 harness-mc + MC 版改版",
+      "status": "done",
+      "track": "infra",
+      "note": "腳本從 000_Agent/scripts/ 搬到 harness-mc/scripts/。輸出改到 harness-mc/milestones/，tasks.json 模板加 done_condition + phase-verify，project.json 加 tracks + 結構化 success_criteria（verify_cmd + expected），建完自動 rebuild MC"
+    },
+    {
+      "id": "inf-7",
+      "title": "Task 完成紀錄 toggle（completed_at / commits / summary）",
+      "status": "done",
+      "track": "infra",
+      "completed_at": "2026-05-15",
+      "commits": ["2ea5bd2"],
+      "summary": "tasks.json 加 completed_at/commits/summary 欄位，前端 details toggle 展開顯示完成紀錄 + ▶ 指示器。generate-data.mjs 同步 pass-through 新欄位",
+      "note": "資料層 + 前端 + 資料管線一次到位"
+    },
+    {
+      "id": "mapelon2-init",
+      "title": "mapelon-2 前台專案開案",
+      "status": "done",
+      "track": "data",
+      "completed_at": "2026-05-15",
+      "commits": ["69ef81b"],
+      "summary": "Mapelon 2.0 前台交接完成，在 MC 建立 16 task 追蹤（8 completed + 8 pending/blocked）",
+      "note": "auto-task：commit 時無對應 task，自動建立"
+    },
+    {
+      "id": "inf-8",
+      "title": "commit message 帶 task ID + git log 反查 script",
+      "status": "not_started",
+      "track": "infra",
+      "note": "commit message 格式：[task:brain-migration-m1]。寫 script 從 git log 反查 task 完成狀態，自動填入 commits 欄位。目前手動 ROI 足夠，規模變大時再啟動"
     }
   ]
 }

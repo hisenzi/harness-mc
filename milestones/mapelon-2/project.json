@@ -1,0 +1,50 @@
+{
+  "id": "mapelon-2",
+  "name": "Mapelon 2.0 前台",
+  "description": "JSDC 哈密瓜 GIS 前台。Next.js 14 + ArcGIS + TailwindCSS。P3 視覺改版 + 氣象圖層 + 天氣 widget 已交付，進入家浚部署驗收 + 後續功能階段。",
+  "type": "client",
+  "status": "in_progress",
+  "priority": "high",
+  "owner": "Vincent",
+  "created": "2026-03-23",
+  "estimated_completion": "TBD",
+  "tags": ["gis", "next.js", "arcgis", "jsdc", "frontend", "handover"],
+  "goals": [
+    "P3 視覺改版落地（Glassmorphism、sidebar、right toolbar）",
+    "氣象圖層 + 天氣 widget 完整交付",
+    "家浚 Docker 部署驗收通過",
+    "內容模組 API 對接（三峽文化地圖、議題地圖）"
+  ],
+  "risks": [
+    {
+      "risk": "家浚 Docker 環境變數遺漏（OWM API key），天氣功能全壞",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "HANDOVER-260515.md 必查清單 #1-#2 明列"
+    },
+    {
+      "risk": "後端 layer-tree 未建立，地方哈密瓜功能空白",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "已通知家浚，需後端建立 jsdc org 的 layer-tree 資料"
+    },
+    {
+      "risk": "map-view-settings 中心點在台南，標題卻寫三峽",
+      "impact": "low",
+      "probability": "high",
+      "mitigation": "需家浚更新後端 map-view-settings 座標為三峽 (24.934, 121.369)"
+    }
+  ],
+  "success_criteria": [
+    "兩站（Vercel + Docker）UI 功能一致",
+    "天氣功能（tile + widget + click-on-map）兩站正常",
+    "地方哈密瓜 layer-tree 有資料可展示",
+    "地圖預設中心在三峽"
+  ],
+  "tracks": {
+    "handover": "程式碼交接、文件、驗收",
+    "deploy": "Vercel + Docker 部署、env var、CI/CD",
+    "feature": "功能開發（P3 視覺、氣象、內容模組）",
+    "tech-debt": "技術債清理（dead code、font-weight、DesktopSidebar 拆分）"
+  }
+}

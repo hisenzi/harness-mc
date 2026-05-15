@@ -123,6 +123,9 @@
       "title": "new-project.py 搬到 harness-mc + MC 版改版",
       "status": "done",
       "track": "infra",
+      "completed_at": "2026-05-15",
+      "commits": ["ca1234b"],
+      "summary": "腳本從 000_Agent/scripts/ 搬到 harness-mc/scripts/，輸出路徑改為 harness-mc/milestones/。模板加 done_condition + phase-verify + 結構化 success_criteria",
       "note": "腳本從 000_Agent/scripts/ 搬到 harness-mc/scripts/。輸出改到 harness-mc/milestones/，tasks.json 模板加 done_condition + phase-verify，project.json 加 tracks + 結構化 success_criteria（verify_cmd + expected），建完自動 rebuild MC"
     },
     {
@@ -143,6 +146,26 @@
       "completed_at": "2026-05-15",
       "commits": ["69ef81b"],
       "summary": "Mapelon 2.0 前台交接完成，在 MC 建立 16 task 追蹤（8 completed + 8 pending/blocked）",
+      "note": "auto-task：commit 時無對應 task，自動建立"
+    },
+    {
+      "id": "tasks-backfill-260515",
+      "title": "全專案既有 task 回填 commits/summary",
+      "status": "done",
+      "track": "data",
+      "completed_at": "2026-05-15",
+      "commits": ["c4fb1fa"],
+      "summary": "inf-7 上線後回填 dual-blade + harness-mc 既有 completed task 的 completed_at/commits/summary",
+      "note": "auto-task：commit 時無對應 task，自動建立"
+    },
+    {
+      "id": "launch-autoport",
+      "title": "launch.json 加 autoPort 避免 port 衝突",
+      "status": "done",
+      "track": "infra",
+      "completed_at": "2026-05-15",
+      "commits": ["4eb6666"],
+      "summary": "加 autoPort: true，port 被占用時自動遞增，不用手動換 port",
       "note": "auto-task：commit 時無對應 task，自動建立"
     },
     {

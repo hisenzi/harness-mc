@@ -169,6 +169,16 @@
       "note": "auto-task：commit 時無對應 task，自動建立"
     },
     {
+      "id": "tasks-backfill-batch-260515",
+      "title": "tasks.json 回填 6 筆 commit 的完成紀錄",
+      "status": "done",
+      "track": "data",
+      "completed_at": "2026-05-15",
+      "commits": ["66ef9d4"],
+      "summary": "worktree-commit 流程回填：inf-6/inf-7/p3-1/p3-2 補 commits + 3 個 auto-task 建立 + mapelon-2 project.json 補漏",
+      "note": "auto-task：commit 時無對應 task，自動建立"
+    },
+    {
       "id": "inf-8",
       "title": "commit message 帶 task ID + git log 反查 script",
       "status": "not_started",

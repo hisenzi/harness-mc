@@ -261,8 +261,8 @@
       "status": "completed",
       "track": "infrastructure",
       "completed_at": "2026-05-14",
-      "commits": ["2f172a3"],
-      "summary": "建立 worktree-commit skill（7 步防呆流程 + auto-task 機制）。project-init v3.0 路徑改 $COLLAB/。.claude/skills/ 39 個全部 symlink 到 000_Agent/skills/",
+      "commits": ["2f172a3", "35f5266"],
+      "summary": "建立 worktree-commit skill（7 步防呆流程 + auto-task 機制）。v1.2 加 10 天自驗 + push 部署 + 刪 Co-Authored-By。project-init v3.0 路徑改 $COLLAB/",
       "note": "auto-task：commit 時無對應 task，自動建立"
     }
   ]

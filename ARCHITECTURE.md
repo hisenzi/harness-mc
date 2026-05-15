@@ -72,6 +72,21 @@ hisenzi.github.io/harness-mc/
 2. `[...]` — pure array
 3. `{ "dev": [...], "ops": [...] }` — dev/ops split
 
+### task 標準欄位
+
+| 欄位 | 類型 | 必要 | 說明 |
+|------|------|------|------|
+| `id` | string | ✅ | 唯一識別碼（kebab-case） |
+| `title` | string | ✅ | 任務標題 |
+| `status` | string | ✅ | `completed` / `pending` / `blocked` / `needs_fix` |
+| `track` | string | ✅ | 分類（`feature` / `tech-debt` / `handover` / `deploy` 等） |
+| `completed_at` | string | | 完成日期（`YYYY-MM-DD`） |
+| `commits` | string[] | | git commit hash 陣列，MC 前端會截取前 7 碼顯示 |
+| `summary` | string | | 完成後的摘要說明 |
+| `note` | string | | 未完成 task 的補充說明 |
+
+> **注意：** 欄位名是 `commits`（複數、陣列），不是 `commit`（字串）。MC 前端只認 `commits`。
+
 ### HC 驗證擴充欄位
 
 在標準 task 基礎上加：

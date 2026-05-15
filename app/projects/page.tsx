@@ -13,6 +13,9 @@ interface Task {
   issues_fixed?: number;
   verdict?: string | null;
   note?: string;
+  completed_at?: string | null;
+  commits?: string[];
+  summary?: string;
 }
 
 interface Project {
@@ -221,31 +224,58 @@ export default function ProjectsPage() {
                       <div className="text-small text-[var(--text-muted)] font-medium mb-2">
                         {m.icon} {key} ({doneCount}/{tasks.length})
                       </div>
-                      {tasks.map((task) => (
-                        <div
-                          key={task.id}
-                          className="flex items-center gap-2 py-1.5 text-body flex-wrap"
-                        >
-                          <span>{statusIcon(task.status)}</span>
-                          <span
-                            className={
-                              task.status === "done" || task.status === "completed" || task.status === "fixed"
-                                ? "text-[var(--text-muted)] line-through"
-                                : ""
-                            }
-                          >
-                            {task.title}
-                          </span>
-                          {foundationBadge(task.foundation)}
-                          {verdictBadge(task.verdict)}
-                          {task.issues_found && task.issues_found > 0 ? (
-                            <span className="text-caption text-[var(--text-muted)]">
-                              問題:{task.issues_fixed}/{task.issues_found}
+                      {tasks.map((task) => {
+                        const isDone = task.status === "done" || task.status === "completed" || task.status === "fixed";
+                        const hasDetails = isDone && !!(task.summary || (task.commits && task.commits.length > 0));
+
+                        const row = (
+                          <div className="flex items-center gap-2 py-1.5 text-body flex-wrap min-w-0">
+                            {hasDetails && (
+                              <span className="text-[var(--text-muted)] text-caption transition-transform duration-150 group-open:rotate-90">▶</span>
+                            )}
+                            <span>{statusIcon(task.status)}</span>
+                            <span className={isDone ? "text-[var(--text-muted)] line-through" : ""}>
+                              {task.title}
                             </span>
-                          ) : null}
-                          <span className="text-caption text-[var(--text-muted)] ml-auto">{task.id}</span>
-                        </div>
-                      ))}
+                            {foundationBadge(task.foundation)}
+                            {verdictBadge(task.verdict)}
+                            {task.issues_found && task.issues_found > 0 ? (
+                              <span className="text-caption text-[var(--text-muted)]">
+                                問題:{task.issues_fixed}/{task.issues_found}
+                              </span>
+                            ) : null}
+                            <span className="text-caption text-[var(--text-muted)] ml-auto">{task.id}</span>
+                          </div>
+                        );
+
+                        if (!hasDetails) return <div key={task.id}>{row}</div>;
+
+                        return (
+                          <details key={task.id} className="group">
+                            <summary className="list-none cursor-pointer [&::-webkit-details-marker]:hidden">
+                              {row}
+                            </summary>
+                            <div className="ml-7 mt-1 mb-2 pl-3 border-l-2 border-[var(--border)] text-small text-[var(--text-muted)] space-y-1">
+                              {task.summary && <p>{task.summary}</p>}
+                              <div className="flex items-center gap-3 flex-wrap">
+                                {task.completed_at && (
+                                  <span>📅 {task.completed_at}</span>
+                                )}
+                                {task.commits && task.commits.length > 0 && (
+                                  <span className="font-mono">
+                                    {task.commits.map((c, i) => (
+                                      <span key={c}>
+                                        {i > 0 && " · "}
+                                        <span className="text-[var(--accent)]">{c.slice(0, 7)}</span>
+                                      </span>
+                                    ))}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </details>
+                        );
+                      })}
                     </div>
                   );
                 });

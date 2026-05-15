@@ -18,6 +18,9 @@ function normalize(t) {
     issues_fixed: t.issues_fixed ?? 0,
     verdict: t.verdict ?? null,
     note: t.note || "",
+    completed_at: t.completed_at || null,
+    commits: t.commits || [],
+    summary: t.summary || "",
   };
 }
 

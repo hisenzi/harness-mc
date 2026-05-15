@@ -20,6 +20,25 @@ interface Project {
   total: number;
 }
 
+function ToolsCard() {
+  const [summary, setSummary] = useState<{ totalSkills: number; totalScripts: number; totalHooks: number } | null>(null);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/tools.json`)
+      .then((r) => r.json())
+      .then((d) => setSummary(d.summary))
+      .catch(() => {});
+  }, []);
+
+  if (!summary) return <div className="text-body text-[var(--text-muted)] mt-3">載入中...</div>;
+
+  return (
+    <div className="text-body text-[var(--text-muted)] mt-3">
+      {summary.totalSkills} skills · {summary.totalScripts} scripts · {summary.totalHooks} hooks
+    </div>
+  );
+}
+
 function EvaluationCard({ projects }: { projects: Project[] }) {
   const allTasks = projects.flatMap((p) => p.tasks);
   const validated = allTasks.filter((t) => t.verdict);
@@ -144,7 +163,10 @@ export default function HomePage() {
         </div>
 
         {/* 工具 */}
-        <div className="rounded-xl border border-[var(--border)]/50 bg-[var(--card)] p-5 opacity-40">
+        <Link
+          href="/tools"
+          className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5 hover:border-[var(--accent)]/50 transition cursor-pointer"
+        >
           <div className="flex items-center gap-3 mb-2">
             <span className="text-title">🔧</span>
             <div>
@@ -152,8 +174,8 @@ export default function HomePage() {
               <div className="text-[11px] text-[var(--text-muted)]">Tool Use</div>
             </div>
           </div>
-          <div className="text-body text-[var(--text-muted)] mt-3">Phase 3</div>
-        </div>
+          <ToolsCard />
+        </Link>
       </div>
     </main>
   );

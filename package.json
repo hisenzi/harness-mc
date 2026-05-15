@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3001",
-    "prebuild": "node scripts/generate-data.mjs",
+    "prebuild": "node scripts/generate-data.mjs && node scripts/generate-tools-data.mjs",
     "build": "next build",
     "start": "next start -p 3001"
   },

@@ -264,6 +264,16 @@
       "commits": ["2f172a3", "35f5266"],
       "summary": "建立 worktree-commit skill（7 步防呆流程 + auto-task 機制）。v1.2 加 10 天自驗 + push 部署 + 刪 Co-Authored-By。project-init v3.0 路徑改 $COLLAB/",
       "note": "auto-task：commit 時無對應 task，自動建立"
+    },
+    {
+      "id": "harness-framework-v2",
+      "title": "Harness Engineering 雙層框架 + planning-preflight 閘門",
+      "status": "completed",
+      "track": "infrastructure",
+      "completed_at": "2026-05-18",
+      "commits": ["e5aeaea"],
+      "summary": "四大支柱重構為能力層（Memory+Tools）＋紀律層（Planning+Evaluation）。ARCHITECTURE.md §九新增雙層視角，cc-claude-md.md 加 Planning 鐵律，新建 planning-preflight skill（HC 條件觸發閘門）",
+      "note": "auto-task：HC 分析 #rightProblem + #levelsOfAnalysis + #breakItDown + #abstraction。起因：HiBlocks 開案事實錯誤教訓"
     }
   ]
 }

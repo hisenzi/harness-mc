@@ -125,11 +125,18 @@ export default function HomePage() {
       <div className="mb-8">
         <h1 className="text-title font-bold">Mission Control</h1>
         <p className="text-body text-[var(--text-muted)] mt-1">
-          Harness Engineering 四大支柱
+          Harness Engineering 四大支柱 · 雙層架構
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="space-y-6">
+        <div>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">紀律層</div>
+            <div className="text-[11px] text-[var(--text-muted)]">Execution Discipline — 每次執行都過的關卡</div>
+            <div className="flex-1 border-t border-[var(--border)]"></div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* 規劃與執行 */}
         <Link
           href="/projects"
@@ -149,7 +156,16 @@ export default function HomePage() {
 
         {/* 評估 */}
         <EvaluationCard projects={projects} />
+          </div>
+        </div>
 
+        <div>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">能力層</div>
+            <div className="text-[11px] text-[var(--text-muted)]">Capability Platform — 設定一次，持續存在</div>
+            <div className="flex-1 border-t border-[var(--border)]"></div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* 記憶 */}
         <div className="rounded-xl border border-[var(--border)]/50 bg-[var(--card)] p-5 opacity-40">
           <div className="flex items-center gap-3 mb-2">
@@ -176,6 +192,8 @@ export default function HomePage() {
           </div>
           <ToolsCard />
         </Link>
+          </div>
+        </div>
       </div>
     </main>
   );

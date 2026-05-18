@@ -1,6 +1,6 @@
 {
   "name": "Mission Control 共享儀表板",
-  "description": "Agent 無關的專案追蹤系統 — Harness Engineering 四大支柱（規劃與執行、評估、記憶、工具），CC 和 HiSenzi 共讀寫",
+  "description": "Agent 無關的專案追蹤系統 — Harness Engineering 雙層架構（紀律層：規劃與執行+評估 / 能力層：記憶+工具），CC 和 HiSenzi 共讀寫",
   "status": "active",
   "created": "2026-05-13",
   "tracks": {
@@ -11,7 +11,7 @@
     "data": "資料與開案"
   },
   "goals": [
-    "四大支柱各有獨立頁面，首頁為入口",
+    "雙層架構（紀律層＋能力層）各有獨立頁面，首頁分層呈現",
     "milestones 資料格式相容 OC，agents 共寫",
     "GitHub Pages 或 Vercel 部署，免後端"
   ],

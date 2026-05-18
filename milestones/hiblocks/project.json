@@ -1,0 +1,79 @@
+{
+  "name": "HiBlocks 商業化區塊庫",
+  "description": "URL → DESIGN.md → Theme 自動化管線，搭配可收費 Astro 區塊庫",
+  "type": "standalone",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-05-18",
+  "estimated_completion": "2026-07-15",
+  "repo": "hisenzi/hiblocks",
+  "repo_path": "Claude_協作/hiblocks",
+  "tracks": {
+    "phase-1": "Phase 1 — 可接案最小產品",
+    "phase-2": "Phase 2 — 可收費產品",
+    "phase-3": "Phase 3 — 護城河"
+  },
+  "goals": [
+    "20 個核心 block（現有 14 + 新增 6），100% token 驅動（零硬編值）",
+    "URL → DESIGN.md → theme-{name}.css Claude prompt template 管線",
+    "Block Catalog 預覽頁 + Theme Switcher 即時切換",
+    "內容架構與 block props 分離，CMS-ready（Keystatic 友好）",
+    "4 個 demo theme（default, dark, maxmodel, monaka）驗證 token 系統通用性"
+  ],
+  "risks": [
+    {
+      "risk": "Block 硬編值殘留導致 theme 換膚不完整",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "P1-1 全面掃描 hi-blocks.css，統一改為 var(--hi-*)"
+    },
+    {
+      "risk": "髒 CSS 網站（無 :root）無法自動提取 token",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "H2 驗證：測試 3 個 WordPress/Webflow 站，建立 fallback 規則"
+    },
+    {
+      "risk": "一人團隊精力分散，Phase 1 拖延",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "嚴格分 Phase，每個 task 有 done_condition，不跳級"
+    },
+    {
+      "risk": "Astro 綁定限制市場規模",
+      "impact": "low",
+      "probability": "low",
+      "mitigation": "Phase 3 評估 Web Component 版，短期先接受"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "15 個 block × 3 個 theme 全排列渲染正確",
+      "verify_cmd": "手動截圖比對 + computed style 抽查",
+      "expected": "所有 block 在 3 個 theme 下視覺正確，無硬編殘留"
+    },
+    {
+      "criterion": "URL → theme 全流程 ≤ 5 分鐘",
+      "verify_cmd": "計時測試：輸入新 URL → 產出可用 theme-{name}.css",
+      "expected": "≤ 5 min（含人工 review）"
+    },
+    {
+      "criterion": "Block Catalog 頁面可線上預覽 + 切換 theme",
+      "verify_cmd": "開啟 /blocks/ → 切換 theme dropdown → 所有 block 即時換膚",
+      "expected": "切換無閃爍，所有 block 正確反映新 theme"
+    },
+    {
+      "criterion": "設計師 user test 正面回饋",
+      "verify_cmd": "3-5 位設計師完成 demo 操作 + 回饋問卷",
+      "expected": "≥ 3 人表示願意付費或在接案中使用"
+    }
+  ],
+  "hypotheses": [
+    {"id": "H1", "desc": "Theme 換膚對 80%+ block 有效", "status": "pending", "phase": 1},
+    {"id": "H2", "desc": "髒 CSS 網站可生成 DESIGN.md", "status": "pending", "phase": 1},
+    {"id": "H3", "desc": "AI 可根據 block catalog 生成 Astro 頁面", "status": "pending", "phase": 2},
+    {"id": "H4", "desc": "設計師願意為 URL→theme 能力付費", "status": "pending", "phase": 1},
+    {"id": "H5", "desc": "15 個 block 覆蓋 80% 接案需求", "status": "pending", "phase": 1},
+    {"id": "H6", "desc": "客戶能自助操作不需介入", "status": "pending", "phase": 2}
+  ]
+}

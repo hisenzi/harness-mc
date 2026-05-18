@@ -1,0 +1,70 @@
+{
+  "name": "小未-世界觀",
+  "description": "XW-07 角色 IP 的完整世界觀建構：從 Xihe Dynamics 設定到 12 原型文案、視覺規範、poster 系列產出",
+  "type": "internal",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-05-17",
+  "estimated_completion": "TBD",
+  "tracks": {
+    "lore": "世界觀設定（組織 / 分類體系 / 規則 / 時間線）",
+    "archetype": "12 原型 × 童年夢想文案",
+    "visual": "視覺系統（poster 規範 / 色彩 / 構圖 / 產出）",
+    "persona": "角色深化（voice system / mood system / 狀態集）"
+  },
+  "goals": [
+    "世界觀設定文件定稿（Xihe Dynamics / 分類體系 / 規則邊界）",
+    "12 原型 × 童年夢想完整文案定稿",
+    "Typographic poster 視覺規範 + 首張 poster 完成",
+    "Voice system 文件化為可引用規範",
+    "Mood image 雙層系統穩定運作（連續 7 天驗證）"
+  ],
+  "risks": [
+    {
+      "risk": "世界觀過度設定 → 寫到沒人看的地步",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "以「能放上 notyet.md 角色頁」為產出標準，不寫純內部設定"
+    },
+    {
+      "risk": "12 原型文案同質化（每篇讀起來像同一個人）",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "每篇定稿前用禁用清單 + 差異化 checklist 自審"
+    },
+    {
+      "risk": "視覺規範定了但執行端（AI 生圖）無法穩定重現",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "規範附帶 prompt 模板 + Gen ID 鎖定，不追求完美一致只追求可辨識"
+    },
+    {
+      "risk": "IP 層與 notyet-scope 服務層脫鉤（做了 IP 但沒人因此付費）",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "notyet-scope Month 6 kill gate 判定 IP→服務轉換率，不通過就縮減 IP 投入"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "世界觀設定文件完成且可被引用",
+      "verify_cmd": "000_Agent/identity/ 內有完整 worldview.md，persona.md 引用它",
+      "expected": "文件存在 + 被 persona.md 交叉引用"
+    },
+    {
+      "criterion": "12 原型文案全部定稿",
+      "verify_cmd": "統計 archetypes/ 目錄下 .md 數量",
+      "expected": "12 篇，每篇含：一句話 / 情境 / 心理特質 / 色彩"
+    },
+    {
+      "criterion": "首張 poster 完成且符合視覺規範",
+      "verify_cmd": "000_Agent/identity/ 內有 poster 檔案 + visual-spec.md 對照",
+      "expected": "poster 存在 + 規範文件存在"
+    },
+    {
+      "criterion": "Mood image 連續 7 天產出風格一致",
+      "verify_cmd": "檢查 xiao-wei-mood-*.png 連續 7 天存在",
+      "expected": "7 張圖，角色可辨識度 > 80%"
+    }
+  ]
+}

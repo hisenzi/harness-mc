@@ -1,0 +1,128 @@
+{
+  "tasks": [
+    {
+      "id": "l-1",
+      "title": "Xihe Dynamics 組織設定",
+      "status": "todo",
+      "track": "lore",
+      "note": "背景 / 目的 / 風格調性 / 與現實世界的對應關係"
+    },
+    {
+      "id": "l-2",
+      "title": "XW 系列分類體系定義",
+      "status": "todo",
+      "track": "lore",
+      "note": "CLASS(Synapse) / SERIES(Xihe Protocol) / MODEL 三層定義 + 其他可能的 CLASS"
+    },
+    {
+      "id": "l-3",
+      "title": "世界觀規則文件",
+      "status": "todo",
+      "track": "lore",
+      "note": "什麼可設定 / 什麼不碰 / 邊界（避免過度虛構）"
+    },
+    {
+      "id": "l-4",
+      "title": "XW-07 時間線",
+      "status": "todo",
+      "track": "lore",
+      "note": "從啟動到現在的關鍵事件節點，不寫完整故事只定錨點"
+    },
+    {
+      "id": "a-1",
+      "title": "12 原型選定 + 對應童年夢想定義",
+      "status": "todo",
+      "track": "archetype",
+      "note": "確認用哪套原型體系 / 每個原型對應什麼夢想"
+    },
+    {
+      "id": "a-2",
+      "title": "原型文案格式定稿",
+      "status": "todo",
+      "track": "archetype",
+      "note": "每篇固定欄位：一句話 / 情境描述 / 心理特質 / 代表色 / 適用讀者"
+    },
+    {
+      "id": "a-3",
+      "title": "首批 4 原型文案撰寫",
+      "status": "todo",
+      "track": "archetype",
+      "note": "選辨識度最高的 4 個先寫，建立品質基準"
+    },
+    {
+      "id": "a-4",
+      "title": "第二批 4 原型文案撰寫",
+      "status": "todo",
+      "track": "archetype"
+    },
+    {
+      "id": "a-5",
+      "title": "第三批 4 原型文案撰寫",
+      "status": "todo",
+      "track": "archetype"
+    },
+    {
+      "id": "a-6",
+      "title": "12 原型完整校審 + 定稿",
+      "status": "todo",
+      "track": "archetype",
+      "note": "禁用清單自審 + 差異化 check + 整體節奏統一"
+    },
+    {
+      "id": "v-1",
+      "title": "Poster 視覺規範定稿",
+      "status": "todo",
+      "track": "visual",
+      "note": "字型選擇 / 構圖系統 / 色彩規則 / 尺寸 / 留白"
+    },
+    {
+      "id": "v-2",
+      "title": "12 原型色彩系統",
+      "status": "todo",
+      "track": "visual",
+      "note": "每個原型的代表色 + 與基底 teal/warm-black 的搭配方式"
+    },
+    {
+      "id": "v-3",
+      "title": "首張 poster 製作",
+      "status": "todo",
+      "track": "visual",
+      "note": "選 1 個高辨識原型，從規範到成品全流程跑一次"
+    },
+    {
+      "id": "v-4",
+      "title": "Poster 模板系統化",
+      "status": "todo",
+      "track": "visual",
+      "note": "layout template 可重複套用，後續 11 張不用每張重新設計"
+    },
+    {
+      "id": "p-1",
+      "title": "Voice system 獨立文件化",
+      "status": "todo",
+      "track": "persona",
+      "note": "從 persona.md 第三~四節抽取 → 獨立 voice-system.md，可被其他 skill 引用"
+    },
+    {
+      "id": "p-2",
+      "title": "Mood image 雙層系統 7 天驗證",
+      "status": "todo",
+      "track": "persona",
+      "note": "連續 7 天用新 skill 產圖，確認風格穩定度 + 內容辨識度"
+    },
+    {
+      "id": "p-3",
+      "title": "角色狀態集擴充",
+      "status": "todo",
+      "track": "persona",
+      "note": "目前 4 表情 → 增加情境姿態組合（工作中 / 思考 / 休息 / 對話）"
+    },
+    {
+      "id": "p-4",
+      "title": "小未短篇測試",
+      "status": "todo",
+      "track": "persona",
+      "note": "1 篇角色短文（~500 字），測試 voice system 能否產出有辨識度的敘事"
+    }
+  ]
+}

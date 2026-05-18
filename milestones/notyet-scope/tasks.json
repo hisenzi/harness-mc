@@ -1,0 +1,123 @@
+{
+  "tasks": [
+    {
+      "id": "v-1",
+      "title": "SCOPE Day 1 啟動：建立每日紀錄格式（S-C-O-P-E 五欄）",
+      "status": "todo",
+      "track": "validate"
+    },
+    {
+      "id": "v-2",
+      "title": "SCOPE 連續 30 天執行紀錄",
+      "status": "todo",
+      "track": "validate",
+      "note": "每日 15-20 min，紀錄五步驟執行與觀察"
+    },
+    {
+      "id": "v-3",
+      "title": "Day 30 回顧：自評有效性 + 決定是否公開",
+      "status": "todo",
+      "track": "validate",
+      "note": "Kill Gate #1：不通過 = 砍方法論層"
+    },
+    {
+      "id": "si-1",
+      "title": "站內 SEO（meta description / structured data / robots.txt 確認）",
+      "status": "todo",
+      "track": "site-infra"
+    },
+    {
+      "id": "si-2",
+      "title": "RSS feed + OG meta + 社群分享卡片",
+      "status": "todo",
+      "track": "site-infra"
+    },
+    {
+      "id": "si-3",
+      "title": "部署流程確認（notyet.md domain → hosting 狀態）",
+      "status": "todo",
+      "track": "site-infra"
+    },
+    {
+      "id": "si-4",
+      "title": "Astro 套件升級 + 相依性檢查",
+      "status": "todo",
+      "track": "site-infra"
+    },
+    {
+      "id": "se-1",
+      "title": "新 content collection：characters schema 設計",
+      "status": "todo",
+      "track": "site-expand",
+      "note": "欄位：原型 / 夢想 / 色彩 / poster ref / 心理特質 / 一句話"
+    },
+    {
+      "id": "se-2",
+      "title": "新 content collection：methodology schema 設計",
+      "status": "todo",
+      "track": "site-expand",
+      "note": "欄位：方法名 / 來源 / 步驟 / 適用場景"
+    },
+    {
+      "id": "se-3",
+      "title": "角色目錄頁模板（grid layout + filter）",
+      "status": "todo",
+      "track": "site-expand"
+    },
+    {
+      "id": "se-4",
+      "title": "方法論 hub 頁模板",
+      "status": "todo",
+      "track": "site-expand"
+    },
+    {
+      "id": "se-5",
+      "title": "導覽重構（加入：角色 / 方法 / 服務 / 關於）",
+      "status": "todo",
+      "track": "site-expand"
+    },
+    {
+      "id": "co-1",
+      "title": "「notyet.md 是什麼」定位文",
+      "status": "todo",
+      "track": "content",
+      "note": "taiwan.md 對標但差異說明，建造者日誌調性"
+    },
+    {
+      "id": "co-2",
+      "title": "核心文 ×1（建造者日誌調性，從既有文章延伸）",
+      "status": "todo",
+      "track": "content"
+    },
+    {
+      "id": "co-3",
+      "title": "貢獻者機制設計（AI team byline 規範）",
+      "status": "todo",
+      "track": "content"
+    },
+    {
+      "id": "sv-1",
+      "title": "服務頁文案（四線簡介 + 合作流程，最小版）",
+      "status": "todo",
+      "track": "service"
+    },
+    {
+      "id": "sv-2",
+      "title": "CTA 設計規範（哪些頁面放、什麼語氣、導向哪）",
+      "status": "todo",
+      "track": "service"
+    },
+    {
+      "id": "cb-1",
+      "title": "聯繫 Raymond：PAI 引用授權 + 協作意願確認",
+      "status": "todo",
+      "track": "collab"
+    },
+    {
+      "id": "cb-2",
+      "title": "PAI Notion template 取得 + 研究",
+      "status": "todo",
+      "track": "collab"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "name": "小未世界觀 × SCOPE × notyet.md",
+  "description": "內容宇宙為載體：小未 IP 吸引注意力、SCOPE 方法論建立信任、自然導向數位營運訂閱制服務",
+  "type": "internal",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-05-16",
+  "estimated_completion": "TBD",
+  "tracks": {
+    "validate": "SCOPE 自驗（90 天門檻）",
+    "site-infra": "站體基礎（SEO / RSS / 部署）",
+    "site-expand": "站體擴建（新 collection / 頁面模板 / 導覽）",
+    "content": "內容首批（定位文 / 核心文 / 貢獻者機制）",
+    "ip": "→ 已拆至 xw-worldview 專案",
+    "service": "服務串接（服務頁 / CTA 設計）",
+    "collab": "外部協作（Raymond / 貢獻者）"
+  },
+  "goals": [
+    "SCOPE 自驗 30 天完成，判定方法論是否可公開教學",
+    "notyet.md 站體擴建完成（characters + methodology collection 上線）",
+    "首批 3 篇核心內容 + 定位文上線",
+    "小未世界觀產出就緒（see xw-worldview）",
+    "服務頁最小版上線，具備接客能力"
+  ],
+  "risks": [
+    {
+      "risk": "SCOPE 自驗失敗（自己用都無效）→ 方法論層全部不成立",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "Day 30 硬性 kill gate，不通過就砍方法論層"
+    },
+    {
+      "risk": "飛輪啟動延遲 6-12 個月，前期零回饋導致動力流失",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "冷啟動靠既有人脈轉介，不等 SEO；自驗紀錄本身就是內容素材"
+    },
+    {
+      "risk": "角色 IP 受眾 ≠ 服務付費客群（夢想者 ≠ 企業主）",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "Month 6 檢查 IP 互動數據，無效就砍 IP 層"
+    },
+    {
+      "risk": "一人產能分散，8 軌並行每軌不到位",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "Phase 0 只做 4 軌（validate + site-infra + site-expand + content），IP/service 後置"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "SCOPE 連續 30 天執行紀錄完成",
+      "verify_cmd": "檢查每日紀錄檔是否連續 30 天",
+      "expected": "30/30 天有紀錄，自評有效"
+    },
+    {
+      "criterion": "notyet.md 新 collection schema 上線",
+      "verify_cmd": "astro build 無錯誤 + characters/methodology 路由可訪問",
+      "expected": "build pass + 頁面回應 200"
+    },
+    {
+      "criterion": "月產出 ≥ 2 篇長文穩定 3 個月",
+      "verify_cmd": "git log --since 統計 content 目錄新增檔案數",
+      "expected": "每月 ≥ 2 篇新 .mdx"
+    },
+    {
+      "criterion": "首位付費客戶在 6 個月內轉換",
+      "verify_cmd": "digital-ops-sub tasks 有 completed 項",
+      "expected": "至少 1 位月費客戶"
+    }
+  ]
+}

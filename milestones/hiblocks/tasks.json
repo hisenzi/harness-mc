@@ -1,0 +1,111 @@
+{
+  "project": "hiblocks",
+  "tasks": [
+    {
+      "id": "p1-0",
+      "title": "內容架構分離（頁面資料抽離 + Content Schema 擴充）",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "頁面硬寫內容抽離到 data/ 或 content/，Content Collections schema 擴充涵蓋所有 block 類型，對 Keystatic 友好",
+      "estimate": "5hr",
+      "note": "Props interface 14 個 block 全部已有，不需新建。重點是頁面層的資料抽離與 schema 擴充"
+    },
+    {
+      "id": "p1-1",
+      "title": "Token 硬編修復（hi-blocks.css 全面去硬編）",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "hi-blocks.css 零硬編色值/尺寸，Hero overlay + Navbar bg + GSAP 參數全部 token 化，theme-default.css 補齊所有 token",
+      "estimate": "10hr",
+      "note": "Day 0 已發現 P1-P3，此 task 一次修完"
+    },
+    {
+      "id": "p1-2",
+      "title": "補 Block 到 20 個（6 個新 block）",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "Pricing, Team, LogoCloud, ContentSection, Newsletter, ContactForm 完成，均吃 token + CMS-ready",
+      "estimate": "15hr",
+      "note": "已有 14 block（含 FAQ, Testimonial, Stats）。新增 6 個，每個建完即測 theme 換膚"
+    },
+    {
+      "id": "p1-3",
+      "title": "DESIGN.md → Theme 生成管線（Claude prompt template）",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "URL → DESIGN.md prompt template 完成，DESIGN.md → theme-{name}.css prompt template 完成，3 個測試網站驗證通過",
+      "estimate": "10hr",
+      "note": "Day 0 驗證管線可行（monaka theme）。不用 shell script，用 Claude prompt template 更靈活。已有 4 個 theme 可參考格式"
+    },
+    {
+      "id": "p1-4a",
+      "title": "Theme Switcher 架構 spike",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "確定 runtime theme 切換方案（data-theme vs dynamic import vs iframe），POC 驗證可行，記錄 ADR",
+      "estimate": "3hr",
+      "note": "現有架構是 build-time CSS import per layout，runtime 切換需要不同方案。先 spike 再做 catalog"
+    },
+    {
+      "id": "p1-4b",
+      "title": "Block Catalog 預覽頁 + Theme Switcher 實作",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "/blocks/ 索引頁列出所有 block，/blocks/{name} 可預覽 + code snippet，Theme Switcher 下拉切換即時生效",
+      "estimate": "12hr",
+      "note": "依賴 p1-4a spike 結論決定實作方式"
+    },
+    {
+      "id": "p1-5",
+      "title": "驗證假說 H1/H2/H4/H5",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "H1: 4 theme × 20 block 全排列通過。H2: 3 個髒 CSS 站可提取。H4: 3 位設計師正面回饋。H5: 覆蓋率 ≥ 80%",
+      "estimate": "11hr",
+      "note": "Phase 1 收尾驗證，結果決定是否進 Phase 2。已有 4 theme（default, dark, maxmodel, monaka）"
+    },
+    {
+      "id": "p1-verify",
+      "title": "Phase 1 驗收整合",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "所有 p1-* done + success_criteria 前 3 項通過 + hypotheses H1/H2/H5 更新狀態"
+    },
+    {
+      "id": "p2-1",
+      "title": "深淺色切換系統",
+      "status": "blocked",
+      "track": "phase-2",
+      "done_condition": "每個 theme 有 light/dark 兩套 semantic token，toggle 元件完成，所有 block 雙色測試通過",
+      "note": "blocked by p1-verify"
+    },
+    {
+      "id": "p2-2",
+      "title": "Block 變體（Hero×3, Navbar×2, Footer×2, Portfolio×2）",
+      "status": "blocked",
+      "track": "phase-2",
+      "done_condition": "9 個變體完成，Block Catalog 可選擇變體預覽"
+    },
+    {
+      "id": "p2-3",
+      "title": "文件 + 定價 + 授權",
+      "status": "blocked",
+      "track": "phase-2",
+      "done_condition": "每個 block Props 文件完成，定價頁上線，授權條款就緒"
+    },
+    {
+      "id": "p2-4",
+      "title": "驗證假說 H3（AI 生成 Astro 頁面）",
+      "status": "blocked",
+      "track": "phase-2",
+      "done_condition": "Block Catalog Prompt 建立，測試 AI 生成品質，決定是否做成產品功能"
+    },
+    {
+      "id": "p2-5",
+      "title": "CMS 接入（Keystatic + /admin）",
+      "status": "blocked",
+      "track": "phase-2",
+      "done_condition": "Keystatic 安裝 + schema mapping 完成，/admin 可登入編輯，存檔 → auto deploy 流程通"
+    }
+  ]
+}

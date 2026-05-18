@@ -194,9 +194,19 @@
       "status": "done",
       "track": "phase-1",
       "completed_at": "2026-05-18",
-      "commits": [],
+      "commits": ["5528390"],
       "summary": "首頁從平面 2×2 grid 重構為紀律層＋能力層兩區，每區有標籤行（中文名 + 英文說明 + 分隔線）",
       "note": "page.tsx 外層改 space-y-6，內層各自 grid。配合 ARCHITECTURE.md §九 雙層架構文件"
+    },
+    {
+      "id": "dat-milestones-260518",
+      "title": "新增 hiblocks、notyet-scope、xw-worldview 專案 milestones",
+      "status": "done",
+      "track": "data",
+      "completed_at": "2026-05-18",
+      "commits": ["a0effe5"],
+      "summary": "3 個新專案加入 MC 追蹤。hiblocks task 經 HC 驗證修正（14 block 非 6、已有 Props）",
+      "note": "auto-task：commit 時無對應 task，自動建立"
     },
     {
       "id": "inf-8",

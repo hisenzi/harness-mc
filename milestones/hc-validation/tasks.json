@@ -362,6 +362,186 @@
       "commits": [
         "b03c0d0"
       ]
+    },
+    {
+      "number": "021",
+      "id": "deduction",
+      "title": "021 #deduction 演繹邏輯",
+      "status": "completed",
+      "track": "formal-logic",
+      "layer": "分析推理",
+      "foundation": "強",
+      "issues_found": 3,
+      "issues_fixed": 1,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "定義混淆 validity/soundness→拆開兩概念。Reductio 分類層級（低）和措辭精確度（低）不修。五種有效形式、兩種無效形式、Step 4 真值表全部學術正確",
+      "note": "溯源：SEP Argument and Argumentation、IEP Validity and Soundness",
+      "commits": [
+        "ea6083b"
+      ]
+    },
+    {
+      "number": "022",
+      "id": "induction",
+      "title": "022 #induction 歸納推理",
+      "status": "completed",
+      "track": "formal-logic",
+      "layer": "分析推理",
+      "foundation": "強",
+      "issues_found": 2,
+      "issues_fixed": 1,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "IBE 分類爭議（Peirce abduction vs 歸納子類）→加註解說明評估重點不同。反模式 3 基率/取樣偏誤混淆（低）不修。五種歸納類型和強度評估學術正確",
+      "note": "溯源：SEP Abduction、Campos 2011 Synthese、IEP Deductive-Inductive",
+      "commits": [
+        "ea6083b"
+      ]
+    },
+    {
+      "number": "023",
+      "id": "correlation",
+      "title": "023 #correlation 相關與因果",
+      "status": "completed",
+      "track": "cognitive-science",
+      "layer": "分析推理",
+      "foundation": "強",
+      "issues_found": 3,
+      "issues_fixed": 1,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "冰淇淋/溺水範例放錯欄位（反向因果→共同原因）→移欄+補正確範例。Hill criteria 缺效應量（低）和結論分級不完全平行（低）不修。整體框架與 Pearl/Hill 高度吻合",
+      "note": "溯源：Bradford Hill 1965、Pearl SCM framework",
+      "commits": [
+        "ea6083b"
+      ]
+    },
+    {
+      "number": "024",
+      "id": "heuristicBias",
+      "title": "024 #heuristicBias 捷思偏誤",
+      "status": "completed",
+      "track": "cognitive-science",
+      "layer": "分析推理",
+      "foundation": "強",
+      "issues_found": 5,
+      "issues_fixed": 1,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "定義只提 2 種但操作涵蓋 5 種→擴寫定義。4 低 ISSUE（base rate 歸屬、錨定矯正簡化、情感矯正樂觀、Peak-End 分類地位）不修。五種捷思溯源清楚，複製狀態穩健",
+      "note": "溯源：Tversky & Kahneman 1973/1974、Slovic 2002、Kahneman 1993。代表性捷思 2024 預註冊複製成功 8/9",
+      "commits": [
+        "ea6083b"
+      ]
+    },
+    {
+      "number": "025",
+      "id": "estimation",
+      "title": "025 #estimation 估算技術",
+      "status": "completed",
+      "track": "methodology",
+      "layer": "分析推理",
+      "foundation": "強",
+      "issues_found": 2,
+      "issues_fixed": 1,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "防錨定規則只在反模式區不在執行步驟→Step 2 加「先獨立估算」指示。直覺校驗措辭張力（低）不修。Fermi 分解三策略完整，走查順暢",
+      "note": "",
+      "commits": [
+        "ea6083b"
+      ]
+    },
+    {
+      "number": "026",
+      "id": "evidenceBased",
+      "title": "026 #evidenceBased 證據基礎思考",
+      "status": "completed",
+      "track": "methodology",
+      "layer": "分析推理",
+      "foundation": "強",
+      "issues_found": 2,
+      "issues_fixed": 1,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "D 級證據在高不確定性領域被系統性低估→Step 2 加情境化評估指引。循環引用偵測方法（低）不修。證據金字塔 A-E 內部一致，走查順暢",
+      "note": "",
+      "commits": [
+        "ea6083b"
+      ]
+    },
+    {
+      "number": "027",
+      "id": "contrarian",
+      "title": "027 #contrarian 逆向思維",
+      "status": "completed",
+      "track": "methodology",
+      "layer": "分析推理",
+      "foundation": "強",
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "0 ISSUE。五種翻轉方式作為 checklist 可區分且覆蓋足夠，反模式界線清晰（為反對而反對 vs 工具性逆向），走查順暢",
+      "note": "",
+      "commits": [
+        "ea6083b"
+      ]
+    },
+    {
+      "number": "028",
+      "id": "firstPrinciples",
+      "title": "028 #firstPrinciples 第一原理",
+      "status": "completed",
+      "track": "methodology",
+      "layer": "分析推理",
+      "foundation": "強",
+      "issues_found": 1,
+      "issues_fixed": 1,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "隱性知識探查只在反模式提醒、步驟中缺動作→Step 1 加子步驟。四層追問邏輯遞進完整，比較表平衡良好，走查順暢",
+      "note": "",
+      "commits": [
+        "ea6083b"
+      ]
+    },
+    {
+      "number": "029",
+      "id": "purpose",
+      "title": "029 #purpose 目的與價值評估",
+      "status": "completed",
+      "track": "methodology",
+      "layer": "權衡決策",
+      "foundation": "強",
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "0 ISSUE。三層目標層級完整，對齊檢查銜接良好，價值衝突處理流程完整（含不可調和情境），停止規則明確，反模式防護完整",
+      "note": "",
+      "commits": [
+        "ea6083b"
+      ]
+    },
+    {
+      "number": "030",
+      "id": "utility",
+      "title": "030 #utility 效用分析",
+      "status": "completed",
+      "track": "cognitive-science",
+      "layer": "權衡決策",
+      "foundation": "中",
+      "issues_found": 2,
+      "issues_fixed": 1,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "Utility 命名指向 vNM 效用理論但內容是多維度 CBA→定義加澄清句。四維度框架為自建（低）不修。隱性成本清單和反模式（McNamara fallacy、status quo bias）溯源正確",
+      "note": "溯源：Samuelson & Zeckhauser 1988 Status Quo Bias、McNamara Fallacy、Real Options Analysis",
+      "commits": [
+        "ea6083b"
+      ]
     }
   ]
 }

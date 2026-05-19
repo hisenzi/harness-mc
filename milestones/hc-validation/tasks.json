@@ -4,13 +4,16 @@
     {
       "id": "fallacies",
       "title": "#fallacies 邏輯謬誤",
-      "status": "needs_fix",
+      "status": "completed",
       "track": "formal-logic",
-      "foundation": "極強",
-      "issues_found": 2,
-      "issues_fixed": 0,
-      "verdict": "可用需修",
-      "note": "循環論證/乞題重複；倖存者偏誤歸類錯誤"
+      "foundation": "強",
+      "issues_found": 3,
+      "issues_fixed": 3,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "commits": ["6d1483b"],
+      "summary": "重組 Step 2 分類表：循環論證/乞題合併（structural+pragmatic）；倖存者偏誤從歸納謬誤移至新增選擇偏誤類別；「結構謬誤」改名「前提謬誤」、稻草人移至關聯性謬誤",
+      "note": "重新驗證發現第 3 個 issue（結構謬誤類別名稱不當），三個一併修正"
     },
     {
       "id": "optimization",
@@ -26,13 +29,16 @@
     {
       "id": "confirmationBias",
       "title": "#confirmationBias 確認偏誤",
-      "status": "needs_fix",
+      "status": "completed",
       "track": "cognitive-science",
-      "foundation": "極強",
-      "issues_found": 2,
-      "issues_fixed": 0,
-      "verdict": "可用需修",
-      "note": "信心量表反向強化偏誤；缺 base rate neglect"
+      "foundation": "強",
+      "issues_found": 3,
+      "issues_fixed": 2,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "commits": ["6d1483b"],
+      "summary": "Step 4 信心量表從「高信心→高門檻抵擋反證」翻轉為「高信心→紅燈檢查信心來源」；Step 3 新增 base rate 檢查項。ISSUE 3（biased memory）判定實戰價值低，不修",
+      "note": "重新驗證發現第 3 個 issue（缺 biased memory 機制），經評估為學術完整性問題非操作缺陷，決定不修"
     },
     {
       "id": "systemDynamics",
@@ -92,13 +98,15 @@
     {
       "id": "breakItDown",
       "title": "#breakItDown 拆解問題",
-      "status": "needs_fix",
+      "status": "completed",
       "track": "methodology",
       "foundation": "中",
       "issues_found": 2,
-      "issues_fixed": 0,
-      "verdict": "可用需修",
-      "note": "MECE 指令 vs 反模式矛盾；5W 缺 How"
+      "issues_fixed": 2,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "Step 2 MECE 從硬性指令改為目標方向（承認重疊、標註交叉點）；Step 1 加入 How 維度補齊機制層掃描",
+      "note": "已修：MECE 指令 vs 反模式矛盾→指令降為目標且加交叉點標註；5W 缺 How→加入 How 三問"
     },
     {
       "id": "rightProblem",

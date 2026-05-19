@@ -9,6 +9,7 @@
   "created": "2026-05-13",
   "estimated_completion": "TBD",
   "tags": ["hc", "validation", "thinking-framework"],
+  "methodology": "$COLLAB/notyet-harness/300_Obsidian_brain/HC/_validation/methodology.md",
   "goals": [
     "驗證 20 個 priority HC 的操作手冊是否準確反映底層學科概念",
     "辨識操作手冊中的簡化、遺漏、或內部矛盾",
@@ -35,8 +36,40 @@
     "產出驗證方法論，可套用在 skeleton → priority 升級時的品質把關"
   ],
   "tracks": {
-    "formal-logic": "形式邏輯/數學類：有明確學術定義，可逐項比對對錯",
-    "cognitive-science": "認知科學/行為經濟類：溯源原始研究 + 檢查複製狀態",
-    "methodology": "方法論/流程框架類：驗內部一致性 + 步驟完整性"
+    "formal-logic": {
+      "name": "形式邏輯/數學類",
+      "method": "逐項比對學術定義",
+      "hcs": ["#deduction", "#epistemology"],
+      "steps": [
+        "用 #epistemology 區分：操作手冊的定義屬於假說、理論、還是已確立事實",
+        "用 #deduction 檢查：操作手冊的推理步驟是否合乎形式邏輯",
+        "Web search 查學術來源，逐項比對操作手冊的定義/分類是否與學術共識一致",
+        "不一致處標 ISSUE，記錄學術來源 + 操作手冊原文 + 差異點"
+      ]
+    },
+    "cognitive-science": {
+      "name": "認知科學/行為經濟類",
+      "method": "溯源原始研究 + 檢查複製狀態",
+      "hcs": ["#sourceQuality", "#replication", "#sciMethod"],
+      "steps": [
+        "用 #sourceQuality 辨識：操作手冊引用的概念出自哪個原始研究（作者/年份/期刊）",
+        "Web search 溯源原始研究，確認操作手冊的描述是否準確反映原始研究結論",
+        "用 #replication 檢查：該研究的複製狀態（已複製/複製失敗/未被複製）",
+        "用 #sciMethod 評估：操作手冊的應用建議是否超出原始研究的適用範圍",
+        "複製失敗或適用範圍偏差處標 ISSUE"
+      ]
+    },
+    "methodology": {
+      "name": "方法論/流程框架類",
+      "method": "驗內部一致性 + 步驟完整性",
+      "hcs": ["#breakItDown", "#rightProblem"],
+      "steps": [
+        "用 #rightProblem 檢查：操作手冊的問題定義是否涵蓋了 HC 宣稱要解決的問題",
+        "用 #breakItDown 檢查：步驟之間是否有矛盾（如指令 vs 反模式衝突）",
+        "逐步走查：Step N 的輸出是否能作為 Step N+1 的輸入",
+        "完整性檢查：所有 Step 走完後，是否真的能達成 HC 定義的目標",
+        "矛盾或缺漏處標 ISSUE"
+      ]
+    }
   }
 }

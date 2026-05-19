@@ -2,232 +2,366 @@
   "project": "hc-validation",
   "tasks": [
     {
-      "id": "fallacies",
-      "title": "#fallacies 邏輯謬誤",
-      "status": "completed",
-      "track": "formal-logic",
-      "foundation": "強",
-      "issues_found": 3,
-      "issues_fixed": 3,
-      "verdict": "可用",
-      "completed_at": "2026-05-19",
-      "commits": ["6d1483b"],
-      "summary": "重組 Step 2 分類表：循環論證/乞題合併（structural+pragmatic）；倖存者偏誤從歸納謬誤移至新增選擇偏誤類別；「結構謬誤」改名「前提謬誤」、稻草人移至關聯性謬誤",
-      "note": "重新驗證發現第 3 個 issue（結構謬誤類別名稱不當），三個一併修正"
-    },
-    {
-      "id": "optimization",
-      "title": "#optimization 最佳化",
-      "status": "not_started",
-      "track": "formal-logic",
-      "foundation": null,
-      "issues_found": 0,
-      "issues_fixed": 0,
-      "verdict": null,
-      "note": ""
-    },
-    {
-      "id": "confirmationBias",
-      "title": "#confirmationBias 確認偏誤",
-      "status": "completed",
-      "track": "cognitive-science",
-      "foundation": "強",
-      "issues_found": 3,
-      "issues_fixed": 2,
-      "verdict": "可用",
-      "completed_at": "2026-05-19",
-      "commits": ["6d1483b"],
-      "summary": "Step 4 信心量表從「高信心→高門檻抵擋反證」翻轉為「高信心→紅燈檢查信心來源」；Step 3 新增 base rate 檢查項。ISSUE 3（biased memory）判定實戰價值低，不修",
-      "note": "重新驗證發現第 3 個 issue（缺 biased memory 機制），經評估為學術完整性問題非操作缺陷，決定不修"
-    },
-    {
-      "id": "systemDynamics",
-      "title": "#systemDynamics 系統動力學",
-      "status": "not_started",
-      "track": "cognitive-science",
-      "foundation": null,
-      "issues_found": 0,
-      "issues_fixed": 0,
-      "verdict": null,
-      "note": ""
-    },
-    {
-      "id": "multipleCauses",
-      "title": "#multipleCauses 多重因果",
-      "status": "not_started",
-      "track": "cognitive-science",
-      "foundation": null,
-      "issues_found": 0,
-      "issues_fixed": 0,
-      "verdict": null,
-      "note": ""
-    },
-    {
-      "id": "analogies",
-      "title": "#analogies 類比推理",
-      "status": "not_started",
-      "track": "cognitive-science",
-      "foundation": null,
-      "issues_found": 0,
-      "issues_fixed": 0,
-      "verdict": null,
-      "note": ""
-    },
-    {
-      "id": "negotiate",
-      "title": "#negotiate 談判協商",
-      "status": "not_started",
-      "track": "cognitive-science",
-      "foundation": null,
-      "issues_found": 0,
-      "issues_fixed": 0,
-      "verdict": null,
-      "note": ""
-    },
-    {
-      "id": "powerDynamics",
-      "title": "#powerDynamics 權力動態",
-      "status": "not_started",
-      "track": "cognitive-science",
-      "foundation": null,
-      "issues_found": 0,
-      "issues_fixed": 0,
-      "verdict": null,
-      "note": ""
-    },
-    {
-      "id": "breakItDown",
-      "title": "#breakItDown 拆解問題",
+      "number": "001",
+      "id": "rightProblem",
+      "title": "001 #rightProblem 問對問題",
       "status": "completed",
       "track": "methodology",
+      "layer": "問題定義",
+      "foundation": "強",
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "0 ISSUE。四層問題分類（症狀→機制→結構→心智模型）內部一致、四個反模式全被指令對沖、走查無卡點",
+      "note": "20 個 HC 中最乾淨的一份",
+      "commits": [
+        "b03c0d0"
+      ]
+    },
+    {
+      "number": "002",
+      "id": "breakItDown",
+      "title": "002 #breakItDown 拆解問題",
+      "status": "completed",
+      "track": "methodology",
+      "layer": "問題定義",
       "foundation": "中",
       "issues_found": 2,
       "issues_fixed": 2,
       "verdict": "可用",
       "completed_at": "2026-05-19",
       "summary": "Step 2 MECE 從硬性指令改為目標方向（承認重疊、標註交叉點）；Step 1 加入 How 維度補齊機制層掃描",
-      "note": "已修：MECE 指令 vs 反模式矛盾→指令降為目標且加交叉點標註；5W 缺 How→加入 How 三問"
+      "note": "已修：MECE 指令 vs 反模式矛盾→指令降為目標且加交叉點標註；5W 缺 How→加入 How 三問",
+      "commits": [
+        "b03c0d0"
+      ]
     },
     {
-      "id": "rightProblem",
-      "title": "#rightProblem 問對問題",
-      "status": "not_started",
-      "track": "methodology",
-      "foundation": null,
-      "issues_found": 0,
-      "issues_fixed": 0,
-      "verdict": null,
-      "note": ""
-    },
-    {
-      "id": "infoNeeded",
-      "title": "#infoNeeded 資訊需求界定",
-      "status": "not_started",
-      "track": "methodology",
-      "foundation": null,
-      "issues_found": 0,
-      "issues_fixed": 0,
-      "verdict": null,
-      "note": ""
-    },
-    {
+      "number": "003",
       "id": "constraints",
-      "title": "#constraints 限制條件求解",
-      "status": "not_started",
+      "title": "003 #constraints 限制條件求解",
+      "status": "completed",
       "track": "methodology",
-      "foundation": null,
+      "layer": "問題定義",
+      "foundation": "強",
       "issues_found": 0,
       "issues_fixed": 0,
-      "verdict": null,
-      "note": ""
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "0 ISSUE。Step 2→3 先辨識衝突再挑戰約束的排序設計好，四個反模式全被指令對沖",
+      "note": "",
+      "commits": [
+        "b03c0d0"
+      ]
     },
     {
-      "id": "designThinking",
-      "title": "#designThinking 設計思考",
-      "status": "not_started",
+      "number": "004",
+      "id": "infoNeeded",
+      "title": "004 #infoNeeded 資訊需求界定",
+      "status": "completed",
       "track": "methodology",
-      "foundation": null,
+      "layer": "問題定義",
+      "foundation": "強",
       "issues_found": 0,
       "issues_fixed": 0,
-      "verdict": null,
-      "note": ""
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "0 ISSUE。Step 3 的 value-of-information 判斷準則設計強，Known/Known Unknown/Unknown Unknown 盤點架構完整",
+      "note": "",
+      "commits": [
+        "b03c0d0"
+      ]
     },
     {
+      "number": "005",
+      "id": "confirmationBias",
+      "title": "005 #confirmationBias 確認偏誤",
+      "status": "completed",
+      "track": "cognitive-science",
+      "layer": "分析推理",
+      "foundation": "強",
+      "issues_found": 3,
+      "issues_fixed": 2,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "commits": [
+        "6d1483b",
+        "b03c0d0"
+      ],
+      "summary": "Step 4 信心量表從「高信心→高門檻抵擋反證」翻轉為「高信心→紅燈檢查信心來源」；Step 3 新增 base rate 檢查項。ISSUE 3（biased memory）判定實戰價值低，不修",
+      "note": "重新驗證發現第 3 個 issue（缺 biased memory 機制），經評估為學術完整性問題非操作缺陷，決定不修"
+    },
+    {
+      "number": "006",
+      "id": "fallacies",
+      "title": "006 #fallacies 邏輯謬誤",
+      "status": "completed",
+      "track": "formal-logic",
+      "layer": "分析推理",
+      "foundation": "強",
+      "issues_found": 3,
+      "issues_fixed": 3,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "commits": [
+        "6d1483b",
+        "b03c0d0"
+      ],
+      "summary": "重組 Step 2 分類表：循環論證/乞題合併（structural+pragmatic）；倖存者偏誤從歸納謬誤移至新增選擇偏誤類別；「結構謬誤」改名「前提謬誤」、稻草人移至關聯性謬誤",
+      "note": "重新驗證發現第 3 個 issue（結構謬誤類別名稱不當），三個一併修正"
+    },
+    {
+      "number": "007",
+      "id": "multipleCauses",
+      "title": "007 #multipleCauses 多重因果",
+      "status": "completed",
+      "track": "cognitive-science",
+      "layer": "分析推理",
+      "foundation": "強",
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "0 ISSUE。交互類型表完整、Step 4 因果檢驗是 Hill criteria 的合理簡化、排他檢驗比 Hill 原版 specificity 更好",
+      "note": "溯源：5 Whys (Ohno)、魚骨圖 (Ishikawa)、Bradford Hill criteria 1965",
+      "commits": [
+        "b03c0d0"
+      ]
+    },
+    {
+      "number": "008",
+      "id": "systemDynamics",
+      "title": "008 #systemDynamics 系統動力學",
+      "status": "completed",
+      "track": "cognitive-science",
+      "layer": "分析推理",
+      "foundation": "強",
+      "issues_found": 2,
+      "issues_fixed": 0,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "2 低 ISSUE（定義用動力系統理論語言但內容是系統思考傳統、Step 2 混合 behavior modes 與 archetypes），皆不影響操作，不修",
+      "note": "概念溯源至 Forrester/Senge/Meadows/Sterman，槓桿點是 Meadows 12 項的合理簡化",
+      "commits": [
+        "b03c0d0"
+      ]
+    },
+    {
+      "number": "009",
       "id": "hypothesisDriven",
-      "title": "#hypothesisDriven 假說驅動研究",
-      "status": "not_started",
+      "title": "009 #hypothesisDriven 假說驅動研究",
+      "status": "completed",
       "track": "methodology",
-      "foundation": null,
+      "layer": "分析推理",
+      "foundation": "強",
       "issues_found": 0,
       "issues_fixed": 0,
-      "verdict": null,
-      "note": ""
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "0 ISSUE。科學方法的實務版，Step 2 四項品質檢查完整，5 個反模式全被對沖，Step 5→1 迴路處理迭代研究",
+      "note": "",
+      "commits": [
+        "b03c0d0"
+      ]
     },
     {
-      "id": "audience",
-      "title": "#audience 受眾適配",
-      "status": "not_started",
-      "track": "methodology",
-      "foundation": null,
+      "number": "010",
+      "id": "analogies",
+      "title": "010 #analogies 類比推理",
+      "status": "completed",
+      "track": "cognitive-science",
+      "layer": "分析推理",
+      "foundation": "強",
       "issues_found": 0,
       "issues_fixed": 0,
-      "verdict": null,
-      "note": ""
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "0 ISSUE。Step 1-4 精確對應 Gentner structure-mapping theory 操作化，反模式全有學術對應",
+      "note": "溯源：Gentner 1983 Structure-Mapping、Gick & Holyoak 1980/1983 analogical transfer",
+      "commits": [
+        "b03c0d0"
+      ]
     },
     {
-      "id": "thesis",
-      "title": "#thesis 論點陳述",
-      "status": "not_started",
-      "track": "methodology",
-      "foundation": null,
-      "issues_found": 0,
+      "number": "011",
+      "id": "optimization",
+      "title": "011 #optimization 最佳化",
+      "status": "completed",
+      "track": "formal-logic",
+      "layer": "解決決策",
+      "foundation": "強",
+      "issues_found": 3,
       "issues_fixed": 0,
-      "verdict": null,
-      "note": ""
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "1 中 + 2 低 ISSUE（策略表混合正交維度、梯度改善標籤不精確、魯棒優化描述偏鬆），三者皆低實戰影響且 Step 4 安全網足夠，決定不修",
+      "note": "formal-logic track 全部完成",
+      "commits": [
+        "b03c0d0"
+      ]
     },
     {
-      "id": "organization",
-      "title": "#organization 組織結構",
-      "status": "not_started",
+      "number": "012",
+      "id": "designThinking",
+      "title": "012 #designThinking 設計思考",
+      "status": "completed",
       "track": "methodology",
-      "foundation": null,
-      "issues_found": 0,
+      "layer": "解決決策",
+      "foundation": "強",
+      "issues_found": 1,
       "issues_fixed": 0,
-      "verdict": null,
-      "note": ""
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "1 低 ISSUE（流程教條反模式缺對沖），觸發條件已過濾不需完整流程的場景，不修。d.school 五階段操作化完整，POV/HMW 寫法標準",
+      "note": "",
+      "commits": [
+        "b03c0d0"
+      ]
     },
     {
-      "id": "presentation",
-      "title": "#presentation 專業呈現",
-      "status": "not_started",
-      "track": "methodology",
-      "foundation": null,
-      "issues_found": 0,
-      "issues_fixed": 0,
-      "verdict": null,
-      "note": ""
-    },
-    {
-      "id": "medium",
-      "title": "#medium 媒介選擇",
-      "status": "not_started",
-      "track": "methodology",
-      "foundation": null,
-      "issues_found": 0,
-      "issues_fixed": 0,
-      "verdict": null,
-      "note": ""
-    },
-    {
+      "number": "013",
       "id": "ethicalFraming",
-      "title": "#ethicalFraming 倫理框架",
-      "status": "not_started",
+      "title": "013 #ethicalFraming 倫理框架",
+      "status": "completed",
       "track": "methodology",
-      "foundation": null,
+      "layer": "解決決策",
+      "foundation": "強",
       "issues_found": 0,
       "issues_fixed": 0,
-      "verdict": null,
-      "note": ""
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "0 ISSUE。五框架（效益/義務/德行/關懷/公平）覆蓋西方倫理學主要傳統，反模式全被對沖，沈默利害關係人設計好",
+      "note": "",
+      "commits": [
+        "b03c0d0"
+      ]
+    },
+    {
+      "number": "014",
+      "id": "audience",
+      "title": "014 #audience 受眾適配",
+      "status": "completed",
+      "track": "methodology",
+      "layer": "溝通表達",
+      "foundation": "強",
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "0 ISSUE。五維受眾輪廓（含抗性維度）設計強，混合受眾分層策略正確，反模式全被對沖",
+      "note": "",
+      "commits": [
+        "b03c0d0"
+      ]
+    },
+    {
+      "number": "015",
+      "id": "thesis",
+      "title": "015 #thesis 論點陳述",
+      "status": "completed",
+      "track": "methodology",
+      "layer": "溝通表達",
+      "foundation": "強",
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "0 ISSUE。五項品質檢驗（含統領性+價值 so what）設計強，精煉策略（太模糊/太大/太安全）操作性高",
+      "note": "",
+      "commits": [
+        "b03c0d0"
+      ]
+    },
+    {
+      "number": "016",
+      "id": "organization",
+      "title": "016 #organization 組織結構",
+      "status": "completed",
+      "track": "methodology",
+      "layer": "溝通表達",
+      "foundation": "強",
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "0 ISSUE。七種組織模式表完整，四種自我檢驗（掃描/刪除/順序/受眾）把結構品質拉到可操作層",
+      "note": "",
+      "commits": [
+        "b03c0d0"
+      ]
+    },
+    {
+      "number": "017",
+      "id": "presentation",
+      "title": "017 #presentation 專業呈現",
+      "status": "completed",
+      "track": "methodology",
+      "layer": "溝通表達",
+      "foundation": "強",
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "0 ISSUE。六維專業度檢查表完整，四種媒介調整規則操作性強，反模式全被對沖",
+      "note": "",
+      "commits": [
+        "b03c0d0"
+      ]
+    },
+    {
+      "number": "018",
+      "id": "medium",
+      "title": "018 #medium 媒介選擇",
+      "status": "completed",
+      "track": "methodology",
+      "layer": "溝通表達",
+      "foundation": "強",
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "0 ISSUE。九種媒介特性表完整，成本效益分析含半衰期+可複用性，跨媒介策略是實務亮點",
+      "note": "",
+      "commits": [
+        "b03c0d0"
+      ]
+    },
+    {
+      "number": "019",
+      "id": "negotiate",
+      "title": "019 #negotiate 談判協商",
+      "status": "completed",
+      "track": "cognitive-science",
+      "layer": "互動協作",
+      "foundation": "強",
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "0 ISSUE。Fisher & Ury 框架精確操作化（立場vs利益/BATNA/ZOPA），錨定效應出價策略符合 Tversky & Kahneman，反模式全被對沖",
+      "note": "",
+      "commits": [
+        "b03c0d0"
+      ]
+    },
+    {
+      "number": "020",
+      "id": "powerDynamics",
+      "title": "020 #powerDynamics 權力動態",
+      "status": "completed",
+      "track": "cognitive-science",
+      "layer": "互動協作",
+      "foundation": "強",
+      "issues_found": 0,
+      "issues_fixed": 0,
+      "verdict": "可用",
+      "completed_at": "2026-05-19",
+      "summary": "0 ISSUE。六種權力完全對應 French & Raven 1959/1965（5+1），隱性權力中心和聯盟結構分析設計好，倫理檢查防操控",
+      "note": "",
+      "commits": [
+        "b03c0d0"
+      ]
     }
   ]
 }

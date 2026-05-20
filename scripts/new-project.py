@@ -26,7 +26,7 @@ PROJECTS_DIR = MC_DIR / "milestones"
 SYNC_SCRIPT  = AGENT_DIR / "scripts" / "sync-projects-to-obsidian.py"
 REPOS_JSON   = AGENT_DIR / "config" / "repos.json"
 ARCH_MD      = AGENT_DIR / "ARCHITECTURE.md"
-OPENCLAW_DIR = Path.home() / ".openclaw"
+STANDALONE_DIR = COLLAB_DIR
 GEN_DATA     = MC_DIR / "scripts" / "generate-data.mjs"
 
 
@@ -60,6 +60,7 @@ def make_project_json(args) -> dict:
                 {"criterion": "可部署到目標平台", "verify_cmd": "curl -s -o /dev/null -w '%{http_code}' <URL>", "expected": "200"},
                 {"criterion": "核心功能可正常操作", "verify_cmd": "（填入驗證指令）", "expected": "（預期結果）"},
             ],
+            "decisions": [],
         })
     else:
         base.update({
@@ -73,6 +74,7 @@ def make_project_json(args) -> dict:
             "success_criteria": [
                 {"criterion": "（請填入驗收標準）", "verify_cmd": "（驗證指令）", "expected": "（預期結果）"},
             ],
+            "decisions": [],
         })
 
     return base
@@ -112,12 +114,12 @@ def make_tasks_json(args) -> dict:
 
 def setup_standalone_repo(project_id: str, name: str, desc: str, deploy_target: str = None):
     """建立 GitHub repo + clone + 初始化 + 更新 repos.json + ARCHITECTURE.md"""
-    repo_dir = OPENCLAW_DIR / project_id
+    repo_dir = STANDALONE_DIR / project_id
 
     print(f"\n📦 建立 GitHub repo: hisenzi/{project_id}")
     result = subprocess.run(
         ["gh", "repo", "create", f"hisenzi/{project_id}", "--private", "--clone"],
-        capture_output=True, text=True, cwd=str(OPENCLAW_DIR)
+        capture_output=True, text=True, cwd=str(STANDALONE_DIR)
     )
     if result.returncode != 0:
         print(f"❌ GitHub repo 建立失敗：{result.stderr}")
@@ -164,7 +166,7 @@ def update_repos_json(project_id: str, desc: str, deploy_target: str = None):
     if project_id in existing:
         for r in repos:
             if isinstance(r, dict) and r["name"] == project_id:
-                r["path"] = f"~/.openclaw/{project_id}"
+                r["path"] = f"Claude_協作/{project_id}"
                 r["remote"] = f"hisenzi/{project_id}"
                 if deploy_target:
                     r["deploy_target"] = deploy_target
@@ -172,7 +174,7 @@ def update_repos_json(project_id: str, desc: str, deploy_target: str = None):
     else:
         repos.append({
             "name": project_id,
-            "path": f"~/.openclaw/{project_id}",
+            "path": f"Claude_協作/{project_id}",
             "remote": f"hisenzi/{project_id}",
             "auto_push": False,
             "deploy_target": deploy_target,
@@ -263,7 +265,7 @@ def promote(args):
 
         print(f"\n🎉 升級完成：{args.id} → standalone")
         print(f"   Repo: https://github.com/hisenzi/{args.id}")
-        print(f"   本地: ~/.openclaw/{args.id}/")
+        print(f"   本地: Claude_協作/{args.id}/")
         print("   ⚠️ 記得更新 MEMORY.md 加入 Repo 行")
     else:
         print("❌ 升級失敗")
@@ -333,7 +335,7 @@ def create(args):
     print(f"   Obsidian：Projects/{args.id}.md")
     if args.type == "standalone":
         print(f"   Repo: https://github.com/hisenzi/{args.id}")
-        print(f"   本地: ~/.openclaw/{args.id}/")
+        print(f"   本地: Claude_協作/{args.id}/")
     print("   ⚠️ 待辦：補充 project.json placeholder + 更新 MEMORY.md [P1]")
 
 

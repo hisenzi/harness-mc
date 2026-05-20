@@ -40,6 +40,12 @@ for (const dir of fs.readdirSync(milestonesDir)) {
       for (const t of raw.tasks) tasks.push(normalize(t));
     } else if (Array.isArray(raw.dev)) {
       for (const t of [...raw.dev, ...(raw.ops || [])]) tasks.push(normalize(t));
+    } else if (Array.isArray(raw.phases)) {
+      for (const phase of raw.phases) {
+        if (Array.isArray(phase.tasks)) {
+          for (const t of phase.tasks) tasks.push(normalize({ ...t, track: t.track || phase.id }));
+        }
+      }
     }
 
     if (tasks.length === 0) continue;
@@ -53,10 +59,16 @@ for (const dir of fs.readdirSync(milestonesDir)) {
     const stat = fs.statSync(tasksPath);
     const done = tasks.filter((t) => ["done", "completed", "fixed"].includes(t.status)).length;
 
+    const projectStatus = meta.status || "active";
+    if (projectStatus === "archived") continue;
+
     results.push({
       project: dir,
       name: meta.name || dir,
       description: meta.description || "",
+      status: projectStatus,
+      type: meta.type || "other",
+      priority: meta.priority || "medium",
       tasks,
       lastModified: stat.mtime.toISOString(),
       done,

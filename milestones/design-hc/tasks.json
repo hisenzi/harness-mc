@@ -4,51 +4,61 @@
     {
       "id": "p0-brand-dna",
       "title": "Brand DNA YAML 模板",
-      "status": "completed",
+      "status": "done",
       "track": "foundation",
       "done_condition": "YAML 模板可從設計 brief 填出完整品牌規格，含 visual-identity / tone / constraints / target-audience 等欄位",
       "completed_at": "2026-05-14",
-      "commits": ["47041c3"],
+      "commits": [
+        "47041c3"
+      ],
       "summary": "brand-dna-template.yaml v1.0：project / brand / audience / visual-identity / tone / constraints / intent 七大區塊，約束引導不填空原則"
     },
     {
       "id": "p0-14hc",
       "title": "14 條 Design HC 定義檔",
-      "status": "completed",
+      "status": "done",
       "track": "foundation",
       "done_condition": "14 檔各有 id / name / category / definition / triggers / pairs-with / conflicts-with / requires / vlm-check / theory-base 欄位，schema 驗證通過",
       "completed_at": "2026-05-14",
-      "commits": ["889871f"],
+      "commits": [
+        "889871f"
+      ],
       "summary": "14 條 .md（YAML frontmatter）分 4 類：visual-foundation(5) / quality-control(3) / composition(3) / experience(3)，每條含 vlm-check 3-4 項 + theory-base 3 筆"
     },
     {
       "id": "p0-hc-planner",
       "title": "HC Planner prompt",
-      "status": "completed",
+      "status": "done",
       "track": "pipeline",
       "done_condition": "輸入 Brand DNA YAML → 輸出適用的 Design HC 組合 + 每條的應用理由。3 份 brief 實測一致度 > 80%",
       "completed_at": "2026-05-14",
-      "commits": ["958add1"],
+      "commits": [
+        "958add1"
+      ],
       "summary": "5 步選配流程（triggers → requires → 衝突偵測 → must/should/may 三級 → 組合建議），4 條預設升級規則，輸出 YAML 含 reason + conflicts + not-selected"
     },
     {
       "id": "p0-vlm-triage",
       "title": "VLM Triage prompt",
-      "status": "completed",
+      "status": "done",
       "track": "pipeline",
       "done_condition": "輸入設計圖 + 適用 HC 清單 → 輸出逐條評估（pass/warn/fail + 具體依據）。5 張設計圖實測有可解釋結果",
       "completed_at": "2026-05-14",
-      "commits": ["958add1"],
+      "commits": [
+        "958add1"
+      ],
       "summary": "逐條 vlm-check 評估（pass/warn/fail/skip），evidence 指向具體元素 + 可執行 suggestion + positive-highlights，支援多頁/響應式/印刷/無 Brand DNA 情境"
     },
     {
       "id": "p0-hc-scope-tag",
       "title": "14 HC 加 base/kv 分層標記",
-      "status": "completed",
+      "status": "done",
       "track": "foundation",
       "done_condition": "每條 HC 的 frontmatter 加 scope: base | kv 欄位，base 8 條 + KV 6 條，分層理由記錄在案",
       "completed_at": "2026-05-14",
-      "commits": ["4f36b3c"],
+      "commits": [
+        "4f36b3c"
+      ],
       "summary": "14 條 HC frontmatter 加 scope 欄位：base 8 條（visual-foundation 5 + quality-control 3）+ kv 6 條（composition 3 + experience 3）"
     },
     {
@@ -142,7 +152,7 @@
     {
       "id": "p0-ref-library",
       "title": "設計參考資料庫分類（Sample/）",
-      "status": "completed",
+      "status": "done",
       "track": "foundation",
       "done_condition": "(1) 資料夾結構對齊 cascade 架構（brand-identity / kv-print / web-ui）+ 媒材維度（illustration / photography / fine-art / typography）(2) 現有 13 資料夾內容遷移完成 (3) _index.md schema 定義完成，VLM Triage 可查詢",
       "completed_at": "2026-05-14",

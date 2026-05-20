@@ -2,6 +2,15 @@
   "project": "hiblocks",
   "tasks": [
     {
+      "id": "p1-s",
+      "title": "Token Schema Contract 定義",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "tokens.schema.json 定義三層 token（A1-required / A2-fallback / B-alias），涵蓋 hi-blocks.css 引用的 21 個 token + theme 定義的 65 個 token。defaults.css 提供所有 A2 fallback 值。4 個現有 theme 全部通過 validate script",
+      "estimate": "6hr",
+      "note": "參考 open-design _schema/ 架構。A1=品牌必決（bg/fg/accent/font/type-scale），A2=有合理預設值（radius/motion/spacing/shadow），B=可 alias 到同層 sibling（text-dark→text, border-light→border）。hi-blocks.css 的 50+ 硬編 rgba 需分類：token 化 vs UI 常數。此 task 產出是 p1-1 去硬編的依據"
+    },
+    {
       "id": "p1-0",
       "title": "內容架構分離（頁面資料抽離 + Content Schema 擴充）",
       "status": "todo",
@@ -15,9 +24,9 @@
       "title": "Token 硬編修復（hi-blocks.css 全面去硬編）",
       "status": "todo",
       "track": "phase-1",
-      "done_condition": "hi-blocks.css 零硬編色值/尺寸，Hero overlay + Navbar bg + GSAP 參數全部 token 化，theme-default.css 補齊所有 token",
+      "done_condition": "hi-blocks.css 零硬編色值/尺寸（UI 常數除外），所有值引用 p1-s 定義的 schema token。22 個硬編 hex + 30 個硬編 rgba 全部處理。4 個 theme 通過 validate script",
       "estimate": "10hr",
-      "note": "Day 0 已發現 P1-P3，此 task 一次修完"
+      "note": "依賴 p1-s 的 token schema。Grounding 發現：navbar bg rgba(15,15,15,0.85)、hero overlay rgba(0,0,0,0.45)、hover rgba(255,255,255,0.06) 等需決定是 token 化還是歸類為 UI 常數"
     },
     {
       "id": "p1-2",
@@ -30,12 +39,12 @@
     },
     {
       "id": "p1-3",
-      "title": "DESIGN.md → Theme 生成管線（Claude prompt template）",
+      "title": "DESIGN.md → Theme 生成管線（Claude prompt template + token contract）",
       "status": "todo",
       "track": "phase-1",
-      "done_condition": "URL → DESIGN.md prompt template 完成，DESIGN.md → theme-{name}.css prompt template 完成，3 個測試網站驗證通過",
+      "done_condition": "URL → DESIGN.md prompt template 完成（引用 token schema，明確列出 A1 必提取項）。DESIGN.md → theme-{name}.css prompt template 完成（A2 用 defaults.css fallback，B-slot 用 alias）。3 個測試網站驗證通過 + validate script 通過",
       "estimate": "10hr",
-      "note": "Day 0 驗證管線可行（monaka theme）。不用 shell script，用 Claude prompt template 更靈活。已有 4 個 theme 可參考格式"
+      "note": "prompt template 引用 tokens.schema.json 作為 contract，不是把規則嵌在 prompt 裡。這確保 100+ theme 生成的一致性。已有 monaka 作為參考"
     },
     {
       "id": "p1-4a",
@@ -57,12 +66,12 @@
     },
     {
       "id": "p1-5",
-      "title": "驗證假說 H1/H2/H4/H5",
+      "title": "驗證假說 H1/H2/H4/H5/H7",
       "status": "todo",
       "track": "phase-1",
-      "done_condition": "H1: 4 theme × 20 block 全排列通過。H2: 3 個髒 CSS 站可提取。H4: 3 位設計師正面回饋。H5: 覆蓋率 ≥ 80%",
+      "done_condition": "H1: 4 theme × 20 block 全排列通過。H2: 3 個髒 CSS 站可提取。H4: 3 位設計師正面回饋。H5: 覆蓋率 ≥ 80%。H7: 4 個 theme 全部通過 validate script（token schema contract 驗證）",
       "estimate": "11hr",
-      "note": "Phase 1 收尾驗證，結果決定是否進 Phase 2。已有 4 theme（default, dark, maxmodel, monaka）"
+      "note": "H7 是新增的 schema 驗證假說。validate script 檢查：A1 token 全部存在、A2 token 全部存在（值可為 fallback）、B-slot 全部宣告（值可為 alias）"
     },
     {
       "id": "p1-verify",
@@ -106,6 +115,68 @@
       "status": "blocked",
       "track": "phase-2",
       "done_condition": "Keystatic 安裝 + schema mapping 完成，/admin 可登入編輯，存檔 → auto deploy 流程通"
+    },
+    {
+      "id": "p2-6",
+      "title": "Theme 資料夾結構遷移 + meta.json",
+      "status": "blocked",
+      "track": "phase-2",
+      "done_condition": "每個 theme 從 src/styles/theme-{name}.css 遷移為 themes/{name}/ 資料夾（含 meta.json + DESIGN.md + tokens.css）。meta.json 含 id/name/category/source_url/created/status 欄位。Agent 可用 jq/grep 搜尋分類",
+      "note": "blocked by p1-verify。資料夾結構參考 open-design design-systems/{brand}/，但簡化（不需要 manifest schema version、components.html）"
+    },
+    {
+      "id": "p2-7",
+      "title": "validate.sh — Theme 驗證腳本",
+      "status": "blocked",
+      "track": "phase-2",
+      "done_condition": "bash validate.sh [theme-name|--all] 可檢查：A1 token 全部存在、A2 token 全部存在、B-slot 全部宣告、無 schema 外的未知 token。單 theme 執行 < 2 秒，全量 100 theme < 30 秒",
+      "note": "Phase 1 用簡易版（p1-s 附帶），Phase 2 做正式版。Agent 可在生成 theme 後自動執行驗證"
+    },
+    {
+      "id": "p2-8",
+      "title": "propagate.sh — Schema 變更傳播腳本",
+      "status": "blocked",
+      "track": "phase-2",
+      "done_condition": "新增 A2 token 到 schema 後，bash propagate.sh 自動補上 fallback 值到所有 theme。新增 A1 token 時產出「需品牌決策」清單。dry-run 模式可預覽變更",
+      "note": "blocked by p2-6 + p2-7。等價於 open-design 的 derive script"
+    },
+    {
+      "id": "p2-9",
+      "title": "驗證假說 H8（Agent 自主生成+驗證 theme）",
+      "status": "blocked",
+      "track": "phase-2",
+      "done_condition": "Agent 從 URL 開始，自主完成 DESIGN.md 生成 → tokens.css 生成 → validate.sh 通過 → meta.json 填寫，全程零人工介入。5 個測試 URL 成功率 ≥ 80%"
+    },
+    {
+      "id": "p3-1",
+      "title": "audit.sh — Theme 健康度稽核",
+      "status": "blocked",
+      "track": "phase-3",
+      "done_condition": "bash audit.sh 產出健康度報告：token 完整性、跨 theme 一致性分析、stale theme 偵測（> 6 個月未更新）、C→B promotion 建議。Agent 可定期執行",
+      "note": "blocked by p2-verify"
+    },
+    {
+      "id": "p3-2",
+      "title": "Theme 索引 + 搜尋能力",
+      "status": "blocked",
+      "track": "phase-3",
+      "done_condition": "Agent 可搜尋 theme：by category、by color（深/淺底）、by font type（serif/sans）、by similarity to URL。基於 meta.json + tokens.css 解析",
+      "note": "100+ theme 時的核心管理能力"
+    },
+    {
+      "id": "p3-3",
+      "title": "C→B→A Token 升級機制",
+      "status": "blocked",
+      "track": "phase-3",
+      "done_condition": "Agent 偵測到 ≥2 theme 使用同名自訂 token 時建議升級。升級流程：Agent 提案 → Vincent 確認 → schema 更新 → propagate 推送",
+      "note": "參考 open-design BRAND_EXTENSIONS + promotion path"
+    },
+    {
+      "id": "p3-4",
+      "title": "驗證假說 H9（Agent 管理 50+ theme 生命週期）",
+      "status": "blocked",
+      "track": "phase-3",
+      "done_condition": "50 個 theme 存在，Agent 可執行：批量 validate、schema propagate、audit 報告、promotion 建議。全流程 Agent 自主 + Vincent 確認關鍵決策"
     }
   ]
 }

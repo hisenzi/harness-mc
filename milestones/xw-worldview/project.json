@@ -1,7 +1,7 @@
 {
   "name": "小未-世界觀",
   "description": "XW-07 角色 IP 的完整世界觀建構：從 Xihe Dynamics 設定到 12 原型文案、視覺規範、poster 系列產出",
-  "type": "internal",
+  "type": "system",
   "status": "active",
   "priority": "high",
   "created": "2026-05-17",

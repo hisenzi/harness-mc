@@ -1,0 +1,86 @@
+{
+  "id": "exam-prep-6yr",
+  "name": "六年一貫考試準備系統",
+  "description": "國7→高三 端到端考試準備系統：知識庫 + 歷屆題庫 + HC 驗證策略引擎 + 動機設計 + 進度追蹤。覆蓋會考（國7-9）與學測自然（高一）。",
+  "type": "service",
+  "status": "active",
+  "priority": "high",
+  "owner": "Vincent",
+  "created": "2026-05-19",
+  "estimated_completion": "TBD",
+  "tags": ["education", "exam-prep", "learning-system", "hc-verified"],
+  "predecessor": {
+    "exam-master": {
+      "status": "closed",
+      "closed_date": "2026-03-08",
+      "inherited": ["國文 347 卡", "英文 305 卡", "114年歷屆題 79 題", "知識庫架構", "卡片規則", "歷屆題管線腳本"]
+    },
+    "nsg-system": {
+      "status": "superseded",
+      "reason": "本案為端到端產品，nsg-system 的系統層組件直接複用，內容層和策略層重新設計",
+      "reused": ["tracker.py", "report_generator.py", "broadcaster.py", "NSG Tracker HTML v2.0", "Cron 基礎設施", "LINE Bot 連接", "Zeabur 部署"],
+      "replaced": ["schedule_generator.py (固定A/B輪轉 → 動態排程)", "onboarding (通用 → 考試情境專屬)"],
+      "deferred": ["Supabase 多用戶 → Phase 3"]
+    }
+  },
+  "data_sources": {
+    "會考知識庫": "notyet-harness/300_Obsidian_brain/會考知識庫/",
+    "六年一貫自然科": "CC本機協作_無Git/六年一貫_自然科複習自學系統/",
+    "HC 思考框架": "notyet-harness/300_Obsidian_brain/HC/"
+  },
+  "strategy_foundation": {
+    "framework": "HC 驗證過的三圈靶心法 + B++ 公式",
+    "hc_used": ["#rightProblem", "#confirmationBias", "#multipleCauses", "#constraints", "#optimization", "#evidenceBased"],
+    "key_corrections": [
+      "效益目標用行為指標（完成 X 章）非成果指標（提升 N%）",
+      "時間分配依基準測試動態調整，不預設固定比例",
+      "加入動機設計層（最高 ROI 缺口）",
+      "補充隱性約束調查（補習班、可用時間、設備）",
+      "弱科用一切可用資源，不因系統沒卡片就跳過"
+    ]
+  },
+  "goals": [
+    "5 科知識卡片（國英已有 + 數學社會自然待建）",
+    "3 年以上歷屆題（114 已有 + 112-113 待匯入）+ P-value 難度標注",
+    "2 套 HC 驗證學習路徑（會考入口 + 學測入口）",
+    "動態排程引擎（基準測試 → 個人化路徑）",
+    "動機設計：遊戲化追蹤（複用 NSG Tracker v2.0）+ 定期 checkpoint",
+    "LINE/Telegram 推播提醒（複用 broadcaster.py）"
+  ],
+  "risks": [
+    {
+      "risk": "Vincent 一人同時建內容 + 建系統 + 找 pilot 學生，產能瓶頸",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "Phase 0 只用現有內容建系統（零新增內容），Phase 1 內容和系統平行但分週交替，不同時開工"
+    },
+    {
+      "risk": "3 科卡片建置量大（數學34+社會45+自然45=124章）",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "Phase 1 只建數學 core 10 章，其餘依學生需求驅動"
+    },
+    {
+      "risk": "動態排程引擎設計複雜度高",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "Phase 0 先用規則引擎（if-else），非 ML"
+    },
+    {
+      "risk": "HC 驗證策略未經真實學生驗證",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "Phase 1 末段安排 1 名學生 pilot test"
+    }
+  ],
+  "success_criteria": [
+    "1 名會考生完成 4 週 pilot，留存率 > 70%",
+    "會考 pilot 後學生能說出自己的弱科和進步方向",
+    "系統可在 Zeabur 穩定運行（複用 nsg-system 基礎設施）"
+  ],
+  "tracks": {
+    "content": "內容層：知識卡片 + 歷屆題 + 難度標注",
+    "system": "系統層：排程引擎 + 追蹤 + 推播 + 部署",
+    "strategy": "策略層：學習路徑 + 動機設計 + 隱性約束"
+  }
+}

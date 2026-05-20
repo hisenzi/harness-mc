@@ -2,6 +2,8 @@
   "name": "數位營運架構師：訂閱制",
   "description": "一人公司服務系統化 — 四條服務線（品牌/網站/Notion/AI Agent）從專案制轉月費制，三層架構（客戶旅程→服務執行→知識資產）",
   "status": "active",
+  "type": "service",
+  "priority": "high",
   "created": "2026-05-11",
   "tracks": {
     "wave-1": "打地基（2-3 週）",

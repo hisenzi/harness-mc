@@ -42,7 +42,9 @@
       "status": "done",
       "track": "phase-3",
       "completed_at": "2026-05-15",
-      "commits": ["3bb29a4"],
+      "commits": [
+        "3bb29a4"
+      ],
       "summary": "三類資料源定義：skills（YAML frontmatter）、scripts（.py/.sh/.mjs/.js）、hooks（settings.json）+ git log 變更紀錄",
       "note": "三類資料源：skills（YAML frontmatter）、scripts（.py/.sh/.mjs/.js）、hooks（settings.json）+ git log 變更紀錄"
     },
@@ -52,7 +54,9 @@
       "status": "done",
       "track": "phase-3",
       "completed_at": "2026-05-15",
-      "commits": ["3bb29a4"],
+      "commits": [
+        "3bb29a4"
+      ],
       "summary": "generate-tools-data.mjs 掃描產出 tools.json。/tools 頁 4 tabs + 搜尋。首頁工具卡片即時摘要 + 可點擊",
       "note": "generate-tools-data.mjs 掃描產出 tools.json。/tools 頁 4 tabs（Skills/Scripts/Hooks/變更紀錄）+ 搜尋。首頁工具卡片顯示即時摘要"
     },
@@ -124,7 +128,9 @@
       "status": "done",
       "track": "infra",
       "completed_at": "2026-05-15",
-      "commits": ["ca1234b"],
+      "commits": [
+        "ca1234b"
+      ],
       "summary": "腳本從 000_Agent/scripts/ 搬到 harness-mc/scripts/，輸出路徑改為 harness-mc/milestones/。模板加 done_condition + phase-verify + 結構化 success_criteria",
       "note": "腳本從 000_Agent/scripts/ 搬到 harness-mc/scripts/。輸出改到 harness-mc/milestones/，tasks.json 模板加 done_condition + phase-verify，project.json 加 tracks + 結構化 success_criteria（verify_cmd + expected），建完自動 rebuild MC"
     },
@@ -134,7 +140,9 @@
       "status": "done",
       "track": "infra",
       "completed_at": "2026-05-15",
-      "commits": ["2ea5bd2"],
+      "commits": [
+        "2ea5bd2"
+      ],
       "summary": "tasks.json 加 completed_at/commits/summary 欄位，前端 details toggle 展開顯示完成紀錄 + ▶ 指示器。generate-data.mjs 同步 pass-through 新欄位",
       "note": "資料層 + 前端 + 資料管線一次到位"
     },
@@ -144,7 +152,9 @@
       "status": "done",
       "track": "data",
       "completed_at": "2026-05-15",
-      "commits": ["69ef81b"],
+      "commits": [
+        "69ef81b"
+      ],
       "summary": "Mapelon 2.0 前台交接完成，在 MC 建立 16 task 追蹤（8 completed + 8 pending/blocked）",
       "note": "auto-task：commit 時無對應 task，自動建立"
     },
@@ -154,7 +164,9 @@
       "status": "done",
       "track": "data",
       "completed_at": "2026-05-15",
-      "commits": ["c4fb1fa"],
+      "commits": [
+        "c4fb1fa"
+      ],
       "summary": "inf-7 上線後回填 dual-blade + harness-mc 既有 completed task 的 completed_at/commits/summary",
       "note": "auto-task：commit 時無對應 task，自動建立"
     },
@@ -164,7 +176,9 @@
       "status": "done",
       "track": "infra",
       "completed_at": "2026-05-15",
-      "commits": ["4eb6666"],
+      "commits": [
+        "4eb6666"
+      ],
       "summary": "加 autoPort: true，port 被占用時自動遞增，不用手動換 port",
       "note": "auto-task：commit 時無對應 task，自動建立"
     },
@@ -174,7 +188,9 @@
       "status": "done",
       "track": "data",
       "completed_at": "2026-05-15",
-      "commits": ["66ef9d4"],
+      "commits": [
+        "66ef9d4"
+      ],
       "summary": "worktree-commit 流程回填：inf-6/inf-7/p3-1/p3-2 補 commits + 3 個 auto-task 建立 + mapelon-2 project.json 補漏",
       "note": "auto-task：commit 時無對應 task，自動建立"
     },
@@ -184,7 +200,9 @@
       "status": "done",
       "track": "data",
       "completed_at": "2026-05-15",
-      "commits": ["a137dac"],
+      "commits": [
+        "a137dac"
+      ],
       "summary": "66ef9d4 批次回填 commit + worktree-commit-skill append 35f5266 的 task 紀錄寫入",
       "note": "auto-task：commit 時無對應 task，自動建立"
     },
@@ -194,7 +212,9 @@
       "status": "done",
       "track": "phase-1",
       "completed_at": "2026-05-18",
-      "commits": ["5528390"],
+      "commits": [
+        "5528390"
+      ],
       "summary": "首頁從平面 2×2 grid 重構為紀律層＋能力層兩區，每區有標籤行（中文名 + 英文說明 + 分隔線）",
       "note": "page.tsx 外層改 space-y-6，內層各自 grid。配合 ARCHITECTURE.md §九 雙層架構文件"
     },
@@ -204,14 +224,16 @@
       "status": "done",
       "track": "data",
       "completed_at": "2026-05-18",
-      "commits": ["a0effe5"],
+      "commits": [
+        "a0effe5"
+      ],
       "summary": "3 個新專案加入 MC 追蹤。hiblocks task 經 HC 驗證修正（14 block 非 6、已有 Props）",
       "note": "auto-task：commit 時無對應 task，自動建立"
     },
     {
       "id": "inf-8",
       "title": "commit message 帶 task ID + git log 反查 script",
-      "status": "not_started",
+      "status": "todo",
       "track": "infra",
       "note": "commit message 格式：[task:brain-migration-m1]。寫 script 從 git log 反查 task 完成狀態，自動填入 commits 欄位。目前手動 ROI 足夠，規模變大時再啟動"
     }

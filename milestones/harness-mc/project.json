@@ -2,6 +2,8 @@
   "name": "Mission Control 共享儀表板",
   "description": "Agent 無關的專案追蹤系統 — Harness Engineering 雙層架構（紀律層：規劃與執行+評估 / 能力層：記憶+工具），CC 和 HiSenzi 共讀寫",
   "status": "active",
+  "type": "system",
+  "priority": "high",
   "created": "2026-05-13",
   "tracks": {
     "phase-1": "Phase 1（規劃與執行 + 評估）",

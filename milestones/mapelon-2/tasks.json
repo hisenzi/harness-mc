@@ -4,79 +4,95 @@
     {
       "id": "p3-visual-refactor",
       "title": "P3 視覺大改（Glassmorphism + sidebar + right toolbar）",
-      "status": "completed",
+      "status": "done",
       "track": "feature",
       "completed_at": "2026-04-20",
-      "commits": ["fb81152"],
+      "commits": [
+        "fb81152"
+      ],
       "summary": "Glassmorphism 浮動面板、Desktop sidebar 320px、右上 pill 按鈕列、深色底圖鎖定、叢集 zoom 修正、圖徵色彩 by folder theme、i18n 骨架"
     },
     {
       "id": "weather-layer-phase1",
       "title": "氣象圖層 Phase 1（OWM tile + UI 面板）",
-      "status": "completed",
+      "status": "done",
       "track": "feature",
       "completed_at": "2026-04-25",
-      "commits": ["6ca9cd0"],
+      "commits": [
+        "6ca9cd0"
+      ],
       "summary": "WeatherTileContent 4 chip / opacity / legend、WebTileLayer 接入 ArcGIS、CloudSun pill 改指向 weatherTile mode"
     },
     {
       "id": "weather-layer-phase2",
       "title": "氣象圖層 Phase 2（天氣 widget + click-on-map）",
-      "status": "completed",
+      "status": "done",
       "track": "feature",
       "completed_at": "2026-05-07",
-      "commits": ["7e78483"],
+      "commits": [
+        "7e78483"
+      ],
       "summary": "Weather API server proxy（rate limit + 10min cache）、WeatherDetailPanel FAB/Card、click-on-map CSS pulse ping、368 鄉鎮 point-in-polygon lookup、Mobile tray 自動縮高"
     },
     {
       "id": "handover-doc",
       "title": "交接文件撰寫（HANDOVER.md + 配套文件）",
-      "status": "completed",
+      "status": "done",
       "track": "handover",
       "completed_at": "2026-05-08",
-      "commits": ["6b093f0"],
+      "commits": [
+        "6b093f0"
+      ],
       "summary": "HANDOVER.md（13 節完整交接）、WORKFLOW.md、DESIGN_TOKENS.md、VERCEL_DEPLOY_SOP.md、OPENWEATHERMAP_SETUP.md、specs 範例"
     },
     {
       "id": "verification-report",
       "title": "驗收報告（Vincent 版 vs 家浚版比對）",
-      "status": "completed",
+      "status": "done",
       "track": "handover",
       "completed_at": "2026-05-15",
-      "commits": ["82b0a58"],
+      "commits": [
+        "82b0a58"
+      ],
       "summary": "API 8 endpoint 測試、UI 逐項驗收、HANDOVER-260515.md 產出。發現 layer-tree 404 + map-view-settings 指向台南"
     },
     {
       "id": "font-weight-token",
       "title": "Typography token 嵌入 font-weight",
-      "status": "completed",
+      "status": "done",
       "track": "tech-debt",
       "completed_at": "2026-05-15",
-      "commits": ["82b0a58"],
+      "commits": [
+        "82b0a58"
+      ],
       "summary": "tailwind.config.ts fontSize 加 fontWeight（caption~body: 500, heading~title: 700）。DESIGN_TOKENS.md 同步更新"
     },
     {
       "id": "dark-mode-tray-bg",
       "title": "修正 Tray 深色模式白底 bug（9 檔 #FFFFFF → var(--sheet-bg)）",
-      "status": "completed",
+      "status": "done",
       "track": "feature",
       "completed_at": "2026-05-15",
-      "commits": ["82b0a58"],
+      "commits": [
+        "82b0a58"
+      ],
       "summary": "Tray 外殼 + 8 個內容面板（BaseMap/StoryLayer/FeatureList/FeatureInfo/LayerInfo/LayerSettings/DatahubLayer/TrayHeader）的 background 從硬編碼 #FFFFFF 改為 var(--sheet-bg)，dark mode 自動切換為 #1A202A"
     },
     {
       "id": "weather-docker-guide",
       "title": "氣象功能 Docker 部署教學文件",
-      "status": "completed",
+      "status": "done",
       "track": "handover",
       "completed_at": "2026-05-15",
-      "commits": ["82b0a58"],
+      "commits": [
+        "82b0a58"
+      ],
       "summary": "WEATHER_DOCKER_GUIDE.md：OWM 註冊、Dockerfile 修改（ARG/ENV 兩把 key）、docker build --build-arg、驗證步驟、FAQ。HANDOVER-260515.md 加上指引連結"
     },
     {
       "id": "font-weight-cleanup",
       "title": "清理重複 font-weight utility class",
-      "status": "pending",
+      "status": "todo",
       "track": "tech-debt",
       "note": "token 已嵌入 fontWeight 後，codebase 中 text-heading font-bold 等重複宣告可移除。保留刻意覆蓋的 case（如 text-heading font-normal）"
     },
@@ -97,35 +113,35 @@
     {
       "id": "docker-env-verify",
       "title": "驗證家浚 Docker 環境變數（OWM key + basePath）",
-      "status": "pending",
+      "status": "todo",
       "track": "deploy",
       "note": "HANDOVER-260515.md 必查清單 #1-#4。需確認 NEXT_PUBLIC_OWM_API_KEY + OWM_API_KEY 都有設"
     },
     {
       "id": "datahub-dead-code",
       "title": "DatahubLayerContent 死代碼清理",
-      "status": "pending",
+      "status": "todo",
       "track": "tech-debt",
       "note": "HANDOVER.md P3 技術債。DatahubLayerContent + DatahubLayerButton + LayerOperatorMode 'datahubLayer' 成員可刪除"
     },
     {
       "id": "sidebar-refactor",
       "title": "DesktopSidebar 拆分（500+ 行 → 4 子元件）",
-      "status": "pending",
+      "status": "todo",
       "track": "tech-debt",
       "note": "HANDOVER.md P2 技術債。拆成 SidebarExploreView / SidebarDataSourceView / SidebarSettingsView / SidebarCollapsed"
     },
     {
       "id": "content-api-local-melon",
       "title": "地方哈密瓜接三峽文化地圖 API",
-      "status": "pending",
+      "status": "todo",
       "track": "feature",
       "note": "HANDOVER.md 內容模組規劃。目前用 layer-tree，未來接三峽文化地圖 API"
     },
     {
       "id": "content-api-story-melon",
       "title": "主題哈密瓜接議題地圖 API",
-      "status": "pending",
+      "status": "todo",
       "track": "feature",
       "note": "HANDOVER.md 內容模組規劃。目前用 Datahub story-layer，未來接議題地圖 API"
     }

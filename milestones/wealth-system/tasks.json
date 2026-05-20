@@ -1,0 +1,102 @@
+{
+  "project": "wealth-system",
+  "tasks": [
+    {
+      "id": "b-1",
+      "title": "① 算出你的數字（月支出→年支出→財務自由數字→年化→月投入→收入缺口）",
+      "status": "todo",
+      "track": "build",
+      "done_condition": "一頁紙產出：6 個數字全部填完，可行性檢查通過（年化 <15%、月投入 <收入 70%）",
+      "est_hours": 2,
+      "depends_on": [],
+      "note": "Layer 5+4：終態定義 + 財務門檻，系統骨幹起點"
+    },
+    {
+      "id": "b-2",
+      "title": "② 盤點現況（所有帳戶餘額 + 月收入 + 月支出 + 現有投資 + 債務）",
+      "status": "todo",
+      "track": "build",
+      "done_condition": "一張表：涵蓋所有金融帳戶、收入來源、支出類別、投資部位、債務明細",
+      "est_hours": 2,
+      "depends_on": ["b-1"],
+      "note": "Layer 4：知道起點才知道差距"
+    },
+    {
+      "id": "b-3",
+      "title": "③ 設計帳戶分流（薪水→自動轉投資/預備金/生活）",
+      "status": "todo",
+      "track": "build",
+      "done_condition": "一張帳戶架構圖：標明每個帳戶用途、自動轉帳金額和日期",
+      "est_hours": 1,
+      "depends_on": ["b-2"],
+      "note": "Layer 2A：用結構鎖住儲蓄率"
+    },
+    {
+      "id": "b-4",
+      "title": "④ 設定自動轉帳 + 定期定額（開帳戶→設轉帳→設 ETF 定期定額）",
+      "status": "todo",
+      "track": "build",
+      "done_condition": "銀行自動轉帳已生效 + 券商 ETF 定期定額已設定",
+      "est_hours": 2,
+      "depends_on": ["b-3"],
+      "note": "Layer 2B + Layer 1：系統開始運轉的時刻"
+    },
+    {
+      "id": "b-5",
+      "title": "⑤ 建立月度 5 分鐘檢查（模板 + 日曆提醒）",
+      "status": "todo",
+      "track": "build",
+      "done_condition": "檢查模板存在（三個數字：本月存了多少/投資帳戶現值/vs 目標進度）+ 日曆每月 1 號提醒已設定",
+      "est_hours": 0.5,
+      "depends_on": ["b-4"],
+      "note": "迴路 R.1：維持系統運轉的最小迴路"
+    },
+    {
+      "id": "b-6",
+      "title": "⑥ 預備金 + 債務決策（預備金目標 = 月支出×6，債務處置優先級）",
+      "status": "todo",
+      "track": "build",
+      "done_condition": "兩個決定已記錄：預備金目標金額 + 債務處置策略（先還 or 並行）",
+      "est_hours": 1,
+      "depends_on": [],
+      "note": "Layer 2C：一次性決策，獨立於主線，隨時可做"
+    },
+    {
+      "id": "o-1",
+      "title": "⑦ 年度重算（重跑 ① 的數字，校正終態）",
+      "status": "todo",
+      "track": "operate",
+      "done_condition": "每年 1 月重新計算財務自由數字，比對去年，決定是否調整月投入或配置",
+      "est_hours": 1,
+      "depends_on": ["b-5"],
+      "note": "迴路 R.3：系統年度自我校正，觸發時間 2027-01"
+    },
+    {
+      "id": "e-1",
+      "title": "擴充：投資配置細化（四桶金 + 核心/衛星/探索比例）",
+      "status": "blocked",
+      "track": "expand",
+      "done_condition": "四桶金配置表完成，各桶比例 + 標的已填入",
+      "depends_on": ["b-5"],
+      "note": "觸發條件：系統穩定跑 6 個月 + 有閒錢超出 ETF 定額"
+    },
+    {
+      "id": "e-2",
+      "title": "擴充：收入引擎（收入類型診斷 + 成長策略 + 季度回顧）",
+      "status": "blocked",
+      "track": "expand",
+      "done_condition": "收入診斷完成 + 成長策略選定 + 季度回顧模板已建立",
+      "depends_on": [],
+      "note": "觸發條件：收入缺口 > 月收入 50%"
+    },
+    {
+      "id": "e-3",
+      "title": "擴充：路徑追蹤儀表板（三曲線 + 資產負債表）",
+      "status": "blocked",
+      "track": "expand",
+      "done_condition": "三曲線儀表板（資產/收入/支出 vs 目標）+ 年度資產負債快照",
+      "depends_on": ["b-5"],
+      "note": "觸發條件：資產 > 500 萬，配置開始影響結果"
+    }
+  ]
+}

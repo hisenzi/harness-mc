@@ -2,7 +2,7 @@
   "id": "mapelon-2",
   "name": "Mapelon 2.0 前台",
   "description": "JSDC 哈密瓜 GIS 前台。Next.js 14 + ArcGIS + TailwindCSS。P3 視覺改版 + 氣象圖層 + 天氣 widget 已交付，進入家浚部署驗收 + 後續功能階段。",
-  "type": "client",
+  "type": "service",
   "status": "in_progress",
   "priority": "high",
   "owner": "Vincent",

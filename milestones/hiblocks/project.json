@@ -1,7 +1,7 @@
 {
   "name": "HiBlocks 商業化區塊庫",
-  "description": "URL → DESIGN.md → Theme 自動化管線，搭配可收費 Astro 區塊庫",
-  "type": "standalone",
+  "description": "URL → DESIGN.md → Theme 自動化管線，搭配可收費 Astro 區塊庫。100+ 品牌 theme 規模，AI Agent 協助管理生命週期",
+  "type": "service",
   "status": "active",
   "priority": "high",
   "created": "2026-05-18",
@@ -11,14 +11,16 @@
   "tracks": {
     "phase-1": "Phase 1 — 可接案最小產品",
     "phase-2": "Phase 2 — 可收費產品",
-    "phase-3": "Phase 3 — 護城河"
+    "phase-3": "Phase 3 — 護城河：Agent 管理平台 + 100+ theme 庫"
   },
   "goals": [
     "20 個核心 block（現有 14 + 新增 6），100% token 驅動（零硬編值）",
-    "URL → DESIGN.md → theme-{name}.css Claude prompt template 管線",
+    "Token Schema Contract：定義必要/fallback/alias 三層 token 規則，所有 theme 遵守同一 contract",
+    "URL → DESIGN.md → theme-{name}.css Claude prompt template 管線，prompt 引用 token contract",
     "Block Catalog 預覽頁 + Theme Switcher 即時切換",
     "內容架構與 block props 分離，CMS-ready（Keystatic 友好）",
-    "4 個 demo theme（default, dark, maxmodel, monaka）驗證 token 系統通用性"
+    "4 個 demo theme 驗證 token 系統通用性，架構預留 100+ theme 擴展",
+    "Agent 可執行的 validate/propagate/audit 機制，支撐 100+ theme 生命週期管理"
   ],
   "risks": [
     {
@@ -44,6 +46,18 @@
       "impact": "low",
       "probability": "low",
       "mitigation": "Phase 3 評估 Web Component 版，短期先接受"
+    },
+    {
+      "risk": "Token schema 設計錯誤導致 100+ theme 需大規模重構",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "Phase 1 用 4 theme 驗證 schema 完整性，參考 open-design 四層架構（A1-identity/A1-structure/A2/B-slot）"
+    },
+    {
+      "risk": "硬編 rgba/hex 殘留導致 theme 換膚不完全（hi-blocks.css 現有 50+ 硬編值）",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "p1-1 全面掃描，分類為需 token 化 vs 可接受的 UI 常數（overlay、backdrop-filter）"
     }
   ],
   "success_criteria": [
@@ -74,6 +88,9 @@
     {"id": "H3", "desc": "AI 可根據 block catalog 生成 Astro 頁面", "status": "pending", "phase": 2},
     {"id": "H4", "desc": "設計師願意為 URL→theme 能力付費", "status": "pending", "phase": 1},
     {"id": "H5", "desc": "15 個 block 覆蓋 80% 接案需求", "status": "pending", "phase": 1},
-    {"id": "H6", "desc": "客戶能自助操作不需介入", "status": "pending", "phase": 2}
+    {"id": "H6", "desc": "客戶能自助操作不需介入", "status": "pending", "phase": 2},
+    {"id": "H7", "desc": "Token schema contract 能確保 theme 跨品牌一致性（4 theme 全通過 guard）", "status": "pending", "phase": 1},
+    {"id": "H8", "desc": "Agent 能自主完成 theme 建立+驗證全流程（URL→theme，零人工介入）", "status": "pending", "phase": 2},
+    {"id": "H9", "desc": "Agent 能管理 50+ theme 的生命週期（propagate/audit/promote）", "status": "pending", "phase": 3}
   ]
 }

@@ -2,7 +2,7 @@
   "id": "dual-blade",
   "name": "雙刀流系統",
   "description": "CC（Claude Code，小未）+ OC（OpenClaw，HiSenzi）兩台 Mac 透過 git 同步 brain 的 AI agent 協作系統。brain 內容、同步機制、備份、跨 agent 標準的整體治理。",
-  "type": "internal",
+  "type": "system",
   "status": "in_progress",
   "priority": "high",
   "owner": "Vincent",

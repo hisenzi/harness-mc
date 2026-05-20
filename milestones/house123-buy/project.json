@@ -1,7 +1,9 @@
 {
   "name": "第二間房產購置評估",
   "description": "單頁 HTML 8 步互動引導，讓有二房需求的人自助完成財務評估並匯出 PDF 報告",
-  "status": "active",
+  "status": "completed",
+  "type": "service",
+  "priority": "medium",
   "created": "2026-04-29",
   "tracks": {
     "dev": "功能開發",

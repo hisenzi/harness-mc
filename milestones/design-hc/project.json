@@ -1,7 +1,7 @@
 {
   "name": "設計版 HC 系統",
   "description": "設計師的 power tool：設計案 brief → 結構化規格 → Design Token → AI prompt → 生成 → VLM 評估 → 迭代。Designer-in-the-loop，不取代設計師",
-  "type": "internal",
+  "type": "knowledge",
   "status": "active",
   "priority": "high",
   "created": "2026-05-14",

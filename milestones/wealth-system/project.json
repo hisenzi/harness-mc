@@ -1,0 +1,62 @@
+{
+  "name": "理財逆向工程系統",
+  "description": "終態驅動、自動校正的個人理財作業系統，7 項核心工作項目",
+  "type": "service",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-05-19",
+  "estimated_completion": "2026-06-01",
+  "tracks": {
+    "build": "Build（建系統）",
+    "operate": "Operate（讓系統轉）",
+    "expand": "Expand（按需擴充）"
+  },
+  "goals": [
+    "建立終態驅動的財務目標：從人生場景倒推財務自由數字、月投入、收入缺口",
+    "自動化現金流分流：薪水進帳即自動分配至投資/預備金/生活，不靠意志力",
+    "啟動定期定額投資：系統第二天就有錢在市場裡運轉",
+    "建立最小迴路：月度 5 分鐘檢查 + 年度重算，系統自我校正"
+  ],
+  "risks": [
+    {
+      "risk": "過度設計：花時間做模板而非實際執行",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "HC 80/20 已砍到 7 項，嚴格不加回，觸發條件到了再擴充"
+    },
+    {
+      "risk": "收入缺口過大導致月投入不可行",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "Layer 4 試算時內建可行性檢查（年化 >15% 或月投入 >收入 70% 標紅）"
+    },
+    {
+      "risk": "中途放棄（從知道到做到的距離）",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "最小系統一個週末建完，自動轉帳設定後無需意志力維持"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "有一個明確的財務自由數字（年支出 ÷ 提領率）",
+      "verify_cmd": "cat project files",
+      "expected": "具體數字，非 placeholder"
+    },
+    {
+      "criterion": "自動轉帳已設定，薪水入帳即分流",
+      "verify_cmd": "銀行 app 截圖",
+      "expected": "至少一筆自動轉帳到投資帳戶"
+    },
+    {
+      "criterion": "ETF 定期定額已啟動",
+      "verify_cmd": "券商 app 截圖",
+      "expected": "至少一支 ETF 在定期扣款"
+    },
+    {
+      "criterion": "月度檢查流程已建立",
+      "verify_cmd": "日曆提醒 + 檢查模板存在",
+      "expected": "每月 1 號有提醒，模板有三個數字欄位"
+    }
+  ]
+}

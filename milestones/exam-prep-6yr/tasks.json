@@ -1,0 +1,302 @@
+{
+  "project_id": "exam-prep-6yr",
+  "last_updated": "2026-05-19",
+  "updated_by": "CC",
+  "minimum_viable_content": {
+    "threshold": "國英卡片 652 張 + 114年 79 題 = 已足夠啟動系統原型",
+    "current": {
+      "國文": "347 卡 / 57 章",
+      "英文": "305 卡 / 51 章",
+      "數學": "0 卡 / 架構有",
+      "社會": "0 卡 / 架構有",
+      "自然": "0 卡 / 架構有",
+      "歷屆題": "79 題（114年國英）",
+      "學測自然": "19 章 PDF + 6 年歷屆（未結構化）"
+    }
+  },
+  "phases": [
+    {
+      "id": "phase-0",
+      "name": "Phase 0：系統原型（用現有國英 + 114年）",
+      "status": "todo",
+      "goal": "用已有的 652 張卡 + 79 題建出可跑的原型，驗證動態排程概念",
+      "tracks": [
+        "system",
+        "strategy"
+      ],
+      "tasks": [
+        {
+          "id": "t0-1",
+          "title": "Fork nsg-system 可複用組件",
+          "status": "todo",
+          "track": "system",
+          "description": "從 hisenzi/nsg-system repo 取出 tracker.py、report_generator.py、broadcaster.py、NSG Tracker HTML v2.0、Cron 設定。建立新 repo 或新分支。",
+          "reuses": "nsg-system Phase 1-2 + Phase Proto"
+        },
+        {
+          "id": "t0-2",
+          "title": "考試情境 Onboarding",
+          "status": "todo",
+          "track": "strategy",
+          "description": "改造 onboarding_engine.py：加入隱性約束調查（你上補習班嗎？每天可用幾小時？有電腦嗎？目標等級？最弱科？）。輸出：student_profile.json",
+          "hc_correction": "修正 4：補充隱性約束調查"
+        },
+        {
+          "id": "t0-3",
+          "title": "基準測試模組",
+          "status": "todo",
+          "track": "system",
+          "description": "從 114年歷屆題抽 20 題（國文 10 + 英文 10，涵蓋 easy/medium/hard），限時施測，輸出各科正確率 + 弱章 TOP 5。",
+          "depends_on": [],
+          "data": "會考知識庫/歷屆試題/114年"
+        },
+        {
+          "id": "t0-4",
+          "title": "動態排程引擎 v0",
+          "status": "todo",
+          "track": "system",
+          "description": "取代 nsg schedule_generator.py 的固定 A/B 輪轉。規則引擎：基準測試結果 → 弱科加權 → 每週排程。輸入：student_profile.json + baseline_result.json。輸出：weekly_schedule.json",
+          "hc_correction": "修正 3：時間分配依基準測試動態調整",
+          "replaces": "nsg-system schedule_generator.py"
+        },
+        {
+          "id": "t0-5",
+          "title": "原型整合測試",
+          "status": "todo",
+          "track": "system",
+          "description": "Onboarding → 基準測試 → 動態排程 → Tracker 打卡 → 週報。用 Vincent 自己走完全流程。",
+          "depends_on": [
+            "t0-1",
+            "t0-2",
+            "t0-3",
+            "t0-4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-1",
+      "name": "Phase 1：會考 MVP（+數學 + 112-113年）",
+      "status": "todo",
+      "goal": "加數學 core 10 章 + 2 年歷屆題 → 可接第一個會考生",
+      "tracks": [
+        "content",
+        "system",
+        "strategy"
+      ],
+      "depends_on": [
+        "phase-0"
+      ],
+      "tasks": [
+        {
+          "id": "t1-1",
+          "title": "數學 core 10 章卡片建置",
+          "status": "todo",
+          "track": "content",
+          "description": "從知識庫架構.md 的 34 章中選最高頻 10 章（整數運算、一元一次方程式、比例、直角坐標、幾何基礎、統計初步、因式分解、二元一次方程式、三角形性質、機率初步）。每章 Step 卡 + 學習地圖。",
+          "inherited_from": "exam-master m1.4 (pending)",
+          "estimated": "10 章 × ~15 卡/章 = ~150 卡"
+        },
+        {
+          "id": "t1-2",
+          "title": "匯入 112-113 年歷屆題（國文+英文）",
+          "status": "todo",
+          "track": "content",
+          "description": "用 .openclaw_260418/workspace/scripts/exam-pipeline.sh 匯入。目標：112+113 年國英 → +約 170 題。",
+          "inherited_from": "exam-master t2.1.1 (in_progress)",
+          "scripts_path": ".openclaw_260418/workspace/scripts/",
+          "data": "需取得 112-113 年 PDF（來源：國中教育會考官網 / 心測中心）",
+          "unverified": "112-113年 PDF 是否已下載待確認"
+        },
+        {
+          "id": "t1-3",
+          "title": "歷屆題 P-value 難度標注",
+          "status": "todo",
+          "track": "content",
+          "description": "為所有已匯入歷屆題標注 P-value 分級：easy (P≥0.7) / medium (P 0.4-0.69) / hard (P<0.4)。讓三圈靶心法的 easy→medium→hard 路由可執行。",
+          "depends_on": [
+            "t1-2"
+          ]
+        },
+        {
+          "id": "t1-4",
+          "title": "三圈靶心法路由",
+          "status": "todo",
+          "track": "strategy",
+          "description": "在動態排程引擎中加入三圈路由：學生當前在哪圈（依基準測試和累計正確率）→ 推薦對應難度的章節和題目。",
+          "hc_source": "三圈靶心法 + B++ 公式",
+          "depends_on": [
+            "t0-4",
+            "t1-3"
+          ]
+        },
+        {
+          "id": "t1-5",
+          "title": "會考學習路徑：國7升國8 入口",
+          "status": "todo",
+          "track": "strategy",
+          "description": "路徑設計文件：Phase mapping（地基期→主攻期→收斂期→調峰期）、每 phase 的行為目標（非成果目標）、動態調整規則、checkpoint 設計。",
+          "hc_correction": "修正 2：目標用行為指標"
+        },
+        {
+          "id": "t1-6",
+          "title": "動機設計：checkpoint + 家長 check-in",
+          "status": "todo",
+          "track": "strategy",
+          "description": "每 2 週產出 checkpoint 報告（已完成章節、正確率趨勢、連續天數）。設計家長/導師 check-in 模板（5 分鐘可讀懂的 summary）。整合到 NSG Tracker 遊戲化系統。",
+          "hc_correction": "修正 1：動機設計層",
+          "reuses": "nsg-system NSG Tracker v2.0 遊戲化"
+        },
+        {
+          "id": "t1-7",
+          "title": "會考 pilot：1 名學生 4 週測試",
+          "status": "todo",
+          "track": "system",
+          "description": "招募 1 名國7-8 學生，走完 Onboarding → 基準測試 → 4 週排程 → checkpoint 報告。收集：留存率、每日使用時間、checkpoint 反饋。",
+          "depends_on": [
+            "t1-1",
+            "t1-4",
+            "t1-5",
+            "t1-6"
+          ],
+          "success_criteria": "留存率 > 70%（4 週中至少 20 天有打卡）"
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "Phase 2：學測自然科整合",
+      "status": "todo",
+      "goal": "結構化六年一貫材料 → 可接第一個學測生",
+      "tracks": [
+        "content",
+        "strategy"
+      ],
+      "depends_on": [
+        "phase-0"
+      ],
+      "note": "Phase 2 和 Phase 1 可平行推進（無依賴）",
+      "tasks": [
+        {
+          "id": "t2-1",
+          "title": "高一課本 PDF → 結構化卡片（物理+化學優先）",
+          "status": "todo",
+          "track": "content",
+          "description": "物理 6 章 + 化學 4 章 → Step 卡 + 學習地圖。每章精讀 PDF 後提取核心概念。",
+          "data": "CC本機協作_無Git/六年一貫_自然科複習自學系統/高一自然科data/物理/ + 化學/",
+          "estimated": "10 章 × ~12 卡/章 = ~120 卡"
+        },
+        {
+          "id": "t2-2",
+          "title": "高一課本 PDF → 結構化卡片（生物+地科）",
+          "status": "todo",
+          "track": "content",
+          "description": "生物 3 章 + 地科 6 章 → Step 卡 + 學習地圖。",
+          "data": "CC本機協作_無Git/六年一貫_自然科複習自學系統/高一自然科data/生物/ + 地科/",
+          "estimated": "9 章 × ~12 卡/章 = ~108 卡"
+        },
+        {
+          "id": "t2-3",
+          "title": "學測歷屆題結構化（110-115年）",
+          "status": "todo",
+          "track": "content",
+          "description": "7 份學測自然試卷（110-115年 + 109試辦）→ 題目卡 + 章節對應 + 科別分類（物/化/生/地）+ 題型分類（選擇/非選/跨科）+ 難度標注。",
+          "data": "CC本機協作_無Git/六年一貫_自然科複習自學系統/高一自然科data/（110-115試卷 + 109試辦 = 7份）"
+        },
+        {
+          "id": "t2-4",
+          "title": "非選擇題評分模板",
+          "status": "todo",
+          "track": "strategy",
+          "description": "從 111-114 年非選擇題評分原則 PDF 提取通用評分框架。讓學生可自評非選題答案。",
+          "data": "CC本機協作_無Git/六年一貫_自然科複習自學系統/高一自然科data/07-*.pdf + *非選*.pdf"
+        },
+        {
+          "id": "t2-5",
+          "title": "學測學習路徑：高一升高二入口",
+          "status": "todo",
+          "track": "strategy",
+          "description": "路徑設計：4 科強弱排序 → 弱科精讀 → 強科測試驅動 → 非選專項 → 跨科整合。行為目標制。",
+          "hc_correction": "修正 2 + 修正 3"
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "Phase 3：跨階段橋接 + 規模化",
+      "status": "todo",
+      "goal": "會考→學測銜接 + 多用戶支援 + 補齊剩餘內容",
+      "tracks": [
+        "content",
+        "system",
+        "strategy"
+      ],
+      "depends_on": [
+        "phase-1",
+        "phase-2"
+      ],
+      "tasks": [
+        {
+          "id": "t3-1",
+          "title": "國中→高中概念對照表",
+          "status": "todo",
+          "track": "strategy",
+          "description": "國中自然 ↔ 高一自然的概念映射表。幫助國中基礎薄弱的高中生知道要回頭補哪裡。"
+        },
+        {
+          "id": "t3-2",
+          "title": "跨科連結地圖",
+          "status": "todo",
+          "track": "strategy",
+          "description": "物理×化學、生物×地科的交叉索引。應對學測混合題型。"
+        },
+        {
+          "id": "t3-3",
+          "title": "會考→學測能力銜接路徑",
+          "status": "todo",
+          "track": "strategy",
+          "description": "會考 B++ 以上的學生 → 學測自然科的起跑建議。定義「國中自然哪些概念對學測有直接幫助」。"
+        },
+        {
+          "id": "t3-4",
+          "title": "社會科卡片建置（會考）",
+          "status": "todo",
+          "track": "content",
+          "description": "45 章，依學生需求優先序建置。",
+          "inherited_from": "exam-master m1.4 t1.4.3"
+        },
+        {
+          "id": "t3-5",
+          "title": "自然科卡片建置（會考）",
+          "status": "todo",
+          "track": "content",
+          "description": "45 章，依學生需求優先序建置。",
+          "inherited_from": "exam-master m1.4 t1.4.4"
+        },
+        {
+          "id": "t3-6",
+          "title": "Supabase 多用戶",
+          "status": "todo",
+          "track": "system",
+          "description": "從 nsg-system Phase S 繼承：users/checkins/reviews 三表 + RLS + Google/LINE 登入 + 離線同步。",
+          "inherited_from": "nsg-system Phase S (all pending)"
+        },
+        {
+          "id": "t3-7",
+          "title": "數學剩餘 24 章卡片建置",
+          "status": "todo",
+          "track": "content",
+          "description": "Phase 1 建了 core 10 章，剩餘 24 章依使用數據排優先序。"
+        },
+        {
+          "id": "t3-8",
+          "title": "RAG 知識庫查詢",
+          "status": "todo",
+          "track": "system",
+          "description": "會考知識庫 export → JSON chunks → embedding → 查詢。讓 agent 能回答學生的知識問題。",
+          "inherited_from": "nsg-system Phase B mB.4 (pending)"
+        }
+      ]
+    }
+  ]
+}

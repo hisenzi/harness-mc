@@ -5,8 +5,7 @@
       "name": "mc",
       "runtimeExecutable": "npx",
       "runtimeArgs": ["next", "dev"],
-      "port": 3002,
-      "autoPort": true
+      "port": 3001
     }
   ]
 }

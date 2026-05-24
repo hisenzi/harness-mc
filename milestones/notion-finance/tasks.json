@@ -1,0 +1,191 @@
+{
+  "project": "notion-finance",
+  "tasks": [
+    {
+      "id": "core-1",
+      "title": "Notion API 連通 + DB schema 確認",
+      "status": "done",
+      "track": "core"
+    },
+    {
+      "id": "core-2",
+      "title": "消費記錄 DB 讀取驗證",
+      "status": "done",
+      "track": "core"
+    },
+    {
+      "id": "core-3",
+      "title": "V2 腳本（notion-finance-v2.py）：add/query/balance/settlement/dump",
+      "status": "done",
+      "track": "core",
+      "note": "1058 行，專款專用制，付款方式=預算單位"
+    },
+    {
+      "id": "core-4",
+      "title": "帳戶設定外部化（BUDGETS/BASE_CASH 從硬編碼改讀 config JSON）",
+      "status": "done",
+      "track": "migrate",
+      "note": "BUDGETS 10 項 + BASE_CASH 33267 移至 config/budgets.json，腳本啟動時 _load_budgets() 讀取"
+    },
+    {
+      "id": "core-5",
+      "title": "代墊自動沖轉（payment≠belong 時寫餘額沖轉記錄）",
+      "status": "done",
+      "track": "core",
+      "note": "cmd_add 偵測代墊自動記沖轉，子類別=轉帳"
+    },
+    {
+      "id": "core-6",
+      "title": "月底結算（month-end 指令 + dry-run）",
+      "status": "done",
+      "track": "core",
+      "note": "身上/快樂 belong-based remaining，餘額 payment-based"
+    },
+    {
+      "id": "core-7",
+      "title": "歷史月份重建（rebuild --month / --all）",
+      "status": "done",
+      "track": "core"
+    },
+    {
+      "id": "core-8",
+      "title": "全域搜尋（search，本地 JSON + Notion fallback）",
+      "status": "done",
+      "track": "core"
+    },
+    {
+      "id": "core-9",
+      "title": "V2 審計修 bug（月結雙重計入 / 代墊判斷 / HSBC 篩選名）",
+      "status": "done",
+      "track": "core",
+      "note": "4/12 審計通過，dry-run 驗證正確"
+    },
+    {
+      "id": "migrate-1",
+      "title": "建立 finance-dashboard 獨立 repo（private, GitHub）",
+      "status": "done",
+      "track": "migrate",
+      "note": "Next.js 16 + React 19 + Tailwind v4 + HMAC auth middleware。HC 修正：不需 standalone mode，Vercel 原生 serverless 即可"
+    },
+    {
+      "id": "migrate-2",
+      "title": "腳本路徑去 OC 化（SECRETS → env var, MC_FINANCE_DIR → 相對路徑）",
+      "status": "done",
+      "track": "migrate",
+      "note": "NOTION_TOKEN 讀 env var fallback .env；MC_FINANCE_DIR 用 __file__ 相對定位；ACCOUNTS_PATH 移除（未使用）"
+    },
+    {
+      "id": "migrate-3",
+      "title": "v1 new-month 指令移植到 v2",
+      "status": "done",
+      "track": "migrate",
+      "note": "從 v1 移植 cmd_new_month，含 bootstrap 模式 + dry-run + 重複偵測。DB_ACCOUNTS 常數已加入"
+    },
+    {
+      "id": "migrate-4",
+      "title": "OC finance-v2 page.tsx 移植到獨立 repo",
+      "status": "done",
+      "track": "migrate",
+      "note": "1090 行 client component 移植完成。fetch URL 改為 /api/finance/*，無其他 OC 依賴"
+    },
+    {
+      "id": "migrate-5",
+      "title": "密碼鎖（middleware.ts + /login + /api/auth）",
+      "status": "done",
+      "track": "migrate",
+      "note": "HMAC cookie auth，30 天有效。API route 無 cookie → 401，頁面 → 302 /login。已驗證全流程"
+    },
+    {
+      "id": "migrate-6",
+      "title": "Vercel 部署 + outputFileTracingIncludes 設定",
+      "status": "todo",
+      "track": "migrate",
+      "note": "next.config.mjs 已設 outputFileTracingIncludes。待建 GitHub private repo + Vercel 連結部署"
+    },
+    {
+      "id": "migrate-7",
+      "title": "MBA-2 clone repo + 定時推送 cron（sync-finance.sh）",
+      "status": "todo",
+      "track": "migrate",
+      "note": "git pull --rebase → git add data/ → commit → push。規則：只 MBA-2 寫 data/"
+    },
+    {
+      "id": "migrate-8",
+      "title": "OC 資料搬家（JSON + bookkeeping-rules + .env）",
+      "status": "done",
+      "track": "migrate",
+      "note": "JSON 2 檔 + bookkeeping-rules 已搬。.env 不入 repo（secrets），使用者在 MBA-2 自建"
+    },
+    {
+      "id": "migrate-9",
+      "title": "全流程測試（記帳 → JSON → push → Vercel → 手機看）",
+      "status": "todo",
+      "track": "migrate",
+      "note": "MBA-2 端對端驗證，確認封存 .openclaw_260418 後系統獨立運作"
+    },
+    {
+      "id": "mc-1",
+      "title": "MC Finance V2 頁面（消費概覽 + 預算 vs 實際）",
+      "status": "done",
+      "track": "mc"
+    },
+    {
+      "id": "mc-2",
+      "title": "MC 歷史頁面（lazy load + 年度趨勢 + 跨月比較）",
+      "status": "done",
+      "track": "mc"
+    },
+    {
+      "id": "mc-3",
+      "title": "MC 搜尋功能（API + 頁面搜尋框，跨月全文搜尋）",
+      "status": "done",
+      "track": "mc"
+    },
+    {
+      "id": "mc-4",
+      "title": "MC 月份選擇器改版（年份下拉 + 12 月格狀）",
+      "status": "in_progress",
+      "track": "mc",
+      "note": "已讀完現有實作，尚未寫入新版"
+    },
+    {
+      "id": "auto-1",
+      "title": "月度快照架構（帳戶總覽一帳戶一月一筆 + new-month 指令）",
+      "status": "done",
+      "track": "auto",
+      "note": "v1 Cron 每月 1 日 00:30，待 migrate-3 移植後切 v2"
+    },
+    {
+      "id": "auto-2",
+      "title": "分月 JSON 架構（data/finance/YYYY-MM.json + summary.json）",
+      "status": "done",
+      "track": "auto"
+    },
+    {
+      "id": "auto-3",
+      "title": "cron 改系統 crontab/launchd（脫離 OC cron）",
+      "status": "todo",
+      "track": "auto",
+      "note": "HC-7：OC 退場前完成，含記帳推送 + 每月 new-month"
+    },
+    {
+      "id": "future-1",
+      "title": "Web 記帳介面（/api/finance-v2/add POST route）",
+      "status": "backlog",
+      "track": "future",
+      "note": "HC-8：OC agent 退場後的記帳觸發方式，骨架預留 API route"
+    },
+    {
+      "id": "future-2",
+      "title": "Telegram 自然語言記帳（一行輸入 → 解析 → 寫入 Notion）",
+      "status": "backlog",
+      "track": "future"
+    },
+    {
+      "id": "future-3",
+      "title": "月報摘要推送 Telegram（每月消費分類統計）",
+      "status": "backlog",
+      "track": "future"
+    }
+  ]
+}

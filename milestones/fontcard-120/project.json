@@ -1,0 +1,74 @@
+{
+  "name": "王明嘉字卡120字型收集",
+  "description": "經典字體120張字卡整理、字型盤點與收集系統",
+  "type": "internal",
+  "status": "active",
+  "priority": "medium",
+  "created": "2026-05-23",
+  "estimated_completion": "TBD",
+  "tracks": {
+    "phase-1": "Phase 1 — 整理與盤點",
+    "phase-2": "Phase 2 — 字型收集與啟用",
+    "phase-3": "Phase 3 — 知識庫整合"
+  },
+  "goals": [
+    "120 張字卡全部結構化命名並建立 JSON 索引",
+    "盤點 Mac 已安裝字型，分類標注來源（系統/可下載/Adobe/商業）",
+    "收集並啟用所有可免費取得的字型（macOS 可下載 + Adobe Fonts）",
+    "建立字型分類知識體系，與 Notion 字體資料庫整合"
+  ],
+  "risks": [
+    {
+      "risk": "商業字型無免費替代",
+      "impact": "low",
+      "probability": "high",
+      "mitigation": "標記為 commercial-only，記錄替代字型選項供未來參考"
+    },
+    {
+      "risk": "Adobe Fonts 訂閱中斷導致字型失效",
+      "impact": "medium",
+      "probability": "low",
+      "mitigation": "區分 Adobe Fonts 與本機安裝字型，記錄依賴關係"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "120 張字卡全部改名完成，font-index.json 無缺漏",
+      "verify_cmd": "ls 00_王明嘉-字卡120/*-1.JPG | wc -l && cat font-index.json | python3 -c 'import json,sys; d=json.load(sys.stdin); print(len(d[\"cards\"]))'",
+      "expected": "120 檔案 + 120 JSON 條目"
+    },
+    {
+      "criterion": "macOS 可下載字型全部啟用",
+      "verify_cmd": "fc-list | grep -ci 'centaur\\|cochin\\|copperplate\\|didot'",
+      "expected": "至少 12 款 macOS 可下載字型可用"
+    },
+    {
+      "criterion": "字型來源分類文件完整，每款字型標注 installed/downloadable/adobe/commercial",
+      "verify_cmd": "cat font-index.json | python3 -c 'import json,sys; d=json.load(sys.stdin); print(all(\"source\" in v for v in d[\"cards\"].values()))'",
+      "expected": "True"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "整理方式",
+      "decision": "全量手動辨識 + 批次改名腳本",
+      "reason": "120 張卡片需要逐張確認正反面對應，自動化程度不夠高，但腳本保證可重複執行",
+      "alternatives_rejected": ["只重新命名不建索引（資訊損失太大）", "按分類建子資料夾（破壞連續編號）"],
+      "hc_used": []
+    },
+    {
+      "topic": "字型取得策略",
+      "decision": "先盤點 Mac 已有 → 再分類收集",
+      "reason": "避免重複下載已安裝字型，優先利用免費資源（macOS 內建 + Adobe Fonts 訂閱）",
+      "alternatives_rejected": ["直接全部網路搜尋下載（可能違反授權）"],
+      "hc_used": []
+    },
+    {
+      "topic": "專案類型",
+      "decision": "internal（非 standalone）",
+      "reason": "資料整理專案，無獨立程式碼或部署需求，由 backup.sh 自動備份即可",
+      "alternatives_rejected": ["standalone（過度，不需要 GitHub repo）"],
+      "hc_used": []
+    }
+  ]
+}

@@ -80,8 +80,56 @@ for (const dir of fs.readdirSync(milestonesDir)) {
   }
 }
 
+// Split self-learning: system tasks → projects.json, courses → learning.json
+const COURSE_TRACKS = new Set(["course", "book", "free", "yt"]);
+const learningOutPath = path.join(root, "public", "data", "learning.json");
+let learningData = null;
+
+for (const p of results) {
+  if (p.project === "self-learning") {
+    const courseTasks = p.tasks.filter((t) => COURSE_TRACKS.has(t.track));
+    const systemTasks = p.tasks.filter((t) => !COURSE_TRACKS.has(t.track));
+
+    const byStatus = { now: 0, next: 0, someday: 0, done: 0 };
+    const byType = {};
+    for (const t of courseTasks) {
+      if (t.status === "in_progress") byStatus.now++;
+      else if (t.status === "todo") byStatus.next++;
+      else if (t.status === "done") byStatus.done++;
+      else byStatus.someday++;
+      byType[t.track] = (byType[t.track] || 0) + 1;
+    }
+
+    learningData = {
+      summary: { total: courseTasks.length, ...byStatus, byType },
+      courses: courseTasks.map((t) => {
+        const parts = (t.note || "").split(" | ");
+        const parsed = {};
+        for (const part of parts) {
+          if (part.startsWith("柱:")) parsed.pillar = part.slice(2);
+          else if (part.startsWith("T:")) parsed.triage = Number(part.slice(2)) || 0;
+          else if (part.startsWith("E:")) parsed.energy = part.slice(2);
+          else if (part.endsWith("%")) parsed.pct = Number(part.replace("%", "")) || 0;
+          else if (part.startsWith("http")) parsed.link = part;
+        }
+        return { ...t, ...parsed };
+      }),
+    };
+
+    p.tasks = systemTasks;
+    p.done = systemTasks.filter((t) => ["done", "completed", "fixed"].includes(t.status)).length;
+    p.total = systemTasks.length;
+    break;
+  }
+}
+
 results.sort((a, b) => new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime());
 
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, JSON.stringify(results, null, 2));
 console.log(`Generated ${outPath} — ${results.length} projects, ${results.reduce((s, p) => s + p.total, 0)} tasks`);
+
+if (learningData) {
+  fs.writeFileSync(learningOutPath, JSON.stringify(learningData, null, 2));
+  console.log(`Generated ${learningOutPath} — ${learningData.summary.total} courses`);
+}

@@ -12,12 +12,56 @@ interface Task {
   issues_fixed?: number;
 }
 
+interface LearningSummary {
+  total: number;
+  now: number;
+  next: number;
+  someday: number;
+  done: number;
+  byType: Record<string, number>;
+}
+
 interface Project {
   project: string;
   name: string;
   tasks: Task[];
   done: number;
   total: number;
+}
+
+function LearningCard() {
+  const [data, setData] = useState<LearningSummary | null>(null);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/learning.json`)
+      .then((r) => r.json())
+      .then((d) => setData(d.summary))
+      .catch(() => {});
+  }, []);
+
+  if (!data) return <div className="text-body text-[var(--text-muted)] mt-3">載入中...</div>;
+
+  const typeLabels: Record<string, string> = { course: "課程", book: "書", free: "免費", yt: "YT" };
+
+  return (
+    <>
+      <div className="flex items-baseline gap-3 mt-3">
+        <span className="text-[20px] font-semibold text-[var(--text)]">{data.total}</span>
+        <span className="text-[12px] text-[var(--text-muted)]">學習項目</span>
+      </div>
+      <div className="flex gap-3 mt-2 text-[12px]">
+        {data.now > 0 && <span className="text-pink-400">NOW {data.now}</span>}
+        {data.next > 0 && <span className="text-blue-400">NEXT {data.next}</span>}
+        {data.done > 0 && <span className="text-green-400">DONE {data.done}</span>}
+        {data.someday > 0 && <span className="text-[var(--text-muted)]">SOMEDAY {data.someday}</span>}
+      </div>
+      <div className="flex flex-wrap gap-2 mt-3 text-[11px] text-[var(--text-muted)]">
+        {Object.entries(data.byType).map(([k, v]) => (
+          <span key={k}>{typeLabels[k] || k} {v}</span>
+        ))}
+      </div>
+    </>
+  );
 }
 
 function ToolsCard() {
@@ -192,6 +236,29 @@ export default function HomePage() {
           </div>
           <ToolsCard />
         </Link>
+          </div>
+        </div>
+
+        <div>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">學習層</div>
+            <div className="text-[11px] text-[var(--text-muted)]">Learning Pipeline — 多課程自學管線</div>
+            <div className="flex-1 border-t border-[var(--border)]"></div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Link
+              href="/learning"
+              className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5 hover:border-pink-500/50 transition cursor-pointer"
+            >
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-title">📚</span>
+                <div>
+                  <div className="font-semibold text-heading">學習進度</div>
+                  <div className="text-[11px] text-[var(--text-muted)]">Course Tracker</div>
+                </div>
+              </div>
+              <LearningCard />
+            </Link>
           </div>
         </div>
       </div>

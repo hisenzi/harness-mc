@@ -1,0 +1,90 @@
+{
+  "project": "fontcard-120",
+  "tasks": [
+    {
+      "id": "p1-1",
+      "title": "字卡辨識與批次改名",
+      "status": "done",
+      "track": "phase-1",
+      "done_condition": "120 張字卡全部改名為 NNN_font-name-{1,2}.JPG 格式",
+      "note": "rename-fontcards.sh 已執行，119 組改名成功（001 先前已改），card 035 正反面顛倒已修正"
+    },
+    {
+      "id": "p1-2",
+      "title": "建立 font-index.json 索引",
+      "status": "done",
+      "track": "phase-1",
+      "done_condition": "JSON 含 120 條目，每條有 name/category/category_name",
+      "note": "17 分類、120 字體，含 meta 區塊"
+    },
+    {
+      "id": "p1-3",
+      "title": "封面索引與非字卡歸檔",
+      "status": "done",
+      "track": "phase-1",
+      "done_condition": "cover + 3 張索引卡移至 00_封面索引/，非字卡移至 _非字卡/",
+      "note": "IMG_4623.PNG（股票截圖）已隔離"
+    },
+    {
+      "id": "p1-4",
+      "title": "Mac 已安裝字型盤點",
+      "status": "done",
+      "track": "phase-1",
+      "done_condition": "120 款字型對照 fc-list 結果，標注已安裝/未安裝",
+      "note": "修正後：26 已安裝、3 可下載、62 Adobe Fonts、29 商業"
+    },
+    {
+      "id": "p1-5",
+      "title": "font-index.json 加入 source 欄位",
+      "status": "done",
+      "track": "phase-1",
+      "done_condition": "每款字型標注 installed/downloadable/adobe/commercial",
+      "note": "已加入並經 fc-list 交叉驗證修正"
+    },
+    {
+      "id": "p2-1",
+      "title": "啟用 macOS 可下載字型（3 款）",
+      "status": "todo",
+      "track": "phase-2",
+      "done_condition": "Font Book 下載字型，fc-list 可查到",
+      "note": "Centaur, Sabon, Walbaum（其餘 Cochin/Copperplate/Didot/Gill Sans/Optima/Palatino/Rockwell/Trajan 已安裝）"
+    },
+    {
+      "id": "p2-2",
+      "title": "啟用 Adobe Fonts 字型（62 款）",
+      "status": "todo",
+      "track": "phase-2",
+      "done_condition": "透過 Adobe Fonts 網站啟用，fc-list 可查到",
+      "note": "需逐批啟用，Adobe CC 訂閱中"
+    },
+    {
+      "id": "p2-3",
+      "title": "商業字型替代方案清單（29 款）",
+      "status": "todo",
+      "track": "phase-2",
+      "done_condition": "每款商業字型記錄免費替代選項或標注無替代"
+    },
+    {
+      "id": "p2-verify",
+      "title": "Phase 2 驗收：字型啟用驗證",
+      "status": "todo",
+      "track": "phase-2",
+      "done_condition": "fc-list 交叉驗證，已安裝數 >= 81（20+12+49）"
+    },
+    {
+      "id": "p3-1",
+      "title": "Notion 字體資料庫整合",
+      "status": "todo",
+      "track": "phase-3",
+      "done_condition": "font-index.json 資料匯入 Notion 字體資料庫",
+      "note": "Vincent 核心領域之一"
+    },
+    {
+      "id": "p3-2",
+      "title": "字型分類知識整理",
+      "status": "todo",
+      "track": "phase-3",
+      "done_condition": "17 分類的說明文件或筆記建立，含代表字型與特徵"
+    }
+  ]
+}

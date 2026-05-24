@@ -1,0 +1,384 @@
+{
+  "tasks": [
+    {
+      "id": "notion-course-db",
+      "title": "Notion 課程總表建置（schema + 課程資料匯入）",
+      "status": "done",
+      "track": "setup",
+      "completed_at": "2026-05-20",
+      "commits": [],
+      "note": "含 Triage 矩陣欄位：9宮格柱子、時效性、即用性、能量成本",
+      "summary": "12 欄位 schema + 9 門課程匯入 + board/table linked views"
+    },
+    {
+      "id": "notion-log-db",
+      "title": "Notion 學習日誌建置（schema + relation + views）",
+      "status": "done",
+      "track": "setup",
+      "completed_at": "2026-05-20",
+      "commits": [],
+      "note": "含 spaced repetition 複習日欄位、學習類型 select",
+      "summary": "10 欄位 schema + 雙向 relation 課程總表 + calendar/table linked views"
+    },
+    {
+      "id": "mc-milestone",
+      "title": "MC 里程碑建立 + learning type 上色",
+      "status": "done",
+      "track": "setup",
+      "completed_at": "2026-05-20",
+      "commits": [],
+      "note": "",
+      "summary": "project.json + tasks.json + catBarColor #ec4899 粉色"
+    },
+    {
+      "id": "course-triage",
+      "title": "11 門課程 Triage 評分（Vincent 填分數）",
+      "status": "todo",
+      "track": "triage",
+      "completed_at": null,
+      "commits": [],
+      "note": "柱子對齊 + 時效 + 即用 各 0-3，選出 2 門 NOW",
+      "summary": ""
+    },
+    {
+      "id": "weekly-schedule",
+      "title": "每週學習排程模板（5 block/天 × 工作日）",
+      "status": "todo",
+      "track": "process",
+      "completed_at": null,
+      "commits": [],
+      "note": "05:00-06:00 深度 / 15:00-16:30 複習+整合",
+      "summary": ""
+    },
+    {
+      "id": "spaced-rep-flow",
+      "title": "Spaced repetition 流程：R1-R5 自動排入學習日誌",
+      "status": "todo",
+      "track": "process",
+      "completed_at": null,
+      "commits": [],
+      "note": "D+1/+3/+7/+14/+30，每天 Block C 處理到期複習",
+      "summary": ""
+    },
+    {
+      "id": "heptabase-template",
+      "title": "Heptabase 學習卡片模板（含跨課程連結欄位）",
+      "status": "todo",
+      "track": "setup",
+      "completed_at": null,
+      "commits": [],
+      "note": "一句話摘要 + 連結既有卡片 + 下次複習日",
+      "summary": ""
+    },
+    {
+      "id": "2week-pilot",
+      "title": "2 週 pilot run：2 門 NOW 課程實際運作",
+      "status": "todo",
+      "track": "operation",
+      "completed_at": null,
+      "commits": [],
+      "note": "驗證排程可行性、複習機制是否跟得上",
+      "summary": ""
+    },
+    {
+      "id": "weekly-review-ritual",
+      "title": "週六回顧儀式建立（30 min checklist）",
+      "status": "todo",
+      "track": "operation",
+      "completed_at": null,
+      "commits": [],
+      "note": "本週學了什麼、triage 要不要調、整合筆記",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "倪海廈-風水、易經",
+      "status": "deferred",
+      "track": "yt",
+      "completed_at": null,
+      "commits": [],
+      "note": "柱:健康能量 | T:0 | YouTube 頻道",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "蔡恩全-CEO的16個私房管理工具",
+      "status": "deferred",
+      "track": "course",
+      "completed_at": null,
+      "commits": [],
+      "note": "柱:方法論 | T:0 | 3hrs 管理實戰法則",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "Udemy-創業學習資源",
+      "status": "deferred",
+      "track": "course",
+      "completed_at": null,
+      "commits": [],
+      "note": "T:0 | https://freelancingfreedom.com/",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "《極簡工作術》",
+      "status": "deferred",
+      "track": "book",
+      "completed_at": null,
+      "commits": [],
+      "note": "T:0 | 事先決定規則以不動大腦・減少判斷消耗",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "蔡恩全-溝通表達",
+      "status": "deferred",
+      "track": "course",
+      "completed_at": null,
+      "commits": [],
+      "note": "柱:精通 | T:0 | 2hrs 國際舞台軟實力",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "《設計你的小習慣》",
+      "status": "deferred",
+      "track": "book",
+      "completed_at": null,
+      "commits": [],
+      "note": "柱:方法論 | T:0 | B=MAP 行為=動機×行動×提示",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "蔡順任-西洋藝術欣賞",
+      "status": "deferred",
+      "track": "course",
+      "completed_at": null,
+      "commits": [],
+      "note": "柱:精通 | T:0 | $3820 跟著修復師重新愛上西洋藝術",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "謝哲青-記憶宮殿",
+      "status": "deferred",
+      "track": "course",
+      "completed_at": null,
+      "commits": [],
+      "note": "柱:方法論 | T:0",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "《技能密碼》THE SKILL CODE",
+      "status": "deferred",
+      "track": "book",
+      "completed_at": null,
+      "commits": [],
+      "note": "柱:方法論 | T:0 | MIT博士・3C: Challenge, Complexity, Connection",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "《命定之書》張修修",
+      "status": "deferred",
+      "track": "book",
+      "completed_at": null,
+      "commits": [],
+      "note": "柱:方法論 | T:0 | ICE 閱讀法：Images→Curiosity→Explore",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "卡片盒筆記思考術（Sönke Ahrens）",
+      "status": "deferred",
+      "track": "course",
+      "completed_at": null,
+      "commits": [],
+      "note": "柱:方法論 | T:0 | https://sat.cool/course/167 | $3500・原作者版，與瓦基版不同",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "《創業之國以色列》",
+      "status": "deferred",
+      "track": "book",
+      "completed_at": null,
+      "commits": [],
+      "note": "T:0 | chutzpath 文化・膽量與自信",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "《西方哲學史》羅素",
+      "status": "deferred",
+      "track": "book",
+      "completed_at": null,
+      "commits": [],
+      "note": "柱:精通 | T:0 | 1945 伯特蘭·羅素",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "高效原力",
+      "status": "deferred",
+      "track": "book",
+      "completed_at": null,
+      "commits": [],
+      "note": "柱:時間專注 | T:0",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "《三禧思維》",
+      "status": "deferred",
+      "track": "book",
+      "completed_at": null,
+      "commits": [],
+      "note": "T:0 | 機率思考・不確定性中的行動信心",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "GTD《Getting Things Done》",
+      "status": "deferred",
+      "track": "book",
+      "completed_at": null,
+      "commits": [],
+      "note": "柱:方法論 | T:0 | 外部系統=第二大腦",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "中小企業網路大學",
+      "status": "deferred",
+      "track": "free",
+      "completed_at": null,
+      "commits": [],
+      "note": "T:0 | https://www.smelearning.org.tw | 政府免費・AI產業應用、智慧排程等",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "增加人文素養",
+      "status": "deferred",
+      "track": "free",
+      "completed_at": null,
+      "commits": [],
+      "note": "T:0 | ChatGPT 自學・批判性思維+閱讀研究",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "柯文哲：人生十堂課",
+      "status": "deferred",
+      "track": "course",
+      "completed_at": null,
+      "commits": [],
+      "note": "T:0 | $100",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "王明嘉｜字卡120",
+      "status": "in_progress",
+      "track": "course",
+      "completed_at": null,
+      "commits": [],
+      "note": "柱:精通 | T:0 | Typography 字體學習・界線比目標更有彈性",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "建築設計",
+      "status": "deferred",
+      "track": "course",
+      "completed_at": null,
+      "commits": [],
+      "note": "T:0",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "企業財稅",
+      "status": "deferred",
+      "track": "course",
+      "completed_at": null,
+      "commits": [],
+      "note": "T:0 | 一人公司財務稅務",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "AI SEO",
+      "status": "deferred",
+      "track": "course",
+      "completed_at": null,
+      "commits": [],
+      "note": "T:0 | 搜尋引擎優化 + AI 工具",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "AI 大紀元（GARYTU）",
+      "status": "deferred",
+      "track": "course",
+      "completed_at": null,
+      "commits": [],
+      "note": "T:0 | AI 圖像生成、prompt 工程",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "簡報技術",
+      "status": "deferred",
+      "track": "course",
+      "completed_at": null,
+      "commits": [],
+      "note": "T:0 | 簡報設計與表達",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "觀葉植物",
+      "status": "deferred",
+      "track": "course",
+      "completed_at": null,
+      "commits": [],
+      "note": "T:0 | 植物照護與栽培",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "蔬食料理（光之戰士）",
+      "status": "deferred",
+      "track": "course",
+      "completed_at": null,
+      "commits": [],
+      "note": "T:0 | https://cooking.radiantwarriors.tw/onilinecourse | 全食物蔬食烹飪",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "卡片盒筆記法",
+      "status": "deferred",
+      "track": "course",
+      "completed_at": null,
+      "commits": [],
+      "note": "T:0 | Zettelkasten 知識管理",
+      "summary": ""
+    },
+    {
+      "id": "notion-366714fb14c6",
+      "title": "Vibe Coding",
+      "status": "deferred",
+      "track": "course",
+      "completed_at": null,
+      "commits": [],
+      "note": "T:0 | AI 輔助程式開發",
+      "summary": ""
+    }
+  ]
+}

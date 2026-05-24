@@ -83,6 +83,7 @@ const catBarColor: Record<string, string> = {
   service: "#3b82f6",
   knowledge: "#a855f7",
   system: "#22c55e",
+  learning: "#ec4899",
 };
 
 function ProgressBar({ done, total, type }: { done: number; total: number; type?: string }) {

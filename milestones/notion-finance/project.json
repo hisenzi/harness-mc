@@ -1,0 +1,40 @@
+{
+  "name": "記帳系統 V2（專款專用制）",
+  "description": "Telegram 一行記帳 → OpenClaw 解析 → Notion 寫入，付款方式即預算單位，代墊自動沖轉，MC 消費儀表板",
+  "type": "service",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-03-14",
+  "tracks": {
+    "core": "核心（腳本 + Notion）",
+    "migrate": "獨立部署遷移（脫離 OC）",
+    "mc": "MC 儀表板",
+    "auto": "自動化（Cron）",
+    "future": "未來擴充"
+  },
+  "goals": [
+    "專款專用：付款方式本身就是預算單位，不另設信封層",
+    "代墊自動沖轉：payment≠belong 時自動寫餘額沖轉記錄",
+    "月底結算自動化：每月 1 日 Cron 建新月快照 + 結算",
+    "Telegram 一行記帳 → Notion 寫入 → MC 顯示",
+    "MC 儀表板：消費概覽 + 歷史 + 搜尋"
+  ],
+  "risks": [
+    {
+      "risk": "換月時帳戶 ID 變動導致快取失效",
+      "impact": "medium",
+      "mitigation": "new-month 指令自動建帳戶快照，換月後重新查詢 ID"
+    },
+    {
+      "risk": "代墊沖轉邏輯複雜度隨付款方式增加而上升",
+      "impact": "low",
+      "mitigation": "沖轉只寫餘額側，統計時排除子類別=轉帳"
+    }
+  ],
+  "success_criteria": [
+    "每筆消費標記：付款方式 + 歸屬（belong），代墊自動寫沖轉",
+    "月底結算 dry-run 數字正確（身上/快樂/餘額/合計）",
+    "MC finance-v2 頁面顯示當月消費、各付款方式預算 vs 實際",
+    "Telegram 自然語言記帳可用"
+  ]
+}

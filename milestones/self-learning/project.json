@@ -1,0 +1,29 @@
+{
+  "name": "自學系統｜學習管線",
+  "description": "多課程自學管線：Triage → Schedule → Learn → Review → Integrate。MC 監控、Heptabase 管內容、Notion 管進度及執行",
+  "type": "learning",
+  "status": "active",
+  "priority": "high",
+  "owner": "Vincent",
+  "created": "2026-05-20",
+  "tracks": {
+    "setup": "系統建置",
+    "triage": "課程分流與優先排序",
+    "process": "學習流程與複習機制",
+    "operation": "日常運作與迭代",
+    "course": "線上課程",
+    "book": "書籍",
+    "free": "免費資源",
+    "yt": "YouTube"
+  },
+  "goals": [
+    "每天 2.5h 可持續學習，不靠意志力",
+    "Spaced repetition 確保知識留存",
+    "學習投入轉化為可用能力，不是堆積未完成進度"
+  ],
+  "success_criteria": [
+    "2 門 NOW 課程穩定推進 ≥2 週",
+    "複習佇列每日清空",
+    "每週回顧產出 ≥1 則整合筆記"
+  ]
+}

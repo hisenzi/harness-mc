@@ -31,7 +31,7 @@
       "status": "done",
       "track": "phase-1",
       "done_condition": "120 款字型對照 fc-list 結果，標注已安裝/未安裝",
-      "note": "修正後：26 已安裝、3 可下載、62 Adobe Fonts、29 商業"
+      "note": "修正後：20 installed、29 local、2 downloadable、46 adobe、23 commercial"
     },
     {
       "id": "p1-5",
@@ -43,23 +43,23 @@
     },
     {
       "id": "p2-1",
-      "title": "啟用 macOS 可下載字型（3 款）",
+      "title": "啟用 macOS 可下載字型（2 款）",
       "status": "todo",
       "track": "phase-2",
       "done_condition": "Font Book 下載字型，fc-list 可查到",
-      "note": "Centaur, Sabon, Walbaum（其餘 Cochin/Copperplate/Didot/Gill Sans/Optima/Palatino/Rockwell/Trajan 已安裝）"
+      "note": "Sabon, Walbaum"
     },
     {
       "id": "p2-2",
-      "title": "啟用 Adobe Fonts 字型（62 款）",
+      "title": "啟用 Adobe Fonts 字型（46 款）",
       "status": "todo",
       "track": "phase-2",
       "done_condition": "透過 Adobe Fonts 網站啟用，fc-list 可查到",
-      "note": "需逐批啟用，Adobe CC 訂閱中"
+      "note": "需逐批啟用，Adobe CC 訂閱中（原 62 款，29 款已在本地資料夾找到）"
     },
     {
       "id": "p2-3",
-      "title": "商業字型替代方案清單（29 款）",
+      "title": "商業字型替代方案清單（23 款）",
       "status": "todo",
       "track": "phase-2",
       "done_condition": "每款商業字型記錄免費替代選項或標注無替代"
@@ -69,15 +69,15 @@
       "title": "Phase 2 驗收：字型啟用驗證",
       "status": "todo",
       "track": "phase-2",
-      "done_condition": "fc-list 交叉驗證，已安裝數 >= 81（20+12+49）"
+      "done_condition": "fc-list 交叉驗證，已安裝數 >= 68（20 installed + 2 downloadable + 46 adobe）"
     },
     {
       "id": "p3-1",
       "title": "Notion 字體資料庫整合",
-      "status": "todo",
+      "status": "done",
       "track": "phase-3",
       "done_condition": "font-index.json 資料匯入 Notion 字體資料庫",
-      "note": "Vincent 核心領域之一"
+      "note": "120 筆已寫入 Notion 字體主資料庫（字體名稱/字卡編號/語系/字體分類/下載狀態），分類系統從 7 類替換為 17 類"
     },
     {
       "id": "p3-2",

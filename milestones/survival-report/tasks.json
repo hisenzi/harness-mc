@@ -1,0 +1,122 @@
+{
+  "project": "survival-report",
+  "tasks": [
+    {
+      "id": "p1-0",
+      "title": "開案 + project.json 填寫",
+      "status": "done",
+      "track": "phase-1",
+      "done_condition": "project.json goals/risks/success_criteria/decisions 已填寫，非 placeholder",
+      "completed_date": "2026-05-24"
+    },
+    {
+      "id": "p1-1",
+      "title": "SR-01 起稿：大腦搬家（GD → Git）",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "brain-migration-gd-to-git.md 完成，符合 CONTENT-PLAN.md 格式規範 + 固定骨架 + 脫敏",
+      "note": "素材：ADR-001、HC 分析紀錄。與 workspace-as-repo 是不同事件，不重疊"
+    },
+    {
+      "id": "p1-2",
+      "title": "SR-01 發佈 + 驗證受眾反應",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "文章上線 notyet.md，收集至少一週的反應數據",
+      "note": "驗證假說：系統存活報告角度是否引發共鳴"
+    },
+    {
+      "id": "p1-3",
+      "title": "SR-05 起稿：一個人用兩個 AI",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "two-agents-one-human.md 完成，符合格式規範",
+      "note": "素材：ARCHITECTURE.md agent 表、CORE.md 邊界表、identity/"
+    },
+    {
+      "id": "p1-4",
+      "title": "SR-02 起稿：CLAUDE.md 同步三代記",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "claude-md-sync-three-generations.md 完成",
+      "note": "素材：CLAUDE.md 同步規則段落、廢棄 launchd plist"
+    },
+    {
+      "id": "p1-5",
+      "title": "SR-03 起稿：AI 的記憶會腐爛",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "memory-decay-and-janitor.md 完成。切角度：衰減與 janitor，不重複 memory-three-layers",
+      "note": "素材：ARCHITECTURE.md 記憶段落、memory-janitor 腳本"
+    },
+    {
+      "id": "p1-6",
+      "title": "SR-04 起稿：Heartbeat 瘦身記",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "heartbeat-diet.md 完成",
+      "note": "素材：ARCHITECTURE.md heartbeat 段落"
+    },
+    {
+      "id": "p1-verify",
+      "title": "Phase 1 驗收：第一梯 4 篇上線 + 受眾信號評估",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "4 篇文章在 notyet.md 上線，格式統一，受眾反應數據足以決定 Phase 2 方向"
+    },
+    {
+      "id": "p2-1",
+      "title": "SR-06 起稿：20 個 Cron Job 的存活率",
+      "status": "todo",
+      "track": "phase-2",
+      "done_condition": "cron-jobs-survival-rate.md 完成",
+      "note": "素材：ARCHITECTURE.md 排程表、cron 防護架構"
+    },
+    {
+      "id": "p2-2",
+      "title": "SR-07 起稿：116 張思考卡",
+      "status": "todo",
+      "track": "phase-2",
+      "done_condition": "thinking-cards-as-router.md 完成",
+      "note": "素材：HC 知識庫、hc-registry.md"
+    },
+    {
+      "id": "p2-3",
+      "title": "SR-08 起稿：38 個 Skill 哪些天天用",
+      "status": "todo",
+      "track": "phase-2",
+      "done_condition": "skills-usage-audit.md 完成",
+      "note": "素材：skills/、SKILLS-INDEX.md、archive/"
+    },
+    {
+      "id": "p2-verify",
+      "title": "Phase 2 驗收：第二梯上線 + 產品化方向評估",
+      "status": "todo",
+      "track": "phase-2",
+      "done_condition": "第二梯文章上線，從累積反應中辨識可產品化方向"
+    },
+    {
+      "id": "p3-1",
+      "title": "SR-09 起稿：我砍掉的自動化",
+      "status": "todo",
+      "track": "phase-3",
+      "done_condition": "killed-automations.md 完成",
+      "note": "素材：CLAUDE.md 歷史段落、scripts/_deprecated/"
+    },
+    {
+      "id": "p3-2",
+      "title": "SR-10 起稿：每份文件一個家",
+      "status": "todo",
+      "track": "phase-3",
+      "done_condition": "one-file-one-home.md 完成",
+      "note": "素材：CORE.md 路徑規範、commit 路徑檢查 hook"
+    },
+    {
+      "id": "p3-verify",
+      "title": "Phase 3 驗收：系列完結 + 品牌定位落地評估",
+      "status": "todo",
+      "track": "phase-3",
+      "done_condition": "10 篇全部上線，品牌定位語確定，產品化方向有初步結論"
+    }
+  ]
+}

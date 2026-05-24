@@ -1,0 +1,90 @@
+{
+  "name": "系統存活報告",
+  "description": "設計師的 AI 工作系統田野報告——哪些活下來、哪些死了、為什麼",
+  "type": "internal",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-05-24",
+  "estimated_completion": "TBD",
+  "tracks": {
+    "phase-1": "驗證與第一梯（重生類 4 篇）",
+    "phase-2": "第二梯（活類 4 篇）",
+    "phase-3": "第三梯（死類 + 設計原則 2 篇）"
+  },
+  "goals": [
+    "發佈第一篇試水溫文章，驗證「系統存活報告」角度是否引發受眾共鳴",
+    "完成第一梯 4 篇重生類文章（SR-01 ~ SR-04），建立系列辨識度",
+    "透過系列內容建立「設計師 × AI 系統建構者」的品牌定位",
+    "從內容反應中辨識可產品化的方向（模板、框架、顧問服務）"
+  ],
+  "risks": [
+    {
+      "risk": "受眾定義太寬——「需要產品的人或公司」涵蓋太廣，可能無法精準觸達",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "第一篇發佈後看誰回應，用數據收斂受眾輪廓"
+    },
+    {
+      "risk": "素材脫敏困難——實際系統含路徑、設定、內部流程，公開需要改寫",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "每篇發佈前走 CONTENT-PLAN.md 脫敏規則（無 API key、無客戶全名、無個資）"
+    },
+    {
+      "risk": "寫作語氣偏移——系統類內容容易掉進教科書口吻",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "嚴格遵守 notyet.md 風格 C + AI 味偵測 + 禁用詞清單"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "SR-01 發佈且收到至少 3 則非社交性質的回應（提問、討論、轉發）",
+      "verify_cmd": "手動檢查發佈平台互動數據",
+      "expected": "回應中出現「我也想知道」「怎麼做到的」類需求信號"
+    },
+    {
+      "criterion": "第一梯 4 篇全部發佈，在 notyet.md 上線",
+      "verify_cmd": "ls src/content/blog/zh/brain-migration-gd-to-git.md claude-md-sync-three-generations.md memory-decay-and-janitor.md heartbeat-diet.md",
+      "expected": "4 個檔案都存在且有 pubDate"
+    },
+    {
+      "criterion": "系列有統一的骨架格式和視覺辨識（固定結構 + 封面圖風格）",
+      "verify_cmd": "人工比對每篇的 H2 結構是否符合固定骨架",
+      "expected": "每篇都有：當初為什麼建 / 實際用了之後 / 活死重生原因 / 如果重來"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "差異化角度選擇",
+      "decision": "採用「系統存活報告」角度——不教怎麼建，只講用了三個月後什麼活下來、什麼死了",
+      "reason": "SIFT 分析中 Twist 階段產出的 Un-version：市面知識管理內容幾乎都是「教你怎麼設定」，「建完後怎麼用」是內容空白。命名為「系統存活報告」讓角度可傳播。",
+      "alternatives_rejected": [
+        "教學型內容（Notion 模板教學）→ 紅海，無差異化",
+        "工具評測 → 不是 Vincent 的強項，也不連結到品牌",
+        "純技術文件 → 受眾太窄，不支撐品牌目的"
+      ],
+      "hc_used": ["#sift", "#contrarian", "#gapAnalysis"]
+    },
+    {
+      "topic": "系列結構與發佈策略",
+      "decision": "分三梯發佈：重生類（故事性最強）→ 活類（建立可信度）→ 死類（深化洞察），每篇固定骨架",
+      "reason": "#utility 分析：重生類故事性最高、寫作成本最低（有現成 ADR 和文件），適合開場驗證。固定骨架讓系列有辨識度，也降低每篇的起稿成本。",
+      "alternatives_rejected": [
+        "按時間順序發佈 → 早期系統太簡單，故事性不足",
+        "不分梯次隨機發 → 無法系統性驗證受眾反應"
+      ],
+      "hc_used": ["#utility", "#organization", "#audience"]
+    },
+    {
+      "topic": "目的與受眾定義",
+      "decision": "目的：品牌 + 產品。受眾：需要產品的人或公司。",
+      "reason": "#rightProblem 指出原始行動清單跳過了目的層和受眾層。補回後確認差異化不在設計能力，而在「設計師 × AI 系統建構者」交集。受眾暫定寬泛，用第一篇數據收斂。",
+      "alternatives_rejected": [
+        "純品牌（不考慮產品化）→ 缺商業目標",
+        "先定義細分受眾再寫 → 沒有數據支撐，不如先發佈再收斂"
+      ],
+      "hc_used": ["#rightProblem", "#hypothesisDriven", "#audience"]
+    }
+  ]
+}

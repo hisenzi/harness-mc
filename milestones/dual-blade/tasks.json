@@ -67,7 +67,7 @@
       "title": "M4 MBA-2 跑 SOP 完成切換",
       "status": "blocked",
       "track": "migration",
-      "note": "200_Reference/MBA-2-migration-sop-260513.md 已寫好待 MBA-2 執行"
+      "note": "000_Agent/docs/dual-blade/MBA-2-migration-sop-260524.md（5/24 驗證更新至 9 步）待 MBA-2 執行"
     },
     {
       "id": "migration-verify-mba1",
@@ -302,6 +302,26 @@
       ],
       "summary": "四大支柱重構為能力層（Memory+Tools）＋紀律層（Planning+Evaluation）。ARCHITECTURE.md §九新增雙層視角，cc-claude-md.md 加 Planning 鐵律，新建 planning-preflight skill（HC 條件觸發閘門）",
       "note": "auto-task：HC 分析 #rightProblem + #levelsOfAnalysis + #breakItDown + #abstraction。起因：HiBlocks 開案事實錯誤教訓"
+    },
+    {
+      "id": "sop-verification-260524",
+      "title": "MBA-2 SOP 驗證修正 + pending-tasks 合併",
+      "status": "done",
+      "track": "migration",
+      "completed_at": "2026-05-24",
+      "commits": ["da773fc"],
+      "summary": "驗證 MBA-2-migration-sop-260513.md 發現 5 處過時（$COLLAB 定義缺失、路徑硬編碼、MEMORY.md 位置錯、repo 清單不全、過時清單未標狀態）。修正後合併 pending-tasks 為 Steps 8-9，檔名改 260524",
+      "note": "MBA-2-pending-tasks.md 建後發現與 SOP 重疊，合併後刪除。SOP 從 7 步擴展到 9 步 + downstream unlocks"
+    },
+    {
+      "id": "dual-blade-timeline",
+      "title": "雙刀流帶狀專案紀錄建立",
+      "status": "done",
+      "track": "knowledge",
+      "completed_at": "2026-05-24",
+      "commits": ["da773fc"],
+      "summary": "建立 000_Agent/docs/dual-blade-timeline.md — 6 Phase 完整演化脈絡（4/11→5/24），36+ 檔案按狀態分類索引，26 git commits，30 MC tasks 快照，瓶頸分析（M4），待辦三層分類",
+      "note": "HC #rightProblem + #breakItDown 分析後建立。用途：散落 50+ 檔案的統一入口，過程本身是知識資產"
     }
   ]
 }

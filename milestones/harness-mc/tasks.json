@@ -236,6 +236,36 @@
       "status": "todo",
       "track": "infra",
       "note": "commit message 格式：[task:brain-migration-m1]。寫 script 從 git log 反查 task 完成狀態，自動填入 commits 欄位。目前手動 ROI 足夠，規模變大時再啟動"
+    },
+    {
+      "id": "dat-status-type-normalize",
+      "title": "task status 正規化 + project type 重分類",
+      "status": "done",
+      "track": "data",
+      "completed_at": "2026-05-19",
+      "commits": ["3ff9224"],
+      "summary": "task status 統一為 5 種值（done/todo/in_progress/blocked/deferred），project type 改為 service/knowledge/system。新增 exam-prep-6yr、wealth-system milestone",
+      "note": "auto-task：commit 時無對應 task，自動建立"
+    },
+    {
+      "id": "projects-card-filter-rebuild",
+      "title": "專案頁卡片高度對齊 + type filter 重構",
+      "status": "done",
+      "track": "phase-1",
+      "completed_at": "2026-05-19",
+      "commits": ["1556b1e"],
+      "summary": "卡片標題固定兩行高、StatusDot 取代 emoji、filter 改 service/knowledge/system/completed、ProgressBar 分類上色、移除目前清空區塊",
+      "note": "auto-task：commit 時無對應 task，自動建立"
+    },
+    {
+      "id": "config-launch-newproject",
+      "title": "launch.json 改 npx next dev + new-project.py 路徑遷移",
+      "status": "done",
+      "track": "infra",
+      "completed_at": "2026-05-19",
+      "commits": ["e36d5e2"],
+      "summary": "launch.json 改用 npx next dev，new-project.py 路徑從 ~/.openclaw/ 遷移至 Claude_協作/",
+      "note": "auto-task：commit 時無對應 task，自動建立"
     }
   ]
 }

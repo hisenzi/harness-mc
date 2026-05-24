@@ -186,6 +186,16 @@
       "title": "月報摘要推送 Telegram（每月消費分類統計）",
       "status": "backlog",
       "track": "future"
+    },
+    {
+      "id": "data-refresh-apr-may",
+      "title": "April 資料從 Notion 重新 dump + 新增 May",
+      "status": "done",
+      "track": "migrate",
+      "completed_at": "2026-05-24",
+      "commits": ["1cf3a7a"],
+      "summary": "April 原為 4/18 mid-month snapshot (74 筆/$20,642)，重新 dump 為完整凍結月 (124 筆/$54,934)。新增 May (109 筆/$55,530)",
+      "note": "auto-task：commit 時無對應 task，自動建立"
     }
   ]
 }

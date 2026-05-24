@@ -85,6 +85,16 @@
       "status": "todo",
       "track": "phase-3",
       "done_condition": "17 分類的說明文件或筆記建立，含代表字型與特徵"
+    },
+    {
+      "id": "font-scan-count-fix",
+      "title": "字型掃描計數修正 + p3-1 Notion 整合完成",
+      "status": "done",
+      "track": "infrastructure",
+      "completed_at": "2026-05-24",
+      "commits": ["8a64dff"],
+      "summary": "掃描結果修正為 20 installed/29 local/2 downloadable/46 adobe/23 commercial。p3-1 完成：120 筆寫入 Notion 字體主資料庫，分類系統 7→17 類",
+      "note": "auto-task：commit 時無對應 task，自動建立"
     }
   ]
 }

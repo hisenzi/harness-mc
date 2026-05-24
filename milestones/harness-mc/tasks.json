@@ -276,6 +276,16 @@
       "commits": ["5c90622"],
       "summary": "學習進度詳細頁、首頁 LearningCard、generate-data 拆分 learning.json、Notion 課程同步腳本、新增 fontcard-120 / notion-finance / self-learning milestone",
       "note": "auto-task：commit 時無對應 task，自動建立"
+    },
+    {
+      "id": "backfill-learning-auto-task",
+      "title": "補回填 learning-page auto-task（5c90622 遺漏 Step 7）",
+      "status": "done",
+      "track": "infra",
+      "completed_at": "2026-05-24",
+      "commits": ["bec1d7a"],
+      "summary": "前 session commit 5c90622 漏做 Step 7 auto-task 回填，本次補上",
+      "note": "auto-task：commit 時無對應 task，自動建立"
     }
   ]
 }

@@ -266,6 +266,16 @@
       "commits": ["e36d5e2"],
       "summary": "launch.json 改用 npx next dev，new-project.py 路徑從 ~/.openclaw/ 遷移至 Claude_協作/",
       "note": "auto-task：commit 時無對應 task，自動建立"
+    },
+    {
+      "id": "learning-page-and-milestones",
+      "title": "學習頁 + 首頁卡片 + Notion sync 腳本 + 3 新 milestone",
+      "status": "done",
+      "track": "phase-1",
+      "completed_at": "2026-05-24",
+      "commits": ["5c90622"],
+      "summary": "學習進度詳細頁、首頁 LearningCard、generate-data 拆分 learning.json、Notion 課程同步腳本、新增 fontcard-120 / notion-finance / self-learning milestone",
+      "note": "auto-task：commit 時無對應 task，自動建立"
     }
   ]
 }

@@ -1,0 +1,137 @@
+{
+  "name": "思考健身房 Thinking Gym",
+  "description": "HC 驅動的思考技能練習系統：情境驅動、做中學、思考重播、AI 助教 + 人類教練模式。用密涅瓦 HC 框架為國中/高中/大人提供結構化思考練習。",
+  "type": "standalone",
+  "status": "active",
+  "priority": "high",
+  "owner": "Vincent",
+  "created": "2026-05-26",
+  "estimated_completion": "TBD",
+  "tags": ["education", "hc-framework", "thinking-skills", "ai-tutor"],
+  "data_sources": {
+    "HC 知識庫": "notyet-harness/300_Obsidian_brain/HC/",
+    "HC 路由表": "notyet-harness/300_Obsidian_brain/HC/_index/hc-registry.md",
+    "HC 組合模板": "notyet-harness/300_Obsidian_brain/HC/_combos/",
+    "六年一貫系統": "harness-mc/milestones/exam-prep-6yr/"
+  },
+  "related_projects": {
+    "exam-prep-6yr": {
+      "relation": "module-sharing",
+      "shared": ["tracker (NSG v2.0)", "broadcaster.py", "HC 知識庫"],
+      "independent": ["核心循環", "情境卡庫", "思考重播引擎"]
+    }
+  },
+  "tracks": {
+    "validation": "Phase 0 假說驗證（30 天 pilot，不建系統）",
+    "content": "內容層：情境卡 + HC Agent Prompt + 操作手冊適配",
+    "system": "系統層：Web App（BYOK Agent + 進度追蹤）",
+    "strategy": "策略層：學習路徑 + 受眾適配 + 動機設計"
+  },
+  "goals": [
+    "驗證 3 個核心假說（H-A 思考品質提升、H-B AI 回饋價值、H-C 自主留存率）",
+    "建立 HC Agent System Prompt（路由表 + 操作手冊 + 思考重播指令 + 受眾適配規則）",
+    "建立 Phase 0 情境卡庫（6 核心 HC × 5 題 = 30 道，國中版優先）",
+    "完成 30 天 pilot（3 人 × 3 種動機條件），產出留存率 + pre/post 思考品質數據",
+    "Phase 1：BYOK Web App（登入 + 每日一思 + 思考重播 + 進度追蹤）"
+  ],
+  "risks": [
+    {
+      "risk": "HC 微練習不能遷移到真實場景（Duolingo 效應：會做練習但不會實戰）",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "Phase 0 pilot 的 Day 31 用全新情境題測遷移能力（不提示 HC）。失敗 → 重新設計核心循環"
+    },
+    {
+      "risk": "AI 回饋品質不足，學習者學會塞關鍵字而非真正改善思考（Goodhart's Law）",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "Phase 0 同時收集 AI 回饋 vs Vincent 人工回饋的效果對比。AI 遠不如人 → 定位從 AI 教練改為人類教練的 AI 助手"
+    },
+    {
+      "risk": "無外部壓力時留存率 < 20%，產品模式不成立",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "Phase 0 測試三種動機條件（自主/提醒/群組）。群組必要 → 社會層是核心功能不是附加。全部失敗 → 轉 B2B（學校/企業）"
+    },
+    {
+      "risk": "Vincent 一人同時建內容 + 建系統 + 找 pilot 人選，產能瓶頸",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "Phase 0 完全不建系統（LINE 群 + Claude + Sheet），只驗證假說。Phase 1 才建系統"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "H-A 通過：30 天 pilot 後，學習者在全新情境題中自發使用的 HC 步驟數增加 50%+",
+      "verify_cmd": "Vincent 人工比對 Day 1 vs Day 31 作答",
+      "expected": "HC 步驟數 Day 31 >= Day 1 × 1.5"
+    },
+    {
+      "criterion": "H-B 通過：AI 標注漏掉的 HC 步驟後，下一題同類問題該步驟出現率 > 60%",
+      "verify_cmd": "追蹤每人每題的 HC 步驟命中率",
+      "expected": "被標注的漏步驟在後續出現率 > 60%"
+    },
+    {
+      "criterion": "H-C 通過：群組模式 30 天留存率 > 67%（20/30 天完成練習）",
+      "verify_cmd": "Google Sheet 打卡紀錄",
+      "expected": "至少 1 種動機條件下留存率 > 67%"
+    },
+    {
+      "criterion": "HC Agent Prompt 品質：情境生成 + 思考重播在 3 個受眾都能產出合格輸出",
+      "verify_cmd": "Vincent 人工審核 Agent 輸出品質（每受眾抽 5 題）",
+      "expected": "合格率 > 80%"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "核心學習模式",
+      "decision": "思考健身房（Thinking Gym）：做中學 + 思考重播 + 漸進練習，不是傳統課程或 AI 家教",
+      "reason": "HC 是操作技能（habit）不是知識。用 #sift 分析後發現，學習模式應對標棋/醫學/武術的技能訓練（大量重複 × 變化情境 × 即時回饋 × 漸進難度），不是 Coursera 式的影片+測驗",
+      "alternatives_rejected": [
+        "傳統線上課程（影片+測驗+證書）→ 排除：HC 不是知識，上課模式教不會騎腳踏車",
+        "純 AI Agent 家教 → 排除：AI 只能做結構標注不能做品質判斷，需要人類教練",
+        "純 Claude Project/Custom GPT 發佈 → 排除：無進度追蹤、無社會互動層"
+      ],
+      "hc_used": ["#sift", "#analogies", "#contrarian", "#rightProblem"]
+    },
+    {
+      "topic": "AI 的角色定位",
+      "decision": "AI 是助教（標注 + 出題），人類是教練（帶反思 + 抓盲點）",
+      "reason": "#confirmationBias 驗證發現 AI 回饋的品質假設只有 C 級證據。#contrarian 翻轉顯示醫學 PBL 的核心不是教材而是有經驗的主治醫師。AI 教練 → AI 助教是風險降級的正確方向",
+      "alternatives_rejected": [
+        "AI 當主教練 → 排除：AI 無法判斷思考品質，只能做結構檢查。可能觸發 Goodhart's Law"
+      ],
+      "hc_used": ["#confirmationBias", "#contrarian", "#evidenceBased", "#analogies"]
+    },
+    {
+      "topic": "Phase 0 策略",
+      "decision": "先驗證假說再建系統。Phase 0 用 LINE 群 + Claude + Sheet 跑 30 天 pilot，不寫任何程式碼",
+      "reason": "#hypothesisDriven 提取出 3 個核心假說（微練習遷移、AI 回饋價值、自主留存），全部只有 C-D 級證據。#evidenceBased 判斷在沒有 B 級以上證據前不應投入開發資源",
+      "alternatives_rejected": [
+        "直接建 Web App → 排除：7 個核心假設中 0 個有 B 級以上證據，建了可能白費",
+        "跳過驗證上線 → 排除：三個致命風險未解除就開發，違反 #evidenceBased"
+      ],
+      "hc_used": ["#hypothesisDriven", "#evidenceBased", "#constraints"]
+    },
+    {
+      "topic": "受眾優先序",
+      "decision": "Phase 0 先做國中版。因為韓中梅竹東高中課程已驗證做中學 HC 對國中/高中有效，且與 exam-prep-6yr 受眾重疊最大",
+      "reason": "#audience 分析三受眾後，國中有最多現成驗證（韓中梅 500 專題）且情境卡最容易設計（生活具象）。大人付費意願高但 HC 教育市場需求未驗證（#evidenceBased E 級）",
+      "alternatives_rejected": [
+        "先做大人版 → 排除：付費意願高但 HC 學習需求未驗證，風險更大",
+        "三個受眾同時做 → 排除：#constraints 人力約束，Vincent 一人無法同時建 3 套情境卡"
+      ],
+      "hc_used": ["#audience", "#constraints", "#evidenceBased"]
+    },
+    {
+      "topic": "與六年一貫系統的關係",
+      "decision": "共用平台層（auth/tracker/push），各自擁有內容層和策略層。HC 知識庫是共用資料源",
+      "reason": "#optimization 分析模組共用 ROI，系統層完全可複用（NSG Tracker + broadcaster），但內容和策略邏輯完全不同。#breakItDown 拆解後確認兩個系統的交叉點在 HC 知識庫（exam-prep 用它做策略驗證，thinking-gym 用它做學習內容）",
+      "alternatives_rejected": [
+        "完全獨立系統 → 排除：重複建 auth/tracker 浪費產能",
+        "完全共用（做成 exam-prep 的子功能）→ 排除：學習邏輯完全不同，硬合會增加複雜度"
+      ],
+      "hc_used": ["#optimization", "#breakItDown", "#constraints"]
+    }
+  ]
+}

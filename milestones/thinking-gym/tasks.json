@@ -1,0 +1,260 @@
+{
+  "project_id": "thinking-gym",
+  "last_updated": "2026-05-27",
+  "updated_by": "CC",
+  "phases": [
+    {
+      "id": "phase-0",
+      "name": "Phase 0：假說驗證（不建系統，只驗證）",
+      "status": "todo",
+      "goal": "用 LINE 群 + Claude + Sheet 跑 30 天 pilot，驗證 3 個核心假說",
+      "tracks": ["validation", "content"],
+      "tasks": [
+        {
+          "id": "t0-1",
+          "title": "HC Agent System Prompt v1",
+          "status": "done",
+          "track": "content",
+          "description": "打包 HC 路由表 + 6 核心 HC 操作手冊 + 思考重播指令（含思路分歧比對引導）+ 核心循環 5 步驟 + 國中受眾適配規則 + 反模式護欄。輸出：一份可貼入 Claude Project / Custom GPT 的 system prompt。SIFT 洞見：學習重心在「專家對照」步驟的分歧比對，不只是 AI 缺失標注。",
+          "depends_on": [],
+          "data": [
+            "notyet-harness/300_Obsidian_brain/HC/_index/hc-registry.md",
+            "notyet-harness/300_Obsidian_brain/HC/critical-thinking-批判思考/analyzing-problems-分析問題/001-right-problem-問對問題.md",
+            "notyet-harness/300_Obsidian_brain/HC/critical-thinking-批判思考/analyzing-problems-分析問題/002-break-it-down-拆解問題.md",
+            "notyet-harness/300_Obsidian_brain/HC/critical-thinking-批判思考/analyzing-inferences-分析推論/005-confirmation-bias-確認偏誤.md",
+            "notyet-harness/300_Obsidian_brain/HC/critical-thinking-批判思考/analyzing-inferences-分析推論/007-multiple-causes-多重因果.md",
+            "notyet-harness/300_Obsidian_brain/HC/creative-thinking-創意思考/solving-problems-解決問題/003-constraints-限制條件求解.md",
+            "notyet-harness/300_Obsidian_brain/HC/_custom/026-evidence-based-證據基礎思考.md"
+          ],
+          "done_condition": "prompt 貼入 Claude Project 後，能對國中生出情境題 + 做思考重播（HC 標注 + 思路分歧比對引導）+ 輸出專家對照，Vincent 人工審核合格"
+        },
+        {
+          "id": "t0-2",
+          "title": "Phase 0 情境卡庫（30 道，國中版）",
+          "status": "todo",
+          "track": "content",
+          "description": "6 核心 HC × 5 道情境題 = 30 道。每道含：情境描述（200 字以內，國中生活場景）、預期觸發的 HC、專家思路路徑（含關鍵分岔點標記，不只是最終答案，而是推理過程中每個轉彎及理由）。情境來源：班級/社團/社群/家庭/時事。",
+          "depends_on": ["t0-1"],
+          "done_condition": "30 道情境卡建立完成，每道有情境+觸發 HC+專家思路路徑（含分岔點），Vincent 審核語言層級適合國中"
+        },
+        {
+          "id": "t0-3",
+          "title": "Pre-test 題目設計（Day 1 基準測試）",
+          "status": "todo",
+          "track": "validation",
+          "description": "設計 3 道全新情境題（不屬於 30 道練習題庫），用於 Day 1 pre-test 和 Day 31 post-test 的 B 卷。要求：不提示任何 HC、讓學習者自由作答、可比對分析品質。每題預先定義「理想作答應包含的 HC 步驟」作為評分基準。",
+          "depends_on": [],
+          "done_condition": "3 道 pre-test 題 + 3 道 post-test 題 + 各題 HC 步驟評分基準完成"
+        },
+        {
+          "id": "t0-4",
+          "title": "招募 3 名 pilot 參與者",
+          "status": "todo",
+          "track": "validation",
+          "description": "找 3 名國中生（或準國中生），分配到三種動機條件：(A) 完全自主（無提醒）、(B) LINE 每日提醒、(C) 小群組（互相看到對方進度）。需取得家長同意。",
+          "depends_on": [],
+          "done_condition": "3 人確認參加 + 分組完成 + 家長同意"
+        },
+        {
+          "id": "t0-5",
+          "title": "Pilot 基礎設施建置",
+          "status": "todo",
+          "track": "validation",
+          "description": "建立三個元件，不寫程式碼：(1) Google Sheet — 依 docs/phase0-data-framework.md 的欄位設計建表，Tier 1 必追蹤（步驟命中率、完成Y/N、標注修復率）+ Tier 2 建議追蹤（HC 學習速度、AI vs 人工差異、流失天數、字數趨勢）(2) LINE 群或 Telegram 頻道（發題 + 提醒）(3) Claude Project（HC Agent prompt v1）。",
+          "depends_on": ["t0-1"],
+          "data": ["thinking-gym/docs/phase0-data-framework.md"],
+          "done_condition": "Sheet 按 data framework 建好 + 發題頻道建好 + Claude Project 建好，乾跑一次流程確認暢通"
+        },
+        {
+          "id": "t0-6",
+          "title": "Day 1 Pre-test 施測",
+          "status": "todo",
+          "track": "validation",
+          "description": "3 名參與者各做 3 道 pre-test 題（不提示 HC、自由作答）。收集作答文字。Vincent 用預定義評分基準標注每人的 HC 步驟使用數。",
+          "depends_on": ["t0-3", "t0-4", "t0-5"],
+          "done_condition": "3 人 × 3 題 = 9 份作答 + 9 份 HC 步驟標注完成"
+        },
+        {
+          "id": "t0-7",
+          "title": "30 天每日練習執行",
+          "status": "todo",
+          "track": "validation",
+          "description": "每天發 1 道情境題（從 30 題庫輪發）。學習者作答 → AI 思考重播（HC 標注 + 思路分歧比對：引導學習者比對自己的思路和專家思路的分岔點）→ 專家對照。記錄：每人每天是否完成、作答內容、AI 回饋內容、學習者分歧比對的品質。Day 15 加入 Vincent 人工回饋（每人 5 分鐘），比較 AI vs 人工回饋效果。",
+          "depends_on": ["t0-2", "t0-6"],
+          "done_condition": "30 天全部發題完畢，作答和回饋記錄齊全"
+        },
+        {
+          "id": "t0-8",
+          "title": "Day 31 Post-test 施測",
+          "status": "todo",
+          "track": "validation",
+          "description": "3 名參與者做 3 道 post-test 題（全新題目、不提示 HC）。Vincent 用同一評分基準標注 HC 步驟使用數。與 Day 1 pre-test 比較。",
+          "depends_on": ["t0-7"],
+          "done_condition": "3 人 × 3 題 = 9 份作答 + 9 份 HC 步驟標注完成"
+        },
+        {
+          "id": "t0-9",
+          "title": "Phase 0 數據分析與決策",
+          "status": "todo",
+          "track": "validation",
+          "description": "分析三個假說：\nH-A：比較 pre/post HC 步驟數（目標 +50%）\nH-B：AI 回饋後 vs 人工回饋後的步驟改善率\nH-C：三種動機條件的留存率（目標 >67%）\n產出判斷：哪些假說通過、哪些失敗、Phase 1 是否啟動、設計是否需要修正。",
+          "depends_on": ["t0-8"],
+          "done_condition": "三個假說各有明確判定（通過/部分/失敗）+ Phase 1 Go/No-Go 決策 + 修正方向文件"
+        },
+        {
+          "id": "t0-10",
+          "title": "Phase 0 結束訪談 + 動機問卷設計",
+          "status": "todo",
+          "track": "validation",
+          "description": "設計 Day 31 質性訪談題綱（為什麼繼續/放棄、最喜歡/最討厭的環節、複習需求）+ Octalysis 8 核心驅動力歸類框架。訪談結果編碼後作為 Phase 0.5 問卷設計和 Phase 1 動機設計的輸入。",
+          "depends_on": ["t0-8"],
+          "done_condition": "訪談題綱 + Octalysis 歸類框架完成，3 人訪談完成並編碼"
+        }
+      ]
+    },
+    {
+      "id": "phase-05",
+      "name": "Phase 0.5：擴大驗證 + 設計決策",
+      "status": "blocked",
+      "goal": "10-15 人 × 2 週，收集動機偏好、學習路徑偏好、回饋格式偏好等設計決策數據",
+      "depends_on": ["phase-0"],
+      "note": "Phase 0 至少 2 個假說通過才啟動。仍用 LINE + Claude + Sheet，不建系統",
+      "tracks": ["validation", "strategy"],
+      "tasks": [
+        {
+          "id": "t05-1",
+          "title": "擴大招募 10-15 名參與者",
+          "status": "blocked",
+          "track": "validation",
+          "description": "從 Phase 0 的 3 人擴大到 10-15 人。混合國中/高中/大人受眾（各 3-5 人）。含家長同意（國高中生）。目的：取得足夠樣本做 A/B 比較。",
+          "depends_on": ["t0-9"]
+        },
+        {
+          "id": "t05-2",
+          "title": "2 週 A/B 測試執行",
+          "status": "blocked",
+          "track": "validation",
+          "description": "測試項目：(1) 選題偏好：自選 3 題 vs 系統推薦 1 題，比較完成率 (2) 回饋格式：純 HC 缺失標注 vs 缺失標注+思路分歧比對，比較下一題改善幅度 (3) 提醒時段：隨機分配不同推送時間，找最佳時段 (4) Octalysis 問卷：8 核心驅動力偏好排序。",
+          "depends_on": ["t05-1"]
+        },
+        {
+          "id": "t05-3",
+          "title": "Phase 0.5 數據分析 + Phase 1 設計決策",
+          "status": "blocked",
+          "track": "strategy",
+          "description": "統整 Phase 0 + 0.5 全部數據，產出 Phase 1 設計決策文件：(1) Octalysis 驅動力排序 → 動機設計重點 (2) 選題偏好 → 學習路徑是推薦制還是自選制 (3) 回饋格式 → AI 回饋的最佳長度和結構 (4) 複習衰減曲線 → 間隔複習間距 (5) 提醒最佳時段 (6) 三受眾差異分析。",
+          "depends_on": ["t05-2"],
+          "done_condition": "Phase 1 設計決策文件完成，每個決策有用戶數據支撐（至少 C 級證據）"
+        }
+      ]
+    },
+    {
+      "id": "phase-1",
+      "name": "Phase 1：MVP Web App（依 Phase 0 結果調整）",
+      "status": "blocked",
+      "goal": "BYOK Web App + 核心學習循環 + 進度追蹤",
+      "depends_on": ["phase-05"],
+      "note": "Phase 0 H-A 或 H-C 失敗 → Phase 1 設計需大幅修正。H-B 失敗 → AI 角色從教練降為助手。Phase 0 全部失敗 → 轉向或中止。Phase 0.5 數據決定動機設計和學習路徑方向",
+      "tracks": ["system", "content", "strategy"],
+      "tasks": [
+        {
+          "id": "t1-1",
+          "title": "技術棧決定 + 架構設計",
+          "status": "blocked",
+          "track": "system",
+          "description": "根據 Phase 0 + 0.5 結果決定：前端框架（Astro/Next）、BYOK API 整合方式（含 Google Gemini API）、Google OAuth 帳號系統、進度追蹤 DB（Supabase 共用 exam-prep-6yr 或獨立）、部署目標（Zeabur/Vercel）。",
+          "depends_on": ["t05-3"]
+        },
+        {
+          "id": "t1-2",
+          "title": "核心學習循環 UI",
+          "status": "blocked",
+          "track": "system",
+          "description": "5 步驟 UI，重心在 step 3-4 整合：今日一思 → 作答區 → 思考重播（AI 標注 + 思路分歧比對）→ 專家對照（互動式，非被動展示）→ 操作手冊揭曉。含受眾切換（國中/高中/大人語言層級）。"
+        },
+        {
+          "id": "t1-3",
+          "title": "擴展情境卡庫（高中 + 大人版）",
+          "status": "blocked",
+          "track": "content",
+          "description": "在國中版 30 題基礎上，新增高中版 30 題 + 大人版 30 題（同 6 HC，不同情境）。或驗證 AI 即時生成情境的品質是否足夠取代固定題庫。"
+        },
+        {
+          "id": "t1-4",
+          "title": "擴展到李佳達 20 核心 HC",
+          "status": "blocked",
+          "track": "content",
+          "description": "從 6 HC 擴展到 22 priority HC。更新 Agent System Prompt + 補建對應情境卡。"
+        },
+        {
+          "id": "t1-5",
+          "title": "進度追蹤 + HC 雷達圖",
+          "status": "blocked",
+          "track": "system",
+          "description": "記錄每人每次練習的 HC 步驟命中率。以 4 大思考力（批判/創意/溝通/互動）× 子類別呈現雷達圖。複用 exam-prep-6yr 的 tracker 架構。"
+        },
+        {
+          "id": "t1-6",
+          "title": "社會互動層（如果 H-C 顯示群組必要）",
+          "status": "blocked",
+          "track": "strategy",
+          "description": "對打模式（兩人同題互相挑戰）、群組排行榜、streak 機制。Phase 0 H-C 結果決定這是核心功能還是附加功能。"
+        },
+        {
+          "id": "t1-7",
+          "title": "動機設計（基於 Phase 0 + 0.5 數據）",
+          "status": "blocked",
+          "track": "strategy",
+          "description": "根據 Phase 0.5 的 Octalysis 問卷結果和行為數據，設計 Phase 1 的動機機制。重點驅動力（預計：成就感、創意賦權、擁有感、社會影響），排除或謹慎使用的驅動力（稀缺性、損失厭惡）。輸出：動機設計規格文件，指導 UI、通知、獎勵機制的實作。",
+          "depends_on": ["t05-3"]
+        },
+        {
+          "id": "t1-8",
+          "title": "基礎學習路徑（弱項推薦 + 複習提醒）",
+          "status": "blocked",
+          "track": "system",
+          "description": "MVP 版學習路徑：(1) 弱項推薦：雷達圖最低分 HC → 推薦下一題練習 (2) 複習提醒：超過 N 天沒練的 HC → 推送複習（N 由 Phase 0 衰減曲線數據決定）(3) 練習紀錄頁：歷次練習的 HC 標注結果 + 累積教練建議。不做完整間隔重複演算法，Phase 2 再視數據決定。",
+          "depends_on": ["t1-5", "t05-3"]
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "Phase 2：完整系統 + exam-prep 整合",
+      "status": "blocked",
+      "goal": "116 HC 全量 + 多用戶 + 跨系統透鏡",
+      "depends_on": ["phase-1"],
+      "tracks": ["system", "content", "strategy"],
+      "tasks": [
+        {
+          "id": "t2-1",
+          "title": "exam-prep 交叉透鏡",
+          "status": "blocked",
+          "track": "strategy",
+          "description": "exam-prep 學生做完考題後，揭曉「你用了哪些 HC」，可點擊進入 thinking-gym 深入練習。"
+        },
+        {
+          "id": "t2-2",
+          "title": "116 HC 全量瀏覽 + 自由探索",
+          "status": "blocked",
+          "track": "content",
+          "description": "HC 地圖視覺化（4 大能力 × 子類別 × 116 HC）。priority HC 有完整練習，其餘只有手冊瀏覽。"
+        },
+        {
+          "id": "t2-3",
+          "title": "多用戶 + Supabase",
+          "status": "blocked",
+          "track": "system",
+          "description": "擴展 Phase 1 已建立的 Google OAuth，加入 LINE Login + Apple Sign-in。共用 exam-prep-6yr Phase 3 的 Supabase 多用戶架構（users/checkins/reviews + RLS）。"
+        },
+        {
+          "id": "t2-4",
+          "title": "UGC 情境卡（使用者提交）",
+          "status": "blocked",
+          "track": "content",
+          "description": "學習者可提交自己的情境卡供他人練習。審核機制 + 品質評分。"
+        }
+      ]
+    }
+  ]
+}

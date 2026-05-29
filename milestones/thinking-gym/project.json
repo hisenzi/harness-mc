@@ -1,6 +1,6 @@
 {
   "name": "思考健身房 Thinking Gym",
-  "description": "HC 驅動的思考技能練習系統：情境驅動、做中學、思考重播、AI 助教 + 人類教練模式。用密涅瓦 HC 框架為國中/高中/大人提供結構化思考練習。",
+  "description": "網頁式 HC 思考技能練習系統。三拍式陷阱情境（踩坑→揭示→遷移），使用者選生活脈絡、系統交錯分配 HC + 自動調適陷阱深度。密涅瓦 HC 框架為核心，國中/高中/大人三受眾。",
   "type": "standalone",
   "status": "active",
   "priority": "high",
@@ -18,21 +18,21 @@
     "exam-prep-6yr": {
       "relation": "module-sharing",
       "shared": ["tracker (NSG v2.0)", "broadcaster.py", "HC 知識庫"],
-      "independent": ["核心循環", "情境卡庫", "思考重播引擎"]
+      "independent": ["三拍陷阱互動流程", "陷阱情境庫", "HC 交錯分配引擎"]
     }
   },
   "tracks": {
-    "validation": "Phase 0 假說驗證（30 天 pilot，不建系統）",
-    "content": "內容層：情境卡 + HC Agent Prompt + 操作手冊適配",
-    "system": "系統層：Web App（BYOK Agent + 進度追蹤）",
+    "content": "內容層：三拍式陷阱情境庫 + HC Agent Prompt",
+    "system": "系統層：Web App（三拍互動 + 紀錄 + 交錯分配 + 深度調適）",
+    "validation": "驗證層：pilot 招募 + pre/post test + 數據分析",
     "strategy": "策略層：學習路徑 + 受眾適配 + 動機設計"
   },
   "goals": [
-    "驗證 3 個核心假說（H-A 思考品質提升、H-B AI 回饋價值、H-C 自主留存率）",
-    "建立 HC Agent System Prompt（路由表 + 操作手冊 + 思考重播指令 + 受眾適配規則）",
-    "建立 Phase 0 情境卡庫（6 核心 HC × 5 題 = 30 道，國中版優先）",
-    "完成 30 天 pilot（3 人 × 3 種動機條件），產出留存率 + pre/post 思考品質數據",
-    "Phase 1：BYOK Web App（登入 + 每日一思 + 思考重播 + 進度追蹤）"
+    "Phase 0：雙模式 MVP（三拍陷阱練習 + /ask 即時問題），驗證 3 核心假說（H-A 遷移、H-B AI 回饋、H-C 留存）",
+    "架構：BYOK（Google AI）+ Supabase 追蹤 + 白名單 Gmail 登入 + 管理後台",
+    "三拍式陷阱情境庫（6 HC × 5 組 = 30 組，國中脈絡優先）",
+    "完成 30 天 pilot（3-5 人），產出結構化數據（踩坑率 / 揭示理解 / 遷移成功率）",
+    "Phase 1：多 Provider BYOK + 自動調適陷阱深度（Lv1-4）+ 擴展脈絡與受眾 + 進度儀表板"
   ],
   "risks": [
     {
@@ -51,13 +51,13 @@
       "risk": "無外部壓力時留存率 < 20%，產品模式不成立",
       "impact": "high",
       "probability": "high",
-      "mitigation": "Phase 0 測試三種動機條件（自主/提醒/群組）。群組必要 → 社會層是核心功能不是附加。全部失敗 → 轉 B2B（學校/企業）"
+      "mitigation": "Phase 0 測試兩種動機條件（自主 autonomous / 提醒 reminded）。若留存率全低 → 社會層可能是必要功能，Phase 1 再評估群組模式（t1-7）。全部失敗 → 轉 B2B（學校/企業）"
     },
     {
       "risk": "Vincent 一人同時建內容 + 建系統 + 找 pilot 人選，產能瓶頸",
       "impact": "high",
       "probability": "high",
-      "mitigation": "Phase 0 完全不建系統（LINE 群 + Claude + Sheet），只驗證假說。Phase 1 才建系統"
+      "mitigation": "Phase 0 建最小可驗證 MVP（多步驟表單 + Supabase），範圍嚴格限制在驗證假說所需的最小功能（見 product-spec.md §8）。不做自動調適/動機設計/社會層。先建可 demo 系統再招募 pilot（t0-8 依賴 t0-9）"
     }
   ],
   "success_criteria": [
@@ -67,18 +67,18 @@
       "expected": "HC 步驟數 Day 31 >= Day 1 × 1.5"
     },
     {
-      "criterion": "H-B 通過：AI 標注漏掉的 HC 步驟後，下一題同類問題該步驟出現率 > 60%",
-      "verify_cmd": "追蹤每人每題的 HC 步驟命中率",
-      "expected": "被標注的漏步驟在後續出現率 > 60%"
+      "criterion": "H-B 通過：被 AI 揭示（三拍 Beat 2）踩過的坑，下次同 HC 陷阱不再踩中的比率 > 60%",
+      "verify_cmd": "追蹤每人每 HC 的踩坑→揭示→後續是否再踩（annotations 表）+ AI 揭示 vs Day 15 起人工回饋的改善率對比",
+      "expected": "揭示後同 HC 不再踩坑率 > 60%"
     },
     {
-      "criterion": "H-C 通過：群組模式 30 天留存率 > 67%（20/30 天完成練習）",
-      "verify_cmd": "Google Sheet 打卡紀錄",
+      "criterion": "H-C 通過：至少一種動機條件（自主/提醒）30 天留存率 > 67%（20/30 天完成練習）",
+      "verify_cmd": "Supabase sessions 表完成紀錄，按 motivation_group 分組統計",
       "expected": "至少 1 種動機條件下留存率 > 67%"
     },
     {
-      "criterion": "HC Agent Prompt 品質：情境生成 + 思考重播在 3 個受眾都能產出合格輸出",
-      "verify_cmd": "Vincent 人工審核 Agent 輸出品質（每受眾抽 5 題）",
+      "criterion": "HC Agent Prompt 品質：/ask 即時問題模式的 HC 路由拆解 + 思考重播，對國中受眾產出合格輸出",
+      "verify_cmd": "Vincent 人工審核 /ask 輸出品質（抽 10 題真實問題）",
       "expected": "合格率 > 80%"
     }
   ],
@@ -105,13 +105,34 @@
     },
     {
       "topic": "Phase 0 策略",
-      "decision": "先驗證假說再建系統。Phase 0 用 LINE 群 + Claude + Sheet 跑 30 天 pilot，不寫任何程式碼",
-      "reason": "#hypothesisDriven 提取出 3 個核心假說（微練習遷移、AI 回饋價值、自主留存），全部只有 C-D 級證據。#evidenceBased 判斷在沒有 B 級以上證據前不應投入開發資源",
+      "decision": "Phase 0 建 MVP 網頁驗證假說。SIFT 分析後發現三拍式陷阱情境需要結構化紀錄（踩坑率/遷移成功），LINE+Sheet 手動記錄不可行，簡單網頁反而更省力",
+      "reason": "原始決策「不寫 code」是為了避免驗證前過度投入。但 SIFT 後的設計（陷阱→揭示→遷移 三拍 + HC 交錯分配 + 深度調適）需要結構化數據收集，手動記錄反而更耗人力。#constraints 重新評估後，「不寫 code」從硬約束降級為假約束。MVP 網頁本質是多步驟表單+資料庫，開發成本低於 30 天手動記錄",
       "alternatives_rejected": [
-        "直接建 Web App → 排除：7 個核心假設中 0 個有 B 級以上證據，建了可能白費",
-        "跳過驗證上線 → 排除：三個致命風險未解除就開發，違反 #evidenceBased"
+        "LINE 群 + Claude + Sheet → 排除：三拍互動需手動判讀回應品質再回填，30天×5人=450筆，人力成本高於建一個簡單網頁",
+        "跳過驗證直接建完整系統 → 排除：假說仍需驗證，MVP 只建最小可驗證功能"
       ],
-      "hc_used": ["#hypothesisDriven", "#evidenceBased", "#constraints"]
+      "hc_used": ["#sift", "#constraints", "#hypothesisDriven", "#evidenceBased"]
+    },
+    {
+      "topic": "練習格式：陷阱情境取代情境卡",
+      "decision": "採用三拍式陷阱情境（Trap→Reveal→Transfer），取代傳統情境卡問答",
+      "reason": "SIFT 分析發現：情境卡標注目標 HC（🎯 #breakItDown）等於把答案印在題目上。真實場景不會告訴你「現在請用確認偏誤」。陷阱格式讓學習者先暴露慣性思考，再從體感錯誤中認識 HC。交錯練習（interleaving）比分類練習（blocking）的長期遷移效果顯著更好",
+      "alternatives_rejected": [
+        "情境卡 + 標注 HC → 排除：Duolingo 效應——標籤可見時會做，標籤消失就不會",
+        "純問答式 → 排除：缺乏「先犯錯再反思」的學習循環"
+      ],
+      "hc_used": ["#sift", "#confirmationBias", "#analogies", "#audience"]
+    },
+    {
+      "topic": "使用者選脈絡，不選 HC 主題",
+      "decision": "使用者選生活脈絡（校園/打工/社團/人際），系統控制 HC 交錯分配 + 陷阱深度自動調適",
+      "reason": "讓使用者選 HC 主題（批判思考/創意思考）會洩漏陷阱方向，削弱辨識訓練。脈絡選擇提供投入感但不洩漏 HC。自動調適深度（Lv1 單層→Lv2 偽裝→Lv3 多重交互→Lv4 無陷阱校準）比使用者自選難度更精準",
+      "alternatives_rejected": [
+        "使用者選 HC 主題 → 排除：等於告訴學習者陷阱在哪，訓練不到辨識能力",
+        "使用者選難度 → 排除：思考難度取決於陷阱隱蔽度而非內容複雜度，使用者無法自評",
+        "雙模式（探索+精練）→ 排除：SIFT 深挖後發現探索模式已足夠，精練模式可待 Phase 1 再評估"
+      ],
+      "hc_used": ["#sift", "#constraints", "#rightProblem"]
     },
     {
       "topic": "受眾優先序",

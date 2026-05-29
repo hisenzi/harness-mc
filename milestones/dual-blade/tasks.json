@@ -322,6 +322,16 @@
       "commits": ["da773fc"],
       "summary": "建立 000_Agent/docs/dual-blade-timeline.md — 6 Phase 完整演化脈絡（4/11→5/24），36+ 檔案按狀態分類索引，26 git commits，30 MC tasks 快照，瓶頸分析（M4），待辦三層分類",
       "note": "HC #rightProblem + #breakItDown 分析後建立。用途：散落 50+ 檔案的統一入口，過程本身是知識資產"
+    },
+    {
+      "id": "xiao-wei-mood-codex-autogen",
+      "title": "xiao-wei-mood skill 接 Codex 自動生圖 + 專案母題場景",
+      "status": "done",
+      "track": "infrastructure",
+      "completed_at": "2026-05-28",
+      "commits": ["e8a5505"],
+      "summary": "心情圖管線從『輸出 prompt 等人工貼 ChatGPT』改為呼叫 mcp__codex__codex 自動生圖存檔；新增 Step 1.5 專案母題（思考健身房=思維啞鈴）讓場景多變化；修參考圖/存圖路徑 + 改 $COLLAB 合規",
+      "note": "auto-task：commit e8a5505。順修 Codex MCP config（npx→直接 binary /Applications/Codex.app，本機 ~/.claude.json，對端 MBA-2 待套用）"
     }
   ]
 }

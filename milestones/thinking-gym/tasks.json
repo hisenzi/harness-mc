@@ -310,9 +310,9 @@
       "title": "MVP 產品規格定義（product-spec.md）",
       "status": "done",
       "completed_at": "2026-05-28",
+      "commits": ["ed70837"],
       "track": "infrastructure",
-      "summary": "雙軌資料架構（BYOK + Supabase 追蹤）、雙模式（三拍練習 + /ask 即時問題）、13 頁（使用者 7 + 管理 6）、8 張 DB 表、技術棧選型、共用介面定義",
-      "note": "product-spec.md 尚未進 git，commit 後補 commits[]"
+      "summary": "雙軌資料架構（BYOK + Supabase 追蹤）、雙模式（三拍練習 + /ask 即時問題）、13 頁（使用者 7 + 管理 6）、8 張 DB 表、技術棧選型、共用介面定義"
     }
   ]
 }

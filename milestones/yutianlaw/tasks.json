@@ -81,6 +81,16 @@
       "track": "deploy",
       "done_condition": "push → Zeabur import(自動偵測 Astro) → 綁 yutianlaw.com(Cloudflare DNS 灰雲) → SSL → https 訪問回 200",
       "note": "⚠️ WARN：yutianlaw.com 網域/DNS 交接需向客戶確認。依賴 p1-verify。流程見 astro-site-launcher Phase 5"
+    },
+    {
+      "id": "p1-init",
+      "title": "開案：project-init 建立 yutianlaw milestone",
+      "status": "done",
+      "track": "infrastructure",
+      "completed_at": "2026-05-30",
+      "commits": ["5d3bec3"],
+      "summary": "經 HC 分析開案，建 project.json(4 decisions)+9 tasks，登錄 repos.json/ARCHITECTURE",
+      "note": "auto-task：開案 commit 無對應既有 task"
     }
   ]
 }

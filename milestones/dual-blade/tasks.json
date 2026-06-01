@@ -332,6 +332,16 @@
       "commits": ["e8a5505"],
       "summary": "心情圖管線從『輸出 prompt 等人工貼 ChatGPT』改為呼叫 mcp__codex__codex 自動生圖存檔；新增 Step 1.5 專案母題（思考健身房=思維啞鈴）讓場景多變化；修參考圖/存圖路徑 + 改 $COLLAB 合規",
       "note": "auto-task：commit e8a5505。順修 Codex MCP config（npx→直接 binary /Applications/Codex.app，本機 ~/.claude.json，對端 MBA-2 待套用）"
+    },
+    {
+      "id": "skill-dual-path-fix",
+      "title": "skill 路徑去 OC 寫死改 CC/OC 雙端偵測（11 skill）",
+      "status": "done",
+      "track": "infrastructure",
+      "completed_at": "2026-05-30",
+      "commits": ["6235f6c"],
+      "summary": "11 skill references/scripts 路徑原寫死 OC 路徑（~/.openclaw/workspace/skills/），CC 透過 symlink 共用同份 skill 但無此路徑致 Step 0 cat rules.md 失敗；改 $S 雙端偵測（先試 ~/.claude/skills，不存在才用 ~/.openclaw/workspace/skills），OC 零影響",
+      "note": "auto-task：commit 6235f6c。security-scan 之前 session 已自行去 OC 路徑未納入；對端 MBA-2 git pull 後需驗證 OC fallback。診斷見 CC memory feedback_skill_dual_path"
     }
   ]
 }

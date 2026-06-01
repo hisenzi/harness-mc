@@ -1,0 +1,86 @@
+{
+  "project": "yutianlaw",
+  "tasks": [
+    {
+      "id": "p1-1",
+      "title": "需求確認與區塊對應矩陣（14 區塊 vs 雨田 5 區段）",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "產出區塊對應矩陣：每個雨田區段標可直接用/需改/需客製；團隊區塊方案與文章列表方案拍板",
+      "note": "Grounding 已驗證 14 區塊 props。關鍵待決：團隊區塊無現成（改裝 HiPortfolioGrid+Detail vs 客製 HiTeam）"
+    },
+    {
+      "id": "p1-2",
+      "title": "HiBlocks 導入 yutianlaw repo",
+      "status": "done",
+      "track": "phase-1",
+      "done_condition": "hiblocks 的 src(layouts/components/styles/scripts)+config 複製進 yutianlaw，npm install 後 npm run build exit 0",
+      "note": "yutianlaw 現為空 repo（僅 README+.gitignore）。不繼承 hiblocks git 史（獨立 repo 決策）",
+      "completed_at": "2026-05-30",
+      "commits": ["5d9f004"],
+      "summary": "HiBlocks 全套導入 yutianlaw repo，npm build 通過、dev server 可跑"
+    },
+    {
+      "id": "p1-3",
+      "title": "雨田品牌替換（astro-site-launcher brand-checklist）",
+      "status": "done",
+      "track": "phase-1",
+      "done_condition": "站名/Logo/meta/OG/favicon/footer/navbar 換成雨田，移除展創模型 demo；grep 無 maxmodel/展創 殘留",
+      "note": "依賴 p1-2。Logo 在 231123_yutianlaw.com_雨田/00_常用已備份/or/雨田LOGO/；checklist 見 astro-site-launcher/references/brand-checklist.md",
+      "completed_at": "2026-05-30",
+      "commits": ["5d9f004"],
+      "summary": "套 theme-yutian（深藏藍#1e2e4f+香檳金+明體），navbar/footer/hero 雨田化，移除展創 demo；真 Logo 圖待 p1-7"
+    },
+    {
+      "id": "p1-4",
+      "title": "首頁核心區段組裝 + 官網最新資料同步",
+      "status": "done",
+      "track": "phase-1",
+      "done_condition": "HiHero+HiAbout+HiFeature+HiCta+HiFooter+HiNavbar 組成首頁；內容已改用官網 2026 最新資料（沉穩辯護文案 / 4 大服務領域 / 8 位律師 / 完整聯絡）",
+      "note": "已完成。資料來源從 docx 升級為官網本體（_temp/yt_googlesite.html 提取）。emoji 已全移除",
+      "completed_at": "2026-05-30",
+      "commits": ["5d9f004"],
+      "summary": "首頁組裝 + 內容同步自雨田官網（沉穩辯護文案/4大服務領域/8位律師/完整聯絡）"
+    },
+    {
+      "id": "p1-5",
+      "title": "專業團隊區段（5 人律師介紹）",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "依 p1-1 拍板方案實作團隊區塊，填 5 人姓名/職稱/學經歷/專業領域/照片，可檢視完整資料",
+      "note": "⚠️ WARN：HiBlocks 無專屬 Team 區塊。資料在 專業團隊.docx（含學經歷/專業領域/承辦案件），照片在 or/。依賴 p1-1 方案 + p1-4"
+    },
+    {
+      "id": "p1-6",
+      "title": "文章系統（news content collection + 列表頁 + 詳情頁）",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "content.config.ts 加 news collection，建列表頁與 [slug] 詳情頁，發 1 篇測試文並正確渲染（代上稿模式 P1）",
+      "note": "依賴 p1-2。複製 portfolio collection 的 zod 模式；P2 才接 Git-based CMS（律師自助）"
+    },
+    {
+      "id": "p1-7",
+      "title": "圖片資源處理（律師照、Logo、favicon、OG image）",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "照片裁切最佳化（webp/avif，YYMMDD_slug 命名）放 src/images 或 public/images，build 引用正常",
+      "note": "依賴 p1-3+p1-5。原圖在 or/（jpg）。⚠️ 雷修瑋所長照片需確認（疑 YA3_25xx）"
+    },
+    {
+      "id": "p1-verify",
+      "title": "Phase 1 驗收整合",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "跑 project.json 全部 success_criteria：build 零錯 + 五區段齊 + 文章系統可運作 + 響應式/SEO；環境異動彙整完成",
+      "note": "前置 p1-1~p1-7 全 done 後執行"
+    },
+    {
+      "id": "p1-deploy",
+      "title": "部署 Zeabur + 網域上線",
+      "status": "todo",
+      "track": "deploy",
+      "done_condition": "push → Zeabur import(自動偵測 Astro) → 綁 yutianlaw.com(Cloudflare DNS 灰雲) → SSL → https 訪問回 200",
+      "note": "⚠️ WARN：yutianlaw.com 網域/DNS 交接需向客戶確認。依賴 p1-verify。流程見 astro-site-launcher Phase 5"
+    }
+  ]
+}

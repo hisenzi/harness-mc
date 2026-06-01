@@ -1,0 +1,103 @@
+{
+  "name": "雨田聯合法律事務所網站",
+  "description": "雨田聯合法律事務所形象官網，HiBlocks/Astro 靜態前台 + 漸進式文章機制",
+  "type": "standalone",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-05-29",
+  "estimated_completion": "2026-06-12",
+  "tracks": {
+    "phase-1": "P1 前台上線",
+    "deploy": "部署"
+  },
+  "goals": [
+    "P1 前台上線：用 HiBlocks 區塊組出雨田形象站（首頁橫幅 + 事務所介紹 + 10 類案件 + 5 人專業團隊 + 聯絡），部署到 Zeabur，2026-06-12 前可公開訪問",
+    "文章機制 P1：以 Astro content collection 建 news/文章系統（代上稿模式），CC 加 markdown 即可發布",
+    "漸進式後台路徑：架構保留 P2（Git-based CMS 律師自助）與 P3（動態功能）演進空間，不換架構、不鎖死",
+    "視覺品質符合律師事務所專業形象與雨田品牌（Logo、『及時雨』文案意象）",
+    "成為 HiBlocks 第一個對外實戰案例（dogfood，回饋區塊庫商業化）"
+  ],
+  "risks": [
+    {
+      "risk": "拖延風險：案子已拖約 1.5 年（231123 起），P1 可能再度延宕",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "鎖定 2 週衝刺、先上線後迭代、P2/P3 明確延後不混入 P1"
+    },
+    {
+      "risk": "HiBlocks 14 區塊不足以覆蓋律師站所需版型",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "P1 第一步盤點 14 區塊對應需求矩陣，缺口才客製或調整"
+    },
+    {
+      "risk": "內容素材不全（律師個人簡介、案件類型細節、聯絡資訊）",
+      "impact": "medium",
+      "probability": "low",
+      "mitigation": "已有文案 docx + 5 人照片 + Logo；缺項列清單向客戶補，不阻擋版型開發"
+    },
+    {
+      "risk": "網域與部署交接：yutianlaw.com 既有網域/信箱與 Zeabur 部署的 DNS 銜接",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "上線前確認網域 DNS 與部署目標（Zeabur 為預設，可改實際主機）"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "前台可公開訪問",
+      "verify_cmd": "curl -s -o /dev/null -w '%{http_code}' <部署URL>",
+      "expected": "200"
+    },
+    {
+      "criterion": "build 成功無錯",
+      "verify_cmd": "cd Claude_協作/yutianlaw && npm run build",
+      "expected": "exit 0，無 error"
+    },
+    {
+      "criterion": "五個核心區段齊全（橫幅/事務所介紹/案件類型/專業團隊/聯絡）",
+      "verify_cmd": "grep -l -E 'Hero|About|案件|團隊|Footer' dist/index.html",
+      "expected": "首頁含五區段"
+    },
+    {
+      "criterion": "文章系統可運作：至少 1 篇測試文章發布並正確渲染",
+      "verify_cmd": "ls dist/news/ 2>/dev/null && curl -s <URL>/news/<slug>",
+      "expected": "對應文章頁存在"
+    },
+    {
+      "criterion": "響應式 + 基本 SEO（title/meta/OG）",
+      "verify_cmd": "grep -E 'og:|<meta name=\"description\"' dist/index.html",
+      "expected": "head 含 meta 與 OG 標籤"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "建站平台選型：Joomla vs HiBlocks/Astro",
+      "decision": "用 HiBlocks（Astro 靜態站）做前台，文章用 content collection",
+      "reason": "對一人公司 + CC 協作情境是 Pareto 最優——CC 全流程可協作（git+程式碼+本機 dev+截圖驗證）、零主機維護、資安結構性免疫、視覺自由、近乎免費部署。Joomla 僅在『律師自主即時發文』單一維度領先。",
+      "alternatives_rejected": "Joomla（延續 2023 themis_quickstart_j4 舊路）：已踩過『不能更新』維護坑（231225 手改 UpdateModel.php）、動態系統有自我強化的維護/資安迴路、CC 協作度低（核心為後台 GUI 點擊）、Themis 為 Joomla 4 模板而官方主力已 Joomla 5",
+      "hc_used": "#rightProblem #constraints #systemDynamics #optimization #medium"
+    },
+    {
+      "topic": "「後台上文章」如何實作",
+      "decision": "漸進式三階段：P1 代上稿（content collection + CC rebuild）→ P2 律師自助（Git-based CMS 如 Decap/Sveltia）→ P3 動態功能（Astro server islands / 外接服務）。同一 repo 漸進加層。",
+      "reason": "律師文章低頻（月 0-2 篇）、長存、重 SEO，markdown/靜態完全勝任。三情境在 Astro 上是同一條路的三階段（分階段滿足約束 + 魯棒優化），不必第一天就扛動態系統維護債。Vincent 選 1+2+3 = 要可成長路徑。",
+      "alternatives_rejected": "第一天就上動態 CMS（Joomla）：為『情境3 的可能性』從上線日就付情境3 的維護成本",
+      "hc_used": "#constraints #optimization #medium #breakItDown"
+    },
+    {
+      "topic": "雨田站與 HiBlocks 的 repo 關係",
+      "decision": "獨立 repo hisenzi/yutianlaw，HiBlocks 當模板來源（複製需要的區塊起步）",
+      "reason": "客戶交付物與產品庫分開——HiBlocks 持續演進不影響雨田、git 史乾淨、部署解耦",
+      "alternatives_rejected": "放 hiblocks repo 內當實例（客戶站與產品庫綁一起、部署耦合）；先 internal 不建 repo（多一道 promote 手續、方向已明確無實益）",
+      "hc_used": "#constraints #optimization"
+    },
+    {
+      "topic": "yutianlaw 與雨田現有 Google Sites 官網的關係",
+      "decision": "yutianlaw 定位為取代官網的正式版——脫離 Google Sites、獨立部署 yutianlaw.com，追求更好的 SEO/載入速度/設計掌控；後台上文章需求重現（P2 Git-based CMS 或代上稿）",
+      "reason": "2026-05-30 抓官網資料時發現：雨田官網（嵌 Google Sites）本身已是完整前台+後台 CMS（文章管理/管理員登入/富文本編輯器），最初『前台+後台上文章』需求其實已被滿足。但嵌 Google Sites 在 SEO/掌控/載入上受限，Vincent 確認 yutianlaw 取代它。官網內容（沉穩辯護文案、4 大服務領域、8 位律師、聯絡資訊）已同步至 yutianlaw。",
+      "alternatives_rejected": "官網已夠用、yutianlaw 只當 HiBlocks 練手（Vincent 否決，要正式取代）；官網當參考並行（否決）",
+      "hc_used": "#rightProblem #constraints"
+    }
+  ]
+}

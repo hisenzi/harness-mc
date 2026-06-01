@@ -21,7 +21,8 @@
           "track": "content",
           "description": "打包 HC 路由表 + 6 核心 HC 操作手冊 + 思考重播指令 + 核心循環 5 步驟 + 國中受眾適配規則 + 反模式護欄。輸出：一份可貼入 Claude Project / Custom GPT 的 system prompt。同時作為 /ask 即時問題模式的 AI 拆解核心。",
           "depends_on": [],
-          "done_condition": "prompt 貼入 Claude Project 後，能對國中生出情境題 + 做思考重播，Vincent 人工審核合格"
+          "done_condition": "prompt 貼入 Claude Project 後，能對國中生出情境題 + 做思考重播，Vincent 人工審核合格",
+          "note": "pivot 後 runtime 只 /ask 用到此 prompt（HC 路由 + 思考重播）。「出題 / 5 步循環 / 操作手冊揭曉」為舊設計殘留，建 t0-15 時精簡為 /ask-only；出題段可留作 t0-2 三拍撰寫輔助。done_condition 的「出題」是 pivot 前標準（spec §8 即時生成不做），不影響 done 狀態。"
         },
         {
           "id": "t0-2",
@@ -46,9 +47,9 @@
           "title": "三拍互動頁面（/exercise）",
           "status": "todo",
           "track": "system",
-          "description": "核心練習流程 UI（product-spec.md §2-3）：\n\n/exercise — 脈絡選擇（校園/社團/人際/家庭/網路）\n/exercise/[sessionId] — 三拍互動：\n  1. Beat 1（陷阱）：顯示情境 → 文字輸入 → 送出（不可回退）\n  2. Beat 2（揭示）：顯示盲點 + HC 名稱 + 思考模式解釋\n  3. Beat 3（遷移）：新情境 → 文字輸入 → 送出\n/exercise/[sessionId]/done — 今日摘要 + 累計統計\n\n每步回應自動寫入 Supabase responses 表。",
+          "description": "核心練習流程 UI（product-spec.md §2-3）：\n\n/exercise — 脈絡選擇（校園/社團/人際/家庭/網路）\n/exercise/[sessionId] — 三拍互動：\n  1. Beat 1（陷阱）：顯示情境 → 文字輸入 → 送出（不可回退）\n  2. Beat 2（揭示）：顯示盲點 + HC 名稱 + 思考模式解釋\n  3. Beat 3（遷移）：新情境 → 文字輸入 → 送出\n/exercise/[sessionId]/done — 今日摘要 + 累計統計\n/history — 我的紀錄（Phase 0 簡版：日期 + 脈絡 + HC 列表，讀 sessions 表）\n\n每步回應自動寫入 Supabase responses 表。",
           "depends_on": ["t0-3"],
-          "done_condition": "三拍互動流程跑通，每步文字輸入 + 提交 + 不可回退 + 資料寫入 DB"
+          "done_condition": "三拍互動流程跑通，每步文字輸入 + 提交 + 不可回退 + 資料寫入 DB + /history 列出歷次練習"
         },
         {
           "id": "t0-5",

@@ -44,11 +44,11 @@
     },
     {
       "id": "p1-5",
-      "title": "專業團隊區段（5 人律師介紹）",
+      "title": "專業團隊區段（8 位律師介紹）",
       "status": "todo",
       "track": "phase-1",
-      "done_condition": "依 p1-1 拍板方案實作團隊區塊，填 5 人姓名/職稱/學經歷/專業領域/照片，可檢視完整資料",
-      "note": "⚠️ WARN：HiBlocks 無專屬 Team 區塊。資料在 專業團隊.docx（含學經歷/專業領域/承辦案件），照片在 or/。依賴 p1-1 方案 + p1-4"
+      "done_condition": "依 p1-1 拍板方案實作團隊區塊，填 8 位律師姓名/職稱/學歷（雷修瑋/雷宇軒/蔡承翰/莊智翔/林根億/陳建廷/簡凱葳/林彥妤），可檢視完整資料",
+      "note": "⚠️ WARN：HiBlocks 無專屬 Team 區塊（改裝 HiPortfolioGrid+Detail vs 客製 HiTeam，p1-1 拍板）。資料源從 docx(5人) 升級為官網(8人)；官網團隊區無照片、照片可選。p1-4 已放 8 人文字卡（HiFeature），p1-5 升級為正式團隊區塊"
     },
     {
       "id": "p1-6",

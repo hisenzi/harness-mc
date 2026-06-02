@@ -1,0 +1,106 @@
+{
+  "name": "獨立主題式地圖",
+  "description": "輕量 Leaflet 前端，渲染智繪台（JGIS）共通欄位 GeoJSON，支援多主題（書店／美術…）",
+  "type": "standalone",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-06-01",
+  "estimated_completion": "TBD",
+  "tracks": {
+    "spike": "契約對齊 Spike",
+    "refactor": "前端主題化改造",
+    "theme": "風景心境主題上線",
+    "hygiene": "工程衛生與部署"
+  },
+  "goals": [
+    "前端從「寫死讀 book.geojson 的書店欄位」改成「讀智繪台共通欄位 + 主題設定檔」，資料驅動渲染",
+    "建立主題設定檔機制（色彩 token／文案字串／欄位標籤／type1 分類對應／地圖預設視角），達成「換主題只改設定、不改程式」",
+    "以風景心境（美術）為第一個驗證主題，19 筆（景點 9 + 畫作 10）在前端正確渲染、無空白 UI 區塊",
+    "補工程衛生：git 版控（repo 已建）、SMTP/admin 密鑰外置、composer 依賴可安裝",
+    "重新定位既有 PHP 回報／admin 後端（保留回報、釐清在智繪台資料流下的角色）"
+  ],
+  "risks": [
+    {
+      "risk": "欄位契約落差：前端目前讀 21 個智繪台不會輸出的欄位（address/openTime/staus/phone/tagline/id…）",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "先做「契約對齊 Spike」，把欄位分成 共通(16)／主題可選／前端生成 三類，前端改為容錯讀取"
+    },
+    {
+      "risk": "tagline 是前端重點元素，但智繪台格式不輸出",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "Spike 時三選一定案：前端自動生成 / 智繪台補欄位 / 移除該元素"
+    },
+    {
+      "risk": "畫作地圖的 Point 座標語意未明（描繪地點？收藏地？）",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "向 Vincent／資料來源（顏娟英《風景心境》）確認後再定地圖敘事方式"
+    },
+    {
+      "risk": "智繪台輸出格式可能演進；目前契約僅基於 1 份範本 + 2 份風景心境資料",
+      "impact": "medium",
+      "probability": "low",
+      "mitigation": "用既有多份 JGIS 樣本（國定古蹟／自然景觀／落地版）對拍驗證，前端對未知欄位採容錯"
+    },
+    {
+      "risk": "智繪台資料與既有 book.geojson（文化部來源＋本地加工）混用，可能造成兩套欄位邏輯",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "以智繪台格式為單一契約來源；書店主題的 book.geojson 視為「含主題可選欄位的智繪台超集」處理"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "風景心境 19 筆在 indiebooks 前端正確渲染（marker 上圖 + 詳情面板無空白區塊）",
+      "verify_cmd": "本機起站載入 風景心境_景點資料.geojson + 畫作地圖.geojson，preview_snapshot 檢視詳情面板",
+      "expected": "9+10 個 marker 上圖；面板顯示 name/desc/story/撰稿人/pic，無書店欄位空殼"
+    },
+    {
+      "criterion": "換主題只改設定檔、不改程式碼",
+      "verify_cmd": "切換書店主題與美術主題各載入一次，比對程式碼 diff",
+      "expected": "差異只在主題設定檔與資料來源路徑，index 邏輯零改動"
+    },
+    {
+      "criterion": "可部署上線",
+      "verify_cmd": "curl -s -o /dev/null -w '%{http_code}' <部署URL>",
+      "expected": "200"
+    },
+    {
+      "criterion": "密鑰不落在原始碼",
+      "verify_cmd": "grep -rniE 'password|app_password|smtp_pass' --include=*.php . | grep -v getenv",
+      "expected": "無明文密碼（皆改為環境變數讀取）"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "產品載體選擇",
+      "decision": "用 indiebooks 的 Leaflet 輕量前端當基底，改造成 data-driven 可換主題；不走 Mapelon 重型版、不自建 CMS",
+      "reason": "在「一人公司＋美術/前端背景」的支配性約束下，輕量、自己能完全掌握的前端最可行；資料層由智繪台解決，不需重型平台或自建後台",
+      "alternatives_rejected": "Mapelon(Next.js+ArcGIS)：過重、綁 ArcGIS 授權＋家浚碼，超出單人維護半徑｜自建 CMS：智繪台已是 authoring 工具，自建是重造輪子｜純手改不產品化：無法支撐換主題量產",
+      "hc_used": "#rightProblem, #constraints, #confirmationBias"
+    },
+    {
+      "topic": "資料來源",
+      "decision": "資料一律由智繪台（JGIS）產出共通欄位 GeoJSON，前端只消費不編輯",
+      "reason": "智繪台 + 社區GIS認證 + 共通欄位 是 JSDC 既有 pipeline，資料治理（來源可追溯／授權與風險標記）已內建解決",
+      "alternatives_rejected": "接 Notion/Sheets 當 CMS：此為前一輪在不知道智繪台存在時的誤判，智繪台已是工具層，作廢",
+      "hc_used": "#infoNeeded, #confirmationBias"
+    },
+    {
+      "topic": "前端資料契約",
+      "decision": "前端以智繪台 17 欄為主契約；book.geojson 的書店專屬欄位（address/openTime/staus…）降為「主題可選欄位」",
+      "reason": "實測智繪台範本＋風景心境 與 book.geojson 欄位落差達 21 欄；若照 book.geojson 寫死，新主題資料一進來即大片破版",
+      "alternatives_rejected": "照現有 book.geojson 欄位寫死前端：以單一主題（書店）欄位以偏概全，換主題即破版",
+      "hc_used": "#fallacies, #infoNeeded"
+    },
+    {
+      "topic": "開案類型與 repo 歸屬",
+      "decision": "standalone，repo 掛 hisenzi/indiebooks",
+      "reason": "是可獨立部署的前端程式碼，符合 standalone 判準；Vincent 確認放個人帳號無歸屬疑慮",
+      "alternatives_rejected": "internal-first 再 promote：CC 建議的保守路線（因 IP 訊號薄弱），Vincent 拍板直接 standalone",
+      "hc_used": "#constraints"
+    }
+  ]
+}

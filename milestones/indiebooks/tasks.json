@@ -1,0 +1,126 @@
+{
+  "project": "indiebooks",
+  "tasks": [
+    {
+      "id": "spike-1",
+      "title": "智繪台契約盤點：產出「智繪台共通欄位 → UI 區塊」對應表",
+      "status": "todo",
+      "track": "spike",
+      "done_condition": "對應表列出智繪台 17 欄各對應前端哪個 UI 元素，標明前端目前有讀/沒讀（依據：風景心境 2 檔 + JGIS 範本）"
+    },
+    {
+      "id": "spike-2",
+      "title": "三大欄位缺口決策定案：tagline(讀13×·不出)、staus(讀26×·不出)、撰稿人(出·讀0)",
+      "status": "todo",
+      "track": "spike",
+      "done_condition": "三缺口各定處置（前端生成／智繪台補／移除／新增顯示），寫入 project.json decisions",
+      "note": "前置：spike-1"
+    },
+    {
+      "id": "spike-verify",
+      "title": "Spike 驗收：契約表 + 缺口決策 完成",
+      "status": "todo",
+      "track": "spike",
+      "done_condition": "兩份產出完成並可作為 refactor 依據",
+      "note": "前置：spike-1, spike-2"
+    },
+    {
+      "id": "refactor-1",
+      "title": "主題設定檔機制：建 theme config 結構",
+      "status": "todo",
+      "track": "refactor",
+      "done_condition": "theme config 含 dataUrl／色彩token／文案字串／欄位標籤／type1分類對應／地圖預設視角／placeholder；index.html 從中讀設定",
+      "note": "前置：spike-verify。grounding 已驗 /indiebooks 無既有 config，此為新建"
+    },
+    {
+      "id": "refactor-2",
+      "title": "資料載入與文案標籤解耦：fetch 路徑與寫死業務字串改讀 config",
+      "status": "todo",
+      "track": "refactor",
+      "done_condition": "index.html 無寫死 fetch('data/book.geojson')、無寫死中文業務字串（書店/營業時間/營業中…），皆來自 theme config",
+      "note": "前置：refactor-1。grounding 已驗 4 處 fetch 寫死 + 業務字串寫死"
+    },
+    {
+      "id": "refactor-3",
+      "title": "詳情面板容錯渲染：欄位缺值不顯示該區塊",
+      "status": "todo",
+      "track": "refactor",
+      "done_condition": "載入缺欄位的資料時無空白 UI 區塊、無 console error",
+      "note": "前置：refactor-1。grounding 已驗 staus×26 等欄位寫死渲染"
+    },
+    {
+      "id": "refactor-verify",
+      "title": "改造驗收：書店主題透過設定檔載入、行為與原版一致",
+      "status": "todo",
+      "track": "refactor",
+      "done_condition": "success_criteria#2（換主題零程式改動）；書店 698 筆渲染與改造前一致（可對照凍結原版 or/）",
+      "note": "前置：refactor-1,2,3"
+    },
+    {
+      "id": "theme-1",
+      "title": "匯入風景心境資料進 repo",
+      "status": "todo",
+      "track": "theme",
+      "done_condition": "景點9+畫作10 兩 geojson 置於 repo data 路徑、前端可 fetch",
+      "note": "前置：refactor-verify。源檔在 Roger_AI_Agent/260521_JGIS智繪台/；grounding 已驗 repo 內尚無此資料"
+    },
+    {
+      "id": "theme-2",
+      "title": "美術主題設定檔：art theme config",
+      "status": "todo",
+      "track": "theme",
+      "done_condition": "art config 完成（type1分類:展覽場館/風景寫生…、撰稿人標籤、色彩、地圖視角、文案），切換可載入風景心境",
+      "note": "前置：refactor-1, theme-1"
+    },
+    {
+      "id": "theme-3",
+      "title": "畫作座標語意處理（描繪地／收藏地）",
+      "status": "todo",
+      "track": "theme",
+      "done_condition": "畫作 marker 的座標語意經 Vincent 確認並於 UI 標明",
+      "note": "⚠️ UNVERIFIED：前提待 Vincent 確認語意（project.json risk 已追蹤）；不阻擋其他 task"
+    },
+    {
+      "id": "theme-verify",
+      "title": "風景心境 19 筆正確渲染、無空白區塊",
+      "status": "todo",
+      "track": "theme",
+      "done_condition": "success_criteria#1（9+10 marker 上圖；面板顯示 name/desc/story/撰稿人/pic，無書店欄位空殼）",
+      "note": "前置：theme-1, theme-2"
+    },
+    {
+      "id": "hygiene-1",
+      "title": "composer install 裝 PHPMailer",
+      "status": "todo",
+      "track": "hygiene",
+      "done_condition": "vendor/ 含 phpmailer，回報表單 require autoload 不 fatal",
+      "note": "grounding 已驗 vendor/ 空、composer 需 phpmailer ^6.9。可平行"
+    },
+    {
+      "id": "hygiene-2",
+      "title": "密鑰外置：config.mail.php + auth.php 帳密改環境變數",
+      "status": "todo",
+      "track": "hygiene",
+      "done_condition": "success_criteria#4（grep 無明文密碼，密鑰由環境注入）",
+      "note": "grounding 已驗 auth.php change_this_password + config.mail.php your_app_password。可平行"
+    },
+    {
+      "id": "hygiene-3",
+      "title": "部署上線 + 流程文件化（含 town.geojson 另放）",
+      "status": "todo",
+      "track": "hygiene",
+      "done_condition": "success_criteria#3（部署 200）；README 載明部署步驟與 town.geojson 注入",
+      "note": "前置：hygiene-1, hygiene-2, theme-verify"
+    },
+    {
+      "id": "init",
+      "title": "開案：建立 MC milestone（project.json + 14 task）+ repo 整併",
+      "status": "completed",
+      "track": "infrastructure",
+      "completed_at": "2026-06-02",
+      "commits": [],
+      "summary": "project-init 建立獨立主題式地圖專案（5 goals/5 risks/4 decisions + 14 task 過 preflight）；issuemap→indiebooks repo 整併、含程式碼 baseline + 凍結原版 or/",
+      "note": "auto-task：commit 時無對應 task，自動建立"
+    }
+  ]
+}

@@ -4,9 +4,14 @@
     {
       "id": "spike-1",
       "title": "智繪台契約盤點：產出「智繪台共通欄位 → UI 區塊」對應表",
-      "status": "todo",
+      "status": "completed",
       "track": "spike",
-      "done_condition": "對應表列出智繪台 17 欄各對應前端哪個 UI 元素，標明前端目前有讀/沒讀（依據：風景心境 2 檔 + JGIS 範本）"
+      "done_condition": "對應表列出智繪台 17 欄各對應前端哪個 UI 元素，標明前端目前有讀/沒讀（依據：風景心境 2 檔 + JGIS 範本）",
+      "completed_at": "2026-06-02",
+      "commits": [
+        "44b1837"
+      ],
+      "summary": "盤點完成：智繪台 17 欄→前端 UI 對應表（12 設計/3 fallback/2 沒讀），產出 indiebooks/docs/jgis-contract-audit.md，附 4 缺口餵 spike-2"
     },
     {
       "id": "spike-2",
@@ -118,7 +123,9 @@
       "status": "completed",
       "track": "infrastructure",
       "completed_at": "2026-06-02",
-      "commits": [],
+      "commits": [
+        "c5fd0b0"
+      ],
       "summary": "project-init 建立獨立主題式地圖專案（5 goals/5 risks/4 decisions + 14 task 過 preflight）；issuemap→indiebooks repo 整併、含程式碼 baseline + 凍結原版 or/",
       "note": "auto-task：commit 時無對應 task，自動建立"
     }

@@ -8,8 +8,11 @@
       "track": "phase-1",
       "done_condition": "project.json goals/risks/success_criteria/decisions 已填寫，非 placeholder",
       "completed_at": "2026-05-24",
-      "commits": ["d37b1c3"],
-      "summary": "系統存活報告 milestone 開案，project.json + tasks.json 15 tasks 建立完成"
+      "commits": [
+        "d37b1c3",
+        "8499b55"
+      ],
+      "summary": "系統存活報告 milestone 開案，project.json + tasks.json 15 tasks 建立完成；含 HC #041 SIFT 操作卡建立（commit 8499b55, notyet-harness）"
     },
     {
       "id": "p1-1",

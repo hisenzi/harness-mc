@@ -17,7 +17,9 @@
       "done_condition": "hiblocks 的 src(layouts/components/styles/scripts)+config 複製進 yutianlaw，npm install 後 npm run build exit 0",
       "note": "yutianlaw 現為空 repo（僅 README+.gitignore）。不繼承 hiblocks git 史（獨立 repo 決策）",
       "completed_at": "2026-05-30",
-      "commits": ["5d9f004"],
+      "commits": [
+        "5d9f004"
+      ],
       "summary": "HiBlocks 全套導入 yutianlaw repo，npm build 通過、dev server 可跑"
     },
     {
@@ -28,7 +30,9 @@
       "done_condition": "站名/Logo/meta/OG/favicon/footer/navbar 換成雨田，移除展創模型 demo；grep 無 maxmodel/展創 殘留",
       "note": "依賴 p1-2。Logo 在 231123_yutianlaw.com_雨田/00_常用已備份/or/雨田LOGO/；checklist 見 astro-site-launcher/references/brand-checklist.md",
       "completed_at": "2026-05-30",
-      "commits": ["5d9f004"],
+      "commits": [
+        "5d9f004"
+      ],
       "summary": "套 theme-yutian（深藏藍#1e2e4f+香檳金+明體），navbar/footer/hero 雨田化，移除展創 demo；真 Logo 圖待 p1-7"
     },
     {
@@ -39,7 +43,9 @@
       "done_condition": "HiHero+HiAbout+HiFeature+HiCta+HiFooter+HiNavbar 組成首頁；內容已改用官網 2026 最新資料（沉穩辯護文案 / 4 大服務領域 / 8 位律師 / 完整聯絡）",
       "note": "已完成。資料來源從 docx 升級為官網本體（_temp/yt_googlesite.html 提取）。emoji 已全移除",
       "completed_at": "2026-05-30",
-      "commits": ["5d9f004"],
+      "commits": [
+        "5d9f004"
+      ],
       "summary": "首頁組裝 + 內容同步自雨田官網（沉穩辯護文案/4大服務領域/8位律師/完整聯絡）"
     },
     {
@@ -49,7 +55,9 @@
       "track": "phase-1",
       "done_condition": "依 p1-1 拍板方案實作團隊區塊，填 8 位律師姓名/職稱/學歷（雷修瑋/雷宇軒/蔡承翰/莊智翔/林根億/陳建廷/簡凱葳/林彥妤），可檢視完整資料",
       "completed_at": "2026-06-01",
-      "commits": ["0c1769e"],
+      "commits": [
+        "0c1769e"
+      ],
       "summary": "客製 HiTeam flip card 區塊：8 位律師正面名/職稱(官網)/學歷，點擊 3D 翻轉看背面 bio（學經歷/專業領域/重大案件）；4 真照片+4 姓氏圓圈 fallback，圓形統一 96px",
       "note": "⚠️ WARN：HiBlocks 無專屬 Team 區塊（改裝 HiPortfolioGrid+Detail vs 客製 HiTeam，p1-1 拍板）。資料源從 docx(5人) 升級為官網(8人)；官網團隊區無照片、照片可選。p1-4 已放 8 人文字卡（HiFeature），p1-5 升級為正式團隊區塊。bio 來源 專業團隊.docx，背面僅 4 人有完整 bio（雷修瑋/雷宇軒/林彥妤+部分），餘僅學經歷"
     },
@@ -67,7 +75,10 @@
       "status": "todo",
       "track": "phase-1",
       "done_condition": "照片裁切最佳化（webp/avif，YYMMDD_slug 命名）放 src/images 或 public/images，build 引用正常",
-      "note": "依賴 p1-3+p1-5。原圖在 or/（jpg）。⚠️ 雷修瑋所長照片需確認（疑 YA3_25xx）"
+      "note": "進行中：949c9a1 律師照 ya3-2748 壓縮 13.9M→2.6M。p1-7 範圍含全部律師照優化+Logo+favicon+OG image，其餘待處理 → 留 todo",
+      "commits": [
+        "949c9a1"
+      ]
     },
     {
       "id": "p1-verify",
@@ -91,9 +102,23 @@
       "status": "done",
       "track": "infrastructure",
       "completed_at": "2026-05-30",
-      "commits": ["5d3bec3"],
+      "commits": [
+        "5d3bec3"
+      ],
       "summary": "經 HC 分析開案，建 project.json(4 decisions)+9 tasks，登錄 repos.json/ARCHITECTURE",
       "note": "auto-task：開案 commit 無對應既有 task"
+    },
+    {
+      "id": "navbar-two-stage-260602",
+      "title": "Navbar 兩段式深藏藍（首屏實色/捲動玻璃霧面）+ menu/CTA 色修正",
+      "status": "done",
+      "track": "phase-1",
+      "completed_at": "2026-06-02",
+      "commits": [
+        "80b168a"
+      ],
+      "summary": "雨田 navbar 兩段式：首屏實色、捲動玻璃霧面 + menu/CTA 配色修正",
+      "note": "auto-task：commit 80b168a（Vincent 自行 commit）盤點時無對應 task，補建"
     }
   ]
 }

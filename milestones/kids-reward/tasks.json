@@ -1,0 +1,75 @@
+{
+  "project": "kids-reward",
+  "tasks": [
+    {
+      "id": "p1-1",
+      "title": "本地 git init + 連接 GitHub remote + 同步",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "git remote -v 顯示 hisenzi/kids-reward，本地與 remote 同步"
+    },
+    {
+      "id": "p1-2",
+      "title": "願望清單系統（提交＋為什麼想要＋父母填點數＋進度條＋70/30 兌換）",
+      "status": "todo",
+      "track": "phase-1",
+      "depends_on": ["p1-1"],
+      "done_condition": "孩子可提交願望（含理由）→ 家長待審核列表 → 父母填入點數 → 進度條顯示 → 兌換時 70/30 計算正確（1點=$5）"
+    },
+    {
+      "id": "p1-3",
+      "title": "得點申報＋父母審核流程",
+      "status": "todo",
+      "track": "phase-1",
+      "depends_on": ["p1-1"],
+      "done_condition": "孩子點擊得分按鈕 → 進入待審核 → 父母批准後點數入帳 / 拒絕後不入帳"
+    },
+    {
+      "id": "p1-4",
+      "title": "保留現有得分項目（小考/段考/模擬考/複習講義/自訂加點）",
+      "status": "todo",
+      "track": "phase-1",
+      "depends_on": ["p1-3"],
+      "done_condition": "所有計分規則與舊版一致：小考（一般/理化加倍）、段考（國中/高中）、模擬考、複習講義、自訂加點"
+    },
+    {
+      "id": "p1-5",
+      "title": "歷史紀錄＋統計",
+      "status": "todo",
+      "track": "phase-1",
+      "depends_on": ["p1-3"],
+      "done_condition": "累計獲得/已兌換/餘額統計正確，紀錄可刪除（PIN 保護），得點與兌換紀錄分開顯示"
+    },
+    {
+      "id": "p1-6",
+      "title": "使用規則說明頁",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "含六區塊：基本規則（1點=$5、70/30）、願望定價說明、閱讀加成規則（對話加成/洞見紀錄/多元加成）、教學加倍、得分項目說明、季度規則會議"
+    },
+    {
+      "id": "p1-7",
+      "title": "家長管理（PIN、孩子設定、匯出匯入）",
+      "status": "todo",
+      "track": "phase-1",
+      "depends_on": ["p1-3"],
+      "done_condition": "PIN 保護進入、孩子名稱修改、JSON 匯出匯入、待審核列表（得點＋願望統一顯示）"
+    },
+    {
+      "id": "p1-8",
+      "title": "更新 repos.json + 推送 GitHub",
+      "status": "todo",
+      "track": "phase-1",
+      "depends_on": ["p1-2", "p1-3", "p1-4", "p1-5", "p1-6", "p1-7"],
+      "done_condition": "repos.json 有 kids-reward 條目，GitHub main 分支為最新版本"
+    },
+    {
+      "id": "p1-verify",
+      "title": "Phase 1 驗收（5 條 success criteria）",
+      "status": "todo",
+      "track": "phase-1",
+      "depends_on": ["p1-8"],
+      "done_condition": "project.json 5 條 success_criteria 全部通過"
+    }
+  ]
+}

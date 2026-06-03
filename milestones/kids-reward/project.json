@@ -1,0 +1,116 @@
+{
+  "name": "孩子獎勵系統",
+  "description": "孩子獎勵與願望管理系統，基於 Octalysis 八角框架設計，整合 HC 分析洞見",
+  "type": "standalone",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-05-24",
+  "estimated_completion": "2026-06-07",
+  "tracks": {
+    "phase-1": "Phase 1 — 核心系統重構",
+    "phase-2": "Phase 2 — 八角驅動力完善",
+    "deploy": "部署"
+  },
+  "goals": [
+    "願望清單系統：孩子提交願望（任何類型，不限商品）→ 親子討論價值 → 父母填入點數 → 進度追蹤。點數反映的是『這個願望值多少努力』，不是市場價格",
+    "雙向審核流程：孩子申報得點 → 父母核定 → 點數入帳（取代父母單方操作）",
+    "八角框架整合：8 核心驅動力對應具體機制，White Hat（Drive 1-3）為主、Black Hat（Drive 6-8）為輔",
+    "等級畢業制：高等級孩子從外在積分逐步過渡到信任制，內建退場機制",
+    "統一兌換規則：1 點 = NT$5，所有願望兌換一律 70/30（點數折抵 70%、孩子自付 30%）。願望點數由親子討論後父母填入，討論本身就是教育機制"
+  ],
+  "risks": [
+    {
+      "risk": "外在動機侵蝕內在動機（HC #carrotAndStick）",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "等級畢業制 + 對話加成機制 + 洞見紀錄（分離內在價值與外在獎勵）"
+    },
+    {
+      "risk": "談判權力不對等（HC #powerDynamics + #negotiate）",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "孩子有願望提案權 + 得點申報權 + 季度規則會議 + 等級解鎖談判力"
+    },
+    {
+      "risk": "延遲滿足跨度過長導致放棄（HC #systemDynamics 迴路 B）",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "願望分三級（小/中/大）+ 里程碑解鎖 + 進度視覺化"
+    },
+    {
+      "risk": "Goodhart's Law — 孩子最佳化可觀測指標而非真實成長",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "計質不計量 + 選書多元加成 + 教學加倍機制"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "孩子可獨立提交願望與得點申報",
+      "verify_cmd": "手動測試：開啟 app → 切換到孩子角色 → 新增願望 + 申報得點",
+      "expected": "兩項操作不需家長 PIN 即可提交，提交後出現在家長待審核列表"
+    },
+    {
+      "criterion": "家長審核流程完整",
+      "verify_cmd": "手動測試：家長 PIN 進入 → 審核願望（設定點數）→ 審核得點（批准/拒絕）",
+      "expected": "批准後點數入帳 + 願望出現進度條；拒絕後孩子收到通知"
+    },
+    {
+      "criterion": "等級系統正確計算",
+      "verify_cmd": "手動測試：累計得點觸發升級 → 等級徽章更新 → 旅程頁面顯示正確",
+      "expected": "8 級對應正確門檻，XP 進度條準確"
+    },
+    {
+      "criterion": "願望兌換 70/30 計算正確（1 點 = NT$5）",
+      "verify_cmd": "手動測試：願望點數由父母填入 → 兌換時顯示所需點數（70%）＋ 孩子自付金額（30%）",
+      "expected": "例：願望 200 點 → 需 140 點 + 自付 $300。計算正確，進度條追蹤準確"
+    },
+    {
+      "criterion": "localStorage 持久化與匯出匯入",
+      "verify_cmd": "手動測試：操作後關閉瀏覽器 → 重開 → 資料完整；匯出 JSON → 匯入 → 資料一致",
+      "expected": "資料不丟失，匯出匯入格式正確"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "獎勵機制核心框架",
+      "decision": "採用 Octalysis 八角框架，以 White Hat（Drive 1-3）為主驅動、Black Hat（Drive 6-8）刻意壓低",
+      "reason": "HC #carrotAndStick 分析顯示純外在獎勵有侵蝕內在動機風險。White Hat 驅動力（意義感、成就感、創意）產生正面持久動機；Black Hat（稀缺、損失迴避）在兒童系統中容易強化焦慮",
+      "alternatives_rejected": [
+        "純積分兌換制（現有版本）— 缺乏動機分層，長期依賴外在獎勵",
+        "無框架的遊戲化 — 容易淪為表面徽章收集，缺乏系統性設計"
+      ],
+      "hc_used": ["#carrotAndStick", "#systemDynamics", "#purpose"]
+    },
+    {
+      "topic": "得點與願望的審核流程",
+      "decision": "孩子提交 → 父母審核的雙向流程，取代父母單方操作",
+      "reason": "HC #powerDynamics 指出原設計中父母同時是規則制定者＋操作者，孩子無參與感。雙向流程給孩子提案權（Drive 3 創意賦權 + Drive 4 擁有感），父母保留審核權（安全閥）",
+      "alternatives_rejected": [
+        "父母直接操作（現有版本）— 孩子被動，不符合培養自主性的終極目標",
+        "完全自主無審核 — 缺乏父母指導和品質把關"
+      ],
+      "hc_used": ["#powerDynamics", "#negotiate"]
+    },
+    {
+      "topic": "願望定價與兌換機制",
+      "decision": "願望點數由親子討論後父母填入，兌換一律 70/30（1 點 = NT$5）。討論定價本身就是教育機制",
+      "reason": "HC #negotiate：討論『這個願望值多少點數』迫使孩子表達需求和評估價值，同時保持規則統一簡單。所有願望（物品、體驗、權利）都走同一套流程，差異只在討論時怎麼定價，不在系統怎麼計算",
+      "alternatives_rejected": [
+        "系統自動從市場價格計算點數 — 孩子跳過價值思考，失去討論訓練",
+        "父母單方定價不經討論 — 孩子沒有參與感，失去 #negotiate 利益表達訓練"
+      ],
+      "hc_used": ["#systemDynamics", "#purpose"]
+    },
+    {
+      "topic": "等級系統設計",
+      "decision": "8 等級（對應八角框架），高等級解鎖更多自主權而非更多點數",
+      "reason": "HC #purpose 分析指出終極目標是自主能力而非積分累積。等級獎勵應是權利（談判力、規則修改權、信任制）而非貨幣，避免手段目標替代終極目標",
+      "alternatives_rejected": [
+        "等級 = 更多點數倍率 — 強化外在動機迴路",
+        "無等級系統 — 缺乏成長進度感（Drive 2）"
+      ],
+      "hc_used": ["#purpose", "#systemDynamics", "#powerDynamics"]
+    }
+  ]
+}

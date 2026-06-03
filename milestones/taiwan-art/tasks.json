@@ -32,6 +32,18 @@
       "track": "launch",
       "done_condition": "success_criteria#1（9＋10 marker 上圖、面板無書店空殼）＋ #3（route 200）",
       "note": "前置：data + theme-config + indiebooks/refactor-verify"
+    },
+    {
+      "id": "init",
+      "title": "開案：從 indiebooks 拆出 taiwan-art 內容專案",
+      "status": "completed",
+      "track": "infrastructure",
+      "completed_at": "2026-06-03",
+      "commits": [
+        "3828069"
+      ],
+      "summary": "風景心境拆為獨立內容專案（4 task），indiebooks 回歸純引擎；架構=一引擎+N內容包",
+      "note": "auto-task：commit 時無對應 task，自動建立"
     }
   ]
 }

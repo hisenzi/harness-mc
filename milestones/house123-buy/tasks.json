@@ -47,6 +47,19 @@
       "title": "GitHub Pages 部署",
       "status": "done",
       "track": "deploy"
+    },
+    {
+      "id": "archive-oldver-pdf-260603",
+      "title": "周邊歸檔：index.html 舊版 + PDF 匯出快照",
+      "status": "done",
+      "completed_at": "2026-06-03",
+      "commits": [
+        "959242e",
+        "915d852"
+      ],
+      "summary": "old/index.html 舊版快照(959242e) + 買房評估 PDF 匯出 house123_buy.pdf/2.pdf 共2.5M(915d852)",
+      "note": "auto-task：盤點 house123_buy 未commit 時歸檔，主功能 t1-t8 已全 done",
+      "track": "dev"
     }
   ]
 }

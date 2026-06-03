@@ -1,11 +1,29 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { execSync } from "child_process";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const milestonesDir = path.join(root, "milestones");
 const outPath = path.join(root, "public", "data", "projects.json");
+
+// lastModified 取「最後 commit 該專案的時間」而非檔案 mtime——
+// CI checkout 會把所有檔案 mtime 重設成 build 時間，導致線上「最近修改」排序失效。
+// 未 commit 的檔（git 無紀錄）退回 mtime。需 CI 用 fetch-depth: 0 才有完整歷史。
+function gitTime(absDir, fallback) {
+  try {
+    const rel = path.relative(root, absDir);
+    const out = execSync(`git log -1 --format=%cI -- "${rel}"`, {
+      cwd: root,
+      encoding: "utf-8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
+    return out || fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 function normalize(t) {
   return {
@@ -70,7 +88,7 @@ for (const dir of fs.readdirSync(milestonesDir)) {
       type: meta.type || "other",
       priority: meta.priority || "medium",
       tasks,
-      lastModified: stat.mtime.toISOString(),
+      lastModified: gitTime(path.join(milestonesDir, dir), stat.mtime.toISOString()),
       done,
       total: tasks.length,
       tracks: meta.tracks || {},

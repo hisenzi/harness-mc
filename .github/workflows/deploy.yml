@@ -19,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # 完整歷史，供 generate-data 用 git commit 時間排序
       - uses: actions/setup-node@v6
         with:
           node-version: 22

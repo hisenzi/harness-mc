@@ -8,14 +8,13 @@
   "estimated_completion": "TBD",
   "tracks": {
     "spike": "契約對齊 Spike",
-    "refactor": "前端主題化改造",
-    "theme": "風景心境主題上線",
+    "refactor": "前端主題化改造（含載入任意內容包機制）",
     "hygiene": "工程衛生與部署"
   },
   "goals": [
     "前端從「寫死讀 book.geojson 的書店欄位」改成「讀智繪台共通欄位 + 主題設定檔」，資料驅動渲染",
     "建立主題設定檔機制（色彩 token／文案字串／欄位標籤／type1 分類對應／地圖預設視角），達成「換主題只改設定、不改程式」",
-    "以風景心境（美術）為第一個驗證主題，19 筆（景點 9 + 畫作 10）在前端正確渲染、無空白 UI 區塊",
+    "引擎能載入任意內容包（content/<map>/：智繪台 GeoJSON + theme.json），以書店＋風景心境兩內容包驗證；風景心境產品已拆為 taiwan-art 內容專案",
     "補工程衛生：git 版控（repo 已建）、SMTP/admin 密鑰外置、composer 依賴可安裝",
     "重新定位既有 PHP 回報／admin 後端（保留回報、釐清在智繪台資料流下的角色）"
   ],
@@ -53,9 +52,9 @@
   ],
   "success_criteria": [
     {
-      "criterion": "風景心境 19 筆在 indiebooks 前端正確渲染（marker 上圖 + 詳情面板無空白區塊）",
-      "verify_cmd": "本機起站載入 風景心境_景點資料.geojson + 畫作地圖.geojson，preview_snapshot 檢視詳情面板",
-      "expected": "9+10 個 marker 上圖；面板顯示 name/desc/story/撰稿人/pic，無書店欄位空殼"
+      "criterion": "引擎能載入任意內容包並正確渲染（以書店＋風景心境兩包驗證，缺欄位不破版）",
+      "verify_cmd": "引擎切換載入 content/book/ 與 content/taiwan-art/，preview_snapshot 檢視兩包詳情面板",
+      "expected": "兩包 marker 皆上圖；缺欄位不留空殼、無 console error"
     },
     {
       "criterion": "換主題只改設定檔、不改程式碼",
@@ -101,6 +100,14 @@
       "reason": "是可獨立部署的前端程式碼，符合 standalone 判準；Vincent 確認放個人帳號無歸屬疑慮",
       "alternatives_rejected": "internal-first 再 promote：CC 建議的保守路線（因 IP 訊號薄弱），Vincent 拍板直接 standalone",
       "hc_used": "#constraints"
+    },
+    {
+      "topic": "引擎 vs 內容拆分（架構）",
+      "decision": "indiebooks 定位為純引擎；每張地圖＝獨立內容專案（資料+theme.json 內容包），引擎靠 route 載入 content/<map>/。風景心境已拆為 taiwan-art，博愛等後續同模式",
+      "reason": "HC 架構分析：引擎＝不變程式、內容＝每張變動的資料+設定；引擎複製 N 份＝一人公司維護死穴。先例：SSG 主題、WordPress theme+content、Mapelon /{orgCode}",
+      "alternatives_rejected": "把主題當 indiebooks 內部 track：引擎綁死特定主題、後續地圖無法複用｜每地圖複製引擎：維護爆炸",
+      "hc_used": "#rightProblem, #breakItDown, #abstraction, #constraints, #optimization, #analogies"
     }
-  ]
+  ],
+  "consumers": ["taiwan-art"]
 }

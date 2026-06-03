@@ -34,8 +34,8 @@
       "title": "主題設定檔機制：建 theme config 結構",
       "status": "todo",
       "track": "refactor",
-      "done_condition": "theme config 含 dataUrl／色彩token／文案字串／欄位標籤／type1分類對應／地圖預設視角／placeholder；index.html 從中讀設定",
-      "note": "前置：spike-verify。grounding 已驗 /indiebooks 無既有 config，此為新建"
+      "done_condition": "引擎讀 content/<map>/theme.json（dataUrl／色彩token／文案／欄位標籤／type1分類對應／視角／placeholder／slogan），支援 route 載入任意內容包（書店／taiwan-art／後續博愛），新增地圖零引擎改動",
+      "note": "前置：spike-verify。架構：一引擎+N內容包（見 project.json 架構 decision）；grounding 已驗無既有 config"
     },
     {
       "id": "refactor-2",
@@ -60,38 +60,6 @@
       "track": "refactor",
       "done_condition": "success_criteria#2（換主題零程式改動）；書店 698 筆渲染與改造前一致（可對照凍結原版 or/）",
       "note": "前置：refactor-1,2,3"
-    },
-    {
-      "id": "theme-1",
-      "title": "匯入風景心境資料進 repo",
-      "status": "todo",
-      "track": "theme",
-      "done_condition": "景點9+畫作10 兩 geojson 置於 repo data 路徑、前端可 fetch",
-      "note": "前置：refactor-verify。源檔在 Roger_AI_Agent/260521_JGIS智繪台/；grounding 已驗 repo 內尚無此資料"
-    },
-    {
-      "id": "theme-2",
-      "title": "美術主題設定檔：art theme config",
-      "status": "todo",
-      "track": "theme",
-      "done_condition": "art config 完成（type1分類:展覽場館/風景寫生…、撰稿人標籤、色彩、地圖視角、文案），切換可載入風景心境",
-      "note": "前置：refactor-1, theme-1"
-    },
-    {
-      "id": "theme-3",
-      "title": "畫作座標語意處理（描繪地／收藏地）",
-      "status": "todo",
-      "track": "theme",
-      "done_condition": "畫作 marker 的座標語意經 Vincent 確認並於 UI 標明",
-      "note": "⚠️ UNVERIFIED：前提待 Vincent 確認語意（project.json risk 已追蹤）；不阻擋其他 task"
-    },
-    {
-      "id": "theme-verify",
-      "title": "風景心境 19 筆正確渲染、無空白區塊",
-      "status": "todo",
-      "track": "theme",
-      "done_condition": "success_criteria#1（9+10 marker 上圖；面板顯示 name/desc/story/撰稿人/pic，無書店欄位空殼）",
-      "note": "前置：theme-1, theme-2"
     },
     {
       "id": "hygiene-1",

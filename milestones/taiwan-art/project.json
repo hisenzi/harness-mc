@@ -1,0 +1,80 @@
+{
+  "name": "風景心境（臺灣近代美術地圖）",
+  "description": "顏娟英《風景心境》臺灣近代美術人文地圖（景點9＋畫作10）；內容專案，吃 indiebooks 引擎的智繪台 GeoJSON 渲染。",
+  "type": "internal",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-06-03",
+  "estimated_completion": "TBD",
+  "depends_on": ["indiebooks"],
+  "tracks": {
+    "content": "內容包建置（資料／主題設定／座標特例）",
+    "launch": "渲染驗收與上線"
+  },
+  "goals": [
+    "把顏娟英《風景心境》臺灣近代美術人文地圖（景點9＋畫作10）做成 indiebooks 引擎的第一個內容包，正確渲染上線",
+    "產出美術主題設定 theme.json（type1 分類對應／撰稿人 byline／色彩／地圖視角／slogan），驗證引擎「換內容包只改設定」",
+    "釐清畫作地圖的座標語意（描繪地／收藏地）並在 UI 正確表達",
+    "作為「內容專案標準模板」首例（資料→設定→座標特例→上線），為後續博愛等內容專案立樣板"
+  ],
+  "risks": [
+    {
+      "risk": "依賴引擎未就緒：上線前提是 indiebooks 引擎 refactor-verify（能載任意內容包）完成",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "排程上引擎先行；引擎 refactor-1 已納入「載入任意內容包」設計，taiwan-art 不需引擎改動"
+    },
+    {
+      "risk": "畫作地圖座標語意未明（描繪地／收藏地）",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "向 Vincent／《風景心境》來源確認後再定地圖敘事與 UI 標注"
+    },
+    {
+      "risk": "智繪台欄位前端處置（撰稿人位置／pic_courtesy 顯示／tagline 預設語）屬引擎層 spike-2 決策、未定",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "跟引擎 spike-2 同步；內容專案不自決欄位處置，只提供資料與設定值"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "景點9＋畫作10 共 19 點在引擎正確渲染（marker 上圖＋詳情面板顯示 name/desc/story/撰稿人/pic，無書店欄位空殼）",
+      "verify_cmd": "引擎載入 content/taiwan-art/ 起站，preview_snapshot 檢視 19 點與詳情面板",
+      "expected": "9＋10 marker 上圖；面板無書店欄位空殼"
+    },
+    {
+      "criterion": "換內容包只改設定、不改引擎程式（書店↔美術切換）",
+      "verify_cmd": "引擎切換書店與 taiwan-art 內容包各載一次，比對引擎程式 diff",
+      "expected": "差異只在 content 包與設定，引擎邏輯零改動"
+    },
+    {
+      "criterion": "上線可訪問",
+      "verify_cmd": "curl -s -o /dev/null -w '%{http_code}' <route /taiwan-art>",
+      "expected": "200"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "專案定位",
+      "decision": "內容專案，consumes indiebooks 引擎——「一引擎 + N 內容包」架構，taiwan-art 為首個內容包",
+      "reason": "HC 架構分析：引擎＝不變的程式（渲染/契約/主題機制），內容＝每張地圖變動的資料+設定；新地圖＝加內容包、引擎零改動。博愛等後續地圖同模式複用",
+      "alternatives_rejected": "美術主題留在 indiebooks 當 track：會讓引擎綁死特定主題、博愛無法複用｜每張地圖複製引擎：維護 N 份程式＝一人公司死穴",
+      "hc_used": "#rightProblem, #breakItDown, #abstraction, #constraints, #optimization, #analogies"
+    },
+    {
+      "topic": "type＝internal",
+      "decision": "內容包（GeoJSON＋theme.json＋資產）住引擎 repo 的 content/taiwan-art/，不另開 repo，靠 route 載入",
+      "reason": "資料+設定非獨立程式碼；資料所有權≠檔案位置（博愛是 Roger 的資料也照此）；符合 issuemap 子路徑部署慣例；引擎單一來源避免維護爆炸",
+      "alternatives_rejected": "standalone 各自 repo：引擎當依賴需 bump N repo，對一人公司過重（待某地圖確需獨立部署再 promote）",
+      "hc_used": "#constraints, #optimization"
+    },
+    {
+      "topic": "從 indiebooks 遷移",
+      "decision": "原 indiebooks 的 theme track（theme-1/2/3/verify 風景心境工作）搬來本專案，indiebooks 回歸純引擎",
+      "reason": "拆分讓引擎與內容各自演進、task 模板可推廣到博愛；引擎驗證仍用書店+風景心境當測試資料，但風景心境產品＝本專案",
+      "alternatives_rejected": "維持耦合：引擎與單一主題綁死，違背可換主題初衷",
+      "hc_used": "#rightProblem, #breakItDown"
+    }
+  ]
+}

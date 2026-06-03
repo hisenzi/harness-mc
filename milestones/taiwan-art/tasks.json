@@ -1,0 +1,37 @@
+{
+  "project": "taiwan-art",
+  "tasks": [
+    {
+      "id": "data",
+      "title": "匯入風景心境內容包到引擎 content/taiwan-art/",
+      "status": "todo",
+      "track": "content",
+      "done_condition": "景點9＋畫作10 兩份智繪台 GeoJSON 置於引擎 content/taiwan-art/，引擎可載入",
+      "note": "前置：indiebooks/refactor-verify（引擎能載任意內容包）。源檔在 Roger_AI_Agent/260521_JGIS智繪台/"
+    },
+    {
+      "id": "theme-config",
+      "title": "美術主題設定 theme.json",
+      "status": "todo",
+      "track": "content",
+      "done_condition": "theme.json 含 type1 分類對應（展覽場館/風景寫生…）／撰稿人 byline／色彩／地圖視角／slogan；引擎切換可正確載入渲染",
+      "note": "前置：indiebooks/refactor-1（主題設定機制）+ data"
+    },
+    {
+      "id": "coords",
+      "title": "畫作座標語意處理（描繪地／收藏地）",
+      "status": "todo",
+      "track": "content",
+      "done_condition": "畫作 marker 座標語意經 Vincent 確認並於 UI 標明",
+      "note": "⚠️ UNVERIFIED：前提待 Vincent 確認語意；不阻擋 data/theme-config"
+    },
+    {
+      "id": "launch",
+      "title": "19 點渲染驗收 + 上線 route",
+      "status": "todo",
+      "track": "launch",
+      "done_condition": "success_criteria#1（9＋10 marker 上圖、面板無書店空殼）＋ #3（route 200）",
+      "note": "前置：data + theme-config + indiebooks/refactor-verify"
+    }
+  ]
+}

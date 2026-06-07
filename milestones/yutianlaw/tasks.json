@@ -124,6 +124,38 @@
       ],
       "summary": "雨田 navbar 兩段式：首屏實色、捲動玻璃霧面 + menu/CTA 配色修正",
       "note": "auto-task：commit 80b168a（Vincent 自行 commit）盤點時無對應 task，補建"
+    },
+    {
+      "id": "navbar-faq-anchor-260607",
+      "title": "導覽列統整（含 FAQ 錨點）",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "navbar 選單統一整理；新增的 #faq 區段加入導覽錨點；檢視首頁各區段錨點對應（#about #services #team #faq #contact）",
+      "note": "Vincent 指定：menu 等最後統整。FAQ 區段已建好但 navbar 尚未指向。留待 P1 收尾一起做"
+    },
+    {
+      "id": "faq-section-260607",
+      "title": "FAQ 常見問題區（首頁 #faq）",
+      "status": "done",
+      "track": "phase-1",
+      "completed_at": "2026-06-07",
+      "done_condition": "首頁 team 與 contact 之間新增 #faq 區段，沿用 HiFaq block，7 題（依四大執業領域+委任流程擬定），開啟 FAQPage JSON-LD schema",
+      "note": "內容為 FACTLOCK 擬定（未杜撰費用數字/後酬），費用與時程文案待 Vincent 確認",
+      "commits": [
+        "339be49"
+      ]
+    },
+    {
+      "id": "team-spotlight-rail-260607",
+      "title": "律師團隊改版 spotlight-rail + 收錄 HiBlocks t27",
+      "status": "done",
+      "track": "phase-1",
+      "completed_at": "2026-06-07",
+      "done_condition": "HiTeam 改成金色橫向人像列（桌機 hover 浮資訊+翻卡 / 手機底部彈出卡）；改造為合格 HiBlocks 模組（零 inline style、token 化、樣式入 hi-blocks.css t27）；收 grid+spotlight-rail 兩變體；雙 repo build 通過",
+      "note": "對應 hiblocks milestone p1-2(Team)/p1-2m(manifest)。4 位律師無照片暫用金色姓氏佔位卡，待 Vincent 補照片替換",
+      "commits": [
+        "339be49"
+      ]
     }
   ]
 }

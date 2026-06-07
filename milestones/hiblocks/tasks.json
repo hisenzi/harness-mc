@@ -8,7 +8,7 @@
       "track": "phase-1",
       "done_condition": "tokens.schema.json 定義三層 token（A1-required / A2-fallback / B-alias），涵蓋 hi-blocks.css 引用的 21 個 token + theme 定義的 65 個 token。defaults.css 提供所有 A2 fallback 值。4 個現有 theme 全部通過 validate script",
       "estimate": "6hr",
-      "note": "參考 open-design _schema/ 架構。A1=品牌必決（bg/fg/accent/font/type-scale），A2=有合理預設值（radius/motion/spacing/shadow），B=可 alias 到同層 sibling（text-dark→text, border-light→border）。hi-blocks.css 的 50+ 硬編 rgba 需分類：token 化 vs UI 常數。此 task 產出是 p1-1 去硬編的依據"
+      "note": "參考 open-design _schema/ 架構。A1=品牌必決（bg/fg/accent/font/type-scale），A2=有合理預設值（radius/motion/spacing/shadow），B=可 alias 到同層 sibling（text-dark→text, border-light→border）。hi-blocks.css 的 50+ 硬編 rgba 需分類：token 化 vs UI 常數。此 task 產出是 p1-1 去硬編的依據。（2026-06-07）hi-team t27 新增 spotlight token 群（--hi-color-spotlight-bg/-bg-2、on-spotlight×3、placeholder×2），屬 A1（品牌整區有色背景），schema 需納入；目前 theme-default.css 以 brand 當 fallback，theme-yutian.css 覆寫為金色"
     },
     {
       "id": "p1-0",
@@ -36,9 +36,24 @@
       "title": "補 Block 到 20 個（6 個新 block）",
       "status": "todo",
       "track": "phase-1",
-      "done_condition": "Pricing, Team, LogoCloud, ContentSection, Newsletter, ContactForm 完成，均吃 token + CMS-ready",
+      "done_condition": "Team ✅；剩 Pricing, LogoCloud, ContentSection, Newsletter, ContactForm，均吃 token + CMS-ready",
       "estimate": "15hr",
-      "note": "已有 14 block（含 FAQ, Testimonial, Stats）。新增 6 個，每個建完即測 theme 換膚"
+      "note": "已有 14 block。Team（t27）2026-06-07 完成：起於 yutianlaw 雛形 → token 化（新增 spotlight token 群）+ 樣式移入 hi-blocks.css（零 inline style）+ 收 grid/spotlight-rail 兩變體 → 移植產品 repo，yutianlaw 與 hiblocks 雙 build 通過。剩 5 個（Pricing/LogoCloud/ContentSection/Newsletter/ContactForm），每個建完即測 theme 換膚",
+      "commits": [
+        "69b9d04"
+      ]
+    },
+    {
+      "id": "p1-2m",
+      "title": "Block Manifest（blocks.manifest.json 可篩選清單）",
+      "status": "done",
+      "track": "phase-1",
+      "completed_at": "2026-06-07",
+      "done_condition": "src/components/blocks/blocks.manifest.json 登錄全部 15 block，含 id/component/code/category/status/variants/props/interactive/cms_ready，可用 jq 依任一維度篩選。作為 p1-4b Block Catalog 的資料層",
+      "note": "新增需求（Vincent）：用系統的方式篩選 block。15 block 全登錄、jq 篩選驗證通過。code 僅 t21–t27 有正式編號，其餘 8 個 block 從未編號（null=待指派，未臆造）。p1-4b catalog 頁應以此 manifest 為資料來源，不再各自硬列",
+      "commits": [
+        "69b9d04"
+      ]
     },
     {
       "id": "p1-3",

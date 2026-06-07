@@ -64,10 +64,15 @@
     {
       "id": "p1-6",
       "title": "文章系統（news content collection + 列表頁 + 詳情頁）",
-      "status": "todo",
+      "status": "done",
       "track": "phase-1",
       "done_condition": "content.config.ts 加 news collection，建列表頁與 [slug] 詳情頁，發 1 篇測試文並正確渲染（代上稿模式 P1）",
-      "note": "依賴 p1-2。複製 portfolio collection 的 zod 模式；P2 才接 Git-based CMS（律師自助）"
+      "completed_at": "2026-06-02",
+      "commits": [
+        "1c662a4"
+      ],
+      "summary": "news collection（複製 portfolio glob+zod）+ 兩欄響應式列表 + 720px 詳情頁；匯入官網 5 篇法律觀點（商事/民事/行政），每篇末尾加常見問題 FAQ；對應 navbar /news。超原訂「1 篇測試文」",
+      "note": "依賴 p1-2。複製 portfolio collection 的 zod 模式；P2 才接 Git-based CMS（律師自助）。文章列表方案拍板：新建簡潔文章版面（非複用 HiPortfolioGrid 圖網格），同步解決 p1-1 待決項。5 篇全文 Vincent 提供於 _temp/文章/，FAQ 由 CC 依原文論述生成、需律師終審"
     },
     {
       "id": "p1-7",

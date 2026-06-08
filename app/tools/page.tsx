@@ -144,17 +144,17 @@ export default function ToolsPage() {
 
       {/* Skills */}
       {tab === "skills" && (
-        <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
           {filteredSkills.map((skill) => {
             const isOpen = expanded.has(skill.id);
             const hasChangelog = skill.changelog && skill.changelog.length > 0;
             return (
               <div
                 key={skill.id}
-                className="rounded-lg border border-[var(--border)] bg-[var(--card)] p-3"
+                className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 flex flex-col"
               >
                 <div
-                  className={`flex items-center gap-2 mb-1 ${hasChangelog ? "cursor-pointer" : ""}`}
+                  className={`flex items-start gap-2 ${hasChangelog ? "cursor-pointer" : ""}`}
                   onClick={() => {
                     if (!hasChangelog) return;
                     setExpanded((prev) => {
@@ -166,24 +166,20 @@ export default function ToolsPage() {
                   }}
                 >
                   {hasChangelog && (
-                    <span className="text-caption text-[var(--text-muted)]">{isOpen ? "▼" : "▶"}</span>
+                    <span className="text-caption text-[var(--text-muted)] mt-0.5 shrink-0">{isOpen ? "▼" : "▶"}</span>
                   )}
-                  <span className="font-medium text-body">{skill.name}</span>
-                  {skill.version && (
-                    <span className="text-caption px-1.5 py-0.5 rounded bg-green-500/15 text-green-400">
-                      v{skill.version}
-                    </span>
-                  )}
-                  {hasChangelog && (
-                    <span className="text-caption text-[var(--text-muted)]">
-                      {skill.changelog.length} 版
-                    </span>
-                  )}
-                  <span className="text-caption text-[var(--text-muted)] ml-auto">
-                    {dateFmt(skill.lastModified)}
-                  </span>
+                  <span className="font-medium text-body line-clamp-2 min-h-[52px] flex-1">{skill.name}</span>
                 </div>
-                <p className="text-small text-[var(--text-muted)] line-clamp-2">{skill.description}</p>
+                <div className="flex justify-between items-center w-full text-caption text-[var(--text-muted)] mt-1 min-h-[20px]">
+                  <span className="flex gap-1.5 items-center">
+                    {skill.version && (
+                      <span className="px-1.5 py-0.5 rounded bg-green-500/15 text-green-400">v{skill.version}</span>
+                    )}
+                    {hasChangelog && <span>{skill.changelog.length} 版</span>}
+                  </span>
+                  <span className="shrink-0">{dateFmt(skill.lastModified)}</span>
+                </div>
+                <p className="text-small text-[var(--text-muted)] line-clamp-2 mt-1.5 w-full">{skill.description}</p>
 
                 {isOpen && hasChangelog && (
                   <div className="mt-3 pt-3 border-t border-[var(--border)] space-y-3">
@@ -232,24 +228,20 @@ export default function ToolsPage() {
 
       {/* Scripts */}
       {tab === "scripts" && (
-        <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
           {filteredScripts.map((script) => {
             const badge = locationBadge[script.location] || { bg: "bg-gray-500/15", text: "text-gray-400" };
             return (
               <div
                 key={`${script.location}/${script.name}`}
-                className="rounded-lg border border-[var(--border)] bg-[var(--card)] p-3"
+                className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 flex flex-col"
               >
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-mono font-medium text-body">{script.name}</span>
-                  <span className={`text-caption px-1.5 py-0.5 rounded ${badge.bg} ${badge.text}`}>
-                    {script.location}
-                  </span>
-                  <span className="text-caption text-[var(--text-muted)] ml-auto">
-                    {dateFmt(script.lastModified)}
-                  </span>
+                <span className="font-mono font-medium text-body line-clamp-2 min-h-[52px] block break-all">{script.name}</span>
+                <div className="flex justify-between items-center w-full text-caption mt-1 min-h-[20px]">
+                  <span className={`px-1.5 py-0.5 rounded ${badge.bg} ${badge.text}`}>{script.location}</span>
+                  <span className="text-[var(--text-muted)] shrink-0">{dateFmt(script.lastModified)}</span>
                 </div>
-                <p className="text-small text-[var(--text-muted)] line-clamp-2">{script.description || "—"}</p>
+                <p className="text-small text-[var(--text-muted)] line-clamp-2 mt-1.5 w-full">{script.description || "—"}</p>
               </div>
             );
           })}
@@ -261,13 +253,13 @@ export default function ToolsPage() {
 
       {/* Hooks */}
       {tab === "hooks" && (
-        <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
           {data.hooks.map((hook, i) => (
             <div
               key={i}
-              className="rounded-lg border border-[var(--border)] bg-[var(--card)] p-3"
+              className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 flex flex-col"
             >
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex flex-wrap items-center gap-2 mb-2 min-h-[52px]">
                 <span className="text-caption px-1.5 py-0.5 rounded bg-purple-500/15 text-purple-400">
                   {hook.event}
                 </span>
@@ -275,10 +267,10 @@ export default function ToolsPage() {
                   {hook.matcher}
                 </span>
                 {hook.statusMessage && (
-                  <span className="text-small text-[var(--text-muted)] ml-auto">{hook.statusMessage}</span>
+                  <span className="text-small text-[var(--text-muted)] w-full">{hook.statusMessage}</span>
                 )}
               </div>
-              <code className="text-caption text-[var(--text-muted)] break-all block">{hook.command}</code>
+              <code className="text-caption text-[var(--text-muted)] break-all block line-clamp-3">{hook.command}</code>
             </div>
           ))}
           {data.hooks.length === 0 && (
@@ -289,13 +281,13 @@ export default function ToolsPage() {
 
       {/* Changes */}
       {tab === "changes" && (
-        <div className="space-y-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
           {data.recentChanges.map((change, i) => (
             <div
               key={i}
-              className="rounded-lg border border-[var(--border)] bg-[var(--card)] p-3"
+              className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 flex flex-col"
             >
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-2 mb-1 min-h-[20px]">
                 <span className="text-caption text-[var(--text-muted)]">{change.date}</span>
                 <span
                   className={`text-caption px-1.5 py-0.5 rounded ${
@@ -306,11 +298,11 @@ export default function ToolsPage() {
                 >
                   {change.repo}
                 </span>
-                <span className="text-body flex-1 truncate">{change.message}</span>
               </div>
+              <span className="text-body line-clamp-2 min-h-[48px] block">{change.message}</span>
               {change.files.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {change.files.map((f) => (
+                <div className="flex flex-wrap gap-1 mt-1.5">
+                  {change.files.slice(0, 6).map((f) => (
                     <span key={f} className="text-caption text-[var(--text-muted)] font-mono">
                       {f}
                     </span>

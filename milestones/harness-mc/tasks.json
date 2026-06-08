@@ -286,6 +286,25 @@
       "commits": ["bec1d7a"],
       "summary": "前 session commit 5c90622 漏做 Step 7 auto-task 回填，本次補上",
       "note": "auto-task：commit 時無對應 task，自動建立"
+    },
+    {
+      "id": "tools-skill-changelog",
+      "title": "skill 卡片可展開版本歷史時間軸",
+      "status": "done",
+      "track": "phase-1",
+      "completed_at": "2026-06-08",
+      "commits": ["62f669b"],
+      "summary": "generate-tools-data.mjs 加 parseChangelog() 讀各 skill CHANGELOG.md；tools 頁 skill 卡片可點擊展開版本時間軸（版號 badge＋summary＋commit hash），最新版綠色高亮。",
+      "note": "auto-task：commit 時無對應 task，自動建立"
+    },
+    {
+      "id": "tools-skills-ci-data-gap",
+      "title": "/tools skills·hooks 生產環境為空（CI 讀不到 notyet-harness）",
+      "status": "todo",
+      "track": "infra",
+      "priority": "medium",
+      "done_condition": "線上 hisenzi.github.io/harness-mc/data/tools.json 的 skills 陣列非空",
+      "note": "根因：deploy.yml 只 checkout harness-mc，generate-tools-data.mjs 讀 ../notyet-harness/000_Agent/skills 不存在→scanSkills() 回 []。修法：(a) CI 加 checkout notyet-harness（私有需 PAT）(b) commit tools.json 快照並改 prebuild 不覆寫 (c) scanSkills 缺檔 fallback 讀快照。2026-06-08 sweep 發現，Vincent 指示另開 task"
     }
   ]
 }

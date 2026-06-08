@@ -380,6 +380,26 @@
       ],
       "summary": "盤點未commit後清理：腳本/憑證路徑遷git repo(fd27ee7)、heptabase→PAI管線+task卡skill(708695f)、heptabase clients加life-focus+state(6803b10)、repos監控清單+sync-projects+ARCHITECTURE(23ce087)、小未人設v2+mood圖(faf7192)、daily memory 05-14~06-02歸檔(6ce4869)、AI大紀元生成影像指南(b174fec)",
       "note": "auto-task：盤點清庫存批次。SIFT commit(8499b55)另記 survival-report/p1-0；.gitignore衛生commit(5 repo)未建task"
+    },
+    {
+      "id": "notyet-article-skill",
+      "title": "notyet-article 文章生產器 skill（引擎九步＋可插拔風格）",
+      "status": "done",
+      "track": "infrastructure",
+      "completed_at": "2026-06-08",
+      "commits": ["ce86e9a", "8febf7f"],
+      "summary": "引擎九步＋可插拔風格（styles/）。整合 editorial-rules.md（threads-writer/CONTENT-PLAN/EDITORIAL/session 踩坑四源）、Step 0 強制讀正本硬閘門、Step 6 去 AI 味判準、Step 10 寫完貼全文。住 notyet-harness/000_Agent/skills/（hash 屬 notyet-harness repo）",
+      "note": "auto-task：commit 時無對應 task，自動建立"
+    },
+    {
+      "id": "build-skill-skill",
+      "title": "build-skill skill（CC 原生，取代 hisenzi-skill-builder）",
+      "status": "done",
+      "track": "infrastructure",
+      "completed_at": "2026-06-08",
+      "commits": ["f8a9a14"],
+      "summary": "CC 原生重寫，移除 OpenClaw skill-creator/obsidian-note.py 依賴（CC 機不存在會卡死）；周邊整合改 best-effort 不當閘門。住 notyet-harness/000_Agent/skills/（hash 屬 notyet-harness repo）",
+      "note": "auto-task：commit 時無對應 task，自動建立"
     }
   ]
 }

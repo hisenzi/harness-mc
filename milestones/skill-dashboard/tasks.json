@@ -1,0 +1,99 @@
+{
+  "project": "skill-dashboard",
+  "tasks": [
+    {
+      "id": "ci-1",
+      "title": "選定 CI 資料缺口修法（三方案評估）",
+      "status": "todo",
+      "track": "ci-fix",
+      "priority": "critical",
+      "done_condition": "決策寫入 project.json decisions：committed 快照 / PAT checkout / scan fallback 三選一定案",
+      "note": "Grounding：生產 tools.json 已驗 skills:0、hooks:0、scripts:4；根因 deploy.yml 單 checkout harness-mc。傾向快照法（免 PAT、無私有 repo 密鑰進 CI）"
+    },
+    {
+      "id": "ci-2",
+      "title": "實作選定方案，線上 /tools skills 非空",
+      "status": "todo",
+      "track": "ci-fix",
+      "priority": "critical",
+      "depends_on": ["ci-1"],
+      "done_condition": "curl 線上 tools.json，skills 陣列 length > 0；hooks 同步處理或記為後續 task",
+      "note": "原 harness-mc/tools-skills-ci-data-gap task 依邊界決策搬移至此"
+    },
+    {
+      "id": "meta-1",
+      "title": "frontmatter version 半自動補齊腳本",
+      "status": "todo",
+      "track": "metadata",
+      "priority": "high",
+      "done_condition": "腳本從 SKILL.md body '> version:' 行抽值寫入 frontmatter version，對 20 個有 body 行的 skill 可批次補",
+      "note": "Grounding：40 skill 中僅 2 有 frontmatter version、20 有 body version 行（可抽）、其餘 18 需手動定版"
+    },
+    {
+      "id": "meta-2",
+      "title": "核心 skill 補 CHANGELOG（含 build-skill）",
+      "status": "todo",
+      "track": "metadata",
+      "priority": "medium",
+      "depends_on": ["meta-1"],
+      "done_condition": "定義核心 skill 清單；每個補 CHANGELOG.md（沿用 notyet-article 格式），版本歷史視圖有資料",
+      "note": "Grounding：現僅 notyet-article 1 個有 CHANGELOG；build-skill 已有 body version、無 CHANGELOG，列首批"
+    },
+    {
+      "id": "view-trigger",
+      "title": "觸發詞檢視",
+      "status": "todo",
+      "track": "views",
+      "priority": "high",
+      "done_condition": "generate-tools-data 從 description 抽各 skill 觸發詞；/tools 加視圖列出、標可能重疊",
+      "note": "Grounding：觸發詞在 SKILL.md frontmatter description（『當 Vincent 說…時使用』），tools.json 已帶 description"
+    },
+    {
+      "id": "view-health",
+      "title": "失效偵測",
+      "status": "todo",
+      "track": "views",
+      "priority": "high",
+      "done_condition": "依 build-skill 7 項驗證＋路徑斷鏈＋symlink 檢查產 health 欄位；/tools 標紅有問題的 skill",
+      "note": "Grounding：build-skill SKILL.md 已定義 7 項驗證表（dir=name／frontmatter 完整／version 行／不撞名／references 被引用／body<500），可直接沿用判準"
+    },
+    {
+      "id": "usage-mechanism",
+      "title": "使用記錄機制（使用統計前置）",
+      "status": "todo",
+      "track": "views",
+      "priority": "medium",
+      "done_condition": "確認／修復 skill 完成時寫 session/skill 到 log；跑數個 skill 後 log 有對應新行",
+      "note": "Grounding：skill-executions.jsonl 現僅 1~3 行、近乎未在記，多數 skill 沒接寫 log。無此機制使用統計無資料"
+    },
+    {
+      "id": "view-usage",
+      "title": "使用統計視圖",
+      "status": "todo",
+      "track": "views",
+      "priority": "medium",
+      "depends_on": ["usage-mechanism"],
+      "done_condition": "讀使用 log 產各 skill 叫用次數；/tools 顯示",
+      "note": "blocked until usage-mechanism 通——不在空資料上硬做"
+    },
+    {
+      "id": "found-sync",
+      "title": "正本／symlink 同步機制文件化＋驗證腳本",
+      "status": "todo",
+      "track": "foundation",
+      "priority": "medium",
+      "done_condition": "文件說明 000_Agent/skills 正本＋~/.claude/skills 目錄 symlink；驗證腳本檢查 symlink 指向與檔案 inode 一致",
+      "note": "Grounding：~/.claude/skills 是目錄 symlink 指向 repo（非 per-file hardlink），inode 驗證通過。換機／重裝會斷"
+    },
+    {
+      "id": "verify",
+      "title": "整合驗收",
+      "status": "todo",
+      "track": "foundation",
+      "priority": "high",
+      "depends_on": ["ci-2", "view-trigger", "view-health"],
+      "done_condition": "success_criteria 全驗過：線上 skills 非空＋三視圖可用＋失效偵測抓出已知問題",
+      "note": "前置核心 task 全 done 後執行"
+    }
+  ]
+}

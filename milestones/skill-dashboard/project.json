@@ -1,0 +1,99 @@
+{
+  "name": "技能儀表板",
+  "description": "掃描 000_Agent/skills 的技能管理儀表板，於 harness-mc /tools 呈現版本、變更歷史與 metadata",
+  "type": "internal",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-06-08",
+  "estimated_completion": "TBD",
+  "tracks": {
+    "ci-fix": "生產資料缺口修復",
+    "metadata": "技能 metadata 標準化",
+    "views": "三個管理視圖（觸發詞／失效偵測／使用統計）",
+    "foundation": "正本與同步機制"
+  },
+  "goals": [
+    "技能儀表板生產可用：修 CI 資料缺口，線上 /tools 的 skills 與 hooks 不再為空（現況皆 0，因 deploy.yml 只 checkout harness-mc，scanSkills 讀不到 notyet-harness、scanHooks 讀不到 Claude_協作/.claude/settings.json）",
+    "技能 metadata 標準化：40 個 skill 的 SKILL.md frontmatter 補齊 version（現 2/40，其中 20 個有 body version 行可半自動抽），重點 skill 補 CHANGELOG（現 1/40），讓版本與變更歷史有資料可顯示",
+    "儀表板加三個管理視圖：觸發詞檢視（從 description 抽各 skill 觸發詞並列、抓重疊與漏洞）、失效偵測（依 build-skill 7 項驗證＋路徑斷鏈自動抓壞掉的 skill）、使用統計（前置：先有可靠的使用記錄機制，現 skill-executions.jsonl 近乎空）",
+    "資料正本與同步機制文件化：000_Agent/skills 為單一正本，~/.claude/skills 以目錄 symlink 指向正本；建驗證腳本防換機／重裝／搬家斷鏈"
+  ],
+  "risks": [
+    {
+      "risk": "notyet-harness 為私有 repo，harness-mc 的 CI 只 checkout 自己，scanSkills/scanHooks 讀不到資料 → 生產 /tools 的 skills 與 hooks 永遠為空",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "三方案評估後選定，傾向 committed tools.json 快照＋prebuild 改為缺正本時不覆寫（免 PAT、無私有 repo 密鑰進 CI 風險）；備案 CI 加 PAT checkout 或 scan fallback 讀快照"
+    },
+    {
+      "risk": "使用統計缺可靠資料源——skill-executions.jsonl 現僅 1~3 行、近乎未在記，多數 skill 沒接寫 log",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "把『使用記錄機制』列為使用統計的前置 task；機制未通前此功能 blocked，不在無資料上硬做統計（FACTLOCK）"
+    },
+    {
+      "risk": "metadata 標準化是 38 個 skill 的人工工作量（version 缺 38、CHANGELOG 缺 39）",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "漸進、先核心常用 skill；20 個有 body version 行的可半自動抽到 frontmatter，其餘 18 手動定版；CHANGELOG 只重點 skill 補"
+    },
+    {
+      "risk": "~/.claude/skills 是指向 repo 的目錄 symlink，換機／重裝／repo 搬家會斷鏈致全 skill 失效",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "機制文件化＋驗證腳本（檢查 symlink 指向正確、檔案 inode 與 repo 一致），併入失效偵測"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "線上 tools.json 的 skills 陣列非空（與本地一致）",
+      "verify_cmd": "curl -s https://hisenzi.github.io/harness-mc/data/tools.json | python3 -c 'import sys,json;print(len(json.load(sys.stdin)[\"skills\"]))'",
+      "expected": "> 0（基線 0）"
+    },
+    {
+      "criterion": "三個管理視圖在 /tools 可用（觸發詞檢視、失效偵測、使用統計或其資料源狀態）",
+      "verify_cmd": "grep -E 'trigger|health|usage|觸發詞|失效|使用' harness-mc/app/tools/page.tsx",
+      "expected": "三視圖對應 UI 程式碼皆存在"
+    },
+    {
+      "criterion": "失效偵測能抓出現有已知問題（缺 version／路徑斷鏈／symlink 異常的 skill）",
+      "verify_cmd": "node harness-mc/scripts/generate-tools-data.mjs（產出含 health 欄位）",
+      "expected": "偵測列出 ≥1 個有問題的 skill"
+    },
+    {
+      "criterion": "核心 skill 的 frontmatter version 覆蓋率明顯高於基線 2/40",
+      "verify_cmd": "node -e '讀 public/data/tools.json，數 version 非 null 的 skill'",
+      "expected": "明顯 > 2"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "專案型態",
+      "decision": "internal — 住既有 harness-mc(UI)＋notyet-harness(skills 正本)，無新 repo",
+      "reason": "無獨立程式碼、不需外部部署，是既有兩 repo 的能力延伸",
+      "alternatives_rejected": ["standalone（多餘的 repo 與部署開銷）"],
+      "hc_used": ["#constraints"]
+    },
+    {
+      "topic": "與 harness-mc 專案的邊界",
+      "decision": "skill-dashboard 管『技能』這條線（掃描／顯示／metadata／三視圖）；harness-mc milestone 管 MC 平台底層。/tools 初版與版本歷史（已完成）留在 harness-mc 當紀錄，CI 缺口 task 搬入 skill-dashboard",
+      "reason": "避免同一頁被兩個專案雙追蹤（CORE.md：每份文件一個身份一個家一個用途）",
+      "alternatives_rejected": ["全塞 harness-mc（職責混雜、技能工作被 MC 平台工作淹沒）"],
+      "hc_used": ["#levelsOfAnalysis", "#constraints"]
+    },
+    {
+      "topic": "CI 資料缺口修法（暫定，ci-1 task 階段定案）",
+      "decision": "傾向 committed tools.json 快照＋prebuild 改為缺正本時不覆寫",
+      "reason": "PAT checkout 會把私有 repo 密鑰帶進 CI（安全成本）；快照法最簡、免密鑰",
+      "alternatives_rejected": ["CI 加 checkout notyet-harness（需 PAT，私有 repo 密鑰進 CI）", "維持現況（生產永遠空、功能等於沒上線）"],
+      "hc_used": ["#constraints", "#rightProblem"]
+    },
+    {
+      "topic": "使用統計定位",
+      "decision": "先確認／建立可靠的使用記錄機制，再做統計視圖；現有 log 近乎空不硬做",
+      "reason": "FACTLOCK——不在不存在的資料上假裝有統計",
+      "alternatives_rejected": ["直接讀現有 jsonl 做統計（資料僅 1~3 行，等於假數據）"],
+      "hc_used": ["#infoNeeded"]
+    }
+  ]
+}

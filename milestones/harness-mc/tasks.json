@@ -296,6 +296,16 @@
       "commits": ["62f669b"],
       "summary": "generate-tools-data.mjs 加 parseChangelog() 讀各 skill CHANGELOG.md；tools 頁 skill 卡片可點擊展開版本時間軸（版號 badge＋summary＋commit hash），最新版綠色高亮。",
       "note": "auto-task：commit 時無對應 task，自動建立"
+    },
+    {
+      "id": "tools-cards-3col",
+      "title": "/tools 四 tab 卡片改 3 欄等高排版",
+      "status": "completed",
+      "track": "infrastructure",
+      "completed_at": "2026-06-08",
+      "commits": ["3489c82"],
+      "summary": "skills/scripts/hooks/變更紀錄 四 tab 從單欄改 md:2/lg:3 欄 grid，卡片對齊專案頁（rounded-xl p-4、標題 line-clamp-2 min-h-52 等高、items-start 不拉長展開列）",
+      "note": "auto-task：commit 時無對應 task，自動建立"
     }
   ]
 }

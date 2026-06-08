@@ -30,12 +30,14 @@ function scanSkills() {
     if (!fm.name) continue;
 
     const stat = fs.statSync(filePath);
+    const changelog = parseChangelog(path.join(dirPath, "CHANGELOG.md"));
     results.push({
       id: dir,
       name: fm.name,
       description: (fm.description || "").replace(/\n/g, " ").slice(0, 200),
       version: fm.version || null,
       lastModified: stat.mtime.toISOString(),
+      changelog,
     });
   }
 
@@ -62,6 +64,43 @@ function parseFrontmatter(content) {
   }
   if (currentKey) obj[currentKey] = currentVal.trim().replace(/^["']|["']$/g, "");
   return obj;
+}
+
+function parseChangelog(filePath) {
+  if (!fs.existsSync(filePath)) return [];
+  const content = fs.readFileSync(filePath, "utf-8");
+  const entries = [];
+  let current = null;
+
+  for (const line of content.split("\n")) {
+    const versionMatch = line.match(/^- version:\s*"?([^"]+)"?/);
+    if (versionMatch) {
+      if (current) entries.push(current);
+      current = { version: versionMatch[1], date: "", summary: "", details: "", commits: [] };
+      continue;
+    }
+    if (!current) continue;
+
+    const dateMatch = line.match(/^\s+date:\s*"?([^"]+)"?/);
+    if (dateMatch) { current.date = dateMatch[1]; continue; }
+
+    const summaryMatch = line.match(/^\s+summary:\s*"?([^"]*)"?/);
+    if (summaryMatch) { current.summary = summaryMatch[1]; continue; }
+
+    const detailsMatch = line.match(/^\s+details:\s*"?([^"]*)"?/);
+    if (detailsMatch) { current.details = detailsMatch[1]; continue; }
+
+    const commitsMatch = line.match(/^\s+commits:\s*\[([^\]]*)\]/);
+    if (commitsMatch) {
+      current.commits = commitsMatch[1]
+        .split(",")
+        .map((s) => s.trim().replace(/"/g, ""))
+        .filter(Boolean);
+      continue;
+    }
+  }
+  if (current) entries.push(current);
+  return entries;
 }
 
 // ── Scripts ─────────────────────────────────────────────────────────────

@@ -3,12 +3,21 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+interface ChangelogEntry {
+  version: string;
+  date: string;
+  summary: string;
+  details: string;
+  commits: string[];
+}
+
 interface Skill {
   id: string;
   name: string;
   description: string;
   version: string | null;
   lastModified: string;
+  changelog: ChangelogEntry[];
 }
 
 interface Script {
@@ -57,6 +66,7 @@ export default function ToolsPage() {
   const [data, setData] = useState<ToolsData | null>(null);
   const [tab, setTab] = useState<Tab>("skills");
   const [search, setSearch] = useState("");
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/tools.json`)
@@ -135,25 +145,85 @@ export default function ToolsPage() {
       {/* Skills */}
       {tab === "skills" && (
         <div className="space-y-2">
-          {filteredSkills.map((skill) => (
-            <div
-              key={skill.id}
-              className="rounded-lg border border-[var(--border)] bg-[var(--card)] p-3"
-            >
-              <div className="flex items-center gap-2 mb-1">
-                <span className="font-medium text-body">{skill.name}</span>
-                {skill.version && (
-                  <span className="text-caption px-1.5 py-0.5 rounded bg-green-500/15 text-green-400">
-                    v{skill.version}
+          {filteredSkills.map((skill) => {
+            const isOpen = expanded.has(skill.id);
+            const hasChangelog = skill.changelog && skill.changelog.length > 0;
+            return (
+              <div
+                key={skill.id}
+                className="rounded-lg border border-[var(--border)] bg-[var(--card)] p-3"
+              >
+                <div
+                  className={`flex items-center gap-2 mb-1 ${hasChangelog ? "cursor-pointer" : ""}`}
+                  onClick={() => {
+                    if (!hasChangelog) return;
+                    setExpanded((prev) => {
+                      const next = new Set(prev);
+                      if (next.has(skill.id)) next.delete(skill.id);
+                      else next.add(skill.id);
+                      return next;
+                    });
+                  }}
+                >
+                  {hasChangelog && (
+                    <span className="text-caption text-[var(--text-muted)]">{isOpen ? "▼" : "▶"}</span>
+                  )}
+                  <span className="font-medium text-body">{skill.name}</span>
+                  {skill.version && (
+                    <span className="text-caption px-1.5 py-0.5 rounded bg-green-500/15 text-green-400">
+                      v{skill.version}
+                    </span>
+                  )}
+                  {hasChangelog && (
+                    <span className="text-caption text-[var(--text-muted)]">
+                      {skill.changelog.length} 版
+                    </span>
+                  )}
+                  <span className="text-caption text-[var(--text-muted)] ml-auto">
+                    {dateFmt(skill.lastModified)}
                   </span>
+                </div>
+                <p className="text-small text-[var(--text-muted)] line-clamp-2">{skill.description}</p>
+
+                {isOpen && hasChangelog && (
+                  <div className="mt-3 pt-3 border-t border-[var(--border)] space-y-3">
+                    {skill.changelog.map((entry, i) => (
+                      <div key={i} className="flex gap-3">
+                        <div className="flex flex-col items-center">
+                          <span className={`text-caption px-1.5 py-0.5 rounded font-mono ${
+                            i === 0 ? "bg-green-500/15 text-green-400" : "bg-[var(--border)]/50 text-[var(--text-muted)]"
+                          }`}>
+                            v{entry.version}
+                          </span>
+                          {i < skill.changelog.length - 1 && (
+                            <div className="w-px flex-1 bg-[var(--border)] mt-1" />
+                          )}
+                        </div>
+                        <div className="flex-1 pb-1">
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <span className="text-small font-medium">{entry.summary}</span>
+                            <span className="text-caption text-[var(--text-muted)]">{entry.date}</span>
+                          </div>
+                          {entry.details && (
+                            <p className="text-caption text-[var(--text-muted)] mb-1">{entry.details}</p>
+                          )}
+                          {entry.commits.length > 0 && (
+                            <div className="flex gap-1.5 flex-wrap">
+                              {entry.commits.map((hash) => (
+                                <span key={hash} className="text-caption font-mono px-1.5 py-0.5 rounded bg-orange-500/15 text-orange-400">
+                                  {hash.slice(0, 7)}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 )}
-                <span className="text-caption text-[var(--text-muted)] ml-auto">
-                  {dateFmt(skill.lastModified)}
-                </span>
               </div>
-              <p className="text-small text-[var(--text-muted)] line-clamp-2">{skill.description}</p>
-            </div>
-          ))}
+            );
+          })}
           {filteredSkills.length === 0 && (
             <p className="text-body text-[var(--text-muted)] text-center py-8">無符合結果</p>
           )}

@@ -1,0 +1,112 @@
+{
+  "name": "Agent-Agnostic 排程系統",
+  "description": "不綁任何 agent 的萬用任務排程框架——任務即資料、執行者即外掛",
+  "type": "internal",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-06-08",
+  "estimated_completion": "2026-06-09",
+  "tracks": {
+    "scaffold": "骨架建置",
+    "first-task": "第一個任務上線",
+    "mc-integration": "MC 儀表板整合"
+  },
+  "goals": [
+    "建立 agent-agnostic 排程框架：任務定義(YAML)與執行者(runner adapter)完全分離，換 agent 不改任務檔",
+    "第一個任務 cc-log-sweep 在 launchd 觸發下可無人值守跑完（盤點未 log session → 補寫 → commit → 通知）",
+    "Telegram 推播可用且 token 不進 git（安全）",
+    "框架住在 git 共享層，MBA-1/MBA-2 雙端 git pull 後各自 install.sh 即可用"
+  ],
+  "risks": [
+    {
+      "risk": "claude -p 無人值守旗標不確定（--dangerously-skip-permissions 待實測）",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "P0 先手動 dispatch.sh 驗證，確認旗標後才上 launchd"
+    },
+    {
+      "risk": "22:00 時段排程擁擠（OC 已有 6 個 job 在 21:55~22:30），git index race",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "cc-log-sweep 排在 21:30 前完成，避開擁擠段；commit 用 git commit -- <path> 精準限定"
+    },
+    {
+      "risk": "事後從 transcript 重建 cc-log 品質降級（不如 session 自己寫）",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "定位為 safety net 補網，非主力記錄路徑；stats 抓不到的標「$— 待補」"
+    },
+    {
+      "risk": "電腦關機/睡眠導致 launchd 不觸發",
+      "impact": "low",
+      "probability": "medium",
+      "mitigation": "launchd 支援 missed-fire catch-up（需驗證 StartCalendarInterval 行為）"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "手動 dispatch.sh cc-log-sweep 跑完，daily memory 有新 [CC] block 且 git 已 commit",
+      "verify_cmd": "bash schedule/dispatch.sh cc-log-sweep && git -C notyet-harness log -1 --oneline",
+      "expected": "exit 0 + commit message 含 cc-log-sweep"
+    },
+    {
+      "criterion": "同一個 task spec 換 runner（--runner shell）可跑，任務檔不改",
+      "verify_cmd": "bash schedule/dispatch.sh cc-log-sweep --runner shell",
+      "expected": "shell runner 被呼叫（即使結果不同，證明 runner 可換）"
+    },
+    {
+      "criterion": "Telegram 通知送達且 .env 中的 token 不在 git tracked files 中",
+      "verify_cmd": "bash schedule/lib/notify.sh '測試' && git -C notyet-harness ls-files schedule/.env",
+      "expected": "Telegram 收到 + ls-files 無輸出（.env 被 gitignore）"
+    },
+    {
+      "criterion": "install.sh 生成 plist 後 launchctl list 可見排程",
+      "verify_cmd": "bash schedule/install.sh && launchctl list | grep com.hisenzi.schedule",
+      "expected": "至少一筆 com.hisenzi.schedule.cc-log-sweep"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "觸發引擎",
+      "decision": "macOS launchd（系統級，agent 無關）",
+      "reason": "#rightProblem + #abstraction：真正要解的是觸發/任務/執行三者解耦，launchd 是 OS 原生不綁任何 agent runtime",
+      "alternatives_rejected": ["OC cron Gateway（綁 OC runtime，CC 不能改 Gateway）", "CC 內建 /schedule（綁 CC，違反 agent-agnostic 需求）"],
+      "hc_used": ["#rightProblem", "#abstraction", "#constraints"]
+    },
+    {
+      "topic": "任務契約存放",
+      "decision": "git 共享層 notyet-harness/schedule/（雙端同步）",
+      "reason": "#levelsOfAnalysis：契約層要所有 agent + 雙端都讀得到，git 是既有同步管道",
+      "alternatives_rejected": ["本機獨立目錄（綁單機，不同步）"],
+      "hc_used": ["#levelsOfAnalysis", "#constraints"]
+    },
+    {
+      "topic": "架構路線",
+      "decision": "自建輕量版（tasks/*.yaml + runners/*.sh + dispatch.sh）",
+      "reason": "場景比 Composio/Docker Agent 等企業框架簡單，用 notyet-harness 生態，.sh + .yaml 就夠；業界已驗證此模式可行",
+      "alternatives_rejected": ["直接採用 Composio + opencode-scheduler（過重）", "先評估再決定（時間不允許）"],
+      "hc_used": ["#breakItDown", "#constraints"]
+    },
+    {
+      "topic": "通知管道",
+      "decision": "CC 自推 Telegram（curl Bot API），token 放 schedule/.env（gitignore）",
+      "reason": "Telegram Bot API 是純 HTTP，任何能 curl 的都能推，不依賴 OC。舊腳本 token 已外洩進 git → 新設計必須隔離",
+      "alternatives_rejected": ["借 OC Gateway 推播（多一層依賴）", "只寫 runs/ 不通知（不夠主動）"],
+      "hc_used": ["#constraints"]
+    },
+    {
+      "topic": "第一個任務",
+      "decision": "cc-log-sweep（21:30，safety net 補網未 log 的 session）",
+      "reason": "模擬驗證發現 22:00 撞車（6 個 OC job 同時段），改 21:30 避開；定位為補網不是主力路徑",
+      "alternatives_rejected": ["daily-summary（不夠具體）", "排在 22:00（跟現有排程撞車）"],
+      "hc_used": ["#rightProblem", "#systemDynamics", "#constraints"]
+    },
+    {
+      "topic": "盤點判定機制",
+      "decision": "標記法——cc-log 成功後記 session_id 到 cc-logged.log，盤點 = 今日 session 減已標記",
+      "reason": "[CC] block 不記 session id，靠標題語意猜會漏報/重複；標記法可靠可審計",
+      "alternatives_rejected": ["語意猜 + 人工確認（不可靠）", "session 結束自動 cc-log（SessionEnd hook 不能 spawn 新 session）"],
+      "hc_used": ["#constraints", "#infoNeeded"]
+    }
+  ]
+}

@@ -121,6 +121,26 @@
       "depends_on": ["t12"],
       "done_condition": "MC 首頁顯示排程健康狀態（今日 N 成功 / N 失敗）+ prebuild 自動跑 generate-schedule-data.mjs",
       "priority": "high"
+    },
+    {
+      "id": "plan-doc",
+      "title": "Agent-Agnostic 排程系統規劃書",
+      "status": "completed",
+      "track": "infrastructure",
+      "completed_at": "2026-06-08",
+      "commits": ["8f9a279"],
+      "summary": "HC 6 視角分析 + 四層架構 + cc-log-sweep 任務設計。檔在 notyet-harness/100_Todo/plan/（注意：此 hash 屬 notyet-harness repo）",
+      "note": "auto-task：commit 時無對應 task，自動建立"
+    },
+    {
+      "id": "init-project",
+      "title": "agnostic-scheduler 開案",
+      "status": "completed",
+      "track": "infrastructure",
+      "completed_at": "2026-06-08",
+      "commits": ["b7f4661"],
+      "summary": "4 goals / 4 risks / 6 decisions / 13 tasks (3 tracks)。harness-mc/milestones/",
+      "note": "auto-task：commit 時無對應 task，自動建立"
     }
   ]
 }

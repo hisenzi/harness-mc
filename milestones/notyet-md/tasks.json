@@ -6,56 +6,96 @@
       "title": "沿用 repo 殼、換掉 ScrewFast src/（branch redesign/v0.1）",
       "status": "done",
       "track": "p0-ship",
-      "done_condition": "移除 111 個 ScrewFast 檔（sections/ui/SaaS 頁/Starlight），保留網域/remote/git 史/內容層；astro.config + package.json 精簡"
+      "done_condition": "移除 111 個 ScrewFast 檔（sections/ui/SaaS 頁/Starlight），保留網域/remote/git 史/內容層；astro.config + package.json 精簡",
+      "completed_at": "2026-06-08",
+      "commits": [
+        "69f55c5"
+      ],
+      "summary": "移除 111 ScrewFast 檔，保留網域/內容層/git 史"
     },
     {
       "id": "p0-2",
       "title": "精簡內容 schema（圖 optional + status 狀態機）",
       "status": "done",
       "track": "p0-ship",
-      "done_condition": "content.config.ts：blog 砍到必要欄位 + status enum（draft/wip/shipping/parked/abandoned），圖片欄位 optional，loader 限定 zh"
+      "done_condition": "content.config.ts：blog 砍到必要欄位 + status enum（draft/wip/shipping/parked/abandoned），圖片欄位 optional，loader 限定 zh",
+      "completed_at": "2026-06-08",
+      "commits": [
+        "69f55c5"
+      ],
+      "summary": "schema 砍到必要欄位 + status 狀態機，圖 optional，loader 限 zh"
     },
     {
       "id": "p0-3",
       "title": "theme-notyet 設計層（token + base CSS + 字型）",
       "status": "done",
       "track": "p0-ship",
-      "done_condition": "原型 18.5KB CSS → theme-notyet.css（--hi-* token）+ base.css；字型走 Google Fonts（Newsreader/思源宋/JetBrains Mono/思源黑）"
+      "done_condition": "原型 18.5KB CSS → theme-notyet.css（--hi-* token）+ base.css；字型走 Google Fonts（Newsreader/思源宋/JetBrains Mono/思源黑）",
+      "completed_at": "2026-06-08",
+      "commits": [
+        "69f55c5"
+      ],
+      "summary": "原型 CSS → --hi-* token + base.css，字型走 Google Fonts"
     },
     {
       "id": "p0-4",
       "title": "編輯 block 元件（props 驅動、備萃取）",
       "status": "done",
       "track": "p0-ship",
-      "done_condition": "SiteHeader/SiteFooter/StatusTag/PostRow/SubscribeBlock/SectionHeader + FaqSection/FaqAccordion + BaseLayout"
+      "done_condition": "SiteHeader/SiteFooter/StatusTag/PostRow/SubscribeBlock/SectionHeader + FaqSection/FaqAccordion + BaseLayout",
+      "completed_at": "2026-06-08",
+      "commits": [
+        "69f55c5"
+      ],
+      "summary": "7 個 props 驅動編輯元件（備 Hiblocks 萃取）"
     },
     {
       "id": "p0-5",
       "title": "建四頁 home/archive/post/about（zh-only）",
       "status": "done",
       "track": "p0-ship",
-      "done_condition": "index（hero+最近文+訂閱）/archive（狀態篩選）/blog/[slug]（閱讀版）/about，路由可訪問"
+      "done_condition": "index（hero+最近文+訂閱）/archive（狀態篩選）/blog/[slug]（閱讀版）/about，路由可訪問",
+      "completed_at": "2026-06-08",
+      "commits": [
+        "69f55c5"
+      ],
+      "summary": "四頁 zh-only，狀態機正確渲染"
     },
     {
       "id": "p0-6",
       "title": "接 10 篇真文章 + 補 status",
       "status": "done",
       "track": "p0-ship",
-      "done_condition": "現有 zh 文章接上新 schema，4 篇有證據的標 shipping、其餘 wip；圖片 frontmatter 清除"
+      "done_condition": "現有 zh 文章接上新 schema，4 篇有證據的標 shipping、其餘 wip；圖片 frontmatter 清除",
+      "completed_at": "2026-06-08",
+      "commits": [
+        "69f55c5"
+      ],
+      "summary": "10 篇真文章接新 schema，4 篇標 shipping"
     },
     {
       "id": "p0-7",
       "title": "寫 inaugural 遞迴開站文",
       "status": "done",
       "track": "p0-ship",
-      "done_condition": "notyet-inaugural.md：「什麼是 notyet.md 以及為什麼還沒完成」，用形式示範未完成（版本/狀態/commit）"
+      "done_condition": "notyet-inaugural.md：「什麼是 notyet.md 以及為什麼還沒完成」，用形式示範未完成（版本/狀態/commit）",
+      "completed_at": "2026-06-08",
+      "commits": [
+        "69f55c5"
+      ],
+      "summary": "inaugural 遞迴開站文（白板指定的定錨內容）"
     },
     {
       "id": "p0-8",
       "title": "build 驗證（技術 + 視覺）",
       "status": "done",
       "track": "p0-ship",
-      "done_condition": "npm run build 零錯誤、14 頁 + sitemap；預覽截圖確認 home/archive/post 忠實還原原型"
+      "done_condition": "npm run build 零錯誤、14 頁 + sitemap；預覽截圖確認 home/archive/post 忠實還原原型",
+      "completed_at": "2026-06-08",
+      "commits": [
+        "69f55c5"
+      ],
+      "summary": "npm run build 零錯誤 14 頁 + 三頁視覺截圖確認"
     },
     {
       "id": "p0-9",
@@ -88,6 +128,20 @@
       "track": "p3-cms",
       "done_condition": "markdown 薄 CMS（編輯文章 + 觸發部署），做成 Hiblocks 模組，利用 block 的 cms_ready",
       "note": "你的點 2+3；更後面"
+    },
+    {
+      "id": "open-project",
+      "title": "開案：repos 登記 + MC milestone + Obsidian sync 防呆",
+      "status": "done",
+      "track": "p0-ship",
+      "completed_at": "2026-06-08",
+      "commits": [
+        "73d82da",
+        "2e2be4c",
+        "9b92040"
+      ],
+      "summary": "notyet-md 登記進 repos.json（standalone/zeabur）、建 MC milestone、修 sync-projects 在 risks 缺 probability 時的 crash（4 專案連帶受惠）",
+      "note": "auto-task：commit 時無對應 task，自動建立"
     }
   ]
 }

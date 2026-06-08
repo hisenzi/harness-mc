@@ -1,0 +1,100 @@
+{
+  "name": "notyet.md",
+  "description": "還沒完成的世界——AI 時代工作系統的公開建造現場（Astro 靜態站，部署 Zeabur）",
+  "type": "standalone",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-06-08",
+  "estimated_completion": "2026-06-15",
+  "repo": "hisenzi/notyet-md",
+  "repo_path": "Claude_協作/notyet_website/notyet-md",
+  "deploy_target": "zeabur",
+  "tracks": {
+    "p0-ship": "P0｜先上線（極簡 Astro 站）",
+    "p1-style": "P1｜de-AI 化 style",
+    "p2-hiblocks": "P2｜萃取編輯 block 進 Hiblocks",
+    "p3-cms": "P3｜簡易後台 CMS 模組"
+  },
+  "goals": [
+    "以「還沒完成但已運作」為命題，公開記錄 AI 時代工作系統的建造過程，作為三站生態系（notyet.md → hisenzi.com → Medium）的唯一主更新站",
+    "v0.1 極簡上線：home/archive/post/about 四頁 + draft→wip→shipping 狀態機 + 真實文章，部署 Zeabur",
+    "設計層 token 化（theme-notyet，--hi-* 命名與 Hiblocks 相容）：style 可獨立 de-AI 化、未來 block 可低成本萃取進 Hiblocks",
+    "把每日記憶與專案經驗轉成有記憶點、可被轉述的內容（Steph Ango 溫度 + swyx 結構，先寫粗的、成熟後搬 hisenzi.com 精修）"
+  ],
+  "risks": [
+    {
+      "risk": "ship 拖延——白板頭號風險：v0.1 哲學最大的威脅是自己冒出來的 v0.2 想法（精修才上線=背叛論述）",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "範圍鎖死：style／後台／Hiblocks 萃取／雙語全 defer，先 push 上線"
+    },
+    {
+      "risk": "style 過 AI 感影響第一印象（Vincent 已標記）",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "設計 token 化，P1 只改 theme-notyet.css token，不重建結構"
+    },
+    {
+      "risk": "內容脫敏疏漏（API key／客戶全名／個資）",
+      "impact": "high",
+      "probability": "low",
+      "mitigation": "發布前冷讀者測試 + EDITORIAL 塑膠詞／AI 味禁用清單逐段檢查"
+    },
+    {
+      "risk": "Zeabur SSL × Cloudflare Proxy 衝突（握手失敗／重定向迴圈）",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "綁域名時 Cloudflare 關 Proxy（灰雲），刪乾淨舊 A/CNAME，等 DNS 傳播 5-30 分"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "npm run build 零錯誤、14 頁 + sitemap + 壓縮",
+      "verify_cmd": "cd notyet_website/notyet-md && npm run build",
+      "expected": "Complete，0 errors，14 page(s) built"
+    },
+    {
+      "criterion": "四頁路由可訪問、狀態機正確渲染",
+      "verify_cmd": "npm run preview → localhost:4321 逐頁看",
+      "expected": "home/archive/post/about 正常，狀態色（draft/wip/shipping/parked/abandoned）正確"
+    },
+    {
+      "criterion": "notyet.md 線上可訪問、SSL 正常",
+      "verify_cmd": "curl -I https://notyet.md",
+      "expected": "HTTP 200 + 有效憑證"
+    },
+    {
+      "criterion": "inaugural 遞迴開站文上線（白板指定的定錨內容）",
+      "verify_cmd": "curl -I https://notyet.md/blog/notyet-inaugural/",
+      "expected": "HTTP 200"
+    },
+    {
+      "criterion": "零 ScrewFast 殘留",
+      "verify_cmd": "grep -ri 'preline\\|screwfast\\|tailwind' dist/ | head",
+      "expected": "空"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "基底架構選擇（沿用 repo vs 全新 vs renovate ScrewFast）",
+      "decision": "沿用 hisenzi/notyet-md repo 殼，整個換掉 ScrewFast src/，在分支 redesign/v0.1 重建極簡表現層",
+      "reason": "白板明定『Astro minimal starter』+『markdown 樸素本身就是身份』；現有 ScrewFast scaffold 違反此哲學且尚未部署。沿用 repo 保網域/git 史/內容層，分支讓全程可逆",
+      "alternatives_rejected": "開全新資料夾（丟 git 史、要重接部署）；原樣 renovate ScrewFast（與極簡論述衝突、留 80 個 SaaS 元件殘留）",
+      "hc_used": "#rightProblem #multipleCauses #gapAnalysis #constraints"
+    },
+    {
+      "topic": "與 Hiblocks 的耦合時機（你的點 3/4）",
+      "decision": "notyet.md 獨立先上線，block 切乾淨、token 用 --hi-* 命名；上線後（P2）才把編輯 block 萃取進 Hiblocks，後台（P3）做成 Hiblocks CMS 模組",
+      "reason": "白板紀律『快上線、其餘 defer』；現在就耦合會重蹈 ship 拖延。Vincent 拍板『獨立先上線，上線後再萃取』。Hiblocks block 已標 cms_ready，未來有天然的家",
+      "alternatives_rejected": "直接長在 Hiblocks 上（上線變慢、重新引入完美主義拖延）；完全不管 Hiblocks（點 3/4 以後要重寫）",
+      "hc_used": "#breakItDown #constraints"
+    },
+    {
+      "topic": "v0.1 範圍：雙語 / style / 訂閱 / 封面圖",
+      "decision": "v0.1 只做 zh、style 維持原型（標記過 AI 感留 P1）、訂閱表單做 on-brand 誠實 placeholder、RSS 導覽暫拿掉、封面圖全 optional 不顯示、en 4 篇擱置",
+      "reason": "白板 defer 清單明列『中英雙語：中文先穩，英文 v2』『設計系統：markdown 樸素即身份』，style 屬可延後的 80%；上線前修 style = 完美主義拖延（白板頭號威脅）",
+      "alternatives_rejected": "上線前先 de-AI style；v0.1 就做雙語（架構變重、拖慢上線）",
+      "hc_used": "#rightProblem #constraints #gapAnalysis"
+    }
+  ]
+}

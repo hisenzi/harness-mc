@@ -1,0 +1,93 @@
+{
+  "project": "notyet-md",
+  "tasks": [
+    {
+      "id": "p0-1",
+      "title": "沿用 repo 殼、換掉 ScrewFast src/（branch redesign/v0.1）",
+      "status": "done",
+      "track": "p0-ship",
+      "done_condition": "移除 111 個 ScrewFast 檔（sections/ui/SaaS 頁/Starlight），保留網域/remote/git 史/內容層；astro.config + package.json 精簡"
+    },
+    {
+      "id": "p0-2",
+      "title": "精簡內容 schema（圖 optional + status 狀態機）",
+      "status": "done",
+      "track": "p0-ship",
+      "done_condition": "content.config.ts：blog 砍到必要欄位 + status enum（draft/wip/shipping/parked/abandoned），圖片欄位 optional，loader 限定 zh"
+    },
+    {
+      "id": "p0-3",
+      "title": "theme-notyet 設計層（token + base CSS + 字型）",
+      "status": "done",
+      "track": "p0-ship",
+      "done_condition": "原型 18.5KB CSS → theme-notyet.css（--hi-* token）+ base.css；字型走 Google Fonts（Newsreader/思源宋/JetBrains Mono/思源黑）"
+    },
+    {
+      "id": "p0-4",
+      "title": "編輯 block 元件（props 驅動、備萃取）",
+      "status": "done",
+      "track": "p0-ship",
+      "done_condition": "SiteHeader/SiteFooter/StatusTag/PostRow/SubscribeBlock/SectionHeader + FaqSection/FaqAccordion + BaseLayout"
+    },
+    {
+      "id": "p0-5",
+      "title": "建四頁 home/archive/post/about（zh-only）",
+      "status": "done",
+      "track": "p0-ship",
+      "done_condition": "index（hero+最近文+訂閱）/archive（狀態篩選）/blog/[slug]（閱讀版）/about，路由可訪問"
+    },
+    {
+      "id": "p0-6",
+      "title": "接 10 篇真文章 + 補 status",
+      "status": "done",
+      "track": "p0-ship",
+      "done_condition": "現有 zh 文章接上新 schema，4 篇有證據的標 shipping、其餘 wip；圖片 frontmatter 清除"
+    },
+    {
+      "id": "p0-7",
+      "title": "寫 inaugural 遞迴開站文",
+      "status": "done",
+      "track": "p0-ship",
+      "done_condition": "notyet-inaugural.md：「什麼是 notyet.md 以及為什麼還沒完成」，用形式示範未完成（版本/狀態/commit）"
+    },
+    {
+      "id": "p0-8",
+      "title": "build 驗證（技術 + 視覺）",
+      "status": "done",
+      "track": "p0-ship",
+      "done_condition": "npm run build 零錯誤、14 頁 + sitemap；預覽截圖確認 home/archive/post 忠實還原原型"
+    },
+    {
+      "id": "p0-9",
+      "title": "commit + push + Zeabur 部署 + 綁域名",
+      "status": "todo",
+      "track": "p0-ship",
+      "done_condition": "branch commit + push；Zeabur import repo 部署；Cloudflare 關 Proxy 綁 notyet.md；https 200",
+      "note": "待 Vincent 拍板 push；Zeabur/DNS 是 Vincent dashboard 動作"
+    },
+    {
+      "id": "p1-1",
+      "title": "de-AI 化 style（只改 theme-notyet token）",
+      "status": "todo",
+      "track": "p1-style",
+      "done_condition": "Vincent 認可視覺不再過 AI 感；只動 theme-notyet.css token，不重建結構",
+      "note": "上線後"
+    },
+    {
+      "id": "p2-1",
+      "title": "萃取編輯 block 進 Hiblocks（content/editorial 類）",
+      "status": "todo",
+      "track": "p2-hiblocks",
+      "done_condition": "PostRow/StatusTag/Archive/Reading/Subscribe 等進 hiblocks，新增 content/editorial 類 + theme-notyet，更新 blocks.manifest.json",
+      "note": "你的點 4；上線後"
+    },
+    {
+      "id": "p3-1",
+      "title": "簡易後台做成 Hiblocks CMS 模組",
+      "status": "todo",
+      "track": "p3-cms",
+      "done_condition": "markdown 薄 CMS（編輯文章 + 觸發部署），做成 Hiblocks 模組，利用 block 的 cms_ready",
+      "note": "你的點 2+3；更後面"
+    }
+  ]
+}

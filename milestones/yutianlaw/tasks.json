@@ -80,9 +80,10 @@
       "status": "todo",
       "track": "phase-1",
       "done_condition": "照片裁切最佳化（webp/avif，YYMMDD_slug 命名）放 src/images 或 public/images，build 引用正常",
-      "note": "進行中：949c9a1 律師照 ya3-2748 壓縮 13.9M→2.6M。p1-7 範圍含全部律師照優化+Logo+favicon+OG image，其餘待處理 → 留 todo",
+      "note": "進行中。ac0f47d：真 logo（navbar/footer/favicon 雷字篆印）+ hero 走廊實景 + 關於區團隊照（ya3-2748 桌機橫幅/ya3-2748_m 手機直幅）+ OG 品牌卡 + 全部 webp/avif 最佳化（tools/optimize-images.mjs）。個別律師大頭照（lei/zhuang/lin/詹）仍 Vincent WIP，未進此 commit → 留 todo。",
       "commits": [
-        "949c9a1"
+        "949c9a1",
+        "ac0f47d"
       ]
     },
     {

@@ -246,6 +246,18 @@
       "track": "legal-ai",
       "done_condition": "yt-B1 完成後立細拆 task；暫不估時",
       "note": "官方 12 款無刑事/行政救濟/家事。借 litigation-legal 骨架；刑事含量刑分析 skill（林根億司法院量刑研究小組背景=差異化，量刑系統介接待確認）；行政救濟與 yt-A2 內容線同利基。品質閘門 legal-builder-hub:skills-qa。Heptabase 卡 [yt-B3]"
+    },
+    {
+      "id": "fix-mobile-menu",
+      "title": "手機選單修正：滿版遮罩 + 點項目關閉並捲至區塊",
+      "status": "completed",
+      "track": "phase-1",
+      "completed_at": "2026-06-09",
+      "commits": [
+        "9ec4577"
+      ],
+      "summary": "修手機選單捲動後塌掉/內容透出（navbar 的 backdrop-filter 把 fixed 選單困在 ~72px 容器內）→ 開啟時關掉 backdrop-filter 恢復滿版；顯隱改 visibility 避開 opacity transition 卡住；背景改純色；點項目即關閉選單並捲至該區塊。",
+      "note": "auto-task：commit 時無對應 task，自動建立"
     }
   ]
 }

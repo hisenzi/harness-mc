@@ -1,6 +1,6 @@
 {
   "name": "思考健身房 Thinking Gym",
-  "description": "網頁式 HC 思考技能練習系統。三拍式陷阱情境（踩坑→揭示→遷移），使用者選生活脈絡、系統交錯分配 HC + 自動調適陷阱深度。密涅瓦 HC 框架為核心，國中/高中/大人三受眾。",
+  "description": "網頁式 HC 思考技能練習系統。三拍式陷阱情境（踩坑→AI 個人化揭示→遷移），使用者選生活脈絡、系統交錯分配 HC + 依程度自適應陷阱深度。密涅瓦 HC 框架為核心，依思考程度分級（非年齡），AI 互動限 18+（Gemini ToS）。",
   "type": "standalone",
   "status": "active",
   "priority": "high",
@@ -30,7 +30,7 @@
   "goals": [
     "Phase 0：雙模式 MVP（三拍陷阱練習 + /ask 即時問題），驗證 3 核心假說（H-A 遷移、H-B AI 回饋、H-C 留存）",
     "架構：BYOK（Google AI）+ Supabase 追蹤 + 白名單 Gmail 登入 + 管理後台",
-    "三拍式陷阱情境庫（6 HC × 5 組 = 30 組，國中脈絡優先）",
+    "三拍式陷阱情境庫（6 HC × 5 組 = 30 組，多脈絡 × Lv1，通用語言）",
     "完成 30 天 pilot（3-5 人），產出結構化數據（踩坑率 / 揭示理解 / 遷移成功率）",
     "Phase 1：多 Provider BYOK + 自動調適陷阱深度（Lv1-4）+ 擴展脈絡與受眾 + 進度儀表板"
   ],
@@ -77,7 +77,7 @@
       "expected": "至少 1 種動機條件下留存率 > 67%"
     },
     {
-      "criterion": "HC Agent Prompt 品質：/ask 即時問題模式的 HC 路由拆解 + 思考重播，對國中受眾產出合格輸出",
+      "criterion": "HC Agent Prompt 品質：三拍 Beat 2 個人化揭示 + /ask 即時拆解，對 18+ 混程度學習者產出合格輸出",
       "verify_cmd": "Vincent 人工審核 /ask 輸出品質（抽 10 題真實問題）",
       "expected": "合格率 > 80%"
     }
@@ -135,14 +135,16 @@
       "hc_used": ["#sift", "#constraints", "#rightProblem"]
     },
     {
-      "topic": "受眾優先序",
-      "decision": "Phase 0 先做國中版。因為韓中梅竹東高中課程已驗證做中學 HC 對國中/高中有效，且與 exam-prep-6yr 受眾重疊最大",
-      "reason": "#audience 分析三受眾後，國中有最多現成驗證（韓中梅 500 專題）且情境卡最容易設計（生活具象）。大人付費意願高但 HC 教育市場需求未驗證（#evidenceBased E 級）",
+      "topic": "分級策略：依程度非年齡 + AI 互動 18+ 門檻",
+      "decision": "不分年齡版本（國中/高中/大人），改依思考程度分級（trap_depth Lv1-4 自適應）+ 使用者自選生活脈絡。AI 驅動的三拍揭示 + /ask 需 18+，故 Phase 0 pilot 招 18+ 混程度成人",
+      "reason": "#rightProblem 重構：年齡把『脈絡相關性』和『思考難度』混為一談，但思考程度 ≠ 年齡（成人也可能是某 HC 新手）。程度軸早在設計裡＝trap_depth。觸發重構的硬約束是 Gemini API ToS——須 18+ 且禁止服務 likely-accessed-by-under-18，而三拍真正的『互動』（讀作答→個人化揭示）必須 AI，靜態預寫做不到，故 AI 互動先鎖 18+。脈絡（職場/人際/金錢…）是使用者自選題材、非版本",
       "alternatives_rejected": [
-        "先做大人版 → 排除：付費意願高但 HC 學習需求未驗證，風險更大",
-        "三個受眾同時做 → 排除：#constraints 人力約束，Vincent 一人無法同時建 3 套情境卡"
+        "年齡分版（國中/高中/大人）→ 排除：把難度和題材綁在年齡上；且國中版用 AI 三拍揭示違反 Gemini ToS",
+        "先做國中版（原決策）→ 排除：Gemini ToS 18+ 禁止服務未成年，AI 驅動三拍揭示無法對國中合法運作",
+        "三拍揭示走純靜態預寫以服務未成年 → 排除：靜態揭示不讀作答＝不能互動（看影片非練習），失去思路分歧比對核心",
+        "未成年改用非 AI 供應商 → 暫緩：OpenAI/Anthropic 等主流 LLM 多有 18+ 限制，留待研究合規 EDU 級方案"
       ],
-      "hc_used": ["#audience", "#constraints", "#evidenceBased"]
+      "hc_used": ["#rightProblem", "#constraints", "#evidenceBased", "#audience"]
     },
     {
       "topic": "與六年一貫系統的關係",

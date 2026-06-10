@@ -13,30 +13,31 @@
       "tasks": [
         {
           "id": "t0-1",
-          "title": "HC Agent System Prompt v1",
-          "status": "done",
-          "completed_at": "2026-05-27",
+          "title": "HC Agent System Prompt（v1 done · v2 待適配）",
+          "status": "in-progress",
           "commits": ["ef39a5d"],
-          "summary": "v1.1 prompt 含 6 核心 HC 路由+操作手冊+思路分歧比對，Claude Project 實測通過",
+          "summary": "v1 完成（國中語言 + /ask 驗證，commit ef39a5d）；受眾改程度分級後待 v2：通用語言 + AI 驅動三拍揭示",
           "track": "content",
-          "description": "打包 HC 路由表 + 6 核心 HC 操作手冊 + 思考重播指令 + 核心循環 5 步驟 + 國中受眾適配規則 + 反模式護欄。輸出：一份可貼入 Claude Project / Custom GPT 的 system prompt。同時作為 /ask 即時問題模式的 AI 拆解核心。",
+          "description": "打包 HC 路由表 + 6 核心 HC 操作手冊 + 思考重播指令 + 通用語言（非年齡專屬）+ 程度適配（難度由 trap_depth 控制）+ 反模式護欄。輸出：一份可貼入 Claude Project / Custom GPT 的 system prompt。驅動兩處互動：(1) 三拍 Beat 2 揭示（讀使用者作答 → 個人化揭示 + 思路分歧比對）(2) /ask 即時拆解。",
           "depends_on": [],
-          "done_condition": "prompt 貼入 Claude Project 後，能對國中生出情境題 + 做思考重播，Vincent 人工審核合格",
-          "note": "pivot 後 runtime 只 /ask 用到此 prompt（HC 路由 + 思考重播）。「出題 / 5 步循環 / 操作手冊揭曉」為舊設計殘留，建 t0-15 時精簡為 /ask-only；出題段可留作 t0-2 三拍撰寫輔助。done_condition 的「出題」是 pivot 前標準（spec §8 即時生成不做），不影響 done 狀態。"
+          "done_condition": "prompt 能讀三拍作答做個人化揭示（思路分歧比對）+ /ask 即時拆解，語言通用適合 18+ 混程度，Vincent 人工審核合格",
+          "note": "v1 為國中語言、僅驗證 /ask（commit ef39a5d）。受眾改「依程度非年齡」+ AI 驅動三拍揭示後，需 v2 適配：(1) 語言改通用白話 (2) 加三拍 Beat 2 揭示指令（讀作答→個人化）。難度由 trap_depth 控制、非年齡。AI 互動需 18+（Gemini ToS）。故 t0-1 從 done 退回實質未完成，待 v2。"
         },
         {
           "id": "t0-2",
-          "title": "三拍式陷阱情境庫（6 HC × 5 組 = 30 組，國中脈絡）",
+          "title": "三拍式陷阱情境庫（6 HC × 5 組 = 30 組，多脈絡 × Lv1）",
           "status": "todo",
           "track": "content",
-          "description": "每組含三拍：\n第一拍（陷阱）：2-3 句情境，自然觸發慣性思考，不標注目標 HC\n第二拍（揭示）：展示學習者的盲點 + 對應 HC 名稱 + 解釋思考模式\n第三拍（遷移）：完全不同脈絡的同結構陷阱，測試是否學會模式\n\n脈絡分佈：校園 / 社團 / 人際 / 家庭 / 網路生活，每個脈絡 6 組。\n6 HC：#rightProblem #breakItDown #confirmationBias #multipleCauses #constraints #evidenceBased\n\n完成後匯入 Supabase scenarios 表。",
+          "description": "每組含三拍：\n第一拍（陷阱）：2-3 句情境，自然觸發慣性思考，不標注目標 HC\n第二拍（揭示）：由 AI 讀使用者作答即時生成個人化揭示（你掉進/避開了 X 陷阱）；情境庫只存「目標 HC + 理想揭示要點」作為 AI grounding，非死文字\n第三拍（遷移）：完全不同脈絡的同結構陷阱，測試是否學會模式\n\n脈絡分佈：職場 / 人際 / 金錢決策 / 家庭 / 資訊判斷，每脈絡 6 組。語言通用白話（適合 18+ 混程度）。Phase 0 全 Lv1（trap_depth=1）。\n6 HC：#rightProblem #breakItDown #confirmationBias #multipleCauses #constraints #evidenceBased\n\n完成後匯入 Supabase scenarios 表（beat_1 / beat_3 情境 + 目標 HC + 揭示要點）。",
           "depends_on": ["t0-1"],
-          "done_condition": "30 組三拍情境完成，每組有陷阱+揭示+遷移，Vincent 審核語言適合國中 + 陷阱自然不做作"
+          "done_condition": "30 組完成，每組有陷阱情境 + 目標 HC + 揭示要點 + 遷移情境，Vincent 審核語言通用 + 陷阱自然不做作"
         },
         {
           "id": "t0-3",
           "title": "專案初始化 + Supabase + 認證 + BYOK",
-          "status": "todo",
+          "status": "in-progress",
+          "commits": ["3615844"],
+          "summary": "code-complete（Next.js+Supabase+OAuth+BYOK+migration+dev guard，build 通過，commit 3615844）；待 Vincent 外部設定（Supabase 專案 / OAuth / Vercel）",
           "track": "system",
           "description": "技術棧已定（見 product-spec.md §4）：\n\n1. 初始化 Next.js 14+（App Router）+ Tailwind CSS repo\n2. 建立 Supabase 專案 notyet-edu（與 exam-prep-6yr 共用，schema: thinking_gym）\n3. 建 8 張表（product-spec.md §5）：allowed_emails / scenarios / sessions / responses / annotations / hc_assignments / ask_sessions / test_responses\n4. Google OAuth 登入 + allowed_emails 白名單驗證（名單外顯示「此系統為邀請制」）\n5. BYOK /setup 頁：貼 Google AI API Key → 存 localStorage → 測試連線 → 安全說明\n6. 部署空殼到 Vercel",
           "depends_on": [],
@@ -47,7 +48,7 @@
           "title": "三拍互動頁面（/exercise）",
           "status": "todo",
           "track": "system",
-          "description": "核心練習流程 UI（product-spec.md §2-3）：\n\n/exercise — 脈絡選擇（校園/社團/人際/家庭/網路）\n/exercise/[sessionId] — 三拍互動：\n  1. Beat 1（陷阱）：顯示情境 → 文字輸入 → 送出（不可回退）\n  2. Beat 2（揭示）：顯示盲點 + HC 名稱 + 思考模式解釋\n  3. Beat 3（遷移）：新情境 → 文字輸入 → 送出\n/exercise/[sessionId]/done — 今日摘要 + 累計統計\n/history — 我的紀錄（Phase 0 簡版：日期 + 脈絡 + HC 列表，讀 sessions 表）\n\n每步回應自動寫入 Supabase responses 表。",
+          "description": "核心練習流程 UI（product-spec.md §2-3）：\n\n/exercise — 脈絡選擇（職場/人際/金錢決策/家庭/資訊判斷）\n/exercise/[sessionId] — 三拍互動：\n  1. Beat 1（陷阱）：顯示情境 → 文字輸入 → 送出（不可回退）\n  2. Beat 2（揭示）：BYOK client-side 呼叫 AI 讀作答 → 個人化揭示（你掉進/避開了 X 陷阱）+ HC 名稱 + 思路分歧比對\n  3. Beat 3（遷移）：新情境 → 文字輸入 → 送出\n/exercise/[sessionId]/done — 今日摘要 + 累計統計\n/history — 我的紀錄（Phase 0 簡版：日期 + 脈絡 + HC 列表，讀 sessions 表）\n\n每步回應自動寫入 Supabase responses 表。",
           "depends_on": ["t0-3"],
           "done_condition": "三拍互動流程跑通，每步文字輸入 + 提交 + 不可回退 + 資料寫入 DB + /history 列出歷次練習"
         },
@@ -56,7 +57,7 @@
           "title": "脈絡選擇 + HC 交錯分配引擎",
           "status": "todo",
           "track": "system",
-          "description": "使用者在 /exercise 選脈絡（校園/社團/人際/家庭/網路）。\n系統從 scenarios 表抽題，HC 交錯分配（不連續出同一個 HC）。\n寫入 hc_assignments 表追蹤分配歷史，避免同一人重複做同一題。\nPhase 0 全部 Lv1（trap_depth=1），不做自動調適。",
+          "description": "使用者在 /exercise 選脈絡（職場/人際/金錢決策/家庭/資訊判斷）。\n系統從 scenarios 表抽題，HC 交錯分配（不連續出同一個 HC）。\n寫入 hc_assignments 表追蹤分配歷史，避免同一人重複做同一題。\nPhase 0 全部 Lv1（trap_depth=1），不做自動調適（程度自適應留 Phase 1 t1-2）。",
           "depends_on": ["t0-3", "t0-2"],
           "done_condition": "選脈絡後出題正確，同一人不重複，HC 不連續出現，分配紀錄寫入 DB"
         },
@@ -89,12 +90,12 @@
         },
         {
           "id": "t0-8",
-          "title": "招募 3-5 名 pilot 參與者（國中生）",
+          "title": "招募 3-5 名 pilot 參與者（18+，混程度）",
           "status": "todo",
           "track": "validation",
-          "description": "MVP 乾跑通過後招募。用可 demo 的系統向家長和學生說明。\n每人：加入白名單 Gmail + 協助設定 Google AI API Key（BYOK）。\n動機條件分組：(A) 完全自主（autonomous）(B) 每日 LINE 提醒（reminded）。",
+          "description": "MVP 乾跑通過後招募。對象：18+ 成人（AI 互動受 Gemini ToS 18+ 限制），刻意混不同思考程度。\n每人：加入白名單 Gmail + 自行設定 Google AI API Key（BYOK，18+ 可申請）。\n動機條件分組：(A) 完全自主（autonomous）(B) 每日提醒（reminded）。",
           "depends_on": ["t0-9"],
-          "done_condition": "3-5 人確認 + 家長同意 + Gmail 加入白名單 + BYOK 設定完成"
+          "done_condition": "3-5 人確認（皆 18+）+ Gmail 加入白名單 + BYOK 設定完成"
         },
         {
           "id": "t0-9",
@@ -163,10 +164,10 @@
       "tasks": [
         {
           "id": "t05-1",
-          "title": "擴大招募 10-15 名參與者（混合國中/高中/大人）",
+          "title": "擴大招募 10-15 名參與者（18+，混不同程度）",
           "status": "blocked",
           "track": "validation",
-          "description": "從 Phase 0 的 3-5 人擴大。混合受眾各 3-5 人。目的：取得足夠樣本做 A/B 比較 + 跨受眾差異分析。",
+          "description": "從 Phase 0 的 3-5 人擴大到 10-15 人（皆 18+）。刻意涵蓋不同思考程度（新手到熟手）。目的：取得足夠樣本做 A/B 比較 + 跨程度差異分析。",
           "depends_on": ["t0-13"]
         },
         {
@@ -212,10 +213,10 @@
         },
         {
           "id": "t1-3",
-          "title": "擴展陷阱情境庫（高中 + 大人脈絡）",
+          "title": "擴展陷阱情境庫（更多脈絡 + 深度分級 Lv2-4）",
           "status": "blocked",
           "track": "content",
-          "description": "在國中版 30 組基礎上，新增高中脈絡 30 組 + 大人脈絡 30 組。脈絡擴展：職場 / 創業 / 投資 / 社群經營。或驗證 AI 即時生成陷阱的品質。"
+          "description": "在 Phase 0 的 30 組基礎上擴展：新增脈絡（創業/投資/管理/感情…）+ 更深陷阱層級素材（Lv2 偽裝 / Lv3 多重交互 / Lv4 無陷阱校準），供 t1-2 自適應引擎調用。或驗證 AI 即時生成陷阱的品質是否足以取代固定題庫。"
         },
         {
           "id": "t1-4",

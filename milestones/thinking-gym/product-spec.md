@@ -1,7 +1,7 @@
 # 思考健身房 Thinking Gym — MVP 產品規格
 
 > Phase 0 目標：用最小網頁驗證 3 個核心假說（遷移 / AI 回饋 / 留存）
-> 受眾：3-5 名國中生（白名單邀請）
+> 受眾：3-5 名 18+ 參與者（混思考程度，白名單邀請）。依程度分級非年齡；AI 互動限 18+（Gemini ToS）
 > 參考：POPPINS 數位錯題本（BYOK + 零後端 AI 調用）
 
 ---
@@ -13,6 +13,8 @@
 | 資料隱私在使用者 | AI API Key 用 BYOK，存 localStorage，不經伺服器 |
 | 追蹤數據在 Vincent | 練習回應 + 行為紀錄寫入 Supabase，供追蹤與優化 |
 | 封閉存取 | 只有白名單 Gmail 可註冊登入（Google OAuth） |
+| 分級非年齡 | 難度由 trap_depth（Lv1-4）依程度自適應；脈絡使用者自選；皆非「年齡版本」 |
+| 年齡門檻 | AI 互動（三拍揭示 + /ask）限 18+（Gemini ToS：須 18+ 且禁止服務未成年） |
 
 ---
 
@@ -24,7 +26,7 @@
 |------|------|------|
 | 登入 | `/` | Google OAuth → 白名單檢查 → 引導設定 API Key |
 | API Key 設定 | `/setup` | BYOK 輸入 + 安全說明 + 測試連線（同 POPPINS 模式） |
-| 脈絡選擇 | `/exercise` | 五脈絡選一（校園/社團/人際/家庭/網路）→ 系統分配 HC + 情境 |
+| 脈絡選擇 | `/exercise` | 五脈絡選一（職場/人際/金錢決策/家庭/資訊判斷）→ 系統分配 HC + 情境 |
 | 三拍練習 | `/exercise/[sessionId]` | Beat 1 陷阱 → Beat 2 揭示 → Beat 3 遷移，不可回退 |
 | 練習完成 | `/exercise/[sessionId]/done` | 今日摘要 + 累計統計 |
 | 即時問題 | `/ask` | 帶入真實問題 → AI 用 HC 路由拆解 → 思考重播 |
@@ -60,8 +62,8 @@
     ↓ 系統從該脈絡抽題，HC 交錯分配
   Beat 1：讀情境 → 文字作答 → 送出（不可回退）
     ↓ 回應寫入 Supabase
-  Beat 2：揭示盲點 + 命名 HC + 解釋思考模式
-    ↓ 繼續
+  Beat 2：AI 讀作答 → 個人化揭示（掉進/避開 X 陷阱）+ 命名 HC + 思路分歧比對
+    ↓ 繼續（BYOK client-side 呼叫，揭示要點來自 scenarios 表 grounding）
   Beat 3：新脈絡同結構陷阱 → 文字作答 → 送出
     ↓ 回應寫入 Supabase
   完成頁：今日 HC、累計練習數、連續天數
@@ -132,10 +134,10 @@ AI 回應 → 只在瀏覽器處理 → 不存伺服器
 |------|------|------|
 | id | text PK | e.g. `rt-campus-01` |
 | hc_id | text | `#rightProblem` 等 |
-| context | text | 校園/社團/人際/家庭/網路 |
+| context | text | 職場/人際/金錢決策/家庭/資訊判斷 |
 | trap_depth | int | 1-4（Phase 0 全部 Lv1） |
 | beat_1_text | text | 陷阱情境 |
-| beat_2_text | text | 揭示 + HC 解釋 |
+| beat_2_text | text | 揭示要點（AI grounding，非死文字；實際揭示由 AI 讀作答即時生成） |
 | beat_3_text | text | 遷移情境 |
 | beat_3_reference | text | 理想遷移回應（評分參考） |
 | active | boolean | 啟用/停用 |

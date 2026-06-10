@@ -77,22 +77,30 @@
     {
       "id": "p1-7",
       "title": "圖片資源處理（律師照、Logo、favicon、OG image）",
-      "status": "todo",
+      "status": "done",
       "track": "phase-1",
+      "completed_at": "2026-06-10",
       "done_condition": "照片裁切最佳化（webp/avif，YYMMDD_slug 命名）放 src/images 或 public/images，build 引用正常",
-      "note": "進行中。ac0f47d：真 logo（navbar/footer/favicon 雷字篆印）+ hero 走廊實景 + 關於區團隊照（ya3-2748 桌機橫幅/ya3-2748_m 手機直幅）+ OG 品牌卡 + 全部 webp/avif 最佳化（tools/optimize-images.mjs）。個別律師大頭照（lei/zhuang/lin/詹）仍 Vincent WIP，未進此 commit → 留 todo。",
+      "summary": "全站圖片管線完成：logo/hero/OG/favicon/合照（ac0f47d）+ 律師頭像 webp 管線（2de395a）— 4 律師照重修版 2000×3000 jpg → 800px webp 20-44K，lawyers.ts 改引 webp；*.psd 出 repo/dist（28M 工作檔原本會部署上線）。命名沿用既有 surname-givenname 慣例（非原訂 YYMMDD_slug，全資料夾一致性優先）",
+      "note": "詹秉恆（助理）照已備好（zhan-bingheng.jpg/webp）但未上 team 區：無 bio 資料、且 team 區定位是律師團隊，是否納入待 Vincent 拍板。蔡承翰/林根億/陳建廷/簡凱葳 4 位仍金色姓氏佔位卡（設計接受態）",
       "commits": [
         "949c9a1",
-        "ac0f47d"
+        "ac0f47d",
+        "2de395a"
       ]
     },
     {
       "id": "p1-verify",
       "title": "Phase 1 驗收整合",
-      "status": "todo",
+      "status": "done",
       "track": "phase-1",
+      "completed_at": "2026-06-10",
       "done_condition": "跑 project.json 全部 success_criteria：build 零錯 + 五區段齊 + 文章系統可運作 + 響應式/SEO；環境異動彙整完成",
-      "note": "前置 p1-1~p1-7 全 done 後執行"
+      "summary": "4/5 criteria 通過：build 7 頁零錯、五區段+footer 齊、news 5 篇渲染、og/meta 齊+桌機/手機響應式 preview 驗證。C1（公開訪問）屬 p1-deploy 部署後驗。驗收抓到兩個部署阻斷並修除（fe0f6b8）：展創 demo 殘留（/portfolio ×2 + /demo/monaka 仍被建出）、PSD 28M 隨 public/ 進 dist。dist 最終 14M 無 psd 無殘留",
+      "note": "前置 p1-1~p1-7 全 done 後執行。p1-1 兩項待決已被 p1-5/p1-6 吸收，實質完成但 Vincent 未指示關閉，留 todo",
+      "commits": [
+        "fe0f6b8"
+      ]
     },
     {
       "id": "p1-deploy",
@@ -100,7 +108,11 @@
       "status": "todo",
       "track": "deploy",
       "done_condition": "push → Zeabur import(自動偵測 Astro) → 綁 yutianlaw.com(Cloudflare DNS 灰雲) → SSL → https 訪問回 200",
-      "note": "⚠️ WARN：yutianlaw.com 網域/DNS 交接需向客戶確認。依賴 p1-verify。流程見 astro-site-launcher Phase 5"
+      "note": "⚠️ WARN：yutianlaw.com 網域/DNS 交接需向客戶確認。260610 進度：Zeabur import 完成（Vincent 操作 dashboard，HiSenzi 自管伺服器）→ build 失敗 ×3，根因 = repo 殘留 .nvmrc=20（HiBlocks 帶入）蓋過 engines，zbpack 用 Node 20 而 Astro 6 要 22.12+ → c369ac7 釘 .node-version/.nvmrc=22 修復 → https://yutianlaw.zeabur.app 全路由 200（首頁/news/404/sitemap/robots/OG/webp、殘留路徑 404）。剩：綁 yutianlaw.com（Cloudflare A 記錄灰雲）+ SSL。教訓：ZBPACK_NODE_VERSION 是 no-op（zbpack nodejs provider 無此 config key，已查原始碼），版本來源優先序 .node-version → .nvmrc → engines.node",
+      "commits": [
+        "d95e64b",
+        "c369ac7"
+      ]
     },
     {
       "id": "p1-init",
@@ -129,10 +141,15 @@
     {
       "id": "navbar-faq-anchor-260607",
       "title": "導覽列統整（含 FAQ 錨點）",
-      "status": "todo",
+      "status": "done",
       "track": "phase-1",
+      "completed_at": "2026-06-10",
       "done_condition": "navbar 選單統一整理；新增的 #faq 區段加入導覽錨點；檢視首頁各區段錨點對應（#about #services #team #faq #contact）",
-      "note": "Vincent 指定：menu 等最後統整。FAQ 區段已建好但 navbar 尚未指向。留待 P1 收尾一起做"
+      "summary": "常見問題 /#faq 入 navbar 與 footer 關於雨田欄，選單順序對齊首頁區段流；五錨點（about/services/team/faq/contact）全數存在且定位無 navbar 覆蓋，#contact 由 CTA 預約諮詢覆蓋。桌機+手機抽屜皆 preview 驗證",
+      "note": "Vincent 指定：menu 等最後統整。FAQ 區段已建好但 navbar 尚未指向。留待 P1 收尾一起做",
+      "commits": [
+        "842fb51"
+      ]
     },
     {
       "id": "faq-section-260607",
@@ -157,6 +174,78 @@
       "commits": [
         "339be49"
       ]
+    },
+    {
+      "id": "yt-A1",
+      "title": "文章詳情頁加「諮詢前準備清單」結尾區塊",
+      "status": "todo",
+      "track": "content",
+      "done_condition": "5 篇既有文章 build 通過、詳情頁顯示 fallback 通用清單；含 prepList frontmatter 的文章渲染客製清單；清單後接諮詢 CTA",
+      "note": "news/[slug].astro 文末新區塊（重用 HiCta 樣式）+ content.config.ts news schema 加選填 prepList。fallback 內容呼應首頁 FAQ 第 2 題。估 0.5 天。Heptabase 卡 [yt-A1]"
+    },
+    {
+      "id": "yt-A2",
+      "title": "「事發 72 小時」行政救濟系列 +2 篇",
+      "status": "todo",
+      "track": "content",
+      "done_condition": "考試資格救濟、退學處分救濟 2 篇發布（category 行政訴訟）、各含 prepList、律師終審通過",
+      "note": "複製肇逃吊照篇配方（鎖定一種情境一種人、開頭當事人原話）。素材=lawyers.ts cases 欄位（醫師考試資格案/警大退學案），需律所提供去識別化素材。估每篇 0.5-1 天。Heptabase 卡 [yt-A2]"
+    },
+    {
+      "id": "yt-A3",
+      "title": "[GATED] 服務區改情境分診入口",
+      "status": "blocked",
+      "track": "content",
+      "done_condition": "gate 解除（律所書面拍板＋假設驗證）後細拆實作 task",
+      "note": "雙 gate：①律所品牌決策（家事/民生要不要進敘事，SIFT 洞見1 縫隙）②「訪客需分診」為未驗證推論，建議用真實 intake 對話驗證。Heptabase 卡 [yt-A3]"
+    },
+    {
+      "id": "yt-A4",
+      "title": "[GATED] 委任流程透明頁／反向信任內容",
+      "status": "blocked",
+      "track": "content",
+      "done_condition": "律所點頭哪項就為該項立正式 task（含文案來源與審稿流程）",
+      "note": "①委任流程透明頁：放大 FAQ 既有可驗證承諾（書面說明收費）②「什麼情況我們會勸你不要告」。gate：Vincent 向律所提案測試接受度。Heptabase 卡 [yt-A4]"
+    },
+    {
+      "id": "yt-B0",
+      "title": "Claude for Legal pilot 工作量評估",
+      "status": "todo",
+      "track": "legal-ai",
+      "done_condition": "litigation-legal 19 個 skills＋commercial-legal 評估表交付（直接用/改寫/重寫三檔分類＋工時）；yt-B1 估時重估完成",
+      "note": "clone anthropics/claude-for-legal（Apache 2.0 已查證、本機無 clone）。標注四層構造佔比：機制/方法層可直接用 vs 法律內容層（FRE 408 等）需重寫。不碰當事人資料，gate 前可做；報告兼提案材料。估 1 天。B 線第一個 task。Heptabase 卡 [yt-B0]"
+    },
+    {
+      "id": "yt-B-gate",
+      "title": "[決策] 律所 AI 部署決策（保密/部署形態/預算）",
+      "status": "todo",
+      "track": "legal-ai",
+      "done_condition": "三項書面確認：①卷證進 AI 保密政策＋去識別化規則 ②部署形態（Claude for Work/Enterprise vs API，必須資料不訓練）③預算與 engagement 形式。不過則 B 線止於 yt-B0",
+      "note": "Vincent 行動項：帶 yt-B0 報告向律所提案。保留原 repo 定位聲明（輸出皆 attorney review 前草稿）。Heptabase 卡 [yt-B-gate]"
+    },
+    {
+      "id": "yt-B1",
+      "title": "Phase 1 中文化：litigation-legal＋commercial-legal",
+      "status": "blocked",
+      "track": "legal-ai",
+      "done_condition": "1 件已結民事案（去識別化）跑 chronology＋brief-section，律師評輸出品質達可用",
+      "note": "依賴 yt-B0＋yt-B-gate＋律所書狀範本。interview/practice profile 中文化、FRE 408 gate 改台灣脈絡、deposition-prep→交互詰問準備；方法層（逐字引文/pinpoint cite）不動；引註此階段全標 [verify]。估 1-2 週級（UNVERIFIED，B0 後重估）。Heptabase 卡 [yt-B1]"
+    },
+    {
+      "id": "yt-B2",
+      "title": "Phase 2 裁判書夜間同步 MCP",
+      "status": "todo",
+      "track": "legal-ai",
+      "done_condition": "MCP 可回傳裁判書全文＋出處；yt-B1 輸出引註帶真實案號可溯源",
+      "note": "帳號申請（opendata.judicial.gov.tw，審核時長 UNKNOWN）是全 B 線最早該動的人工步驟。JList/JDoc token 驗證、服務時段 0:00-6:00 → 架構=夜間同步本地索引非即時查詢。全國法規 XML 納同索引（參考 mojLawSplit）。可與 yt-B1 並行。估 1-2 週不含帳號等待。Heptabase 卡 [yt-B2]"
+    },
+    {
+      "id": "yt-B3",
+      "title": "Phase 3 自建刑事辯護＋行政救濟 plugin",
+      "status": "backlog",
+      "track": "legal-ai",
+      "done_condition": "yt-B1 完成後立細拆 task；暫不估時",
+      "note": "官方 12 款無刑事/行政救濟/家事。借 litigation-legal 骨架；刑事含量刑分析 skill（林根億司法院量刑研究小組背景=差異化，量刑系統介接待確認）；行政救濟與 yt-A2 內容線同利基。品質閘門 legal-builder-hub:skills-qa。Heptabase 卡 [yt-B3]"
     }
   ]
 }

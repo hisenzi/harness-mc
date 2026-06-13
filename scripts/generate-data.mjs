@@ -31,6 +31,8 @@ function normalize(t) {
     title: t.title || t.description || "",
     status: t.status || "not_started",
     track: t.track || "dev",
+    order: t.order ?? null,
+    order_label: t.order_label || "",
     foundation: t.foundation ?? null,
     issues_found: t.issues_found ?? 0,
     issues_fixed: t.issues_fixed ?? 0,
@@ -39,6 +41,7 @@ function normalize(t) {
     completed_at: t.completed_at || null,
     commits: t.commits || [],
     summary: t.summary || "",
+    external_refs: t.external_refs || {},
   };
 }
 

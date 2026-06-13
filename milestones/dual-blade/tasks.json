@@ -503,7 +503,9 @@
       "status": "done",
       "track": "infrastructure",
       "completed_at": "2026-06-13",
-      "commits": [],
+      "commits": [
+        "f3fa211"
+      ],
       "summary": "更新 app/projects/page.tsx，專案 modal 的 track header 會顯示 project.json tracks 說明，並替 control-plane 加上專屬顏色。重建 MC data 後可在 dual-blade 看到 control-plane track 與相關任務進度。",
       "done_condition": "dual-blade 專案頁能看到 control-plane track 與相關任務；若 dashboard 對新 track 顯示不清，補 UI 或資料層調整。",
       "note": "此任務排在最後，等 control-plane tasks 寫入後再驗證 dashboard 呈現是否足夠。"
@@ -514,10 +516,347 @@
       "status": "done",
       "track": "control-plane",
       "completed_at": "2026-06-13",
-      "commits": [],
+      "commits": [
+        "f3fa211"
+      ],
       "summary": "建立完整系統解法：ADR metadata 加 Projects，project.json 加 decision_refs，generate-data 帶出 decision_refs，MC 專案 modal 顯示關鍵決策，check-adr-backlinks.mjs 在 prebuild 檢查雙向索引。",
       "done_condition": "ADR-003 Projects metadata 與 dual-blade/project.json decision_refs 雙向一致；npm run build 會先跑 ADR backlink checker，缺漏時失敗。",
       "note": "解決『不是 Vincent 提醒才知道要看 ADR』的系統問題。ADR 正本仍在 notyet-harness/000_Agent/decisions，MC project 只保留引用。"
+    },
+    {
+      "id": "agent-control-plane-execution-plan",
+      "title": "Agent Control Plane 執行計劃正本",
+      "status": "done",
+      "track": "control-plane",
+      "completed_at": "2026-06-13",
+      "commits": [],
+      "summary": "補上 000_Agent/docs/agent-control-plane/execution-plan-260613.md，將 roadmap 轉成可執行 task sequence，並讓 roadmap 結尾指向 execution plan。",
+      "done_condition": "execution-plan-260613.md 存在，scheduler-security-memory-roadmap-260613.md 的 Immediate Next Actions 指向該文件，並列出第一批 execution tasks。",
+      "note": "修正盲點：不能只寫 planning / roadmap，必須規劃執行與 MC 追蹤。"
+    },
+    {
+      "id": "heptabase-cli-task-card-adapter",
+      "title": "Heptabase CLI task card adapter",
+      "status": "done",
+      "track": "control-plane",
+      "order": 1,
+      "order_label": "ACP-HB-01",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "e23b5e5"
+      ],
+      "summary": "建立 heptabase-task-cards/scripts/create-task-cards.mjs，讓 MC tasks.json 可透過官方 Heptabase CLI 建立 note card 並加入既有白板；同步更新 skill 與 MCP/tools boundary，採 CLI adapter first、MCP later。",
+      "done_condition": "create-task-cards.mjs 可 dry-run、可用 Heptabase CLI 建 note card、可 add-card 到既有 whiteboard；SKILL.md 與 mcp-tools-boundary-map-260613.md 記錄 CLI adapter 邊界。",
+      "note": "已用 MC 儀表版白板驗證 7 張 harness-mc control-plane task cards 建立成功；Heptabase 是視覺層，MC tasks.json 仍是 source of truth。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "1a9234dd-e943-4514-9574-ea9471627f70",
+          "synced_at": "2026-06-14",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    {
+      "id": "heptabase-cli-append-mode",
+      "title": "Heptabase CLI append mode",
+      "status": "done",
+      "track": "control-plane",
+      "order": 2,
+      "order_label": "ACP-HB-02",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "e23b5e5"
+      ],
+      "depends_on": [
+        "heptabase-cli-task-card-adapter"
+      ],
+      "summary": "為 Heptabase task card adapter 新增 --append-existing；既有卡片會追加更新紀錄，不重建、不覆蓋原內容，並補上測試與 skill 文件。",
+      "done_condition": "create-task-cards.mjs 支援 --append-existing，測試覆蓋 append markdown 不重複 H1；dry-run 能顯示 appendExisting=true。",
+      "note": "append 模式適合補進度、決策、commit hash；replace mode 另行設計。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "ba3a5d99-3f47-40b2-a250-760e75137cb0",
+          "synced_at": "2026-06-14",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    {
+      "id": "heptabase-cli-integration-record",
+      "title": "Heptabase CLI 接入紀錄回填",
+      "status": "done",
+      "track": "control-plane",
+      "order": 3,
+      "order_label": "ACP-HB-03",
+      "depends_on": [
+        "heptabase-cli-task-card-adapter",
+        "heptabase-cli-append-mode"
+      ],
+      "completed_at": "2026-06-14",
+      "summary": "回填 Heptabase CLI 接入治理紀錄：boundary map 記錄 CLI adapter first / MCP later 的原因與 card color 限制，daily log 記錄今日決策脈絡，Heptabase card 追加同步紀錄。",
+      "done_condition": "回填 daily log、MC task summary、相關 Heptabase 卡片 append 紀錄，讓未來 agent 查得到為何採 Heptabase CLI adapter first、MCP later。",
+      "note": "這是治理紀錄，不是新功能；目標是讓決策可追溯。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "aed428dc-09d7-4f0b-a586-a36f2f967d8a",
+          "synced_at": "2026-06-14",
+          "sync_mode": "appended"
+        }
+      },
+      "commits": [
+        "e23b5e5"
+      ]
+    },
+    {
+      "id": "heptabase-task-external-refs-schema",
+      "title": "MC task external_refs.heptabase schema",
+      "status": "done",
+      "track": "control-plane",
+      "order": 4,
+      "order_label": "ACP-HB-04",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "e23b5e5"
+      ],
+      "depends_on": [
+        "heptabase-cli-task-card-adapter"
+      ],
+      "summary": "定義 tasks.json 的 external_refs.heptabase 欄位，並讓 generate-data.mjs 保留 external_refs；已將 7 張 MC 儀表版 Heptabase 卡片 ID 回填到對應 dual-blade tasks。",
+      "done_condition": "定義 tasks.json 的 external_refs.heptabase 欄位，至少包含 whiteboard/card_id/synced_at/sync_mode，並補一個 sample task 驗證不破壞 MC rebuild。",
+      "note": "讓 Heptabase 卡片關聯回 MC task source of truth；不讓 Heptabase 反向成為正本。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "2e551a3d-5eea-4672-8300-d28e162b5139",
+          "synced_at": "2026-06-14",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    {
+      "id": "heptabase-task-sync-write-back",
+      "title": "Heptabase task sync write-back",
+      "status": "done",
+      "track": "control-plane",
+      "order": 5,
+      "order_label": "ACP-HB-05",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "e23b5e5"
+      ],
+      "depends_on": [
+        "heptabase-task-external-refs-schema"
+      ],
+      "summary": "create-task-cards.mjs 新增 --write-back，正式同步 Heptabase 成功後會把 card_id、whiteboard、synced_at、sync_mode 回寫到 tasks.json 的 external_refs.heptabase；dry-run 不寫檔。",
+      "done_condition": "create-task-cards.mjs 支援 --write-back：建立或重用卡片後，把 card_id、whiteboard、synced_at、sync_mode 回寫到對應 tasks.json，並保留 dry-run preview。",
+      "note": "write-back 只更新 MC tasks.json 的 external_refs，不從 Heptabase 讀狀態覆蓋 MC。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "ae201d33-c941-4bbc-9b66-3f4eb32e4c8e",
+          "synced_at": "2026-06-14",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    {
+      "id": "heptabase-task-sync-mode",
+      "title": "Heptabase task sync mode",
+      "status": "done",
+      "track": "control-plane",
+      "order": 6,
+      "order_label": "ACP-HB-06",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "e23b5e5"
+      ],
+      "depends_on": [
+        "heptabase-task-sync-write-back",
+        "heptabase-cli-append-mode"
+      ],
+      "summary": "create-task-cards.mjs 新增 --sync lifecycle mode；dry-run 會列出 create/append plan，正式同步會依 external_refs.heptabase.card_id append 或建立卡片，並自動 write-back。",
+      "done_condition": "create-task-cards.mjs 支援 --sync：沒有 card_id 時 create + add-card + write-back；有 card_id 時 append 更新紀錄；dry-run 列出 create/append/skip 計畫。",
+      "note": "把 task 寫好後接著新增卡片或內容變成一條可執行流程，避免靠人記。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "accac7fc-19e8-4667-9940-18da662a2cfb",
+          "synced_at": "2026-06-14",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    {
+      "id": "heptabase-task-sequence-labels",
+      "title": "Heptabase task sequence labels",
+      "status": "done",
+      "track": "control-plane",
+      "order": 7,
+      "order_label": "ACP-HB-07",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "e23b5e5"
+      ],
+      "depends_on": [
+        "heptabase-task-sync-mode"
+      ],
+      "summary": "為 Heptabase task lifecycle 加入 order/order_label 欄位，並讓 Heptabase 卡片標題使用穩定順序標籤，例如 [ACP-HB-01] [task-id] title。",
+      "done_condition": "dual-blade / harness-mc 的 Heptabase task cards 有 order/order_label；create-task-cards.mjs 產生含順序標籤的標題，並可用 --update-title-only 更新既有卡片標題。",
+      "note": "排序欄位留在 MC tasks.json；Heptabase 卡片標題只是同步顯示。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "b2c15224-e761-4c3b-a798-71ff21734240",
+          "synced_at": "2026-06-14",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    {
+      "id": "heptabase-task-lifecycle-hooks",
+      "title": "Task lifecycle Heptabase sync hooks",
+      "status": "done",
+      "track": "control-plane",
+      "order": 8,
+      "order_label": "ACP-HB-08",
+      "depends_on": [
+        "heptabase-task-sync-mode"
+      ],
+      "completed_at": "2026-06-14",
+      "summary": "補上 Heptabase task lifecycle hooks：project-init 在開案後可 dry-run / sync task cards，planning 在寫 tasks.json 後要求 MC build 與 Heptabase 發布判斷，worktree-commit 在 task 回填後 append 既有 Heptabase card；同時記錄 CLI 目前不支援 card color。",
+      "done_condition": "更新 project-init / planning / worktree-commit 相關 skill：新增 task 後提示或執行 Heptabase sync；commit 回填 task 後 append 完成紀錄到既有 Heptabase 卡片。",
+      "note": "先做 skill-level hook，不做無確認背景自動化；外部寫入仍需有明確 task scope。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "519add72-b283-45e1-aab3-bc6c38b97a2b",
+          "synced_at": "2026-06-14",
+          "sync_mode": "appended"
+        }
+      },
+      "commits": [
+        "e23b5e5"
+      ]
+    },
+    {
+      "id": "heptabase-task-refresh-existing",
+      "title": "Heptabase existing card summary refresh mode",
+      "status": "done",
+      "track": "control-plane",
+      "order": 9,
+      "order_label": "ACP-HB-09",
+      "depends_on": [
+        "heptabase-task-lifecycle-hooks"
+      ],
+      "completed_at": "2026-06-14",
+      "summary": "新增 --refresh-existing 模式：用 note read/save 更新既有 Heptabase card 的頂部 H1、Status、內容與完成標準，同時保留下方更新紀錄，修正 append 後卡片頂部仍顯示舊 todo 的問題。",
+      "done_condition": "create-task-cards.mjs 支援 --refresh-existing，測試覆蓋只替換更新紀錄前的頂部摘要；skill 與 external_refs schema 記錄 refreshed sync_mode。",
+      "note": "修正 Heptabase 視覺層盲點：append 保留歷史，但第一眼摘要也必須跟 MC source of truth 一致。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "12ce2444-5b97-418b-b4f1-008aa3227b41",
+          "synced_at": "2026-06-14",
+          "sync_mode": "appended"
+        }
+      },
+      "commits": [
+        "e23b5e5"
+      ]
+    },
+    {
+      "id": "cc-log-worktree-commit-bridge",
+      "title": "cc-log to worktree-commit handoff and strict 4C gate",
+      "status": "done",
+      "track": "control-plane",
+      "order": 10,
+      "order_label": "ACP-SKILL-01",
+      "completed_at": "2026-06-14",
+      "summary": "優化階段性完成流程：cc-log 在專案階段完成時輸出 commit-handoff 並接到 worktree-commit；worktree-commit 的 4C 10 天自驗改成必填表格 gate，禁止用 OK/PASS/看得懂帶過。",
+      "done_condition": "cc-log skill 明確定義 project completion handoff；worktree-commit skill Step 0 讀 handoff、Step 4c 嚴格要求 Context/Change/Cause/Check 四列與 PASS 結論，未通過不能進 Vincent commit 確認。",
+      "note": "修正 4C 容易被口頭蓋章跳過的舊問題；讓 cc-log 記錄與 commit 防呆流程接成同一條階段收尾流程。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "2eb67d5e-9f5b-4913-86da-0c6f3cc8c953",
+          "synced_at": "2026-06-14",
+          "sync_mode": "appended"
+        }
+      },
+      "commits": [
+        "e23b5e5"
+      ]
+    },
+    {
+      "id": "agent-control-plane-schedule-inventory",
+      "title": "Agent Control Plane schedule inventory",
+      "status": "todo",
+      "track": "control-plane",
+      "done_condition": "產出 schedule-inventory-260613.md，盤點 active schedules、OpenClaw historical jobs、Codex App automations；每筆都有 source/status/executor kind/migration decision。",
+      "note": "執行前不可改 live schedule；先 read-only inventory。"
+    },
+    {
+      "id": "agent-control-plane-security-policy",
+      "title": "Agent-neutral security policy draft",
+      "status": "todo",
+      "track": "control-plane",
+      "done_condition": "產出 security-policy-260613.md 或 CORE.md 精簡段落，包含 secret denylist、operation tiers、third-party intake、shared memory rule。",
+      "note": "從 openclaw-security-extract-260613.md 萃取，但不得恢復 OpenClaw runtime dependency。"
+    },
+    {
+      "id": "agent-control-plane-memory-policy",
+      "title": "Agent-neutral memory policy draft",
+      "status": "todo",
+      "track": "control-plane",
+      "done_condition": "產出 memory-policy-260613.md，明列 L0/L1/L2/Daily/Adapter memory 與 canonical vs cache 邊界。",
+      "note": "解決 MEMORY.md owner 從 HiSenzi 轉成 Vincent 授權下 shared brain governance。"
+    },
+    {
+      "id": "agent-control-plane-schedule-schema",
+      "title": "Agent-neutral schedule schema",
+      "status": "todo",
+      "track": "control-plane",
+      "depends_on": [
+        "agent-control-plane-schedule-inventory"
+      ],
+      "done_condition": "產出 schedule-schema-260613.md 或 schedule/schema.json，能映射 OpenClaw historical jobs、local scripts、agent turns、Codex heartbeat 三個以上 sample。",
+      "note": "依賴 schedule inventory；schema 穩定前不做 controlled write。"
+    },
+    {
+      "id": "agent-control-plane-readonly-query-schema",
+      "title": "Read-only MC / architecture query schema",
+      "status": "todo",
+      "track": "control-plane",
+      "depends_on": [
+        "adr-project-backlink-system"
+      ],
+      "done_condition": "產出 read-only-query-schema-260613.md，定義 mc.list_projects、mc.get_project、mc.list_tasks、architecture.search 的 input/output。",
+      "note": "先設計 read-only schema，再評估 MCP v1。"
+    },
+    {
+      "id": "agent-control-plane-mcp-v1-evaluation",
+      "title": "MCP v1 評估（read-only first）",
+      "status": "todo",
+      "track": "control-plane",
+      "depends_on": [
+        "agent-control-plane-schedule-schema",
+        "agent-control-plane-readonly-query-schema"
+      ],
+      "done_condition": "根據 schedule schema 與 read-only query schema，決定 MCP v1 是否只做 read-only tools；列出採用/暫緩理由。",
+      "note": "不得跳過 inventory / schema 直接 MCP 化。"
     }
   ]
 }

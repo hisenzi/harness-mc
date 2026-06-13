@@ -30,6 +30,14 @@ interface Project {
   done: number;
   total: number;
   tracks: Record<string, string>;
+  decision_refs?: DecisionRef[];
+}
+
+interface DecisionRef {
+  adr?: string;
+  title: string;
+  path: string;
+  note?: string;
 }
 
 const trackMeta: Record<string, { bg: string; text: string }> = {
@@ -39,6 +47,7 @@ const trackMeta: Record<string, { bg: string; text: string }> = {
   dev: { bg: "bg-blue-500/15", text: "text-blue-400" },
   ops: { bg: "bg-yellow-500/15", text: "text-yellow-400" },
   planning: { bg: "bg-green-500/15", text: "text-green-400" },
+  "control-plane": { bg: "bg-cyan-500/15", text: "text-cyan-400" },
 };
 
 function StatusDot({ status }: { status: string }) {
@@ -238,6 +247,26 @@ export default function ProjectsPage() {
             <div className="flex-1 overflow-auto p-4">
               <ProgressBar done={selected.done} total={selected.total} type={selected.type} />
 
+              {selected.decision_refs && selected.decision_refs.length > 0 && (
+                <div className="mt-4 rounded-lg border border-[var(--border)] bg-[var(--bg)]/50 p-3">
+                  <div className="text-small font-medium text-[var(--text)] mb-2">關鍵決策</div>
+                  <div className="space-y-2">
+                    {selected.decision_refs.map((ref) => (
+                      <div key={`${ref.adr || ref.title}-${ref.path}`} className="text-small">
+                        <div className="flex flex-wrap items-baseline gap-2">
+                          {ref.adr && (
+                            <span className="text-caption px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-400">{ref.adr}</span>
+                          )}
+                          <span className="font-medium text-[var(--text)]">{ref.title}</span>
+                        </div>
+                        <div className="mt-0.5 font-mono text-caption text-[var(--text-muted)] break-all">{ref.path}</div>
+                        {ref.note && <div className="mt-0.5 text-caption text-[var(--text-muted)]">{ref.note}</div>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {(() => {
                 const tracks = [...new Set(selected.tasks.map((t) => t.track))];
                 return tracks.map((key) => {
@@ -246,10 +275,16 @@ export default function ProjectsPage() {
                     (t) => t.status === "done" || t.status === "completed" || t.status === "fixed"
                   ).length;
                   const m = trackMeta[key] || { bg: "", text: "" };
+                  const trackDescription = selected.tracks?.[key];
                   return (
                     <div key={key} className="mt-4">
-                      <div className="text-small text-[var(--text-muted)] font-medium mb-2">
-                        {key} ({doneCount}/{tasks.length})
+                      <div className="mb-2 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                        <span className={`text-small font-medium px-1.5 py-0.5 rounded ${m.bg} ${m.text || "text-[var(--text-muted)]"}`}>
+                          {key} ({doneCount}/{tasks.length})
+                        </span>
+                        {trackDescription && (
+                          <span className="text-caption text-[var(--text-muted)]">{trackDescription}</span>
+                        )}
                       </div>
                       {tasks.map((task) => {
                         const isDone = task.status === "done" || task.status === "completed" || task.status === "fixed";

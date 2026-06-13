@@ -1,7 +1,7 @@
 {
   "id": "dual-blade",
-  "name": "雙刀流系統",
-  "description": "CC（Claude Code，小未）+ OC（OpenClaw，HiSenzi）兩台 Mac 透過 git 同步 brain 的 AI agent 協作系統。brain 內容、同步機制、備份、跨 agent 標準的整體治理。",
+  "name": "AI Agent 共享腦系統（原雙刀流）",
+  "description": "Claude Code / Codex / 未來 agent 共用 notyet-harness brain 的可攜協作系統。OpenClaw / HiSenzi 不再作為日常參與者，僅保留為歷史資料來源與架構萃取來源。brain 內容、同步機制、備份、跨 agent 標準的整體治理。",
   "type": "system",
   "status": "in_progress",
   "priority": "high",
@@ -10,8 +10,9 @@
   "estimated_completion": "TBD",
   "tags": ["dual-blade", "brain", "infrastructure", "multi-agent", "git", "ai-agent"],
   "goals": [
-    "兩台 Mac brain 即時可用、資料屬於 Vincent",
-    "任何 AI agent（CC / OC / Codex / 未來工具）可快速 onboard 使用 brain",
+    "共享 brain 即時可用、資料屬於 Vincent",
+    "任何 AI agent（Claude Code / Codex / 未來工具）可快速 onboard 使用 brain",
+    "OpenClaw 早期資料可被萃取，但不成為新系統 runtime 依賴",
     "架構變動可追蹤（ADR 紀錄系統）",
     "完整備份體系（多層、可演練）"
   ],
@@ -33,18 +34,34 @@
       "impact": "high",
       "probability": "medium",
       "mitigation": "ADR-002 觸發條件 #2 寫客戶 onboarding 出現時重啟評估"
+    },
+    {
+      "risk": "舊文件仍把 OpenClaw / HiSenzi 寫成 active agent，可能誤導後續 agent",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "以 $COLLAB/AGENTS.md 與 000_Agent/CORE.md 為入口，逐步清理 milestone / architecture / skills 中的 active OC/HiSenzi 敘述"
     }
   ],
   "success_criteria": [
-    "MBA-1 + MBA-2 brain 從 GD 完全切到 git，兩台都驗證可用",
+    "Claude Code / Codex 可透過 $COLLAB 與 000_Agent/CORE.md 讀取共享 brain",
     "任何架構決策進 000_Agent/decisions/ 走 ADR pattern",
     "MEMORY.md / SOUL.md / CORE.md 內容 agent-neutral",
-    "8 層備份體系健全可演練"
+    "OpenClaw / HiSenzi 相關資料標為 historical source，不再作為日常協作前提",
+    "備份體系健全可演練"
+  ],
+  "decision_refs": [
+    {
+      "adr": "ADR-003",
+      "title": "dual-blade 轉型為 Vincent Agent Control Plane",
+      "path": "$COLLAB/notyet-harness/000_Agent/decisions/ADR-003-agent-control-plane.md",
+      "note": "查此專案前先讀；它說明為何 dual-blade 不新開案、為何 OpenClaw / HiSenzi 退為 historical source。"
+    }
   ],
   "tracks": {
-    "migration": "brain 大遷移（GD → git）M1-M5 + 後續路徑切換",
+    "migration": "brain 大遷移（GD → git）+ OpenClaw 歷史資料萃取與退場",
     "infrastructure": "備份體系（8 層）、launchd、git workflow",
     "standards": "ADR 紀錄系統、跨 agent portability、Codex / 客戶分享",
+    "control-plane": "Agent Control Plane / shared brain / runtime governance 的架構轉型",
     "knowledge": "Obsidian 知識庫、skills、MEMORY 維護",
     "outreach": "對外 starter kit、公開發布"
   }

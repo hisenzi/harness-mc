@@ -79,9 +79,9 @@
     {
       "id": "migration-verify-mba2",
       "title": "MBA-2 遷移驗收",
-      "status": "blocked",
+      "status": "deferred",
       "track": "migration",
-      "note": "依賴 M4。驗收清單：000_Agent/docs/migration-verification-checklist.md § MBA-2。git pull → S1-S5 / E1-E5 / OC cron 確認"
+      "note": "OpenClaw / HiSenzi 退出日常協作後，MBA-2 / OC cron 不再是新系統 runtime 驗收前提。僅保留為歷史遷移紀錄；如需萃取 OpenClaw 排程再回查。"
     },
     {
       "id": "migration-backup-config",
@@ -93,9 +93,9 @@
     {
       "id": "migration-oc-cron-path",
       "title": "MBA-2 OC cron job 路徑確認（是否引用 GD）",
-      "status": "blocked",
+      "status": "deferred",
       "track": "migration",
-      "note": "5/14 MBA-1 查不到 cron 設定，但 MBA-2 OC Gateway 可能有排程呼叫舊 GD 路徑的腳本。需 MBA-2 上 openclaw cron list 確認"
+      "note": "OpenClaw / HiSenzi 不再作為日常參與者後，此項不再是 runtime blocker。若後續萃取 OpenClaw 排程系統，才回查 MBA-2 / OC cron path。"
     },
     {
       "id": "migration-gd-residual",
@@ -155,16 +155,29 @@
     {
       "id": "portability-evaluation",
       "title": "AGENTS.md / OpenAgentSkills / MCP 標準採納評估",
-      "status": "deferred",
+      "status": "in_progress",
       "track": "standards",
-      "note": "ADR-002 Deferred。觸發條件：Codex 真用 / 客戶 onboarding / vendor 變動 / 半年重檢"
+      "note": "ADR-002 原本 Deferred；2026-06-13 因 Vincent 實際使用 Codex 觸發重啟。新方向：OpenClaw / HiSenzi 不再參與日常協作，改由 Claude Code / Codex / 未來 agent 透過 $COLLAB + AGENTS.md + shared skills 接入。MCP 對照仍待做。"
     },
     {
       "id": "codex-prototype",
       "title": "Codex 30 min prototype 驗證 brain 可讀性",
-      "status": "deferred",
+      "status": "done",
       "track": "standards",
-      "note": "ADR-002 觸發條件之一。Vincent 真用 Codex 那天再做"
+      "completed_at": "2026-06-13",
+      "commits": [],
+      "summary": "Codex 已可透過全域 ~/.codex/AGENTS.md、$COLLAB/AGENTS.md、notyet-harness/AGENTS.md 讀取共享入口；skills 透過 ~/.agents/skills 與 $COLLAB/.agents/skills 指向 notyet-harness/000_Agent/skills。",
+      "note": "本機設定與 symlink 已驗證可掃描共享 skills。此 prototype 同時確認 CORE.md 維持單一來源，AGENTS.md 作薄入口。"
+    },
+    {
+      "id": "openclaw-hisenzi-retire",
+      "title": "OpenClaw / HiSenzi 退出日常協作角色",
+      "status": "done",
+      "track": "standards",
+      "completed_at": "2026-06-13",
+      "commits": [],
+      "summary": "雙刀流定位調整：OpenClaw / HiSenzi 之後不再作為日常共同參與者；保留為歷史資料來源與架構萃取來源。主要入口轉為 Claude Code / Codex / 未來 agent 共用 $COLLAB 與 notyet-harness。",
+      "note": "後續需清理仍把 OC / HiSenzi 當 active agent 的文件與任務；不影響 .openclaw_260418 作為排程、安全、記憶系統的歷史萃取來源。"
     },
     {
       "id": "client-share-structure",
@@ -218,9 +231,9 @@
     {
       "id": "memory-md-trim",
       "title": "MEMORY.md 28 個 P1 專案瘦身",
-      "status": "blocked",
+      "status": "todo",
       "track": "knowledge",
-      "note": "HiSenzi 管 MEMORY.md，CC 唯讀。HiSenzi 自行處理"
+      "note": "原先標 HiSenzi 管 MEMORY.md；OpenClaw / HiSenzi 退出後需重新定義 owner。暫定由 Vincent 授權下的 Claude Code / Codex 共同維護，仍需保留敏感資料邊界。"
     },
     {
       "id": "cc-boundary-mc-write",
@@ -276,7 +289,7 @@
       "status": "todo",
       "track": "standards",
       "done_condition": ".claude/settings.json 加 PreToolUse hook，git commit 前自動 grep 硬編路徑，命中則 block",
-      "note": "CORE.md 規範已寫（2026-05-14）。git pre-commit hook 等 MBA-2 上線或 HiSenzi commit 再加"
+      "note": "CORE.md 規範已寫（2026-05-14）。OpenClaw / HiSenzi 退出日常協作後，改以 Claude Code / Codex 共用入口與 commit 前檢查為主；不再等待 HiSenzi commit。"
     },
     {
       "id": "worktree-commit-skill",
@@ -349,7 +362,7 @@
         "6235f6c"
       ],
       "summary": "11 skill references/scripts 路徑原寫死 OC 路徑（~/.openclaw/workspace/skills/），CC 透過 symlink 共用同份 skill 但無此路徑致 Step 0 cat rules.md 失敗；改 $S 雙端偵測（先試 ~/.claude/skills，不存在才用 ~/.openclaw/workspace/skills），OC 零影響",
-      "note": "auto-task：commit 6235f6c。security-scan 之前 session 已自行去 OC 路徑未納入；對端 MBA-2 git pull 後需驗證 OC fallback。診斷見 CC memory feedback_skill_dual_path"
+      "note": "auto-task：commit 6235f6c。歷史上為 CC/OC 雙端偵測；2026-06-13 後 OC fallback 視為 legacy compatibility，不再是日常協作驗收前提。診斷見 CC memory feedback_skill_dual_path"
     },
     {
       "id": "project-init-v3.1",
@@ -387,7 +400,10 @@
       "status": "done",
       "track": "infrastructure",
       "completed_at": "2026-06-08",
-      "commits": ["ce86e9a", "8febf7f"],
+      "commits": [
+        "ce86e9a",
+        "8febf7f"
+      ],
       "summary": "引擎九步＋可插拔風格（styles/）。整合 editorial-rules.md（threads-writer/CONTENT-PLAN/EDITORIAL/session 踩坑四源）、Step 0 強制讀正本硬閘門、Step 6 去 AI 味判準、Step 10 寫完貼全文。住 notyet-harness/000_Agent/skills/（hash 屬 notyet-harness repo）",
       "note": "auto-task：commit 時無對應 task，自動建立"
     },
@@ -397,9 +413,111 @@
       "status": "done",
       "track": "infrastructure",
       "completed_at": "2026-06-08",
-      "commits": ["f8a9a14"],
+      "commits": [
+        "f8a9a14"
+      ],
       "summary": "CC 原生重寫，移除 OpenClaw skill-creator/obsidian-note.py 依賴（CC 機不存在會卡死）；周邊整合改 best-effort 不當閘門。住 notyet-harness/000_Agent/skills/（hash 屬 notyet-harness repo）",
       "note": "auto-task：commit 時無對應 task，自動建立"
+    },
+    {
+      "id": "agent-control-plane-sift-validation",
+      "title": "Agent Control Plane 趨勢驗證與非顯見定位",
+      "status": "done",
+      "track": "control-plane",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "82e9573"
+      ],
+      "summary": "產出 000_Agent/docs/agent-control-plane/sift-validation-260613.md。用 HC #sift 驗證 agent harness / runtime / control plane 趨勢，結論是先定位 Vincent-owned personal agent infrastructure，不急著新開案或全面 MCP 化。",
+      "done_condition": "產出一份 SIFT validation note，說清楚顯見趨勢、Vincent 的非顯見切入點、已存在元件、暫不做的 buzzword。",
+      "note": "先驗證定位，再進 ADR。重點不是新開案，而是確認 dual-blade 轉型為使用者擁有的 Agent Control Plane 是否站得住。"
+    },
+    {
+      "id": "agent-control-plane-adr",
+      "title": "Agent Control Plane 架構決策 ADR",
+      "status": "done",
+      "track": "control-plane",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "82e9573"
+      ],
+      "summary": "產出 000_Agent/decisions/ADR-003-agent-control-plane.md，並更新 decisions/README.md。記錄 dual-blade 轉型為 Vincent Agent Control Plane，ADR-002 的 Codex 真用觸發條件已發生。",
+      "done_condition": "在 000_Agent/decisions/ 產出 ADR，包含為何先放 dual-blade、不新開案、OpenClaw / HiSenzi 為何退為 historical source、Claude Code / Codex / future agents 如何接入。",
+      "note": "依賴 agent-control-plane-sift-validation。ADR 用來防止後續 agent 只看現況、不知道為何這樣決定。"
+    },
+    {
+      "id": "agent-runtime-layer-map",
+      "title": "Agent Runtime 五層映射",
+      "status": "done",
+      "track": "control-plane",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "82e9573"
+      ],
+      "summary": "更新 000_Agent/ARCHITECTURE.md，新增 Agent Control Plane Reference Architecture。完成 Entry / Rules / Capabilities / Runtime / Governance 五層映射與 Minimum Viable Control Plane 定義。",
+      "done_condition": "ARCHITECTURE.md 新增 Agent Control Plane Reference Architecture，明確對應 AGENTS.md、CORE.md、skills/、schedule/MCP/hooks、security/memory/MC/audit。",
+      "note": "目標是定義 Minimum Viable Control Plane：哪些元件必須穩定，哪些 agent 可以替換。"
+    },
+    {
+      "id": "openclaw-architecture-extract",
+      "title": "OpenClaw 歷史架構萃取",
+      "status": "done",
+      "track": "migration",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "82e9573"
+      ],
+      "summary": "產出三份 historical extract：openclaw-schedule-extract-260613.md、openclaw-security-extract-260613.md、openclaw-memory-extract-260613.md。每份都標出可沿用、需改寫、淘汰三類。",
+      "done_condition": "產出三份萃取筆記，分別標出可沿用、需改寫、淘汰三類；不得把 OpenClaw / HiSenzi 重新設為 active runtime dependency。",
+      "note": "OpenClaw 只作 historical source。此任務依賴 agent-runtime-layer-map，避免先搬技術再補架構。"
+    },
+    {
+      "id": "scheduler-security-memory-roadmap",
+      "title": "排程、安全、記憶系統 roadmap",
+      "status": "done",
+      "track": "control-plane",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "82e9573"
+      ],
+      "summary": "產出 000_Agent/docs/agent-control-plane/scheduler-security-memory-roadmap-260613.md。將排程、安全、記憶分成 Phase 0 立即微調、Phase 1 schema/document、Phase 2 runtime adapter、Phase 3 MCP 接入。",
+      "done_condition": "列出現在要微調的排程、最低安全規範、agent-neutral memory 維護方式，並標出哪些要進 agnostic-scheduler、哪些留在 CORE/ARCHITECTURE。",
+      "note": "這是 roadmap，不是一次實作所有系統。先定邊界和優先順序。"
+    },
+    {
+      "id": "mcp-tools-boundary-map",
+      "title": "MCP 與工具接入邊界對照",
+      "status": "done",
+      "track": "control-plane",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "82e9573"
+      ],
+      "summary": "產出 000_Agent/docs/agent-control-plane/mcp-tools-boundary-map-260613.md。定義 MCP 化判斷條件，先推 read-only MCP candidates，寫入、secret、外部發布與破壞性操作保留 approval/manual 邊界。",
+      "done_condition": "產出邊界表，分類哪些要 MCP 化、哪些維持 local script、哪些只是 skill 文件、哪些需要人工 approval。",
+      "note": "外部趨勢是 MCP 化，但 Vincent 系統要先以資料所有權、可攜性、安全邊界為準。"
+    },
+    {
+      "id": "control-plane-mc-dashboard-update",
+      "title": "Mission Control 顯示 Agent Control Plane track",
+      "status": "done",
+      "track": "infrastructure",
+      "completed_at": "2026-06-13",
+      "commits": [],
+      "summary": "更新 app/projects/page.tsx，專案 modal 的 track header 會顯示 project.json tracks 說明，並替 control-plane 加上專屬顏色。重建 MC data 後可在 dual-blade 看到 control-plane track 與相關任務進度。",
+      "done_condition": "dual-blade 專案頁能看到 control-plane track 與相關任務；若 dashboard 對新 track 顯示不清，補 UI 或資料層調整。",
+      "note": "此任務排在最後，等 control-plane tasks 寫入後再驗證 dashboard 呈現是否足夠。"
+    },
+    {
+      "id": "adr-project-backlink-system",
+      "title": "ADR 與 Mission Control project 雙向索引系統",
+      "status": "done",
+      "track": "control-plane",
+      "completed_at": "2026-06-13",
+      "commits": [],
+      "summary": "建立完整系統解法：ADR metadata 加 Projects，project.json 加 decision_refs，generate-data 帶出 decision_refs，MC 專案 modal 顯示關鍵決策，check-adr-backlinks.mjs 在 prebuild 檢查雙向索引。",
+      "done_condition": "ADR-003 Projects metadata 與 dual-blade/project.json decision_refs 雙向一致；npm run build 會先跑 ADR backlink checker，缺漏時失敗。",
+      "note": "解決『不是 Vincent 提醒才知道要看 ADR』的系統問題。ADR 正本仍在 notyet-harness/000_Agent/decisions，MC project 只保留引用。"
     }
   ]
 }

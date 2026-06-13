@@ -92,6 +92,7 @@ for (const dir of fs.readdirSync(milestonesDir)) {
       done,
       total: tasks.length,
       tracks: meta.tracks || {},
+      decision_refs: meta.decision_refs || [],
     });
   } catch {
     // skip malformed

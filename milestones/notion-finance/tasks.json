@@ -149,6 +149,113 @@
       "note": "已讀完現有實作，尚未寫入新版"
     },
     {
+      "id": "mc-5",
+      "title": "建立領現計畫 derived model（應備現金/ATM 計畫/已領/尚未領/零頭結轉）",
+      "status": "completed",
+      "track": "mc",
+      "note": "先不改 Notion schema；從 sourceMonth.settlement.next_month_cash 與 executionMonth 的 ATM領現轉帳 records 推導 requiredCash/plannedAtm/carryForward/withdrawn/remainingToWithdraw/status",
+      "completed_at": "2026-06-15",
+      "summary": "Withdrawal-plan derived model now calculates required cash, planned ATM amount, withdrawn cash, remaining withdrawal, carry-forward, and status from cached finance data.",
+      "commits": [
+        "1f0bd74"
+      ]
+    },
+    {
+      "id": "mc-6",
+      "title": "修正月結區塊文案：下月實際領現 → 下月應備現金",
+      "status": "completed",
+      "track": "mc",
+      "note": "避免把 5 月月結算出的 6 月應備現金誤稱為實際領現；實際領現需由 6 月 ATM領現 records 計算",
+      "completed_at": "2026-06-15",
+      "summary": "Month-end cash label now says next-month required cash instead of actual withdrawal, separating plan from execution.",
+      "commits": [
+        "1f0bd74"
+      ]
+    },
+    {
+      "id": "mc-7",
+      "title": "新增本月領現進度區塊",
+      "status": "completed",
+      "track": "mc",
+      "note": "顯示應備現金、ATM 計畫、已領現、尚未領、零頭結轉；狀態包含 not_started/partial/complete/over_withdrawn",
+      "completed_at": "2026-06-15",
+      "summary": "Dashboard now shows current-month withdrawal progress with required cash, ATM plan, withdrawn, remaining, carry-forward, and status.",
+      "commits": [
+        "1f0bd74"
+      ]
+    },
+    {
+      "id": "mc-8",
+      "title": "拆分餘額語意顯示（月結帶入/已領現/本月餘額支付/目前可用/尚未領現）",
+      "status": "completed",
+      "track": "mc",
+      "note": "尚未領現是 execution backlog，不混入餘額 remaining；餘額 remaining 只反映已發生的月結帶入、已領現與本月餘額支付",
+      "completed_at": "2026-06-15",
+      "summary": "Balance semantics are separated in UI copy so withdrawal backlog is not counted as available envelope balance.",
+      "commits": [
+        "1f0bd74"
+      ]
+    },
+    {
+      "id": "mc-9",
+      "title": "補領現計畫計算測試與邊界情境",
+      "status": "completed",
+      "track": "mc",
+      "note": "驗證 47213→47000+213、已領 20000→尚未領 27000、已領 47000→complete、已領 50000→over_withdrawn，並確認 backlog 不污染餘額 remaining",
+      "completed_at": "2026-06-15",
+      "summary": "Withdrawal-plan verification script covers partial, complete, over-withdrawn, and carry-forward scenarios.",
+      "commits": [
+        "1f0bd74"
+      ]
+    },
+    {
+      "id": "mc-10",
+      "title": "重構 dashboard 月結/領現區塊元件邊界",
+      "status": "completed",
+      "track": "mc",
+      "note": "在 finance-dashboard/app/page.tsx 拆出或新增 WithdrawalPlanSection，讓 5 月月結計算與 6 月領現執行進度分離",
+      "completed_at": "2026-06-15",
+      "summary": "Dashboard separates month-end settlement planning from current-month withdrawal execution via a dedicated section.",
+      "commits": [
+        "1f0bd74"
+      ]
+    },
+    {
+      "id": "core-10",
+      "title": "更新信封模型文件：月結應備現金 vs 實際領現",
+      "status": "completed",
+      "track": "core",
+      "note": "補充月結算出的是下月應備現金；ATM 零頭進 carry_forward；尚未領現是 execution backlog，不算信封可用餘額",
+      "completed_at": "2026-06-15",
+      "summary": "Envelope model docs define required cash, actual withdrawal, ATM carry-forward, and withdrawal backlog rules.",
+      "commits": [
+        "1f0bd74"
+      ]
+    },
+    {
+      "id": "mc-11",
+      "title": "驗證 dashboard 領現追蹤顯示",
+      "status": "in_progress",
+      "track": "mc",
+      "note": "npm run test:withdrawal-plan 與 npm run build 已通過；實際資料驗證 2026-06 = requiredCash 47213 / withdrawn 20000 / remainingToWithdraw 27000 / carryForward 213。登入後視覺檢查尚待 Vincent 或已登入 session 驗證。",
+      "commits": [
+        "1f0bd74"
+      ],
+      "summary": "Build and data verification pass for withdrawal tracking; authenticated visual QA remains pending because the dashboard is password protected."
+    },
+    {
+      "id": "mc-12",
+      "title": "月底轉帳指示加入可持久化 checkbox",
+      "status": "completed",
+      "track": "mc",
+      "completed_at": "2026-06-15",
+      "summary": "Month-end transfer instructions now have persistent checkboxes backed by a PATCH API that updates transfer done/date state.",
+      "note": "新增 /api/finance/[month]/transfer route、transfer-state helper 與 verify-transfer-state 測試。",
+      "commits": [
+        "1f0bd74"
+      ]
+    },
+    {
       "id": "auto-1",
       "title": "月度快照架構（帳戶總覽一帳戶一月一筆 + new-month 指令）",
       "status": "done",
@@ -193,7 +300,9 @@
       "status": "done",
       "track": "migrate",
       "completed_at": "2026-05-24",
-      "commits": ["1cf3a7a"],
+      "commits": [
+        "1cf3a7a"
+      ],
       "summary": "April 原為 4/18 mid-month snapshot (74 筆/$20,642)，重新 dump 為完整凍結月 (124 筆/$54,934)。新增 May (109 筆/$55,530)",
       "note": "auto-task：commit 時無對應 task，自動建立"
     }

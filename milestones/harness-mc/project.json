@@ -10,12 +10,17 @@
     "phase-2": "Phase 2（記憶）",
     "phase-3": "Phase 3（工具）",
     "infra": "基礎建設",
-    "data": "資料與開案"
+    "data": "資料與開案",
+    "sentinel": "哨兵模式（變化偵測與送達：diff 引擎 + Notion/Telegram/自檢出口）",
+    "control-plane": "Agent Control Plane observability（MC 作為 shared brain / ADR / runtime / policy 的 read-only console）",
+    "willgrow-system": "Willgrow 活系統（意圖→行動→回饋→成長；舊 Jarvis/system-ops 為歷史參照）"
   },
   "goals": [
     "雙層架構（紀律層＋能力層）各有獨立頁面，首頁分層呈現",
     "milestones 資料格式相容 OC，agents 共寫",
-    "GitHub Pages 或 Vercel 部署，免後端"
+    "GitHub Pages 或 Vercel 部署，免後端",
+    "Agent Control Plane console：首頁能顯示下一步 execution tasks、ADR health、runtime/policy 狀態，讓下一個 agent 不靠 Vincent 提醒也知道入口與邊界",
+    "Willgrow：把舊 OpenClaw memory、system-ops blueprint、MC task pipeline 統整成可被觸發、可觀測、可回饋的活系統，而不是散落的歷史資料。"
   ],
   "risks": [
     {
@@ -27,11 +32,79 @@
       "risk": "記憶支柱範圍不明確",
       "impact": "medium",
       "mitigation": "Phase 2 前先定義 spec"
+    },
+    {
+      "risk": "MC 儀表板只顯示 task 進度，沒有呈現 Agent Control Plane 的入口、決策與 runtime 邊界",
+      "impact": "medium",
+      "mitigation": "新增 control-plane data generator 與首頁 ControlPlaneCard，先做 read-only observability，再評估 controlled write / MCP v1"
+    },
+    {
+      "risk": "舊 OpenClaw memory 與現行 MC milestones 狀態不一致，導致 Willgrow 藍圖引用過期事實",
+      "impact": "high",
+      "mitigation": "先建立 source-of-truth 分級與 Willgrow index，daily memory 只能當證據線索；task 狀態以現行 MC milestones / read model 為準。"
+    },
+    {
+      "risk": "Willgrow 活系統變成抽象願景，沒有進入日常 workflow",
+      "impact": "high",
+      "mitigation": "System Growth Gate 要求明確 trigger、資料流、MC 可視化 surface、feedback loop；未完成前不得標示為已落地。"
     }
   ],
   "success_criteria": [
     "Phase 1 四頁面可用（首頁/專案/評估/詳情 modal）",
     "所有活躍專案都有 milestones 資料",
-    "新 session（CC/HiSenzi）能透過 HANDOFF 文件獨立操作 MC"
-  ]
+    "新 session（CC/HiSenzi）能透過 HANDOFF 文件獨立操作 MC",
+    "Willgrow index 明確列出舊 system-ops source files、source-of-truth 等級、可遷移內容與過時內容。",
+    "MC task 統整完成：舊 system-ops / Willgrow 能力能映射到現行 harness-mc / dual-blade / sentinel / control-plane tasks，避免重複開 task。",
+    "MC 或 control-plane surface 能看見 Willgrow 活系統的啟動條件、資料流、feedback loop 與下一步任務。"
+  ],
+  "decisions": [
+    {
+      "topic": "開案位置",
+      "decision": "不另開獨立 milestone，先在 harness-mc 內新增 willgrow-system track。",
+      "reason": "Willgrow 的落地介面是 MC / control-plane / task event pipeline；另開專案會把入口切散，反而不利於日常使用。",
+      "alternatives_rejected": [
+        "新開 willgrow-system milestone — 容易變成平行願景專案，無法直接統整 MC task 與 control-plane surface",
+        "只整理成聊天摘要 — future agents 無法穩定重用，也不能進 MC workflow"
+      ],
+      "hc_used": [
+        "#rightProblem",
+        "#systemDynamics",
+        "#organization"
+      ]
+    },
+    {
+      "topic": "Source-of-truth 分級",
+      "decision": "舊 system-ops BLUEPRINT/project/tasks/references 是一級證據；daily memory 是時間線與線索；現行 MC milestones/read model 是任務狀態正本。",
+      "reason": "舊 memory 自己記錄過 MEMORY.md 可能過期；若不分級，Willgrow 統整會把歷史願景誤認為現況。",
+      "alternatives_rejected": [
+        "直接把所有 memory 條目合併 — 容易重複與引用過期狀態",
+        "只看現行 MC tasks — 會漏掉 Willgrow 願景與 system-ops 產品化脈絡"
+      ],
+      "hc_used": [
+        "#evidenceBased",
+        "#sift"
+      ]
+    },
+    {
+      "topic": "System Growth Gate",
+      "decision": "Willgrow 活系統必須具備 trigger、source→process→output 資料流、MC/control-plane 可視化 surface、task/event feedback loop。",
+      "reason": "Vincent 要的是會在對的時間自己長出來的系統，不是只建立任務清單或收藏舊資料。",
+      "alternatives_rejected": [
+        "人工記得查 Willgrow index — 不符合活系統啟動條件",
+        "只做文件不接 MC surface — 日常 workflow 看不到，也不會回饋下一輪任務"
+      ],
+      "hc_used": [
+        "#systemDynamics",
+        "#sift",
+        "#evidenceBased"
+      ]
+    }
+  ],
+  "naming": {
+    "current": "Willgrow",
+    "tagline": "讓人的意志長成現實的活系統",
+    "previous_reference": "Jarvis / system-ops",
+    "decided": "2026-06-16",
+    "note": "Jarvis 保留為歷史參照，不再作為正式系統名稱。"
+  }
 }

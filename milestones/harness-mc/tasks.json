@@ -1,6 +1,786 @@
 {
   "tasks": [
     {
+      "id": "willgrow-source-inventory",
+      "title": "Willgrow / system-ops source inventory",
+      "status": "todo",
+      "track": "willgrow-system",
+      "order": 1,
+      "order_label": "MC-LIVE-01",
+      "priority": "critical",
+      "done_condition": "建立 Willgrow source inventory，列出舊 OpenClaw memory、system-ops BLUEPRINT/project/tasks/references、現行 Obsidian Projects/system-ops.md、MC control-plane tasks 的檔案清單與 source-of-truth 等級。",
+      "note": "Grounding 起點：$COLLAB/.openclaw_260418/workspace/memory、$COLLAB/.openclaw_260418/workspace/milestones/projects/system-ops、$COLLAB/notyet-harness/300_Obsidian_brain/Projects/system-ops.md、harness-mc/milestones/harness-mc。",
+      "batch": "control-console",
+      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "414606d6-14fe-438b-b51b-fb17d3762114",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "willgrow-system-index",
+      "title": "產出 Willgrow Index",
+      "status": "todo",
+      "track": "willgrow-system",
+      "order": 2,
+      "order_label": "MC-LIVE-02",
+      "priority": "critical",
+      "depends_on": [
+        "willgrow-source-inventory"
+      ],
+      "done_condition": "產出 system-workflow/docs/specs/willgrow-living-system-index.md，包含能力拆解、歷史來源、現行對應、過時內容、未落地缺口與下一步入口。",
+      "note": "不是聊天摘要；要讓 future agents 不讀本次對話也能重建 Willgrow 脈絡。",
+      "batch": "control-console",
+      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "b4d7759d-0ff2-4af8-a4cf-db7bb8c02324",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "willgrow-mc-task-map",
+      "title": "統整 Willgrow 舊任務到現行 MC tasks",
+      "status": "todo",
+      "track": "willgrow-system",
+      "order": 3,
+      "order_label": "MC-LIVE-03",
+      "priority": "critical",
+      "depends_on": [
+        "willgrow-source-inventory",
+        "willgrow-system-index"
+      ],
+      "done_condition": "產出 Willgrow → MC task map：每個 system-ops / Willgrow 能力標示 mapped_to / superseded_by / migrate_to / archive_reason，並列出需要新增、合併、關閉的 MC tasks。",
+      "note": "優先映射到 harness-mc control-plane、sentinel、dual-blade ACP、agnostic-scheduler；避免把已存在 ACP pipeline 重開一遍。",
+      "batch": "control-console",
+      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "12b795e8-6273-405b-845f-e1f291d6ecdd",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "willgrow-growth-gate-spec",
+      "title": "定義 Willgrow 活系統啟動條件與 feedback loop",
+      "status": "todo",
+      "track": "willgrow-system",
+      "order": 4,
+      "order_label": "MC-LIVE-04",
+      "priority": "critical",
+      "depends_on": [
+        "willgrow-mc-task-map"
+      ],
+      "done_condition": "明確定義 trigger、source→process→output 資料流、MC/control-plane 可視化 surface、feedback loop；至少涵蓋 Vincent 說 Willgrow/活系統/system-ops、weekly review、stale/blocked task、new project growth gate 四種觸發。",
+      "note": "這是 System Growth Gate 的正本；不能用「人工記得看」當啟動機制。",
+      "batch": "control-console",
+      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "3d22653b-5d9b-4c1c-9cb3-f465be4e1d5e",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "acp-task-schema-validator",
+      "title": "ACP task schema 驗證器",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 5,
+      "order_label": "MC-LIVE-05",
+      "priority": "critical",
+      "depends_on": [
+        "dual-blade/acp-task-authoring-protocol"
+      ],
+      "done_condition": "新增 scripts/validate-tasks.mjs，支援 --project、--track、--changed-only；MVP 對新/changed ACP tasks fail，歷史 tasks 先 warn；檢查 id/title/status/track/done_condition/depends_on/order_label/external_refs。",
+      "note": "Validator 不可一開始追殺 506 個歷史 task；先保護新寫入與 control-plane scope。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "36fac29a-0796-42e1-b439-b494fa25eea8",
+          "synced_at": "2026-06-16",
+          "sync_mode": "appended"
+        }
+      },
+      "batch": "control-console"
+    },
+    {
+      "id": "acp-task-write-command-map",
+      "title": "Task 寫入命令對照表",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 6,
+      "order_label": "MC-LIVE-06",
+      "priority": "high",
+      "depends_on": [
+        "dual-blade/acp-task-authoring-protocol",
+        "acp-task-schema-validator"
+      ],
+      "done_condition": "產出 system-workflow/docs/task-write-command-map.md，列出 Vincent 說「寫 task / 更新 task / task 寫到 Heptabase / 完成 task」時對應的 skills、scripts、validators、stop conditions。",
+      "note": "這是 MC 端給 UI/read model 使用的 routing 摘要；notyet-harness 的 protocol 是正本。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "b372b6a8-c594-4e25-88e3-d600d666a052",
+          "synced_at": "2026-06-16",
+          "sync_mode": "appended"
+        }
+      },
+      "batch": "control-console"
+    },
+    {
+      "id": "acp-task-event-outbox",
+      "title": "跨 repo task event outbox（取代 worktree-commit 直接寫 MC）",
+      "status": "in_progress",
+      "track": "control-plane",
+      "order": 7,
+      "order_label": "MC-LIVE-07",
+      "priority": "critical",
+      "depends_on": [
+        "acp-task-write-command-map",
+        "acp-task-schema-validator"
+      ],
+      "done_condition": "改造 worktree-commit：commit repo 非 harness-mc 時，不直接修改 harness-mc tasks.json；改為寫入 append-only task event（含 event_id/repo/commit/project/task_id/type/summary/created_at/actor/session_id）。同 repo harness-mc 仍可走直接回填。",
+      "note": "已新增 task-event-outbox writer + verification script，並更新 worktree-commit skill v1.6：跨 repo commit 改寫 append-only task event，不直接改 harness-mc tasks.json。待 commit/驗收後標 completed。",
+      "batch": "control-console",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "7d301abd-8bbc-4610-b70b-8ce01d4b036a",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "acp-apply-task-events",
+      "title": "Task events apply script（single-writer reducer）",
+      "status": "in_progress",
+      "track": "control-plane",
+      "order": 8,
+      "order_label": "MC-LIVE-08",
+      "priority": "critical",
+      "depends_on": [
+        "acp-task-event-outbox"
+      ],
+      "done_condition": "新增 scripts/apply-task-events.mjs：讀取 pending task events，idempotent apply 到現有 milestones/*/tasks.json；支援 duplicate event_id 去重、unknown_task/unknown_type rejected queue、commit append、completed/reopened/blocked 基本事件。apply 後跑 generate-data.mjs。",
+      "note": "已新增 apply-task-events reducer + verification script：pending events 可套用到 milestones/*/tasks.json，支援 duplicate event_id、unknown_task、unknown_type rejected queue，以及 completed/reopened/blocked/commit_attached。待完整驗證與 commit 後標 completed。",
+      "batch": "control-console",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "de58542e-54bb-46de-bc2b-4cbbd0fe439a",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "acp-task-state-split",
+      "title": "Task 定義與狀態分離（state read model）",
+      "status": "in_progress",
+      "track": "control-plane",
+      "order": 9,
+      "order_label": "MC-LIVE-09",
+      "priority": "high",
+      "depends_on": [
+        "acp-apply-task-events"
+      ],
+      "done_condition": "設計並實作 tasks definition + state/events 分離：tasks.json 保留 id/title/track/done_condition/depends_on，state.json 或 generated read model 保存 status/completed_at/commits/summary/external_refs；generate-data.mjs 改讀 merged view。",
+      "note": "已新增 task-state merge helper，generate-data.mjs 可讀 milestones/<project>/state.json overlay，apply-task-events 改寫 state.json 而不是直接改 tasks.json。MVP 尚未 mass migrate 既有 tasks.json，避免與多 session dirty changes 混雜；待 commit/驗收後標 completed。",
+      "batch": "control-console",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "47d0db3b-d8e4-422d-b8d0-8eab09e496f2",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "acp-external-sync-queue",
+      "title": "外部同步 queue 化（Heptabase / Obsidian / Notion）",
+      "status": "in_progress",
+      "track": "control-plane",
+      "order": 10,
+      "order_label": "MC-LIVE-10",
+      "priority": "high",
+      "depends_on": [
+        "acp-apply-task-events",
+        "acp-obsidian-canvas-sync-hook"
+      ],
+      "done_condition": "將 Heptabase append、Obsidian Canvas sync、Notion sync 改為由 MC sync actor 根據事件/state 產生 sync_requested/synced/failed events；失敗可重試，不阻斷 feature repo commit。",
+      "note": "已新增 sync-event-queue writer + verification script，apply-task-events 會在 applied task event 後產生 sync_requested：Obsidian Canvas（所有狀態變更）、Heptabase append（有 external_refs.heptabase.card_id）、Notion sentinel（blocked）。MVP 只排隊不執行外部服務，避免 commit session 被 Heptabase/Canvas/Notion 卡住；待 commit/驗收後標 completed。",
+      "batch": "control-console",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "286dd312-fb22-4edb-9dab-005ce84d9e3c",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "acp-task-event-dashboard",
+      "title": "MC 顯示 task event pipeline 狀態",
+      "status": "in_progress",
+      "track": "control-plane",
+      "order": 11,
+      "order_label": "MC-LIVE-11",
+      "priority": "medium",
+      "depends_on": [
+        "acp-apply-task-events"
+      ],
+      "done_condition": "MC dashboard 顯示 pending/applied/rejected task events、latest reducer run、unknown_task/duplicate/retry 狀態；讓 Vincent 能看到 single-writer pipeline 是否卡住。",
+      "note": "已新增 generate-task-event-data.mjs + task-events.json read model，首頁新增 read-only Task Event Pipeline 卡片，顯示 pending/applied/rejected、latest reducer run、rejected reason、sync pending/failed。待完整 build/commit 後標 completed。",
+      "batch": "control-console",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "7be3dedc-4f91-4947-aaee-5a6503feca2a",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "acp-control-plane-read-model-v0",
+      "title": "Agent Control Plane 讀取模型 v0",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 12,
+      "order_label": "MC-LIVE-12",
+      "priority": "critical",
+      "depends_on": [
+        "acp-task-schema-validator",
+        "acp-skill-validator",
+        "dual-blade/acp-agent-event-log-schema"
+      ],
+      "done_condition": "新增 scripts/generate-control-plane-data.mjs，輸出 public/data/control-plane.json v0；只讀 tasks.json、agent-control-plane docs、validator output，包含 next_actions、missing_gates、validator_summary、latest_agent_events、policy_status。",
+      "note": "v0 不讀 Heptabase、不讀外部 API、不依賴完整 MCP schema；連續 2-3 次能回答 next action / missing gate 後再做 UI。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "d4e60f6f-96c8-4444-8b46-ff081dea2650",
+          "synced_at": "2026-06-16",
+          "sync_mode": "appended"
+        }
+      },
+      "batch": "control-console"
+    },
+    {
+      "id": "willgrow-anatomy-read-model",
+      "title": "設計 Willgrow anatomy read model",
+      "status": "todo",
+      "track": "willgrow-system",
+      "order": 13,
+      "order_label": "MC-LIVE-13",
+      "priority": "high",
+      "depends_on": [
+        "willgrow-growth-gate-spec",
+        "acp-control-plane-read-model-v0"
+      ],
+      "done_condition": "定義 willgrow-system.json v0 schema：DNA/persona、memory/context、senses/events、muscles/agents/tools、immune/validators/security、heartbeat/schedules、feedback/task-events、open_loops。",
+      "note": "只做 read model schema，不先接外部 API；資料來源以現行 MC milestones/read model + Willgrow index 為主。",
+      "batch": "control-console",
+      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "74cd3657-8300-48e9-a43b-c5eb94ef6d65",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "willgrow-dashboard-surface",
+      "title": "MC 顯示 Willgrow 活系統 surface",
+      "status": "todo",
+      "track": "willgrow-system",
+      "order": 14,
+      "order_label": "MC-LIVE-14",
+      "priority": "high",
+      "depends_on": [
+        "willgrow-anatomy-read-model",
+        "acp-task-event-dashboard"
+      ],
+      "done_condition": "MC 首頁或 control-plane 區塊能顯示 Willgrow 活系統狀態：觸發來源、下一步、未閉合回饋、對應 tasks、open loops；狀態不可只藏在 project detail。",
+      "note": "先與 ControlPlaneCard / Task Event Pipeline 並列或合併，不做另一套孤立頁面。",
+      "batch": "control-console",
+      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "1c37d31b-0f99-4f36-903e-7944d0969d0f",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "willgrow-control-console-verify",
+      "title": "MC 活系統控制台化驗收",
+      "status": "todo",
+      "track": "willgrow-system",
+      "order": 15,
+      "order_label": "MC-LIVE-VERIFY-1",
+      "priority": "critical",
+      "depends_on": [
+        "willgrow-dashboard-surface"
+      ],
+      "done_condition": "驗證第一批控制台化完成：MC 能回答 source-of-truth、現行 task map、啟動條件、狀態管線、read model、dashboard surface 與未閉合 feedback loop；不能宣稱已具備主動化。",
+      "note": "原 willgrow-system-verify 拆成兩段：本 task 驗收「感知、狀態、回饋、可觀測性」。主動化另由 willgrow-proactive-loop-verify 驗收。",
+      "batch": "control-console",
+      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "6b345e36-ec8e-4a49-a1c2-92c2b1860266",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "willgrow-trigger-rules-registry",
+      "title": "Willgrow trigger rules registry",
+      "status": "todo",
+      "track": "willgrow-system",
+      "batch": "proactive-loop",
+      "order": 16,
+      "order_label": "MC-LIVE-16",
+      "priority": "critical",
+      "depends_on": [
+        "willgrow-control-console-verify"
+      ],
+      "done_condition": "定義 trigger registry：stale/blocked task、sync failed、rejected event、weekly review、session startup、project-init growth gate 未完成等事件如何喚醒 MC；每個 trigger 都有 source、condition、cooldown、output event。",
+      "note": "第二批主動化起點；沒有 trigger registry，dashboard 只能被動顯示。",
+      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "974eae6e-d972-438d-83bd-11ac31e97f24",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "willgrow-recommendation-engine-v0",
+      "title": "Willgrow recommendation engine v0",
+      "status": "todo",
+      "track": "willgrow-system",
+      "batch": "proactive-loop",
+      "order": 17,
+      "order_label": "MC-LIVE-17",
+      "priority": "critical",
+      "depends_on": [
+        "willgrow-trigger-rules-registry",
+        "willgrow-anatomy-read-model",
+        "acp-control-plane-read-model-v0"
+      ],
+      "done_condition": "根據 control-plane / willgrow read model 產生 next best action 候選，至少輸出 reason、evidence_refs、risk_level、requires_approval、suggested_task_id；不得直接執行高風險動作。",
+      "note": "讓 MC 從「看見下一步」升級成「能提出為什麼是下一步」。",
+      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "54d84d6d-a55a-4ef7-99c4-84d6d79ff705",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "willgrow-approval-policy",
+      "title": "Willgrow approval policy",
+      "status": "todo",
+      "track": "willgrow-system",
+      "batch": "proactive-loop",
+      "order": 18,
+      "order_label": "MC-LIVE-18",
+      "priority": "critical",
+      "depends_on": [
+        "willgrow-recommendation-engine-v0"
+      ],
+      "done_condition": "定義允許自動、需 Vincent approve、禁止自動三類 action policy；涵蓋 task reorder、task create/update/close、external sync、draft patch、delete/secret/history rewrite 等邊界。",
+      "note": "主動化的安全閘門；沒有 approval policy，不允許 autonomous runner。",
+      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "8cf001fb-fe0d-48ec-961e-4a129e27b558",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "willgrow-autonomous-action-runner-v0",
+      "title": "Willgrow autonomous action runner v0",
+      "status": "todo",
+      "track": "willgrow-system",
+      "batch": "proactive-loop",
+      "order": 19,
+      "order_label": "MC-LIVE-19",
+      "priority": "high",
+      "depends_on": [
+        "willgrow-approval-policy",
+        "acp-external-sync-queue"
+      ],
+      "done_condition": "實作低風險 runner v0：只能產 summary、提出 reorder 建議、排 sync_requested event、產 draft patch；所有中高風險 action 只產 approval request，不自動 apply。",
+      "note": "部分自動執行的第一版，重點是低風險與可回退。",
+      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "cf2baa5f-91b7-4f6b-9a66-62c0b3a51291",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "willgrow-proactive-loop-dashboard",
+      "title": "MC 顯示 Willgrow proactive loop",
+      "status": "todo",
+      "track": "willgrow-system",
+      "batch": "proactive-loop",
+      "order": 20,
+      "order_label": "MC-LIVE-20",
+      "priority": "high",
+      "depends_on": [
+        "willgrow-autonomous-action-runner-v0"
+      ],
+      "done_condition": "MC 顯示 trigger → recommendation → approval → action → feedback 狀態；至少能看見最近 trigger、建議原因、approval queue、runner output、未閉合 loop。",
+      "note": "第二批主動化的可觀測面。",
+      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "06a39600-e2ee-438e-8605-426f41f8ff64",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "willgrow-proactive-loop-verify",
+      "title": "Willgrow 主動化閉環驗收",
+      "status": "todo",
+      "track": "willgrow-system",
+      "batch": "proactive-loop",
+      "order": 21,
+      "order_label": "MC-LIVE-VERIFY-2",
+      "priority": "critical",
+      "depends_on": [
+        "willgrow-proactive-loop-dashboard"
+      ],
+      "done_condition": "驗證 MC 能回答：哪個 trigger 觸發、推薦什麼、證據是什麼、是否需 Vincent approve、runner 做了什麼、feedback 回寫到哪裡、哪些 loop 未閉合。",
+      "note": "第二段驗收；通過後才可說 MC 具備「更主動：觸發、建議、部分自動執行」。",
+      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "0bf72cb5-f545-4096-a9f5-060a1eba3c5a",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "p2-1",
+      "title": "記憶支柱 spec 定義",
+      "status": "in_progress",
+      "track": "phase-2"
+    },
+    {
+      "id": "p2-2",
+      "title": "記憶頁面（/memory）實作",
+      "status": "todo",
+      "track": "phase-2"
+    },
+    {
+      "id": "inf-8",
+      "title": "commit message 帶 task ID + git log 反查 script",
+      "status": "todo",
+      "track": "infra",
+      "note": "commit message 格式：[task:brain-migration-m1]。寫 script 從 git log 反查 task 完成狀態，自動填入 commits 欄位。目前手動 ROI 足夠，規模變大時再啟動"
+    },
+    {
+      "id": "acp-skill-validator",
+      "title": "ACP skill 驗證器",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 9,
+      "order_label": "ACP-MC-09",
+      "priority": "critical",
+      "depends_on": [
+        "dual-blade/acp-skill-routes"
+      ],
+      "done_condition": "新增 scripts/validate-skills.mjs，支援 --changed-only；changed SKILL.md 缺 > version 或 ## 版本歷史時 fail，舊 skill 先 warn；檢查 description、路徑是否 agent-neutral。",
+      "note": "Skill update task 是否要求版本紀錄由 task validator 檢查；檔案事實由 skill validator 檢查。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "74e3f6a1-5751-4312-9ea3-d651156242dc",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    {
+      "id": "acp-dashboard-spec",
+      "title": "Agent Control Plane 儀表板規格",
+      "status": "deferred",
+      "track": "control-plane",
+      "order": 1,
+      "order_label": "ACP-MC-01",
+      "priority": "medium",
+      "depends_on": [
+        "dual-blade/agent-control-plane-execution-plan"
+      ],
+      "done_condition": "產出 system-workflow/docs/specs/agent-control-plane-dashboard.md，明確定義 MC 首頁作為 Control Plane console 的資訊架構、資料源、read-only 邊界與驗收標準。",
+      "note": "先寫 spec，不先動 UI。回答「下一個 agent 打開 MC 第一眼要知道什麼」。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "abd5b0e9-dee6-402a-8227-7ee7e3a12c20",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      },
+      "superseded_by": "willgrow-growth-gate-spec",
+      "defer_reason": "原本要先產 ACP dashboard spec；HC 驗證後改由 Willgrow source/index/task map/growth gate 先定義活系統，再產 dashboard surface。此 spec 作為歷史參照，不作第一批執行入口。",
+      "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。"
+    },
+    {
+      "id": "acp-system-workflow-migration-note",
+      "title": "system-workflow 歷史原型遷移筆記",
+      "status": "deferred",
+      "track": "control-plane",
+      "order": 2,
+      "order_label": "ACP-MC-02",
+      "priority": "medium",
+      "depends_on": [
+        "acp-dashboard-spec"
+      ],
+      "done_condition": "產出 system-workflow/docs/specs/system-workflow-migration-to-acp.md，列出 workflow-dashboard 可沿用、需改寫、淘汰項，並明確移除 OpenClaw path / 獨立 repo 假設。",
+      "note": "把 2026-04-18 workflow dashboard prototype 收編為 MC/ACP observability 設計素材，不照搬。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "11cb9561-da59-4d09-8054-0adbcaa1396a",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      },
+      "superseded_by": "willgrow-system-index",
+      "defer_reason": "system-workflow 歷史原型遷移應被納入 Willgrow Index 與 task map，不再作為獨立前置 task。",
+      "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。"
+    },
+    {
+      "id": "acp-control-plane-data-generator",
+      "title": "產生 control-plane.json 的資料生成器",
+      "status": "deferred",
+      "track": "control-plane",
+      "order": 3,
+      "order_label": "ACP-MC-03",
+      "priority": "medium",
+      "depends_on": [
+        "acp-dashboard-spec",
+        "dual-blade/agent-control-plane-readonly-query-schema"
+      ],
+      "done_condition": "新增 scripts/generate-control-plane-data.mjs 並串進 prebuild，輸出 public/data/control-plane.json，至少包含 next_actions、decision_health、runtime_inventory_status、policy_status、mcp_candidates、agent_onboarding_health。",
+      "note": "資料層先行；React 頁面只讀 JSON，不直接掃 markdown。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "14c4195c-8d78-4c0a-be46-715b11828480",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      },
+      "superseded_by": "acp-control-plane-read-model-v0",
+      "defer_reason": "與 acp-control-plane-read-model-v0 都產 generate-control-plane-data.mjs / control-plane.json；後者範圍更精準，先併入 read model v0，不另開平行資料生成器。",
+      "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。"
+    },
+    {
+      "id": "acp-home-control-plane-card",
+      "title": "首頁 Agent Control Plane 區塊",
+      "status": "deferred",
+      "track": "control-plane",
+      "order": 4,
+      "order_label": "ACP-MC-04",
+      "priority": "medium",
+      "depends_on": [
+        "acp-control-plane-read-model-v0",
+        "willgrow-dashboard-surface"
+      ],
+      "done_condition": "首頁新增 ControlPlaneCard，顯示下一步 execution task、必讀 ADR、ADR backlink health、runtime/policy 狀態，且能連到 /projects 的 dual-blade 與 harness-mc。",
+      "note": "這是 MC 成為 control plane console 的第一個可見切面。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "6faab7ad-f053-478b-ae53-e36665a98c0e",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      },
+      "defer_reason": "原本是先做首頁卡片；HC 驗證後改成先有 read model 與 Willgrow dashboard surface，再決定是否需要獨立 ControlPlaneCard。",
+      "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。"
+    },
+    {
+      "id": "acp-projects-sidebar-search",
+      "title": "/projects 側欄、搜尋與 project 分組",
+      "status": "deferred",
+      "track": "control-plane",
+      "order": 5,
+      "order_label": "ACP-MC-05",
+      "priority": "low",
+      "depends_on": [
+        "acp-system-workflow-migration-note"
+      ],
+      "done_condition": "/projects 引入 system-workflow mockup 的 full-height sidebar、搜尋、Pinned/Active/Done/Archived 分群；100+ project 時仍可掃描。",
+      "note": "先改善 navigation density，再改 project detail。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "279e27d3-1720-41ca-a2ed-df9f45083f7d",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      },
+      "defer_reason": "這是 projects UX 密度優化，不是 MC 活系統鏈第一批核心；等 Source→Map→Read Model→Surface 完成後再排。",
+      "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。"
+    },
+    {
+      "id": "acp-project-detail-control-plane",
+      "title": "Project detail 顯示決策引用、下一步與阻塞",
+      "status": "deferred",
+      "track": "control-plane",
+      "order": 6,
+      "order_label": "ACP-MC-06",
+      "priority": "medium",
+      "depends_on": [
+        "willgrow-mc-task-map",
+        "acp-control-plane-read-model-v0"
+      ],
+      "done_condition": "project detail 不只列 task；固定顯示 decision_refs、next executable task、blocked/stale 摘要、source-of-truth links。dual-blade/harness-mc 專案可直接看出 ACP 狀態。",
+      "note": "可先用 drawer/modal 增強，不必一次改成完整 route。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "7f35efa7-fad4-4d3b-8f0b-bdb154cd89a8",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      },
+      "defer_reason": "project detail 要顯示的 decision_refs / next executable task / blocked 摘要需先由 Willgrow task map 與 control-plane read model 產生，暫不先做 UI。",
+      "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。"
+    },
+    {
+      "id": "acp-runtime-policy-surface",
+      "title": "Runtime / policy 唯讀顯示層",
+      "status": "deferred",
+      "track": "control-plane",
+      "order": 7,
+      "order_label": "ACP-MC-07",
+      "priority": "medium",
+      "depends_on": [
+        "dual-blade/agent-control-plane-schedule-inventory",
+        "dual-blade/agent-control-plane-security-policy",
+        "dual-blade/agent-control-plane-memory-policy"
+      ],
+      "done_condition": "schedule inventory、security policy、memory policy 完成後，MC 顯示 runtime/policy health；未完成時顯示「待 inventory/policy」而非空白。",
+      "note": "不得在 inventory / policy 完成前做 controlled write 或 MCP 寫入。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "f3f232ce-ea1e-48d5-b5bb-b343fe1c8f7f",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      },
+      "defer_reason": "依賴 dual-blade 的 schedule/security/memory policy inventory；現階段先顯示 missing gate，不先做 runtime/policy surface。",
+      "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。"
+    },
+    {
+      "id": "sn-5",
+      "title": "Notion 重要提醒寫入（sentinel-notion.mjs）",
+      "status": "blocked",
+      "track": "sentinel",
+      "done_condition": "讀 changes.json 把待裁決事項（new blocked / stale）upsert 進 PAI 行動庫並出現在重要提醒 view，同日重跑不重複建卡",
+      "priority": "high",
+      "note": "腳本完成（upsert 防重 + object_not_found 降級驗證 exit 2）。已用 MCP 代打建今日卡 37d714fb-14c6-81cb-9350-e3c913278387，狀態=待追蹤命中重要提醒 view filter（狀態=待追蹤 OR 是否逾期，實際取得 view 定義確認）。blocked：等 Vincent 把 PAI 行動庫分享給 \"MC Sync\" integration（Notion → ⋯ → Connections）",
+      "history_note": "不是刪除；此 task 屬於外部通知/排程出口。HC 驗證後列為第二階段之後的接線工作：先完成 trigger rules / recommendation / approval policy，再接 Notion、Telegram、launchd。"
+    },
+    {
+      "id": "sn-6",
+      "title": "Telegram 出口接上（sentinel → notify.sh）",
+      "status": "blocked",
+      "track": "sentinel",
+      "done_condition": "sentinel-diff --push 經 notify.sh 推 Telegram 送達",
+      "priority": "medium",
+      "note": "blocked：等 Vincent BotFather 重發 token（舊 token 已外洩需 revoke）填入 schedule/.env",
+      "history_note": "不是刪除；此 task 屬於外部通知/排程出口。HC 驗證後列為第二階段之後的接線工作：先完成 trigger rules / recommendation / approval policy，再接 Notion、Telegram、launchd。"
+    },
+    {
+      "id": "sn-7",
+      "title": "launchd 每日排程（收編進 agnostic-scheduler 框架）",
+      "status": "todo",
+      "track": "sentinel",
+      "done_condition": "mc-sentinel 任務經 dispatch.sh + install.sh 上 launchd 每日自動跑",
+      "priority": "medium",
+      "note": "依賴 agnostic-scheduler t2/t8；過渡期由 sn-4 的 session 自檢觸發推送，CC 本人就是排程器",
+      "history_note": "不是刪除；此 task 屬於外部通知/排程出口。HC 驗證後列為第二階段之後的接線工作：先完成 trigger rules / recommendation / approval policy，再接 Notion、Telegram、launchd。"
+    },
+    {
       "id": "p1-1",
       "title": "首頁四支柱卡片 + API route",
       "status": "done",
@@ -23,18 +803,6 @@
       "title": "Typography 5-tier semantic tokens 全頁面統一",
       "status": "done",
       "track": "phase-1"
-    },
-    {
-      "id": "p2-1",
-      "title": "記憶支柱 spec 定義",
-      "status": "todo",
-      "track": "phase-2"
-    },
-    {
-      "id": "p2-2",
-      "title": "記憶頁面（/memory）實作",
-      "status": "todo",
-      "track": "phase-2"
     },
     {
       "id": "p3-1",
@@ -231,19 +999,14 @@
       "note": "auto-task：commit 時無對應 task，自動建立"
     },
     {
-      "id": "inf-8",
-      "title": "commit message 帶 task ID + git log 反查 script",
-      "status": "todo",
-      "track": "infra",
-      "note": "commit message 格式：[task:brain-migration-m1]。寫 script 從 git log 反查 task 完成狀態，自動填入 commits 欄位。目前手動 ROI 足夠，規模變大時再啟動"
-    },
-    {
       "id": "dat-status-type-normalize",
       "title": "task status 正規化 + project type 重分類",
       "status": "done",
       "track": "data",
       "completed_at": "2026-05-19",
-      "commits": ["3ff9224"],
+      "commits": [
+        "3ff9224"
+      ],
       "summary": "task status 統一為 5 種值（done/todo/in_progress/blocked/deferred），project type 改為 service/knowledge/system。新增 exam-prep-6yr、wealth-system milestone",
       "note": "auto-task：commit 時無對應 task，自動建立"
     },
@@ -253,7 +1016,9 @@
       "status": "done",
       "track": "phase-1",
       "completed_at": "2026-05-19",
-      "commits": ["1556b1e"],
+      "commits": [
+        "1556b1e"
+      ],
       "summary": "卡片標題固定兩行高、StatusDot 取代 emoji、filter 改 service/knowledge/system/completed、ProgressBar 分類上色、移除目前清空區塊",
       "note": "auto-task：commit 時無對應 task，自動建立"
     },
@@ -263,7 +1028,9 @@
       "status": "done",
       "track": "infra",
       "completed_at": "2026-05-19",
-      "commits": ["e36d5e2"],
+      "commits": [
+        "e36d5e2"
+      ],
       "summary": "launch.json 改用 npx next dev，new-project.py 路徑從 ~/.openclaw/ 遷移至 Claude_協作/",
       "note": "auto-task：commit 時無對應 task，自動建立"
     },
@@ -273,7 +1040,9 @@
       "status": "done",
       "track": "phase-1",
       "completed_at": "2026-05-24",
-      "commits": ["5c90622"],
+      "commits": [
+        "5c90622"
+      ],
       "summary": "學習進度詳細頁、首頁 LearningCard、generate-data 拆分 learning.json、Notion 課程同步腳本、新增 fontcard-120 / notion-finance / self-learning milestone",
       "note": "auto-task：commit 時無對應 task，自動建立"
     },
@@ -283,7 +1052,9 @@
       "status": "done",
       "track": "infra",
       "completed_at": "2026-05-24",
-      "commits": ["bec1d7a"],
+      "commits": [
+        "bec1d7a"
+      ],
       "summary": "前 session commit 5c90622 漏做 Step 7 auto-task 回填，本次補上",
       "note": "auto-task：commit 時無對應 task，自動建立"
     },
@@ -293,7 +1064,9 @@
       "status": "done",
       "track": "phase-1",
       "completed_at": "2026-06-08",
-      "commits": ["62f669b"],
+      "commits": [
+        "62f669b"
+      ],
       "summary": "generate-tools-data.mjs 加 parseChangelog() 讀各 skill CHANGELOG.md；tools 頁 skill 卡片可點擊展開版本時間軸（版號 badge＋summary＋commit hash），最新版綠色高亮。",
       "note": "auto-task：commit 時無對應 task，自動建立"
     },
@@ -303,9 +1076,81 @@
       "status": "completed",
       "track": "infrastructure",
       "completed_at": "2026-06-08",
-      "commits": ["3489c82"],
+      "commits": [
+        "3489c82"
+      ],
       "summary": "skills/scripts/hooks/變更紀錄 四 tab 從單欄改 md:2/lg:3 欄 grid，卡片對齊專案頁（rounded-xl p-4、標題 line-clamp-2 min-h-52 等高、items-start 不拉長展開列）",
       "note": "auto-task：commit 時無對應 task，自動建立"
+    },
+    {
+      "id": "sn-1",
+      "title": "schedule/ 骨架 + lib/notify.sh + .env.example（agnostic-scheduler t1/t4 切片）",
+      "status": "completed",
+      "track": "sentinel",
+      "done_condition": "notyet-harness/schedule/{tasks,runners,lib,runs} 存在 + .gitignore 排除 .env 與 runs/ + notify.sh 從 .env 讀 token curl Telegram + .env.example 範本進 git",
+      "priority": "high",
+      "note": "完成後回填 agnostic-scheduler t1（t4 等 token 驗證才能 completed）",
+      "completed_at": "2026-06-12",
+      "summary": "schedule/{tasks,runners,lib,runs} 骨架 + .gitignore（排除 .env/runs/）+ lib/notify.sh（無 token exit 2 優雅降級）+ .env.example 範本 + tasks/mc-sentinel.yaml 任務契約。git check-ignore 驗證通過"
+    },
+    {
+      "id": "sn-2",
+      "title": "scripts/sentinel-diff.mjs：git 基線 diff + 衰老掃描 → changes.json",
+      "status": "completed",
+      "track": "sentinel",
+      "done_condition": "以 git 24h 前 rev 為基線比對 milestones 現況（含未 commit 變更）→ public/data/changes.json（events + stale + brief 三句話摘要）+ prebuild 串接",
+      "priority": "critical",
+      "note": "diff 基線用 git 本身，零新增快照檔。衰老閾值：blocked 專案 14 天無 commit、in_progress 7 天、deferred 30 天（專案級近似）",
+      "completed_at": "2026-06-12",
+      "summary": "sentinel-diff.mjs：git 24h 基線（git 即快照庫）、多格式 tasks parser、衰老掃描（blocked 14d / in_progress 7d / deferred 30d 專案級）、--brief/--push/--since、錯誤時產合法空殼不擋 CI。prebuild 串接。實跑驗證：39 events · 3 stale · 41 blocked_now，正確涵蓋未 commit 變更"
+    },
+    {
+      "id": "sn-3",
+      "title": "MC 首頁頂部「今日變化」區塊",
+      "status": "completed",
+      "track": "sentinel",
+      "done_condition": "首頁第一屏顯示 changes.json 的 brief + events 清單，無變化時顯示安靜狀態，視覺沿用 MC 現有 token",
+      "priority": "high",
+      "completed_at": "2026-06-12",
+      "summary": "首頁 SentinelCard：brief + stale 黃色警示 + 前 8 筆 events（+N 筆摺疊）+ 基線 rev 與產生時戳（誠實時間，不假即時）。安靜狀態顯示 blocked 持平數。headless 截圖驗證渲染正確"
+    },
+    {
+      "id": "sn-4",
+      "title": "CC session 啟動自檢串接哨兵簡報",
+      "status": "completed",
+      "track": "sentinel",
+      "done_condition": "cc-claude-md.md 啟動自檢加一步：跑 sentinel-diff --brief 看今日變化與 blocked 清單；本機 cp + git push，cc-log 註明對端待 cp",
+      "priority": "high",
+      "completed_at": "2026-06-12",
+      "summary": "cc-claude-md.md 啟動自檢新增 Step 2 哨兵簡報（--brief 看變化、stale 主動條列、未推送加 --push、失敗不阻斷 session）。已 cp 本機，md5 雙端一致。⚠️ 對端 MBA-2 git pull 後待 cp"
+    },
+    {
+      "id": "acp-obsidian-canvas-sync-hook",
+      "title": "MC 到 Obsidian Canvas 同步 hook",
+      "status": "done",
+      "track": "control-plane",
+      "order": 12,
+      "order_label": "ACP-OBS-02",
+      "depends_on": [
+        "acp-obsidian-visual-layer-protocol",
+        "acp-task-write-command-map"
+      ],
+      "summary": "把 Visual Layer Transition Protocol 接進 planning、project-init、worktree-commit、heptabase-task-cards 四個 skill hook；改 MC task 後會同步 Obsidian Canvas，Heptabase refs 回寫後再同步一次。",
+      "done_condition": "更新 planning / project-init / worktree-commit / heptabase-task-cards 相關 skill hook：改 MC task 後先跑 MC generate-data，再跑 npm run sync:obsidian-canvas；若屬於 Heptabase 視覺層，再依需求 --sync、--update-title-only 或 --refresh-existing。",
+      "note": "更新 skill versions：planning v1.2、project-init v3.3、worktree-commit v1.5、heptabase-task-cards v1.3。後續 ACP-OBS-03/04 分別補 boundary map 與 Canvas artifact policy。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "b396bb3f-31f8-43da-8663-f6ad4fd22f59",
+          "synced_at": "2026-06-15",
+          "sync_mode": "appended"
+        }
+      },
+      "completed_at": "2026-06-14",
+      "commits": [
+        "3efeaa1"
+      ]
     }
   ]
 }

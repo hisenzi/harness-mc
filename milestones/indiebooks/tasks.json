@@ -15,11 +15,16 @@
     },
     {
       "id": "spike-2",
-      "title": "三大欄位缺口決策定案：tagline(讀13×·不出)、staus(讀26×·不出)、撰稿人(出·讀0)",
-      "status": "todo",
+      "title": "新增地圖欄位確認規則：基本欄位 + 主題欄位 + 顯示責任分層",
+      "status": "completed",
       "track": "spike",
-      "done_condition": "三缺口各定處置（前端生成／智繪台補／移除／新增顯示），寫入 project.json decisions",
-      "note": "前置：spike-1"
+      "done_condition": "定義製作新地圖時的欄位確認表：JGIS 基本欄位、該地圖新增主題欄位、每欄責任歸屬（資料/theme.json/前端生成/不顯示），並以博愛基金會關懷站地圖需求驗證一次",
+      "completed_at": "2026-06-16",
+      "commits": [
+        "b84ded7"
+      ],
+      "summary": "完成新增地圖欄位確認表：基本欄位、主題欄位、theme config 責任分層，並用博愛基金會關懷站地圖試跑；產出 indiebooks/docs/new-map-field-checklist.md",
+      "note": "前置：spike-1。HC reframe：不是補 tagline/staus/撰稿人 三欄，而是建立新地圖 onboarding 的欄位確認流程"
     },
     {
       "id": "spike-verify",

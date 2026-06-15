@@ -15,6 +15,7 @@
     "前端從「寫死讀 book.geojson 的書店欄位」改成「讀智繪台共通欄位 + 主題設定檔」，資料驅動渲染",
     "建立主題設定檔機制（色彩 token／文案字串／欄位標籤／type1 分類對應／地圖預設視角），達成「換主題只改設定、不改程式」",
     "引擎能載入任意內容包（content/<map>/：智繪台 GeoJSON + theme.json），以書店＋風景心境兩內容包驗證；風景心境產品已拆為 taiwan-art 內容專案",
+    "建立新增地圖前的欄位確認流程：先確認基本欄位，再確認該地圖需要增加哪些主題欄位，避免引擎被單一內容包綁死",
     "補工程衛生：git 版控（repo 已建）、SMTP/admin 密鑰外置、composer 依賴可安裝",
     "重新定位既有 PHP 回報／admin 後端（保留回報、釐清在智繪台資料流下的角色）"
   ],
@@ -107,7 +108,14 @@
       "reason": "HC 架構分析：引擎＝不變程式、內容＝每張變動的資料+設定；引擎複製 N 份＝一人公司維護死穴。先例：SSG 主題、WordPress theme+content、Mapelon /{orgCode}",
       "alternatives_rejected": "把主題當 indiebooks 內部 track：引擎綁死特定主題、後續地圖無法複用｜每地圖複製引擎：維護爆炸",
       "hc_used": "#rightProblem, #breakItDown, #abstraction, #constraints, #optimization, #analogies"
+    },
+    {
+      "topic": "新增地圖欄位確認流程",
+      "decision": "製作新地圖時，第一個引導項目是確認欄位：先列 JGIS 基本欄位，再列該地圖需求新增的主題欄位，最後決定每個欄位放在資料、theme.json 或前端生成規則",
+      "reason": "博愛基金會關懷站地圖會有基本欄位，也會有依關懷站需求增加的欄位；若沒有欄位確認步驟，前端容易再次被上一個主題的欄位假設綁住",
+      "alternatives_rejected": "直接從現有書店或風景心境欄位複製：會把單一主題的偶然欄位誤認為引擎契約｜等開發時遇到缺欄再補：會讓資料、文案、UI 責任邊界混在一起",
+      "hc_used": "#rightProblem, #breakItDown, #infoNeeded, #constraints"
     }
   ],
-  "consumers": ["taiwan-art"]
+  "consumers": ["taiwan-art", "博愛基金會關懷站地圖"]
 }

@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { StatusDot } from "../components/StatusDot";
 
 interface Task {
   id: string;
   title: string;
   status: string;
   track: string;
+  order_label?: string;
   foundation?: string | null;
   issues_found?: number;
   issues_fixed?: number;
@@ -49,19 +51,6 @@ const trackMeta: Record<string, { bg: string; text: string }> = {
   planning: { bg: "bg-green-500/15", text: "text-green-400" },
   "control-plane": { bg: "bg-cyan-500/15", text: "text-cyan-400" },
 };
-
-function StatusDot({ status }: { status: string }) {
-  const colors: Record<string, string> = {
-    done: "bg-green-400",
-    needs_fix: "bg-yellow-400",
-    in_progress: "bg-blue-400",
-    blocked: "bg-red-400",
-    deferred: "bg-gray-500",
-  };
-  return (
-    <span className={`inline-block w-2 h-2 rounded-full shrink-0 ${colors[status] || "bg-gray-600"}`} />
-  );
-}
 
 function verdictBadge(v: string | null | undefined) {
   if (!v) return null;
@@ -296,6 +285,17 @@ export default function ProjectsPage() {
                               <span className="text-[var(--text-muted)] text-caption transition-transform duration-150 group-open:rotate-90">▶</span>
                             )}
                             <StatusDot status={task.status} />
+                            {task.order_label && (
+                              <span
+                                className={`font-mono text-caption px-1.5 py-0.5 rounded border ${
+                                  isDone
+                                    ? "border-[var(--border)] text-[var(--text-muted)]"
+                                    : "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
+                                }`}
+                              >
+                                [{task.order_label}]
+                              </span>
+                            )}
                             <span className={isDone ? "text-[var(--text-muted)] line-through" : ""}>
                               {task.title}
                             </span>

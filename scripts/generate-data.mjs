@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
+import { mergeTaskDefinitionsWithState } from "./task-state.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -70,6 +71,14 @@ for (const dir of fs.readdirSync(milestonesDir)) {
     }
 
     if (tasks.length === 0) continue;
+
+    const statePath = path.join(milestonesDir, dir, "state.json");
+    if (fs.existsSync(statePath)) {
+      const state = JSON.parse(fs.readFileSync(statePath, "utf-8").replace(/^﻿/, ""));
+      const mergedTasks = mergeTaskDefinitionsWithState(tasks, state);
+      tasks.length = 0;
+      tasks.push(...mergedTasks);
+    }
 
     let meta = {};
     const projectPath = path.join(milestonesDir, dir, "project.json");

@@ -5,6 +5,11 @@
   "scripts": {
     "dev": "next dev -p 3001",
     "sync": "node scripts/sync-notion-courses.mjs",
+    "test:task-event-outbox": "node scripts/verify-task-event-outbox.mjs",
+    "test:apply-task-events": "node scripts/verify-apply-task-events.mjs",
+    "test:task-state": "node scripts/verify-task-state-merge.mjs",
+    "test:sync-event-queue": "node scripts/verify-sync-event-queue.mjs",
+    "test:task-event-dashboard": "node scripts/verify-task-event-dashboard-data.mjs",
     "prebuild": "node scripts/check-adr-backlinks.mjs && node scripts/generate-data.mjs && node scripts/generate-tools-data.mjs",
     "build": "next build",
     "start": "next start -p 3001"

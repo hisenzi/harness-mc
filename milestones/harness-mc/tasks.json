@@ -268,11 +268,17 @@
     {
       "id": "acp-task-event-dashboard",
       "title": "MC 顯示 task event pipeline 狀態",
-      "status": "in_progress",
+      "status": "completed",
       "track": "control-plane",
       "order": 11,
       "order_label": "MC-LIVE-11",
       "priority": "medium",
+      "completed_at": "2026-06-16",
+      "commits": [
+        "ac10c35",
+        "757c809"
+      ],
+      "summary": "首頁新增 Task Event Pipeline 卡片，顯示 task/sync event pending、rejected、latest reducer 與 queue pressure，並把 task-events/sentinel data generation 接入 prebuild。",
       "depends_on": [
         "acp-apply-task-events"
       ],

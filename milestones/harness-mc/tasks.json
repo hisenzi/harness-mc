@@ -150,11 +150,16 @@
     {
       "id": "acp-task-event-outbox",
       "title": "跨 repo task event outbox（取代 worktree-commit 直接寫 MC）",
-      "status": "in_progress",
+      "status": "completed",
       "track": "control-plane",
       "order": 7,
       "order_label": "MC-LIVE-07",
       "priority": "critical",
+      "completed_at": "2026-06-16",
+      "commits": [
+        "ac10c35"
+      ],
+      "summary": "新增 append-only task event writer 與驗證，讓跨 repo commit 能產生 task event 而不是直接寫 MC canonical tasks。",
       "depends_on": [
         "acp-task-write-command-map",
         "acp-task-schema-validator"
@@ -175,11 +180,16 @@
     {
       "id": "acp-apply-task-events",
       "title": "Task events apply script（single-writer reducer）",
-      "status": "in_progress",
+      "status": "completed",
       "track": "control-plane",
       "order": 8,
       "order_label": "MC-LIVE-08",
       "priority": "critical",
+      "completed_at": "2026-06-16",
+      "commits": [
+        "ac10c35"
+      ],
+      "summary": "新增 single-writer reducer，支援 pending events 套用、duplicate 去重、unknown task/type rejection、commit append 與 basic status transitions。",
       "depends_on": [
         "acp-task-event-outbox"
       ],
@@ -199,11 +209,16 @@
     {
       "id": "acp-task-state-split",
       "title": "Task 定義與狀態分離（state read model）",
-      "status": "in_progress",
+      "status": "completed",
       "track": "control-plane",
       "order": 9,
       "order_label": "MC-LIVE-09",
       "priority": "high",
+      "completed_at": "2026-06-16",
+      "commits": [
+        "ac10c35"
+      ],
+      "summary": "新增 task-state helper，讓 generate-data.mjs 可用 milestones/<project>/state.json overlay 合併任務狀態，降低 tasks.json 寫入衝突面。",
       "depends_on": [
         "acp-apply-task-events"
       ],
@@ -223,11 +238,16 @@
     {
       "id": "acp-external-sync-queue",
       "title": "外部同步 queue 化（Heptabase / Obsidian / Notion）",
-      "status": "in_progress",
+      "status": "completed",
       "track": "control-plane",
       "order": 10,
       "order_label": "MC-LIVE-10",
       "priority": "high",
+      "completed_at": "2026-06-16",
+      "commits": [
+        "ac10c35"
+      ],
+      "summary": "新增 sync-event queue writer，讓 reducer 在任務狀態變更後排入 Obsidian Canvas、Heptabase append 與 Notion sentinel sync_requested events。",
       "depends_on": [
         "acp-apply-task-events",
         "acp-obsidian-canvas-sync-hook"

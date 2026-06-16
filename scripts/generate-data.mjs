@@ -39,6 +39,8 @@ function normalize(t) {
     issues_fixed: t.issues_fixed ?? 0,
     verdict: t.verdict ?? null,
     note: t.note || "",
+    done_condition: t.done_condition || "",
+    depends_on: t.depends_on || [],
     completed_at: t.completed_at || null,
     commits: t.commits || [],
     summary: t.summary || "",

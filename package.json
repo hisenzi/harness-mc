@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev -p 3001",
     "sync": "node scripts/sync-notion-courses.mjs",
+    "sync:obsidian-canvas": "node scripts/generate-data.mjs && node scripts/sync-obsidian-canvas.mjs --whiteboard \"MC 儀表版\"",
     "test:task-event-outbox": "node scripts/verify-task-event-outbox.mjs",
     "test:apply-task-events": "node scripts/verify-apply-task-events.mjs",
     "test:task-state": "node scripts/verify-task-state-merge.mjs",

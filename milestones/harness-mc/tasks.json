@@ -212,35 +212,6 @@
       }
     },
     {
-      "id": "acp-task-state-split",
-      "title": "ACP-MC-15 Task 定義與狀態分離（state read model）",
-      "status": "completed",
-      "track": "control-plane",
-      "order": 9,
-      "order_label": "ACP-MC-15",
-      "priority": "high",
-      "completed_at": "2026-06-16",
-      "commits": [
-        "ac10c35"
-      ],
-      "summary": "新增 task-state helper，讓 generate-data.mjs 可用 milestones/<project>/state.json overlay 合併任務狀態，降低 tasks.json 寫入衝突面。",
-      "depends_on": [
-        "acp-apply-task-events"
-      ],
-      "done_condition": "設計並實作 tasks definition + state/events 分離：tasks.json 保留 id/title/track/done_condition/depends_on，state.json 或 generated read model 保存 status/completed_at/commits/summary/external_refs；generate-data.mjs 改讀 merged view。",
-      "note": "已新增 task-state merge helper，generate-data.mjs 可讀 milestones/<project>/state.json overlay，apply-task-events 改寫 state.json 而不是直接改 tasks.json。MVP 尚未 mass migrate 既有 tasks.json，避免與多 session dirty changes 混雜；待 commit/驗收後標 completed。",
-      "batch": "control-console",
-      "external_refs": {
-        "heptabase": {
-          "whiteboard": "MorroWise / system-ops",
-          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
-          "card_id": "47d0db3b-d8e4-422d-b8d0-8eab09e496f2",
-          "synced_at": "2026-06-16",
-          "sync_mode": "renamed"
-        }
-      }
-    },
-    {
       "id": "acp-external-sync-queue",
       "title": "ACP-MC-16 外部同步 queue 化（Heptabase / Obsidian / Notion）",
       "status": "completed",
@@ -330,80 +301,93 @@
       }
     },
     {
-      "id": "heptabase-pai-sync-migration-spec",
-      "title": "ACP-SYNC-01 Heptabase PAI 同步解耦規格",
-      "status": "todo",
+      "id": "acp-system-attention-freshness-contract",
+      "title": "ACP-MC-19 首頁 System Attention 與 freshness contract mockup",
+      "status": "completed",
       "track": "control-plane",
-      "order": 11.6,
-      "order_label": "ACP-SYNC-01",
+      "order_label": "ACP-MC-19",
       "priority": "critical",
       "depends_on": [
+        "acp-worktree-status-inventory",
+        "acp-visual-sync-coverage-report"
+      ],
+      "done_condition": "產出 system-workflow/docs/mockups/system-attention-freshness.html，將首頁首屏從大面積今日變化清單改成 System Attention：只顯示 stale / blocked / queue pending 等決策訊號，並定義資料新增時的自動更新模型、本地與外部 source 的 freshness contract，以及最後更新時間如何供 Vincent 判斷資料是否可信。",
+      "note": "補 task anchor：Vincent 指出要執行任務前應先確認 task；本次先產出 mockup 後才發現缺 task，需補上追蹤來源。設計方向：兩層更新模型，最終支援本地 source 與 Heptabase / Notion 等外部 source 變動自動刷新；第一階段先從本地 tasks.json / task-events / generated data 開始，首頁只顯示最新更新時間與 source 狀態，不把舊快照偽裝成現況。",
+      "summary": "完成 ACP-MC-19 首頁 System Attention：以 stale、blocked、queue pending 與 data freshness 取代大面積今日變化清單，並保留 freshness contract 讓資料可信度可判斷。",
+      "completed_at": "2026-06-20",
+      "batch": "control-console",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "7e5f4e33-33e6-420a-931a-e71476d1b4ea",
+          "synced_at": "2026-06-20",
+          "sync_mode": "created"
+        }
+      },
+      "commits": [
+        "9b44afc"
+      ]
+    },
+    {
+      "id": "acp-control-plane-operating-loop",
+      "title": "ACP-MC-20 補齊 Control Plane 運行迴路與文件路由",
+      "status": "completed",
+      "track": "control-plane",
+      "order_label": "ACP-MC-20",
+      "priority": "critical",
+      "depends_on": [
+        "acp-task-before-work-gate",
+        "acp-visual-sync-coverage-gate",
+        "acp-obsidian-canvas-sync-hook",
+        "acp-system-attention-freshness-contract"
+      ],
+      "done_condition": "補齊系統性工作迴路文件與文件路由：明確定義討論→可行判斷→task anchor→MC source→Heptabase→Obsidian Canvas→MC read model/freshness 的必經流程；新增 agent-control-plane docs index，標示每份 protocol / schema / plan 何時必讀，避免文件隨意散放或靠 Vincent 逐次提醒。",
+      "note": "Vincent 指出目前像東補西補：系統思考有出現，但缺固定運行機制。此 task 以 harness-mc/milestones/harness-mc 為對照，盤點既有 gate / hook / queue / report，補上文件路由與 operating loop，先讓 future agents 知道何時讀哪份文件、何時必須先建 task、何時同步視覺層與何時回報 freshness。",
+      "summary": "完成 ACP-MC-20 Control Plane 運行迴路：正式化討論到 task、Heptabase、Obsidian Canvas、MC read model/freshness 的必經流程，並以 Agent Control Plane README 路由 protocol、schema、boundary map 與 planning 文件。",
+      "completed_at": "2026-06-20",
+      "batch": "control-console",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "4daedcbb-2aa0-4e6f-9618-d07f7c88047b",
+          "synced_at": "2026-06-20",
+          "sync_mode": "appended"
+        }
+      },
+      "commits": [
+        "a80b899",
+        "93d58b3"
+      ]
+    },
+    {
+      "id": "acp-visual-sync-coverage-report",
+      "title": "Visual sync coverage report read model",
+      "status": "in_progress",
+      "track": "control-plane",
+      "order_label": "ACP-MC-REPORT-01",
+      "priority": "medium",
+      "depends_on": [
+        "acp-visual-sync-coverage-gate",
         "acp-external-sync-queue",
-        "acp-skill-validator"
+        "acp-obsidian-canvas-sync-hook"
       ],
-      "done_condition": "產出同步遷移規格，明確列出 heptabase-cli-to-pai.py、heptabase-to-pai.py、heptabase-to-notion.py 的現況職責、依存關係、目標依存圖、保留/封存條件、回退策略與不碰 token/不覆蓋手動 triage 的紅線。",
-      "note": "本 task 只定義架構與驗收，不改同步邏輯。結論方向：CLI 是新主線；heptabase-cli-to-pai.py 不應長期 import heptabase-to-pai.py；heptabase-to-pai.py 完成遷移後改為 legacy fallback 或封存。規格需寫入 heptabase-notion-sync skill 或 system-workflow docs，並在 CHANGELOG.md 記錄 v1.3 計畫。",
-      "batch": "heptabase-pai-sync-migration"
-    },
-    {
-      "id": "heptabase-cli-pai-shared-lib",
-      "title": "ACP-SYNC-02 抽出 Heptabase PAI shared library",
-      "status": "todo",
-      "track": "control-plane",
-      "order": 11.7,
-      "order_label": "ACP-SYNC-02",
-      "priority": "critical",
-      "depends_on": [
-        "heptabase-pai-sync-migration-spec"
-      ],
-      "done_condition": "新增 shared helper（例如 heptabase_pai_lib.py / heptabase_notion_lib.py），承接 PAI DB mapping、state load/save、Notion request、content_to_blocks、image upload、PAI create/update 等共用邏輯；heptabase-cli-to-pai.py 可直接引用 shared lib，不再需要 import heptabase-to-pai.py。",
-      "note": "先做 lib extraction，不急著刪舊腳本。驗證需包含：python syntax compile、heptabase-cli-to-pai.py --list、至少一個白板 --dry-run；不得正式寫 Notion，除非 Vincent 明確批准。",
-      "batch": "heptabase-pai-sync-migration"
-    },
-    {
-      "id": "heptabase-cli-pai-decouple",
-      "title": "ACP-SYNC-03 CLI to PAI 主線解耦",
-      "status": "todo",
-      "track": "control-plane",
-      "order": 11.8,
-      "order_label": "ACP-SYNC-03",
-      "priority": "critical",
-      "depends_on": [
-        "heptabase-cli-pai-shared-lib"
-      ],
-      "done_condition": "改造 heptabase-cli-to-pai.py：保留 Heptabase CLI 讀取與 ProseMirror→Markdown 轉換，PAI mapping/Notion 寫入改走 shared lib；檔案中不再 import heptabase-to-pai.py；dry-run 輸出與原 PAI script 行為等價。",
-      "note": "這一步是正式把 CLI driver 從 wrapper 升級為主線 command。完成後 heptabase-notion-sync skill 預設路線應只指向 heptabase-cli-to-pai.py；MCP/OAuth PAI 路線降級為 legacy fallback。",
-      "batch": "heptabase-pai-sync-migration"
-    },
-    {
-      "id": "heptabase-pai-legacy-archive",
-      "title": "ACP-SYNC-04 封存 MCP 版 heptabase-to-pai.py",
-      "status": "todo",
-      "track": "control-plane",
-      "order": 11.9,
-      "order_label": "ACP-SYNC-04",
-      "priority": "high",
-      "depends_on": [
-        "heptabase-cli-pai-decouple"
-      ],
-      "done_condition": "在 CLI 主線 dry-run parity 通過後，將 heptabase-to-pai.py 標記為 legacy fallback 或移入 archive；保留明確回退指令與封存原因，避免 future agents 誤用 MCP/OAuth PAI 路線。",
-      "note": "封存不是刪除。若移檔，需確認任何 cron、skill、docs、MC tools data 都不再指向舊位置；若保留原檔，檔頭必須明確寫 Legacy MCP/OAuth fallback, do not use for normal PAI sync。",
-      "batch": "heptabase-pai-sync-migration"
-    },
-    {
-      "id": "heptabase-sync-skill-version-record",
-      "title": "ACP-SYNC-05 Heptabase sync skill 版本紀錄閉環",
-      "status": "todo",
-      "track": "control-plane",
-      "order": 11.95,
-      "order_label": "ACP-SYNC-05",
-      "priority": "high",
-      "depends_on": [
-        "heptabase-pai-legacy-archive"
-      ],
-      "done_condition": "更新 heptabase-notion-sync/SKILL.md 與 CHANGELOG.md，記錄 v1.3 解耦、v1.4 封存；在 harness-mc 跑 npm run test:skills、npm run prebuild、npm run build，並確認 public/data/tools.json 的 heptabase-notion-sync 卡片顯示最新 version/changelog。",
-      "note": "skill 是這條同步系統的歷程入口：SKILL.md 寫現在怎麼用、紅線與預設路線；CHANGELOG.md 寫遷移歷程；execution_log.json 只記每次同步執行結果，不當版本紀錄。",
-      "batch": "heptabase-pai-sync-migration"
+      "done_condition": "新增 read model 或 script，掃描指定 project / track 的 tasks，輸出每個 task 的 MC source 狀態、external_refs.heptabase card_id / whiteboard / synced_at、最近 Canvas sync 狀態與 coverage gaps；MC dashboard 可顯示 pending Heptabase sync / pending Canvas sync。",
+      "note": "這是 gate 的自動化版本；目前規則已要求人工回報 coverage，後續要讓 MC 自己看見哪些 task 尚未同步到 Heptabase 或 Obsidian Canvas。2026-06-20：先更新 system-workflow/docs/mockups/worktree-status.html，加入 Task 視覺同步首頁區塊；接著把首頁 app/page.tsx 接上 Task 視覺同步卡片，先由前端從 projects.json 現算 tracked task coverage，尚未完成獨立 read model / script。 整理 2026-06-20：首頁已有 Task 視覺同步卡片作為 partial surface；此 task 保留為正式 read model/script 化，不與 ACP-MC-19 重複。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "3a002909-5ee3-4bd8-9df9-71d3c4c6c0f0",
+          "synced_at": "2026-06-20",
+          "sync_mode": "appended"
+        }
+      },
+      "commits": [
+        "2f507b0",
+        "7cebf4e"
+      ]
     },
     {
       "id": "acp-control-plane-read-model-v0",
@@ -662,50 +646,146 @@
       }
     },
     {
+      "id": "heptabase-pai-sync-migration-spec",
+      "title": "ACP-SYNC-01 Heptabase PAI 同步解耦規格",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 11.6,
+      "order_label": "ACP-SYNC-01",
+      "priority": "critical",
+      "depends_on": [
+        "acp-external-sync-queue",
+        "acp-skill-validator"
+      ],
+      "done_condition": "產出同步遷移規格，明確列出 heptabase-cli-to-pai.py、heptabase-to-pai.py、heptabase-to-notion.py 的現況職責、依存關係、目標依存圖、保留/封存條件、回退策略與不碰 token/不覆蓋手動 triage 的紅線。",
+      "note": "本 task 只定義架構與驗收，不改同步邏輯。結論方向：CLI 是新主線；heptabase-cli-to-pai.py 不應長期 import heptabase-to-pai.py；heptabase-to-pai.py 完成遷移後改為 legacy fallback 或封存。規格需寫入 heptabase-notion-sync skill 或 system-workflow docs，並在 CHANGELOG.md 記錄 v1.3 計畫。",
+      "batch": "heptabase-pai-sync-migration"
+    },
+    {
+      "id": "heptabase-cli-pai-shared-lib",
+      "title": "ACP-SYNC-02 抽出 Heptabase PAI shared library",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 11.7,
+      "order_label": "ACP-SYNC-02",
+      "priority": "critical",
+      "depends_on": [
+        "heptabase-pai-sync-migration-spec"
+      ],
+      "done_condition": "新增 shared helper（例如 heptabase_pai_lib.py / heptabase_notion_lib.py），承接 PAI DB mapping、state load/save、Notion request、content_to_blocks、image upload、PAI create/update 等共用邏輯；heptabase-cli-to-pai.py 可直接引用 shared lib，不再需要 import heptabase-to-pai.py。",
+      "note": "先做 lib extraction，不急著刪舊腳本。驗證需包含：python syntax compile、heptabase-cli-to-pai.py --list、至少一個白板 --dry-run；不得正式寫 Notion，除非 Vincent 明確批准。",
+      "batch": "heptabase-pai-sync-migration"
+    },
+    {
+      "id": "heptabase-cli-pai-decouple",
+      "title": "ACP-SYNC-03 CLI to PAI 主線解耦",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 11.8,
+      "order_label": "ACP-SYNC-03",
+      "priority": "critical",
+      "depends_on": [
+        "heptabase-cli-pai-shared-lib"
+      ],
+      "done_condition": "改造 heptabase-cli-to-pai.py：保留 Heptabase CLI 讀取與 ProseMirror→Markdown 轉換，PAI mapping/Notion 寫入改走 shared lib；檔案中不再 import heptabase-to-pai.py；dry-run 輸出與原 PAI script 行為等價。",
+      "note": "這一步是正式把 CLI driver 從 wrapper 升級為主線 command。完成後 heptabase-notion-sync skill 預設路線應只指向 heptabase-cli-to-pai.py；MCP/OAuth PAI 路線降級為 legacy fallback。",
+      "batch": "heptabase-pai-sync-migration"
+    },
+    {
+      "id": "heptabase-pai-legacy-archive",
+      "title": "ACP-SYNC-04 封存 MCP 版 heptabase-to-pai.py",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 11.9,
+      "order_label": "ACP-SYNC-04",
+      "priority": "high",
+      "depends_on": [
+        "heptabase-cli-pai-decouple"
+      ],
+      "done_condition": "在 CLI 主線 dry-run parity 通過後，將 heptabase-to-pai.py 標記為 legacy fallback 或移入 archive；保留明確回退指令與封存原因，避免 future agents 誤用 MCP/OAuth PAI 路線。",
+      "note": "封存不是刪除。若移檔，需確認任何 cron、skill、docs、MC tools data 都不再指向舊位置；若保留原檔，檔頭必須明確寫 Legacy MCP/OAuth fallback, do not use for normal PAI sync。",
+      "batch": "heptabase-pai-sync-migration"
+    },
+    {
+      "id": "heptabase-sync-skill-version-record",
+      "title": "ACP-SYNC-05 Heptabase sync skill 版本紀錄閉環",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 11.95,
+      "order_label": "ACP-SYNC-05",
+      "priority": "high",
+      "depends_on": [
+        "heptabase-pai-legacy-archive"
+      ],
+      "done_condition": "更新 heptabase-notion-sync/SKILL.md 與 CHANGELOG.md，記錄 v1.3 解耦、v1.4 封存；在 harness-mc 跑 npm run test:skills、npm run prebuild、npm run build，並確認 public/data/tools.json 的 heptabase-notion-sync 卡片顯示最新 version/changelog。",
+      "note": "skill 是這條同步系統的歷程入口：SKILL.md 寫現在怎麼用、紅線與預設路線；CHANGELOG.md 寫遷移歷程；execution_log.json 只記每次同步執行結果，不當版本紀錄。",
+      "batch": "heptabase-pai-sync-migration"
+    },
+    {
+      "id": "sn-5",
+      "title": "Notion 重要提醒寫入（sentinel-notion.mjs）",
+      "status": "blocked",
+      "track": "sentinel",
+      "done_condition": "讀 changes.json 把待裁決事項（new blocked / stale）upsert 進 PAI 行動庫並出現在重要提醒 view，同日重跑不重複建卡",
+      "priority": "high",
+      "note": "腳本完成（upsert 防重 + object_not_found 降級驗證 exit 2）。已用 MCP 代打建今日卡 37d714fb-14c6-81cb-9350-e3c913278387，狀態=待追蹤命中重要提醒 view filter（狀態=待追蹤 OR 是否逾期，實際取得 view 定義確認）。blocked：等 Vincent 把 PAI 行動庫分享給 \"MC Sync\" integration（Notion → ⋯ → Connections）",
+      "history_note": "不是刪除；此 task 屬於外部通知/排程出口。HC 驗證後列為第二階段之後的接線工作：先完成 trigger rules / recommendation / approval policy，再接 Notion、Telegram、launchd。"
+    },
+    {
+      "id": "sn-6",
+      "title": "Telegram 出口接上（sentinel → notify.sh）",
+      "status": "blocked",
+      "track": "sentinel",
+      "done_condition": "sentinel-diff --push 經 notify.sh 推 Telegram 送達",
+      "priority": "medium",
+      "note": "blocked：等 Vincent BotFather 重發 token（舊 token 已外洩需 revoke）填入 schedule/.env",
+      "history_note": "不是刪除；此 task 屬於外部通知/排程出口。HC 驗證後列為第二階段之後的接線工作：先完成 trigger rules / recommendation / approval policy，再接 Notion、Telegram、launchd。"
+    },
+    {
+      "id": "sn-7",
+      "title": "launchd 每日排程（收編進 agnostic-scheduler 框架）",
+      "status": "todo",
+      "track": "sentinel",
+      "done_condition": "mc-sentinel 任務經 dispatch.sh + install.sh 上 launchd 每日自動跑",
+      "priority": "medium",
+      "note": "依賴 agnostic-scheduler t2/t8；過渡期由 sn-4 的 session 自檢觸發推送，CC 本人就是排程器",
+      "history_note": "不是刪除；此 task 屬於外部通知/排程出口。HC 驗證後列為第二階段之後的接線工作：先完成 trigger rules / recommendation / approval policy，再接 Notion、Telegram、launchd。"
+    },
+    {
       "id": "p2-1",
       "title": "記憶支柱 spec 定義",
-      "status": "in_progress",
-      "track": "phase-2"
+      "status": "deferred",
+      "track": "phase-2",
+      "priority": "low",
+      "order_label": "LEGACY-P2-1",
+      "superseded_by": [
+        "morrowise-anatomy-read-model"
+      ],
+      "note": "整理 2026-06-20：舊記憶支柱 spec 線改由 morrowise-anatomy-read-model 承接 memory/context，暫不作為獨立活系統主線。"
     },
     {
       "id": "p2-2",
       "title": "記憶頁面（/memory）實作",
-      "status": "todo",
-      "track": "phase-2"
+      "status": "deferred",
+      "track": "phase-2",
+      "priority": "low",
+      "order_label": "LEGACY-P2-2",
+      "superseded_by": [
+        "morrowise-dashboard-surface"
+      ],
+      "note": "整理 2026-06-20：舊 /memory 頁面實作暫緩，先由 MorroWise dashboard surface 顯示活系統需要的 memory/context 狀態。"
     },
     {
       "id": "inf-8",
       "title": "commit message 帶 task ID + git log 反查 script",
-      "status": "todo",
+      "status": "deferred",
       "track": "infra",
-      "note": "commit message 格式：[task:brain-migration-m1]。寫 script 從 git log 反查 task 完成狀態，自動填入 commits 欄位。目前手動 ROI 足夠，規模變大時再啟動"
-    },
-    {
-      "id": "acp-skill-validator",
-      "title": "ACP skill 驗證器",
-      "status": "completed",
-      "track": "control-plane",
-      "order": 9,
-      "order_label": "ACP-MC-09",
-      "priority": "critical",
-      "completed_at": "2026-06-20",
-      "depends_on": [
-        "dual-blade/acp-skill-routes"
-      ],
-      "done_condition": "新增 scripts/validate-skills.mjs，支援 --changed-only；changed SKILL.md 缺 > version 或 ## 版本歷史時 fail，舊 skill 先 warn；檢查 description、路徑是否 agent-neutral。",
-      "summary": "新增 validate-skills.mjs + verify-validate-skills.mjs，changed SKILL.md 缺版本行、版本歷史、description 或含硬編本機路徑會 fail；舊 skill 只列 legacy warning，並接入 npm run test:skills / prebuild。",
-      "note": "Skill update task 是否要求版本紀錄由 task validator 檢查；檔案事實由 skill validator 檢查。本次已把檔案事實檢查系統化：changed-only 作為阻擋閘門，全量掃描作為 legacy backlog 清單。",
-      "external_refs": {
-        "heptabase": {
-          "whiteboard": "MC 儀表版",
-          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
-          "card_id": "74e3f6a1-5751-4312-9ea3-d651156242dc",
-          "synced_at": "2026-06-14",
-          "sync_mode": "renamed"
-        }
-      },
-      "commits": [
-        "757f283"
+      "note": "commit message 格式：[task:brain-migration-m1]。寫 script 從 git log 反查 task 完成狀態，自動填入 commits 欄位。目前手動 ROI 足夠，規模變大時再啟動 整理 2026-06-20：commit 反查需求折到 task event outbox 與 ACP read model；不再作為獨立主線 task。",
+      "priority": "low",
+      "order_label": "LEGACY-INF-8",
+      "superseded_by": [
+        "acp-task-event-outbox",
+        "acp-control-plane-read-model-v0"
       ]
     },
     {
@@ -715,12 +795,12 @@
       "track": "control-plane",
       "order": 1,
       "order_label": "ACP-MC-01",
-      "priority": "medium",
+      "priority": "low",
       "depends_on": [
         "dual-blade/agent-control-plane-execution-plan"
       ],
       "done_condition": "產出 system-workflow/docs/specs/agent-control-plane-dashboard.md，明確定義 MC 首頁作為 Control Plane console 的資訊架構、資料源、read-only 邊界與驗收標準。",
-      "note": "先寫 spec，不先動 UI。回答「下一個 agent 打開 MC 第一眼要知道什麼」。",
+      "note": "先寫 spec，不先動 UI。回答「下一個 agent 打開 MC 第一眼要知道什麼」。 整理 2026-06-20：舊 ACP dashboard spec 已被 ACP-MC-20 operating loop 與 MC-LIVE MorroWise control-console 主線吸收；保留為歷史設計素材，不作為下一步。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -730,7 +810,10 @@
           "sync_mode": "renamed"
         }
       },
-      "superseded_by": "morrowise-growth-gate-spec",
+      "superseded_by": [
+        "morrowise-growth-gate-spec",
+        "acp-control-plane-operating-loop"
+      ],
       "defer_reason": "原本要先產 ACP dashboard spec；HC 驗證後改由 MorroWise source/index/task map/growth gate 先定義活系統，再產 dashboard surface。此 spec 作為歷史參照，不作第一批執行入口。",
       "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。"
     },
@@ -741,12 +824,12 @@
       "track": "control-plane",
       "order": 2,
       "order_label": "ACP-MC-02",
-      "priority": "medium",
+      "priority": "low",
       "depends_on": [
         "acp-dashboard-spec"
       ],
       "done_condition": "產出 system-workflow/docs/specs/system-workflow-migration-to-acp.md，列出 workflow-dashboard 可沿用、需改寫、淘汰項，並明確移除 OpenClaw path / 獨立 repo 假設。",
-      "note": "把 2026-04-18 workflow dashboard prototype 收編為 MC/ACP observability 設計素材，不照搬。",
+      "note": "把 2026-04-18 workflow dashboard prototype 收編為 MC/ACP observability 設計素材，不照搬。 整理 2026-06-20：system-workflow 歷史原型遷移改由 morrowise-system-index 承接，避免平行維護第二份遷移筆記。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -756,7 +839,9 @@
           "sync_mode": "renamed"
         }
       },
-      "superseded_by": "morrowise-system-index",
+      "superseded_by": [
+        "morrowise-system-index"
+      ],
       "defer_reason": "system-workflow 歷史原型遷移應被納入 MorroWise Index 與 task map，不再作為獨立前置 task。",
       "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。"
     },
@@ -767,13 +852,13 @@
       "track": "control-plane",
       "order": 3,
       "order_label": "ACP-MC-03",
-      "priority": "medium",
+      "priority": "low",
       "depends_on": [
         "acp-dashboard-spec",
         "dual-blade/agent-control-plane-readonly-query-schema"
       ],
       "done_condition": "新增 scripts/generate-control-plane-data.mjs 並串進 prebuild，輸出 public/data/control-plane.json，至少包含 next_actions、decision_health、runtime_inventory_status、policy_status、mcp_candidates、agent_onboarding_health。",
-      "note": "資料層先行；React 頁面只讀 JSON，不直接掃 markdown。",
+      "note": "資料層先行；React 頁面只讀 JSON，不直接掃 markdown。 整理 2026-06-20：control-plane.json 生成器併入 MC-LIVE-12 acp-control-plane-read-model-v0，避免資料層任務重複。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -783,7 +868,9 @@
           "sync_mode": "renamed"
         }
       },
-      "superseded_by": "acp-control-plane-read-model-v0",
+      "superseded_by": [
+        "acp-control-plane-read-model-v0"
+      ],
       "defer_reason": "與 acp-control-plane-read-model-v0 都產 generate-control-plane-data.mjs / control-plane.json；後者範圍更精準，先併入 read model v0，不另開平行資料生成器。",
       "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。"
     },
@@ -794,13 +881,13 @@
       "track": "control-plane",
       "order": 4,
       "order_label": "ACP-MC-04",
-      "priority": "medium",
+      "priority": "low",
       "depends_on": [
         "acp-control-plane-read-model-v0",
         "morrowise-dashboard-surface"
       ],
       "done_condition": "首頁新增 ControlPlaneCard，顯示下一步 execution task、必讀 ADR、ADR backlink health、runtime/policy 狀態，且能連到 /projects 的 dual-blade 與 harness-mc。",
-      "note": "這是 MC 成為 control plane console 的第一個可見切面。",
+      "note": "這是 MC 成為 control plane console 的第一個可見切面。 整理 2026-06-20：首頁 control-plane card 併入 MorroWise dashboard surface 與 ACP read model；ACP-MC-19 已先提供 System Attention 首屏。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -811,7 +898,11 @@
         }
       },
       "defer_reason": "原本是先做首頁卡片；HC 驗證後改成先有 read model 與 MorroWise dashboard surface，再決定是否需要獨立 ControlPlaneCard。",
-      "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。"
+      "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。",
+      "superseded_by": [
+        "morrowise-dashboard-surface",
+        "acp-control-plane-read-model-v0"
+      ]
     },
     {
       "id": "acp-projects-sidebar-search",
@@ -892,34 +983,61 @@
       "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。"
     },
     {
-      "id": "sn-5",
-      "title": "Notion 重要提醒寫入（sentinel-notion.mjs）",
-      "status": "blocked",
-      "track": "sentinel",
-      "done_condition": "讀 changes.json 把待裁決事項（new blocked / stale）upsert 進 PAI 行動庫並出現在重要提醒 view，同日重跑不重複建卡",
+      "id": "acp-task-state-split",
+      "title": "ACP-MC-15 Task 定義與狀態分離（state read model）",
+      "status": "completed",
+      "track": "control-plane",
+      "order": 9,
+      "order_label": "ACP-MC-15",
       "priority": "high",
-      "note": "腳本完成（upsert 防重 + object_not_found 降級驗證 exit 2）。已用 MCP 代打建今日卡 37d714fb-14c6-81cb-9350-e3c913278387，狀態=待追蹤命中重要提醒 view filter（狀態=待追蹤 OR 是否逾期，實際取得 view 定義確認）。blocked：等 Vincent 把 PAI 行動庫分享給 \"MC Sync\" integration（Notion → ⋯ → Connections）",
-      "history_note": "不是刪除；此 task 屬於外部通知/排程出口。HC 驗證後列為第二階段之後的接線工作：先完成 trigger rules / recommendation / approval policy，再接 Notion、Telegram、launchd。"
+      "completed_at": "2026-06-16",
+      "commits": [
+        "ac10c35"
+      ],
+      "summary": "新增 task-state helper，讓 generate-data.mjs 可用 milestones/<project>/state.json overlay 合併任務狀態，降低 tasks.json 寫入衝突面。",
+      "depends_on": [
+        "acp-apply-task-events"
+      ],
+      "done_condition": "設計並實作 tasks definition + state/events 分離：tasks.json 保留 id/title/track/done_condition/depends_on，state.json 或 generated read model 保存 status/completed_at/commits/summary/external_refs；generate-data.mjs 改讀 merged view。",
+      "note": "已新增 task-state merge helper，generate-data.mjs 可讀 milestones/<project>/state.json overlay，apply-task-events 改寫 state.json 而不是直接改 tasks.json。MVP 尚未 mass migrate 既有 tasks.json，避免與多 session dirty changes 混雜；待 commit/驗收後標 completed。",
+      "batch": "control-console",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "47d0db3b-d8e4-422d-b8d0-8eab09e496f2",
+          "synced_at": "2026-06-16",
+          "sync_mode": "renamed"
+        }
+      }
     },
     {
-      "id": "sn-6",
-      "title": "Telegram 出口接上（sentinel → notify.sh）",
-      "status": "blocked",
-      "track": "sentinel",
-      "done_condition": "sentinel-diff --push 經 notify.sh 推 Telegram 送達",
-      "priority": "medium",
-      "note": "blocked：等 Vincent BotFather 重發 token（舊 token 已外洩需 revoke）填入 schedule/.env",
-      "history_note": "不是刪除；此 task 屬於外部通知/排程出口。HC 驗證後列為第二階段之後的接線工作：先完成 trigger rules / recommendation / approval policy，再接 Notion、Telegram、launchd。"
-    },
-    {
-      "id": "sn-7",
-      "title": "launchd 每日排程（收編進 agnostic-scheduler 框架）",
-      "status": "todo",
-      "track": "sentinel",
-      "done_condition": "mc-sentinel 任務經 dispatch.sh + install.sh 上 launchd 每日自動跑",
-      "priority": "medium",
-      "note": "依賴 agnostic-scheduler t2/t8；過渡期由 sn-4 的 session 自檢觸發推送，CC 本人就是排程器",
-      "history_note": "不是刪除；此 task 屬於外部通知/排程出口。HC 驗證後列為第二階段之後的接線工作：先完成 trigger rules / recommendation / approval policy，再接 Notion、Telegram、launchd。"
+      "id": "acp-skill-validator",
+      "title": "ACP skill 驗證器",
+      "status": "completed",
+      "track": "control-plane",
+      "order": 9,
+      "order_label": "ACP-MC-09",
+      "priority": "critical",
+      "completed_at": "2026-06-20",
+      "depends_on": [
+        "dual-blade/acp-skill-routes"
+      ],
+      "done_condition": "新增 scripts/validate-skills.mjs，支援 --changed-only；changed SKILL.md 缺 > version 或 ## 版本歷史時 fail，舊 skill 先 warn；檢查 description、路徑是否 agent-neutral。",
+      "summary": "新增 validate-skills.mjs + verify-validate-skills.mjs，changed SKILL.md 缺版本行、版本歷史、description 或含硬編本機路徑會 fail；舊 skill 只列 legacy warning，並接入 npm run test:skills / prebuild。",
+      "note": "Skill update task 是否要求版本紀錄由 task validator 檢查；檔案事實由 skill validator 檢查。本次已把檔案事實檢查系統化：changed-only 作為阻擋閘門，全量掃描作為 legacy backlog 清單。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "74e3f6a1-5751-4312-9ea3-d651156242dc",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      },
+      "commits": [
+        "757f283"
+      ]
     },
     {
       "id": "p1-1",
@@ -1327,34 +1445,6 @@
       ]
     },
     {
-      "id": "acp-visual-sync-coverage-report",
-      "title": "Visual sync coverage report read model",
-      "status": "in_progress",
-      "track": "control-plane",
-      "order_label": "ACP-MC-REPORT-01",
-      "priority": "medium",
-      "depends_on": [
-        "acp-visual-sync-coverage-gate",
-        "acp-external-sync-queue",
-        "acp-obsidian-canvas-sync-hook"
-      ],
-      "done_condition": "新增 read model 或 script，掃描指定 project / track 的 tasks，輸出每個 task 的 MC source 狀態、external_refs.heptabase card_id / whiteboard / synced_at、最近 Canvas sync 狀態與 coverage gaps；MC dashboard 可顯示 pending Heptabase sync / pending Canvas sync。",
-      "note": "這是 gate 的自動化版本；目前規則已要求人工回報 coverage，後續要讓 MC 自己看見哪些 task 尚未同步到 Heptabase 或 Obsidian Canvas。2026-06-20：先更新 system-workflow/docs/mockups/worktree-status.html，加入 Task 視覺同步首頁區塊；接著把首頁 app/page.tsx 接上 Task 視覺同步卡片，先由前端從 projects.json 現算 tracked task coverage，尚未完成獨立 read model / script。",
-      "external_refs": {
-        "heptabase": {
-          "whiteboard": "MC 儀表版",
-          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
-          "card_id": "3a002909-5ee3-4bd8-9df9-71d3c4c6c0f0",
-          "synced_at": "2026-06-20",
-          "sync_mode": "appended"
-        }
-      },
-      "commits": [
-        "2f507b0",
-        "7cebf4e"
-      ]
-    },
-    {
       "id": "morrowise-rename-impact-inventory",
       "title": "盤點 Willgrow → MorroWise 改名影響範圍",
       "status": "completed",
@@ -1403,67 +1493,6 @@
       },
       "commits": [
         "7cebf4e"
-      ]
-    },
-    {
-      "id": "acp-system-attention-freshness-contract",
-      "title": "ACP-MC-19 首頁 System Attention 與 freshness contract mockup",
-      "status": "completed",
-      "track": "control-plane",
-      "order_label": "ACP-MC-19",
-      "priority": "critical",
-      "depends_on": [
-        "acp-worktree-status-inventory",
-        "acp-visual-sync-coverage-report"
-      ],
-      "done_condition": "產出 system-workflow/docs/mockups/system-attention-freshness.html，將首頁首屏從大面積今日變化清單改成 System Attention：只顯示 stale / blocked / queue pending 等決策訊號，並定義資料新增時的自動更新模型、本地與外部 source 的 freshness contract，以及最後更新時間如何供 Vincent 判斷資料是否可信。",
-      "note": "補 task anchor：Vincent 指出要執行任務前應先確認 task；本次先產出 mockup 後才發現缺 task，需補上追蹤來源。設計方向：兩層更新模型，最終支援本地 source 與 Heptabase / Notion 等外部 source 變動自動刷新；第一階段先從本地 tasks.json / task-events / generated data 開始，首頁只顯示最新更新時間與 source 狀態，不把舊快照偽裝成現況。",
-      "summary": "完成 ACP-MC-19 首頁 System Attention：以 stale、blocked、queue pending 與 data freshness 取代大面積今日變化清單，並保留 freshness contract 讓資料可信度可判斷。",
-      "completed_at": "2026-06-20",
-      "batch": "control-console",
-      "external_refs": {
-        "heptabase": {
-          "whiteboard": "MC 儀表版",
-          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
-          "card_id": "7e5f4e33-33e6-420a-931a-e71476d1b4ea",
-          "synced_at": "2026-06-20",
-          "sync_mode": "created"
-        }
-      },
-      "commits": [
-        "9b44afc"
-      ]
-    },
-    {
-      "id": "acp-control-plane-operating-loop",
-      "title": "ACP-MC-20 補齊 Control Plane 運行迴路與文件路由",
-      "status": "completed",
-      "track": "control-plane",
-      "order_label": "ACP-MC-20",
-      "priority": "critical",
-      "depends_on": [
-        "acp-task-before-work-gate",
-        "acp-visual-sync-coverage-gate",
-        "acp-obsidian-canvas-sync-hook",
-        "acp-system-attention-freshness-contract"
-      ],
-      "done_condition": "補齊系統性工作迴路文件與文件路由：明確定義討論→可行判斷→task anchor→MC source→Heptabase→Obsidian Canvas→MC read model/freshness 的必經流程；新增 agent-control-plane docs index，標示每份 protocol / schema / plan 何時必讀，避免文件隨意散放或靠 Vincent 逐次提醒。",
-      "note": "Vincent 指出目前像東補西補：系統思考有出現，但缺固定運行機制。此 task 以 harness-mc/milestones/harness-mc 為對照，盤點既有 gate / hook / queue / report，補上文件路由與 operating loop，先讓 future agents 知道何時讀哪份文件、何時必須先建 task、何時同步視覺層與何時回報 freshness。",
-      "summary": "完成 ACP-MC-20 Control Plane 運行迴路：正式化討論到 task、Heptabase、Obsidian Canvas、MC read model/freshness 的必經流程，並以 Agent Control Plane README 路由 protocol、schema、boundary map 與 planning 文件。",
-      "completed_at": "2026-06-20",
-      "batch": "control-console",
-      "external_refs": {
-        "heptabase": {
-          "whiteboard": "MC 儀表版",
-          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
-          "card_id": "4daedcbb-2aa0-4e6f-9618-d07f7c88047b",
-          "synced_at": "2026-06-20",
-          "sync_mode": "appended"
-        }
-      },
-      "commits": [
-        "a80b899",
-        "93d58b3"
       ]
     }
   ]

@@ -604,9 +604,10 @@
       "done_condition": "定義允許自動、需 Vincent approve、禁止自動三類 action policy；涵蓋 task reorder、task create/update/close、memory write/update、schedule mutation、external sync/write、public posting/email、private/shared memory write、third-party repo/skill intake、draft patch、commit/push/deploy、visual-layer overwrite/reverse sync、browser form submit/message send/payment/delete、delete/secret/runtime auth/app storage/local DB/private key/history rewrite 等邊界。",
       "note": "主動化的安全閘門；沒有 approval policy，不允許 autonomous runner。執行本 task 時先統整 $COLLAB/notyet-harness/000_Agent/CORE.md、docs/agent-control-plane/openclaw-security-extract-260613.md、mcp-tools-boundary-map-260613.md、visual-layer-transition-protocol.md、skills/security-scan、skills/browser-setup、skills/worktree-commit 的安全規則；同時回查 OpenClaw 原始歷史來源 $COLLAB/.openclaw_260418/workspace/AGENTS.md、CORE.md、skills/security-scan/references/rules.md、skills/git-worktree/dist/SKILL.md。需明確落地三層：allowed（read-only、generated data、dry-run、低風險本地驗證）、approval_required（對外寫入、push/deploy、schedule/memory/task 狀態變更、第三方搬入、不可逆或可見副作用）、forbidden（主動讀/輸出 secrets、繞過 Vincent approval、從 Heptabase/Canvas/chat 反向覆寫 MC、讀 app storage/token/local DB、無 recovery plan 的刪除或 history rewrite）。Commit 邊界需特別定義：runner 最多產生 commit plan / draft patch；實際 commit 必須走 worktree-commit confirmation gate，push/deploy 需 Vincent 明確同意。",
       "completed_at": "2026-06-20",
-      "summary": "定義 MorroWise approval policy：新增機器可讀 policy、正式 spec、schema 欄位與 verifier，將 action 分成 allowed、approval_required、forbidden 三層；覆蓋 task/memory/schedule 變更、外部 sync/write、第三方 intake、commit/push/deploy、visual-layer overwrite/reverse sync、browser submit/message、secret/runtime auth/app storage/local DB/private key/history rewrite 等邊界。未知 runner action 預設需 approval，且 direction agreement 不等於 operation approval。",
+      "summary": "定義 MorroWise approval policy：新增機器可讀 policy、正式 spec、schema 欄位與 verifier，將 action 分成 allowed、approval_required、forbidden 三層；覆蓋 task/memory/schedule 變更、外部 sync/write、第三方 intake、commit/push/deploy、visual-layer overwrite/reverse sync、browser submit/message、secret/runtime auth/app storage/local DB/private key/history rewrite 等邊界。未知 runner action 預設需 approval，且 direction agreement 不等於 operation approval。 追加防呆：runner 最多產生 commit plan / draft patch；實際 commit 必須走 worktree-commit confirmation gate，push/deploy 需 Vincent 明確同意。",
       "commits": [
-        "519e9c5"
+        "519e9c5",
+        "9a66e90"
       ],
       "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {

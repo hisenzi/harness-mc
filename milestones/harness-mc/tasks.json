@@ -438,7 +438,7 @@
     {
       "id": "morrowise-anatomy-read-model",
       "title": "設計 MorroWise anatomy read model",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "order": 13,
       "order_label": "MC-LIVE-13",
@@ -451,6 +451,11 @@
       "note": "只做 read model schema，不先接外部 API；資料來源以現行 MC milestones/read model + MorroWise index 為主。",
       "batch": "control-console",
       "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "completed_at": "2026-06-20",
+      "summary": "定義 morrowise-system.json v0 schema 與 companion spec：涵蓋 DNA、memory/context、senses/events、muscles、immune validators、heartbeat、feedback、open_loops，並加入 portable_agent_verification，讓任何 Agent 可由 $COLLAB 接手驗證。",
+      "commits": [
+        "a966779"
+      ],
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise / system-ops",

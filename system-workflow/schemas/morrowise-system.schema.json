@@ -483,11 +483,22 @@
     "actionCandidate": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["action_id", "kind", "approval_required"],
+      "required": ["action_id", "kind", "approval_required", "risk_level", "runner_output"],
       "properties": {
         "action_id": { "type": "string" },
         "kind": { "type": "string" },
-        "approval_required": { "type": "boolean" }
+        "approval_required": { "type": "boolean" },
+        "risk_level": { "enum": ["low", "medium", "high"] },
+        "runner_output": {
+          "enum": [
+            "summary",
+            "reorder_suggestion",
+            "sync_requested_event_plan",
+            "sync_requested_event",
+            "draft_patch",
+            "approval_request"
+          ]
+        }
       }
     },
     "approvalRule": {

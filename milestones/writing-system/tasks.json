@@ -104,7 +104,11 @@
       "done_condition": "article-seeds/2026-06-16_任務管理要變成活系統.md 已補入 Task-before-work gate，並把 MorroWise 語言從抽象標語改成更具體的人話痛點。",
       "completed_at": "2026-06-20",
       "summary": "文章種子補入 Task-before-work gate：提案可行後不可直接動工，必須先有 work anchor；並把 MorroWise 收束語改成「別讓明天的你，從同一個問題重新開始」。",
-      "note": "work anchor：Vincent 要求更新文章種子；依 Task-before-work rule，先記錄 task，再開始改文章。"
+      "note": "work anchor：Vincent 要求更新文章種子；依 Task-before-work rule，先記錄 task，再開始改文章。",
+      "commits": [
+        "4bc4918",
+        "2f507b0"
+      ]
     }
   ]
 }

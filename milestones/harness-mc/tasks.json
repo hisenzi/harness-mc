@@ -9,6 +9,9 @@
       "order_label": "MC-LIVE-01",
       "priority": "critical",
       "completed_at": "2026-06-20",
+      "commits": [
+        "2f507b0"
+      ],
       "done_condition": "建立 Willgrow source inventory，列出舊 OpenClaw memory、system-ops BLUEPRINT/project/tasks/references、現行 Obsidian Projects/system-ops.md、MC control-plane tasks 的檔案清單與 source-of-truth 等級。",
       "summary": "建立 system-workflow/docs/specs/willgrow-source-inventory.md，將現行 MC 正本、舊 system-ops project/reference、Obsidian mirror、daily memory、Heptabase/Canvas 視覺層分級，並列出 Willgrow 後續 index/task-map 應接的來源與鄰近 control-plane/sentinel tasks。",
       "note": "Grounding 起點：$COLLAB/.openclaw_260418/workspace/memory、$COLLAB/.openclaw_260418/workspace/milestones/projects/system-ops、$COLLAB/notyet-harness/300_Obsidian_brain/Projects/system-ops.md、harness-mc/milestones/harness-mc。",
@@ -1296,7 +1299,11 @@
       "done_condition": "vincent-superpowers / planning / execution / project-init 已寫入規則：確認提案可行且將進入實作、改文件、改資料、同步外部工具、寫文章或改流程前，必須先建立或指定可追蹤 task 作為 work anchor。",
       "summary": "新增 Task-before-work gate：可行提案不可直接動工；planning 必須建立或更新 task，execution 開始前必須確認 work anchor，project-init 開案後也要先有 task anchor。",
       "note": "Vincent 指示：當確認提案可行，先紀錄 task；開始動工前一定要有可追蹤紀錄。此 task 是本次規則落地的追蹤 anchor。",
-      "completed_at": "2026-06-20"
+      "completed_at": "2026-06-20",
+      "commits": [
+        "8ecc66d",
+        "2f507b0"
+      ]
     },
     {
       "id": "acp-visual-sync-coverage-gate",
@@ -1308,7 +1315,11 @@
       "done_condition": "planning / project-init / heptabase-task-cards 已寫入規則：task 變更後必須回報 MC task、Heptabase 白板 card、Obsidian Canvas mirror 三層同步狀態，並列出 coverage gaps。",
       "summary": "新增 visual sync coverage gate：有 task 的項目不能只停在 tasks.json；回報時要說明是否同步到 Heptabase 白板、是否已跑 Obsidian Canvas sync、哪些 task 尚缺 external_refs.heptabase 或 Canvas mirror。",
       "note": "Vincent 指示：task 系統要追蹤 task、Heptabase 白板、Obsidian Canvas 的資料同步狀態；有 task 的項目要知道是否都有同步到白板與 Canvas。",
-      "completed_at": "2026-06-20"
+      "completed_at": "2026-06-20",
+      "commits": [
+        "8ecc66d",
+        "2f507b0"
+      ]
     },
     {
       "id": "acp-visual-sync-coverage-report",
@@ -1330,9 +1341,12 @@
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "3a002909-5ee3-4bd8-9df9-71d3c4c6c0f0",
           "synced_at": "2026-06-20",
-          "sync_mode": "created"
+          "sync_mode": "appended"
         }
-      }
+      },
+      "commits": [
+        "2f507b0"
+      ]
     },
     {
       "id": "morrowise-rename-impact-inventory",
@@ -1351,9 +1365,12 @@
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "c1a6712d-e3fe-4669-913c-dc4d22596dd2",
           "synced_at": "2026-06-20",
-          "sync_mode": "created"
+          "sync_mode": "appended"
         }
-      }
+      },
+      "commits": [
+        "2f507b0"
+      ]
     }
   ]
 }

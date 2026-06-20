@@ -623,7 +623,7 @@
     {
       "id": "morrowise-autonomous-action-runner-v0",
       "title": "MorroWise autonomous action runner v0",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "batch": "proactive-loop",
       "order": 19,
@@ -635,6 +635,11 @@
       ],
       "done_condition": "實作低風險 runner v0：只能產 summary、提出 reorder 建議、排 sync_requested event、產 draft patch；所有中高風險 action 只產 approval request，不自動 apply。",
       "note": "部分自動執行的第一版，重點是低風險與可回退。",
+      "completed_at": "2026-06-21",
+      "summary": "實作 MorroWise low-risk action runner v0：新增 runner module、spec、schema 欄位與 verifier；預設 dry-run，只產 summary、reorder_suggestion、sync_requested_event_plan、draft_patch；只有低風險 queue_sync_requested 且明確啟用 writeSyncEvents 時才排本地 sync_requested event；所有中高風險或 approval-required action 只產 approval_request，不自動 apply。",
+      "commits": [
+        "448b98a"
+      ],
       "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {

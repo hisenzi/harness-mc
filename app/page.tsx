@@ -6,11 +6,25 @@ import { StatusDot } from "./components/StatusDot";
 
 interface Task {
   id: string;
+  title?: string;
   status: string;
+  track?: string;
+  order_label?: string;
   verdict?: string | null;
   foundation?: string | null;
   issues_found?: number;
   issues_fixed?: number;
+  completed_at?: string | null;
+  summary?: string;
+  external_refs?: {
+    heptabase?: {
+      whiteboard?: string;
+      whiteboard_id?: string;
+      card_id?: string;
+      synced_at?: string;
+      sync_mode?: string;
+    };
+  };
 }
 
 interface LearningSummary {
@@ -79,6 +93,41 @@ interface TaskEventPipelineData {
   } | null;
   recent_task_events: { id: string; queue: string; type: string; project: string; task_id: string; reason?: string }[];
   recent_sync_events: { id: string; queue: string; type: string; target: string; project: string; task_id: string }[];
+}
+
+interface WorktreeRepo {
+  repo: string;
+  path_label: string;
+  branch: string;
+  upstream: string | null;
+  head: string | null;
+  is_detached: boolean;
+  staged_count: number;
+  unstaged_count: number;
+  untracked_count: number;
+  local_commits_count: number;
+  remote_commits_count: number;
+  status: "uncommitted" | "local_commits" | "needs_reconcile" | "clean";
+  risk: "low" | "medium" | "high";
+  suggested_action: string;
+  files: { indexStatus: string; worktreeStatus: string; path: string }[];
+}
+
+interface WorktreeStatusData {
+  generated_at: string;
+  summary: {
+    scanned: number;
+    uncommitted: number;
+    local_commits: number;
+    needs_reconcile: number;
+    clean: number;
+  };
+  repositories: WorktreeRepo[];
+}
+
+interface VisualSyncTask extends Task {
+  project: string;
+  projectName: string;
 }
 
 // event type → StatusDot status（複用 MC 既有元件，跟 /projects 顏色語彙對齊）
@@ -286,6 +335,254 @@ function TaskEventPipelineCard() {
   );
 }
 
+const worktreeStatusLabel: Record<WorktreeRepo["status"], string> = {
+  uncommitted: "未提交變更",
+  local_commits: "本機未推送",
+  needs_reconcile: "需要對帳",
+  clean: "全部收乾淨",
+};
+
+const worktreeDotStatus: Record<WorktreeRepo["status"], string> = {
+  uncommitted: "needs_fix",
+  local_commits: "in_progress",
+  needs_reconcile: "blocked",
+  clean: "completed",
+};
+
+function WorktreeStatusCard() {
+  const [data, setData] = useState<WorktreeStatusData | null>(null);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/worktrees.json`)
+      .then((r) => r.json())
+      .then(setData)
+      .catch(() => {});
+  }, []);
+
+  if (!data) return null;
+
+  const activeRepos = data.repositories
+    .filter((repo) => repo.status !== "clean")
+    .sort((a, b) => riskRank(b.risk) - riskRank(a.risk))
+    .slice(0, 6);
+  const quiet = activeRepos.length === 0;
+  const generatedLabel = new Date(data.generated_at).toLocaleString("zh-TW", {
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  return (
+    <div>
+      <div className="flex items-center gap-3 mb-3">
+        <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">待收尾工作</div>
+        <div className="text-[11px] text-[var(--text-muted)]">
+          Worktree Status · {data.summary.scanned} 個倉庫已掃描 · {generatedLabel} 產生
+        </div>
+        <div className="flex-1 border-t border-[var(--border)]"></div>
+      </div>
+
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
+        {quiet ? (
+          <div className="flex items-center gap-2 text-[12px] text-[var(--text-muted)]">
+            <StatusDot status="completed" />
+            <span>全部收乾淨 — 無未提交變更、本機未推送或待對帳項目</span>
+            <span className="ml-auto">{data.summary.scanned} 個倉庫已掃描</span>
+          </div>
+        ) : (
+          <>
+            <div className="flex flex-wrap items-center gap-5">
+              <WorktreeMetric label="未提交變更" count={data.summary.uncommitted} tone="yellow" />
+              <WorktreeMetric label="本機未推送" count={data.summary.local_commits} tone="blue" />
+              <WorktreeMetric label="需要對帳" count={data.summary.needs_reconcile} tone="red" />
+              <div className="ml-auto text-right text-[11px] text-[var(--text-muted)]">
+                <div>風險最高</div>
+                <div className="font-mono text-[var(--text)]">{activeRepos[0]?.repo || "—"}</div>
+              </div>
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-[var(--border)] space-y-2 text-[12px]">
+              {activeRepos.map((repo) => {
+                const dirtyCount = repo.staged_count + repo.unstaged_count + repo.untracked_count;
+                return (
+                  <div key={`${repo.path_label}-${repo.status}`} className="rounded-md -mx-2 px-2 py-1.5 hover:bg-[var(--border)]/30 transition">
+                    <div className="flex flex-wrap items-center gap-2 min-w-0">
+                      <StatusDot status={worktreeDotStatus[repo.status]} />
+                      <span className="font-semibold text-[var(--text)]">{repo.repo}</span>
+                      <span className={statusChipClass(repo.status)}>{worktreeStatusLabel[repo.status]}</span>
+                      <span className="ml-auto font-mono text-[11px] text-[var(--text-muted)]">
+                        {dirtyCount > 0 && `${dirtyCount} 變更`}
+                        {dirtyCount > 0 && repo.local_commits_count > 0 && " · "}
+                        {repo.local_commits_count > 0 && `↑${repo.local_commits_count}`}
+                        {repo.remote_commits_count > 0 && ` ↓${repo.remote_commits_count}`}
+                      </span>
+                    </div>
+                    <div className="mt-1 pl-4 text-[11px] text-[var(--text-muted)] min-w-0">
+                      <span className="font-mono break-all">{repo.branch} · {repo.head || "—"}</span>
+                      <span className="px-2 text-[var(--border)]">—</span>
+                      <span>{repo.suggested_action}</span>
+                    </div>
+                    {repo.files.length > 0 && (
+                      <div className="mt-1 pl-4 font-mono text-[11px] text-[var(--text-muted)] truncate">
+                        {repo.files.slice(0, 3).map((file) => `${file.indexStatus}${file.worktreeStatus} ${file.path}`).join(" · ")}
+                        {repo.files.length > 3 ? ` · …還有 ${repo.files.length - 3} 筆` : ""}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function WorktreeMetric({ label, count, tone }: { label: string; count: number; tone: "yellow" | "blue" | "red" }) {
+  const color = tone === "yellow" ? "text-yellow-400" : tone === "blue" ? "text-blue-400" : "text-red-400";
+  return (
+    <div>
+      <div className="text-[11px] text-[var(--text-muted)]">{label}</div>
+      <div className={`text-[20px] font-semibold ${count > 0 ? color : "text-[var(--text)]"}`}>
+        {count}<span className="ml-1 text-[11px] font-medium text-[var(--text-muted)]">個倉庫</span>
+      </div>
+    </div>
+  );
+}
+
+function riskRank(risk: WorktreeRepo["risk"]) {
+  return risk === "high" ? 3 : risk === "medium" ? 2 : 1;
+}
+
+function statusChipClass(status: WorktreeRepo["status"]) {
+  const base = "rounded-full px-2 py-0.5 text-[10px] font-semibold";
+  if (status === "uncommitted") return `${base} bg-yellow-400/10 text-yellow-400`;
+  if (status === "local_commits") return `${base} bg-blue-400/10 text-blue-400`;
+  if (status === "needs_reconcile") return `${base} bg-red-400/10 text-red-400`;
+  return `${base} bg-green-400/10 text-green-400`;
+}
+
+function TaskVisualSyncCard({ projects }: { projects: Project[] }) {
+  const tasks = buildVisualSyncTasks(projects);
+  if (projects.length === 0 || tasks.length === 0) return null;
+
+  const missingHeptabase = tasks.filter((task) => !task.external_refs?.heptabase?.card_id);
+  const canvasPending = tasks.filter((task) => task.external_refs?.heptabase?.card_id && !task.external_refs.heptabase.synced_at);
+  const aligned = tasks.filter((task) => task.external_refs?.heptabase?.card_id && task.external_refs.heptabase.synced_at);
+  const shownMissing = missingHeptabase.slice(0, 4);
+  const shownCanvas = canvasPending.slice(0, 4);
+  const shownAligned = aligned.slice(0, 5);
+
+  return (
+    <div>
+      <div className="flex items-center gap-3 mb-3">
+        <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">Task 視覺同步</div>
+        <div className="text-[11px] text-[var(--text-muted)]">MC source · Heptabase 白板 · Obsidian Canvas</div>
+        <div className="flex-1 border-t border-[var(--border)]"></div>
+      </div>
+
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <VisualSyncColumn title="待補 Heptabase" count={missingHeptabase.length} tone="yellow" tasks={shownMissing} emptyText="目前追蹤範圍都有 card_id" />
+          <VisualSyncColumn title="Canvas 待確認" count={canvasPending.length} tone="red" tasks={shownCanvas} emptyText="沒有缺 synced_at 的 task" />
+          <VisualSyncColumn title="已對齊" count={aligned.length} tone="green" tasks={shownAligned} emptyText="尚無完整 refs" />
+        </div>
+
+        <div className="mt-4 pt-3 border-t border-[var(--border)] flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-[var(--text-muted)]">
+          <span>tracked <span className="font-mono text-[var(--text)]">{tasks.length}</span></span>
+          <span>Heptabase gaps <span className="font-mono text-[var(--text)]">{missingHeptabase.length}</span></span>
+          <span>Canvas gaps <span className="font-mono text-[var(--text)]">{canvasPending.length}</span></span>
+          <span>source <span className="font-mono text-[var(--text)]">projects.json</span></span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function VisualSyncColumn({
+  title,
+  count,
+  tone,
+  tasks,
+  emptyText,
+}: {
+  title: string;
+  count: number;
+  tone: "yellow" | "red" | "green";
+  tasks: VisualSyncTask[];
+  emptyText: string;
+}) {
+  const color = tone === "yellow" ? "text-yellow-400" : tone === "red" ? "text-red-400" : "text-green-400";
+  const dotStatus = tone === "yellow" ? "needs_fix" : tone === "red" ? "blocked" : "completed";
+
+  return (
+    <div className="rounded-lg border border-[var(--border)] bg-black/10 p-4 min-w-0">
+      <div className="flex items-baseline justify-between gap-3 pb-2 mb-3 border-b border-[var(--border)]">
+        <div className="text-[12px] text-[var(--text-muted)]">{title}</div>
+        <div className={`text-[22px] leading-none font-semibold ${count > 0 ? color : "text-[var(--text)]"}`}>{count}</div>
+      </div>
+
+      {tasks.length > 0 ? (
+        <div className="space-y-2">
+          {tasks.map((task) => (
+            <div key={`${task.project}-${task.id}`} className="min-w-0">
+              <div className="flex items-center gap-2 min-w-0">
+                <StatusDot status={dotStatus} />
+                <span className="font-mono text-[11px] text-[var(--text)] truncate">{task.order_label || task.id}</span>
+                <span className={visualSyncTagClass(tone)}>{task.external_refs?.heptabase?.sync_mode || (tone === "yellow" ? "no card" : "sync")}</span>
+              </div>
+              <div className="mt-0.5 pl-4 text-[11px] text-[var(--text-muted)] truncate">
+                {task.projectName} · {task.external_refs?.heptabase?.whiteboard || task.track || "no whiteboard"}
+                {task.external_refs?.heptabase?.card_id ? ` · ${task.external_refs.heptabase.card_id.slice(0, 8)}` : ""}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-[12px] text-[var(--text-muted)] opacity-70">{emptyText}</div>
+      )}
+    </div>
+  );
+}
+
+function visualSyncTagClass(tone: "yellow" | "red" | "green") {
+  const base = "ml-auto shrink-0 rounded-full border px-1.5 py-0.5 text-[10px] font-mono";
+  if (tone === "yellow") return `${base} border-yellow-400/30 text-yellow-400`;
+  if (tone === "red") return `${base} border-red-400/30 text-red-400`;
+  return `${base} border-green-400/30 text-green-400`;
+}
+
+function buildVisualSyncTasks(projects: Project[]): VisualSyncTask[] {
+  const trackedProjects = new Set(["harness-mc", "notyet-md", "writing-system"]);
+  const trackedNeedles = ["morrowise", "visual-sync", "brand-", "article-seed", "morrowise"];
+
+  return projects
+    .flatMap((project) =>
+      project.tasks.map((task) => ({
+        ...task,
+        project: project.project,
+        projectName: project.name,
+      }))
+    )
+    .filter((task) => {
+      const haystack = `${task.id} ${task.title || ""} ${task.summary || ""}`.toLowerCase();
+      return (
+        Boolean(task.external_refs?.heptabase) ||
+        task.completed_at === "2026-06-20" ||
+        (trackedProjects.has(task.project) && trackedNeedles.some((needle) => haystack.includes(needle)))
+      );
+    })
+    .sort((a, b) => visualSyncRank(a) - visualSyncRank(b) || a.project.localeCompare(b.project) || a.id.localeCompare(b.id));
+}
+
+function visualSyncRank(task: VisualSyncTask) {
+  if (!task.external_refs?.heptabase?.card_id) return 0;
+  if (!task.external_refs.heptabase.synced_at) return 1;
+  return 2;
+}
+
 function LearningCard() {
   const [data, setData] = useState<LearningSummary | null>(null);
 
@@ -433,6 +730,8 @@ export default function HomePage() {
       <div className="space-y-6">
         <SentinelCard />
         <TaskEventPipelineCard />
+        <WorktreeStatusCard />
+        <TaskVisualSyncCard projects={projects} />
 
         <div>
           <div className="flex items-center gap-3 mb-3">

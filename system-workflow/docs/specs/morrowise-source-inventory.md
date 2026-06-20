@@ -1,9 +1,9 @@
-# Willgrow Source Inventory
+# MorroWise Source Inventory
 
 > Created: 2026-06-20
-> Scope: `willgrow-system` track in `$COLLAB/harness-mc/milestones/harness-mc`
+> Scope: `morrowise-system` track in `$COLLAB/harness-mc/milestones/harness-mc`
 
-Willgrow is the current system name. Jarvis and `system-ops` are historical references only.
+MorroWise is the current system name. Jarvis and `system-ops` are historical references only.
 
 ## Source-Of-Truth Levels
 
@@ -17,42 +17,42 @@ Willgrow is the current system name. Jarvis and `system-ops` are historical refe
 
 ## S0 Current MC Sources
 
-| Path | Source type | Source level | Use for Willgrow |
+| Path | Source type | Source level | Use for MorroWise |
 |---|---|---:|---|
 | `$COLLAB/harness-mc/milestones/harness-mc/project.json` | Current project definition | S0 | Current goals, risks, success criteria, decisions, and naming policy. |
-| `$COLLAB/harness-mc/milestones/harness-mc/tasks.json` | Current task source of truth | S0 | `willgrow-system` task chain, dependencies, external Heptabase refs, and current task state. |
-| `$COLLAB/harness-mc/system-workflow/docs/specs/workflow-dashboard.md` | Current dashboard/workflow spec | S0 | Existing MC dashboard assumptions to reuse or supersede in Willgrow surface design. |
+| `$COLLAB/harness-mc/milestones/harness-mc/tasks.json` | Current task source of truth | S0 | `morrowise-system` task chain, dependencies, external Heptabase refs, and current task state. |
+| `$COLLAB/harness-mc/system-workflow/docs/specs/workflow-dashboard.md` | Current dashboard/workflow spec | S0 | Existing MC dashboard assumptions to reuse or supersede in MorroWise surface design. |
 | `$COLLAB/harness-mc/system-workflow/docs/mockups/dashboard.html` | Dashboard mockup | S4 | Visual reference only; not a task-state source. |
 | `$COLLAB/harness-mc/system-workflow/docs/mockups/worktree-status.html` | Worktree status mockup | S4 | Related control-plane surface for unfinished local work; visual reference only. |
 
-### Current Willgrow Task Chain
+### Current MorroWise Task Chain
 
 Control-console batch:
 
 | Order | Task | Status | Role |
 |---:|---|---|---|
-| 1 | `willgrow-source-inventory` | completed | Inventory and source-of-truth grading. |
-| 2 | `willgrow-system-index` | todo | Durable Willgrow index and capability summary. |
-| 3 | `willgrow-mc-task-map` | todo | Map historical capabilities into current MC tasks. |
-| 4 | `willgrow-growth-gate-spec` | todo | Define triggers, flow, surfaces, and feedback loop. |
-| 13 | `willgrow-anatomy-read-model` | todo | Define `willgrow-system.json` v0 schema. |
-| 14 | `willgrow-dashboard-surface` | todo | Show Willgrow status on MC surface. |
-| 15 | `willgrow-control-console-verify` | todo | Verify the observable control-console loop. |
+| 1 | `morrowise-source-inventory` | completed | Inventory and source-of-truth grading. |
+| 2 | `morrowise-system-index` | todo | Durable MorroWise index and capability summary. |
+| 3 | `morrowise-mc-task-map` | todo | Map historical capabilities into current MC tasks. |
+| 4 | `morrowise-growth-gate-spec` | todo | Define triggers, flow, surfaces, and feedback loop. |
+| 13 | `morrowise-anatomy-read-model` | todo | Define `morrowise-system.json` v0 schema. |
+| 14 | `morrowise-dashboard-surface` | todo | Show MorroWise status on MC surface. |
+| 15 | `morrowise-control-console-verify` | todo | Verify the observable control-console loop. |
 
 Proactive-loop batch:
 
 | Order | Task | Status | Role |
 |---:|---|---|---|
-| 16 | `willgrow-trigger-rules-registry` | todo | Define event triggers, cooldowns, and output events. |
-| 17 | `willgrow-recommendation-engine-v0` | todo | Produce evidence-backed next-best-action candidates. |
-| 18 | `willgrow-approval-policy` | todo | Split auto, approval-required, and forbidden actions. |
-| 19 | `willgrow-autonomous-action-runner-v0` | todo | Implement low-risk runner behavior. |
-| 20 | `willgrow-proactive-loop-dashboard` | todo | Display trigger to feedback status. |
-| 21 | `willgrow-proactive-loop-verify` | todo | Verify the proactive closed loop. |
+| 16 | `morrowise-trigger-rules-registry` | todo | Define event triggers, cooldowns, and output events. |
+| 17 | `morrowise-recommendation-engine-v0` | todo | Produce evidence-backed next-best-action candidates. |
+| 18 | `morrowise-approval-policy` | todo | Split auto, approval-required, and forbidden actions. |
+| 19 | `morrowise-autonomous-action-runner-v0` | todo | Implement low-risk runner behavior. |
+| 20 | `morrowise-proactive-loop-dashboard` | todo | Display trigger to feedback status. |
+| 21 | `morrowise-proactive-loop-verify` | todo | Verify the proactive closed loop. |
 
 ## S1 Legacy System-Ops Sources
 
-| Path | Source type | Source level | Use for Willgrow |
+| Path | Source type | Source level | Use for MorroWise |
 |---|---|---:|---|
 | `$COLLAB/.openclaw_260418/workspace/milestones/projects/system-ops/BLUEPRINT.md` | Productization blueprint | S1 | Defines the original "internal system becomes product" strategy and four-phase Jarvis roadmap. |
 | `$COLLAB/.openclaw_260418/workspace/milestones/projects/system-ops/project.json` | Historical project definition | S1 | Original goals and success criteria for system maintenance, reference implementation, WARROOM, connector/persona templates, and proactive sensing. |
@@ -65,7 +65,7 @@ Proactive-loop batch:
 
 ## S2 Current Obsidian Mirror
 
-| Path | Source type | Source level | Use for Willgrow |
+| Path | Source type | Source level | Use for MorroWise |
 |---|---|---:|---|
 | `$COLLAB/notyet-harness/300_Obsidian_brain/Projects/system-ops.md` | Project knowledge mirror | S2 | Human-readable historical project page. Use to understand what Vincent saw in Obsidian, but do not override MC task state. |
 | `$COLLAB/notyet-harness/300_Obsidian_brain/Projects/README.md` | Project index | S2 | Confirms the Obsidian-facing project entry and link target. |
@@ -84,7 +84,7 @@ Proactive-loop batch:
 
 ## Current Control-Plane And Sentinel Neighbors
 
-Willgrow should reuse these current MC/control-plane tasks instead of reopening them as new work:
+MorroWise should reuse these current MC/control-plane tasks instead of reopening them as new work:
 
 | Task | Status | Relationship |
 |---|---|---|
@@ -94,11 +94,11 @@ Willgrow should reuse these current MC/control-plane tasks instead of reopening 
 | `acp-external-sync-queue` | completed | External sync queue; useful for Heptabase/Obsidian/Notion feedback. |
 | `acp-task-event-dashboard` | completed | Existing visibility surface for task event pipeline. |
 | `acp-worktree-status-inventory` | in_progress | Nearby unfinished-work visibility surface. |
-| `acp-control-plane-read-model-v0` | todo | Direct dependency for Willgrow anatomy read model. |
-| `acp-dashboard-spec` | deferred | Superseded by `willgrow-growth-gate-spec`; keep as historical reference. |
-| `acp-system-workflow-migration-note` | deferred | Superseded by `willgrow-system-index`; fold into index work. |
-| `acp-home-control-plane-card` | deferred | Wait for Willgrow read model/surface before UI decision. |
-| `acp-project-detail-control-plane` | deferred | Wait for Willgrow task map and control-plane read model. |
+| `acp-control-plane-read-model-v0` | todo | Direct dependency for MorroWise anatomy read model. |
+| `acp-dashboard-spec` | deferred | Superseded by `morrowise-growth-gate-spec`; keep as historical reference. |
+| `acp-system-workflow-migration-note` | deferred | Superseded by `morrowise-system-index`; fold into index work. |
+| `acp-home-control-plane-card` | deferred | Wait for MorroWise read model/surface before UI decision. |
+| `acp-project-detail-control-plane` | deferred | Wait for MorroWise task map and control-plane read model. |
 | `sn-1` to `sn-4` | completed | Existing sentinel data and MC "today changes" surface. |
 | `sn-5`, `sn-6` | blocked | External delivery paths still blocked; treat as gaps for proactive loop. |
 | `sn-7` | todo | Scheduler integration still pending; relevant to trigger automation. |
@@ -107,7 +107,7 @@ Willgrow should reuse these current MC/control-plane tasks instead of reopening 
 
 | Source family | Keep | Migrate | Archive / Caution |
 |---|---|---|---|
-| Jarvis capability decomposition | Capabilities as long-term anatomy categories | Map into Willgrow index and anatomy schema | Do not keep Jarvis as formal product/system name. |
+| Jarvis capability decomposition | Capabilities as long-term anatomy categories | Map into MorroWise index and anatomy schema | Do not keep Jarvis as formal product/system name. |
 | SRE / PDCA / Kaizen method | Core repair-loop principle | Convert to feedback-loop and growth-gate language | Do not treat old task completion counts as current. |
 | Cron redesign | Timeout causes, preprocessing pattern, schedule consolidation | Map into trigger registry and scheduler surface | Old cron counts are historical. Verify current schedule before action. |
 | Memory tag taxonomy | Issue classification categories | Reuse as evidence/risk categories in recommendation engine | Old OpenClaw memory policy may differ from current shared-agent memory. |
@@ -116,7 +116,7 @@ Willgrow should reuse these current MC/control-plane tasks instead of reopening 
 
 ## Next Work Input
 
-`willgrow-system-index` should use this inventory to produce:
+`morrowise-system-index` should use this inventory to produce:
 
 1. capability anatomy: intention, memory/context, events/senses, tools/agents, validators/immune system, schedules/heartbeat, feedback/open loops;
 2. historical source summary by source family;

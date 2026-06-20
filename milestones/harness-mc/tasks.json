@@ -1,10 +1,10 @@
 {
   "tasks": [
     {
-      "id": "willgrow-source-inventory",
-      "title": "Willgrow / system-ops source inventory",
+      "id": "morrowise-source-inventory",
+      "title": "MorroWise / system-ops source inventory",
       "status": "completed",
-      "track": "willgrow-system",
+      "track": "morrowise-system",
       "order": 1,
       "order_label": "MC-LIVE-01",
       "priority": "critical",
@@ -12,14 +12,14 @@
       "commits": [
         "2f507b0"
       ],
-      "done_condition": "建立 Willgrow source inventory，列出舊 OpenClaw memory、system-ops BLUEPRINT/project/tasks/references、現行 Obsidian Projects/system-ops.md、MC control-plane tasks 的檔案清單與 source-of-truth 等級。",
-      "summary": "建立 system-workflow/docs/specs/willgrow-source-inventory.md，將現行 MC 正本、舊 system-ops project/reference、Obsidian mirror、daily memory、Heptabase/Canvas 視覺層分級，並列出 Willgrow 後續 index/task-map 應接的來源與鄰近 control-plane/sentinel tasks。",
+      "done_condition": "建立 MorroWise source inventory，列出舊 OpenClaw memory、system-ops BLUEPRINT/project/tasks/references、現行 Obsidian Projects/system-ops.md、MC control-plane tasks 的檔案清單與 source-of-truth 等級。",
+      "summary": "建立 system-workflow/docs/specs/morrowise-source-inventory.md，將現行 MC 正本、舊 system-ops project/reference、Obsidian mirror、daily memory、Heptabase/Canvas 視覺層分級，並列出 MorroWise 後續 index/task-map 應接的來源與鄰近 control-plane/sentinel tasks。",
       "note": "Grounding 起點：$COLLAB/.openclaw_260418/workspace/memory、$COLLAB/.openclaw_260418/workspace/milestones/projects/system-ops、$COLLAB/notyet-harness/300_Obsidian_brain/Projects/system-ops.md、harness-mc/milestones/harness-mc。",
       "batch": "control-console",
-      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "414606d6-14fe-438b-b51b-fb17d3762114",
           "synced_at": "2026-06-20",
@@ -28,23 +28,23 @@
       }
     },
     {
-      "id": "willgrow-system-index",
-      "title": "產出 Willgrow Index",
+      "id": "morrowise-system-index",
+      "title": "產出 MorroWise Index",
       "status": "todo",
-      "track": "willgrow-system",
+      "track": "morrowise-system",
       "order": 2,
       "order_label": "MC-LIVE-02",
       "priority": "critical",
       "depends_on": [
-        "willgrow-source-inventory"
+        "morrowise-source-inventory"
       ],
-      "done_condition": "產出 system-workflow/docs/specs/willgrow-living-system-index.md，包含能力拆解、歷史來源、現行對應、過時內容、未落地缺口與下一步入口。",
-      "note": "不是聊天摘要；要讓 future agents 不讀本次對話也能重建 Willgrow 脈絡。",
+      "done_condition": "產出 system-workflow/docs/specs/morrowise-living-system-index.md，包含能力拆解、歷史來源、現行對應、過時內容、未落地缺口與下一步入口。",
+      "note": "不是聊天摘要；要讓 future agents 不讀本次對話也能重建 MorroWise 脈絡。",
       "batch": "control-console",
-      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "b4d7759d-0ff2-4af8-a4cf-db7bb8c02324",
           "synced_at": "2026-06-16",
@@ -53,24 +53,24 @@
       }
     },
     {
-      "id": "willgrow-mc-task-map",
-      "title": "統整 Willgrow 舊任務到現行 MC tasks",
+      "id": "morrowise-mc-task-map",
+      "title": "統整 MorroWise 舊任務到現行 MC tasks",
       "status": "todo",
-      "track": "willgrow-system",
+      "track": "morrowise-system",
       "order": 3,
       "order_label": "MC-LIVE-03",
       "priority": "critical",
       "depends_on": [
-        "willgrow-source-inventory",
-        "willgrow-system-index"
+        "morrowise-source-inventory",
+        "morrowise-system-index"
       ],
-      "done_condition": "產出 Willgrow → MC task map：每個 system-ops / Willgrow 能力標示 mapped_to / superseded_by / migrate_to / archive_reason，並列出需要新增、合併、關閉的 MC tasks。",
+      "done_condition": "產出 MorroWise → MC task map：每個 system-ops / MorroWise 能力標示 mapped_to / superseded_by / migrate_to / archive_reason，並列出需要新增、合併、關閉的 MC tasks。",
       "note": "優先映射到 harness-mc control-plane、sentinel、dual-blade ACP、agnostic-scheduler；避免把已存在 ACP pipeline 重開一遍。",
       "batch": "control-console",
-      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "12b795e8-6273-405b-845f-e1f291d6ecdd",
           "synced_at": "2026-06-16",
@@ -79,23 +79,23 @@
       }
     },
     {
-      "id": "willgrow-growth-gate-spec",
-      "title": "定義 Willgrow 活系統啟動條件與 feedback loop",
+      "id": "morrowise-growth-gate-spec",
+      "title": "定義 MorroWise 活系統啟動條件與 feedback loop",
       "status": "todo",
-      "track": "willgrow-system",
+      "track": "morrowise-system",
       "order": 4,
       "order_label": "MC-LIVE-04",
       "priority": "critical",
       "depends_on": [
-        "willgrow-mc-task-map"
+        "morrowise-mc-task-map"
       ],
-      "done_condition": "明確定義 trigger、source→process→output 資料流、MC/control-plane 可視化 surface、feedback loop；至少涵蓋 Vincent 說 Willgrow/活系統/system-ops、weekly review、stale/blocked task、new project growth gate 四種觸發。",
+      "done_condition": "明確定義 trigger、source→process→output 資料流、MC/control-plane 可視化 surface、feedback loop；至少涵蓋 Vincent 說 MorroWise/活系統/system-ops、weekly review、stale/blocked task、new project growth gate 四種觸發。",
       "note": "這是 System Growth Gate 的正本；不能用「人工記得看」當啟動機制。",
       "batch": "control-console",
-      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "3d22653b-5d9b-4c1c-9cb3-f465be4e1d5e",
           "synced_at": "2026-06-16",
@@ -118,7 +118,7 @@
       "note": "Validator 不可一開始追殺 506 個歷史 task；先保護新寫入與 control-plane scope。",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "36fac29a-0796-42e1-b439-b494fa25eea8",
           "synced_at": "2026-06-16",
@@ -143,7 +143,7 @@
       "note": "這是 MC 端給 UI/read model 使用的 routing 摘要；notyet-harness 的 protocol 是正本。",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "b372b6a8-c594-4e25-88e3-d600d666a052",
           "synced_at": "2026-06-16",
@@ -174,7 +174,7 @@
       "batch": "control-console",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "7d301abd-8bbc-4610-b70b-8ce01d4b036a",
           "synced_at": "2026-06-16",
@@ -203,7 +203,7 @@
       "batch": "control-console",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "de58542e-54bb-46de-bc2b-4cbbd0fe439a",
           "synced_at": "2026-06-16",
@@ -232,7 +232,7 @@
       "batch": "control-console",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "47d0db3b-d8e4-422d-b8d0-8eab09e496f2",
           "synced_at": "2026-06-16",
@@ -262,7 +262,7 @@
       "batch": "control-console",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "286dd312-fb22-4edb-9dab-005ce84d9e3c",
           "synced_at": "2026-06-16",
@@ -292,7 +292,7 @@
       "batch": "control-console",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "7be3dedc-4f91-4947-aaee-5a6503feca2a",
           "synced_at": "2026-06-16",
@@ -316,7 +316,7 @@
       "batch": "control-console",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "dcb8099b-6805-48a3-a3d1-70cc4ac5ad86",
           "synced_at": "2026-06-16",
@@ -417,7 +417,7 @@
       "note": "v0 不讀 Heptabase、不讀外部 API、不依賴完整 MCP schema；連續 2-3 次能回答 next action / missing gate 後再做 UI。",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "d4e60f6f-96c8-4444-8b46-ff081dea2650",
           "synced_at": "2026-06-16",
@@ -427,24 +427,24 @@
       "batch": "control-console"
     },
     {
-      "id": "willgrow-anatomy-read-model",
-      "title": "設計 Willgrow anatomy read model",
+      "id": "morrowise-anatomy-read-model",
+      "title": "設計 MorroWise anatomy read model",
       "status": "todo",
-      "track": "willgrow-system",
+      "track": "morrowise-system",
       "order": 13,
       "order_label": "MC-LIVE-13",
       "priority": "high",
       "depends_on": [
-        "willgrow-growth-gate-spec",
+        "morrowise-growth-gate-spec",
         "acp-control-plane-read-model-v0"
       ],
-      "done_condition": "定義 willgrow-system.json v0 schema：DNA/persona、memory/context、senses/events、muscles/agents/tools、immune/validators/security、heartbeat/schedules、feedback/task-events、open_loops。",
-      "note": "只做 read model schema，不先接外部 API；資料來源以現行 MC milestones/read model + Willgrow index 為主。",
+      "done_condition": "定義 morrowise-system.json v0 schema：DNA/persona、memory/context、senses/events、muscles/agents/tools、immune/validators/security、heartbeat/schedules、feedback/task-events、open_loops。",
+      "note": "只做 read model schema，不先接外部 API；資料來源以現行 MC milestones/read model + MorroWise index 為主。",
       "batch": "control-console",
-      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "74cd3657-8300-48e9-a43b-c5eb94ef6d65",
           "synced_at": "2026-06-16",
@@ -453,24 +453,24 @@
       }
     },
     {
-      "id": "willgrow-dashboard-surface",
-      "title": "MC 顯示 Willgrow 活系統 surface",
+      "id": "morrowise-dashboard-surface",
+      "title": "MC 顯示 MorroWise 活系統 surface",
       "status": "todo",
-      "track": "willgrow-system",
+      "track": "morrowise-system",
       "order": 14,
       "order_label": "MC-LIVE-14",
       "priority": "high",
       "depends_on": [
-        "willgrow-anatomy-read-model",
+        "morrowise-anatomy-read-model",
         "acp-task-event-dashboard"
       ],
-      "done_condition": "MC 首頁或 control-plane 區塊能顯示 Willgrow 活系統狀態：觸發來源、下一步、未閉合回饋、對應 tasks、open loops；狀態不可只藏在 project detail。",
+      "done_condition": "MC 首頁或 control-plane 區塊能顯示 MorroWise 活系統狀態：觸發來源、下一步、未閉合回饋、對應 tasks、open loops；狀態不可只藏在 project detail。",
       "note": "先與 ControlPlaneCard / Task Event Pipeline 並列或合併，不做另一套孤立頁面。",
       "batch": "control-console",
-      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "1c37d31b-0f99-4f36-903e-7944d0969d0f",
           "synced_at": "2026-06-16",
@@ -479,23 +479,23 @@
       }
     },
     {
-      "id": "willgrow-control-console-verify",
+      "id": "morrowise-control-console-verify",
       "title": "MC 活系統控制台化驗收",
       "status": "todo",
-      "track": "willgrow-system",
+      "track": "morrowise-system",
       "order": 15,
       "order_label": "MC-LIVE-VERIFY-1",
       "priority": "critical",
       "depends_on": [
-        "willgrow-dashboard-surface"
+        "morrowise-dashboard-surface"
       ],
       "done_condition": "驗證第一批控制台化完成：MC 能回答 source-of-truth、現行 task map、啟動條件、狀態管線、read model、dashboard surface 與未閉合 feedback loop；不能宣稱已具備主動化。",
-      "note": "原 willgrow-system-verify 拆成兩段：本 task 驗收「感知、狀態、回饋、可觀測性」。主動化另由 willgrow-proactive-loop-verify 驗收。",
+      "note": "原 morrowise-system-verify 拆成兩段：本 task 驗收「感知、狀態、回饋、可觀測性」。主動化另由 morrowise-proactive-loop-verify 驗收。",
       "batch": "control-console",
-      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "6b345e36-ec8e-4a49-a1c2-92c2b1860266",
           "synced_at": "2026-06-16",
@@ -504,23 +504,23 @@
       }
     },
     {
-      "id": "willgrow-trigger-rules-registry",
-      "title": "Willgrow trigger rules registry",
+      "id": "morrowise-trigger-rules-registry",
+      "title": "MorroWise trigger rules registry",
       "status": "todo",
-      "track": "willgrow-system",
+      "track": "morrowise-system",
       "batch": "proactive-loop",
       "order": 16,
       "order_label": "MC-LIVE-16",
       "priority": "critical",
       "depends_on": [
-        "willgrow-control-console-verify"
+        "morrowise-control-console-verify"
       ],
       "done_condition": "定義 trigger registry：stale/blocked task、sync failed、rejected event、weekly review、session startup、project-init growth gate 未完成等事件如何喚醒 MC；每個 trigger 都有 source、condition、cooldown、output event。",
       "note": "第二批主動化起點；沒有 trigger registry，dashboard 只能被動顯示。",
-      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "974eae6e-d972-438d-83bd-11ac31e97f24",
           "synced_at": "2026-06-16",
@@ -529,25 +529,25 @@
       }
     },
     {
-      "id": "willgrow-recommendation-engine-v0",
-      "title": "Willgrow recommendation engine v0",
+      "id": "morrowise-recommendation-engine-v0",
+      "title": "MorroWise recommendation engine v0",
       "status": "todo",
-      "track": "willgrow-system",
+      "track": "morrowise-system",
       "batch": "proactive-loop",
       "order": 17,
       "order_label": "MC-LIVE-17",
       "priority": "critical",
       "depends_on": [
-        "willgrow-trigger-rules-registry",
-        "willgrow-anatomy-read-model",
+        "morrowise-trigger-rules-registry",
+        "morrowise-anatomy-read-model",
         "acp-control-plane-read-model-v0"
       ],
-      "done_condition": "根據 control-plane / willgrow read model 產生 next best action 候選，至少輸出 reason、evidence_refs、risk_level、requires_approval、suggested_task_id；不得直接執行高風險動作。",
+      "done_condition": "根據 control-plane / morrowise read model 產生 next best action 候選，至少輸出 reason、evidence_refs、risk_level、requires_approval、suggested_task_id；不得直接執行高風險動作。",
       "note": "讓 MC 從「看見下一步」升級成「能提出為什麼是下一步」。",
-      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "54d84d6d-a55a-4ef7-99c4-84d6d79ff705",
           "synced_at": "2026-06-16",
@@ -556,23 +556,23 @@
       }
     },
     {
-      "id": "willgrow-approval-policy",
-      "title": "Willgrow approval policy",
+      "id": "morrowise-approval-policy",
+      "title": "MorroWise approval policy",
       "status": "todo",
-      "track": "willgrow-system",
+      "track": "morrowise-system",
       "batch": "proactive-loop",
       "order": 18,
       "order_label": "MC-LIVE-18",
       "priority": "critical",
       "depends_on": [
-        "willgrow-recommendation-engine-v0"
+        "morrowise-recommendation-engine-v0"
       ],
       "done_condition": "定義允許自動、需 Vincent approve、禁止自動三類 action policy；涵蓋 task reorder、task create/update/close、external sync、draft patch、delete/secret/history rewrite 等邊界。",
       "note": "主動化的安全閘門；沒有 approval policy，不允許 autonomous runner。",
-      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "8cf001fb-fe0d-48ec-961e-4a129e27b558",
           "synced_at": "2026-06-16",
@@ -581,24 +581,24 @@
       }
     },
     {
-      "id": "willgrow-autonomous-action-runner-v0",
-      "title": "Willgrow autonomous action runner v0",
+      "id": "morrowise-autonomous-action-runner-v0",
+      "title": "MorroWise autonomous action runner v0",
       "status": "todo",
-      "track": "willgrow-system",
+      "track": "morrowise-system",
       "batch": "proactive-loop",
       "order": 19,
       "order_label": "MC-LIVE-19",
       "priority": "high",
       "depends_on": [
-        "willgrow-approval-policy",
+        "morrowise-approval-policy",
         "acp-external-sync-queue"
       ],
       "done_condition": "實作低風險 runner v0：只能產 summary、提出 reorder 建議、排 sync_requested event、產 draft patch；所有中高風險 action 只產 approval request，不自動 apply。",
       "note": "部分自動執行的第一版，重點是低風險與可回退。",
-      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "cf2baa5f-91b7-4f6b-9a66-62c0b3a51291",
           "synced_at": "2026-06-16",
@@ -607,23 +607,23 @@
       }
     },
     {
-      "id": "willgrow-proactive-loop-dashboard",
-      "title": "MC 顯示 Willgrow proactive loop",
+      "id": "morrowise-proactive-loop-dashboard",
+      "title": "MC 顯示 MorroWise proactive loop",
       "status": "todo",
-      "track": "willgrow-system",
+      "track": "morrowise-system",
       "batch": "proactive-loop",
       "order": 20,
       "order_label": "MC-LIVE-20",
       "priority": "high",
       "depends_on": [
-        "willgrow-autonomous-action-runner-v0"
+        "morrowise-autonomous-action-runner-v0"
       ],
       "done_condition": "MC 顯示 trigger → recommendation → approval → action → feedback 狀態；至少能看見最近 trigger、建議原因、approval queue、runner output、未閉合 loop。",
       "note": "第二批主動化的可觀測面。",
-      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "06a39600-e2ee-438e-8605-426f41f8ff64",
           "synced_at": "2026-06-16",
@@ -632,23 +632,23 @@
       }
     },
     {
-      "id": "willgrow-proactive-loop-verify",
-      "title": "Willgrow 主動化閉環驗收",
+      "id": "morrowise-proactive-loop-verify",
+      "title": "MorroWise 主動化閉環驗收",
       "status": "todo",
-      "track": "willgrow-system",
+      "track": "morrowise-system",
       "batch": "proactive-loop",
       "order": 21,
       "order_label": "MC-LIVE-VERIFY-2",
       "priority": "critical",
       "depends_on": [
-        "willgrow-proactive-loop-dashboard"
+        "morrowise-proactive-loop-dashboard"
       ],
       "done_condition": "驗證 MC 能回答：哪個 trigger 觸發、推薦什麼、證據是什麼、是否需 Vincent approve、runner 做了什麼、feedback 回寫到哪裡、哪些 loop 未閉合。",
       "note": "第二段驗收；通過後才可說 MC 具備「更主動：觸發、建議、部分自動執行」。",
-      "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "Willgrow / system-ops",
+          "whiteboard": "MorroWise / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "0bf72cb5-f545-4096-a9f5-060a1eba3c5a",
           "synced_at": "2026-06-16",
@@ -725,8 +725,8 @@
           "sync_mode": "renamed"
         }
       },
-      "superseded_by": "willgrow-growth-gate-spec",
-      "defer_reason": "原本要先產 ACP dashboard spec；HC 驗證後改由 Willgrow source/index/task map/growth gate 先定義活系統，再產 dashboard surface。此 spec 作為歷史參照，不作第一批執行入口。",
+      "superseded_by": "morrowise-growth-gate-spec",
+      "defer_reason": "原本要先產 ACP dashboard spec；HC 驗證後改由 MorroWise source/index/task map/growth gate 先定義活系統，再產 dashboard surface。此 spec 作為歷史參照，不作第一批執行入口。",
       "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。"
     },
     {
@@ -751,8 +751,8 @@
           "sync_mode": "renamed"
         }
       },
-      "superseded_by": "willgrow-system-index",
-      "defer_reason": "system-workflow 歷史原型遷移應被納入 Willgrow Index 與 task map，不再作為獨立前置 task。",
+      "superseded_by": "morrowise-system-index",
+      "defer_reason": "system-workflow 歷史原型遷移應被納入 MorroWise Index 與 task map，不再作為獨立前置 task。",
       "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。"
     },
     {
@@ -792,7 +792,7 @@
       "priority": "medium",
       "depends_on": [
         "acp-control-plane-read-model-v0",
-        "willgrow-dashboard-surface"
+        "morrowise-dashboard-surface"
       ],
       "done_condition": "首頁新增 ControlPlaneCard，顯示下一步 execution task、必讀 ADR、ADR backlink health、runtime/policy 狀態，且能連到 /projects 的 dual-blade 與 harness-mc。",
       "note": "這是 MC 成為 control plane console 的第一個可見切面。",
@@ -805,7 +805,7 @@
           "sync_mode": "renamed"
         }
       },
-      "defer_reason": "原本是先做首頁卡片；HC 驗證後改成先有 read model 與 Willgrow dashboard surface，再決定是否需要獨立 ControlPlaneCard。",
+      "defer_reason": "原本是先做首頁卡片；HC 驗證後改成先有 read model 與 MorroWise dashboard surface，再決定是否需要獨立 ControlPlaneCard。",
       "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。"
     },
     {
@@ -842,7 +842,7 @@
       "order_label": "ACP-MC-06",
       "priority": "medium",
       "depends_on": [
-        "willgrow-mc-task-map",
+        "morrowise-mc-task-map",
         "acp-control-plane-read-model-v0"
       ],
       "done_condition": "project detail 不只列 task；固定顯示 decision_refs、next executable task、blocked/stale 摘要、source-of-truth links。dual-blade/harness-mc 專案可直接看出 ACP 狀態。",
@@ -856,7 +856,7 @@
           "sync_mode": "renamed"
         }
       },
-      "defer_reason": "project detail 要顯示的 decision_refs / next executable task / blocked 摘要需先由 Willgrow task map 與 control-plane read model 產生，暫不先做 UI。",
+      "defer_reason": "project detail 要顯示的 decision_refs / next executable task / blocked 摘要需先由 MorroWise task map 與 control-plane read model 產生，暫不先做 UI。",
       "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。"
     },
     {
@@ -1334,7 +1334,7 @@
         "acp-obsidian-canvas-sync-hook"
       ],
       "done_condition": "新增 read model 或 script，掃描指定 project / track 的 tasks，輸出每個 task 的 MC source 狀態、external_refs.heptabase card_id / whiteboard / synced_at、最近 Canvas sync 狀態與 coverage gaps；MC dashboard 可顯示 pending Heptabase sync / pending Canvas sync。",
-      "note": "這是 gate 的自動化版本；目前規則已要求人工回報 coverage，後續要讓 MC 自己看見哪些 task 尚未同步到 Heptabase 或 Obsidian Canvas。2026-06-20：先更新 system-workflow/docs/mockups/worktree-status.html，加入 Task 視覺同步首頁區塊。",
+      "note": "這是 gate 的自動化版本；目前規則已要求人工回報 coverage，後續要讓 MC 自己看見哪些 task 尚未同步到 Heptabase 或 Obsidian Canvas。2026-06-20：先更新 system-workflow/docs/mockups/worktree-status.html，加入 Task 視覺同步首頁區塊；接著把首頁 app/page.tsx 接上 Task 視覺同步卡片，先由前端從 projects.json 現算 tracked task coverage，尚未完成獨立 read model / script。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -1371,6 +1371,30 @@
       "commits": [
         "2f507b0"
       ]
+    },
+    {
+      "id": "morrowise-structural-rename",
+      "title": "執行 Willgrow → MorroWise 結構改名",
+      "status": "completed",
+      "track": "control-plane",
+      "order_label": "ACP-MC-NAME-02",
+      "priority": "high",
+      "depends_on": [
+        "morrowise-rename-impact-inventory"
+      ],
+      "done_condition": "完成 Willgrow → MorroWise 的正式結構改名：MC dashboard 顯示名稱、相關 task title / track 命名、system-workflow docs 檔名或標題、Heptabase 白板命名策略已統一；保留 daily memory / commit message 等歷史紀錄不回寫。",
+      "summary": "完成 MC canonical source 與 system-workflow docs 的 Willgrow → MorroWise 結構改名：track、task ids、dependencies、display titles、docs 檔名/標題與 dashboard tracking needles 已改用 MorroWise；Willgrow 保留為歷史參照。",
+      "note": "work anchor：Vincent 在 /projects 看不到 morrowise-structural-rename，確認前一輪只有建議編號、尚未建立 task。此 task 承接 ACP-MC-NAME-01 的盤點結論，專門處理正式 rename execution。",
+      "completed_at": "2026-06-20",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "5ee4fae5-a2f4-4dd6-a750-939e63556816",
+          "synced_at": "2026-06-20",
+          "sync_mode": "renamed"
+        }
+      }
     }
   ]
 }

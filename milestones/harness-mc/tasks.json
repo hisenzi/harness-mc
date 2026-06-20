@@ -60,7 +60,7 @@
     {
       "id": "morrowise-mc-task-map",
       "title": "統整 MorroWise 舊任務到現行 MC tasks",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "order": 3,
       "order_label": "MC-LIVE-03",
@@ -73,6 +73,11 @@
       "note": "優先映射到 harness-mc control-plane、sentinel、dual-blade ACP、agnostic-scheduler；避免把已存在 ACP pipeline 重開一遍。",
       "batch": "control-console",
       "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "completed_at": "2026-06-20",
+      "summary": "產出 MorroWise → MC Task Map：將舊 system-ops t1-t30 映射到現行 MC-LIVE、ACP、sentinel 與 ACP-SYNC 任務，結論是不新增新 task，改由既有主線吸收與延伸。",
+      "commits": [
+        "110afc0"
+      ],
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise / system-ops",

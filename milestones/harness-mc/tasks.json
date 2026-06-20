@@ -1408,7 +1408,7 @@
     {
       "id": "acp-system-attention-freshness-contract",
       "title": "ACP-MC-19 首頁 System Attention 與 freshness contract mockup",
-      "status": "in_progress",
+      "status": "completed",
       "track": "control-plane",
       "order_label": "ACP-MC-19",
       "priority": "critical",
@@ -1418,6 +1418,8 @@
       ],
       "done_condition": "產出 system-workflow/docs/mockups/system-attention-freshness.html，將首頁首屏從大面積今日變化清單改成 System Attention：只顯示 stale / blocked / queue pending 等決策訊號，並定義資料新增時的自動更新模型、本地與外部 source 的 freshness contract，以及最後更新時間如何供 Vincent 判斷資料是否可信。",
       "note": "補 task anchor：Vincent 指出要執行任務前應先確認 task；本次先產出 mockup 後才發現缺 task，需補上追蹤來源。設計方向：兩層更新模型，最終支援本地 source 與 Heptabase / Notion 等外部 source 變動自動刷新；第一階段先從本地 tasks.json / task-events / generated data 開始，首頁只顯示最新更新時間與 source 狀態，不把舊快照偽裝成現況。",
+      "summary": "完成 ACP-MC-19 首頁 System Attention：以 stale、blocked、queue pending 與 data freshness 取代大面積今日變化清單，並保留 freshness contract 讓資料可信度可判斷。",
+      "completed_at": "2026-06-20",
       "batch": "control-console",
       "external_refs": {
         "heptabase": {
@@ -1427,7 +1429,10 @@
           "synced_at": "2026-06-20",
           "sync_mode": "created"
         }
-      }
+      },
+      "commits": [
+        "9b44afc"
+      ]
     },
     {
       "id": "acp-control-plane-operating-loop",

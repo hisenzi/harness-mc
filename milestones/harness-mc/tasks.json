@@ -469,7 +469,7 @@
     {
       "id": "morrowise-dashboard-surface",
       "title": "MC 顯示 MorroWise 活系統 surface",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "order": 14,
       "order_label": "MC-LIVE-14",
@@ -482,6 +482,11 @@
       "note": "先與 ControlPlaneCard / Task Event Pipeline 並列或合併，不做另一套孤立頁面。",
       "batch": "control-console",
       "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "completed_at": "2026-06-20",
+      "summary": "MC 首頁新增 MorroWise 活系統 surface：從 projects.json、task-events.json 與 changes.json 派生顯示 trigger sources、next executable task、open loops、feedback/pending events 與 canonical task state，不再只藏在 project detail。",
+      "commits": [
+        "14c8496"
+      ],
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise / system-ops",

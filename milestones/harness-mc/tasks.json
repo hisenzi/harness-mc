@@ -500,7 +500,7 @@
     {
       "id": "morrowise-control-console-verify",
       "title": "MC 活系統控制台化驗收",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "order": 15,
       "order_label": "MC-LIVE-VERIFY-1",
@@ -509,6 +509,11 @@
         "morrowise-dashboard-surface"
       ],
       "done_condition": "驗證第一批控制台化完成：MC 能回答 source-of-truth、現行 task map、啟動條件、狀態管線、read model、dashboard surface 與未閉合 feedback loop；不能宣稱已具備主動化。",
+      "completed_at": "2026-06-20",
+      "summary": "完成 MorroWise 第一批 control-console 驗收：報告確認 MC 能回答 source-of-truth、現行 task map、啟動條件、狀態管線、read model、dashboard surface 與 feedback/open loops，並明確標示尚未具備 proactive/autonomous 能力。",
+      "commits": [
+        "b062825"
+      ],
       "note": "原 morrowise-system-verify 拆成兩段：本 task 驗收「感知、狀態、回饋、可觀測性」。主動化另由 morrowise-proactive-loop-verify 驗收。",
       "batch": "control-console",
       "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",

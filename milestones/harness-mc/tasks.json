@@ -296,6 +296,82 @@
       }
     },
     {
+      "id": "heptabase-pai-sync-migration-spec",
+      "title": "ACP-SYNC-01 Heptabase PAI 同步解耦規格",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 11.6,
+      "order_label": "ACP-SYNC-01",
+      "priority": "critical",
+      "depends_on": [
+        "acp-external-sync-queue",
+        "acp-skill-validator"
+      ],
+      "done_condition": "產出同步遷移規格，明確列出 heptabase-cli-to-pai.py、heptabase-to-pai.py、heptabase-to-notion.py 的現況職責、依存關係、目標依存圖、保留/封存條件、回退策略與不碰 token/不覆蓋手動 triage 的紅線。",
+      "note": "本 task 只定義架構與驗收，不改同步邏輯。結論方向：CLI 是新主線；heptabase-cli-to-pai.py 不應長期 import heptabase-to-pai.py；heptabase-to-pai.py 完成遷移後改為 legacy fallback 或封存。規格需寫入 heptabase-notion-sync skill 或 system-workflow docs，並在 CHANGELOG.md 記錄 v1.3 計畫。",
+      "batch": "heptabase-pai-sync-migration"
+    },
+    {
+      "id": "heptabase-cli-pai-shared-lib",
+      "title": "ACP-SYNC-02 抽出 Heptabase PAI shared library",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 11.7,
+      "order_label": "ACP-SYNC-02",
+      "priority": "critical",
+      "depends_on": [
+        "heptabase-pai-sync-migration-spec"
+      ],
+      "done_condition": "新增 shared helper（例如 heptabase_pai_lib.py / heptabase_notion_lib.py），承接 PAI DB mapping、state load/save、Notion request、content_to_blocks、image upload、PAI create/update 等共用邏輯；heptabase-cli-to-pai.py 可直接引用 shared lib，不再需要 import heptabase-to-pai.py。",
+      "note": "先做 lib extraction，不急著刪舊腳本。驗證需包含：python syntax compile、heptabase-cli-to-pai.py --list、至少一個白板 --dry-run；不得正式寫 Notion，除非 Vincent 明確批准。",
+      "batch": "heptabase-pai-sync-migration"
+    },
+    {
+      "id": "heptabase-cli-pai-decouple",
+      "title": "ACP-SYNC-03 CLI to PAI 主線解耦",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 11.8,
+      "order_label": "ACP-SYNC-03",
+      "priority": "critical",
+      "depends_on": [
+        "heptabase-cli-pai-shared-lib"
+      ],
+      "done_condition": "改造 heptabase-cli-to-pai.py：保留 Heptabase CLI 讀取與 ProseMirror→Markdown 轉換，PAI mapping/Notion 寫入改走 shared lib；檔案中不再 import heptabase-to-pai.py；dry-run 輸出與原 PAI script 行為等價。",
+      "note": "這一步是正式把 CLI driver 從 wrapper 升級為主線 command。完成後 heptabase-notion-sync skill 預設路線應只指向 heptabase-cli-to-pai.py；MCP/OAuth PAI 路線降級為 legacy fallback。",
+      "batch": "heptabase-pai-sync-migration"
+    },
+    {
+      "id": "heptabase-pai-legacy-archive",
+      "title": "ACP-SYNC-04 封存 MCP 版 heptabase-to-pai.py",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 11.9,
+      "order_label": "ACP-SYNC-04",
+      "priority": "high",
+      "depends_on": [
+        "heptabase-cli-pai-decouple"
+      ],
+      "done_condition": "在 CLI 主線 dry-run parity 通過後，將 heptabase-to-pai.py 標記為 legacy fallback 或移入 archive；保留明確回退指令與封存原因，避免 future agents 誤用 MCP/OAuth PAI 路線。",
+      "note": "封存不是刪除。若移檔，需確認任何 cron、skill、docs、MC tools data 都不再指向舊位置；若保留原檔，檔頭必須明確寫 Legacy MCP/OAuth fallback, do not use for normal PAI sync。",
+      "batch": "heptabase-pai-sync-migration"
+    },
+    {
+      "id": "heptabase-sync-skill-version-record",
+      "title": "ACP-SYNC-05 Heptabase sync skill 版本紀錄閉環",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 11.95,
+      "order_label": "ACP-SYNC-05",
+      "priority": "high",
+      "depends_on": [
+        "heptabase-pai-legacy-archive"
+      ],
+      "done_condition": "更新 heptabase-notion-sync/SKILL.md 與 CHANGELOG.md，記錄 v1.3 解耦、v1.4 封存；在 harness-mc 跑 npm run test:skills、npm run prebuild、npm run build，並確認 public/data/tools.json 的 heptabase-notion-sync 卡片顯示最新 version/changelog。",
+      "note": "skill 是這條同步系統的歷程入口：SKILL.md 寫現在怎麼用、紅線與預設路線；CHANGELOG.md 寫遷移歷程；execution_log.json 只記每次同步執行結果，不當版本紀錄。",
+      "batch": "heptabase-pai-sync-migration"
+    },
+    {
       "id": "acp-control-plane-read-model-v0",
       "title": "Agent Control Plane 讀取模型 v0",
       "status": "todo",
@@ -573,7 +649,7 @@
     {
       "id": "acp-skill-validator",
       "title": "ACP skill 驗證器",
-      "status": "todo",
+      "status": "completed",
       "track": "control-plane",
       "order": 9,
       "order_label": "ACP-MC-09",
@@ -582,7 +658,7 @@
         "dual-blade/acp-skill-routes"
       ],
       "done_condition": "新增 scripts/validate-skills.mjs，支援 --changed-only；changed SKILL.md 缺 > version 或 ## 版本歷史時 fail，舊 skill 先 warn；檢查 description、路徑是否 agent-neutral。",
-      "note": "Skill update task 是否要求版本紀錄由 task validator 檢查；檔案事實由 skill validator 檢查。",
+      "note": "Skill update task 是否要求版本紀錄由 task validator 檢查；檔案事實由 skill validator 檢查。本次已把檔案事實檢查系統化：changed-only 作為阻擋閘門，全量掃描作為 legacy backlog 清單。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -591,7 +667,9 @@
           "synced_at": "2026-06-14",
           "sync_mode": "renamed"
         }
-      }
+      },
+      "completed_at": "2026-06-20",
+      "summary": "新增 validate-skills.mjs + verify-validate-skills.mjs，changed SKILL.md 缺版本行、版本歷史、description 或含硬編本機路徑會 fail；舊 skill 只列 legacy warning，並接入 npm run test:skills / prebuild。"
     },
     {
       "id": "acp-dashboard-spec",

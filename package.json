@@ -11,9 +11,10 @@
     "test:task-state": "node scripts/verify-task-state-merge.mjs",
     "test:sync-event-queue": "node scripts/verify-sync-event-queue.mjs",
     "test:task-event-dashboard": "node scripts/verify-task-event-dashboard-data.mjs",
-    "prebuild": "node scripts/check-adr-backlinks.mjs && node scripts/generate-data.mjs && node scripts/generate-tools-data.mjs && node scripts/generate-task-event-data.mjs && node scripts/sentinel-diff.mjs",
+    "prebuild": "node scripts/check-adr-backlinks.mjs && node scripts/validate-skills.mjs --changed-only && node scripts/generate-data.mjs && node scripts/generate-tools-data.mjs && node scripts/generate-task-event-data.mjs && node scripts/sentinel-diff.mjs",
     "build": "next build",
-    "start": "next start -p 3001"
+    "start": "next start -p 3001",
+    "test:skills": "node scripts/verify-validate-skills.mjs && node scripts/validate-skills.mjs --changed-only"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.0.0",

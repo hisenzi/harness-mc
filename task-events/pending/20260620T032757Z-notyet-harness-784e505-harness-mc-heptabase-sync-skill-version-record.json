@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-harness-mc-heptabase-sync-skill-version-record-784e505-20260620T032757Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "784e505",
+  "project": "harness-mc",
+  "task_id": "heptabase-sync-skill-version-record",
+  "status": "updated",
+  "summary": "Recorded heptabase-notion-sync v1.2 history for the MCP-to-CLI PAI sync migration path.",
+  "created_at": "2026-06-20T03:27:57.504Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-20-heptabase-sync-skill"
+}

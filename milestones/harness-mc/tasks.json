@@ -654,7 +654,7 @@
     {
       "id": "morrowise-proactive-loop-dashboard",
       "title": "MC 顯示 MorroWise proactive loop",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "batch": "proactive-loop",
       "order": 20,
@@ -664,7 +664,12 @@
         "morrowise-autonomous-action-runner-v0"
       ],
       "done_condition": "MC 顯示 trigger → recommendation → approval → action → feedback 狀態；至少能看見最近 trigger、建議原因、approval queue、runner output、未閉合 loop。",
-      "note": "第二批主動化的可觀測面。",
+      "note": "第二批主動化的可觀測面。先做 static mockup，再接 read model / frontend；mockup 放在 system-workflow/docs/mockups/，目標是驗證 trigger → recommendation → approval → action → feedback 的狀態語意，不是做裝飾稿。mockup 至少呈現正常閉環、等待 approval、runner blocked / open loop 三種狀態，並標清 read-only boundary。此 dashboard 只顯示 proactive loop 狀態，不可寫回 task state、不可取代 tasks.json / task-events / approval policy，也不可在 morrowise-proactive-loop-verify 通過前宣稱 MorroWise 已具備完整主動化閉環。",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "acf4787"
+      ],
+      "summary": "MC 首頁已顯示 MorroWise proactive loop read model，覆蓋正常閉環、等待 approval、runner blocked/open loop，並以驗證器守住 read-only boundary。",
       "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {

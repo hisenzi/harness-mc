@@ -121,7 +121,7 @@
     {
       "id": "acp-task-schema-validator",
       "title": "ACP task schema 驗證器",
-      "status": "todo",
+      "status": "completed",
       "track": "control-plane",
       "order": 5,
       "order_label": "MC-LIVE-05",
@@ -131,6 +131,11 @@
       ],
       "done_condition": "新增 scripts/validate-tasks.mjs，支援 --project、--track、--changed-only；MVP 對新/changed ACP tasks fail，歷史 tasks 先 warn；檢查 id/title/status/track/done_condition/depends_on/order_label/external_refs。",
       "note": "Validator 不可一開始追殺 506 個歷史 task；先保護新寫入與 control-plane scope。",
+      "completed_at": "2026-06-20",
+      "summary": "新增 task schema validator：支援 --project、--track、--changed-only，對 changed/new control-plane 與 MorroWise tasks 缺欄位時 fail，歷史 legacy 問題維持 warn，讓任何 Agent 寫 task 前有可重跑的 schema gate。",
+      "commits": [
+        "f072545"
+      ],
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise / system-ops",

@@ -1,8 +1,10 @@
 # Control Plane 運行迴路
 
 > Task: `acp-control-plane-operating-loop` (`ACP-MC-20`)
-> Status: draft
+> Status: active spec
 > Updated: 2026-06-20
+> Owner: MC / Agent Control Plane
+> Read when: 任務從討論進入執行、需要新增或完成 MC task、更新 Heptabase / Canvas / MC dashboard 視覺層，或需要判斷文件該讀哪一份時
 
 ## 目的
 
@@ -45,6 +47,18 @@
 | `heptabase-task-external-refs-schema-260613.md` | 寫入或驗證 `external_refs.heptabase` 時 | heptabase-task-cards / visual sync |
 | `mcp-tools-boundary-map-260613.md` | 接工具、CLI、MCP 或外部系統時 | tool / sync planning |
 | `execution-plan-260613.md` | 新增 control-plane task 或規劃 ACP work 時 | planning |
+
+## 文件路由覆蓋確認
+
+ACP-MC-20 的路由覆蓋以 `$COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/README.md` 為入口。該 README 已覆蓋以下工作情境：
+
+1. 新增、更新、完成 MC task 時，必須讀 `visual-layer-transition-protocol.md`。
+2. 同步 task 到 Heptabase 時，必須讀 `heptabase-task-external-refs-schema-260613.md` 與 `visual-layer-transition-protocol.md`。
+3. 設計 MCP / CLI / 外部工具邊界時，必須讀 `mcp-tools-boundary-map-260613.md`。
+4. 建立 control-plane 任務或規劃下一批 ACP work 時，必須讀 `execution-plan-260613.md`。
+5. 引用舊 OpenClaw / memory / schedule / security 資料時，只能把 extract 當證據，不可把歷史資料當現況。
+
+因此，agent 不需要靠聊天記憶猜測該讀哪份文件；只要任務碰到 task state、視覺同步、工具邊界或 ACP planning，就能從 README 進入對應文件。
 
 ## 第一階段：讓本地 source 自動跑起來
 
@@ -96,3 +110,11 @@ Heptabase、Notion 等外部 source 先不宣稱 live。
 3. Task 寫入後能說清楚 Heptabase / Canvas / MC dashboard 是否同步。
 4. Dashboard 能顯示資料最後更新時間。
 5. 缺口會變成 pending gap 或 task，而不是留在聊天裡。
+
+## 目前落地狀態
+
+- Agent Control Plane README 已建立文件路由入口。
+- 視覺層轉換協議已改為繁中 active protocol，並標示何時讀、哪些 skill 需要依賴。
+- `USER.md` 已將預設語言規則固定為繁體中文，避免每次靠 Vincent 口頭提醒。
+- MC 首頁已有 System Attention / Data freshness 區塊，讓資料新鮮度成為控制台首屏判斷。
+- `com.hisenzi.harness-mc` LaunchAgent 維持 `next dev -p 3001` 的 runtime 知識已寫入 shared architecture / memory。

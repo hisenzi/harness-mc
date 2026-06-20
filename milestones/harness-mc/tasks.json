@@ -1399,6 +1399,56 @@
       "commits": [
         "7cebf4e"
       ]
+    },
+    {
+      "id": "acp-system-attention-freshness-contract",
+      "title": "ACP-MC-19 首頁 System Attention 與 freshness contract mockup",
+      "status": "in_progress",
+      "track": "control-plane",
+      "order_label": "ACP-MC-19",
+      "priority": "critical",
+      "depends_on": [
+        "acp-worktree-status-inventory",
+        "acp-visual-sync-coverage-report"
+      ],
+      "done_condition": "產出 system-workflow/docs/mockups/system-attention-freshness.html，將首頁首屏從大面積今日變化清單改成 System Attention：只顯示 stale / blocked / queue pending 等決策訊號，並定義資料新增時的自動更新模型、本地與外部 source 的 freshness contract，以及最後更新時間如何供 Vincent 判斷資料是否可信。",
+      "note": "補 task anchor：Vincent 指出要執行任務前應先確認 task；本次先產出 mockup 後才發現缺 task，需補上追蹤來源。設計方向：兩層更新模型，最終支援本地 source 與 Heptabase / Notion 等外部 source 變動自動刷新；第一階段先從本地 tasks.json / task-events / generated data 開始，首頁只顯示最新更新時間與 source 狀態，不把舊快照偽裝成現況。",
+      "batch": "control-console",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "7e5f4e33-33e6-420a-931a-e71476d1b4ea",
+          "synced_at": "2026-06-20",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "acp-control-plane-operating-loop",
+      "title": "ACP-MC-20 補齊 Control Plane 運行迴路與文件路由",
+      "status": "in_progress",
+      "track": "control-plane",
+      "order_label": "ACP-MC-20",
+      "priority": "critical",
+      "depends_on": [
+        "acp-task-before-work-gate",
+        "acp-visual-sync-coverage-gate",
+        "acp-obsidian-canvas-sync-hook",
+        "acp-system-attention-freshness-contract"
+      ],
+      "done_condition": "補齊系統性工作迴路文件與文件路由：明確定義討論→可行判斷→task anchor→MC source→Heptabase→Obsidian Canvas→MC read model/freshness 的必經流程；新增 agent-control-plane docs index，標示每份 protocol / schema / plan 何時必讀，避免文件隨意散放或靠 Vincent 逐次提醒。",
+      "note": "Vincent 指出目前像東補西補：系統思考有出現，但缺固定運行機制。此 task 以 harness-mc/milestones/harness-mc 為對照，盤點既有 gate / hook / queue / report，補上文件路由與 operating loop，先讓 future agents 知道何時讀哪份文件、何時必須先建 task、何時同步視覺層與何時回報 freshness。",
+      "batch": "control-console",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "4daedcbb-2aa0-4e6f-9618-d07f7c88047b",
+          "synced_at": "2026-06-20",
+          "sync_mode": "appended"
+        }
+      }
     }
   ]
 }

@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MorroWise Proactive Loop Mockup</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070707;
+      --card: #141414;
+      --border: #2a2a2a;
+      --text: #eeeeee;
+      --muted: #858585;
+      --green: #4ade80;
+      --yellow: #facc15;
+      --red: #f87171;
+      --blue: #60a5fa;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main {
+      width: min(1120px, calc(100vw - 48px));
+      margin: 40px auto;
+    }
+    h1 {
+      margin: 0;
+      font-size: 40px;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+    .sub {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 34px 0 12px;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .section-title span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .section-title::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--card);
+      padding: 20px;
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .metric {
+      min-height: 74px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .metric .label {
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .metric .value {
+      margin-top: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 24px;
+      font-weight: 800;
+    }
+    .green { color: var(--green); }
+    .yellow { color: var(--yellow); }
+    .red { color: var(--red); }
+    .blue { color: var(--blue); }
+    .loops {
+      display: grid;
+      gap: 12px;
+    }
+    .loop {
+      display: grid;
+      grid-template-columns: 150px 1fr 120px;
+      gap: 16px;
+      align-items: stretch;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      min-width: 0;
+    }
+    .loop h2 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.25;
+    }
+    .loop .meta {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .stage-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      min-width: 0;
+    }
+    .stage {
+      min-height: 78px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px;
+      min-width: 0;
+    }
+    .stage b {
+      display: block;
+      font-size: 11px;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .stage p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+    .pill {
+      align-self: start;
+      justify-self: end;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      white-space: nowrap;
+    }
+    .boundary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    code {
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    @media (max-width: 900px) {
+      main { width: min(100vw - 28px, 720px); }
+      .summary, .loop, .stage-grid, .boundary { grid-template-columns: 1fr; }
+      .pill { justify-self: start; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>MorroWise Proactive Loop</h1>
+    <div class="sub">MC-LIVE-20 mockup · trigger → recommendation → approval → action → feedback · read-only boundary</div>
+
+    <div class="section-title">Proactive Loop <span>local read model · no task-state write</span></div>
+    <section class="panel">
+      <div class="summary">
+        <div class="metric"><div class="label">closed</div><div class="value green">1</div></div>
+        <div class="metric"><div class="label">waiting approval</div><div class="value yellow">1</div></div>
+        <div class="metric"><div class="label">open loop</div><div class="value red">1</div></div>
+        <div class="metric"><div class="label">runner applied</div><div class="value">0</div></div>
+        <div class="metric"><div class="label">source</div><div class="value blue">RO</div></div>
+      </div>
+
+      <div class="loops">
+        <article class="loop">
+          <div>
+            <h2>正常閉環</h2>
+            <div class="meta">weekly_review · produce_summary · local read model</div>
+          </div>
+          <div class="stage-grid">
+            <div class="stage"><b>trigger</b><p>Sentinel heartbeat requests a weekly review.</p></div>
+            <div class="stage"><b>recommendation</b><p>Produce a local summary with evidence refs.</p></div>
+            <div class="stage"><b>approval</b><p>Allowed because it only writes generated local data.</p></div>
+            <div class="stage"><b>action</b><p>Runner outputs summary; applied remains false.</p></div>
+            <div class="stage"><b>feedback</b><p>Dashboard reads <code>morrowise-proactive-loop.json</code>.</p></div>
+          </div>
+          <div class="pill green">closed</div>
+        </article>
+
+        <article class="loop">
+          <div>
+            <h2>等待 approval</h2>
+            <div class="meta">visual_sync_gap · external write · Vincent gate</div>
+          </div>
+          <div class="stage-grid">
+            <div class="stage"><b>trigger</b><p>Visual mirror looks stale or incomplete.</p></div>
+            <div class="stage"><b>recommendation</b><p>Request external write approval with payload preview.</p></div>
+            <div class="stage"><b>approval</b><p>Policy requires explicit Vincent confirmation.</p></div>
+            <div class="stage"><b>action</b><p>Runner returns approval_request; no sync.</p></div>
+            <div class="stage"><b>feedback</b><p>Open until approval or cancellation is recorded.</p></div>
+          </div>
+          <div class="pill yellow">waiting</div>
+        </article>
+
+        <article class="loop">
+          <div>
+            <h2>runner blocked / open loop</h2>
+            <div class="meta">commit boundary · worktree-commit required</div>
+          </div>
+          <div class="stage-grid">
+            <div class="stage"><b>trigger</b><p>Completed work appears to need git history.</p></div>
+            <div class="stage"><b>recommendation</b><p>Commit boundary is suggested, not executed.</p></div>
+            <div class="stage"><b>approval</b><p>commit / push / deploy class is gated.</p></div>
+            <div class="stage"><b>action</b><p>Runner blocks and emits approval_request.</p></div>
+            <div class="stage"><b>feedback</b><p>Loop stays open until worktree-commit gate completes.</p></div>
+          </div>
+          <div class="pill red">open</div>
+        </article>
+      </div>
+
+      <div class="boundary">
+        <div>
+          <b>read-only boundary</b><br>
+          Dashboard can display loop state only. It cannot close tasks, commit, push, deploy, sync external tools, or reverse-write from visual layers.
+        </div>
+        <div>
+          <b>source of truth</b><br>
+          Canonical state remains <code>tasks.json</code>, <code>task-events</code>, <code>sync-events</code>, and approval policy. Mockup validates semantics before UI polish.
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

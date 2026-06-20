@@ -127,6 +127,60 @@ interface WorktreeStatusData {
   repositories: WorktreeRepo[];
 }
 
+interface ProactiveLoopScenario {
+  scenario_id: string;
+  label: string;
+  status: "closed" | "waiting_approval" | "open_loop";
+  trigger: {
+    trigger_id: string;
+    risk_level: "low" | "medium" | "high";
+    source: string;
+  };
+  recommendation: {
+    recommendation_id: string;
+    reason: string;
+    suggested_action: string;
+    suggested_task_id: string;
+    evidence_refs: { type: string; ref: string }[];
+    hc_reasoning: string;
+    hc_confidence: number;
+  };
+  approval: {
+    requires_approval: boolean;
+    policy: string;
+    risk_level: "low" | "medium" | "high";
+    reason: string;
+  };
+  action: {
+    runner_id: string;
+    output_type: string;
+    applied: boolean;
+    action_class: string;
+    summary: string | null;
+  };
+  feedback: {
+    status: string;
+    destination: string;
+    note: string;
+  };
+}
+
+interface ProactiveLoopData {
+  generated_at: string;
+  read_only: boolean;
+  boundary: string;
+  stages: string[];
+  summary: {
+    scenarios: number;
+    closed: number;
+    waiting_approval: number;
+    open_loop: number;
+    approval_queue: number;
+    runner_applied_actions: number;
+  };
+  scenarios: ProactiveLoopScenario[];
+}
+
 interface VisualSyncTask extends Task {
   project: string;
   projectName: string;
@@ -283,6 +337,138 @@ function morroWiseLoopTagClass(tone: string) {
   if (tone === "red") return `${base} border-red-400/30 text-red-400`;
   if (tone === "blue") return `${base} border-blue-400/30 text-blue-400`;
   return `${base} border-yellow-400/30 text-yellow-400`;
+}
+
+function MorroWiseProactiveLoopCard() {
+  const [data, setData] = useState<ProactiveLoopData | null>(null);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/morrowise-proactive-loop.json`)
+      .then((r) => r.json())
+      .then(setData)
+      .catch(() => {});
+  }, []);
+
+  if (!data) return null;
+
+  const generatedLabel = new Date(data.generated_at).toLocaleString("zh-TW", {
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const activeScenario = data.scenarios.find((scenario) => scenario.status !== "closed") || data.scenarios[0];
+
+  return (
+    <div>
+      <div className="flex items-center gap-3 mb-3">
+        <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">MorroWise Proactive Loop</div>
+        <div className="text-[11px] text-[var(--text-muted)]">
+          trigger → recommendation → approval → action → feedback · {generatedLabel} · {data.read_only ? "read-only" : "write-enabled"}
+        </div>
+        <div className="flex-1 border-t border-[var(--border)]"></div>
+      </div>
+
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+          <LoopMetric label="closed" value={String(data.summary.closed)} tone="green" />
+          <LoopMetric label="waiting approval" value={String(data.summary.waiting_approval)} tone="yellow" />
+          <LoopMetric label="open loop" value={String(data.summary.open_loop)} tone="red" />
+          <LoopMetric label="approval queue" value={String(data.summary.approval_queue)} tone={data.summary.approval_queue > 0 ? "yellow" : "green"} />
+          <LoopMetric label="runner applied" value={String(data.summary.runner_applied_actions)} tone="blue" />
+        </div>
+
+        <div className="grid grid-cols-1 xl:grid-cols-[1.35fr_0.9fr] gap-4">
+          <div className="rounded-lg border border-[var(--border)] p-4 min-w-0">
+            <div className="flex items-center gap-2 pb-3 mb-3 border-b border-[var(--border)] text-[12px] font-semibold text-[var(--text-muted)]">
+              <StatusDot status={data.summary.open_loop > 0 || data.summary.waiting_approval > 0 ? "needs_fix" : "completed"} />
+              <span>Loop scenarios</span>
+              <span className="ml-auto font-mono text-[11px] text-[var(--text-muted)]">{data.summary.scenarios} fixtures</span>
+            </div>
+            <div className="space-y-3">
+              {data.scenarios.map((scenario) => (
+                <div key={scenario.scenario_id} className="rounded-md border border-[var(--border)] bg-black/10 p-3 min-w-0">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <StatusDot status={proactiveLoopDotStatus(scenario.status)} />
+                    <span className="text-[12px] font-semibold text-[var(--text)] truncate">{scenario.label}</span>
+                    <span className={proactiveLoopTagClass(scenario.status)}>{scenario.status}</span>
+                  </div>
+                  <div className="mt-2 grid grid-cols-1 md:grid-cols-5 gap-2">
+                    <LoopStage label="trigger" value={scenario.trigger.trigger_id} />
+                    <LoopStage label="recommend" value={scenario.recommendation.suggested_action} />
+                    <LoopStage label="approval" value={scenario.approval.policy} />
+                    <LoopStage label="action" value={scenario.action.output_type} />
+                    <LoopStage label="feedback" value={scenario.feedback.destination} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-[var(--border)] p-4 min-w-0">
+            <div className="pb-3 mb-3 border-b border-[var(--border)] text-[12px] font-semibold text-[var(--text-muted)]">
+              Current open signal
+            </div>
+            {activeScenario ? (
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 min-w-0">
+                  <StatusDot status={proactiveLoopDotStatus(activeScenario.status)} />
+                  <span className="text-[12px] font-semibold text-[var(--text)] truncate">{activeScenario.label}</span>
+                  <span className={proactiveLoopTagClass(activeScenario.status)}>{activeScenario.approval.risk_level}</span>
+                </div>
+                <div className="mt-3 text-[12px] leading-relaxed text-[var(--text-muted)] line-clamp-4">
+                  {activeScenario.recommendation.reason}
+                </div>
+                <div className="mt-3 rounded-md border border-[var(--border)] p-3 text-[11px] leading-relaxed text-[var(--text-muted)]">
+                  <div className="font-semibold text-[var(--text)]">Runner output</div>
+                  <div className="mt-1 font-mono truncate">{activeScenario.action.output_type} · applied {String(activeScenario.action.applied)}</div>
+                  <div className="mt-1 line-clamp-2">{activeScenario.feedback.note}</div>
+                </div>
+              </div>
+            ) : (
+              <div className="text-[12px] text-[var(--text-muted)]">目前沒有 loop fixture</div>
+            )}
+            <div className="mt-4 pt-3 border-t border-[var(--border)] text-[11px] leading-relaxed text-[var(--text-muted)]">
+              {data.boundary}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LoopMetric({ label, value, tone }: { label: string; value: string; tone: "green" | "yellow" | "red" | "blue" }) {
+  const color =
+    tone === "green" ? "text-green-400" : tone === "yellow" ? "text-yellow-400" : tone === "red" ? "text-red-400" : "text-blue-400";
+  return (
+    <div className="min-h-[70px] rounded-lg border border-[var(--border)] bg-white/[0.018] p-3">
+      <div className="text-[10px] text-[var(--text-muted)] truncate">{label}</div>
+      <div className={`mt-1 font-mono text-[22px] leading-none font-bold ${color}`}>{value}</div>
+    </div>
+  );
+}
+
+function LoopStage({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md border border-[var(--border)] px-2 py-2 min-w-0">
+      <div className="text-[10px] text-[var(--text-muted)]">{label}</div>
+      <div className="mt-1 font-mono text-[11px] text-[var(--text)] truncate">{value}</div>
+    </div>
+  );
+}
+
+function proactiveLoopDotStatus(status: ProactiveLoopScenario["status"]) {
+  if (status === "closed") return "completed";
+  if (status === "waiting_approval") return "needs_fix";
+  return "blocked";
+}
+
+function proactiveLoopTagClass(status: ProactiveLoopScenario["status"]) {
+  const base = "ml-auto shrink-0 rounded-full border px-1.5 py-0.5 text-[10px] font-mono";
+  if (status === "closed") return `${base} border-green-400/30 text-green-400`;
+  if (status === "waiting_approval") return `${base} border-yellow-400/30 text-yellow-400`;
+  return `${base} border-red-400/30 text-red-400`;
 }
 
 function isDoneStatus(status: string) {
@@ -844,6 +1030,7 @@ export default function HomePage() {
       <div className="space-y-6">
         <SystemAttentionCard />
         <MorroWiseSurfaceCard projects={projects} />
+        <MorroWiseProactiveLoopCard />
         <WorktreeStatusCard />
         <TaskVisualSyncCard projects={projects} />
 

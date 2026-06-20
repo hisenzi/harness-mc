@@ -12,6 +12,7 @@
     "test:sync-event-queue": "node scripts/verify-sync-event-queue.mjs",
     "test:task-event-dashboard": "node scripts/verify-task-event-dashboard-data.mjs",
     "test:skills": "node scripts/verify-validate-skills.mjs && node scripts/validate-skills.mjs --changed-only",
+    "test:tasks": "node scripts/verify-validate-tasks.mjs && node scripts/validate-tasks.mjs --changed-only --project harness-mc",
     "test:worktree-status": "node scripts/generate-worktree-status.mjs",
     "prebuild": "node scripts/check-adr-backlinks.mjs && node scripts/validate-skills.mjs --changed-only && node scripts/generate-data.mjs && node scripts/generate-tools-data.mjs && node scripts/generate-task-event-data.mjs && node scripts/generate-worktree-status.mjs && node scripts/sentinel-diff.mjs",
     "build": "next build",

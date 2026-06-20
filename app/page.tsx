@@ -130,209 +130,163 @@ interface VisualSyncTask extends Task {
   projectName: string;
 }
 
-// event type → StatusDot status（複用 MC 既有元件，跟 /projects 顏色語彙對齊）
-const eventStatusMap: Record<string, string> = {
-  done_added: "done",
-  new_blocked: "blocked",
-  unblocked: "in_progress",
-  new_task: "deferred",
-  status: "in_progress",
-};
-
-function SentinelCard() {
-  const [data, setData] = useState<SentinelData | null>(null);
+function SystemAttentionCard() {
+  const [sentinel, setSentinel] = useState<SentinelData | null>(null);
+  const [pipeline, setPipeline] = useState<TaskEventPipelineData | null>(null);
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/changes.json`)
       .then((r) => r.json())
-      .then(setData)
+      .then(setSentinel)
+      .catch(() => {});
+
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/task-events.json`)
+      .then((r) => r.json())
+      .then(setPipeline)
       .catch(() => {});
   }, []);
 
-  if (!data || data.error) return null;
-
-  const quiet = data.events.length === 0 && data.stale.length === 0;
-  const shown = data.events.slice(0, 8);
-  const rest = data.events.length - shown.length;
-  const generatedLabel = new Date(data.generated_at).toLocaleString("zh-TW", {
-    month: "numeric",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const generatedAt = latestDate([sentinel?.generated_at, pipeline?.generated_at]);
+  const generatedLabel = generatedAt
+    ? generatedAt.toLocaleString("zh-TW", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
+    : "讀取中";
+  const freshnessMinutes = generatedAt ? Math.max(0, Math.round((Date.now() - generatedAt.getTime()) / 60000)) : null;
+  const freshnessOk = freshnessMinutes !== null && freshnessMinutes <= 15;
+  const pendingQueue = (pipeline?.task_events.pending || 0) + (pipeline?.sync_events.pending || 0);
+  const staleCount = sentinel?.stale.length || 0;
+  const blockedCount = sentinel?.blocked_now.length || 0;
+  const topItems = buildAttentionItems(sentinel).slice(0, 3);
 
   return (
     <div>
       <div className="flex items-center gap-3 mb-3">
-        <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">今日變化</div>
+        <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">System Attention</div>
         <div className="text-[11px] text-[var(--text-muted)]">
-          Sentinel · 基線 <span className="font-mono">{data.baseline.rev || "—"}</span> · {generatedLabel} 產生
+          generated {generatedLabel} · freshness {freshnessOk ? "OK" : "CHECK"} · auto every build / LaunchAgent
         </div>
         <div className="flex-1 border-t border-[var(--border)]"></div>
       </div>
 
       <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
-        {quiet ? (
-          <div className="flex items-start gap-3">
-            <span className="text-title leading-none opacity-40">◯</span>
-            <div>
-              <div className="text-body font-medium">持平</div>
-              <div className="text-caption text-[var(--text-muted)] mt-1">
-                基線 <span className="font-mono">{data.baseline.rev || "—"}</span> 至今無 task 變化 · 現存 {data.blocked_now.length} 筆 blocked 持平
-              </div>
+        <div className="grid grid-cols-1 xl:grid-cols-[0.8fr_1.4fr_1fr] gap-4">
+          <div className="grid grid-cols-2 gap-3">
+            <AttentionMetric name="stale" value={String(staleCount)} hint="需要重新判斷" tone="yellow" />
+            <AttentionMetric name="blocked" value={String(blockedCount)} hint="現存卡住" tone="red" />
+            <AttentionMetric name="queue pending" value={String(pendingQueue)} hint="待 reducer 處理" tone="blue" />
+            <AttentionMetric
+              name="freshness"
+              value={freshnessOk ? "OK" : "CHECK"}
+              hint={freshnessMinutes === null ? "讀取中" : `${freshnessMinutes} 分鐘前更新`}
+              tone={freshnessOk ? "green" : "yellow"}
+            />
+          </div>
+
+          <div className="rounded-lg border border-[var(--border)] p-4 min-w-0">
+            <div className="flex items-center gap-2 pb-3 mb-3 border-b border-[var(--border)] text-[12px] font-semibold text-[var(--text-muted)]">
+              <StatusDot status={pendingQueue > 0 || staleCount > 0 || blockedCount > 0 ? "needs_fix" : "completed"} />
+              <span>Top attention items</span>
+            </div>
+            <div className="space-y-2">
+              {topItems.length > 0 ? (
+                topItems.map((item) => (
+                  <div key={`${item.project}-${item.taskId}-${item.kind}`} className="grid grid-cols-[104px_1fr_auto] gap-3 items-baseline min-w-0 text-[12px]">
+                    <span className="font-semibold text-[var(--text)] truncate">{item.projectName}</span>
+                    <span className="text-[var(--text-muted)] truncate">{item.description}</span>
+                    <span className={attentionPillClass(item.kind)}>{item.kind}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="text-[12px] text-[var(--text-muted)]">目前沒有需要立即處理的項目</div>
+              )}
+            </div>
+            <div className="mt-4 pt-3 border-t border-[var(--border)] flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-[var(--text-muted)]">
+              <span>today done <span className="font-mono text-[var(--text)]">{countEvents(sentinel, "done_added", "+")}</span></span>
+              <span>new tasks <span className="font-mono text-[var(--text)]">{countEvents(sentinel, "new_task", "+")}</span></span>
+              <span>baseline <span className="font-mono text-[var(--text)]">{sentinel?.baseline.rev || "—"}</span></span>
+              <span>details moved to project drill-down</span>
             </div>
           </div>
-        ) : (
-          <>
-            <div className="text-body font-medium mb-3">{data.brief.replace(/^今日：/, "")}</div>
 
-            {data.stale.length > 0 && (
-              <div className="mb-3 space-y-1">
-                {data.stale.map((s) => (
-                  <div key={s.project} className="text-[12px] text-yellow-400">
-                    ⚠ {s.projectName}：{s.reasons.join("；")}
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {shown.length > 0 && (
-              <div className="space-y-1 text-[12px]">
-                {shown.map((ev) => {
-                  const status = eventStatusMap[ev.type] || "in_progress";
-                  const dim = ev.type === "done_added" ? "opacity-60" : "";
-                  return (
-                    <Link
-                      key={`${ev.project}-${ev.taskId}`}
-                      href={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/projects`}
-                      className={`flex items-center gap-2 min-w-0 py-0.5 -mx-1 px-1 rounded hover:bg-[var(--border)]/40 transition ${dim}`}
-                    >
-                      <StatusDot status={status} />
-                      <span className="text-[var(--text)] shrink-0">{ev.projectName}</span>
-                      <span className="text-[var(--text-muted)] truncate">{ev.title}</span>
-                      {ev.from && (
-                        <span className="text-[11px] text-[var(--text-muted)] shrink-0 ml-auto">
-                          {ev.from} → {ev.to}
-                        </span>
-                      )}
-                    </Link>
-                  );
-                })}
-                {rest > 0 && (
-                  <div className="text-[11px] text-[var(--text-muted)] pl-4 pt-1">… 還有 {rest} 筆</div>
-                )}
-              </div>
-            )}
-
-            <div className="mt-3 pt-3 border-t border-[var(--border)] flex items-center justify-between text-caption text-[var(--text-muted)]">
-              <span>現存 {data.blocked_now.length} 筆 blocked</span>
-              <Link href={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/projects`} className="hover:text-[var(--accent)] transition">
-                查看所有專案 →
-              </Link>
+          <div className="rounded-lg border border-[var(--border)] p-4 min-w-0">
+            <div className="flex items-center gap-2 pb-3 mb-3 border-b border-[var(--border)] text-[12px] font-semibold text-[var(--text-muted)]">
+              <StatusDot status={freshnessOk ? "completed" : "needs_fix"} />
+              <span>Data freshness</span>
             </div>
-          </>
-        )}
+            <div className="space-y-2 text-[12px]">
+              <FreshnessRow source="sentinel" path="public/data/changes.json" generatedAt={sentinel?.generated_at} />
+              <FreshnessRow source="queue" path="public/data/task-events.json" generatedAt={pipeline?.generated_at} />
+              <FreshnessRow source="projects" path="public/data/projects.json" generatedAt={sentinel?.generated_at} />
+            </div>
+            <div className="mt-4 pt-3 border-t border-[var(--border)] text-[11px] leading-relaxed text-[var(--text-muted)]">
+              Auto refresh contract：本地 source 有新增或變更時自動重建 read model；外部 source 只顯示 last checked，不宣稱 live。
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="mt-2 text-[12px] text-[var(--text-muted)]">
+        首頁只回答「現在要不要管、管哪裡、資料新不新」；大量 delta log 移到專案 drill-down。
       </div>
     </div>
   );
 }
 
-function TaskEventPipelineCard() {
-  const [data, setData] = useState<TaskEventPipelineData | null>(null);
-
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/task-events.json`)
-      .then((r) => r.json())
-      .then(setData)
-      .catch(() => {});
-  }, []);
-
-  if (!data) return null;
-
-  const hasPressure = data.task_events.pending > 0 || data.task_events.rejected > 0 || data.sync_events.pending > 0 || data.sync_events.failed > 0;
-  const latest = data.latest_reducer_run;
-  const rejectedReasons = Object.entries(data.task_events.rejected_by_reason);
-  const watchList = [
-    ...data.recent_task_events.filter((event) => event.queue === "pending" || event.queue === "rejected").slice(0, 3),
-    ...data.recent_sync_events.filter((event) => event.queue === "pending" || event.queue === "failed").slice(0, 3),
-  ].slice(0, 5);
-
+function AttentionMetric({ name, value, hint, tone }: { name: string; value: string; hint: string; tone: "yellow" | "red" | "blue" | "green" }) {
+  const color = tone === "yellow" ? "text-yellow-400" : tone === "red" ? "text-red-400" : tone === "blue" ? "text-blue-400" : "text-green-400";
   return (
-    <div>
-      <div className="flex items-center gap-3 mb-3">
-        <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">Task Event Pipeline</div>
-        <div className="text-[11px] text-[var(--text-muted)]">single-writer queue health</div>
-        <div className="flex-1 border-t border-[var(--border)]"></div>
-      </div>
-
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
-        <div className="flex flex-wrap items-center gap-4">
-          <div>
-            <div className="text-[11px] text-[var(--text-muted)]">Task pending</div>
-            <div className={data.task_events.pending > 0 ? "text-[20px] font-semibold text-yellow-400" : "text-[20px] font-semibold text-[var(--text)]"}>
-              {data.task_events.pending}
-            </div>
-          </div>
-          <div>
-            <div className="text-[11px] text-[var(--text-muted)]">Rejected</div>
-            <div className={data.task_events.rejected > 0 ? "text-[20px] font-semibold text-red-400" : "text-[20px] font-semibold text-[var(--text)]"}>
-              {data.task_events.rejected}
-            </div>
-          </div>
-          <div>
-            <div className="text-[11px] text-[var(--text-muted)]">Sync pending</div>
-            <div className={data.sync_events.pending > 0 ? "text-[20px] font-semibold text-blue-400" : "text-[20px] font-semibold text-[var(--text)]"}>
-              {data.sync_events.pending}
-            </div>
-          </div>
-          <div>
-            <div className="text-[11px] text-[var(--text-muted)]">Sync failed</div>
-            <div className={data.sync_events.failed > 0 ? "text-[20px] font-semibold text-red-400" : "text-[20px] font-semibold text-[var(--text)]"}>
-              {data.sync_events.failed}
-            </div>
-          </div>
-          <div className="ml-auto text-right text-[11px] text-[var(--text-muted)]">
-            {latest ? (
-              <>
-                <div>latest reducer</div>
-                <div>{latest.applied} applied · {latest.rejected} rejected · {latest.duplicates} duplicate</div>
-              </>
-            ) : (
-              <div>no reducer report</div>
-            )}
-          </div>
-        </div>
-
-        <div className="mt-4 pt-3 border-t border-[var(--border)]">
-          {hasPressure ? (
-            <div className="space-y-1 text-[12px]">
-              {watchList.map((event) => (
-                <div key={`${event.queue}-${event.id}`} className="flex items-center gap-2 min-w-0">
-                  <StatusDot status={event.queue === "rejected" || event.queue === "failed" ? "blocked" : "in_progress"} />
-                  <span className="text-[var(--text)] shrink-0">{event.queue}</span>
-                  <span className="text-[var(--text-muted)] truncate">
-                    {"target" in event ? event.target : event.type} · {event.project}/{event.task_id}
-                  </span>
-                  {"reason" in event && event.reason && <span className="ml-auto text-[11px] text-red-300 shrink-0">{event.reason}</span>}
-                </div>
-              ))}
-              {rejectedReasons.length > 0 && (
-                <div className="pt-2 text-[11px] text-[var(--text-muted)]">
-                  rejected reasons: {rejectedReasons.map(([reason, count]) => `${reason} ${count}`).join(" · ")}
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="flex items-center gap-2 text-[12px] text-[var(--text-muted)]">
-              <StatusDot status="completed" />
-              <span>queues clear</span>
-              <span className="ml-auto">{data.task_events.applied} applied · {data.sync_events.synced} synced</span>
-            </div>
-          )}
-        </div>
-      </div>
+    <div className="min-h-[74px] rounded-lg border border-[var(--border)] bg-white/[0.018] p-3">
+      <div className="text-[11px] text-[var(--text-muted)]">{name}</div>
+      <div className={`mt-1 font-mono text-[24px] leading-none font-bold ${color}`}>{value}</div>
+      <div className="mt-1 text-[11px] text-[var(--text-muted)]">{hint}</div>
     </div>
   );
+}
+
+function FreshnessRow({ source, path, generatedAt }: { source: string; path: string; generatedAt?: string }) {
+  const date = generatedAt ? new Date(generatedAt) : null;
+  const minutes = date ? Math.max(0, Math.round((Date.now() - date.getTime()) / 60000)) : null;
+  const ok = minutes !== null && minutes <= 15;
+  return (
+    <div className="grid grid-cols-[72px_1fr_auto] gap-2 items-baseline min-w-0 text-[12px]">
+      <span className="font-semibold text-[var(--text)]">{source}</span>
+      <span className="truncate text-[var(--text-muted)]">{path}</span>
+      <span className={`font-mono ${ok ? "text-green-400" : "text-yellow-400"}`}>{minutes === null ? "—" : `${minutes}m`}</span>
+    </div>
+  );
+}
+
+function latestDate(values: (string | undefined)[]) {
+  const dates = values.filter(Boolean).map((value) => new Date(value as string)).filter((date) => !Number.isNaN(date.getTime()));
+  if (dates.length === 0) return null;
+  return new Date(Math.max(...dates.map((date) => date.getTime())));
+}
+
+function countEvents(data: SentinelData | null, type: string, prefix = "") {
+  const count = data?.events.filter((event) => event.type === type).length || 0;
+  return `${prefix}${count}`;
+}
+
+function buildAttentionItems(data: SentinelData | null) {
+  if (!data) return [];
+  const stale = data.stale.map((item) => ({
+    kind: "stale",
+    project: item.project,
+    projectName: item.projectName,
+    taskId: item.project,
+    description: item.reasons.join("；"),
+  }));
+  const blocked = data.blocked_now.map((item) => ({
+    kind: "blocked",
+    project: item.project,
+    projectName: item.projectName,
+    taskId: item.taskId,
+    description: item.title,
+  }));
+  return [...stale, ...blocked];
+}
+
+function attentionPillClass(kind: string) {
+  const color = kind === "blocked" ? "border-red-400/40 text-red-400" : "border-yellow-400/40 text-yellow-400";
+  return `rounded-full border px-2 py-0.5 font-mono text-[10px] font-semibold ${color}`;
 }
 
 const worktreeStatusLabel: Record<WorktreeRepo["status"], string> = {
@@ -729,8 +683,7 @@ export default function HomePage() {
       </div>
 
       <div className="space-y-6">
-        <SentinelCard />
-        <TaskEventPipelineCard />
+        <SystemAttentionCard />
         <WorktreeStatusCard />
         <TaskVisualSyncCard projects={projects} />
 

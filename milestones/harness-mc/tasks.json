@@ -560,7 +560,7 @@
     {
       "id": "morrowise-recommendation-engine-v0",
       "title": "MorroWise recommendation engine v0",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "batch": "proactive-loop",
       "order": 17,
@@ -571,8 +571,13 @@
         "morrowise-anatomy-read-model",
         "acp-control-plane-read-model-v0"
       ],
-      "done_condition": "根據 control-plane / morrowise read model 產生 next best action 候選，至少輸出 reason、evidence_refs、risk_level、requires_approval、suggested_task_id；不得直接執行高風險動作。",
-      "note": "讓 MC 從「看見下一步」升級成「能提出為什麼是下一步」。",
+      "done_condition": "根據 control-plane / morrowise read model 產生 next best action 候選，至少輸出 reason、evidence_refs、risk_level、requires_approval、suggested_task_id；並評估接入 HC thinking router，輸出 hc_refs、hc_reasoning、hc_confidence 或明確說明不接入原因；不得直接執行高風險動作。",
+      "note": "讓 MC 從「看見下一步」升級成「能提出為什麼是下一步」。HC 來源：$COLLAB/notyet-harness/300_Obsidian_brain/HC。HC 應作為 recommendation engine 的思考方法選擇器（例如 #rightProblem、#breakItDown、#risk、#utility、#confirmationBias、#systemDynamics），幫助產生與檢查建議；HC 不取代 tasks.json / read model / task-events 的 evidence，也不能直接決定 task 狀態或繞過 approval policy。",
+      "completed_at": "2026-06-20",
+      "summary": "定義 MorroWise recommendation engine v0：新增機器可讀 recommendation registry、正式 spec、schema 欄位與 verifier，讓 trigger / read model 產生 next-best-action 候選；候選至少包含 reason、evidence_refs、risk_level、requires_approval、suggested_task_id、hc_refs、hc_reasoning、hc_confidence。HC 接為方法選擇器，不取代 tasks.json / read model / task-events evidence，也不得直接執行高風險動作。",
+      "commits": [
+        "72abe9d"
+      ],
       "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {

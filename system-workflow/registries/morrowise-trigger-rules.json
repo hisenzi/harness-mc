@@ -1,0 +1,211 @@
+{
+  "registry_id": "morrowise-trigger-rules.v0",
+  "task_id": "morrowise-trigger-rules-registry",
+  "order_label": "MC-LIVE-16",
+  "updated_at": "2026-06-20",
+  "status": "formal_registry",
+  "source_of_truth": "$COLLAB/harness-mc/milestones/harness-mc/tasks.json",
+  "boundary": {
+    "proactive_status": "trigger_registry_only",
+    "may_execute_actions": false,
+    "next_owner": "morrowise-recommendation-engine-v0",
+    "note": "Triggers wake MC and produce events/recommendation inputs. They do not directly mutate external systems."
+  },
+  "required_trigger_families": [
+    "stale_blocked_task",
+    "sync_failed",
+    "rejected_event",
+    "weekly_review",
+    "session_startup",
+    "project_init_growth_gate_missing"
+  ],
+  "triggers": [
+    {
+      "trigger_id": "morrowise.user_phrase",
+      "family": "user_phrase",
+      "source": {
+        "type": "user_request",
+        "ref": "current session message"
+      },
+      "condition": "User mentions MorroWise, 活系統, system-ops, Jarvis, or asks why the system keeps patching one piece at a time.",
+      "cooldown": "none",
+      "output_event": {
+        "type": "morrowise.triggered",
+        "target": "work_anchor_lookup",
+        "payload": ["phrase", "matched_task_id", "done_condition"]
+      },
+      "next_step": "Find existing task anchor before execution; create/update task if no owner exists.",
+      "risk_level": "low"
+    },
+    {
+      "trigger_id": "morrowise.weekly_review",
+      "family": "weekly_review",
+      "source": {
+        "type": "generated_data",
+        "ref": "$COLLAB/harness-mc/public/data/changes.json"
+      },
+      "condition": "Weekly review, daily closing, or heartbeat asks what changed and what requires attention.",
+      "cooldown": "24h",
+      "output_event": {
+        "type": "morrowise.review_requested",
+        "target": "morrowise-recommendation-engine-v0",
+        "payload": ["sentinel_brief", "done_delta", "blocked_now", "stale", "pending_events"]
+      },
+      "next_step": "Summarize evidence and produce recommendation candidates; do not execute actions yet.",
+      "risk_level": "low"
+    },
+    {
+      "trigger_id": "morrowise.stale_blocked_task",
+      "family": "stale_blocked_task",
+      "source": {
+        "type": "generated_data",
+        "ref": "$COLLAB/harness-mc/public/data/changes.json"
+      },
+      "condition": "A task is blocked, newly blocked, stale after inactivity, or repeatedly appears in Sentinel attention.",
+      "cooldown": "6h per task_id",
+      "output_event": {
+        "type": "morrowise.open_loop_detected",
+        "target": "morrowise-recommendation-engine-v0",
+        "payload": ["project", "task_id", "status", "stale_reason", "blocked_reason"]
+      },
+      "next_step": "Classify owner, missing dependency, missing decision, duplicate legacy task, or approval wait.",
+      "risk_level": "medium"
+    },
+    {
+      "trigger_id": "morrowise.task_completed_without_state_or_commit",
+      "family": "task_completion",
+      "source": {
+        "type": "generated_data",
+        "ref": "$COLLAB/harness-mc/public/data/worktrees.json"
+      },
+      "condition": "Completed work appears in the worktree, but commit boundary or task completion fields are missing.",
+      "cooldown": "session",
+      "output_event": {
+        "type": "morrowise.commit_boundary_needed",
+        "target": "worktree-commit",
+        "payload": ["repo", "changed_files", "candidate_task_id", "verification_status"]
+      },
+      "next_step": "Run commit boundary gate: verify, stage intended scope, commit, then update task state.",
+      "risk_level": "medium"
+    },
+    {
+      "trigger_id": "morrowise.rejected_task_event",
+      "family": "rejected_event",
+      "source": {
+        "type": "generated_data",
+        "ref": "$COLLAB/harness-mc/public/data/task-events.json"
+      },
+      "condition": "Task event reducer reports rejected events or rejected_by_reason count increases.",
+      "cooldown": "1h per event_id",
+      "output_event": {
+        "type": "morrowise.event_repair_requested",
+        "target": "acp-apply-task-events",
+        "payload": ["event_id", "reason", "project", "task_id"]
+      },
+      "next_step": "Inspect rejected reason, repair event or source task, then rerun reducer/generator.",
+      "risk_level": "medium"
+    },
+    {
+      "trigger_id": "morrowise.sync_failed",
+      "family": "sync_failed",
+      "source": {
+        "type": "generated_data",
+        "ref": "$COLLAB/harness-mc/public/data/task-events.json"
+      },
+      "condition": "Sync event failed, sync pending is too old, dry-run mismatch exists, or legacy fallback was used.",
+      "cooldown": "2h per target/task_id",
+      "output_event": {
+        "type": "morrowise.sync_repair_requested",
+        "target": "acp-external-sync-queue",
+        "payload": ["target", "project", "task_id", "failure_reason", "approval_required"]
+      },
+      "next_step": "Prefer dry-run parity; request Vincent approval before external write if policy requires it.",
+      "risk_level": "high"
+    },
+    {
+      "trigger_id": "morrowise.session_startup",
+      "family": "session_startup",
+      "source": {
+        "type": "file",
+        "ref": "$COLLAB/AGENTS.md"
+      },
+      "condition": "A new Agent session starts inside $COLLAB for Vincent/HiSenzi/Codex collaboration work.",
+      "cooldown": "session",
+      "output_event": {
+        "type": "morrowise.startup_check_requested",
+        "target": "portable_agent_verification",
+        "payload": ["entry_chain", "work_anchor_required", "task_source"]
+      },
+      "next_step": "Resolve $COLLAB, read required startup docs, confirm task anchor before work.",
+      "risk_level": "low"
+    },
+    {
+      "trigger_id": "morrowise.project_init_growth_gate_missing",
+      "family": "project_init_growth_gate_missing",
+      "source": {
+        "type": "generated_data",
+        "ref": "$COLLAB/harness-mc/public/data/projects.json"
+      },
+      "condition": "A project exists without goals/risks/success criteria, a valid tasks.json, or at least one executable task anchor.",
+      "cooldown": "24h per project",
+      "output_event": {
+        "type": "morrowise.project_anchor_missing",
+        "target": "project-init",
+        "payload": ["project", "missing_fields", "suggested_task_id"]
+      },
+      "next_step": "Create or repair project/task anchor before implementation begins.",
+      "risk_level": "medium"
+    },
+    {
+      "trigger_id": "morrowise.docs_state_drift",
+      "family": "docs_state_drift",
+      "source": {
+        "type": "file",
+        "ref": "$COLLAB/harness-mc/system-workflow/docs/specs"
+      },
+      "condition": "Markdown status, dashboard state, generated data, Heptabase, or Canvas disagree with tasks.json.",
+      "cooldown": "session per task_id",
+      "output_event": {
+        "type": "morrowise.drift_detected",
+        "target": "docs_state_drift_gate",
+        "payload": ["canonical_source", "stale_source", "task_id", "next_action"]
+      },
+      "next_step": "Use tasks.json as current state; update docs or generated data, or record an open loop.",
+      "risk_level": "medium"
+    },
+    {
+      "trigger_id": "morrowise.visual_sync_gap",
+      "family": "visual_sync_gap",
+      "source": {
+        "type": "generated_data",
+        "ref": "$COLLAB/harness-mc/public/data/projects.json"
+      },
+      "condition": "Tracked task is missing Heptabase card_id, synced_at, Canvas mirror evidence, or visual refs disagree with MC source.",
+      "cooldown": "6h per task_id",
+      "output_event": {
+        "type": "morrowise.visual_sync_requested",
+        "target": "acp-visual-sync-coverage-report",
+        "payload": ["project", "task_id", "missing_layer", "external_refs"]
+      },
+      "next_step": "Request visual-layer sync or coverage report; do not close task from visual layer alone.",
+      "risk_level": "medium"
+    },
+    {
+      "trigger_id": "morrowise.approval_wait",
+      "family": "approval_wait",
+      "source": {
+        "type": "event",
+        "ref": "future approval queue"
+      },
+      "condition": "An approval-required action is waiting too long, or an Agent attempts approval-required work.",
+      "cooldown": "session per approval_id",
+      "output_event": {
+        "type": "morrowise.approval_required",
+        "target": "morrowise-approval-policy",
+        "payload": ["action_class", "risk_level", "requested_by", "evidence_refs"]
+      },
+      "next_step": "Stop before side effect and surface exact requested action to Vincent.",
+      "risk_level": "high"
+    }
+  ]
+}

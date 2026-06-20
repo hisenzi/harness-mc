@@ -1,0 +1,560 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "morrowise-system.schema.json",
+  "title": "MorroWise System Read Model v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "source_of_truth",
+    "portable_agent_verification",
+    "dna",
+    "memory",
+    "senses",
+    "muscles",
+    "immune",
+    "heartbeat",
+    "feedback",
+    "open_loops"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "morrowise-system.v0"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_of_truth": {
+      "$ref": "#/$defs/sourceOfTruth"
+    },
+    "portable_agent_verification": {
+      "$ref": "#/$defs/portableAgentVerification"
+    },
+    "dna": {
+      "$ref": "#/$defs/dna"
+    },
+    "memory": {
+      "$ref": "#/$defs/memory"
+    },
+    "senses": {
+      "$ref": "#/$defs/senses"
+    },
+    "muscles": {
+      "$ref": "#/$defs/muscles"
+    },
+    "immune": {
+      "$ref": "#/$defs/immune"
+    },
+    "heartbeat": {
+      "$ref": "#/$defs/heartbeat"
+    },
+    "feedback": {
+      "$ref": "#/$defs/feedback"
+    },
+    "open_loops": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/openLoop"
+      }
+    }
+  },
+  "$defs": {
+    "sourceOfTruth": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "collab_root",
+        "canonical_task_state",
+        "generated_data",
+        "visual_layers",
+        "docs_are"
+      ],
+      "properties": {
+        "collab_root": {
+          "type": "string",
+          "const": "$COLLAB"
+        },
+        "canonical_task_state": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/pathRef"
+          },
+          "minItems": 1
+        },
+        "generated_data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/pathRef"
+          }
+        },
+        "visual_layers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "role", "may_close_task"],
+            "properties": {
+              "name": { "type": "string" },
+              "role": { "enum": ["mirror", "read_model", "dashboard", "external_surface"] },
+              "may_close_task": { "type": "boolean", "const": false }
+            }
+          }
+        },
+        "docs_are": {
+          "enum": ["routing_and_decision_evidence"]
+        }
+      }
+    },
+    "portableAgentVerification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "principle",
+        "entry_chain",
+        "work_anchor_required",
+        "required_checks",
+        "handoff_evidence"
+      ],
+      "properties": {
+        "principle": {
+          "type": "string",
+          "const": "Data belongs to Vincent; AI agents are replaceable executors."
+        },
+        "entry_chain": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/pathRef"
+          },
+          "minItems": 1
+        },
+        "work_anchor_required": {
+          "type": "boolean",
+          "const": true
+        },
+        "required_checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/check"
+          },
+          "minItems": 1
+        },
+        "handoff_evidence": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "task_id",
+              "done_condition",
+              "changed_files",
+              "verification_output",
+              "commit_hash",
+              "task_summary",
+              "next_task"
+            ]
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "dna": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system_name", "identity", "boundaries", "non_goals"],
+      "properties": {
+        "system_name": { "type": "string", "const": "MorroWise" },
+        "identity": { "type": "string" },
+        "boundaries": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "non_goals": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "memory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["context", "evidence_tags", "commit_boundaries", "dirty_work"],
+      "properties": {
+        "context": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/contextRef" }
+        },
+        "evidence_tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "commit_boundaries": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/commitBoundary" }
+        },
+        "dirty_work": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/dirtyWork" }
+        }
+      }
+    },
+    "senses": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["triggers", "events", "visual_sync_gaps", "freshness"],
+      "properties": {
+        "triggers": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/trigger" }
+        },
+        "events": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/eventRef" }
+        },
+        "visual_sync_gaps": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/visualSyncGap" }
+        },
+        "freshness": {
+          "$ref": "#/$defs/freshness"
+        }
+      }
+    },
+    "muscles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["agents", "tools", "actions"],
+      "properties": {
+        "agents": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/capabilityRef" }
+        },
+        "tools": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/capabilityRef" }
+        },
+        "actions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/actionCandidate" }
+        }
+      }
+    },
+    "immune": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["validators", "security_boundaries", "approval_policy"],
+      "properties": {
+        "validators": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/check" }
+        },
+        "security_boundaries": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "approval_policy": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/approvalRule" }
+        }
+      }
+    },
+    "heartbeat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schedules", "review_cadence", "stale_rules"],
+      "properties": {
+        "schedules": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/scheduleRef" }
+        },
+        "review_cadence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/cadenceRule" }
+        },
+        "stale_rules": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/staleRule" }
+        }
+      }
+    },
+    "feedback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gates", "task_events", "recommendation_candidates", "approval_waiting"],
+      "properties": {
+        "gates": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/gate" }
+        },
+        "task_events": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/eventRef" }
+        },
+        "recommendation_candidates": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/recommendationCandidate" }
+        },
+        "approval_waiting": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/approvalWait" }
+        }
+      }
+    },
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gate_id", "trigger", "source", "process", "output", "surface", "close_rule"],
+      "properties": {
+        "gate_id": { "type": "string" },
+        "trigger": { "type": "string" },
+        "source": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/sourceRef" }
+        },
+        "process": { "type": "string" },
+        "output": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "surface": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "close_rule": { "type": "string" }
+      }
+    },
+    "openLoop": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "loop_id",
+        "gate_id",
+        "source",
+        "condition",
+        "risk_level",
+        "suggested_next_action",
+        "requires_approval",
+        "owner",
+        "review_after",
+        "evidence_refs"
+      ],
+      "properties": {
+        "loop_id": { "type": "string" },
+        "gate_id": { "type": "string" },
+        "source": { "$ref": "#/$defs/sourceRef" },
+        "condition": { "type": "string" },
+        "risk_level": { "enum": ["low", "medium", "high"] },
+        "suggested_next_action": { "type": "string" },
+        "requires_approval": { "type": "boolean" },
+        "owner": { "enum": ["Vincent", "Codex", "Claude Code", "future_agent", "external_system"] },
+        "review_after": { "type": "string" },
+        "evidence_refs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/sourceRef" },
+          "minItems": 1
+        }
+      }
+    },
+    "sourceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "ref"],
+      "properties": {
+        "type": {
+          "enum": ["file", "task", "event", "commit", "route", "external_ref", "user_request", "generated_data"]
+        },
+        "ref": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+    "pathRef": {
+      "type": "string",
+      "pattern": "^\\$COLLAB/"
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["check_id", "command", "scope"],
+      "properties": {
+        "check_id": { "type": "string" },
+        "command": { "type": "string" },
+        "scope": { "type": "string" },
+        "expected": { "type": "string" }
+      }
+    },
+    "contextRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["context_id", "source", "summary"],
+      "properties": {
+        "context_id": { "type": "string" },
+        "source": { "$ref": "#/$defs/sourceRef" },
+        "summary": { "type": "string" },
+        "evidence_tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "commitBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "status", "changed_files", "verification"],
+      "properties": {
+        "task_id": { "type": "string" },
+        "status": { "enum": ["ready_to_commit", "committed", "split_required", "open_loop"] },
+        "changed_files": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "commit": { "type": "string" },
+        "verification": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/check" }
+        }
+      }
+    },
+    "dirtyWork": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repo", "paths", "classification"],
+      "properties": {
+        "repo": { "type": "string" },
+        "paths": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "classification": { "enum": ["owned_by_active_task", "unrelated_dirty", "needs_triage"] }
+      }
+    },
+    "trigger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["trigger_id", "condition", "gate_id", "cooldown"],
+      "properties": {
+        "trigger_id": { "type": "string" },
+        "condition": { "type": "string" },
+        "gate_id": { "type": "string" },
+        "cooldown": { "type": "string" }
+      }
+    },
+    "eventRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event_id", "type", "status"],
+      "properties": {
+        "event_id": { "type": "string" },
+        "type": { "type": "string" },
+        "status": { "enum": ["pending", "applied", "rejected", "failed", "blocked"] },
+        "source": { "$ref": "#/$defs/sourceRef" }
+      }
+    },
+    "visualSyncGap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "layer", "condition", "next_action"],
+      "properties": {
+        "task_id": { "type": "string" },
+        "layer": { "enum": ["Heptabase", "Obsidian Canvas", "MC dashboard", "generated_data"] },
+        "condition": { "type": "string" },
+        "next_action": { "type": "string" }
+      }
+    },
+    "freshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generated_at", "degraded", "reason"],
+      "properties": {
+        "generated_at": { "type": "string", "format": "date-time" },
+        "degraded": { "type": "boolean" },
+        "reason": { "type": "string" }
+      }
+    },
+    "capabilityRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "role", "source"],
+      "properties": {
+        "id": { "type": "string" },
+        "role": { "type": "string" },
+        "source": { "$ref": "#/$defs/sourceRef" }
+      }
+    },
+    "actionCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action_id", "kind", "approval_required"],
+      "properties": {
+        "action_id": { "type": "string" },
+        "kind": { "type": "string" },
+        "approval_required": { "type": "boolean" }
+      }
+    },
+    "approvalRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action_class", "policy"],
+      "properties": {
+        "action_class": { "type": "string" },
+        "policy": { "enum": ["allowed", "approval_required", "forbidden"] },
+        "reason": { "type": "string" }
+      }
+    },
+    "scheduleRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schedule_id", "source", "status"],
+      "properties": {
+        "schedule_id": { "type": "string" },
+        "source": { "$ref": "#/$defs/sourceRef" },
+        "status": { "enum": ["active", "pending", "blocked", "unknown"] }
+      }
+    },
+    "cadenceRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cadence_id", "interval", "gate_id"],
+      "properties": {
+        "cadence_id": { "type": "string" },
+        "interval": { "type": "string" },
+        "gate_id": { "type": "string" }
+      }
+    },
+    "staleRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rule_id", "condition", "gate_id"],
+      "properties": {
+        "rule_id": { "type": "string" },
+        "condition": { "type": "string" },
+        "gate_id": { "type": "string" }
+      }
+    },
+    "recommendationCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recommendation_id", "reason", "suggested_action", "evidence_refs"],
+      "properties": {
+        "recommendation_id": { "type": "string" },
+        "reason": { "type": "string" },
+        "suggested_action": { "type": "string" },
+        "risk_level": { "enum": ["low", "medium", "high"] },
+        "evidence_refs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/sourceRef" }
+        }
+      }
+    },
+    "approvalWait": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["approval_id", "action_class", "requested_by", "status"],
+      "properties": {
+        "approval_id": { "type": "string" },
+        "action_class": { "type": "string" },
+        "requested_by": { "type": "string" },
+        "status": { "enum": ["waiting", "granted", "denied", "expired"] }
+      }
+    }
+  }
+}

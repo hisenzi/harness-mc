@@ -298,9 +298,11 @@ Additional high-risk triggers are also covered:
 
 ## Next Work Entry
 
-The next executable MorroWise task is:
+The next MorroWise anatomy task is:
 
-`morrowise-anatomy-read-model` (`MC-LIVE-05`)
+`morrowise-anatomy-read-model` (`MC-LIVE-13`)
+
+Use `tasks.json` as the execution order source of truth. Intermediate MC-LIVE tasks may belong to ACP/control-plane gates before this anatomy task runs.
 
 It should turn this spec into generated data fields:
 
@@ -314,4 +316,3 @@ It should turn this spec into generated data fields:
 - `visual_sync_gaps`.
 
 Only after those fields exist should `morrowise-dashboard-surface` decide the final UI.
-

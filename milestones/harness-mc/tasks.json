@@ -693,8 +693,8 @@
       "depends_on": [
         "morrowise-proactive-loop-dashboard"
       ],
-      "done_condition": "驗證 MC 能回答：哪個 trigger 觸發、推薦什麼、證據是什麼、是否需 Vincent approve、runner 做了什麼、feedback 回寫到哪裡、哪些 loop 未閉合。",
-      "note": "第二段驗收；通過後才可說 MC 具備「更主動：觸發、建議、部分自動執行」。",
+      "done_condition": "驗證 MC 能用可重跑證據回答：哪個 trigger 觸發、推薦什麼、reason / evidence_refs / risk_level / requires_approval / suggested_task_id / HC reasoning 是什麼、approval policy 判斷為何、runner 做了什麼或為何 blocked、feedback 回寫到哪個 source-of-truth、哪些 loop 未閉合。需提供 sample event chain / fixture 與 verifier，至少覆蓋正常閉環、等待 Vincent approval、runner blocked / open loop 三種情境。",
+      "note": "第二段驗收；通過後才可說 MC 具備「更主動：觸發、建議、部分自動執行」。不可只靠 task text 或 dashboard 目視判斷通過；需新增或指定可重跑的驗收 fixture / verifier，確認 trigger registry、recommendation engine、approval policy、runner、dashboard read model、feedback write-back 串成同一條鏈。驗收必須確認 dashboard 是 read-only、tasks.json / task-events / sync-events 仍是 source of truth、visual layer 不可反向覆寫 MC，且 approval_required / forbidden case 不會被 runner 自動執行。",
       "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {
@@ -705,6 +705,141 @@
           "sync_mode": "created"
         }
       }
+    },
+    {
+      "id": "morrowise-live-system-verification-standard",
+      "title": "定義 MorroWise 活系統驗證標準",
+      "status": "todo",
+      "track": "morrowise-system",
+      "batch": "living-dashboard",
+      "order": 22,
+      "order_label": "MC-LIVE-SYS-01",
+      "priority": "critical",
+      "depends_on": [
+        "morrowise-proactive-loop-verify"
+      ],
+      "done_condition": "產出 MorroWise 活系統 pass/fail checklist，明確定義每個 dashboard surface 必須具備 source、generator、generated_at、stale_rule、next_action、write_boundary、verifier；未達標需標為半活或靜態展示，不可宣稱完整活系統。",
+      "note": "Taiwan.md/semiont 只作參考，不作驗證主體。本 task 的主體是 MorroWise / MC。"
+    },
+    {
+      "id": "morrowise-live-surface-audit",
+      "title": "盤點 MC 現有卡片是否真的活",
+      "status": "todo",
+      "track": "morrowise-system",
+      "batch": "living-dashboard",
+      "order": 23,
+      "order_label": "MC-LIVE-SYS-02",
+      "priority": "critical",
+      "depends_on": [
+        "morrowise-live-system-verification-standard"
+      ],
+      "done_condition": "依 MC-LIVE-SYS-01 標準檢查 System Attention、MorroWise 活系統、MorroWise 主動閉環、Task Event Pipeline、Worktree Status、Approval Queue；每張卡分類為已活、半活、靜態展示或假活風險，並列出缺口。",
+      "note": "重點是驗證 MC 自己，不再把 Taiwan.md 是否完整活系統當主線。"
+    },
+    {
+      "id": "morrowise-live-dashboard-mockup",
+      "title": "建立 MorroWise 活儀表板完整 Mockup",
+      "status": "todo",
+      "track": "morrowise-system",
+      "batch": "living-dashboard",
+      "order": 24,
+      "order_label": "MC-LIVE-SYS-03",
+      "priority": "high",
+      "depends_on": [
+        "morrowise-live-surface-audit"
+      ],
+      "done_condition": "在 system-workflow/docs/mockups/ 產出完整 MC 首頁 mockup，納入 sidebar 資訊分流、首頁摘要、drill-down、approval queue、freshness、read-only boundary；不得使用 emoji，並清楚標示哪些資訊在首頁、哪些進下層。",
+      "note": "Mockup 是資訊架構驗證稿，不是裝飾稿；目標是讓資訊很多時仍能先判斷現在要不要管、先管哪裡、資料新不新。"
+    },
+    {
+      "id": "morrowise-live-dashboard-read-model-contract",
+      "title": "定義 MorroWise live dashboard read model",
+      "status": "todo",
+      "track": "morrowise-system",
+      "batch": "living-dashboard",
+      "order": 25,
+      "order_label": "MC-LIVE-SYS-04",
+      "priority": "high",
+      "depends_on": [
+        "morrowise-live-dashboard-mockup"
+      ],
+      "done_condition": "定義 public/data/morrowise-live-dashboard.json 契約；每個 surface 至少包含 id、label、source_of_truth、source_files、generator、generated_at、stale_rule、freshness_state、next_action、write_boundary、verifier_ref。",
+      "note": "此 read model 是 dashboard 的單一讀取入口，不可成為 task state 的寫入來源。"
+    },
+    {
+      "id": "morrowise-live-dashboard-real-data-flow",
+      "title": "接入 MorroWise 活儀表板真實資料流",
+      "status": "todo",
+      "track": "morrowise-system",
+      "batch": "living-dashboard",
+      "order": 26,
+      "order_label": "MC-LIVE-SYS-05",
+      "priority": "high",
+      "depends_on": [
+        "morrowise-live-dashboard-read-model-contract"
+      ],
+      "done_condition": "將 projects、task-events、sync-events、worktrees、approval policy、proactive loop read model 接成 morrowise-live-dashboard.json；不得只使用 fixture，fixture 只能保留於 verifier。",
+      "note": "這一步把活儀表板從 mockup/read-model contract 推進到真實資料鏈。"
+    },
+    {
+      "id": "morrowise-live-dashboard-stale-degraded-state",
+      "title": "新增 MorroWise stale / degraded 狀態",
+      "status": "todo",
+      "track": "morrowise-system",
+      "batch": "living-dashboard",
+      "order": 27,
+      "order_label": "MC-LIVE-SYS-06",
+      "priority": "high",
+      "depends_on": [
+        "morrowise-live-dashboard-real-data-flow"
+      ],
+      "done_condition": "每個 dashboard surface 能根據 stale_rule 顯示 fresh、stale、degraded、unknown；資料老舊或缺失時不得假裝最新，需顯示最後更新時間與下一步處理建議。",
+      "note": "對應 Vincent 對資料老舊的要求：只顯示最新更新時間來做最後判斷，並在老舊時降級。"
+    },
+    {
+      "id": "morrowise-live-dashboard-loop-verifier",
+      "title": "建立 MorroWise 活儀表板閉環 verifier",
+      "status": "todo",
+      "track": "morrowise-system",
+      "batch": "living-dashboard",
+      "order": 28,
+      "order_label": "MC-LIVE-SYS-07",
+      "priority": "critical",
+      "depends_on": [
+        "morrowise-live-dashboard-stale-degraded-state"
+      ],
+      "done_condition": "新增可重跑 verifier，驗證 trigger、recommendation、approval、runner output、feedback、dashboard read model 串成同一條鏈；approval_required / forbidden case 不得被自動執行。",
+      "note": "此 task 才能判定 MorroWise 不只是資料展示，而是具備可驗證閉環。"
+    },
+    {
+      "id": "morrowise-live-dashboard-homepage-implementation",
+      "title": "把活儀表板 mockup 套回 MC 首頁",
+      "status": "todo",
+      "track": "morrowise-system",
+      "batch": "living-dashboard",
+      "order": 29,
+      "order_label": "MC-LIVE-SYS-08",
+      "priority": "high",
+      "depends_on": [
+        "morrowise-live-dashboard-loop-verifier"
+      ],
+      "done_condition": "依 MC-LIVE-SYS-03 mockup 實作 MC 首頁 sidebar、首頁摘要、drill-down 入口、approval queue、freshness 與 boundary；首頁維持 read-only，不直接寫 task state、commit、push、deploy 或外部同步。",
+      "note": "實作時需降低首屏資訊密度；sidebar 負責分類分流，首頁只回答現在要不要管、先管哪裡、資料新不新。"
+    },
+    {
+      "id": "morrowise-live-dashboard-doc-routing",
+      "title": "完成 MorroWise 活儀表板文件路由",
+      "status": "todo",
+      "track": "morrowise-system",
+      "batch": "living-dashboard",
+      "order": 30,
+      "order_label": "MC-LIVE-SYS-09",
+      "priority": "medium",
+      "depends_on": [
+        "morrowise-live-dashboard-homepage-implementation"
+      ],
+      "done_condition": "整理活儀表板文件入口，明確寫出 spec、mockup、read model、verifier、task source 何時讀；未來 Agent 接手時不用從聊天紀錄或散落文件重新推理。",
+      "note": "目標是把文件也系統化，避免補東補西。"
     },
     {
       "id": "heptabase-pai-sync-migration-spec",

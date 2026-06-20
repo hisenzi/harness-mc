@@ -493,11 +493,15 @@
     "approvalRule": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["action_class", "policy"],
+      "required": ["action_class", "policy", "reason"],
       "properties": {
         "action_class": { "type": "string" },
         "policy": { "enum": ["allowed", "approval_required", "forbidden"] },
-        "reason": { "type": "string" }
+        "reason": { "type": "string" },
+        "required_evidence": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
       }
     },
     "scheduleRef": {

@@ -1,0 +1,171 @@
+{
+  "policy_id": "morrowise-approval-policy.v0",
+  "task_id": "morrowise-approval-policy",
+  "order_label": "MC-LIVE-18",
+  "updated_at": "2026-06-20",
+  "status": "formal_policy",
+  "source_of_truth": "$COLLAB/harness-mc/milestones/harness-mc/tasks.json",
+  "purpose": "Classify MorroWise action candidates before any runner, sync, browser, commit, memory, schedule, or external side effect can proceed.",
+  "sources_reviewed": [
+    "$COLLAB/notyet-harness/000_Agent/CORE.md",
+    "$COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/openclaw-security-extract-260613.md",
+    "$COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/mcp-tools-boundary-map-260613.md",
+    "$COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/visual-layer-transition-protocol.md",
+    "$COLLAB/notyet-harness/000_Agent/skills/security-scan/SKILL.md",
+    "$COLLAB/notyet-harness/000_Agent/skills/security-scan/references/rules.md",
+    "$COLLAB/notyet-harness/000_Agent/skills/browser-setup/SKILL.md",
+    "$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/SKILL.md",
+    "$COLLAB/.openclaw_260418/workspace/AGENTS.md",
+    "$COLLAB/.openclaw_260418/workspace/CORE.md",
+    "$COLLAB/.openclaw_260418/workspace/skills/security-scan/references/rules.md",
+    "$COLLAB/.openclaw_260418/workspace/skills/git-worktree/dist/SKILL.md"
+  ],
+  "core_rules": {
+    "direction_agreement_is_not_operation_approval": true,
+    "source_of_truth": "MC tasks.json remains canonical; Heptabase, Canvas, screenshots, chat, and daily logs cannot reverse-write task state.",
+    "secret_boundary": "Agents must not proactively read, print, summarize, copy, or exfiltrate secrets, credentials, private keys, runtime auth files, app storage, or local databases.",
+    "recovery_rule": "Destructive or irreversible work requires explicit Vincent approval plus a recovery plan. Prefer recoverable trash/archive over deletion.",
+    "external_effect_rule": "Anything that leaves the machine, writes to an external service, submits a browser form, sends a message/email/post, or changes shared automation requires explicit approval."
+  },
+  "policy_tiers": [
+    {
+      "policy": "allowed",
+      "meaning": "Agent may proceed when the action stays within the active task scope, does not mutate canonical state without an existing implementation request, and does not create external side effects.",
+      "requires_vincent_approval": false,
+      "rules": [
+        {
+          "action_class": "read_mc_docs_tasks_public_data",
+          "examples": ["read tasks.json", "read specs", "read generated public/data JSON", "search repo text"],
+          "conditions": ["task relevant", "no secret/auth/runtime store access"],
+          "reason": "Read-only evidence gathering is low risk and required for portable agent execution."
+        },
+        {
+          "action_class": "generate_local_read_model",
+          "examples": ["npm run build", "node scripts/generate-data.mjs", "local verifier output"],
+          "conditions": ["writes only generated local artifacts or build cache expected by repo", "no external API write"],
+          "reason": "Generated local data is recoverable and keeps MC fresh."
+        },
+        {
+          "action_class": "dry_run_or_preview",
+          "examples": ["external sync dry-run", "diff preview", "validation report", "security scan report"],
+          "conditions": ["no external write", "no credential content output"],
+          "reason": "Previewing lets Vincent approve with evidence."
+        },
+        {
+          "action_class": "low_risk_local_verification",
+          "examples": ["npm test", "npm run test:tasks", "schema validation", "curl localhost"],
+          "conditions": ["bounded to local repo or local dev server", "does not mutate external systems"],
+          "reason": "Verification is required before completion claims."
+        },
+        {
+          "action_class": "draft_patch_inside_active_task",
+          "examples": ["edit docs", "edit schema", "add verifier", "mockup-first local artifact"],
+          "conditions": ["Vincent asked to implement", "scope has task anchor", "diff remains reviewable"],
+          "reason": "Implementation inside the agreed task scope is the normal agent job."
+        }
+      ]
+    },
+    {
+      "policy": "approval_required",
+      "meaning": "Agent must stop, show exact intended action, evidence, risk, and recovery plan when applicable, then wait for Vincent approval.",
+      "requires_vincent_approval": true,
+      "rules": [
+        {
+          "action_class": "task_state_mutation",
+          "examples": ["task reorder", "task create", "task update", "task close", "bulk task status change"],
+          "required_evidence": ["task id", "diff preview", "done condition or reason", "verification plan"],
+          "reason": "tasks.json is canonical system state."
+        },
+        {
+          "action_class": "memory_write_or_update",
+          "examples": ["CORE.md update", "long-term memory update", "private/shared memory write"],
+          "required_evidence": ["target file", "exact text", "why it should persist"],
+          "reason": "Memory changes affect future agents."
+        },
+        {
+          "action_class": "schedule_mutation",
+          "examples": ["add cron", "edit LaunchAgent", "delete automation", "change recurring reminder"],
+          "required_evidence": ["schedule id", "old state", "new state", "rollback path"],
+          "reason": "Schedulers create unattended future behavior."
+        },
+        {
+          "action_class": "external_sync_or_write",
+          "examples": ["Heptabase card create/append", "Notion write", "Telegram send", "Obsidian API write", "public posting", "email"],
+          "required_evidence": ["destination", "payload preview", "driver", "dry-run or parity check when available"],
+          "reason": "External writes leave the local workspace and can create source-of-truth drift."
+        },
+        {
+          "action_class": "third_party_repo_skill_intake",
+          "examples": ["install skill", "copy repo into workspace", "add dependency from unknown source"],
+          "required_evidence": ["isolated path", "security-scan verdict", "L1-L4 review", "license/source notes"],
+          "reason": "Third-party code can execute inside Vincent's workspace."
+        },
+        {
+          "action_class": "commit_push_deploy",
+          "examples": ["git commit", "git push", "deploy", "release", "publish static site"],
+          "required_evidence": ["staged path list", "diff summary", "verification output", "commit message", "path policy check"],
+          "reason": "Version history and deployed surfaces are shared, durable state."
+        },
+        {
+          "action_class": "visual_layer_overwrite_or_reverse_sync",
+          "examples": ["overwrite Canvas", "refresh Heptabase", "use Canvas/Heptabase/chat to modify tasks.json"],
+          "required_evidence": ["canonical source", "mirror destination", "manual edit risk check"],
+          "reason": "Visual layers are mirrors, not task-state authorities."
+        },
+        {
+          "action_class": "browser_submit_or_message",
+          "examples": ["submit form", "send chat/message/email", "payment", "account deletion", "OAuth scope approval"],
+          "required_evidence": ["screenshot or page state", "exact action", "account/session context", "risk"],
+          "reason": "Browser actions can act as Vincent in logged-in sessions."
+        }
+      ]
+    },
+    {
+      "policy": "forbidden",
+      "meaning": "Agent must not perform this action unless Vincent explicitly redefines the task and the action is still legally and technically safe. Recommendation engine and runner must treat these as hard stops.",
+      "requires_vincent_approval": "explicit_exception_only",
+      "rules": [
+        {
+          "action_class": "read_or_output_secrets",
+          "examples": ["secrets/", ".env*", "auth profiles", "runtime auth files", "app storage", "local DB", "private keys", "~/.ssh"],
+          "reason": "Secret contents must not be proactively read or exposed."
+        },
+        {
+          "action_class": "bypass_vincent_approval",
+          "examples": ["treat direction agreement as operation approval", "execute approval-required action from recommendation alone"],
+          "reason": "The system must not convert advice into side effects without consent."
+        },
+        {
+          "action_class": "reverse_write_from_visual_or_chat",
+          "examples": ["Heptabase to tasks.json overwrite", "Canvas to task status", "screenshot/chat to canonical state"],
+          "reason": "MC tasks.json is the source of truth."
+        },
+        {
+          "action_class": "destructive_without_recovery",
+          "examples": ["rm -rf", "bulk delete", "account delete", "discard data without backup"],
+          "reason": "Every step must be recoverable."
+        },
+        {
+          "action_class": "history_rewrite_without_explicit_request",
+          "examples": ["git reset --hard", "force push", "rebase published branch", "delete branch with unmerged work"],
+          "reason": "History rewrites can destroy evidence and collaboration context."
+        },
+        {
+          "action_class": "unreviewed_third_party_execution",
+          "examples": ["run downloaded script", "source unknown env", "execute unknown postinstall"],
+          "reason": "Third-party execution requires isolation, scan, and review."
+        }
+      ]
+    }
+  ],
+  "runner_gate": {
+    "input_required": ["recommendation_id", "suggested_action", "risk_level", "requires_approval", "evidence_refs", "suggested_task_id"],
+    "decision_order": [
+      "If action_class matches forbidden, stop.",
+      "If action_class matches approval_required or recommendation.requires_approval is true, request Vincent approval.",
+      "If action_class matches allowed and evidence is sufficient, proceed only inside the active task scope.",
+      "If no rule matches, default to approval_required."
+    ],
+    "default_policy": "approval_required"
+  }
+}

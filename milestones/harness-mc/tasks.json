@@ -1345,7 +1345,8 @@
         }
       },
       "commits": [
-        "2f507b0"
+        "2f507b0",
+        "7cebf4e"
       ]
     },
     {
@@ -1392,9 +1393,12 @@
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "5ee4fae5-a2f4-4dd6-a750-939e63556816",
           "synced_at": "2026-06-20",
-          "sync_mode": "renamed"
+          "sync_mode": "appended"
         }
-      }
+      },
+      "commits": [
+        "7cebf4e"
+      ]
     }
   ]
 }

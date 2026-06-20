@@ -669,7 +669,10 @@
         }
       },
       "completed_at": "2026-06-20",
-      "summary": "新增 validate-skills.mjs + verify-validate-skills.mjs，changed SKILL.md 缺版本行、版本歷史、description 或含硬編本機路徑會 fail；舊 skill 只列 legacy warning，並接入 npm run test:skills / prebuild。"
+      "summary": "新增 validate-skills.mjs + verify-validate-skills.mjs，changed SKILL.md 缺版本行、版本歷史、description 或含硬編本機路徑會 fail；舊 skill 只列 legacy warning，並接入 npm run test:skills / prebuild。",
+      "commits": [
+        "757f283"
+      ]
     },
     {
       "id": "acp-dashboard-spec",

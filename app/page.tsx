@@ -361,11 +361,12 @@ function WorktreeStatusCard() {
 
   if (!data) return null;
 
-  const activeRepos = data.repositories
-    .filter((repo) => repo.status !== "clean")
-    .sort((a, b) => riskRank(b.risk) - riskRank(a.risk))
-    .slice(0, 6);
-  const quiet = activeRepos.length === 0;
+  const quiet = data.repositories.every((repo) => repo.status === "clean");
+  const groupedRepos = {
+    uncommitted: data.repositories.filter((repo) => repo.status === "uncommitted"),
+    local_commits: data.repositories.filter((repo) => repo.status === "local_commits"),
+    needs_reconcile: data.repositories.filter((repo) => repo.status === "needs_reconcile"),
+  };
   const generatedLabel = new Date(data.generated_at).toLocaleString("zh-TW", {
     month: "numeric",
     day: "numeric",
@@ -391,77 +392,77 @@ function WorktreeStatusCard() {
             <span className="ml-auto">{data.summary.scanned} 個倉庫已掃描</span>
           </div>
         ) : (
-          <>
-            <div className="flex flex-wrap items-center gap-5">
-              <WorktreeMetric label="未提交變更" count={data.summary.uncommitted} tone="yellow" />
-              <WorktreeMetric label="本機未推送" count={data.summary.local_commits} tone="blue" />
-              <WorktreeMetric label="需要對帳" count={data.summary.needs_reconcile} tone="red" />
-              <div className="ml-auto text-right text-[11px] text-[var(--text-muted)]">
-                <div>風險最高</div>
-                <div className="font-mono text-[var(--text)]">{activeRepos[0]?.repo || "—"}</div>
-              </div>
-            </div>
-
-            <div className="mt-4 pt-3 border-t border-[var(--border)] space-y-2 text-[12px]">
-              {activeRepos.map((repo) => {
-                const dirtyCount = repo.staged_count + repo.unstaged_count + repo.untracked_count;
-                return (
-                  <div key={`${repo.path_label}-${repo.status}`} className="rounded-md -mx-2 px-2 py-1.5 hover:bg-[var(--border)]/30 transition">
-                    <div className="flex flex-wrap items-center gap-2 min-w-0">
-                      <StatusDot status={worktreeDotStatus[repo.status]} />
-                      <span className="font-semibold text-[var(--text)]">{repo.repo}</span>
-                      <span className={statusChipClass(repo.status)}>{worktreeStatusLabel[repo.status]}</span>
-                      <span className="ml-auto font-mono text-[11px] text-[var(--text-muted)]">
-                        {dirtyCount > 0 && `${dirtyCount} 變更`}
-                        {dirtyCount > 0 && repo.local_commits_count > 0 && " · "}
-                        {repo.local_commits_count > 0 && `↑${repo.local_commits_count}`}
-                        {repo.remote_commits_count > 0 && ` ↓${repo.remote_commits_count}`}
-                      </span>
-                    </div>
-                    <div className="mt-1 pl-4 text-[11px] text-[var(--text-muted)] min-w-0">
-                      <span className="font-mono break-all">{repo.branch} · {repo.head || "—"}</span>
-                      <span className="px-2 text-[var(--border)]">—</span>
-                      <span>{repo.suggested_action}</span>
-                    </div>
-                    {repo.files.length > 0 && (
-                      <div className="mt-1 pl-4 font-mono text-[11px] text-[var(--text-muted)] truncate">
-                        {repo.files.slice(0, 3).map((file) => `${file.indexStatus}${file.worktreeStatus} ${file.path}`).join(" · ")}
-                        {repo.files.length > 3 ? ` · …還有 ${repo.files.length - 3} 筆` : ""}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <WorktreeStatusColumn status="uncommitted" repos={groupedRepos.uncommitted} count={data.summary.uncommitted} tone="yellow" />
+            <WorktreeStatusColumn status="local_commits" repos={groupedRepos.local_commits} count={data.summary.local_commits} tone="blue" />
+            <WorktreeStatusColumn status="needs_reconcile" repos={groupedRepos.needs_reconcile} count={data.summary.needs_reconcile} tone="red" />
+          </div>
         )}
       </div>
     </div>
   );
 }
 
-function WorktreeMetric({ label, count, tone }: { label: string; count: number; tone: "yellow" | "blue" | "red" }) {
-  const color = tone === "yellow" ? "text-yellow-400" : tone === "blue" ? "text-blue-400" : "text-red-400";
+function WorktreeStatusColumn({
+  status,
+  repos,
+  count,
+  tone,
+}: {
+  status: WorktreeRepo["status"];
+  repos: WorktreeRepo[];
+  count: number;
+  tone: "yellow" | "blue" | "red";
+}) {
+  const toneClass =
+    tone === "yellow"
+      ? "border-yellow-400/20 bg-yellow-400/5 text-yellow-400"
+      : tone === "blue"
+        ? "border-blue-400/20 bg-blue-400/5 text-blue-400"
+        : "border-red-400/20 bg-red-400/5 text-red-400";
+
   return (
-    <div>
-      <div className="text-[11px] text-[var(--text-muted)]">{label}</div>
-      <div className={`text-[20px] font-semibold ${count > 0 ? color : "text-[var(--text)]"}`}>
-        {count}<span className="ml-1 text-[11px] font-medium text-[var(--text-muted)]">個倉庫</span>
+    <div className={`rounded-lg border p-4 min-w-0 ${toneClass}`}>
+      <div className="flex items-center gap-2 pb-3 border-b border-current/15">
+        <StatusDot status={worktreeDotStatus[status]} />
+        <span className="text-[12px] font-semibold">{worktreeStatusLabel[status]}</span>
+        <span className="ml-auto text-[22px] leading-none font-semibold">{count}</span>
+      </div>
+
+      <div className="mt-3 space-y-2">
+        {repos.length > 0 ? (
+          repos.slice(0, 5).map((repo) => {
+            const dirtyCount = repo.staged_count + repo.unstaged_count + repo.untracked_count;
+            return (
+              <div key={`${repo.path_label}-${repo.status}`} className="rounded-md border border-[var(--border)] bg-[var(--card)]/80 px-3 py-2 text-[12px] text-[var(--text)]">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="font-semibold truncate">{repo.repo}</span>
+                  <span className="ml-auto shrink-0 font-mono text-[11px] text-[var(--text-muted)]">
+                    {dirtyCount > 0 && `${dirtyCount} 變更`}
+                    {dirtyCount > 0 && repo.local_commits_count > 0 && " · "}
+                    {repo.local_commits_count > 0 && `↑${repo.local_commits_count}`}
+                    {repo.remote_commits_count > 0 && ` ↓${repo.remote_commits_count}`}
+                  </span>
+                </div>
+                <div className="mt-1 font-mono text-[11px] text-[var(--text-muted)] truncate">
+                  {repo.branch} · {repo.head || "—"}
+                </div>
+                <div className="mt-1 text-[11px] text-[var(--text-muted)] line-clamp-2">
+                  {repo.suggested_action}
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <div className="rounded-md border border-dashed border-current/20 py-6 text-center text-[13px] text-[var(--text-muted)]">—</div>
+        )}
+
+        {repos.length > 5 && (
+          <div className="pt-1 text-[11px] text-[var(--text-muted)]">還有 {repos.length - 5} 個倉庫</div>
+        )}
       </div>
     </div>
   );
-}
-
-function riskRank(risk: WorktreeRepo["risk"]) {
-  return risk === "high" ? 3 : risk === "medium" ? 2 : 1;
-}
-
-function statusChipClass(status: WorktreeRepo["status"]) {
-  const base = "rounded-full px-2 py-0.5 text-[10px] font-semibold";
-  if (status === "uncommitted") return `${base} bg-yellow-400/10 text-yellow-400`;
-  if (status === "local_commits") return `${base} bg-blue-400/10 text-blue-400`;
-  if (status === "needs_reconcile") return `${base} bg-red-400/10 text-red-400`;
-  return `${base} bg-green-400/10 text-green-400`;
 }
 
 function TaskVisualSyncCard({ projects }: { projects: Project[] }) {

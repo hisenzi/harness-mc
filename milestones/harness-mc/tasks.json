@@ -303,7 +303,7 @@
     {
       "id": "acp-worktree-status-inventory",
       "title": "ACP-MC-18 待收尾工作盤點",
-      "status": "in_progress",
+      "status": "completed",
       "track": "control-plane",
       "order": 11.5,
       "order_label": "ACP-MC-18",
@@ -312,15 +312,20 @@
         "acp-task-event-dashboard"
       ],
       "done_condition": "產出 system-workflow/docs/mockups/worktree-status.html，以繁中顯示 MC 首頁「待收尾工作」區塊：未提交變更、本機未推送、需要對帳。HTML mockup 經 Vincent 確認後，才新增 generate-worktree-status.mjs、public/data/worktrees.json 與首頁 React 實作。",
+      "summary": "新增 worktree status generator 並接入 MC 首頁，將未提交變更、本機未推送、需要對帳三類狀態分欄顯示，讓首頁能回答哪些 repo 還沒收尾。",
       "note": "來源：system-workflow/docs/worktree-status-handoff-260615.md。此 task 解決「沒 commit 的，我怎麼知道？」；已產出假資料 HTML mockup，補手機寬度保護；待 Vincent 確認後才進 generate-worktree-status.mjs / public/data/worktrees.json / React 實作。",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "053a327"
+      ],
       "batch": "control-console",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "MorroWise / system-ops",
+          "whiteboard": "Willgrow / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "dcb8099b-6805-48a3-a3d1-70cc4ac5ad86",
-          "synced_at": "2026-06-16",
-          "sync_mode": "refreshed"
+          "synced_at": "2026-06-20",
+          "sync_mode": "appended"
         }
       }
     },

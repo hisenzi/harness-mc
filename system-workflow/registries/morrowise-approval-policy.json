@@ -25,7 +25,8 @@
     "source_of_truth": "MC tasks.json remains canonical; Heptabase, Canvas, screenshots, chat, and daily logs cannot reverse-write task state.",
     "secret_boundary": "Agents must not proactively read, print, summarize, copy, or exfiltrate secrets, credentials, private keys, runtime auth files, app storage, or local databases.",
     "recovery_rule": "Destructive or irreversible work requires explicit Vincent approval plus a recovery plan. Prefer recoverable trash/archive over deletion.",
-    "external_effect_rule": "Anything that leaves the machine, writes to an external service, submits a browser form, sends a message/email/post, or changes shared automation requires explicit approval."
+    "external_effect_rule": "Anything that leaves the machine, writes to an external service, submits a browser form, sends a message/email/post, or changes shared automation requires explicit approval.",
+    "commit_boundary_rule": "A runner may produce a commit plan or draft patch only. Actual git commit must go through the worktree-commit confirmation gate. Push and deploy require explicit Vincent approval."
   },
   "policy_tiers": [
     {
@@ -104,6 +105,7 @@
           "action_class": "commit_push_deploy",
           "examples": ["git commit", "git push", "deploy", "release", "publish static site"],
           "required_evidence": ["staged path list", "diff summary", "verification output", "commit message", "path policy check"],
+          "runner_limit": "Runner may only produce a commit plan or draft patch. It must not run git commit, push, deploy, or release directly.",
           "reason": "Version history and deployed surfaces are shared, durable state."
         },
         {
@@ -162,6 +164,7 @@
     "input_required": ["recommendation_id", "suggested_action", "risk_level", "requires_approval", "evidence_refs", "suggested_task_id"],
     "decision_order": [
       "If action_class matches forbidden, stop.",
+      "If action_class is commit_push_deploy, stop at commit plan or draft patch; actual commit must use worktree-commit confirmation gate, and push/deploy require explicit Vincent approval.",
       "If action_class matches approval_required or recommendation.requires_approval is true, request Vincent approval.",
       "If action_class matches allowed and evidence is sufficient, proceed only inside the active task scope.",
       "If no rule matches, default to approval_required."

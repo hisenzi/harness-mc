@@ -43,6 +43,7 @@ OpenClaw is historical source material only. The active policy is `$COLLAB` cent
 3. Agents must not proactively read, print, summarize, copy, or exfiltrate secrets, credentials, private keys, runtime auth files, app storage, or local databases.
 4. Destructive or irreversible work requires explicit Vincent approval and a recovery plan. Prefer recoverable trash/archive over deletion.
 5. Anything that leaves the machine, writes to an external service, submits a browser form, sends a message/email/post, or changes shared automation requires explicit approval.
+6. A runner may produce a commit plan or draft patch only. Actual `git commit` must go through the `worktree-commit` confirmation gate. `push` and `deploy` require explicit Vincent approval.
 
 ## Tier 1: Allowed
 
@@ -67,7 +68,7 @@ Approval-required actions must stop and show the exact intended action, evidence
 | `schedule_mutation` | Add/edit/delete cron, LaunchAgent, recurring automation. | Old state, new state, rollback path. |
 | `external_sync_or_write` | Heptabase, Notion, Telegram, Obsidian API, public posting, email. | Destination, payload preview, driver, dry-run when available. |
 | `third_party_repo_skill_intake` | Install skill, copy repo into workspace, add unknown dependency. | Isolation path, security-scan verdict, L1-L4 review, source/license notes. |
-| `commit_push_deploy` | Git commit, push, deploy, release. | Staged paths, diff summary, verification output, message, path check. |
+| `commit_push_deploy` | Git commit, push, deploy, release. Runner may only produce a commit plan or draft patch. | Staged paths, diff summary, verification output, message, path check. |
 | `visual_layer_overwrite_or_reverse_sync` | Overwrite Canvas, refresh Heptabase, use visual layer to edit task state. | Canonical source, mirror destination, manual edit risk check. |
 | `browser_submit_or_message` | Submit form, send message/email, payment, account deletion, OAuth approval. | Screenshot/page state, exact action, account/session context, risk. |
 
@@ -89,9 +90,10 @@ Forbidden actions are hard stops for recommendation engine and runner.
 The future runner must evaluate action candidates in this order:
 
 1. If the action class matches `forbidden`, stop.
-2. If the action class matches `approval_required`, or the recommendation says `requires_approval: true`, request Vincent approval.
-3. If the action class matches `allowed`, proceed only inside the active task scope.
-4. If no rule matches, default to `approval_required`.
+2. If the action class is `commit_push_deploy`, stop at commit plan or draft patch. Actual commit must use `worktree-commit` confirmation gate. Push/deploy require explicit Vincent approval.
+3. If the action class matches `approval_required`, or the recommendation says `requires_approval: true`, request Vincent approval.
+4. If the action class matches `allowed`, proceed only inside the active task scope.
+5. If no rule matches, default to `approval_required`.
 
 Required runner input:
 

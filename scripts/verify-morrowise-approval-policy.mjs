@@ -24,6 +24,10 @@ assert(policy.policy_id === "morrowise-approval-policy.v0", "unexpected policy_i
 assert(policy.task_id === "morrowise-approval-policy", "unexpected task_id");
 assert(policy.runner_gate?.default_policy === "approval_required", "default policy must be approval_required");
 assert(policy.core_rules?.direction_agreement_is_not_operation_approval === true, "direction agreement rule missing");
+assert(
+  policy.core_rules?.commit_boundary_rule?.includes("worktree-commit confirmation gate"),
+  "commit boundary rule must require worktree-commit confirmation gate"
+);
 assert(Array.isArray(policy.sources_reviewed) && policy.sources_reviewed.length >= 10, "sources_reviewed too small");
 
 const tiers = new Map(policy.policy_tiers.map((tier) => [tier.policy, tier]));
@@ -83,6 +87,10 @@ for (const tier of policy.policy_tiers) {
   }
 }
 
+const commitRule = tiers.get("approval_required").rules.find((rule) => rule.action_class === "commit_push_deploy");
+assert(commitRule.runner_limit?.includes("commit plan or draft patch"), "commit_push_deploy must limit runner to commit plan or draft patch");
+assert(commitRule.runner_limit?.includes("must not run git commit"), "commit_push_deploy must forbid runner git commit");
+
 for (const requiredInput of ["recommendation_id", "suggested_action", "risk_level", "requires_approval", "evidence_refs", "suggested_task_id"]) {
   assert(policy.runner_gate.input_required.includes(requiredInput), `runner input missing: ${requiredInput}`);
 }
@@ -100,6 +108,8 @@ for (const phrase of [
   "Tier 2: Approval Required",
   "Tier 3: Forbidden",
   "Runner Gate",
+  "commit plan or draft patch",
+  "worktree-commit",
   "npm run test:morrowise-approval",
 ]) {
   assert(spec.includes(phrase), `spec missing phrase: ${phrase}`);

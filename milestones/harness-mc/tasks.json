@@ -91,7 +91,7 @@
     {
       "id": "morrowise-growth-gate-spec",
       "title": "定義 MorroWise 活系統啟動條件與 feedback loop",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "order": 4,
       "order_label": "MC-LIVE-04",
@@ -103,6 +103,11 @@
       "note": "這是 System Growth Gate 的正本；不能用「人工記得看」當啟動機制。",
       "batch": "control-console",
       "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
+      "completed_at": "2026-06-20",
+      "summary": "產出 MorroWise Growth Gate 正式規格：把活系統啟動條件定義成 trigger→source→process→output→surface→close-rule 路由，涵蓋使用者語句、weekly review、stale/blocked task、new project、task completion、commit boundary、external sync、docs drift 與 approval wait。",
+      "commits": [
+        "3155e48"
+      ],
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise / system-ops",

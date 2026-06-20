@@ -533,16 +533,37 @@
     "recommendationCandidate": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["recommendation_id", "reason", "suggested_action", "evidence_refs"],
+      "required": [
+        "recommendation_id",
+        "trigger_id",
+        "reason",
+        "suggested_action",
+        "suggested_task_id",
+        "evidence_refs",
+        "risk_level",
+        "requires_approval",
+        "hc_refs",
+        "hc_reasoning",
+        "hc_confidence"
+      ],
       "properties": {
         "recommendation_id": { "type": "string" },
+        "trigger_id": { "type": "string" },
         "reason": { "type": "string" },
         "suggested_action": { "type": "string" },
+        "suggested_task_id": { "type": "string" },
         "risk_level": { "enum": ["low", "medium", "high"] },
+        "requires_approval": { "type": "boolean" },
         "evidence_refs": {
           "type": "array",
           "items": { "$ref": "#/$defs/sourceRef" }
-        }
+        },
+        "hc_refs": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "hc_reasoning": { "type": "string" },
+        "hc_confidence": { "type": "number", "minimum": 0, "maximum": 1 }
       }
     },
     "approvalWait": {

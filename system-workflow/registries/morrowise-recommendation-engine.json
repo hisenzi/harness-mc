@@ -1,0 +1,206 @@
+{
+  "engine_id": "morrowise-recommendation-engine.v0",
+  "task_id": "morrowise-recommendation-engine-v0",
+  "order_label": "MC-LIVE-17",
+  "updated_at": "2026-06-20",
+  "status": "formal_registry",
+  "source_of_truth": "$COLLAB/harness-mc/milestones/harness-mc/tasks.json",
+  "consumes": [
+    "$COLLAB/harness-mc/system-workflow/registries/morrowise-trigger-rules.json",
+    "$COLLAB/harness-mc/system-workflow/schemas/morrowise-system.schema.json",
+    "$COLLAB/harness-mc/public/data/projects.json",
+    "$COLLAB/harness-mc/public/data/changes.json",
+    "$COLLAB/harness-mc/public/data/task-events.json",
+    "$COLLAB/harness-mc/public/data/worktrees.json"
+  ],
+  "boundary": {
+    "proactive_status": "recommendation_candidates_only",
+    "may_execute_actions": false,
+    "may_close_tasks": false,
+    "may_write_external_systems": false,
+    "next_owner": "morrowise-approval-policy",
+    "note": "Recommendation candidates explain why an action should be considered. They do not mutate task state, push commits, sync external tools, or bypass approval policy."
+  },
+  "candidate_contract": {
+    "required_fields": [
+      "recommendation_id",
+      "trigger_id",
+      "reason",
+      "suggested_action",
+      "suggested_task_id",
+      "evidence_refs",
+      "risk_level",
+      "requires_approval",
+      "hc_refs",
+      "hc_reasoning",
+      "hc_confidence"
+    ],
+    "risk_levels": ["low", "medium", "high"],
+    "approval_rule": "High-risk candidates always require approval. Medium-risk candidates require approval when they mutate canonical task state, version history, external systems, or user-facing visual layers.",
+    "evidence_rule": "Evidence must point back to tasks.json, generated read models, trigger events, verifier output, or specs. HC refs can explain thinking, but cannot replace evidence."
+  },
+  "hc_router": {
+    "status": "connected_as_method_selector",
+    "source": "$COLLAB/notyet-harness/300_Obsidian_brain/HC",
+    "router_ref": "$COLLAB/notyet-harness/300_Obsidian_brain/HC/_index/hc-registry.md",
+    "role": "Select thinking checks for recommendation quality. HC does not decide task status and does not override evidence.",
+    "default_refs": [
+      {
+        "hc": "#rightProblem",
+        "ref": "$COLLAB/notyet-harness/300_Obsidian_brain/HC/_validation/001-right-problem.md",
+        "use_for": "Check whether the recommendation is solving the actual system loop, not a symptom."
+      },
+      {
+        "hc": "#breakItDown",
+        "ref": "$COLLAB/notyet-harness/300_Obsidian_brain/HC/_validation/002-break-it-down.md",
+        "use_for": "Split large recommendations into one executable next action and explicit follow-ups."
+      },
+      {
+        "hc": "#risk",
+        "ref": "$COLLAB/notyet-harness/300_Obsidian_brain/HC/_index/hc-registry.md#risk",
+        "use_for": "Classify uncertainty, side effects, approval needs, and rollback cost."
+      },
+      {
+        "hc": "#utility",
+        "ref": "$COLLAB/notyet-harness/300_Obsidian_brain/HC/_index/hc-registry.md#utility",
+        "use_for": "Rank candidates by expected system value and opportunity cost."
+      },
+      {
+        "hc": "#confirmationBias",
+        "ref": "$COLLAB/notyet-harness/300_Obsidian_brain/HC/_validation/005-confirmation-bias.md",
+        "use_for": "Ask what contrary evidence would make this recommendation wrong."
+      },
+      {
+        "hc": "#systemDynamics",
+        "ref": "$COLLAB/notyet-harness/300_Obsidian_brain/HC/_validation/008-system-dynamics.md",
+        "use_for": "Prefer recommendations that close feedback loops instead of adding one-off patches."
+      }
+    ]
+  },
+  "recommendation_types": [
+    {
+      "type": "commit_now",
+      "allowed_when": "Verified completed work has a clean task boundary and only intended files are staged.",
+      "requires_approval": false,
+      "risk_level": "medium",
+      "suggested_task_id_rule": "Use the active task id if present; otherwise recommend creating or locating a task anchor before commit."
+    },
+    {
+      "type": "split_commit",
+      "allowed_when": "Dirty tree contains multiple capabilities, repositories, or unrelated task scopes.",
+      "requires_approval": false,
+      "risk_level": "medium",
+      "suggested_task_id_rule": "Point to the active task and list adjacent task ids as follow-ups."
+    },
+    {
+      "type": "wait_for_approval",
+      "allowed_when": "The next step would mutate canonical task state, external systems, secrets, schedules, deletion, or git history.",
+      "requires_approval": true,
+      "risk_level": "high",
+      "suggested_task_id_rule": "Point to the approval-policy task or the task that owns the requested action."
+    },
+    {
+      "type": "create_task_event",
+      "allowed_when": "Another repo finished relevant work but harness-mc should receive portable task-state evidence through the event queue.",
+      "requires_approval": false,
+      "risk_level": "medium",
+      "suggested_task_id_rule": "Use the task id encoded in the event or recommend creating one."
+    },
+    {
+      "type": "refresh_visual_layer",
+      "allowed_when": "tasks.json is current but dashboard, Heptabase, or Canvas mirror is stale.",
+      "requires_approval": false,
+      "risk_level": "medium",
+      "suggested_task_id_rule": "Use the task whose external_refs or generated data are stale."
+    },
+    {
+      "type": "dry_run_external_sync",
+      "allowed_when": "External sync is stale or failed and parity can be checked without writing outside $COLLAB.",
+      "requires_approval": false,
+      "risk_level": "medium",
+      "suggested_task_id_rule": "Use the sync or visual coverage task id."
+    },
+    {
+      "type": "request_external_write_approval",
+      "allowed_when": "A recommendation would write to Heptabase, Notion, Telegram, LaunchAgent, or another external destination.",
+      "requires_approval": true,
+      "risk_level": "high",
+      "suggested_task_id_rule": "Use the task that owns the external write and include the exact command or operation."
+    },
+    {
+      "type": "create_open_loop",
+      "allowed_when": "Evidence is incomplete, a dependency is missing, or the correct owner cannot be inferred safely.",
+      "requires_approval": false,
+      "risk_level": "low",
+      "suggested_task_id_rule": "Use the active task if known; otherwise propose a new task id."
+    }
+  ],
+  "sample_candidates": [
+    {
+      "recommendation_id": "rec.sync-failed.visual-layer.001",
+      "trigger_id": "morrowise.sync_failed",
+      "reason": "Sync failure is a high-risk external boundary; dry-run parity should be checked before any write.",
+      "suggested_action": "dry_run_external_sync",
+      "suggested_task_id": "acp-visual-sync-coverage-report",
+      "evidence_refs": [
+        {
+          "type": "generated_data",
+          "ref": "$COLLAB/harness-mc/public/data/task-events.json"
+        },
+        {
+          "type": "registry",
+          "ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-trigger-rules.json#morrowise.sync_failed"
+        }
+      ],
+      "risk_level": "medium",
+      "requires_approval": false,
+      "hc_refs": ["#risk", "#confirmationBias"],
+      "hc_reasoning": "Check whether the failure is reproducible before assuming the external system is stale; approval is only needed when moving from dry-run to write.",
+      "hc_confidence": 0.78
+    },
+    {
+      "recommendation_id": "rec.blocked-task.open-loop.001",
+      "trigger_id": "morrowise.stale_blocked_task",
+      "reason": "A stale blocked task should become an explicit open loop with owner, missing dependency, and next review date.",
+      "suggested_action": "create_open_loop",
+      "suggested_task_id": "morrowise-proactive-loop-dashboard",
+      "evidence_refs": [
+        {
+          "type": "generated_data",
+          "ref": "$COLLAB/harness-mc/public/data/changes.json"
+        },
+        {
+          "type": "registry",
+          "ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-trigger-rules.json#morrowise.stale_blocked_task"
+        }
+      ],
+      "risk_level": "low",
+      "requires_approval": false,
+      "hc_refs": ["#rightProblem", "#systemDynamics"],
+      "hc_reasoning": "Treat the blocked item as a feedback-loop gap, not as a prompt to do random work.",
+      "hc_confidence": 0.84
+    },
+    {
+      "recommendation_id": "rec.external-write.approval.001",
+      "trigger_id": "morrowise.visual_sync_gap",
+      "reason": "Refreshing an external visual layer can create source-of-truth drift unless the canonical task state is current and Vincent approves the write.",
+      "suggested_action": "request_external_write_approval",
+      "suggested_task_id": "morrowise-approval-policy",
+      "evidence_refs": [
+        {
+          "type": "generated_data",
+          "ref": "$COLLAB/harness-mc/public/data/projects.json"
+        },
+        {
+          "type": "spec",
+          "ref": "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-anatomy-read-model.md"
+        }
+      ],
+      "risk_level": "high",
+      "requires_approval": true,
+      "hc_refs": ["#risk", "#utility", "#confirmationBias"],
+      "hc_reasoning": "High-risk side effects must stop at approval; utility is only positive if the visual mirror follows tasks.json.",
+      "hc_confidence": 0.72
+    }
+  ]
+}

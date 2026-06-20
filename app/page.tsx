@@ -9,11 +9,13 @@ interface Task {
   title?: string;
   status: string;
   track?: string;
+  order?: number | null;
   order_label?: string;
   verdict?: string | null;
   foundation?: string | null;
   issues_found?: number;
   issues_fixed?: number;
+  done_condition?: string;
   completed_at?: string | null;
   summary?: string;
   external_refs?: {
@@ -128,6 +130,163 @@ interface WorktreeStatusData {
 interface VisualSyncTask extends Task {
   project: string;
   projectName: string;
+}
+
+function MorroWiseSurfaceCard({ projects }: { projects: Project[] }) {
+  const [sentinel, setSentinel] = useState<SentinelData | null>(null);
+  const [pipeline, setPipeline] = useState<TaskEventPipelineData | null>(null);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/changes.json`)
+      .then((r) => r.json())
+      .then(setSentinel)
+      .catch(() => {});
+
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/task-events.json`)
+      .then((r) => r.json())
+      .then(setPipeline)
+      .catch(() => {});
+  }, []);
+
+  const harness = projects.find((project) => project.project === "harness-mc");
+  const morrowiseTasks = (harness?.tasks || [])
+    .filter((task) => task.track === "morrowise-system" || task.id.startsWith("morrowise-"))
+    .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || a.id.localeCompare(b.id));
+  const completed = morrowiseTasks.filter((task) => isDoneStatus(task.status));
+  const openTasks = morrowiseTasks.filter((task) => !isDoneStatus(task.status) && task.status !== "deferred" && task.status !== "archived");
+  const blockedTasks = morrowiseTasks.filter((task) => task.status === "blocked");
+  const nextTask = openTasks[0] || null;
+  const pendingEvents = (pipeline?.task_events.pending || 0) + (pipeline?.sync_events.pending || 0);
+  const staleMorroWise = (sentinel?.stale || []).filter((item) => item.project === "harness-mc").length;
+  const generatedAt = latestDate([sentinel?.generated_at, pipeline?.generated_at]);
+  const generatedLabel = generatedAt
+    ? generatedAt.toLocaleString("zh-TW", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
+    : "讀取中";
+  const surfaceStatus = blockedTasks.length > 0 || pendingEvents > 0 ? "needs_fix" : nextTask ? "in_progress" : "completed";
+  const openLoopCount = openTasks.length + pendingEvents + staleMorroWise;
+  const triggerRows = [
+    { label: "User phrase", signal: "MorroWise / 活系統 / system-ops", state: nextTask ? "routes to task" : "quiet" },
+    { label: "Weekly review", signal: `${sentinel?.brief || "waiting for sentinel"}`, state: staleMorroWise > 0 ? `${staleMorroWise} stale` : "fresh" },
+    { label: "Stale / blocked", signal: `${blockedTasks.length} blocked · ${openTasks.length} open`, state: blockedTasks.length > 0 ? "needs owner" : "tracked" },
+    { label: "New project gate", signal: "requires project/task anchor", state: "schema guarded" },
+  ];
+  const openLoopRows = [
+    ...openTasks.slice(0, 3).map((task) => ({
+      id: task.id,
+      label: task.order_label || task.id,
+      text: task.title || task.id,
+      tone: task.status === "blocked" ? "red" : "yellow",
+    })),
+    ...(pendingEvents > 0
+      ? [{ id: "task-event-pending", label: "events", text: `${pendingEvents} pending task/sync events`, tone: "blue" }]
+      : []),
+  ].slice(0, 4);
+
+  if (!harness || morrowiseTasks.length === 0) return null;
+
+  return (
+    <div>
+      <div className="flex items-center gap-3 mb-3">
+        <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">MorroWise 活系統</div>
+        <div className="text-[11px] text-[var(--text-muted)]">
+          growth layer · generated {generatedLabel} · source projects/task-events/changes
+        </div>
+        <div className="flex-1 border-t border-[var(--border)]"></div>
+      </div>
+
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
+        <div className="grid grid-cols-1 xl:grid-cols-[0.95fr_1.2fr_1fr] gap-4">
+          <div className="rounded-lg border border-[var(--border)] p-4 min-w-0">
+            <div className="flex items-center gap-2 pb-3 mb-3 border-b border-[var(--border)]">
+              <StatusDot status={surfaceStatus} />
+              <span className="text-[12px] font-semibold text-[var(--text-muted)]">Living-system state</span>
+              <span className="ml-auto font-mono text-[11px] text-[var(--text-muted)]">{completed.length}/{morrowiseTasks.length}</span>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              <MorroWiseMetric label="done" value={String(completed.length)} tone="green" />
+              <MorroWiseMetric label="open loops" value={String(openLoopCount)} tone={openLoopCount > 0 ? "yellow" : "green"} />
+              <MorroWiseMetric label="pending" value={String(pendingEvents)} tone={pendingEvents > 0 ? "blue" : "green"} />
+            </div>
+            <div className="mt-4 pt-3 border-t border-[var(--border)] min-w-0">
+              <div className="text-[11px] text-[var(--text-muted)]">Next executable task</div>
+              {nextTask ? (
+                <div className="mt-1 min-w-0">
+                  <div className="font-mono text-[12px] text-[var(--text)] truncate">{nextTask.order_label || nextTask.id}</div>
+                  <div className="mt-1 text-[12px] text-[var(--text-muted)] line-clamp-2">{nextTask.title || nextTask.id}</div>
+                </div>
+              ) : (
+                <div className="mt-1 text-[12px] text-green-400">MorroWise first control-console loop complete</div>
+              )}
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-[var(--border)] p-4 min-w-0">
+            <div className="pb-3 mb-3 border-b border-[var(--border)] text-[12px] font-semibold text-[var(--text-muted)]">
+              Trigger sources
+            </div>
+            <div className="space-y-2">
+              {triggerRows.map((row) => (
+                <div key={row.label} className="grid grid-cols-[104px_1fr_auto] gap-3 items-baseline min-w-0 text-[12px]">
+                  <span className="font-semibold text-[var(--text)] truncate">{row.label}</span>
+                  <span className="text-[var(--text-muted)] truncate">{row.signal}</span>
+                  <span className="rounded-full border border-[var(--border)] px-2 py-0.5 font-mono text-[10px] text-[var(--text-muted)]">{row.state}</span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 pt-3 border-t border-[var(--border)] text-[11px] leading-relaxed text-[var(--text-muted)]">
+              Surface reads current MC data; future `morrowise-system.json` can replace this derived view without changing the dashboard contract.
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-[var(--border)] p-4 min-w-0">
+            <div className="pb-3 mb-3 border-b border-[var(--border)] text-[12px] font-semibold text-[var(--text-muted)]">
+              Feedback / open loops
+            </div>
+            <div className="space-y-2">
+              {openLoopRows.length > 0 ? (
+                openLoopRows.map((row) => (
+                  <div key={row.id} className="min-w-0">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <StatusDot status={row.tone === "red" ? "blocked" : row.tone === "blue" ? "in_progress" : "needs_fix"} />
+                      <span className="font-mono text-[11px] text-[var(--text)] truncate">{row.label}</span>
+                      <span className={morroWiseLoopTagClass(row.tone)}>{row.tone}</span>
+                    </div>
+                    <div className="mt-0.5 pl-4 text-[11px] text-[var(--text-muted)] truncate">{row.text}</div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-[12px] text-[var(--text-muted)]">目前沒有 dashboard-visible open loop</div>
+              )}
+            </div>
+            <div className="mt-4 pt-3 border-t border-[var(--border)] text-[11px] text-[var(--text-muted)]">
+              canonical state: <span className="font-mono text-[var(--text)]">milestones/harness-mc/tasks.json</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MorroWiseMetric({ label, value, tone }: { label: string; value: string; tone: "green" | "yellow" | "blue" }) {
+  const color = tone === "green" ? "text-green-400" : tone === "yellow" ? "text-yellow-400" : "text-blue-400";
+  return (
+    <div className="rounded-md border border-[var(--border)] bg-white/[0.018] p-2 min-w-0">
+      <div className="text-[10px] text-[var(--text-muted)] truncate">{label}</div>
+      <div className={`mt-1 font-mono text-[20px] leading-none font-semibold ${color}`}>{value}</div>
+    </div>
+  );
+}
+
+function morroWiseLoopTagClass(tone: string) {
+  const base = "ml-auto shrink-0 rounded-full border px-1.5 py-0.5 text-[10px] font-mono";
+  if (tone === "red") return `${base} border-red-400/30 text-red-400`;
+  if (tone === "blue") return `${base} border-blue-400/30 text-blue-400`;
+  return `${base} border-yellow-400/30 text-yellow-400`;
+}
+
+function isDoneStatus(status: string) {
+  return status === "completed" || status === "done" || status === "fixed";
 }
 
 function SystemAttentionCard() {
@@ -684,6 +843,7 @@ export default function HomePage() {
 
       <div className="space-y-6">
         <SystemAttentionCard />
+        <MorroWiseSurfaceCard projects={projects} />
         <WorktreeStatusCard />
         <TaskVisualSyncCard projects={projects} />
 

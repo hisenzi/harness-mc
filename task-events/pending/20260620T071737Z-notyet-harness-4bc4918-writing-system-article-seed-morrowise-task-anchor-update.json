@@ -1,0 +1,13 @@
+{
+  "event_id": "task.completed-writing-system-article-seed-morrowise-task-anchor-update-4bc4918-20260620T071737Z",
+  "type": "task.completed",
+  "repo": "notyet-harness",
+  "commit": "4bc4918",
+  "project": "writing-system",
+  "task_id": "article-seed-morrowise-task-anchor-update",
+  "status": "completed",
+  "summary": "Updated the live-system article seed with MorroWise continuation and task-before-work framing.",
+  "created_at": "2026-06-20T07:17:37Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-20-morrowise"
+}

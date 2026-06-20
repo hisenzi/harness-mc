@@ -3,12 +3,14 @@
     {
       "id": "willgrow-source-inventory",
       "title": "Willgrow / system-ops source inventory",
-      "status": "todo",
+      "status": "completed",
       "track": "willgrow-system",
       "order": 1,
       "order_label": "MC-LIVE-01",
       "priority": "critical",
+      "completed_at": "2026-06-20",
       "done_condition": "建立 Willgrow source inventory，列出舊 OpenClaw memory、system-ops BLUEPRINT/project/tasks/references、現行 Obsidian Projects/system-ops.md、MC control-plane tasks 的檔案清單與 source-of-truth 等級。",
+      "summary": "建立 system-workflow/docs/specs/willgrow-source-inventory.md，將現行 MC 正本、舊 system-ops project/reference、Obsidian mirror、daily memory、Heptabase/Canvas 視覺層分級，並列出 Willgrow 後續 index/task-map 應接的來源與鄰近 control-plane/sentinel tasks。",
       "note": "Grounding 起點：$COLLAB/.openclaw_260418/workspace/memory、$COLLAB/.openclaw_260418/workspace/milestones/projects/system-ops、$COLLAB/notyet-harness/300_Obsidian_brain/Projects/system-ops.md、harness-mc/milestones/harness-mc。",
       "batch": "control-console",
       "naming_note": "正式名稱為 Willgrow；Jarvis / system-ops 僅保留為歷史來源與參照。",
@@ -17,8 +19,8 @@
           "whiteboard": "Willgrow / system-ops",
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "414606d6-14fe-438b-b51b-fb17d3762114",
-          "synced_at": "2026-06-16",
-          "sync_mode": "created"
+          "synced_at": "2026-06-20",
+          "sync_mode": "refreshed"
         }
       }
     },
@@ -149,11 +151,11 @@
     },
     {
       "id": "acp-task-event-outbox",
-      "title": "跨 repo task event outbox（取代 worktree-commit 直接寫 MC）",
+      "title": "ACP-MC-13 跨 repo task event outbox（取代 worktree-commit 直接寫 MC）",
       "status": "completed",
       "track": "control-plane",
       "order": 7,
-      "order_label": "MC-LIVE-07",
+      "order_label": "ACP-MC-13",
       "priority": "critical",
       "completed_at": "2026-06-16",
       "commits": [
@@ -173,17 +175,17 @@
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "7d301abd-8bbc-4610-b70b-8ce01d4b036a",
           "synced_at": "2026-06-16",
-          "sync_mode": "created"
+          "sync_mode": "renamed"
         }
       }
     },
     {
       "id": "acp-apply-task-events",
-      "title": "Task events apply script（single-writer reducer）",
+      "title": "ACP-MC-14 Task events apply script（single-writer reducer）",
       "status": "completed",
       "track": "control-plane",
       "order": 8,
-      "order_label": "MC-LIVE-08",
+      "order_label": "ACP-MC-14",
       "priority": "critical",
       "completed_at": "2026-06-16",
       "commits": [
@@ -202,17 +204,17 @@
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "de58542e-54bb-46de-bc2b-4cbbd0fe439a",
           "synced_at": "2026-06-16",
-          "sync_mode": "created"
+          "sync_mode": "renamed"
         }
       }
     },
     {
       "id": "acp-task-state-split",
-      "title": "Task 定義與狀態分離（state read model）",
+      "title": "ACP-MC-15 Task 定義與狀態分離（state read model）",
       "status": "completed",
       "track": "control-plane",
       "order": 9,
-      "order_label": "MC-LIVE-09",
+      "order_label": "ACP-MC-15",
       "priority": "high",
       "completed_at": "2026-06-16",
       "commits": [
@@ -231,17 +233,17 @@
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "47d0db3b-d8e4-422d-b8d0-8eab09e496f2",
           "synced_at": "2026-06-16",
-          "sync_mode": "created"
+          "sync_mode": "renamed"
         }
       }
     },
     {
       "id": "acp-external-sync-queue",
-      "title": "外部同步 queue 化（Heptabase / Obsidian / Notion）",
+      "title": "ACP-MC-16 外部同步 queue 化（Heptabase / Obsidian / Notion）",
       "status": "completed",
       "track": "control-plane",
       "order": 10,
-      "order_label": "MC-LIVE-10",
+      "order_label": "ACP-MC-16",
       "priority": "high",
       "completed_at": "2026-06-16",
       "commits": [
@@ -261,17 +263,17 @@
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "286dd312-fb22-4edb-9dab-005ce84d9e3c",
           "synced_at": "2026-06-16",
-          "sync_mode": "created"
+          "sync_mode": "renamed"
         }
       }
     },
     {
       "id": "acp-task-event-dashboard",
-      "title": "MC 顯示 task event pipeline 狀態",
+      "title": "ACP-MC-17 MC 顯示 task event pipeline 狀態",
       "status": "completed",
       "track": "control-plane",
       "order": 11,
-      "order_label": "MC-LIVE-11",
+      "order_label": "ACP-MC-17",
       "priority": "medium",
       "completed_at": "2026-06-16",
       "commits": [
@@ -291,7 +293,31 @@
           "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
           "card_id": "7be3dedc-4f91-4947-aaee-5a6503feca2a",
           "synced_at": "2026-06-16",
-          "sync_mode": "created"
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    {
+      "id": "acp-worktree-status-inventory",
+      "title": "ACP-MC-18 待收尾工作盤點",
+      "status": "in_progress",
+      "track": "control-plane",
+      "order": 11.5,
+      "order_label": "ACP-MC-18",
+      "priority": "critical",
+      "depends_on": [
+        "acp-task-event-dashboard"
+      ],
+      "done_condition": "產出 system-workflow/docs/mockups/worktree-status.html，以繁中顯示 MC 首頁「待收尾工作」區塊：未提交變更、本機未推送、需要對帳。HTML mockup 經 Vincent 確認後，才新增 generate-worktree-status.mjs、public/data/worktrees.json 與首頁 React 實作。",
+      "note": "來源：system-workflow/docs/worktree-status-handoff-260615.md。此 task 解決「沒 commit 的，我怎麼知道？」；已產出假資料 HTML mockup，補手機寬度保護；待 Vincent 確認後才進 generate-worktree-status.mjs / public/data/worktrees.json / React 實作。",
+      "batch": "control-console",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "dcb8099b-6805-48a3-a3d1-70cc4ac5ad86",
+          "synced_at": "2026-06-16",
+          "sync_mode": "refreshed"
         }
       }
     },
@@ -654,10 +680,12 @@
       "order": 9,
       "order_label": "ACP-MC-09",
       "priority": "critical",
+      "completed_at": "2026-06-20",
       "depends_on": [
         "dual-blade/acp-skill-routes"
       ],
       "done_condition": "新增 scripts/validate-skills.mjs，支援 --changed-only；changed SKILL.md 缺 > version 或 ## 版本歷史時 fail，舊 skill 先 warn；檢查 description、路徑是否 agent-neutral。",
+      "summary": "新增 validate-skills.mjs + verify-validate-skills.mjs，changed SKILL.md 缺版本行、版本歷史、description 或含硬編本機路徑會 fail；舊 skill 只列 legacy warning，並接入 npm run test:skills / prebuild。",
       "note": "Skill update task 是否要求版本紀錄由 task validator 檢查；檔案事實由 skill validator 檢查。本次已把檔案事實檢查系統化：changed-only 作為阻擋閘門，全量掃描作為 legacy backlog 清單。",
       "external_refs": {
         "heptabase": {
@@ -668,8 +696,6 @@
           "sync_mode": "renamed"
         }
       },
-      "completed_at": "2026-06-20",
-      "summary": "新增 validate-skills.mjs + verify-validate-skills.mjs，changed SKILL.md 缺版本行、版本歷史、description 或含硬編本機路徑會 fail；舊 skill 只列 legacy warning，並接入 npm run test:skills / prebuild。",
       "commits": [
         "757f283"
       ]
@@ -1259,6 +1285,75 @@
         "3efeaa1",
         "0c6b65f"
       ]
+    },
+    {
+      "id": "acp-task-before-work-gate",
+      "title": "Task-before-work gate：可行提案動工前必須先有 task",
+      "status": "completed",
+      "track": "control-plane",
+      "order_label": "ACP-MC-GATE-01",
+      "priority": "high",
+      "done_condition": "vincent-superpowers / planning / execution / project-init 已寫入規則：確認提案可行且將進入實作、改文件、改資料、同步外部工具、寫文章或改流程前，必須先建立或指定可追蹤 task 作為 work anchor。",
+      "summary": "新增 Task-before-work gate：可行提案不可直接動工；planning 必須建立或更新 task，execution 開始前必須確認 work anchor，project-init 開案後也要先有 task anchor。",
+      "note": "Vincent 指示：當確認提案可行，先紀錄 task；開始動工前一定要有可追蹤紀錄。此 task 是本次規則落地的追蹤 anchor。",
+      "completed_at": "2026-06-20"
+    },
+    {
+      "id": "acp-visual-sync-coverage-gate",
+      "title": "Visual sync coverage gate：追蹤 task / Heptabase / Canvas 三層同步",
+      "status": "completed",
+      "track": "control-plane",
+      "order_label": "ACP-MC-GATE-02",
+      "priority": "high",
+      "done_condition": "planning / project-init / heptabase-task-cards 已寫入規則：task 變更後必須回報 MC task、Heptabase 白板 card、Obsidian Canvas mirror 三層同步狀態，並列出 coverage gaps。",
+      "summary": "新增 visual sync coverage gate：有 task 的項目不能只停在 tasks.json；回報時要說明是否同步到 Heptabase 白板、是否已跑 Obsidian Canvas sync、哪些 task 尚缺 external_refs.heptabase 或 Canvas mirror。",
+      "note": "Vincent 指示：task 系統要追蹤 task、Heptabase 白板、Obsidian Canvas 的資料同步狀態；有 task 的項目要知道是否都有同步到白板與 Canvas。",
+      "completed_at": "2026-06-20"
+    },
+    {
+      "id": "acp-visual-sync-coverage-report",
+      "title": "Visual sync coverage report read model",
+      "status": "in_progress",
+      "track": "control-plane",
+      "order_label": "ACP-MC-REPORT-01",
+      "priority": "medium",
+      "depends_on": [
+        "acp-visual-sync-coverage-gate",
+        "acp-external-sync-queue",
+        "acp-obsidian-canvas-sync-hook"
+      ],
+      "done_condition": "新增 read model 或 script，掃描指定 project / track 的 tasks，輸出每個 task 的 MC source 狀態、external_refs.heptabase card_id / whiteboard / synced_at、最近 Canvas sync 狀態與 coverage gaps；MC dashboard 可顯示 pending Heptabase sync / pending Canvas sync。",
+      "note": "這是 gate 的自動化版本；目前規則已要求人工回報 coverage，後續要讓 MC 自己看見哪些 task 尚未同步到 Heptabase 或 Obsidian Canvas。2026-06-20：先更新 system-workflow/docs/mockups/worktree-status.html，加入 Task 視覺同步首頁區塊。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "3a002909-5ee3-4bd8-9df9-71d3c4c6c0f0",
+          "synced_at": "2026-06-20",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "morrowise-rename-impact-inventory",
+      "title": "盤點 Willgrow → MorroWise 改名影響範圍",
+      "status": "completed",
+      "track": "control-plane",
+      "order_label": "ACP-MC-NAME-01",
+      "priority": "high",
+      "completed_at": "2026-06-20",
+      "done_condition": "已盤點 Willgrow → MorroWise 改名需處理的正式資料源、結構 ID / docs、Heptabase 白板、文章與品牌文件，以及不應回頭改寫的歷史紀錄。",
+      "summary": "改名盤點結論：品牌/MC 顯示名稱先改，task id / track / docs 檔名屬 structural rename 應另做一批；daily memory 與 commit message 保留 Willgrow 作歷史狀態。",
+      "note": "補帳 task：此盤點先在對話中完成，階段整理時補成可追蹤紀錄。後續若執行改名，應新建 structural rename task。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "c1a6712d-e3fe-4669-913c-dc4d22596dd2",
+          "synced_at": "2026-06-20",
+          "sync_mode": "created"
+        }
+      }
     }
   ]
 }

@@ -142,6 +142,44 @@
       ],
       "summary": "notyet-md 登記進 repos.json（standalone/zeabur）、建 MC milestone、修 sync-projects 在 risks 缺 probability 時的 crash（4 專案連帶受惠）",
       "note": "auto-task：commit 時無對應 task，自動建立"
+    },
+    {
+      "id": "brand-reference-library-v0",
+      "title": "建立 brands reference library v0",
+      "status": "completed",
+      "track": "p1-style",
+      "completed_at": "2026-06-20",
+      "done_condition": "notyet-harness/200_Reference/brands/ 已建立 README、notyet 品牌文件、MorroWise 品牌文件，且說明 notyet / MorroWise / MC / Hiblocks / hisenzi.com 的關係。",
+      "summary": "建立 notyet 與 MorroWise 品牌 reference library：品牌種子、命名語言、operating principles、story、site positioning 與 relationship map。",
+      "note": "補帳 task：此工作在 Task-before-work gate 落地前完成，階段整理時補入可追蹤紀錄。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "da242b3a-4c00-40c6-b667-0e8aeecc4457",
+          "synced_at": "2026-06-20",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "brand-human-copy-pass-v0",
+      "title": "MorroWise / notyet 品牌文件去 AI 味 v0",
+      "status": "completed",
+      "track": "p1-style",
+      "completed_at": "2026-06-20",
+      "done_condition": "MorroWise 第一層品牌語言已從抽象標語改成具體痛點，並在 naming guide 加入少用詞：接住、接上、承接、智慧系統、持續優化、賦能。",
+      "summary": "把「幫現在的人，照顧未來的自己」改為更有人味的方向，例如「別讓明天的你，從同一個問題重新開始」與「你今天做過的判斷，明天應該還能用」。",
+      "note": "補帳 task：Vincent 指出品牌文字太 AI，先用人話化 v0 優化 brands/，之後再進 writing-system 的類艾爾文 style profile。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "24e7963a-0cf9-4029-a15c-c4c565a463ca",
+          "synced_at": "2026-06-20",
+          "sync_mode": "created"
+        }
+      }
     }
   ]
 }

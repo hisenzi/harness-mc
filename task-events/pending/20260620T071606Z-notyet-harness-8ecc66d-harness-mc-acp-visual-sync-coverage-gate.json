@@ -1,0 +1,13 @@
+{
+  "event_id": "task.completed-harness-mc-acp-visual-sync-coverage-gate-8ecc66d-20260620T071606Z",
+  "type": "task.completed",
+  "repo": "notyet-harness",
+  "commit": "8ecc66d",
+  "project": "harness-mc",
+  "task_id": "acp-visual-sync-coverage-gate",
+  "status": "completed",
+  "summary": "Task-changing workflows now require MC, Heptabase, and Obsidian Canvas visual sync coverage reporting.",
+  "created_at": "2026-06-20T07:16:06Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-20-morrowise"
+}

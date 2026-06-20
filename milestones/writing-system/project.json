@@ -1,0 +1,141 @@
+{
+  "name": "文章寫作系統",
+  "description": "將閱讀型文章與 Vincent 寫作偏好萃取成可重複使用的內容生產流程",
+  "type": "internal",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-06-15",
+  "estimated_completion": "TBD",
+  "tracks": {
+    "phase-0": "樣本萃取",
+    "phase-1": "風格規格",
+    "phase-2": "Skill 接線",
+    "phase-3": "試寫驗證"
+  },
+  "goals": [
+    "從艾爾文閱讀型文章樣本萃取高層次寫作精神與可重複結構，不做逐句仿寫。",
+    "建立 Vincent 可用的閱讀型文章 style profile，支援書籍、專案經驗、工作洞見轉成文章。",
+    "參照 Taiwan.md Semiont 的語意生命體設計，把寫作系統定義出 DNA、心跳、免疫系統、散播與 feedback loop。",
+    "將 style profile 接到既有 notyet-article / blog-writer 流程，成為可被 future agents 呼叫的共享寫作能力。",
+    "用至少一篇 Vincent 真實素材試寫驗證，確認文章能保留 Vincent 觀點而不是變成艾爾文仿寫器。"
+  ],
+  "risks": [
+    {
+      "risk": "過度模仿在世作者的表面語氣或句型",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "只萃取高層次結構、選題邏輯與寫作判準，明確要求產出 Vincent 自己的觀點與語氣。"
+    },
+    {
+      "risk": "樣本數不足導致風格規格過度擬合單篇文章",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "先用 6 篇建立 V0，再用 20 篇校準，不把 V0 視為最終定稿。"
+    },
+    {
+      "risk": "新寫作系統與既有 notyet-article / blog-writer 規則重疊或衝突",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "以新增 style/reference 為主，不改動核心引擎；衝突時以既有 editorial-rules 與 Vincent 決策為準。"
+    },
+    {
+      "risk": "文章流程只停在文件，沒有實際產出驗證",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "Phase 3 必須用真實素材試寫並跑發布前檢查，未試寫不得標完成。"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "已完成至少 6 篇艾爾文文章的結構萃取，並記錄共通骨架、差異、不可模仿邊界。",
+      "verify_cmd": "test -f $COLLAB/notyet-harness/000_Agent/skills/notyet-article/styles/reading-insight-vincent.md && grep -n \"樣本\" $COLLAB/notyet-harness/000_Agent/skills/notyet-article/styles/reading-insight-vincent.md",
+      "expected": "檔案存在且列出樣本來源與萃取摘要"
+    },
+    {
+      "criterion": "style profile 可被 agent 直接使用，包含選題條件、開場公式、中段骨架、語氣規則、檢查清單。",
+      "verify_cmd": "grep -n \"選題條件\\|開場\\|中段\\|語氣\\|檢查\" $COLLAB/notyet-harness/000_Agent/skills/notyet-article/styles/reading-insight-vincent.md",
+      "expected": "五個必要區塊皆可搜尋到"
+    },
+    {
+      "criterion": "既有寫作 skill 已知道如何呼叫這個 style，不需要依賴聊天記憶。",
+      "verify_cmd": "grep -R \"reading-insight-vincent\" $COLLAB/notyet-harness/000_Agent/skills/notyet-article $COLLAB/notyet-harness/000_Agent/skills/blog-writer",
+      "expected": "至少一處 skill/reference 明確引用 reading-insight-vincent"
+    },
+    {
+      "criterion": "已用一篇 Vincent 真實素材試寫，並通過非仿寫、核心論點、具體場景、可帶走問題四項檢查。",
+      "verify_cmd": "grep -n \"試寫驗證\\|非仿寫\\|核心論點\\|具體場景\" $COLLAB/harness-mc/milestones/writing-system/tasks.json",
+      "expected": "tasks.json 保留試寫驗證任務與 done_condition"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "專案類型",
+      "decision": "以 internal 專案開案，不建立 standalone repo。",
+      "reason": "此案目前是 shared writing workflow、style profile 與 skill 接線，不需要獨立程式碼或外部部署。",
+      "alternatives_rejected": [
+        "standalone repo — 目前沒有獨立 app / service / deploy target，會增加維護成本"
+      ],
+      "hc_used": [
+        "#rightProblem",
+        "#breakItDown"
+      ]
+    },
+    {
+      "topic": "風格萃取策略",
+      "decision": "先用 6 篇樣本建立 V0，再視需要擴充到 20 篇校準。",
+      "reason": "直接讀 20 篇容易變成大量閱讀但缺少萃取框架；先建立假說，再用更多樣本驗證比較穩。",
+      "alternatives_rejected": [
+        "一開始讀 20 篇 — 成本高且容易只得到模糊結論",
+        "只讀 1 篇 — 樣本不足，容易過度擬合單篇文章"
+      ],
+      "hc_used": [
+        "#evidenceBased",
+        "#sift"
+      ]
+    },
+    {
+      "topic": "著作權與風格邊界",
+      "decision": "只萃取高層次寫作精神、結構與判準，不做逐句仿寫或語句模板複製。",
+      "reason": "目標是 Vincent 的寫作系統吸收可遷移原則，而不是建立艾爾文仿寫器。",
+      "alternatives_rejected": [
+        "模仿艾爾文語氣句型 — 對在世作者風格過度貼近，且會稀釋 Vincent 自己的觀點"
+      ],
+      "hc_used": [
+        "#ethicalFraming",
+        "#audience",
+        "#thesis"
+      ]
+    },
+    {
+      "topic": "系統接入方式",
+      "decision": "優先新增 notyet-article style profile，必要時補 blog-writer reference，而不改寫核心引擎。",
+      "reason": "notyet-article 已有 styles/ 機制，符合可插拔設計；blog-writer 可作 hisenzi.com 發布流程補充。",
+      "alternatives_rejected": [
+        "重寫 notyet-article 引擎 — 風險高且會干擾既有寫作流程",
+        "只留一份聊天摘要 — future agents 無法穩定重用"
+      ],
+      "hc_used": [
+        "#systemDynamics",
+        "#medium",
+        "#organization"
+      ]
+    },
+    {
+      "topic": "系統隱喻與架構參照",
+      "decision": "把 Taiwan.md Semiont 作為寫作系統的高層架構參照：DNA 對應 editorial/style profile，心跳對應週期性寫作與檢查，免疫系統對應品質掃描與反仿寫邊界，繁殖對應文章/短文/skill 的可再利用輸出。",
+      "reason": "這個參照能避免開案只產生任務清單，改成設計一個會被觸發、會自我檢查、會散播、會回饋下一輪的內容生命週期。",
+      "alternatives_rejected": [
+        "只把 Semiont 當靈感連結收藏 — 不會改變實際工作流",
+        "直接複製 Taiwan.md 的生命體語言 — 容易變成表面隱喻，沒有轉成 Vincent 寫作系統的運作規則"
+      ],
+      "references": [
+        "https://taiwan.md/semiont/"
+      ],
+      "hc_used": [
+        "#systemDynamics",
+        "#organization",
+        "#evidenceBased"
+      ]
+    }
+  ]
+}

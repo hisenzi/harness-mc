@@ -1,0 +1,110 @@
+{
+  "project": "writing-system",
+  "tasks": [
+    {
+      "id": "p0-1",
+      "title": "整理第一批 6 篇樣本與萃取維度",
+      "status": "todo",
+      "track": "phase-0",
+      "done_condition": "6 篇樣本 URL、標題、開場方式、核心命題、收尾方式已整理成可檢查清單"
+    },
+    {
+      "id": "p0-2",
+      "title": "萃取共通骨架與不可模仿邊界",
+      "status": "todo",
+      "track": "phase-0",
+      "done_condition": "已產出共通骨架、可遷移寫作精神、禁止逐句仿寫/表面語氣模仿邊界"
+    },
+    {
+      "id": "p0-verify",
+      "title": "Phase 0 驗收整合",
+      "status": "todo",
+      "track": "phase-0",
+      "done_condition": "樣本清單 + 萃取維度 + 著作權/風格邊界彙整完成"
+    },
+    {
+      "id": "p1-1",
+      "title": "建立 reading-insight-vincent style profile",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "notyet-article/styles/reading-insight-vincent.md 已建立，含選題條件、開場公式、中段骨架、語氣規則、檢查清單"
+    },
+    {
+      "id": "p1-2",
+      "title": "定義 Vincent 閱讀型文章流程",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "style profile 明確定義從素材、核心問題、書中模型、個人觀點到收尾問題的流程"
+    },
+    {
+      "id": "p1-3",
+      "title": "建立寫作系統 Semiont anatomy",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "已將 Taiwan.md Semiont 參照轉譯為 Vincent 寫作系統的 DNA、心跳、免疫系統、散播與 feedback loop，不只是收藏連結",
+      "refs": [
+        "https://taiwan.md/semiont/"
+      ]
+    },
+    {
+      "id": "p1-verify",
+      "title": "Phase 1 驗收整合",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "style profile 已通過五區塊 grep 驗證，含 Semiont anatomy，且無逐句模仿規則",
+      "note": "前置任務全 done 後執行"
+    },
+    {
+      "id": "p2-1",
+      "title": "接入 notyet-article / blog-writer",
+      "status": "todo",
+      "track": "phase-2",
+      "done_condition": "既有寫作 skill 或 reference 明確說明何時使用 reading-insight-vincent"
+    },
+    {
+      "id": "p2-2",
+      "title": "同步 shared docs 並確認 future agents 可讀",
+      "status": "todo",
+      "track": "phase-2",
+      "done_condition": "SKILLS-INDEX 或相關 reference 已能指向新 style，且不依賴本次聊天上下文"
+    },
+    {
+      "id": "p2-verify",
+      "title": "Phase 2 驗收整合",
+      "status": "todo",
+      "track": "phase-2",
+      "done_condition": "grep 可找到 reading-insight-vincent 的接入點，並完成 Obsidian/MC 同步"
+    },
+    {
+      "id": "p3-1",
+      "title": "用 Vincent 真實素材試寫一篇閱讀型文章",
+      "status": "todo",
+      "track": "phase-3",
+      "done_condition": "產出一篇試寫全文，且核心論點、具體場景、可帶走問題三者清楚存在"
+    },
+    {
+      "id": "p3-2",
+      "title": "試寫驗證與修正 style profile",
+      "status": "todo",
+      "track": "phase-3",
+      "done_condition": "完成非仿寫、核心論點、具體場景、可帶走問題四項檢查，並依結果修正 style profile"
+    },
+    {
+      "id": "p3-verify",
+      "title": "Phase 3 驗收整合",
+      "status": "todo",
+      "track": "phase-3",
+      "done_condition": "success_criteria + done_condition + 環境異動彙整完成"
+    },
+    {
+      "id": "article-seed-morrowise-task-anchor-update",
+      "title": "更新 MorroWise 活系統文章種子：補入 task-before-work 觀點",
+      "status": "completed",
+      "track": "phase-3",
+      "done_condition": "article-seeds/2026-06-16_任務管理要變成活系統.md 已補入 Task-before-work gate，並把 MorroWise 語言從抽象標語改成更具體的人話痛點。",
+      "completed_at": "2026-06-20",
+      "summary": "文章種子補入 Task-before-work gate：提案可行後不可直接動工，必須先有 work anchor；並把 MorroWise 收束語改成「別讓明天的你，從同一個問題重新開始」。",
+      "note": "work anchor：Vincent 要求更新文章種子；依 Task-before-work rule，先記錄 task，再開始改文章。"
+    }
+  ]
+}

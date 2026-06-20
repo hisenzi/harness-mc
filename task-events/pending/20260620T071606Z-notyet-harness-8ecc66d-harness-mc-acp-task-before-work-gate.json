@@ -1,0 +1,13 @@
+{
+  "event_id": "task.completed-harness-mc-acp-task-before-work-gate-8ecc66d-20260620T071606Z",
+  "type": "task.completed",
+  "repo": "notyet-harness",
+  "commit": "8ecc66d",
+  "project": "harness-mc",
+  "task_id": "acp-task-before-work-gate",
+  "status": "completed",
+  "summary": "Shared workflow skills now require a traceable task anchor before feasible proposals move into execution.",
+  "created_at": "2026-06-20T07:16:06Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-20-morrowise"
+}

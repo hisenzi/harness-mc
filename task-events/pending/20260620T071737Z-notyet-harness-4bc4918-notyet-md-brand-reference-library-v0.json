@@ -1,0 +1,13 @@
+{
+  "event_id": "task.completed-notyet-md-brand-reference-library-v0-4bc4918-20260620T071737Z",
+  "type": "task.completed",
+  "repo": "notyet-harness",
+  "commit": "4bc4918",
+  "project": "notyet-md",
+  "task_id": "brand-reference-library-v0",
+  "status": "completed",
+  "summary": "Created MorroWise and notyet brand reference docs for reusable brand language and ecosystem positioning.",
+  "created_at": "2026-06-20T07:17:37Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-20-morrowise"
+}

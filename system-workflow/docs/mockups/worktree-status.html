@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>待收尾工作 — 首頁區塊 Mockup（ACP-MC-18）</title>
+<style>
+  /* ── 對齊 app/globals.css 與 app/page.tsx 既有 token，深色單欄 ── */
+  :root {
+    --bg: #0a0a0a;
+    --card: #141414;
+    --border: #262626;
+    --text: #e5e5e5;
+    --muted: #737373;
+    --accent: #3b82f6;
+    --green: #4ade80;   /* clean / done */
+    --yellow: #facc15;  /* 未提交 / needs_fix */
+    --blue: #60a5fa;    /* 未推送 / in_progress */
+    --red: #f87171;     /* 需對帳 / blocked */
+    --r: 12px;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+    line-height: 1.5;
+    padding: 48px 24px 80px;
+  }
+  .mock { max-width: 896px; margin: 0 auto; }   /* = max-w-4xl，與首頁同寬 */
+
+  /* mockup 標註（非 UI 本體）*/
+  .mock-title { font-size: 28px; font-weight: 700; letter-spacing: -0.4px; }
+  .mock-sub { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .mock-note { font-size: 12px; color: var(--muted); line-height: 1.7; border-left: 2px solid var(--border); padding: 4px 0 4px 14px; margin-top: 18px; }
+  .mock-note b { color: var(--text); }
+  .state-label { font-size: 12px; font-weight: 600; letter-spacing: 1px; color: var(--muted); margin: 44px 0 16px; }
+  .state-cap { font-size: 12px; color: var(--muted); margin: 14px 2px 0; line-height: 1.7; }
+
+  /* 區塊標題（沿用 page.tsx：title + meta + 分隔線）*/
+  .sec-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .sec-title { font-size: 13px; font-weight: 500; letter-spacing: 0.3px; color: var(--text); white-space: nowrap; }
+  .sec-meta { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .sec-meta .mono { font-family: var(--mono); }
+  .sec-rule { flex: 1; border-top: 1px solid var(--border); }
+
+  /* 卡片 */
+  .card { border: 1px solid var(--border); border-radius: var(--r); background: var(--card); padding: 20px; }
+
+  /* ── 三欄：三狀態並排，全部首頁可見 ── */
+  .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .col-head { display: flex; align-items: center; gap: 7px; padding-bottom: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--border); }
+  .col-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .col-label { font-size: 13px; font-weight: 600; }
+  .col-count { margin-left: auto; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .cells { display: flex; flex-direction: column; gap: 13px; }
+  .cell { cursor: default; }
+  .cell-1 { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+  .repo { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cnt { font-size: 12px; font-family: var(--mono); color: var(--muted); flex-shrink: 0; font-variant-numeric: tabular-nums; }
+  .cnt .down { color: var(--red); }
+  .loc { font-size: 11px; color: var(--muted); font-family: var(--mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
+  .col-empty { font-size: 12px; color: var(--muted); opacity: 0.5; }
+
+  .c-yellow .col-dot { background: var(--yellow); } .c-yellow .col-label, .c-yellow .col-count { color: var(--yellow); } .c-yellow .col-head { border-bottom-color: rgba(250,204,21,0.30); }
+  .c-blue   .col-dot { background: var(--blue); }   .c-blue .col-label,   .c-blue .col-count   { color: var(--blue); }   .c-blue .col-head   { border-bottom-color: rgba(96,165,250,0.30); }
+  .c-red    .col-dot { background: var(--red); }    .c-red .col-label,    .c-red .col-count    { color: var(--red); }    .c-red .col-head    { border-bottom-color: rgba(248,113,113,0.30); }
+  .c-green  .col-dot { background: var(--green); }  .c-green .col-label,  .c-green .col-count  { color: var(--green); }  .c-green .col-head  { border-bottom-color: rgba(74,222,128,0.30); }
+
+  /* ── Task 視覺同步追蹤 ── */
+  .sync-grid { display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 18px; }
+  .sync-card { border: 1px solid var(--border); border-radius: 10px; padding: 15px; background: rgba(255,255,255,0.018); }
+  .sync-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding-bottom: 9px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+  .sync-name { font-size: 12px; color: var(--muted); }
+  .sync-value { font: 700 22px/1 var(--mono); color: var(--text); }
+  .sync-value.warn { color: var(--yellow); }
+  .sync-value.bad { color: var(--red); }
+  .sync-value.good { color: var(--green); }
+  .sync-list { display: flex; flex-direction: column; gap: 10px; }
+  .sync-item { min-width: 0; }
+  .sync-line { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+  .task-id { font-size: 12px; font-family: var(--mono); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sync-tag { margin-left: auto; font-size: 10px; font-family: var(--mono); border: 1px solid var(--border); border-radius: 999px; padding: 1px 6px; color: var(--muted); white-space: nowrap; }
+  .sync-tag.warn { color: var(--yellow); border-color: rgba(250,204,21,0.35); }
+  .sync-tag.bad { color: var(--red); border-color: rgba(248,113,113,0.35); }
+  .sync-tag.good { color: var(--green); border-color: rgba(74,222,128,0.35); }
+  .sync-desc { font-size: 11px; color: var(--muted); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sync-footer { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 11px; color: var(--muted); }
+  .sync-footer .mono { font-family: var(--mono); color: var(--text); }
+
+  /* ── 乾淨狀態 ── */
+  .clean { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+  .clean svg { width: 16px; height: 16px; stroke: var(--green); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .clean .ml { margin-left: auto; font-family: var(--mono); font-size: 11px; white-space: nowrap; }
+
+  @media (max-width: 640px) {
+    body { padding: 28px 14px 56px; }
+    .mock-title { font-size: 22px; }
+    .sec-head { flex-wrap: wrap; gap: 6px; }
+    .sec-rule { flex-basis: 100%; }
+    .card { padding: 16px; }
+    .cols { grid-template-columns: 1fr; gap: 20px; }
+    .sync-grid { grid-template-columns: 1fr; }
+    .clean { flex-wrap: wrap; }
+    .clean .ml { margin-left: 26px; }
+  }
+</style>
+</head>
+<body>
+<div class="mock">
+
+  <div class="mock-title">待收尾工作</div>
+  <div class="mock-sub">Mission Control 首頁區塊 Mockup · ACP-MC-18 · 假資料 · 不影響 <span style="font-family:var(--mono)">app/page.tsx</span></div>
+  <div class="mock-note">
+    Core-message：「<b>現在有沒有沒收的、嚴不嚴重、要不要管</b>」。<br>
+    三欄＝三狀態並排，全部首頁可見、免點擊。欄首數字一眼答 core-message，欄內倉庫同時看得到。「怎麼收尾」建議與檔案明細＝點單一倉庫才出現（動作細節，不佔清單）。
+  </div>
+
+  <!-- ============ 三欄 · 有待收尾 ============ -->
+  <div class="state-label">三欄 · 有待收尾（主狀態）</div>
+
+  <div class="sec-head">
+    <div class="sec-title">待收尾工作</div>
+    <div class="sec-meta">6 個倉庫已掃描 · <span class="mono">17:00</span></div>
+    <div class="sec-rule"></div>
+  </div>
+
+  <div class="card">
+    <div class="cols">
+
+      <div class="col c-yellow">
+        <div class="col-head"><span class="col-dot"></span><span class="col-label">未提交變更</span><span class="col-count">2</span></div>
+        <div class="cells">
+          <div class="cell">
+            <div class="cell-1"><span class="repo">harness-mc</span><span class="cnt">14 變更</span></div>
+            <div class="loc">主 worktree · main · a1b2c3d</div>
+          </div>
+          <div class="cell">
+            <div class="cell-1"><span class="repo">notyet-harness</span><span class="cnt">22 變更</span></div>
+            <div class="loc">主 worktree · main · 9f8e7d6</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col c-blue">
+        <div class="col-head"><span class="col-dot"></span><span class="col-label">本機未推送</span><span class="col-count">2</span></div>
+        <div class="cells">
+          <div class="cell">
+            <div class="cell-1"><span class="repo">harness-mc</span><span class="cnt">↑2</span></div>
+            <div class="loc">acp-mc-event-pipeline · 0c26aab</div>
+          </div>
+          <div class="cell">
+            <div class="cell-1"><span class="repo">notyet-harness</span><span class="cnt">↑1</span></div>
+            <div class="loc">acp-mc-event-pipeline-support · 9167e8d</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col c-red">
+        <div class="col-head"><span class="col-dot"></span><span class="col-label">需要對帳</span><span class="col-count">1</span></div>
+        <div class="cells">
+          <div class="cell">
+            <div class="cell-1"><span class="repo">mapelon-2.0</span><span class="cnt">↑1 <span class="down">↓3</span></span></div>
+            <div class="loc">main · 13daf4f · 本機與遠端分歧</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="state-cap">三狀態並排，欄首「狀態＋數字」一眼掃完；欄內每格＝倉庫＋變更量＋一行位置（分支/HEAD，過長截斷）。空欄顯示「—」。窄螢幕收成直向單欄。</div>
+
+  <!-- ============ Task 視覺同步追蹤 ============ -->
+  <div class="state-label">Task 系統追蹤 · 視覺層同步</div>
+
+  <div class="sec-head">
+    <div class="sec-title">Task 視覺同步</div>
+    <div class="sec-meta">MC source · Heptabase 白板 · Obsidian Canvas · <span class="mono">17:04</span></div>
+    <div class="sec-rule"></div>
+  </div>
+
+  <div class="card">
+    <div class="sync-grid">
+      <div class="sync-card">
+        <div class="sync-top">
+          <span class="sync-name">待補 Heptabase</span>
+          <span class="sync-value warn">3</span>
+        </div>
+        <div class="sync-list">
+          <div class="sync-item">
+            <div class="sync-line"><span class="task-id">morrowise-rename-plan</span><span class="sync-tag warn">no card</span></div>
+            <div class="sync-desc">harness-mc · naming · 待同步到 MorroWise 白板</div>
+          </div>
+          <div class="sync-item">
+            <div class="sync-line"><span class="task-id">article-seed-morrowise-task-anchor-update</span><span class="sync-tag warn">pending</span></div>
+            <div class="sync-desc">writing-system · phase-3 · 尚未指定白板</div>
+          </div>
+          <div class="sync-item">
+            <div class="sync-line"><span class="task-id">brand-human-copy-pass</span><span class="sync-tag warn">draft</span></div>
+            <div class="sync-desc">brands · morrowise · 尚未進入 MC 白板</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sync-card">
+        <div class="sync-top">
+          <span class="sync-name">Canvas 待刷新</span>
+          <span class="sync-value bad">2</span>
+        </div>
+        <div class="sync-list">
+          <div class="sync-item">
+            <div class="sync-line"><span class="task-id">harness-mc/tasks.json</span><span class="sync-tag bad">stale</span></div>
+            <div class="sync-desc">最近 task 變更晚於 Canvas sync</div>
+          </div>
+          <div class="sync-item">
+            <div class="sync-line"><span class="task-id">writing-system/tasks.json</span><span class="sync-tag bad">stale</span></div>
+            <div class="sync-desc">文章系統 task anchor 已更新，Canvas 尚未顯示</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sync-card">
+        <div class="sync-top">
+          <span class="sync-name">已對齊</span>
+          <span class="sync-value good">21</span>
+        </div>
+        <div class="sync-list">
+          <div class="sync-item">
+            <div class="sync-line"><span class="task-id">MorroWise / system-ops</span><span class="sync-tag good">synced</span></div>
+            <div class="sync-desc">MC task 有 card_id，Canvas 顯示短卡號</div>
+          </div>
+          <div class="sync-item">
+            <div class="sync-line"><span class="task-id">acp-visual-sync-coverage-report</span><span class="sync-tag good">synced</span></div>
+            <div class="sync-desc">MC 儀表版 · card 3a002909… · Canvas 已刷新</div>
+          </div>
+          <div class="sync-item">
+            <div class="sync-line"><span class="task-id">MC 儀表版</span><span class="sync-tag good">synced</span></div>
+            <div class="sync-desc">2 projects · 33 cards · latest mirror</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sync-footer">
+      <span>MC tasks <span class="mono">609</span></span>
+      <span>Heptabase gaps <span class="mono">3</span></span>
+      <span>Canvas gaps <span class="mono">2</span></span>
+      <span>last canvas sync <span class="mono">17:04</span></span>
+    </div>
+  </div>
+  <div class="state-cap">這個區塊回答「有 task 的項目，有沒有真的進入視覺層」。缺 Heptabase card、缺 Canvas refresh、已同步三種狀態分開顯示；點 task 後才看外部 refs、白板名、card id、最近 sync event。</div>
+
+  <!-- ============ 三欄 · 部分空欄 ============ -->
+  <div class="state-label">三欄 · 部分狀態為空（示意空欄處理）</div>
+
+  <div class="sec-head">
+    <div class="sec-title">待收尾工作</div>
+    <div class="sec-meta">6 個倉庫已掃描 · <span class="mono">18:20</span></div>
+    <div class="sec-rule"></div>
+  </div>
+
+  <div class="card">
+    <div class="cols">
+      <div class="col c-yellow">
+        <div class="col-head"><span class="col-dot"></span><span class="col-label">未提交變更</span><span class="col-count">0</span></div>
+        <div class="cells"><div class="col-empty">—</div></div>
+      </div>
+      <div class="col c-blue">
+        <div class="col-head"><span class="col-dot"></span><span class="col-label">本機未推送</span><span class="col-count">1</span></div>
+        <div class="cells">
+          <div class="cell">
+            <div class="cell-1"><span class="repo">harness-mc</span><span class="cnt">↑2</span></div>
+            <div class="loc">acp-mc-event-pipeline · 0c26aab</div>
+          </div>
+        </div>
+      </div>
+      <div class="col c-red">
+        <div class="col-head"><span class="col-dot"></span><span class="col-label">需要對帳</span><span class="col-count">0</span></div>
+        <div class="cells"><div class="col-empty">—</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="state-cap">數量分布不均很常見（可能 0/5/0）。空欄保留欄位、顯示「—」，維持三欄結構穩定、不跳版。</div>
+
+  <!-- ============ 全部乾淨 ============ -->
+  <div class="state-label">全部收乾淨</div>
+
+  <div class="sec-head">
+    <div class="sec-title">待收尾工作</div>
+    <div class="sec-meta">6 個倉庫已掃描 · <span class="mono">just now</span></div>
+    <div class="sec-rule"></div>
+  </div>
+
+  <div class="card">
+    <div class="clean">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+      <span>全部收乾淨 — 無未提交、未推送或待對帳</span>
+      <span class="ml">6 個倉庫</span>
+    </div>
+  </div>
+  <div class="state-cap">三欄全空時退成一行，不留三個空欄佔位。</div>
+
+</div>
+</body>
+</html>

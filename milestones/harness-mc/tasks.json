@@ -530,7 +530,7 @@
     {
       "id": "morrowise-trigger-rules-registry",
       "title": "MorroWise trigger rules registry",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "batch": "proactive-loop",
       "order": 16,
@@ -541,6 +541,11 @@
       ],
       "done_condition": "定義 trigger registry：stale/blocked task、sync failed、rejected event、weekly review、session startup、project-init growth gate 未完成等事件如何喚醒 MC；每個 trigger 都有 source、condition、cooldown、output event。",
       "note": "第二批主動化起點；沒有 trigger registry，dashboard 只能被動顯示。",
+      "completed_at": "2026-06-20",
+      "summary": "定義 MorroWise trigger registry：新增機器可讀 registry、spec 與 verifier，覆蓋 stale/blocked task、sync failed、rejected event、weekly review、session startup、project-init growth gate missing，且每個 trigger 都有 source、condition、cooldown、output_event；trigger 只喚醒與輸出 recommendation input，不直接執行動作。",
+      "commits": [
+        "ebe4dc2"
+      ],
       "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {

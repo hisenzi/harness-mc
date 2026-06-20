@@ -30,7 +30,7 @@
     {
       "id": "morrowise-system-index",
       "title": "產出 MorroWise Index",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "order": 2,
       "order_label": "MC-LIVE-02",
@@ -50,7 +50,12 @@
           "synced_at": "2026-06-16",
           "sync_mode": "created"
         }
-      }
+      },
+      "completed_at": "2026-06-20",
+      "summary": "產出 MorroWise Living System Index：定義活系統能力 anatomy、source hierarchy、歷史 system-ops/Jarvis 來源、現行 MC/ACP 對應、過時假設、未落地缺口與下一步入口。",
+      "commits": [
+        "0ca01fe"
+      ]
     },
     {
       "id": "morrowise-mc-task-map",

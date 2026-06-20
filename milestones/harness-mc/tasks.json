@@ -1437,7 +1437,7 @@
     {
       "id": "acp-control-plane-operating-loop",
       "title": "ACP-MC-20 補齊 Control Plane 運行迴路與文件路由",
-      "status": "in_progress",
+      "status": "completed",
       "track": "control-plane",
       "order_label": "ACP-MC-20",
       "priority": "critical",
@@ -1449,6 +1449,8 @@
       ],
       "done_condition": "補齊系統性工作迴路文件與文件路由：明確定義討論→可行判斷→task anchor→MC source→Heptabase→Obsidian Canvas→MC read model/freshness 的必經流程；新增 agent-control-plane docs index，標示每份 protocol / schema / plan 何時必讀，避免文件隨意散放或靠 Vincent 逐次提醒。",
       "note": "Vincent 指出目前像東補西補：系統思考有出現，但缺固定運行機制。此 task 以 harness-mc/milestones/harness-mc 為對照，盤點既有 gate / hook / queue / report，補上文件路由與 operating loop，先讓 future agents 知道何時讀哪份文件、何時必須先建 task、何時同步視覺層與何時回報 freshness。",
+      "summary": "完成 ACP-MC-20 Control Plane 運行迴路：正式化討論到 task、Heptabase、Obsidian Canvas、MC read model/freshness 的必經流程，並以 Agent Control Plane README 路由 protocol、schema、boundary map 與 planning 文件。",
+      "completed_at": "2026-06-20",
       "batch": "control-console",
       "external_refs": {
         "heptabase": {
@@ -1458,7 +1460,11 @@
           "synced_at": "2026-06-20",
           "sync_mode": "appended"
         }
-      }
+      },
+      "commits": [
+        "a80b899",
+        "93d58b3"
+      ]
     }
   ]
 }

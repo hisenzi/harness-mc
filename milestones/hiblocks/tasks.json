@@ -11,6 +11,15 @@
       "note": "參考 open-design _schema/ 架構。A1=品牌必決（bg/fg/accent/font/type-scale），A2=有合理預設值（radius/motion/spacing/shadow），B=可 alias 到同層 sibling（text-dark→text, border-light→border）。hi-blocks.css 的 50+ 硬編 rgba 需分類：token 化 vs UI 常數。此 task 產出是 p1-1 去硬編的依據。（2026-06-07）hi-team t27 新增 spotlight token 群（--hi-color-spotlight-bg/-bg-2、on-spotlight×3、placeholder×2），屬 A1（品牌整區有色背景），schema 需納入；目前 theme-default.css 以 brand 當 fallback，theme-yutian.css 覆寫為金色"
     },
     {
+      "id": "p1-s-typography",
+      "title": "Typography Token Contract 定義",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "在 Token Schema Contract 中補齊 typography 語義層：定義 caption/small/body/heading/title/display 等 token，每個 token 至少包含 font-size、line-height（unitless）、font-weight、letter-spacing、max-inline-size/measure 規則，並明確區分 mobile/desktop responsive 行為。HiHero、HiAbout、HiFeature、HiTeam 等 block 不再直接散落 font-size/line-height，改吃語義 typography token；4 個現有 theme 通過 validate script 與代表性 block 視覺抽查。",
+      "estimate": "4hr",
+      "note": "由 yutianlaw 關於我們手機版排版暴露：HiBlocks 目前有 --hi-text-xs/sm/base/md/lg/xl/2xl/3xl 與 font/type-scale A1 概念，但缺少像 Mapelon 一樣的語義 typography contract。此 task 是 p1-s 的補強：不是把 Mapelon 數值直接套用，而是採用其方法（semantic token → selector 對應 → RWD override），建立 HiBlocks 自己的 type scale 與行長/行距規則。需參考 CSS 可讀性與 WCAG text spacing：unitless line-height、主段落至少可承受 1.5 line-height、文字容器以 ch/em/rem 等相對單位控制，避免 px 零散微調。"
+    },
+    {
       "id": "p1-0",
       "title": "內容架構分離（頁面資料抽離 + Content Schema 擴充）",
       "status": "todo",

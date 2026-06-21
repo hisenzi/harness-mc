@@ -254,7 +254,7 @@ const surfaceAnchors: Record<string, string> = {
   system_attention: "#system-attention",
   morrowise_living_system: "#morrowise-system",
   morrowise_proactive_loop: "#morrowise-loop",
-  task_event_pipeline: "#system-attention",
+  task_event_pipeline: "#task-event-pipeline",
   worktree_status: "#worktree-status",
   approval_queue: "#approval-queue",
 };
@@ -768,6 +768,99 @@ function SystemAttentionCard() {
   );
 }
 
+function TaskEventPipelineCard() {
+  const [pipeline, setPipeline] = useState<TaskEventPipelineData | null>(null);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/task-events.json`)
+      .then((r) => r.json())
+      .then(setPipeline)
+      .catch(() => {});
+  }, []);
+
+  const generatedAt = pipeline?.generated_at ? new Date(pipeline.generated_at) : null;
+  const generatedLabel = generatedAt
+    ? generatedAt.toLocaleString("zh-TW", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
+    : "讀取中";
+  const pendingTaskEvents = pipeline?.task_events.pending || 0;
+  const pendingSyncEvents = pipeline?.sync_events.pending || 0;
+  const rejectedEvents = pipeline?.task_events.rejected || 0;
+  const failedSyncEvents = pipeline?.sync_events.failed || 0;
+  const needsReview = pendingTaskEvents + pendingSyncEvents + rejectedEvents + failedSyncEvents > 0;
+  const recentEvents = [
+    ...(pipeline?.recent_task_events || []).map((event) => ({
+      id: event.id,
+      label: event.type,
+      meta: `${event.project}/${event.task_id}`,
+      queue: event.queue,
+    })),
+    ...(pipeline?.recent_sync_events || []).map((event) => ({
+      id: event.id,
+      label: event.type,
+      meta: `${event.target}/${event.project}/${event.task_id}`,
+      queue: event.queue,
+    })),
+  ].slice(0, 4);
+
+  return (
+    <div>
+      <div className="flex items-center gap-3 mb-3">
+        <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">Task Event Pipeline</div>
+        <div className="text-[11px] text-[var(--text-muted)]">
+          generated {generatedLabel} · reducer queue · read-only
+        </div>
+        <div className="flex-1 border-t border-[var(--border)]"></div>
+      </div>
+
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4">
+        <div className="grid grid-cols-1 xl:grid-cols-[0.9fr_1.1fr] gap-4">
+          <div className="grid grid-cols-4 gap-2">
+            <PipelineMetric label="task pending" value={String(pendingTaskEvents)} tone={pendingTaskEvents > 0 ? "yellow" : "green"} />
+            <PipelineMetric label="sync pending" value={String(pendingSyncEvents)} tone={pendingSyncEvents > 0 ? "blue" : "green"} />
+            <PipelineMetric label="rejected" value={String(rejectedEvents)} tone={rejectedEvents > 0 ? "red" : "green"} />
+            <PipelineMetric label="sync failed" value={String(failedSyncEvents)} tone={failedSyncEvents > 0 ? "red" : "green"} />
+          </div>
+
+          <div className="rounded-lg border border-[var(--border)] bg-black/10 p-3 min-w-0">
+            <div className="flex items-center gap-2">
+              <StatusDot status={needsReview ? "needs_fix" : "completed"} />
+              <div className="text-[12px] font-semibold text-[var(--text)]">Queue read model</div>
+              <span className="ml-auto font-mono text-[11px] text-[var(--text-muted)]">task-events.json</span>
+            </div>
+            <div className="mt-3 space-y-2">
+              {recentEvents.length > 0 ? (
+                recentEvents.map((event) => (
+                  <div key={event.id} className="grid grid-cols-[92px_minmax(0,1fr)_auto] gap-2 text-[11px]">
+                    <span className="font-mono text-[var(--text)] truncate">{event.queue}</span>
+                    <span className="text-[var(--text-muted)] truncate">{event.meta}</span>
+                    <span className="rounded-full border border-[var(--border)] px-2 py-0.5 font-mono text-[10px] text-[var(--text-muted)]">{event.label}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="text-[12px] text-[var(--text-muted)]">目前沒有 recent queue event</div>
+              )}
+            </div>
+            <div className="mt-3 pt-3 border-t border-[var(--border)] text-[11px] text-[var(--text-muted)]">
+              首頁只顯示 queue 狀態；apply、sync、overwrite task files 仍需 reducer / approval gate。
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PipelineMetric({ label, value, tone }: { label: string; value: string; tone: "green" | "yellow" | "blue" | "red" }) {
+  const color =
+    tone === "green" ? "text-green-400" : tone === "yellow" ? "text-yellow-400" : tone === "blue" ? "text-blue-400" : "text-red-400";
+  return (
+    <div className="min-h-[70px] rounded-lg border border-[var(--border)] bg-white/[0.018] p-3 min-w-0">
+      <div className="truncate text-[10px] text-[var(--text-muted)]">{label}</div>
+      <div className={`mt-1 truncate font-mono text-[22px] leading-none font-bold ${color}`}>{value}</div>
+    </div>
+  );
+}
+
 function AttentionMetric({ name, value, hint, tone }: { name: string; value: string; hint: string; tone: "yellow" | "red" | "blue" | "green" }) {
   const color = tone === "yellow" ? "text-yellow-400" : tone === "red" ? "text-red-400" : tone === "blue" ? "text-blue-400" : "text-green-400";
   return (
@@ -1240,6 +1333,7 @@ export default function HomePage() {
             <div className="space-y-6">
               <LiveDashboardSummary data={liveDashboard} />
               <section id="system-attention"><SystemAttentionCard /></section>
+              <section id="task-event-pipeline"><TaskEventPipelineCard /></section>
               <section id="morrowise-system"><MorroWiseSurfaceCard projects={projects} /></section>
               <section id="morrowise-loop"><MorroWiseProactiveLoopCard /></section>
               <section id="worktree-status"><WorktreeStatusCard /></section>

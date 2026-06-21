@@ -353,6 +353,15 @@
       "note": "auto-task：commit e8a5505。順修 Codex MCP config（npx→直接 binary /Applications/Codex.app，本機 ~/.claude.json，對端 MBA-2 待套用）"
     },
     {
+      "id": "xiao-wei-mood-image-gen-rewire",
+      "title": "xiao-wei-mood 改接 Codex/ChatGPT 內建 image_gen",
+      "status": "in_progress",
+      "track": "infrastructure",
+      "done_condition": "xiao-wei-mood SKILL.md 不再引用不存在的 mcp__codex__codex；主流程改為呼叫 Codex/ChatGPT 內建 image_gen，使用 helper 從 ~/.codex/generated_images 找最新圖並複製到 daily/YYYY-MM-DD.png；cc-log HTML 可嵌入該 png；以 2026-06-21 daily log 實測通過並完成 commit 回填。",
+      "estimate": "1hr",
+      "note": "由 yutianlaw session 的 cc-log 觸發。歸屬 dual-blade，因為這是 notyet-harness/000_Agent shared brain 的 skill runtime 修正，不屬於 yutianlaw；舊 task xiao-wei-mood-codex-autogen 已完成但假設了不存在的 Codex MCP tool，本 task 是補正實際 Codex 產品內建 image generation 路線。"
+    },
+    {
       "id": "skill-dual-path-fix",
       "title": "skill 路徑去 OC 寫死改 CC/OC 雙端偵測（11 skill）",
       "status": "done",

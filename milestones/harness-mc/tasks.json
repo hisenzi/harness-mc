@@ -859,7 +859,12 @@
         "morrowise-live-dashboard-loop-verifier"
       ],
       "done_condition": "依 MC-LIVE-SYS-03 mockup 實作 MC 首頁 sidebar、首頁摘要、drill-down 入口、approval queue、freshness 與 boundary；首頁維持 read-only，不直接寫 task state、commit、push、deploy 或外部同步。",
-      "note": "實作時需降低首屏資訊密度；sidebar 負責分類分流，首頁只回答現在要不要管、先管哪裡、資料新不新。"
+      "note": "實作時需降低首屏資訊密度；sidebar 負責分類分流，首頁只回答現在要不要管、先管哪裡、資料新不新。",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "7eedf5c"
+      ],
+      "summary": "把 MC 首頁改成 MorroWise live dashboard 入口：新增 sidebar 分流、首頁摘要、surface drill-down anchors、approval queue preview、freshness 與 read-only boundary，首頁只讀取 read model，不直接改 task state、commit、push、deploy 或外部同步。"
     },
     {
       "id": "morrowise-live-dashboard-doc-routing",

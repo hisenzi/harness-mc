@@ -150,7 +150,7 @@
     {
       "id": "acp-task-write-command-map",
       "title": "Task 寫入命令對照表",
-      "status": "todo",
+      "status": "completed",
       "track": "control-plane",
       "order": 6,
       "order_label": "MC-LIVE-06",
@@ -161,6 +161,11 @@
       ],
       "done_condition": "產出 system-workflow/docs/task-write-command-map.md，列出 Vincent 說「寫 task / 更新 task / task 寫到 Heptabase / 完成 task」時對應的 skills、scripts、validators、stop conditions。",
       "note": "這是 MC 端給 UI/read model 使用的 routing 摘要；notyet-harness 的 protocol 是正本。",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "ec3389b"
+      ],
+      "summary": "新增 Task Write Command Map，將「寫 task / 更新 task / task 寫到 Heptabase / 完成 task」路由到對應 skills、scripts、validators 與 stop conditions，並明確 MC tasks.json 是 source of truth、Heptabase/Canvas/dashboard 是 visual/read-model mirror。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise / system-ops",

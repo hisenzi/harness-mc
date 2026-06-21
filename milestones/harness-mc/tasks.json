@@ -1769,7 +1769,7 @@
     {
       "id": "acp-required-heptabase-canvas-publish-flow",
       "title": "Required Heptabase + Canvas publish flow：task 寫入後必問白板並同步視覺層",
-      "status": "todo",
+      "status": "completed",
       "track": "control-plane",
       "order_label": "ACP-MC-GATE-04",
       "priority": "high",
@@ -1784,16 +1784,22 @@
         "heptabase-task-cards skill 未取得白板名稱時必須停下來問 Vincent，不得自動用 project id 搜尋當作發布目標。",
         "task 寫入後的 coverage report 必須列 MC task、Heptabase card_id、同名 Obsidian Canvas sync、MC data/build 狀態與 gaps。"
       ],
-      "note": "Vincent 決定 Heptabase 不再是 optional visual layer；所有 task 都要寫 Heptabase。流程不可猜白板名稱，未指定時必須先問。Heptabase 白板名稱同時是 Obsidian Canvas 名稱，讓白板與本地 Canvas 一一對齊。",
+      "note": "Vincent 決定 Heptabase 不再是 optional visual layer；所有 task 都要寫 Heptabase。流程不可猜白板名稱，未指定時必須先問。Heptabase 白板名稱同時是 Obsidian Canvas 名稱，讓白板與本地 Canvas 一一對齊。HC framing：#rightProblem 是 task 發布決策邊界，不是單次同步；#systemDynamics 是 whiteboard name 成為 task publish dataflow 的必填輸入；#risk 是猜錯白板會污染 visual layer；#confirmationBias 以 verifier 覆蓋 missing whiteboard must stop。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "b7876337-bc60-487a-b26a-826cd3fa03a6",
-          "synced_at": "2026-06-21",
-          "sync_mode": "created"
+          "synced_at": "2026-06-22",
+          "sync_mode": "refreshed"
         }
-      }
+      },
+      "summary": "完成：task 發布流程已改為必須取得 Vincent 指定的 Heptabase 白板名稱；該白板名稱同時作為 Obsidian Canvas 名稱。planning、project-init、visual-layer-transition-protocol、heptabase-task-cards skill 與 adapter/verifier 均已補上禁止 project id / 預設白板推論、coverage report 與同名 Canvas 規則。",
+      "completed_at": "2026-06-22",
+      "commits": [
+        "28c594a",
+        "fb64d9b"
+      ]
     },
     {
       "id": "acp-hc-framing-gate",

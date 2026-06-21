@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { StatusDot } from "./components/StatusDot";
 
@@ -181,9 +182,296 @@ interface ProactiveLoopData {
   scenarios: ProactiveLoopScenario[];
 }
 
+interface LiveDashboardAction {
+  type: string;
+  target: string | null;
+  label: string;
+}
+
+interface LiveDashboardSurface {
+  id: string;
+  label: string;
+  freshness_state: "fresh" | "stale" | "degraded" | "unknown";
+  freshness_reason: string;
+  last_updated_at: string | null;
+  attention_level: "normal" | "watch" | "needs_review" | "blocked";
+  next_action: LiveDashboardAction;
+  write_boundary: {
+    mode: string;
+    allowed?: string[];
+    forbidden?: string[];
+  };
+  drilldown_route?: string;
+  metrics?: Record<string, number | string | null>;
+}
+
+interface LiveDashboardApproval {
+  id: string;
+  action_class: string;
+  requested_action: string;
+  destination: string;
+  owner: string;
+  created_at: string | null;
+  payload_preview: string;
+  closure_condition: string;
+  write_boundary: string;
+}
+
+interface LiveDashboardData {
+  schema_version: string;
+  generated_at: string;
+  read_only: boolean;
+  summary: {
+    overall_freshness_state: "fresh" | "stale" | "degraded" | "unknown";
+    highest_attention_level: "normal" | "watch" | "needs_review" | "blocked";
+    primary_next_action: LiveDashboardAction | null;
+    approval_wait_count: number;
+    stale_surface_count: number;
+    degraded_surface_count: number;
+    source_counts: Record<string, number>;
+  };
+  surfaces: LiveDashboardSurface[];
+  approval_queue: LiveDashboardApproval[];
+  completion_gate: {
+    worktree_commit: {
+      state: string;
+      required_before_verification_result: boolean;
+      blocker: string | null;
+    };
+  };
+  verification: {
+    verifier_ref: string;
+    verifier_refs?: string[];
+  };
+}
+
 interface VisualSyncTask extends Task {
   project: string;
   projectName: string;
+}
+
+const surfaceAnchors: Record<string, string> = {
+  system_attention: "#system-attention",
+  morrowise_living_system: "#morrowise-system",
+  morrowise_proactive_loop: "#morrowise-loop",
+  task_event_pipeline: "#system-attention",
+  worktree_status: "#worktree-status",
+  approval_queue: "#approval-queue",
+};
+
+function LiveDashboardSidebar({ data, projects }: { data: LiveDashboardData | null; projects: Project[] }) {
+  const totalTasks = projects.reduce((sum, project) => sum + project.total, 0);
+  const doneTasks = projects.reduce((sum, project) => sum + project.done, 0);
+  const surfaces = data?.surfaces || [];
+
+  return (
+    <aside className="xl:sticky xl:top-0 xl:h-screen border-b xl:border-b-0 xl:border-r border-[var(--border)] bg-[#0d0d0d] p-4 xl:overflow-auto">
+      <div className="mb-5">
+        <div className="h-8 w-8 rounded-lg bg-teal-400 text-black grid place-items-center font-black text-[13px]">MC</div>
+        <div className="mt-3 text-[18px] font-bold leading-tight text-[var(--text)]">Mission Control</div>
+        <div className="mt-1 text-[12px] leading-relaxed text-[var(--text-muted)]">
+          read-only control surface
+        </div>
+      </div>
+
+      <nav className="space-y-5">
+        <SidebarGroup title="Live Dashboard" count={surfaces.length}>
+          <SidebarLink href="#live-summary" label="首頁摘要" badge={data?.summary.highest_attention_level || "loading"} active />
+          <SidebarLink href="#approval-queue" label="Approval Queue" badge={String(data?.summary.approval_wait_count ?? 0)} />
+          <SidebarLink href="#freshness" label="Freshness" badge={data?.summary.overall_freshness_state || "—"} />
+        </SidebarGroup>
+
+        <SidebarGroup title="Drill-down" count={surfaces.length}>
+          {surfaces.map((surface) => (
+            <SidebarLink
+              key={surface.id}
+              href={surfaceAnchors[surface.id] || "#live-summary"}
+              label={surface.label}
+              badge={surface.freshness_state}
+            />
+          ))}
+        </SidebarGroup>
+
+        <SidebarGroup title="MC Layers" count={projects.length}>
+          <SidebarLink href="#discipline" label="紀律層" badge={`${doneTasks}/${totalTasks}`} />
+          <SidebarLink href="#capability" label="能力層" badge="tools" />
+          <SidebarLink href="#learning" label="學習層" badge="courses" />
+        </SidebarGroup>
+      </nav>
+
+      <div className="mt-6 border-t border-[var(--border)] pt-4 text-[11px] leading-relaxed text-[var(--text-muted)]">
+        Dashboard surfaces may display state and route attention only. Task state, commits, push, deploy, and external sync stay behind approval gates.
+      </div>
+    </aside>
+  );
+}
+
+function SidebarGroup({ title, count, children }: { title: string; count: number; children: ReactNode }) {
+  return (
+    <div>
+      <div className="mb-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--text-muted)]">
+        <span>{title}</span>
+        <span className="ml-auto rounded-full border border-[var(--border)] px-2 py-0.5 font-mono tracking-normal">{count}</span>
+      </div>
+      <div className="space-y-1">{children}</div>
+    </div>
+  );
+}
+
+function SidebarLink({ href, label, badge, active = false }: { href: string; label: string; badge: string; active?: boolean }) {
+  return (
+    <a
+      href={href}
+      className={`grid min-h-9 grid-cols-[8px_minmax(0,1fr)_auto] items-center gap-3 border-l-2 px-3 text-[13px] transition ${
+        active ? "border-teal-400 bg-teal-400/10 text-[var(--text)]" : "border-transparent text-[var(--text-muted)] hover:bg-white/[0.03]"
+      }`}
+    >
+      <span className={`h-2 w-2 rounded-full ${active ? "bg-teal-400" : "bg-[var(--text-muted)]/50"}`} />
+      <span className="truncate">{label}</span>
+      <span className="max-w-[86px] truncate rounded-full border border-[var(--border)] px-2 py-0.5 text-[10px] font-mono text-[var(--text-muted)]">
+        {badge}
+      </span>
+    </a>
+  );
+}
+
+function LiveDashboardSummary({ data }: { data: LiveDashboardData | null }) {
+  if (!data) {
+    return (
+      <section id="live-summary" className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
+        <div className="text-[13px] text-[var(--text-muted)]">live dashboard read model 載入中</div>
+      </section>
+    );
+  }
+
+  const primary = data.summary.primary_next_action;
+  const topSurfaces = [...data.surfaces].sort((a, b) => attentionRank(b.attention_level) - attentionRank(a.attention_level)).slice(0, 4);
+
+  return (
+    <section id="live-summary" className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <StatusDot status={attentionStatus(data.summary.highest_attention_level)} />
+            <h2 className="text-[22px] font-bold leading-tight text-[var(--text)]">MorroWise Live Dashboard</h2>
+            <span className={statePillClass(data.summary.overall_freshness_state)}>{data.summary.overall_freshness_state}</span>
+          </div>
+          <p className="mt-2 max-w-2xl text-[13px] leading-relaxed text-[var(--text-muted)]">
+            首頁只回答現在要不要管、先管哪裡、資料新不新；所有 side effect 都停在 approval 或 worktree-commit gate。
+          </p>
+        </div>
+        <div className="grid grid-cols-3 gap-2 lg:min-w-[300px]">
+          <SummaryMetric label="attention" value={data.summary.highest_attention_level} tone={data.summary.highest_attention_level === "normal" ? "green" : "yellow"} />
+          <SummaryMetric label="approval" value={String(data.summary.approval_wait_count)} tone={data.summary.approval_wait_count > 0 ? "yellow" : "green"} />
+          <SummaryMetric label="commit gate" value={data.completion_gate.worktree_commit.state} tone={data.completion_gate.worktree_commit.state === "not_required" ? "green" : "blue"} />
+        </div>
+      </div>
+
+      <div className="mt-5 grid grid-cols-1 gap-4 xl:grid-cols-[1fr_0.82fr]">
+        <div className="rounded-lg border border-[var(--border)] bg-black/10 p-4 min-w-0">
+          <div className="mb-3 flex items-center gap-2">
+            <div className="text-[12px] font-semibold text-[var(--text)]">Primary Next Action</div>
+            <span className="ml-auto font-mono text-[11px] text-[var(--text-muted)]">{primary?.type || "none"}</span>
+          </div>
+          <div className="text-[14px] leading-relaxed text-[var(--text)]">{primary?.label || "目前沒有 dashboard-level action"}</div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {topSurfaces.map((surface) => (
+              <a
+                key={surface.id}
+                href={surfaceAnchors[surface.id] || "#live-summary"}
+                className="inline-flex max-w-full items-center gap-2 rounded-full border border-[var(--border)] px-3 py-1 text-[11px] text-[var(--text-muted)] hover:border-[var(--accent)]/50"
+              >
+                <StatusDot status={attentionStatus(surface.attention_level)} />
+                <span className="truncate">{surface.label}</span>
+                <span className="font-mono">{surface.freshness_state}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <div id="freshness" className="rounded-lg border border-[var(--border)] bg-black/10 p-4 min-w-0">
+          <div className="mb-3 text-[12px] font-semibold text-[var(--text)]">Freshness</div>
+          <div className="space-y-2">
+            {data.surfaces.slice(0, 6).map((surface) => (
+              <div key={surface.id} className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 text-[12px]">
+                <div className="min-w-0">
+                  <div className="truncate text-[var(--text)]">{surface.label}</div>
+                  <div className="truncate text-[11px] text-[var(--text-muted)]">{surface.freshness_reason}</div>
+                </div>
+                <span className={statePillClass(surface.freshness_state)}>{surface.freshness_state}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[1fr_0.82fr]">
+        <div id="approval-queue" className="rounded-lg border border-[var(--border)] bg-black/10 p-4 min-w-0">
+          <div className="mb-3 flex items-center gap-2">
+            <div className="text-[12px] font-semibold text-[var(--text)]">Approval Queue</div>
+            <span className="ml-auto rounded-full border border-yellow-400/30 px-2 py-0.5 font-mono text-[10px] text-yellow-400">{data.approval_queue.length}</span>
+          </div>
+          <div className="space-y-2">
+            {data.approval_queue.length > 0 ? (
+              data.approval_queue.slice(0, 3).map((request) => (
+                <div key={request.id} className="rounded-md border border-[var(--border)] p-3 text-[12px]">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="font-mono text-[var(--text)] truncate">{request.action_class}</span>
+                    <span className="ml-auto text-[11px] text-[var(--text-muted)]">{request.owner}</span>
+                  </div>
+                  <div className="mt-1 truncate text-[var(--text-muted)]">{request.requested_action} · {request.destination}</div>
+                </div>
+              ))
+            ) : (
+              <div className="text-[12px] text-[var(--text-muted)]">沒有待審批項目</div>
+            )}
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-[var(--border)] bg-black/10 p-4">
+          <div className="mb-3 text-[12px] font-semibold text-[var(--text)]">Boundary</div>
+          <div className="text-[12px] leading-relaxed text-[var(--text-muted)]">
+            Read-only. No task mutation, external sync, commit, push, deploy, or approval execution from the homepage.
+          </div>
+          <div className="mt-3 border-t border-[var(--border)] pt-3 font-mono text-[11px] text-[var(--text-muted)]">
+            verifier: {data.verification.verifier_ref}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SummaryMetric({ label, value, tone }: { label: string; value: string; tone: "green" | "yellow" | "blue" }) {
+  const color = tone === "green" ? "text-green-400" : tone === "yellow" ? "text-yellow-400" : "text-blue-400";
+  return (
+    <div className="rounded-lg border border-[var(--border)] bg-black/10 p-3 min-w-0">
+      <div className="truncate text-[10px] text-[var(--text-muted)]">{label}</div>
+      <div className={`mt-1 truncate font-mono text-[13px] font-semibold ${color}`}>{value}</div>
+    </div>
+  );
+}
+
+function attentionRank(level: LiveDashboardSurface["attention_level"]) {
+  if (level === "blocked") return 3;
+  if (level === "needs_review") return 2;
+  if (level === "watch") return 1;
+  return 0;
+}
+
+function attentionStatus(level: LiveDashboardSurface["attention_level"]) {
+  if (level === "blocked") return "blocked";
+  if (level === "needs_review") return "needs_fix";
+  if (level === "watch") return "in_progress";
+  return "completed";
+}
+
+function statePillClass(state: LiveDashboardSurface["freshness_state"]) {
+  const base = "shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-mono";
+  if (state === "fresh") return `${base} border-green-400/30 text-green-400`;
+  if (state === "stale") return `${base} border-yellow-400/30 text-yellow-400`;
+  if (state === "degraded") return `${base} border-red-400/30 text-red-400`;
+  return `${base} border-[var(--border)] text-[var(--text-muted)]`;
 }
 
 function MorroWiseSurfaceCard({ projects }: { projects: Project[] }) {
@@ -218,24 +506,6 @@ function MorroWiseSurfaceCard({ projects }: { projects: Project[] }) {
     : "讀取中";
   const surfaceStatus = blockedTasks.length > 0 || pendingEvents > 0 ? "needs_fix" : nextTask ? "in_progress" : "completed";
   const openLoopCount = openTasks.length + pendingEvents + staleMorroWise;
-  const triggerRows = [
-    { label: "User phrase", signal: "MorroWise / 活系統 / system-ops", state: nextTask ? "routes to task" : "quiet" },
-    { label: "Weekly review", signal: `${sentinel?.brief || "waiting for sentinel"}`, state: staleMorroWise > 0 ? `${staleMorroWise} stale` : "fresh" },
-    { label: "Stale / blocked", signal: `${blockedTasks.length} blocked · ${openTasks.length} open`, state: blockedTasks.length > 0 ? "needs owner" : "tracked" },
-    { label: "New project gate", signal: "requires project/task anchor", state: "schema guarded" },
-  ];
-  const openLoopRows = [
-    ...openTasks.slice(0, 3).map((task) => ({
-      id: task.id,
-      label: task.order_label || task.id,
-      text: task.title || task.id,
-      tone: task.status === "blocked" ? "red" : "yellow",
-    })),
-    ...(pendingEvents > 0
-      ? [{ id: "task-event-pending", label: "events", text: `${pendingEvents} pending task/sync events`, tone: "blue" }]
-      : []),
-  ].slice(0, 4);
-
   if (!harness || morrowiseTasks.length === 0) return null;
 
   return (
@@ -243,77 +513,39 @@ function MorroWiseSurfaceCard({ projects }: { projects: Project[] }) {
       <div className="flex items-center gap-3 mb-3">
         <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">MorroWise 活系統</div>
         <div className="text-[11px] text-[var(--text-muted)]">
-          growth layer · generated {generatedLabel} · source projects/task-events/changes
+          只顯示決策摘要 · {generatedLabel} 更新
         </div>
         <div className="flex-1 border-t border-[var(--border)]"></div>
       </div>
 
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
-        <div className="grid grid-cols-1 xl:grid-cols-[0.95fr_1.2fr_1fr] gap-4">
-          <div className="rounded-lg border border-[var(--border)] p-4 min-w-0">
-            <div className="flex items-center gap-2 pb-3 mb-3 border-b border-[var(--border)]">
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4">
+        <div className="grid grid-cols-1 xl:grid-cols-[1fr_1.05fr] gap-4 items-stretch">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
               <StatusDot status={surfaceStatus} />
-              <span className="text-[12px] font-semibold text-[var(--text-muted)]">Living-system state</span>
-              <span className="ml-auto font-mono text-[11px] text-[var(--text-muted)]">{completed.length}/{morrowiseTasks.length}</span>
+              <div className="text-[12px] font-semibold text-[var(--text)]">目前狀態</div>
+              <div className="ml-auto font-mono text-[11px] text-[var(--text-muted)]">{completed.length}/{morrowiseTasks.length}</div>
             </div>
-            <div className="grid grid-cols-3 gap-2">
-              <MorroWiseMetric label="done" value={String(completed.length)} tone="green" />
-              <MorroWiseMetric label="open loops" value={String(openLoopCount)} tone={openLoopCount > 0 ? "yellow" : "green"} />
-              <MorroWiseMetric label="pending" value={String(pendingEvents)} tone={pendingEvents > 0 ? "blue" : "green"} />
-            </div>
-            <div className="mt-4 pt-3 border-t border-[var(--border)] min-w-0">
-              <div className="text-[11px] text-[var(--text-muted)]">Next executable task</div>
-              {nextTask ? (
-                <div className="mt-1 min-w-0">
-                  <div className="font-mono text-[12px] text-[var(--text)] truncate">{nextTask.order_label || nextTask.id}</div>
-                  <div className="mt-1 text-[12px] text-[var(--text-muted)] line-clamp-2">{nextTask.title || nextTask.id}</div>
-                </div>
-              ) : (
-                <div className="mt-1 text-[12px] text-green-400">MorroWise first control-console loop complete</div>
-              )}
+            <div className="mt-3 grid grid-cols-4 gap-2">
+              <MorroWiseMetric label="完成" value={String(completed.length)} tone="green" />
+              <MorroWiseMetric label="未閉合" value={String(openLoopCount)} tone={openLoopCount > 0 ? "yellow" : "green"} />
+              <MorroWiseMetric label="待處理" value={String(pendingEvents)} tone={pendingEvents > 0 ? "blue" : "green"} />
+              <MorroWiseMetric label="老舊" value={String(staleMorroWise)} tone={staleMorroWise > 0 ? "yellow" : "green"} />
             </div>
           </div>
 
-          <div className="rounded-lg border border-[var(--border)] p-4 min-w-0">
-            <div className="pb-3 mb-3 border-b border-[var(--border)] text-[12px] font-semibold text-[var(--text-muted)]">
-              Trigger sources
-            </div>
-            <div className="space-y-2">
-              {triggerRows.map((row) => (
-                <div key={row.label} className="grid grid-cols-[104px_1fr_auto] gap-3 items-baseline min-w-0 text-[12px]">
-                  <span className="font-semibold text-[var(--text)] truncate">{row.label}</span>
-                  <span className="text-[var(--text-muted)] truncate">{row.signal}</span>
-                  <span className="rounded-full border border-[var(--border)] px-2 py-0.5 font-mono text-[10px] text-[var(--text-muted)]">{row.state}</span>
-                </div>
-              ))}
-            </div>
-            <div className="mt-4 pt-3 border-t border-[var(--border)] text-[11px] leading-relaxed text-[var(--text-muted)]">
-              Surface reads current MC data; future `morrowise-system.json` can replace this derived view without changing the dashboard contract.
-            </div>
-          </div>
-
-          <div className="rounded-lg border border-[var(--border)] p-4 min-w-0">
-            <div className="pb-3 mb-3 border-b border-[var(--border)] text-[12px] font-semibold text-[var(--text-muted)]">
-              Feedback / open loops
-            </div>
-            <div className="space-y-2">
-              {openLoopRows.length > 0 ? (
-                openLoopRows.map((row) => (
-                  <div key={row.id} className="min-w-0">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <StatusDot status={row.tone === "red" ? "blocked" : row.tone === "blue" ? "in_progress" : "needs_fix"} />
-                      <span className="font-mono text-[11px] text-[var(--text)] truncate">{row.label}</span>
-                      <span className={morroWiseLoopTagClass(row.tone)}>{row.tone}</span>
-                    </div>
-                    <div className="mt-0.5 pl-4 text-[11px] text-[var(--text-muted)] truncate">{row.text}</div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-[12px] text-[var(--text-muted)]">目前沒有 dashboard-visible open loop</div>
-              )}
-            </div>
-            <div className="mt-4 pt-3 border-t border-[var(--border)] text-[11px] text-[var(--text-muted)]">
-              canonical state: <span className="font-mono text-[var(--text)]">milestones/harness-mc/tasks.json</span>
+          <div className="rounded-lg border border-[var(--border)] bg-black/10 p-3 min-w-0">
+            <div className="text-[11px] text-[var(--text-muted)]">下一個可執行工作</div>
+            {nextTask ? (
+              <div className="mt-1 min-w-0">
+                <div className="font-mono text-[12px] text-[var(--text)] truncate">{nextTask.order_label || nextTask.id}</div>
+                <div className="mt-1 text-[12px] text-[var(--text-muted)] line-clamp-2">{nextTask.title || nextTask.id}</div>
+              </div>
+            ) : (
+              <div className="mt-1 text-[12px] text-green-400">第一段 control-console loop 已完成</div>
+            )}
+            <div className="mt-3 pt-3 border-t border-[var(--border)] text-[11px] text-[var(--text-muted)] truncate">
+              source: <span className="font-mono text-[var(--text)]">tasks.json / task-events / changes</span>
             </div>
           </div>
         </div>
@@ -330,13 +562,6 @@ function MorroWiseMetric({ label, value, tone }: { label: string; value: string;
       <div className={`mt-1 font-mono text-[20px] leading-none font-semibold ${color}`}>{value}</div>
     </div>
   );
-}
-
-function morroWiseLoopTagClass(tone: string) {
-  const base = "ml-auto shrink-0 rounded-full border px-1.5 py-0.5 text-[10px] font-mono";
-  if (tone === "red") return `${base} border-red-400/30 text-red-400`;
-  if (tone === "blue") return `${base} border-blue-400/30 text-blue-400`;
-  return `${base} border-yellow-400/30 text-yellow-400`;
 }
 
 function MorroWiseProactiveLoopCard() {
@@ -362,74 +587,45 @@ function MorroWiseProactiveLoopCard() {
   return (
     <div>
       <div className="flex items-center gap-3 mb-3">
-        <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">MorroWise Proactive Loop</div>
+        <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">MorroWise 主動閉環</div>
         <div className="text-[11px] text-[var(--text-muted)]">
-          trigger → recommendation → approval → action → feedback · {generatedLabel} · {data.read_only ? "read-only" : "write-enabled"}
+          觸發到回饋 · {generatedLabel} 更新 · {data.read_only ? "唯讀" : "可寫入"}
         </div>
         <div className="flex-1 border-t border-[var(--border)]"></div>
       </div>
 
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
-          <LoopMetric label="closed" value={String(data.summary.closed)} tone="green" />
-          <LoopMetric label="waiting approval" value={String(data.summary.waiting_approval)} tone="yellow" />
-          <LoopMetric label="open loop" value={String(data.summary.open_loop)} tone="red" />
-          <LoopMetric label="approval queue" value={String(data.summary.approval_queue)} tone={data.summary.approval_queue > 0 ? "yellow" : "green"} />
-          <LoopMetric label="runner applied" value={String(data.summary.runner_applied_actions)} tone="blue" />
-        </div>
-
-        <div className="grid grid-cols-1 xl:grid-cols-[1.35fr_0.9fr] gap-4">
-          <div className="rounded-lg border border-[var(--border)] p-4 min-w-0">
-            <div className="flex items-center gap-2 pb-3 mb-3 border-b border-[var(--border)] text-[12px] font-semibold text-[var(--text-muted)]">
-              <StatusDot status={data.summary.open_loop > 0 || data.summary.waiting_approval > 0 ? "needs_fix" : "completed"} />
-              <span>Loop scenarios</span>
-              <span className="ml-auto font-mono text-[11px] text-[var(--text-muted)]">{data.summary.scenarios} fixtures</span>
-            </div>
-            <div className="space-y-3">
-              {data.scenarios.map((scenario) => (
-                <div key={scenario.scenario_id} className="rounded-md border border-[var(--border)] bg-black/10 p-3 min-w-0">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <StatusDot status={proactiveLoopDotStatus(scenario.status)} />
-                    <span className="text-[12px] font-semibold text-[var(--text)] truncate">{scenario.label}</span>
-                    <span className={proactiveLoopTagClass(scenario.status)}>{scenario.status}</span>
-                  </div>
-                  <div className="mt-2 grid grid-cols-1 md:grid-cols-5 gap-2">
-                    <LoopStage label="trigger" value={scenario.trigger.trigger_id} />
-                    <LoopStage label="recommend" value={scenario.recommendation.suggested_action} />
-                    <LoopStage label="approval" value={scenario.approval.policy} />
-                    <LoopStage label="action" value={scenario.action.output_type} />
-                    <LoopStage label="feedback" value={scenario.feedback.destination} />
-                  </div>
-                </div>
-              ))}
-            </div>
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4">
+        <div className="grid grid-cols-1 xl:grid-cols-[0.92fr_1.08fr] gap-4">
+          <div className="grid grid-cols-4 gap-2">
+            <LoopMetric label="已閉環" value={String(data.summary.closed)} tone="green" />
+            <LoopMetric label="等審批" value={String(data.summary.waiting_approval)} tone="yellow" />
+            <LoopMetric label="未閉合" value={String(data.summary.open_loop)} tone="red" />
+            <LoopMetric label="已執行" value={String(data.summary.runner_applied_actions)} tone="blue" />
           </div>
 
-          <div className="rounded-lg border border-[var(--border)] p-4 min-w-0">
-            <div className="pb-3 mb-3 border-b border-[var(--border)] text-[12px] font-semibold text-[var(--text-muted)]">
-              Current open signal
-            </div>
-            {activeScenario ? (
-              <div className="min-w-0">
-                <div className="flex items-center gap-2 min-w-0">
-                  <StatusDot status={proactiveLoopDotStatus(activeScenario.status)} />
-                  <span className="text-[12px] font-semibold text-[var(--text)] truncate">{activeScenario.label}</span>
-                  <span className={proactiveLoopTagClass(activeScenario.status)}>{activeScenario.approval.risk_level}</span>
-                </div>
-                <div className="mt-3 text-[12px] leading-relaxed text-[var(--text-muted)] line-clamp-4">
-                  {activeScenario.recommendation.reason}
-                </div>
-                <div className="mt-3 rounded-md border border-[var(--border)] p-3 text-[11px] leading-relaxed text-[var(--text-muted)]">
-                  <div className="font-semibold text-[var(--text)]">Runner output</div>
-                  <div className="mt-1 font-mono truncate">{activeScenario.action.output_type} · applied {String(activeScenario.action.applied)}</div>
-                  <div className="mt-1 line-clamp-2">{activeScenario.feedback.note}</div>
-                </div>
+          <div className="rounded-lg border border-[var(--border)] bg-black/10 p-3 min-w-0">
+            <div className="flex items-center gap-2 min-w-0">
+              <StatusDot status={activeScenario ? proactiveLoopDotStatus(activeScenario.status) : "completed"} />
+              <div className="text-[12px] font-semibold text-[var(--text)] truncate">
+                {activeScenario?.label || "目前沒有未閉合 loop"}
               </div>
-            ) : (
-              <div className="text-[12px] text-[var(--text-muted)]">目前沒有 loop fixture</div>
-            )}
-            <div className="mt-4 pt-3 border-t border-[var(--border)] text-[11px] leading-relaxed text-[var(--text-muted)]">
-              {data.boundary}
+              <span className={activeScenario ? proactiveLoopTagClass(activeScenario.status) : proactiveLoopTagClass("closed")}>
+                {activeScenario ? proactiveLoopStatusLabel(activeScenario.status) : "已閉環"}
+              </span>
+            </div>
+            <div className="mt-2 grid grid-cols-1 md:grid-cols-[1fr_120px_120px] gap-2 text-[11px] min-w-0">
+              <div className="text-[var(--text-muted)] truncate">
+                {activeScenario?.recommendation.reason || "read model 沒有回報需要處理的 loop"}
+              </div>
+              <div className="font-mono text-[var(--text)] truncate">
+                {activeScenario?.action.output_type || "summary"}
+              </div>
+              <div className="font-mono text-[var(--text-muted)] truncate">
+                approval {data.summary.approval_queue}
+              </div>
+            </div>
+            <div className="mt-3 pt-3 border-t border-[var(--border)] text-[11px] text-[var(--text-muted)] truncate">
+              唯讀：不關閉 task、不 commit、不同步外部工具
             </div>
           </div>
         </div>
@@ -449,19 +645,16 @@ function LoopMetric({ label, value, tone }: { label: string; value: string; tone
   );
 }
 
-function LoopStage({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-md border border-[var(--border)] px-2 py-2 min-w-0">
-      <div className="text-[10px] text-[var(--text-muted)]">{label}</div>
-      <div className="mt-1 font-mono text-[11px] text-[var(--text)] truncate">{value}</div>
-    </div>
-  );
-}
-
 function proactiveLoopDotStatus(status: ProactiveLoopScenario["status"]) {
   if (status === "closed") return "completed";
   if (status === "waiting_approval") return "needs_fix";
   return "blocked";
+}
+
+function proactiveLoopStatusLabel(status: ProactiveLoopScenario["status"]) {
+  if (status === "closed") return "已閉環";
+  if (status === "waiting_approval") return "等審批";
+  return "未閉合";
 }
 
 function proactiveLoopTagClass(status: ProactiveLoopScenario["status"]) {
@@ -1007,11 +1200,17 @@ function EvaluationCard({ projects }: { projects: Project[] }) {
 
 export default function HomePage() {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [liveDashboard, setLiveDashboard] = useState<LiveDashboardData | null>(null);
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/projects.json`)
       .then((r) => r.json())
       .then(setProjects)
+      .catch(() => {});
+
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/morrowise-live-dashboard.json`)
+      .then((r) => r.json())
+      .then(setLiveDashboard)
       .catch(() => {});
   }, []);
 
@@ -1019,22 +1218,34 @@ export default function HomePage() {
   const doneTasks = projects.reduce((s, p) => s + p.done, 0);
 
   return (
-    <main className="min-h-screen p-6 md:p-10 max-w-4xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-title font-bold">Mission Control</h1>
-        <p className="text-body text-[var(--text-muted)] mt-1">
-          Harness Engineering 四大支柱 · 雙層架構
-        </p>
-      </div>
+    <main className="min-h-screen">
+      <div className="grid min-h-screen grid-cols-1 xl:grid-cols-[248px_minmax(0,1fr)]">
+        <LiveDashboardSidebar data={liveDashboard} projects={projects} />
 
-      <div className="space-y-6">
-        <SystemAttentionCard />
-        <MorroWiseSurfaceCard projects={projects} />
-        <MorroWiseProactiveLoopCard />
-        <WorktreeStatusCard />
-        <TaskVisualSyncCard projects={projects} />
+        <div className="min-w-0 p-5 md:p-8 xl:p-10">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-7 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <h1 className="text-title font-bold">Mission Control</h1>
+                <p className="text-body text-[var(--text-muted)] mt-1">
+                  Harness Engineering 四大支柱 · MorroWise live dashboard
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2 text-[11px] text-[var(--text-muted)]">
+                <span className="rounded-full border border-[var(--border)] px-3 py-1">read-only homepage</span>
+                <span className="rounded-full border border-[var(--border)] px-3 py-1">source: morrowise-live-dashboard.json</span>
+              </div>
+            </div>
 
-        <div>
+            <div className="space-y-6">
+              <LiveDashboardSummary data={liveDashboard} />
+              <section id="system-attention"><SystemAttentionCard /></section>
+              <section id="morrowise-system"><MorroWiseSurfaceCard projects={projects} /></section>
+              <section id="morrowise-loop"><MorroWiseProactiveLoopCard /></section>
+              <section id="worktree-status"><WorktreeStatusCard /></section>
+              <section id="visual-sync"><TaskVisualSyncCard projects={projects} /></section>
+
+        <div id="discipline">
           <div className="flex items-center gap-3 mb-3">
             <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">紀律層</div>
             <div className="text-[11px] text-[var(--text-muted)]">Execution Discipline — 每次執行都過的關卡</div>
@@ -1063,7 +1274,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div>
+        <div id="capability">
           <div className="flex items-center gap-3 mb-3">
             <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">能力層</div>
             <div className="text-[11px] text-[var(--text-muted)]">Capability Platform — 設定一次，持續存在</div>
@@ -1099,7 +1310,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div>
+        <div id="learning">
           <div className="flex items-center gap-3 mb-3">
             <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">學習層</div>
             <div className="text-[11px] text-[var(--text-muted)]">Learning Pipeline — 多課程自學管線</div>
@@ -1119,6 +1330,9 @@ export default function HomePage() {
               </div>
               <LearningCard />
             </Link>
+          </div>
+        </div>
+            </div>
           </div>
         </div>
       </div>

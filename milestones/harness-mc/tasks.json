@@ -1734,7 +1734,7 @@
     {
       "id": "acp-work-anchor-preflight-flow",
       "title": "Work-anchor preflight flow：開始/可以後先查 active task，沒有就進 task proposal",
-      "status": "todo",
+      "status": "in_progress",
       "track": "control-plane",
       "order_label": "ACP-MC-GATE-03",
       "priority": "high",
@@ -1748,7 +1748,7 @@
         "proposed task 必須包含 id、title、track、done_condition、acceptance 或驗收矩陣草案，並等待 Vincent 確認後才寫入 tasks.json。",
         "house123-buy 核貸後決策系統案例可重跑：既有 t1-t8 + archive task 全 done 時，preflight 應回傳 blocked 與 proposed task，而不是直接改 index.html。"
       ],
-      "note": "Vincent 指出 Task-before-work gate 目前缺觸發與阻擋：說「開始 / 可以」後若 preflight 發現沒有 active task，不能猜、不能直接實作，必須列出查到的 existing tasks、狀態、原因與 proposed task，等確認後才寫入 task 並進入 execution。house123-buy 核貸後決策系統作為第一個驗證案例。",
+      "note": "Vincent 指出 Task-before-work gate 目前缺觸發與阻擋：說「開始 / 可以」後若 preflight 發現沒有 active task，不能猜、不能直接實作，必須列出查到的 existing tasks、狀態、原因與 proposed task，等確認後才寫入 task 並進入 execution。house123-buy 核貸後決策系統作為第一個驗證案例。2026-06-21 進度：已新增 scripts/work-anchor-preflight.mjs、scripts/verify-work-anchor-preflight.mjs 與 npm script test:work-anchor-preflight，並更新 vincent-superpowers / planning / execution / project-init shared skills 接入 work-anchor preflight。已通過 test:work-anchor-preflight、test:skills、test:tasks、generate-data、sync:obsidian-canvas 與 npm run build；目前剩 commit / task closure gate，完成 commit 後再補 completed_at、summary、commits 並關閉。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -1785,6 +1785,41 @@
           "card_id": "b7876337-bc60-487a-b26a-826cd3fa03a6",
           "synced_at": "2026-06-21",
           "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "acp-hc-framing-gate",
+      "title": "HC framing gate：系統型 task 進 execution 前必須先做 HC decision",
+      "status": "todo",
+      "track": "control-plane",
+      "order_label": "ACP-MC-GATE-05",
+      "priority": "high",
+      "depends_on": [
+        "acp-task-before-work-gate",
+        "acp-work-anchor-preflight-flow"
+      ],
+      "done_condition": "定義並落地 HC framing gate：agent 準備執行 control-plane / MorroWise / workflow / gate / validator / skill 流程 task 前，必須先輸出 HC decision block；若判定不需要 HC，也要寫明 not_required reason，避免系統型 task 直接從 task anchor 跳到 implementation。",
+      "acceptance": [
+        "planning / execution / project-init 或對應 task write flow 明確規定：系統型 task 進 execution 前必須先判斷是否需要 HC framing。",
+        "HC decision block 至少包含 task scope、hc_refs、hc_reasoning、hc_confidence 或 not_required reason、以及 evidence_refs；並明確說 HC 是 thinking check，不是 source of truth。",
+        "control-plane / MorroWise / gate / validator / skill 類 task 若缺 HC decision block，validator 或 verifier 能回傳 fail 或明確 warning。",
+        "用 ACP-MC-GATE-03 這次漏掉 HC 的案例重跑：preflight 應先要求 HC framing，再進 work-anchor / implementation flow。",
+        "此 gate 的輸出需能被 future agents 從 task text 或 verifier 結果接續，不依賴聊天記憶。"
+      ],
+      "hc_used": [
+        "#rightProblem",
+        "#systemDynamics",
+        "#risk",
+        "#confirmationBias"
+      ],
+      "hc_reasoning": "根因不是缺一段提醒，而是 HC 只存在於 planning-preflight / project-init 的流程文字，沒有進入系統型 task execution 的資料契約與驗證閘門。此 gate 要把 HC 從記憶型規則變成 trigger、decision block、validator/verifier 與 task text 都看得到的流程邊界。",
+      "note": "Vincent 指出寫 task 會使用 HC 思考；本次執行 ACP-MC-GATE-03 時因已有 task anchor 而直接跳到 implementation，漏掉 HC framing。參考既有 task schema validator、skill validator、visual sync coverage gate、MorroWise recommendation engine 的 hc_refs/hc_reasoning/hc_confidence contract，把這個漏點制度化，而不是只口頭提醒。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "sync_mode": "pending",
+          "note": "待 ACP-MC-GATE-04 的必問白板流程或 Vincent 確認後同步。"
         }
       }
     },

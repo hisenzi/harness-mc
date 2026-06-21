@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-harness-mc-acp-work-anchor-preflight-flow-8c13f68-20260621T154234Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "8c13f68",
+  "project": "harness-mc",
+  "task_id": "acp-work-anchor-preflight-flow",
+  "status": "updated",
+  "summary": "Shared skills now route 開始/可以 execution intent through work-anchor preflight before implementation.",
+  "created_at": "2026-06-21T15:42:34.579Z",
+  "actor": "codex",
+  "session_id": "codex-20260621-acp-mc-gate-03"
+}

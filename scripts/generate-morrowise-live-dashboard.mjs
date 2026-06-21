@@ -9,6 +9,7 @@ const DATA_DIR = path.join("public", "data");
 const CONTRACT_REF = "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-read-model-contract.md";
 const STANDARD_REF = "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-system-verification-standard.md";
 const AUDIT_REF = "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-surface-audit.md";
+const ONE_MINUTE = 60 * 1000;
 
 export function generateMorrowiseLiveDashboard(options = {}) {
   const root = options.root || defaultRoot;
@@ -99,7 +100,10 @@ function systemAttentionSurface(sources) {
     source_files: ["$COLLAB/harness-mc/public/data/changes.json", "$COLLAB/harness-mc/public/data/task-events.json"],
     generator: ["scripts/sentinel-diff.mjs", "scripts/generate-task-event-data.mjs", "npm run prebuild"],
     generated_at: latest([changes.generated_at, taskEvents.generated_at, sources.fileTimes.changes, sources.fileTimes.taskEvents]),
+    stale_after_minutes: 15,
     stale_rule: "stale when generated attention data is older than 15 minutes during an active session, or after task-event/worktree regeneration changes upstream state",
+    missing_sources: missingSources(sources, ["changes", "taskEvents"]),
+    freshness_action: action("generator", "npm run prebuild", "Regenerate changes.json and task-events.json before trusting System Attention."),
     next_action: pendingEvents > 0 || staleCount > 0
       ? action("route_or_task", "surface.system_attention.drilldown", "Review stale, blocked, or pending queue items.")
       : action("none", null, "No attention action required from the current generated data."),
@@ -131,7 +135,10 @@ function morrowiseLivingSystemSurface(sources) {
     ],
     generator: ["scripts/generate-data.mjs", "scripts/generate-task-event-data.mjs", "scripts/sentinel-diff.mjs", "npm run prebuild"],
     generated_at: latest([sources.fileTimes.projects, sources.taskEvents?.generated_at, sources.changes?.generated_at]),
+    stale_after_minutes: 60,
     stale_rule: "stale when generated project, event, or attention data is older than the newest canonical task/event/worktree input used by the dashboard",
+    missing_sources: missingSources(sources, ["projects", "taskEvents", "changes"]),
+    freshness_action: action("generator", "npm run prebuild", "Regenerate project, task-event, and attention data before trusting the MorroWise task chain."),
     next_action: nextTask
       ? action("task", nextTask.id, `${nextTask.order_label || nextTask.id}: ${nextTask.title}`)
       : action("none", null, "All current MorroWise tasks in generated project data are complete or non-actionable."),
@@ -162,7 +169,10 @@ function morrowiseProactiveLoopSurface(sources) {
     ],
     generator: ["scripts/generate-morrowise-proactive-loop.mjs", "scripts/morrowise-action-runner.mjs", "npm run prebuild"],
     generated_at: latest([proactive.generated_at, sources.fileTimes.proactiveLoop]),
+    stale_after_minutes: 60,
     stale_rule: "stale when proactive-loop data predates approval policy, runner, or task-event input changes",
+    missing_sources: missingSources(sources, ["proactiveLoop", "approvalPolicy"]),
+    freshness_action: action("generator", "npm run prebuild", "Regenerate proactive-loop and approval-policy derived data before trusting loop state."),
     next_action: approvalQueue > 0
       ? action("approval", "approval_queue.drilldown", "Review approval-required proactive loop outputs.")
       : action("route_or_verifier", "npm run test:morrowise-loop", "Verify proactive-loop state before presenting it as operational."),
@@ -200,7 +210,10 @@ function taskEventPipelineSurface(sources) {
     ],
     generator: ["scripts/generate-task-event-data.mjs", "scripts/apply-task-events.mjs", "npm run prebuild"],
     generated_at: latest([taskEvents.generated_at, sources.fileTimes.taskEvents]),
+    stale_after_minutes: 30,
     stale_rule: "stale when pending or rejected queues change without a regenerated task-events read model, or when queue age exceeds the dashboard threshold",
+    missing_sources: missingSources(sources, ["taskEvents"]),
+    freshness_action: action("generator", "node scripts/generate-task-event-data.mjs", "Regenerate task-events.json before applying or syncing queue actions."),
     next_action: pending > 0 || rejected > 0 || failed > 0
       ? action("route_or_command", "task_event_pipeline.drilldown", "Inspect task and sync event queues before applying or syncing events.")
       : action("none", null, "No pending task or sync event action required."),
@@ -228,7 +241,10 @@ function worktreeStatusSurface(sources) {
     source_files: ["$COLLAB/harness-mc/public/data/worktrees.json", "$COLLAB/*/.git"],
     generator: ["scripts/generate-worktree-status.mjs", "npm run prebuild"],
     generated_at: latest([worktrees.generated_at, sources.fileTimes.worktrees]),
+    stale_after_minutes: 5,
     stale_rule: "stale after any file edit, commit, checkout, branch switch, pull, push, or agent handoff",
+    missing_sources: missingSources(sources, ["worktrees"]),
+    freshness_action: action("generator", "node scripts/generate-worktree-status.mjs", "Regenerate worktree status after edits, commits, checkouts, pushes, or handoff."),
     next_action: uncommitted > 0
       ? action("command_or_policy", "worktree-commit", "Use the commit gate before committing, pushing, or marking work closed.")
       : action("none", null, "No dirty worktree action required from the generated worktree status."),
@@ -259,7 +275,10 @@ function approvalQueueSurface(sources) {
     ],
     generator: ["scripts/generate-morrowise-proactive-loop.mjs", "scripts/morrowise-action-runner.mjs", "npm run prebuild"],
     generated_at: latest([sources.proactiveLoop?.generated_at, sources.fileTimes.proactiveLoop, sources.fileTimes.approvalPolicy]),
+    stale_after_minutes: 60,
     stale_rule: "stale when approval policy, pending request payload, runner output, or task-event queue changes without regeneration",
+    missing_sources: missingSources(sources, ["proactiveLoop", "approvalPolicy"]),
+    freshness_action: action("generator", "npm run prebuild", "Regenerate proactive-loop and approval policy data before acting on approval requests."),
     next_action: approvals.length > 0
       ? action("approval", "approval_queue.drilldown", "Review exact requested action, destination, owner, age, payload preview, and closure condition before approval.")
       : action("none", null, "No approval request is pending in the generated proactive loop data."),
@@ -278,9 +297,16 @@ function approvalQueueSurface(sources) {
 }
 
 function surface(input) {
+  const freshness = evaluateFreshness(input);
+  const shouldRepair = freshness.state === "stale" || freshness.state === "degraded";
+
   return {
     ...input,
-    freshness_state: input.generated_at ? "fresh" : "unknown",
+    last_updated_at: input.generated_at || null,
+    freshness_state: freshness.state,
+    freshness_reason: freshness.reason,
+    freshness_checked_at: new Date().toISOString(),
+    next_action: shouldRepair && input.freshness_action ? input.freshness_action : input.next_action,
     open_loops: input.open_loops || [],
   };
 }
@@ -291,7 +317,7 @@ function buildSummary(surfaces, sources) {
   const primary = surfaces.find((item) => item.attention_level === highest && item.next_action?.type !== "none")?.next_action || null;
 
   return {
-    overall_freshness_state: surfaces.some((item) => item.freshness_state === "unknown") ? "unknown" : "fresh",
+    overall_freshness_state: summarizeFreshness(surfaces),
     highest_attention_level: highest,
     primary_next_action: primary,
     approval_wait_count: buildApprovalQueue(sources).length,
@@ -305,6 +331,65 @@ function buildSummary(surfaces, sources) {
       proactive_scenarios: sources.proactiveLoop?.summary?.scenarios || 0,
     },
   };
+}
+
+export function evaluateSurfaceFreshness(input, now = new Date()) {
+  if (Array.isArray(input.missing_sources) && input.missing_sources.length > 0) {
+    return {
+      state: "degraded",
+      reason: `Missing required source data: ${input.missing_sources.join(", ")}.`,
+    };
+  }
+
+  if (!input.generated_at) {
+    return {
+      state: "unknown",
+      reason: "No generated_at or file timestamp is available for this surface.",
+    };
+  }
+
+  if (!input.stale_after_minutes) {
+    return {
+      state: "fresh",
+      reason: "Generated timestamp exists and no stricter stale threshold is configured.",
+    };
+  }
+
+  const generatedAtMs = new Date(input.generated_at).getTime();
+  if (!Number.isFinite(generatedAtMs)) {
+    return {
+      state: "unknown",
+      reason: `Invalid generated_at timestamp: ${input.generated_at}.`,
+    };
+  }
+
+  const ageMinutes = Math.floor((now.getTime() - generatedAtMs) / ONE_MINUTE);
+  if (ageMinutes > input.stale_after_minutes) {
+    return {
+      state: "stale",
+      reason: `Last updated ${ageMinutes} minutes ago; threshold is ${input.stale_after_minutes} minutes.`,
+    };
+  }
+
+  return {
+    state: "fresh",
+    reason: `Last updated ${ageMinutes} minutes ago; threshold is ${input.stale_after_minutes} minutes.`,
+  };
+}
+
+function evaluateFreshness(input) {
+  return evaluateSurfaceFreshness(input);
+}
+
+function summarizeFreshness(surfaces) {
+  if (surfaces.some((item) => item.freshness_state === "degraded")) return "degraded";
+  if (surfaces.some((item) => item.freshness_state === "stale")) return "stale";
+  if (surfaces.some((item) => item.freshness_state === "unknown")) return "unknown";
+  return "fresh";
+}
+
+function missingSources(sources, keys) {
+  return keys.filter((key) => !sources[key]);
 }
 
 function buildRoutes() {

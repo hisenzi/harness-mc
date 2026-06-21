@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { generateMorrowiseLiveDashboard } from "./generate-morrowise-live-dashboard.mjs";
+import { evaluateSurfaceFreshness, generateMorrowiseLiveDashboard } from "./generate-morrowise-live-dashboard.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -23,6 +23,8 @@ const requiredSurfaceFields = [
   "generated_at",
   "stale_rule",
   "freshness_state",
+  "last_updated_at",
+  "freshness_reason",
   "next_action",
   "write_boundary",
   "verifier_ref",
@@ -62,5 +64,52 @@ for (const requiredSource of [
 
 assert.equal(data.completion_gate.worktree_commit.required_before_verification_result, true);
 assert.ok(data.verification.verifier_ref.includes("test:morrowise-live-dashboard"));
+
+for (const surface of data.surfaces) {
+  assert.ok(["fresh", "stale", "degraded", "unknown"].includes(surface.freshness_state), `${surface.id} has invalid freshness_state`);
+  assert.ok(surface.freshness_reason, `${surface.id} should explain freshness`);
+  assert.ok(surface.next_action?.label, `${surface.id} should expose next action`);
+}
+
+const degradedData = generateMorrowiseLiveDashboard({
+  root: path.join(root, "__missing__"),
+  write: false,
+});
+
+assert.equal(
+  evaluateSurfaceFreshness({
+    generated_at: "2026-06-21T00:00:00.000Z",
+    stale_after_minutes: 15,
+    missing_sources: [],
+  }, new Date("2026-06-21T00:10:00.000Z")).state,
+  "fresh",
+);
+assert.equal(
+  evaluateSurfaceFreshness({
+    generated_at: "2026-06-21T00:00:00.000Z",
+    stale_after_minutes: 15,
+    missing_sources: [],
+  }, new Date("2026-06-21T00:16:00.000Z")).state,
+  "stale",
+);
+assert.equal(
+  evaluateSurfaceFreshness({
+    generated_at: "2026-06-21T00:00:00.000Z",
+    stale_after_minutes: 15,
+    missing_sources: ["projects"],
+  }, new Date("2026-06-21T00:01:00.000Z")).state,
+  "degraded",
+);
+assert.equal(
+  evaluateSurfaceFreshness({
+    generated_at: null,
+    stale_after_minutes: 15,
+    missing_sources: [],
+  }, new Date("2026-06-21T00:01:00.000Z")).state,
+  "unknown",
+);
+
+assert.ok(degradedData.surfaces.every((surface) => ["degraded", "unknown"].includes(surface.freshness_state)), "missing source fixture should degrade or become unknown");
+assert.ok(degradedData.surfaces.some((surface) => surface.freshness_state === "degraded"), "missing sources should produce at least one degraded surface");
 
 console.log("MorroWise live dashboard data verification OK");

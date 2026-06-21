@@ -1700,6 +1700,63 @@
       ]
     },
     {
+      "id": "acp-work-anchor-preflight-flow",
+      "title": "Work-anchor preflight flow：開始/可以後先查 active task，沒有就進 task proposal",
+      "status": "todo",
+      "track": "control-plane",
+      "order_label": "ACP-MC-GATE-03",
+      "priority": "high",
+      "depends_on": [
+        "acp-task-before-work-gate"
+      ],
+      "done_condition": "定義並落地 work-anchor preflight flow：當 Vincent 說「開始 / 可以」或 agent 準備進入 execution 時，必須先查 active task；若沒有 active task，輸出 blocked 並進入 task proposal，不得開始改檔。",
+      "acceptance": [
+        "說「開始 / 可以」觸發 execution intent 時，preflight 會列出 project、task source、existing task state、active task 與 allow/block 結果。",
+        "若 active task 不存在，流程只能輸出 proposed task 與 next required step，不得進入 apply_patch / file write / implementation。",
+        "proposed task 必須包含 id、title、track、done_condition、acceptance 或驗收矩陣草案，並等待 Vincent 確認後才寫入 tasks.json。",
+        "house123-buy 核貸後決策系統案例可重跑：既有 t1-t8 + archive task 全 done 時，preflight 應回傳 blocked 與 proposed task，而不是直接改 index.html。"
+      ],
+      "note": "Vincent 指出 Task-before-work gate 目前缺觸發與阻擋：說「開始 / 可以」後若 preflight 發現沒有 active task，不能猜、不能直接實作，必須列出查到的 existing tasks、狀態、原因與 proposed task，等確認後才寫入 task 並進入 execution。house123-buy 核貸後決策系統作為第一個驗證案例。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "4194d28c-7a2f-4048-90ec-ce8a19948462",
+          "synced_at": "2026-06-21",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "acp-required-heptabase-canvas-publish-flow",
+      "title": "Required Heptabase + Canvas publish flow：task 寫入後必問白板並同步視覺層",
+      "status": "todo",
+      "track": "control-plane",
+      "order_label": "ACP-MC-GATE-04",
+      "priority": "high",
+      "depends_on": [
+        "acp-visual-sync-coverage-gate",
+        "acp-work-anchor-preflight-flow"
+      ],
+      "done_condition": "更新 task 發布流程：新增或更新 MC task 後，必須詢問 Vincent 要寫進哪個 Heptabase 白板；該白板名稱同時作為 Obsidian Canvas 名稱。Heptabase sync 成功後需回寫 external_refs.heptabase，再用同名 Canvas 同步，最後輸出 MC / Heptabase / Canvas / build coverage report。",
+      "acceptance": [
+        "planning skill 的 Task 發布 hook 將 Heptabase 從 optional 改成必問白板並同步，不可用 project id 或預設白板猜測。",
+        "visual-layer-transition-protocol 明確定義 Heptabase whiteboard name 同時是 Obsidian Canvas name，且 MC tasks.json 仍是 source of truth。",
+        "heptabase-task-cards skill 未取得白板名稱時必須停下來問 Vincent，不得自動用 project id 搜尋當作發布目標。",
+        "task 寫入後的 coverage report 必須列 MC task、Heptabase card_id、同名 Obsidian Canvas sync、MC data/build 狀態與 gaps。"
+      ],
+      "note": "Vincent 決定 Heptabase 不再是 optional visual layer；所有 task 都要寫 Heptabase。流程不可猜白板名稱，未指定時必須先問。Heptabase 白板名稱同時是 Obsidian Canvas 名稱，讓白板與本地 Canvas 一一對齊。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "b7876337-bc60-487a-b26a-826cd3fa03a6",
+          "synced_at": "2026-06-21",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
       "id": "morrowise-rename-impact-inventory",
       "title": "盤點 Willgrow → MorroWise 改名影響範圍",
       "status": "completed",

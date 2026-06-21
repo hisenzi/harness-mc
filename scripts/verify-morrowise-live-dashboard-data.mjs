@@ -64,6 +64,7 @@ for (const requiredSource of [
 
 assert.equal(data.completion_gate.worktree_commit.required_before_verification_result, true);
 assert.ok(data.verification.verifier_ref.includes("test:morrowise-live-dashboard"));
+assert.ok(Array.isArray(data.loop_chain), "loop_chain should be present");
 
 for (const surface of data.surfaces) {
   assert.ok(["fresh", "stale", "degraded", "unknown"].includes(surface.freshness_state), `${surface.id} has invalid freshness_state`);

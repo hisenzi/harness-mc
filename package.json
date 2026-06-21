@@ -21,6 +21,7 @@
     "test:morrowise-runner": "node scripts/verify-morrowise-action-runner.mjs",
     "test:morrowise-loop": "node scripts/verify-morrowise-proactive-loop.mjs",
     "test:morrowise-live-dashboard": "node scripts/verify-morrowise-live-dashboard-data.mjs",
+    "test:morrowise-live-loop": "node scripts/verify-morrowise-live-dashboard-loop.mjs",
     "test:worktree-status": "node scripts/generate-worktree-status.mjs",
     "prebuild": "node scripts/check-adr-backlinks.mjs && node scripts/validate-skills.mjs --changed-only && node scripts/generate-data.mjs && node scripts/generate-tools-data.mjs && node scripts/generate-task-event-data.mjs && node scripts/generate-morrowise-proactive-loop.mjs && node scripts/generate-worktree-status.mjs && node scripts/sentinel-diff.mjs && node scripts/generate-morrowise-live-dashboard.mjs",
     "build": "next build",

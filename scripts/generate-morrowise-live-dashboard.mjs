@@ -44,6 +44,7 @@ export function generateMorrowiseLiveDashboard(options = {}) {
     },
     summary: buildSummary(surfaces, sources),
     surfaces,
+    loop_chain: buildLoopChain(sources),
     routes: buildRoutes(),
     approval_queue: buildApprovalQueue(sources),
     completion_gate: buildCompletionGate(sources),
@@ -51,7 +52,8 @@ export function generateMorrowiseLiveDashboard(options = {}) {
       contract_ref: CONTRACT_REF,
       standard_ref: STANDARD_REF,
       audit_ref: AUDIT_REF,
-      verifier_ref: "npm run test:morrowise-live-dashboard",
+      verifier_ref: "npm run test:morrowise-live-loop",
+      verifier_refs: ["npm run test:morrowise-live-dashboard", "npm run test:morrowise-live-loop"],
       last_verified_at: null,
     },
   };
@@ -329,8 +331,29 @@ function buildSummary(surfaces, sources) {
       sync_events_pending: sources.taskEvents?.sync_events?.pending || 0,
       worktree_repos_scanned: sources.worktrees?.summary?.scanned || 0,
       proactive_scenarios: sources.proactiveLoop?.summary?.scenarios || 0,
+      loop_chain: Array.isArray(sources.proactiveLoop?.scenarios) ? sources.proactiveLoop.scenarios.length : 0,
     },
   };
+}
+
+function buildLoopChain(sources) {
+  const scenarios = Array.isArray(sources.proactiveLoop?.scenarios) ? sources.proactiveLoop.scenarios : [];
+  return scenarios.map((scenario) => ({
+    id: scenario.scenario_id,
+    source_surface_id: "morrowise_proactive_loop",
+    status: scenario.status,
+    read_only: true,
+    stages: {
+      trigger: scenario.trigger,
+      recommendation: scenario.recommendation,
+      approval: scenario.approval,
+      action: scenario.action,
+      feedback: scenario.feedback,
+    },
+    runner_output: scenario.runner_output,
+    evidence_refs: scenario.recommendation?.evidence_refs || [],
+    write_boundary: "Dashboard can display this loop chain only. Approval-required, forbidden, commit, push, deploy, task mutation, and external writes are not executed from the dashboard.",
+  }));
 }
 
 export function evaluateSurfaceFreshness(input, now = new Date()) {

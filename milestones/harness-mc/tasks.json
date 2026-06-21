@@ -1804,7 +1804,7 @@
     {
       "id": "acp-hc-framing-gate",
       "title": "HC framing gate：系統型 task 進 execution 前必須先做 HC decision",
-      "status": "todo",
+      "status": "completed",
       "track": "control-plane",
       "order_label": "ACP-MC-GATE-05",
       "priority": "high",
@@ -1831,10 +1831,36 @@
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
-          "sync_mode": "pending",
-          "note": "待 ACP-MC-GATE-04 的必問白板流程或 Vincent 確認後同步。"
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "2f7c37e6-c158-4ff8-bb06-5da909944ab6",
+          "synced_at": "2026-06-22",
+          "sync_mode": "refreshed"
         }
-      }
+      },
+      "hc_decision": {
+        "task_scope": "harness-mc/acp-hc-framing-gate",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#risk",
+          "#confirmationBias"
+        ],
+        "hc_reasoning": "真正問題不是提醒 agent 要用 HC，而是缺少 execution 前可檢查的資料契約；本 gate 將 HC framing 落成 task 欄位、work-anchor preflight gate、validate-tasks schema 與 shared skill hook。",
+        "hc_confidence": 0.86,
+        "evidence_refs": [
+          "milestones/harness-mc/tasks.json#acp-hc-framing-gate",
+          "system-workflow/docs/specs/morrowise-recommendation-engine.md",
+          "scripts/work-anchor-preflight.mjs",
+          "scripts/validate-tasks.mjs"
+        ],
+        "source_boundary": "HC is a thinking check, not source of truth; MC tasks.json, shared skills, specs, and verifiers remain canonical."
+      },
+      "summary": "完成：HC framing gate 已落地為 planning / execution / project-init shared skill hook、work-anchor preflight target task gate、validate-tasks hc_decision schema 與 test:hc-framing-gate verifier；系統型 task 缺 HC decision block 時會先被擋下或警告，HC 明確作為 thinking check 而非 source of truth。",
+      "completed_at": "2026-06-22",
+      "commits": [
+        "8baa72d",
+        "1cbcd27"
+      ]
     },
     {
       "id": "morrowise-rename-impact-inventory",

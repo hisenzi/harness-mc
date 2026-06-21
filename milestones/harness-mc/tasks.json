@@ -769,7 +769,7 @@
     {
       "id": "morrowise-live-dashboard-read-model-contract",
       "title": "定義 MorroWise live dashboard read model",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "batch": "living-dashboard",
       "order": 25,
@@ -779,7 +779,12 @@
         "morrowise-live-dashboard-mockup"
       ],
       "done_condition": "定義 public/data/morrowise-live-dashboard.json 契約；每個 surface 至少包含 id、label、source_of_truth、source_files、generator、generated_at、stale_rule、freshness_state、next_action、write_boundary、verifier_ref。",
-      "note": "此 read model 是 dashboard 的單一讀取入口，不可成為 task state 的寫入來源。"
+      "note": "此 read model 是 dashboard 的單一讀取入口，不可成為 task state 的寫入來源。",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "db5a57e"
+      ],
+      "summary": "新增 MorroWise live dashboard read model contract，定義 public/data/morrowise-live-dashboard.json top-level shape、surface contract、freshness/classification enum、六個 audited surfaces、drill-down routes、approval queue item contract，並在 verification result 前加入 worktree-commit completion gate。"
     },
     {
       "id": "morrowise-live-dashboard-real-data-flow",

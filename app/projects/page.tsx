@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { StatusDot } from "../components/StatusDot";
+import { filterProjectsByType, getDisplayedProjects } from "./projectFilters.mjs";
 
 interface Task {
   id: string;
@@ -121,13 +122,8 @@ export default function ProjectsPage() {
   const totalTasks = projects.reduce((s, p) => s + p.total, 0);
   const doneTasks = projects.reduce((s, p) => s + p.done, 0);
   const types = [...new Set(projects.map((p) => p.type))].sort();
-  const filtered =
-    typeFilter === "all"
-      ? projects
-      : typeFilter === "completed"
-        ? projects.filter((p) => p.status === "completed" || (p.done > 0 && p.done === p.total))
-        : projects.filter((p) => p.type === typeFilter);
-  const displayed = typeFilter === "completed" ? filtered : filtered.filter((p) => p.done < p.total);
+  const filtered: Project[] = filterProjectsByType(projects, typeFilter);
+  const displayed: Project[] = getDisplayedProjects(projects, typeFilter);
 
   if (loading) {
     return (

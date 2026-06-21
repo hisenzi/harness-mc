@@ -1536,6 +1536,35 @@
       "note": "auto-task：commit 時無對應 task，自動建立"
     },
     {
+      "id": "projects-completed-filter-task-progress-bug",
+      "title": "修正 /projects completed 分類：以 task 完成度判斷，不被 project.status 覆蓋",
+      "status": "completed",
+      "track": "phase-1",
+      "priority": "high",
+      "depends_on": [
+        "projects-card-filter-rebuild"
+      ],
+      "done_condition": "/projects 的 completed 分類只顯示 total > 0 且 done === total 的專案；若 project.status 是 completed 但仍有 todo/in_progress task，必須出現在對應 type 的進行中列表，不得出現在 completed tab。",
+      "acceptance": [
+        "house123-buy 在 9/10 且 project.status=completed 時，不出現在 completed tab。",
+        "house123-buy 在 service filter 下會出現在進行中列表。",
+        "completed tab 仍顯示真正 done === total 的專案。",
+        "新增或抽出可重跑的 filter 判斷測試，先能重現 bug，再通過修正。"
+      ],
+      "note": "Vincent 從截圖指出專案分類 bug：house123-buy 已新增 todo task 後進度為 9/10，卻因 project.json status=completed 仍出現在 completed tab。根因是 app/projects/page.tsx completed filter 使用 p.status === completed OR done === total；應改為以 task 完成條件為準，project.status 不可覆蓋 task progress。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "95c7d3a1-2e5a-46ce-9dc4-f2a2503cf8ce",
+          "synced_at": "2026-06-21",
+          "sync_mode": "appended"
+        }
+      },
+      "completed_at": "2026-06-21",
+      "summary": "/projects completed 分類改為只依 task 完成度判斷；project.status=completed 但仍有 open task 的專案會回到對應 type 的進行中列表。"
+    },
+    {
       "id": "config-launch-newproject",
       "title": "launch.json 改 npx next dev + new-project.py 路徑遷移",
       "status": "done",

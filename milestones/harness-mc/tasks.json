@@ -1734,7 +1734,7 @@
     {
       "id": "acp-work-anchor-preflight-flow",
       "title": "Work-anchor preflight flow：開始/可以後先查 active task，沒有就進 task proposal",
-      "status": "in_progress",
+      "status": "completed",
       "track": "control-plane",
       "order_label": "ACP-MC-GATE-03",
       "priority": "high",
@@ -1748,7 +1748,13 @@
         "proposed task 必須包含 id、title、track、done_condition、acceptance 或驗收矩陣草案，並等待 Vincent 確認後才寫入 tasks.json。",
         "house123-buy 核貸後決策系統案例可重跑：既有 t1-t8 + archive task 全 done 時，preflight 應回傳 blocked 與 proposed task，而不是直接改 index.html。"
       ],
-      "note": "Vincent 指出 Task-before-work gate 目前缺觸發與阻擋：說「開始 / 可以」後若 preflight 發現沒有 active task，不能猜、不能直接實作，必須列出查到的 existing tasks、狀態、原因與 proposed task，等確認後才寫入 task 並進入 execution。house123-buy 核貸後決策系統作為第一個驗證案例。2026-06-21 進度：已新增 scripts/work-anchor-preflight.mjs、scripts/verify-work-anchor-preflight.mjs 與 npm script test:work-anchor-preflight，並更新 vincent-superpowers / planning / execution / project-init shared skills 接入 work-anchor preflight。已通過 test:work-anchor-preflight、test:skills、test:tasks、generate-data、sync:obsidian-canvas 與 npm run build；目前剩 commit / task closure gate，完成 commit 後再補 completed_at、summary、commits 並關閉。",
+      "summary": "新增 work-anchor preflight CLI/verifier 並接入 shared skills；開始/可以/進行前會列 active task 與 allow/block，無 active task 時只能提出 proposed task，house123-buy 歷史 fixture 已可重跑驗證。",
+      "note": "Vincent 指出 Task-before-work gate 目前缺觸發與阻擋：說「開始 / 可以」後若 preflight 發現沒有 active task，不能猜、不能直接實作，必須列出查到的 existing tasks、狀態、原因與 proposed task，等確認後才寫入 task 並進入 execution。house123-buy 核貸後決策系統作為第一個驗證案例。2026-06-21 完成：已新增 scripts/work-anchor-preflight.mjs、scripts/verify-work-anchor-preflight.mjs 與 npm script test:work-anchor-preflight，並更新 vincent-superpowers / planning / execution / project-init shared skills 接入 work-anchor preflight。已通過 test:work-anchor-preflight、test:skills、test:tasks、generate-data、sync:obsidian-canvas 與 npm run build。",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "8c13f68",
+        "b4443a2"
+      ],
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",

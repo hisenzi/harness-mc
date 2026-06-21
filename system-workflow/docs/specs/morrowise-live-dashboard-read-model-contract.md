@@ -5,6 +5,7 @@
 > Updated: 2026-06-21
 > Target read model: `$COLLAB/harness-mc/public/data/morrowise-live-dashboard.json`
 > Upstream: `MC-LIVE-SYS-01`, `MC-LIVE-SYS-02`, `MC-LIVE-SYS-03`
+> Routing map: `morrowise-live-dashboard-routing.md`
 
 ## Purpose
 

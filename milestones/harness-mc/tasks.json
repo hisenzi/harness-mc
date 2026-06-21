@@ -870,7 +870,7 @@
     {
       "id": "morrowise-live-dashboard-doc-routing",
       "title": "完成 MorroWise 活儀表板文件路由",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "batch": "living-dashboard",
       "order": 30,
@@ -880,7 +880,12 @@
         "morrowise-live-dashboard-homepage-implementation"
       ],
       "done_condition": "整理活儀表板文件入口，明確寫出 spec、mockup、read model、verifier、task source 何時讀；未來 Agent 接手時不用從聊天紀錄或散落文件重新推理。",
-      "note": "目標是把文件也系統化，避免補東補西。"
+      "note": "目標是把文件也系統化，避免補東補西。",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "7ae2b9d"
+      ],
+      "summary": "新增 MorroWise live dashboard 文件路由圖，整理 task source、spec、mockup、read model、generator、homepage UI、verifier 的閱讀順序、權威邊界、surface route map、更新邊界與 handoff checklist，並在 read-model contract 加入 routing map 入口。"
     },
     {
       "id": "heptabase-pai-sync-migration-spec",

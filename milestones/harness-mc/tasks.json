@@ -684,7 +684,7 @@
     {
       "id": "morrowise-proactive-loop-verify",
       "title": "MorroWise 主動化閉環驗收",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "batch": "proactive-loop",
       "order": 21,
@@ -695,6 +695,12 @@
       ],
       "done_condition": "驗證 MC 能用可重跑證據回答：哪個 trigger 觸發、推薦什麼、reason / evidence_refs / risk_level / requires_approval / suggested_task_id / HC reasoning 是什麼、approval policy 判斷為何、runner 做了什麼或為何 blocked、feedback 回寫到哪個 source-of-truth、哪些 loop 未閉合。需提供 sample event chain / fixture 與 verifier，至少覆蓋正常閉環、等待 Vincent approval、runner blocked / open loop 三種情境。",
       "note": "第二段驗收；通過後才可說 MC 具備「更主動：觸發、建議、部分自動執行」。不可只靠 task text 或 dashboard 目視判斷通過；需新增或指定可重跑的驗收 fixture / verifier，確認 trigger registry、recommendation engine、approval policy、runner、dashboard read model、feedback write-back 串成同一條鏈。驗收必須確認 dashboard 是 read-only、tasks.json / task-events / sync-events 仍是 source of truth、visual layer 不可反向覆寫 MC，且 approval_required / forbidden case 不會被 runner 自動執行。",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "acf4787",
+        "42c6ad6"
+      ],
+      "summary": "MorroWise 主動化閉環已有可重跑驗收，覆蓋 trigger、recommendation、approval policy、runner action、feedback write-back、dashboard read model 與 forbidden runner case；test:morrowise-loop 與 test:morrowise-live-loop 皆通過。",
       "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {

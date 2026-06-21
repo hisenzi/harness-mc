@@ -14,6 +14,7 @@
     "test:skills": "node scripts/verify-validate-skills.mjs && node scripts/validate-skills.mjs --changed-only",
     "test:tasks": "node scripts/verify-validate-tasks.mjs && node scripts/validate-tasks.mjs --changed-only --project harness-mc",
     "test:work-anchor-preflight": "node scripts/verify-work-anchor-preflight.mjs",
+    "test:required-publish-flow": "node scripts/verify-required-publish-flow.mjs",
     "test:morrowise-schema": "node scripts/verify-morrowise-system-schema.mjs",
     "test:morrowise-console": "node scripts/verify-morrowise-control-console.mjs",
     "test:morrowise-triggers": "node scripts/verify-morrowise-trigger-rules.mjs",

@@ -14,6 +14,7 @@ function parseArgs(argv) {
   const args = {
     project: null,
     tasks: null,
+    taskId: null,
     intent: "execution",
     proposedId: null,
     proposedTitle: null,
@@ -27,6 +28,7 @@ function parseArgs(argv) {
     const arg = argv[i];
     if (arg === "--project") args.project = argv[++i];
     else if (arg === "--tasks") args.tasks = argv[++i];
+    else if (arg === "--task-id") args.taskId = argv[++i];
     else if (arg === "--intent") args.intent = argv[++i];
     else if (arg === "--proposed-id") args.proposedId = argv[++i];
     else if (arg === "--proposed-title") args.proposedTitle = argv[++i];
@@ -47,6 +49,7 @@ function usage() {
     "",
     "Options:",
     "  --tasks <path>                         Override milestones/<project>/tasks.json",
+    "  --task-id <id>                         Use a specific task as the execution anchor",
     "  --intent <text>                        Execution intent label, e.g. 開始 / 可以",
     "  --proposed-id <id>                     Required when no active task exists",
     "  --proposed-title <title>               Required when no active task exists",
@@ -82,6 +85,7 @@ function summarizeTask(task) {
     status: task.status || "todo",
     track: task.track || null,
     done_condition: task.done_condition || null,
+    hc_decision: task.hc_decision || null,
   };
 }
 
@@ -140,22 +144,37 @@ export function runPreflight(args) {
     }
   }
 
+  const targetTask = args.taskId
+    ? activeTasks.find((task) => task.id === args.taskId) || null
+    : activeTasks[0] || null;
+  const hcGate = targetTask ? evaluateHcGate(targetTask, project) : null;
+
   const result = {
     project,
     task_source: path.relative(root, taskSource),
     intent: args.intent,
+    target_task_id: args.taskId || null,
     existing_task_state: existingTaskState,
     active_tasks: activeTasks,
-    active_task: activeTasks[0] || null,
-    decision: activeTasks.length > 0 ? "allow" : "blocked",
-    next_required_step: activeTasks.length > 0
-      ? "進入 execution，並把 active_task 作為 work anchor。"
-      : "先請 Vincent 確認 proposed task；確認後才可寫入 tasks.json 並開始改檔。",
+    active_task: targetTask,
+    hc_gate: hcGate,
+    decision: targetTask && (!hcGate || hcGate.decision === "allow") ? "allow" : "blocked",
+    next_required_step: targetTask
+      ? hcGate?.decision === "blocked"
+        ? "先輸出 HC decision block；確認 HC 是 thinking check 且 evidence/source-of-truth 清楚後，才可進入 work-anchor / implementation flow。"
+        : "進入 execution，並把 active_task 作為 work anchor。"
+      : args.taskId
+        ? "指定 task 不是 active 狀態；先更新或確認 task 狀態，才可開始改檔。"
+        : "先請 Vincent 確認 proposed task；確認後才可寫入 tasks.json 並開始改檔。",
   };
 
-  if (result.decision === "blocked") {
+  if (!targetTask && !args.taskId) {
     result.proposed_task = buildProposedTask(args, project, tasks);
     result.blocked_reason = "No active task found for execution intent.";
+  } else if (!targetTask && args.taskId) {
+    result.blocked_reason = `Target task ${args.taskId} is not active or does not exist.`;
+  } else if (hcGate?.decision === "blocked") {
+    result.blocked_reason = hcGate.reason;
   }
 
   return result;
@@ -169,6 +188,7 @@ function formatMarkdown(result) {
     `execution intent: ${result.intent}`,
     `existing task state: total=${result.existing_task_state.total}, active=${result.existing_task_state.active}, done=${result.existing_task_state.done}, other=${result.existing_task_state.other}`,
     `active task: ${result.active_task ? `${result.active_task.id} (${result.active_task.status})` : "none"}`,
+    `hc gate: ${result.hc_gate ? `${result.hc_gate.decision} (${result.hc_gate.reason})` : "n/a"}`,
     `result: ${result.decision}`,
     `next required step: ${result.next_required_step}`,
   ];
@@ -187,6 +207,55 @@ function formatMarkdown(result) {
   }
 
   return lines.join("\n");
+}
+
+function evaluateHcGate(task, project) {
+  if (!requiresHcDecision(task)) {
+    return {
+      decision: "allow",
+      required: false,
+      reason: "HC framing not required for this task scope.",
+    };
+  }
+
+  const decision = task.hc_decision;
+  if (!decision || typeof decision !== "object" || Array.isArray(decision)) {
+    return {
+      decision: "blocked",
+      required: true,
+      reason: "HC decision block is required before system execution.",
+      required_fields: [
+        "task_scope",
+        "hc_refs",
+        "hc_reasoning",
+        "hc_confidence or not_required_reason",
+        "evidence_refs",
+        "source_boundary",
+      ],
+      proposed_task_scope: `${project}/${task.id}`,
+    };
+  }
+
+  return {
+    decision: "allow",
+    required: true,
+    reason: "HC decision block present.",
+    task_scope: decision.task_scope || `${project}/${task.id}`,
+    hc_refs: decision.hc_refs || [],
+    not_required_reason: decision.not_required_reason || null,
+  };
+}
+
+function requiresHcDecision(task) {
+  const id = String(task.id || "");
+  const track = String(task.track || "");
+  const label = String(task.order_label || "");
+  return track === "control-plane"
+    || track === "morrowise-system"
+    || id.startsWith("acp-")
+    || id.startsWith("morrowise-")
+    || label.startsWith("ACP-")
+    || label.startsWith("MC-LIVE-");
 }
 
 function main() {

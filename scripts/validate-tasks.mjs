@@ -21,6 +21,7 @@ const VALID_STATUSES = new Set([
   "archived",
   "cancelled",
 ]);
+const ACTIVE_STATUSES = new Set(["todo", "in_progress", "doing", "blocked"]);
 
 function parseArgs(argv) {
   const args = {
@@ -189,12 +190,66 @@ function validateTask(task) {
   if ("external_refs" in task && (typeof task.external_refs !== "object" || task.external_refs === null || Array.isArray(task.external_refs))) {
     problems.push("external_refs must be an object when present");
   }
+  if (requiresHcDecision(task) && !("hc_decision" in task)) {
+    problems.push("hc_decision is required for active control-plane / MorroWise execution tasks");
+  }
+  if ("hc_decision" in task) {
+    problems.push(...validateHcDecision(task.hc_decision));
+  }
 
   return problems;
 }
 
 function nonEmptyString(value) {
   return typeof value === "string" && value.trim().length > 0;
+}
+
+function requiresHcDecision(task) {
+  return isPortableAgentScope(task) && ACTIVE_STATUSES.has(String(task.status || "todo").toLowerCase());
+}
+
+function validateHcDecision(decision) {
+  const problems = [];
+  if (!decision || typeof decision !== "object" || Array.isArray(decision)) {
+    return ["hc_decision must be an object when present"];
+  }
+
+  if (!nonEmptyString(decision.task_scope)) {
+    problems.push("hc_decision.task_scope must be a non-empty string");
+  }
+  if (!Array.isArray(decision.evidence_refs) || decision.evidence_refs.length === 0) {
+    problems.push("hc_decision.evidence_refs must be a non-empty array");
+  } else {
+    for (const ref of decision.evidence_refs) {
+      if (!nonEmptyString(ref)) problems.push("hc_decision.evidence_refs entries must be non-empty strings");
+    }
+  }
+  if (!nonEmptyString(decision.source_boundary)) {
+    problems.push("hc_decision.source_boundary must explain that HC is a thinking check, not source of truth");
+  } else if (!/thinking check/i.test(decision.source_boundary) || !/source of truth/i.test(decision.source_boundary)) {
+    problems.push("hc_decision.source_boundary must mention thinking check and source of truth");
+  }
+
+  const hasNotRequired = nonEmptyString(decision.not_required_reason);
+  if (hasNotRequired) return problems;
+
+  if (!Array.isArray(decision.hc_refs) || decision.hc_refs.length === 0) {
+    problems.push("hc_decision.hc_refs must be a non-empty array unless not_required_reason is set");
+  } else {
+    for (const ref of decision.hc_refs) {
+      if (!nonEmptyString(ref) || !ref.startsWith("#")) {
+        problems.push("hc_decision.hc_refs entries must be HC refs like #risk");
+      }
+    }
+  }
+  if (!nonEmptyString(decision.hc_reasoning)) {
+    problems.push("hc_decision.hc_reasoning must be a non-empty string unless not_required_reason is set");
+  }
+  if (typeof decision.hc_confidence !== "number" || decision.hc_confidence < 0 || decision.hc_confidence > 1) {
+    problems.push("hc_decision.hc_confidence must be a number from 0 to 1 unless not_required_reason is set");
+  }
+
+  return problems;
 }
 
 export function validateTasks({ changedOnly = false, projects = new Set(), tracks = new Set() } = {}) {

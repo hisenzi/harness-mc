@@ -21,12 +21,12 @@ const heptabaseSkill = read("000_Agent/skills/heptabase-task-cards/SKILL.md");
 const protocol = read("000_Agent/docs/agent-control-plane/visual-layer-transition-protocol.md");
 const adapter = read("000_Agent/skills/heptabase-task-cards/scripts/create-task-cards.mjs");
 
-includes(planning, /version: 1\.7/, "planning skill must record the publish-flow gate version");
+includes(planning, /v1\.7（2026-06-21）：Task 發布 hook 要求先問 Heptabase 白板名稱/, "planning skill history must record the publish-flow gate version");
 includes(planning, /先問 Vincent exact Heptabase 白板名稱/, "planning hook must require asking Vincent for the whiteboard");
 includes(planning, /不得用 project id、預設白板或搜尋結果推論/, "planning hook must forbid inferred whiteboards");
 includes(planning, /Obsidian Canvas 名稱/, "planning hook must bind whiteboard name to Canvas name");
 
-includes(projectInit, /version: 3\.8/, "project-init must record the publish-flow gate version");
+includes(projectInit, /v3\.8（2026-06-21）：開案後 task 發布必須先取得 Vincent 指定的 Heptabase 白板名稱/, "project-init history must record the publish-flow gate version");
 includes(projectInit, /不得預設 `MC 儀表版`/, "project-init must not default to MC dashboard whiteboard");
 includes(projectInit, /同時作為 Obsidian Canvas 名稱/, "project-init must bind whiteboard name to Canvas name");
 

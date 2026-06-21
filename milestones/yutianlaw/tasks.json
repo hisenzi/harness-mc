@@ -258,6 +258,212 @@
       ],
       "summary": "修手機選單捲動後塌掉/內容透出（navbar 的 backdrop-filter 把 fixed 選單困在 ~72px 容器內）→ 開啟時關掉 backdrop-filter 恢復滿版；顯隱改 visibility 避開 opacity transition 卡住；背景改純色；點項目即關閉選單並捲至該區塊。",
       "note": "auto-task：commit 時無對應 task，自動建立"
+    },
+    {
+      "id": "yt-c1",
+      "title": "LINE 官方帳號聯絡管道（未執行，客戶無官方 LINE）",
+      "status": "done",
+      "track": "phase-2",
+      "done_condition": "確認客戶沒有官方 LINE，LINE 官方帳號入口需求取消；task 狀態關閉，後續聯絡管道改由電話、email、表單與純撥號浮動鈕承接",
+      "completed_at": "2026-06-21",
+      "summary": "需求取消：客戶沒有官方 LINE，因此不新增 LINE 官方帳號入口、QR 或加好友連結；全站聯絡管道維持電話、email 與後續表單。",
+      "note": "2026-06-21 需求更新：不用 LINE，因為客戶沒有官方 LINE。此卡不執行；原先需客戶提供 LINE 官方帳號 ID／加好友連結／QR 圖的 blocked 狀態解除，yt-c4 改為純撥號浮動鈕。FACTLOCK：grep 確認全站無 LINE（僅 tel/email）。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "b2c089e5-ceb5-4583-a4b8-1d9afaaa0818",
+          "synced_at": "2026-06-21",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    {
+      "id": "yt-c2",
+      "title": "修正「預約諮詢」按鈕桌機體驗（tel: → 聯絡區/表單）",
+      "status": "todo",
+      "track": "phase-2",
+      "done_condition": "index.astro CTA 桌機改為跳聯絡區/表單錨點或顯多選項、手機保留撥號；桌機點擊有反應；preview 桌機/手機驗證",
+      "note": "FACTLOCK：index.astro:129 primaryHref=\"tel:02-2507-6066\"，桌機點無反應屬實。footer Default.astro:48 同 tel:（footer 撥號屬合理意圖，可留）。搭配 yt-c3 表單錨點更佳。客戶清單 #2（第一優先）",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "7208a822-ac85-4030-82c5-f9a0dd4a4019",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "yt-c3",
+      "title": "線上聯絡/預約表單（Web3Forms → yutianlaw@gmail.com）",
+      "status": "todo",
+      "track": "phase-2",
+      "done_condition": "聯絡區新增表單（姓名/聯絡方式/案件類型下拉/簡述/希望聯絡時段），Web3Forms 送出寄達 gmail、含必填驗證、附個資蒐集告知勾選；preview 實際送出驗證",
+      "note": "方案 Vincent 拍板 Web3Forms/Formspree（靜態站零後端，符 project.json 零維護/資安免疫決策）。需：Web3Forms access key（免費註冊綁收件信箱）。個資告知勾選依賴 yt-c9 隱私頁。FACTLOCK：grep 確認全站無 form。客戶清單 #3（第一優先）",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "c2e92ae1-9ee9-40e6-9e1f-45ccd1b59f27",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "yt-c4",
+      "title": "手機浮動聯絡鈕（撥號）",
+      "status": "todo",
+      "track": "phase-2",
+      "done_condition": "手機版固定浮動撥號鈕，全程捲動可見、不遮主內容、與既有「回到頂部」鈕不衝突；preview 手機驗證",
+      "note": "2026-06-21 需求更新：不用 LINE，因為客戶沒有官方 LINE；此卡只做撥號，不再依賴 yt-c1。WARN：BaseLayout 已有「回到頂部」浮動鈕（ac0f47d, hi-blocks.css:2458），須協調位置避免疊壓。客戶清單 #4（第一優先）",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "cae598d1-4f49-40ab-8d80-129f52e5b2ae",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "yt-c5",
+      "title": "律師團隊照片與資訊統一（4 缺照＋5 人專業領域）",
+      "status": "blocked",
+      "track": "phase-2",
+      "done_condition": "蔡承翰/林根億/陳建廷/簡凱葳 4 位補專業形象照（webp 管線同 p1-7）；蔡承翰/莊智翔/林根億/陳建廷/簡凱葳 5 位補 expertise；8 位版面格式一致；build 引用正常",
+      "note": "卡素材：4 張律師照 + 5 人專業領域文案。FACTLOCK：lawyers.ts 確認 4 位無 photo、5 位無 expertise；律師專業資訊不可由 CC 編造。照片管線沿用 p1-7（2000×3000→800 webp）。客戶清單 #5（第二優先）",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "aa826e3a-1280-4b71-b22e-3943f7c6e8c8",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "yt-c6",
+      "title": "充實「關於我們」（成立理念/團隊特色/差異化）",
+      "status": "todo",
+      "track": "phase-2",
+      "done_condition": "關於我們區從單段擴充為含成立理念＋團隊特色＋「為什麼選雨田」差異化敘述；內容經客戶/律所確認；preview 驗證",
+      "note": "CC 可基於官網「沉穩辯護」文案＋8 律師背景＋4 服務領域起草框架，差異化事實（成立理念/特色）需客戶確認不可杜撰。現況：p1-4 僅單段介紹。客戶清單 #6（第二優先）",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "58ca3996-1477-4172-b84c-6833ce13b3ca",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "yt-c7",
+      "title": "正式網域 SEO 上線：Google Search Console 收錄",
+      "status": "blocked",
+      "track": "deploy",
+      "done_condition": "p1-deploy 綁域完成後：Search Console 驗證 yutianlaw.com、提交 sitemap.xml、確認開始收錄（site:yutianlaw.com 有結果）",
+      "note": "綁域+SSL 屬 p1-deploy 的 done_condition，本 task 不重複、聚焦 SC 收錄層。依賴 p1-deploy（卡客戶 DNS 交接）。sitemap/robots 已有(d95e64b)。客戶清單 #7（第三優先）",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "9e74b538-6a44-4eb4-8646-6a71d2713355",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "yt-c8",
+      "title": "在地＋領域 SEO 關鍵字自然埋入",
+      "status": "todo",
+      "track": "phase-2",
+      "done_condition": "首頁 title/description/各區段標題自然埋入「台北律師」「中山區律師」「商業訴訟」「刑事辯護」等地域+專業關鍵字，通順不堆砌；經律師確認；grep 驗證關鍵字入 head meta",
+      "note": "FACTLOCK：地址性「台北市中山區」已有，但職業關鍵字組合（地域+律師）未系統埋入 → 強化非從零。文案可與 yt-c10 合規一起送律師審。客戶清單 #8（第三優先）",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "282e6c11-d8e8-414c-b651-79222901dbc3",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "yt-c9",
+      "title": "隱私權政策＋免責聲明頁（頁尾連結）",
+      "status": "todo",
+      "track": "phase-2",
+      "done_condition": "新增 /privacy 隱私權政策＋/disclaimer 免責聲明兩頁，footer 加兩連結；隱私頁含個資蒐集告知（對應 yt-c3 表單）；免責含「本網站內容不構成正式法律意見」；經律師終審",
+      "note": "FACTLOCK：pages/ 確認無此兩頁。CC 起草通用範本，律師終審。yt-c3 表單收個資依法須此告知（yt-c3 個資勾選連到本頁，建議先於或同步 yt-c3）。客戶清單 #9（第三優先）",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "ccc47fee-2a68-494d-9234-e307c6c9c2de",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "yt-c10",
+      "title": "廣告用語合規複查（律師倫理規範）",
+      "status": "todo",
+      "track": "phase-2",
+      "done_condition": "複查全站「重大案件/勝訴/逆轉」等用語，分類個案事實陳述 vs 廣告保證；保證/誇大類改中性「協助處理/經辦」；提交律師終審；產出複查清單",
+      "note": "FACTLOCK 出現處：lawyers.ts cases 欄位標題「重大案件」(HiTeam.astro:53)、news 標題「逆轉勝訴」、內文「判決勝訴」（個案事實）。個案已結判決陳述 vs 廣告保證須律師界定。客戶清單 #10（第三優先）",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "b4dadc72-302e-4b27-a0fc-d0923efbfb2b",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "yt-c11",
+      "title": "法律觀點固定更新節奏（對應既有 yt-A 內容線）",
+      "status": "todo",
+      "track": "content",
+      "done_condition": "確立文章更新頻率（建議月 1-2 篇）；現有 yt-A1（諮詢前準備清單）/yt-A2（行政救濟+2篇）為下批產出",
+      "note": "客戶 #11 = 維持更新頻率，已由內容線 yt-A1/yt-A2 涵蓋，本 task 為節奏 meta 不重複實作。現 5 篇。客戶清單 #11（加分項）",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "4e361d94-74bd-4d4f-8971-cdc8e55a92e8",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "yt-c12",
+      "title": "英文版需求評估（涉外/外商業務）",
+      "status": "backlog",
+      "track": "phase-2",
+      "done_condition": "評估英文版 ROI 與範圍（團隊有 KY/海運/上市/英文契約經驗）；產出做/不做建議＋若做的範圍與工時估算",
+      "note": "加分項，評估性質。Astro i18n 可支援。林彥妤英文契約/KY 經驗為賣點。客戶清單 #12（加分項）",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "88e8f444-8d2f-46e6-a2e1-f5e129d8d095",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
     }
   ]
 }

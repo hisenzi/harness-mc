@@ -8,7 +8,10 @@
   "estimated_completion": "2026-06-12",
   "tracks": {
     "phase-1": "P1 前台上線",
-    "deploy": "部署"
+    "deploy": "部署",
+    "content": "文章內容線",
+    "legal-ai": "法律 AI 線（Claude for Legal）",
+    "phase-2": "P2 客戶驗收修改（轉換/信任/SEO/合規，260618 客戶清單）"
   },
   "goals": [
     "P1 前台上線：用 HiBlocks 區塊組出雨田形象站（首頁橫幅 + 事務所介紹 + 10 類案件 + 5 人專業團隊 + 聯絡），部署到 Zeabur，2026-06-12 前可公開訪問",

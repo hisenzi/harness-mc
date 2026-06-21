@@ -709,7 +709,7 @@
     {
       "id": "morrowise-live-system-verification-standard",
       "title": "定義 MorroWise 活系統驗證標準",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "batch": "living-dashboard",
       "order": 22,
@@ -719,12 +719,17 @@
         "morrowise-proactive-loop-verify"
       ],
       "done_condition": "產出 MorroWise 活系統 pass/fail checklist，明確定義每個 dashboard surface 必須具備 source、generator、generated_at、stale_rule、next_action、write_boundary、verifier；未達標需標為半活或靜態展示，不可宣稱完整活系統。",
-      "note": "Taiwan.md/semiont 只作參考，不作驗證主體。本 task 的主體是 MorroWise / MC。"
+      "note": "Taiwan.md/semiont 只作參考，不作驗證主體。本 task 的主體是 MorroWise / MC。",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "ab92e23"
+      ],
+      "summary": "定義 MorroWise 活系統 surface 驗證標準，要求 source、generator、generated_at、stale_rule、next_action、write_boundary、verifier 並規定未達標分類。"
     },
     {
       "id": "morrowise-live-surface-audit",
       "title": "盤點 MC 現有卡片是否真的活",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "batch": "living-dashboard",
       "order": 23,
@@ -734,12 +739,17 @@
         "morrowise-live-system-verification-standard"
       ],
       "done_condition": "依 MC-LIVE-SYS-01 標準檢查 System Attention、MorroWise 活系統、MorroWise 主動閉環、Task Event Pipeline、Worktree Status、Approval Queue；每張卡分類為已活、半活、靜態展示或假活風險，並列出缺口。",
-      "note": "重點是驗證 MC 自己，不再把 Taiwan.md 是否完整活系統當主線。"
+      "note": "重點是驗證 MC 自己，不再把 Taiwan.md 是否完整活系統當主線。",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "ab92e23"
+      ],
+      "summary": "依活系統標準盤點六個 MC surface，全部分類為 semi_live 並列出後續 read model、stale、verifier 與 homepage 缺口。"
     },
     {
       "id": "morrowise-live-dashboard-mockup",
       "title": "建立 MorroWise 活儀表板完整 Mockup",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "batch": "living-dashboard",
       "order": 24,
@@ -749,7 +759,12 @@
         "morrowise-live-surface-audit"
       ],
       "done_condition": "在 system-workflow/docs/mockups/ 產出完整 MC 首頁 mockup，納入 sidebar 資訊分流、首頁摘要、drill-down、approval queue、freshness、read-only boundary；不得使用 emoji，並清楚標示哪些資訊在首頁、哪些進下層。",
-      "note": "Mockup 是資訊架構驗證稿，不是裝飾稿；目標是讓資訊很多時仍能先判斷現在要不要管、先管哪裡、資料新不新。"
+      "note": "Mockup 是資訊架構驗證稿，不是裝飾稿；目標是讓資訊很多時仍能先判斷現在要不要管、先管哪裡、資料新不新。",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "ab92e23"
+      ],
+      "summary": "新增 MC 首頁 live dashboard mockup，納入 sidebar 分流、首頁摘要、drill-down、approval queue、freshness、surface contract 與 read-only boundary。"
     },
     {
       "id": "morrowise-live-dashboard-read-model-contract",

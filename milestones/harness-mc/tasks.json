@@ -829,7 +829,7 @@
     {
       "id": "morrowise-live-dashboard-loop-verifier",
       "title": "建立 MorroWise 活儀表板閉環 verifier",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "batch": "living-dashboard",
       "order": 28,
@@ -839,7 +839,12 @@
         "morrowise-live-dashboard-stale-degraded-state"
       ],
       "done_condition": "新增可重跑 verifier，驗證 trigger、recommendation、approval、runner output、feedback、dashboard read model 串成同一條鏈；approval_required / forbidden case 不得被自動執行。",
-      "note": "此 task 才能判定 MorroWise 不只是資料展示，而是具備可驗證閉環。"
+      "note": "此 task 才能判定 MorroWise 不只是資料展示，而是具備可驗證閉環。",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "42c6ad6"
+      ],
+      "summary": "新增 MorroWise live dashboard closed-loop verifier，驗證 dashboard loop_chain 串起 trigger、recommendation、approval、runner output、feedback，並確認 approval_required / commit_push_deploy / forbidden cases 不會自動執行。"
     },
     {
       "id": "morrowise-live-dashboard-homepage-implementation",

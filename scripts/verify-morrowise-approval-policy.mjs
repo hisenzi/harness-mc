@@ -28,6 +28,12 @@ assert(
   policy.core_rules?.commit_boundary_rule?.includes("worktree-commit confirmation gate"),
   "commit boundary rule must require worktree-commit confirmation gate"
 );
+assert(
+  policy.core_rules?.worktree_commit_gate_rule?.includes("dirty-tree scan") &&
+    policy.core_rules?.worktree_commit_gate_rule?.includes("4C review") &&
+    policy.core_rules?.worktree_commit_gate_rule?.includes("Vincent confirmation"),
+  "worktree commit gate rule must require dirty-tree scan, 4C review, and Vincent confirmation"
+);
 assert(Array.isArray(policy.sources_reviewed) && policy.sources_reviewed.length >= 10, "sources_reviewed too small");
 
 const tiers = new Map(policy.policy_tiers.map((tier) => [tier.policy, tier]));
@@ -57,6 +63,7 @@ for (const actionClass of [
   "external_sync_or_write",
   "third_party_repo_skill_intake",
   "commit_push_deploy",
+  "worktree_commit_gate",
   "visual_layer_overwrite_or_reverse_sync",
   "browser_submit_or_message",
 ]) {
@@ -89,7 +96,18 @@ for (const tier of policy.policy_tiers) {
 
 const commitRule = tiers.get("approval_required").rules.find((rule) => rule.action_class === "commit_push_deploy");
 assert(commitRule.runner_limit?.includes("commit plan or draft patch"), "commit_push_deploy must limit runner to commit plan or draft patch");
-assert(commitRule.runner_limit?.includes("must not run git commit"), "commit_push_deploy must forbid runner git commit");
+assert(commitRule.runner_limit?.includes("worktree_commit_gate"), "commit_push_deploy must reclassify actual commit as worktree_commit_gate");
+
+const worktreeCommitRule = tiers.get("approval_required").rules.find((rule) => rule.action_class === "worktree_commit_gate");
+assert(worktreeCommitRule, "worktree_commit_gate rule required");
+for (const evidence of ["dirty-tree scan", "full diff review", "4C review", "path policy check", "Vincent confirmation"]) {
+  assert(worktreeCommitRule.required_evidence.includes(evidence), `worktree_commit_gate evidence missing: ${evidence}`);
+}
+assert(worktreeCommitRule.runner_limit?.includes("explicit Vincent confirmation"), "worktree_commit_gate must require explicit Vincent confirmation");
+assert(
+  policy.runner_gate.decision_order.some((step) => step.includes("worktree_commit_gate") && step.includes("before git commit runs")),
+  "runner gate must include worktree_commit_gate before git commit runs"
+);
 
 for (const requiredInput of ["recommendation_id", "suggested_action", "risk_level", "requires_approval", "evidence_refs", "suggested_task_id"]) {
   assert(policy.runner_gate.input_required.includes(requiredInput), `runner input missing: ${requiredInput}`);
@@ -110,6 +128,8 @@ for (const phrase of [
   "Runner Gate",
   "commit plan or draft patch",
   "worktree-commit",
+  "worktree_commit_gate",
+  "4C",
   "npm run test:morrowise-approval",
 ]) {
   assert(spec.includes(phrase), `spec missing phrase: ${phrase}`);

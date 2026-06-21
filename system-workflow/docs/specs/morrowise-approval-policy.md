@@ -2,7 +2,7 @@
 
 > Task: `morrowise-approval-policy` (`MC-LIVE-18`)
 > Status: formal policy
-> Updated: 2026-06-20
+> Updated: 2026-06-21
 > Machine-readable policy: `$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json`
 > Upstream: `morrowise-recommendation-engine-v0`
 
@@ -44,6 +44,7 @@ OpenClaw is historical source material only. The active policy is `$COLLAB` cent
 4. Destructive or irreversible work requires explicit Vincent approval and a recovery plan. Prefer recoverable trash/archive over deletion.
 5. Anything that leaves the machine, writes to an external service, submits a browser form, sends a message/email/post, or changes shared automation requires explicit approval.
 6. A runner may produce a commit plan or draft patch only. Actual `git commit` must go through the `worktree-commit` confirmation gate. `push` and `deploy` require explicit Vincent approval.
+7. `worktree-commit` is the only approved local commit gate. It is not just a recommendation label; it requires dirty-tree scan, per-file diff review, logical commit grouping, 4C review, path policy check, explicit Vincent confirmation, commit execution, and task-state/event follow-up.
 
 ## Tier 1: Allowed
 
@@ -69,6 +70,7 @@ Approval-required actions must stop and show the exact intended action, evidence
 | `external_sync_or_write` | Heptabase, Notion, Telegram, Obsidian API, public posting, email. | Destination, payload preview, driver, dry-run when available. |
 | `third_party_repo_skill_intake` | Install skill, copy repo into workspace, add unknown dependency. | Isolation path, security-scan verdict, L1-L4 review, source/license notes. |
 | `commit_push_deploy` | Git commit, push, deploy, release. Runner may only produce a commit plan or draft patch. | Staged paths, diff summary, verification output, message, path check. |
+| `worktree_commit_gate` | Run the `worktree-commit` process for a proposed commit. | Repo, task id, dirty-tree scan, grouped scope, full diff review, 4C review, verification output, path policy check, commit message, Vincent confirmation. |
 | `visual_layer_overwrite_or_reverse_sync` | Overwrite Canvas, refresh Heptabase, use visual layer to edit task state. | Canonical source, mirror destination, manual edit risk check. |
 | `browser_submit_or_message` | Submit form, send message/email, payment, account deletion, OAuth approval. | Screenshot/page state, exact action, account/session context, risk. |
 
@@ -90,10 +92,11 @@ Forbidden actions are hard stops for recommendation engine and runner.
 The future runner must evaluate action candidates in this order:
 
 1. If the action class matches `forbidden`, stop.
-2. If the action class is `commit_push_deploy`, stop at commit plan or draft patch. Actual commit must use `worktree-commit` confirmation gate. Push/deploy require explicit Vincent approval.
-3. If the action class matches `approval_required`, or the recommendation says `requires_approval: true`, request Vincent approval.
-4. If the action class matches `allowed`, proceed only inside the active task scope.
-5. If no rule matches, default to `approval_required`.
+2. If the action class is `commit_push_deploy`, stop at commit plan or draft patch. Actual commit must be reclassified as `worktree_commit_gate`; push/deploy remain `commit_push_deploy` and require explicit Vincent approval.
+3. If the action class is `worktree_commit_gate`, require the full `worktree-commit` evidence bundle and Vincent confirmation before any `git commit` runs.
+4. If the action class matches `approval_required`, or the recommendation says `requires_approval: true`, request Vincent approval.
+5. If the action class matches `allowed`, proceed only inside the active task scope.
+6. If no rule matches, default to `approval_required`.
 
 Required runner input:
 
@@ -118,6 +121,7 @@ The verifier checks:
 - required action classes are present;
 - forbidden classes include secrets, reverse visual/chat writes, destructive work, history rewrite, and unreviewed third-party execution;
 - approval-required classes include task state, memory, schedule, external sync/write, third-party intake, commit/push/deploy, visual-layer overwrite, and browser submit/message;
+- `worktree_commit_gate` exists as an approval-required class and requires the `worktree-commit` 4C evidence bundle;
 - the runner default policy is `approval_required`;
 - no shared policy file uses hard-coded local `$COLLAB` absolute paths.
 

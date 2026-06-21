@@ -1562,7 +1562,10 @@
         }
       },
       "completed_at": "2026-06-21",
-      "summary": "/projects completed 分類改為只依 task 完成度判斷；project.status=completed 但仍有 open task 的專案會回到對應 type 的進行中列表。"
+      "summary": "/projects completed 分類改為只依 task 完成度判斷；project.status=completed 但仍有 open task 的專案會回到對應 type 的進行中列表。",
+      "commits": [
+        "0d2b454"
+      ]
     },
     {
       "id": "config-launch-newproject",

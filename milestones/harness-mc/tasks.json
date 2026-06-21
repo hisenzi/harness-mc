@@ -1753,7 +1753,8 @@
       "completed_at": "2026-06-21",
       "commits": [
         "8c13f68",
-        "b4443a2"
+        "b4443a2",
+        "7837076"
       ],
       "external_refs": {
         "heptabase": {
@@ -1761,7 +1762,7 @@
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "4194d28c-7a2f-4048-90ec-ce8a19948462",
           "synced_at": "2026-06-21",
-          "sync_mode": "created"
+          "sync_mode": "appended"
         }
       }
     },

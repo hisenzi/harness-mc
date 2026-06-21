@@ -789,7 +789,7 @@
     {
       "id": "morrowise-live-dashboard-real-data-flow",
       "title": "接入 MorroWise 活儀表板真實資料流",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "batch": "living-dashboard",
       "order": 26,
@@ -799,12 +799,17 @@
         "morrowise-live-dashboard-read-model-contract"
       ],
       "done_condition": "將 projects、task-events、sync-events、worktrees、approval policy、proactive loop read model 接成 morrowise-live-dashboard.json；不得只使用 fixture，fixture 只能保留於 verifier。",
-      "note": "這一步把活儀表板從 mockup/read-model contract 推進到真實資料鏈。"
+      "note": "這一步把活儀表板從 mockup/read-model contract 推進到真實資料鏈。",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "4aa784d"
+      ],
+      "summary": "新增 MorroWise live dashboard generator 與 verifier，將 projects、task-events/sync-events、worktrees、approval policy、proactive loop、changes 接成 public/data/morrowise-live-dashboard.json，並串入 prebuild。"
     },
     {
       "id": "morrowise-live-dashboard-stale-degraded-state",
       "title": "新增 MorroWise stale / degraded 狀態",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "batch": "living-dashboard",
       "order": 27,
@@ -814,7 +819,12 @@
         "morrowise-live-dashboard-real-data-flow"
       ],
       "done_condition": "每個 dashboard surface 能根據 stale_rule 顯示 fresh、stale、degraded、unknown；資料老舊或缺失時不得假裝最新，需顯示最後更新時間與下一步處理建議。",
-      "note": "對應 Vincent 對資料老舊的要求：只顯示最新更新時間來做最後判斷，並在老舊時降級。"
+      "note": "對應 Vincent 對資料老舊的要求：只顯示最新更新時間來做最後判斷，並在老舊時降級。",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "8d095c2"
+      ],
+      "summary": "在 MorroWise live dashboard generator 加入 per-surface freshness evaluator，輸出 fresh、stale、degraded、unknown、last_updated_at、freshness_reason 與 stale/degraded 修復 next_action；verifier 覆蓋四種 freshness state。"
     },
     {
       "id": "morrowise-live-dashboard-loop-verifier",

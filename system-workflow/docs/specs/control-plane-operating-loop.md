@@ -18,11 +18,13 @@
 討論 / 想法
   -> 可行判斷
   -> Task gate
+  -> Acceptance gate
   -> MC tasks.json
   -> MC read model
   -> Heptabase card
   -> Obsidian Canvas mirror
   -> MC dashboard freshness
+  -> Review / worktree-commit
   -> 下一輪討論 / 執行
 ```
 
@@ -31,6 +33,7 @@
 | Gate | 對應 task | 何時觸發 | 通過標準 |
 |---|---|---|---|
 | Task-before-work | `acp-task-before-work-gate` | 要改文件、改資料、做 mockup、同步外部工具或進入執行前 | 回報 `work anchor`、`task source`、`done_condition`。 |
+| Acceptance matrix | `MC-LIVE-SYS-10` 起採用，後續納入 task authoring | 多步驟 task、UI、資料管線、同步流程、skill 或系統流程進入 execution 前 | 至少列出驗收 ID、前置資料、操作步驟、通過條件、失敗條件、驗證方式；不得只寫「能回答」或「看起來正常」。 |
 | Visual sync coverage | `acp-visual-sync-coverage-gate` | task 新增 / 更新 / 完成後 | 回報 MC task、Heptabase、Obsidian Canvas 三層狀態與 gaps。 |
 | External sync queue | `acp-external-sync-queue` | task state 變更後需同步外部視覺層或 Notion | 產生可重試的 `sync_requested / synced / failed` 狀態，不讓外部失敗阻斷 source update。 |
 | Canvas hook | `acp-obsidian-canvas-sync-hook` | MC read model 或 Heptabase refs 更新後 | 跑 `npm run sync:obsidian-canvas`，必要時 Heptabase refs 回寫後再跑一次。 |
@@ -96,20 +99,22 @@ Heptabase、Notion 等外部 source 先不宣稱 live。
 遇到以下情況不要硬補：
 
 1. 沒有 task anchor。
-2. 不知道文件該放哪裡，且 README 沒有對應類型。
-3. 視覺層與 MC task 狀態不一致。
-4. 同步需要讀取 credentials、token files、app storage 或 local database。
-5. 外部同步失敗但沒有 queue / retry 狀態可追蹤。
+2. 驗收條件只有「能回答」「看起來正常」「完成整合」這類模糊描述。
+3. 不知道文件該放哪裡，且 README 沒有對應類型。
+4. 視覺層與 MC task 狀態不一致。
+5. 同步需要讀取 credentials、token files、app storage 或 local database。
+6. 外部同步失敗但沒有 queue / retry 狀態可追蹤。
 
 ## 驗收方式
 
 本迴路不是靠「文件寫完」驗收，而是靠下一次工作能不能自然跑起來：
 
 1. Agent 能在動手前找到 work anchor。
-2. Agent 能知道該讀哪份 protocol / schema。
-3. Task 寫入後能說清楚 Heptabase / Canvas / MC dashboard 是否同步。
-4. Dashboard 能顯示資料最後更新時間。
-5. 缺口會變成 pending gap 或 task，而不是留在聊天裡。
+2. Agent 能在動手前找到驗收矩陣，或先補出可判定的驗收項目。
+3. Agent 能知道該讀哪份 protocol / schema。
+4. Task 寫入後能說清楚 Heptabase / Canvas / MC dashboard 是否同步。
+5. Dashboard 能顯示資料最後更新時間。
+6. 缺口會變成 pending gap、open loop 或 task，而不是留在聊天裡。
 
 ## 目前落地狀態
 

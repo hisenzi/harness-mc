@@ -31,11 +31,16 @@ function scanSkills() {
 
     const stat = fs.statSync(filePath);
     const changelog = parseChangelog(path.join(dirPath, "CHANGELOG.md"));
+    const version = fm.version || extractBodyVersion(content) || changelog[0]?.version || null;
+    const category = classifySkill({ dir, fm, content });
+    const groups = classifySkillGroups({ dir, fm, content });
     results.push({
       id: dir,
       name: fm.name,
       description: (fm.description || "").replace(/\n/g, " ").slice(0, 200),
-      version: fm.version || null,
+      version,
+      category,
+      groups,
       lastModified: stat.mtime.toISOString(),
       changelog,
     });
@@ -64,6 +69,64 @@ function parseFrontmatter(content) {
   }
   if (currentKey) obj[currentKey] = currentVal.trim().replace(/^["']|["']$/g, "");
   return obj;
+}
+
+function extractBodyVersion(content) {
+  const match = content.match(/^>\s*version:\s*([0-9][^|\n ]*)/m);
+  return match ? match[1].trim() : null;
+}
+
+function classifySkill({ dir, fm, content }) {
+  const identity = `${dir}\n${fm.name || ""}\n${fm.description || ""}`.toLowerCase();
+  const explicit = {
+    review: "品質驗收",
+    "verification-before-completion": "品質驗收",
+    "requesting-code-review": "品質驗收",
+    "receiving-code-review": "品質驗收",
+    "worktree-commit": "版本控制",
+    "git-worktree": "版本控制",
+    "using-git-worktrees": "版本控制",
+    "heptabase-task-cards": "同步",
+    "heptabase-notion-sync": "同步",
+    "project-init": "任務管理",
+    "planning-preflight": "任務管理",
+    "subagent-tracker": "任務管理",
+    "schedule-cron": "排程",
+    "browser-setup": "瀏覽器",
+    "security-scan": "安全",
+  };
+
+  if (explicit[dir]) return explicit[dir];
+  if (identity.includes("morrowise")) return "MorroWise";
+  if (identity.includes("skill")) return "技能系統";
+  if (identity.includes("sync") || identity.includes("notion") || identity.includes("obsidian") || identity.includes("heptabase")) return "同步";
+  if (identity.includes("project") || identity.includes("task")) return "任務管理";
+  if (identity.includes("debug") || identity.includes("bug") || identity.includes("test") || identity.includes("verify")) return "除錯驗證";
+  if (identity.includes("write") || identity.includes("article") || identity.includes("blog") || identity.includes("threads")) return "內容寫作";
+  return "一般工具";
+}
+
+function classifySkillGroups({ dir, fm, content }) {
+  const text = `${dir}\n${fm.name || ""}\n${fm.description || ""}\n${content}`.toLowerCase();
+  const groups = [];
+  const morrowiseSkills = new Set([
+    "review",
+    "worktree-commit",
+    "heptabase-task-cards",
+    "heptabase-notion-sync",
+    "project-init",
+  ]);
+  const commitGateSkills = new Set(["worktree-commit", "git-worktree", "using-git-worktrees"]);
+  const visualSyncSkills = new Set(["heptabase-task-cards", "heptabase-notion-sync", "project-init"]);
+
+  if (text.includes("morrowise") || morrowiseSkills.has(dir)) {
+    groups.push("MorroWise");
+  }
+  if (text.includes("驗收矩陣") || text.includes("acceptance matrix") || dir === "review") groups.push("驗收規範");
+  if (visualSyncSkills.has(dir) || text.includes("visual-layer")) groups.push("視覺層同步");
+  if (commitGateSkills.has(dir)) groups.push("Commit gate");
+
+  return [...new Set(groups)];
 }
 
 function parseChangelog(filePath) {

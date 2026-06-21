@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-harness-mc-acp-control-plane-operating-loop-7a0a2c8-20260621T083305Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "7a0a2c8",
+  "project": "harness-mc",
+  "task_id": "acp-control-plane-operating-loop",
+  "status": "updated",
+  "summary": "Extracted review into a standalone skill and added acceptance-matrix gates to planning/execution/review workflow.",
+  "created_at": "2026-06-21T08:33:05.367Z",
+  "actor": "codex",
+  "session_id": "codex-20260621-review-skill"
+}

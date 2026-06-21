@@ -16,6 +16,8 @@ interface Skill {
   name: string;
   description: string;
   version: string | null;
+  category: string;
+  groups: string[];
   lastModified: string;
   changelog: ChangelogEntry[];
 }
@@ -93,11 +95,28 @@ export default function ToolsPage() {
   const q = search.toLowerCase();
 
   const filteredSkills = data.skills.filter(
-    (s) => s.name.toLowerCase().includes(q) || s.description.toLowerCase().includes(q)
+    (s) =>
+      s.name.toLowerCase().includes(q) ||
+      s.description.toLowerCase().includes(q) ||
+      s.category.toLowerCase().includes(q) ||
+      s.groups.some((group) => group.toLowerCase().includes(q))
   );
   const filteredScripts = data.scripts.filter(
     (s) => s.name.toLowerCase().includes(q) || s.description.toLowerCase().includes(q)
   );
+  const skillsByCategory = filteredSkills.reduce<Record<string, Skill[]>>((acc, skill) => {
+    const category = skill.category || "一般工具";
+    acc[category] = acc[category] || [];
+    acc[category].push(skill);
+    return acc;
+  }, {});
+  const categoryOrder = Object.keys(skillsByCategory).sort((a, b) => {
+    if (a === "MorroWise") return -1;
+    if (b === "MorroWise") return 1;
+    if (a === "品質驗收") return -1;
+    if (b === "品質驗收") return 1;
+    return a.localeCompare(b, "zh-Hant");
+  });
 
   return (
     <main className="min-h-screen p-4 md:p-8 max-w-5xl mx-auto">
@@ -144,82 +163,101 @@ export default function ToolsPage() {
 
       {/* Skills */}
       {tab === "skills" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
-          {filteredSkills.map((skill) => {
-            const isOpen = expanded.has(skill.id);
-            const hasChangelog = skill.changelog && skill.changelog.length > 0;
-            return (
-              <div
-                key={skill.id}
-                className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 flex flex-col"
-              >
-                <div
-                  className={`flex items-start gap-2 ${hasChangelog ? "cursor-pointer" : ""}`}
-                  onClick={() => {
-                    if (!hasChangelog) return;
-                    setExpanded((prev) => {
-                      const next = new Set(prev);
-                      if (next.has(skill.id)) next.delete(skill.id);
-                      else next.add(skill.id);
-                      return next;
-                    });
-                  }}
-                >
-                  {hasChangelog && (
-                    <span className="text-caption text-[var(--text-muted)] mt-0.5 shrink-0">{isOpen ? "▼" : "▶"}</span>
-                  )}
-                  <span className="font-medium text-body line-clamp-2 min-h-[52px] flex-1">{skill.name}</span>
-                </div>
-                <div className="flex justify-between items-center w-full text-caption text-[var(--text-muted)] mt-1 min-h-[20px]">
-                  <span className="flex gap-1.5 items-center">
-                    {skill.version && (
-                      <span className="px-1.5 py-0.5 rounded bg-green-500/15 text-green-400">v{skill.version}</span>
-                    )}
-                    {hasChangelog && <span>{skill.changelog.length} 版</span>}
-                  </span>
-                  <span className="shrink-0">{dateFmt(skill.lastModified)}</span>
-                </div>
-                <p className="text-small text-[var(--text-muted)] line-clamp-2 mt-1.5 w-full">{skill.description}</p>
-
-                {isOpen && hasChangelog && (
-                  <div className="mt-3 pt-3 border-t border-[var(--border)] space-y-3">
-                    {skill.changelog.map((entry, i) => (
-                      <div key={i} className="flex gap-3">
-                        <div className="flex flex-col items-center">
-                          <span className={`text-caption px-1.5 py-0.5 rounded font-mono ${
-                            i === 0 ? "bg-green-500/15 text-green-400" : "bg-[var(--border)]/50 text-[var(--text-muted)]"
-                          }`}>
-                            v{entry.version}
-                          </span>
-                          {i < skill.changelog.length - 1 && (
-                            <div className="w-px flex-1 bg-[var(--border)] mt-1" />
-                          )}
-                        </div>
-                        <div className="flex-1 pb-1">
-                          <div className="flex items-center gap-2 mb-0.5">
-                            <span className="text-small font-medium">{entry.summary}</span>
-                            <span className="text-caption text-[var(--text-muted)]">{entry.date}</span>
-                          </div>
-                          {entry.details && (
-                            <p className="text-caption text-[var(--text-muted)] mb-1">{entry.details}</p>
-                          )}
-                          {entry.commits.length > 0 && (
-                            <div className="flex gap-1.5 flex-wrap">
-                              {entry.commits.map((hash) => (
-                                <span key={hash} className="text-caption font-mono px-1.5 py-0.5 rounded bg-orange-500/15 text-orange-400">
-                                  {hash.slice(0, 7)}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+        <div className="space-y-6">
+          {categoryOrder.map((category) => (
+            <section key={category}>
+              <div className="flex items-baseline justify-between mb-2">
+                <h2 className="text-heading font-semibold">{category}</h2>
+                <span className="text-caption text-[var(--text-muted)]">{skillsByCategory[category].length} 個</span>
               </div>
-            );
-          })}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
+                {skillsByCategory[category].map((skill) => {
+                  const isOpen = expanded.has(skill.id);
+                  const hasChangelog = skill.changelog && skill.changelog.length > 0;
+                  return (
+                    <div
+                      key={skill.id}
+                      className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 flex flex-col"
+                    >
+                      <div
+                        className={`flex items-start gap-2 ${hasChangelog ? "cursor-pointer" : ""}`}
+                        onClick={() => {
+                          if (!hasChangelog) return;
+                          setExpanded((prev) => {
+                            const next = new Set(prev);
+                            if (next.has(skill.id)) next.delete(skill.id);
+                            else next.add(skill.id);
+                            return next;
+                          });
+                        }}
+                      >
+                        {hasChangelog && (
+                          <span className="text-caption text-[var(--text-muted)] mt-0.5 shrink-0">{isOpen ? "▼" : "▶"}</span>
+                        )}
+                        <span className="font-medium text-body line-clamp-2 min-h-[52px] flex-1">{skill.name}</span>
+                      </div>
+                      <div className="flex justify-between items-center w-full text-caption text-[var(--text-muted)] mt-1 min-h-[20px]">
+                        <span className="flex gap-1.5 items-center">
+                          {skill.version && (
+                            <span className="px-1.5 py-0.5 rounded bg-green-500/15 text-green-400">v{skill.version}</span>
+                          )}
+                          {hasChangelog && <span>{skill.changelog.length} 版</span>}
+                        </span>
+                        <span className="shrink-0">{dateFmt(skill.lastModified)}</span>
+                      </div>
+                      {skill.groups.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 mt-2">
+                          {skill.groups.map((group) => (
+                            <span key={group} className="text-caption px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-300">
+                              {group}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <p className="text-small text-[var(--text-muted)] line-clamp-2 mt-1.5 w-full">{skill.description}</p>
+
+                      {isOpen && hasChangelog && (
+                        <div className="mt-3 pt-3 border-t border-[var(--border)] space-y-3">
+                          {skill.changelog.map((entry, i) => (
+                            <div key={i} className="flex gap-3">
+                              <div className="flex flex-col items-center">
+                                <span className={`text-caption px-1.5 py-0.5 rounded font-mono ${
+                                  i === 0 ? "bg-green-500/15 text-green-400" : "bg-[var(--border)]/50 text-[var(--text-muted)]"
+                                }`}>
+                                  v{entry.version}
+                                </span>
+                                {i < skill.changelog.length - 1 && (
+                                  <div className="w-px flex-1 bg-[var(--border)] mt-1" />
+                                )}
+                              </div>
+                              <div className="flex-1 pb-1">
+                                <div className="flex items-center gap-2 mb-0.5">
+                                  <span className="text-small font-medium">{entry.summary}</span>
+                                  <span className="text-caption text-[var(--text-muted)]">{entry.date}</span>
+                                </div>
+                                {entry.details && (
+                                  <p className="text-caption text-[var(--text-muted)] mb-1">{entry.details}</p>
+                                )}
+                                {entry.commits.length > 0 && (
+                                  <div className="flex gap-1.5 flex-wrap">
+                                    {entry.commits.map((hash) => (
+                                      <span key={hash} className="text-caption font-mono px-1.5 py-0.5 rounded bg-orange-500/15 text-orange-400">
+                                        {hash.slice(0, 7)}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          ))}
           {filteredSkills.length === 0 && (
             <p className="text-body text-[var(--text-muted)] text-center py-8">無符合結果</p>
           )}

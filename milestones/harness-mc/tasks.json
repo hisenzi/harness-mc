@@ -862,7 +862,8 @@
       "note": "實作時需降低首屏資訊密度；sidebar 負責分類分流，首頁只回答現在要不要管、先管哪裡、資料新不新。",
       "completed_at": "2026-06-21",
       "commits": [
-        "7eedf5c"
+        "7eedf5c",
+        "1a7cdb1"
       ],
       "summary": "把 MC 首頁改成 MorroWise live dashboard 入口：新增 sidebar 分流、首頁摘要、surface drill-down anchors、approval queue preview、freshness 與 read-only boundary，首頁只讀取 read model，不直接改 task state、commit、push、deploy 或外部同步。"
     },

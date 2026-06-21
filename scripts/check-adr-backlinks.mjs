@@ -63,6 +63,11 @@ const adrs = parseAdrs();
 const projects = parseProjects();
 const errors = [];
 
+if (!fs.existsSync(decisionsDir)) {
+  console.warn(`ADR backlink check skipped — decisions directory not found: ${path.relative(root, decisionsDir)}`);
+  process.exit(0);
+}
+
 for (const adr of adrs.values()) {
   for (const projectId of adr.projects) {
     const project = projects.get(projectId);

@@ -849,7 +849,7 @@
     {
       "id": "morrowise-live-dashboard-homepage-implementation",
       "title": "把活儀表板 mockup 套回 MC 首頁",
-      "status": "todo",
+      "status": "completed",
       "track": "morrowise-system",
       "batch": "living-dashboard",
       "order": 29,

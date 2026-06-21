@@ -377,13 +377,14 @@
           "whiteboard": "MC 儀表版",
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "4daedcbb-2aa0-4e6f-9618-d07f7c88047b",
-          "synced_at": "2026-06-20",
+          "synced_at": "2026-06-21",
           "sync_mode": "appended"
         }
       },
       "commits": [
         "a80b899",
-        "93d58b3"
+        "93d58b3",
+        "334f671"
       ]
     },
     {
@@ -1577,7 +1578,8 @@
       "track": "phase-1",
       "completed_at": "2026-06-08",
       "commits": [
-        "62f669b"
+        "62f669b",
+        "334f671"
       ],
       "summary": "generate-tools-data.mjs 加 parseChangelog() 讀各 skill CHANGELOG.md；tools 頁 skill 卡片可點擊展開版本時間軸（版號 badge＋summary＋commit hash），最新版綠色高亮。",
       "note": "auto-task：commit 時無對應 task，自動建立"

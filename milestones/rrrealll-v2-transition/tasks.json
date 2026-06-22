@@ -1,0 +1,139 @@
+{
+  "project": "rrrealll-v2-transition",
+  "tasks": [
+    {
+      "id": "w1-1",
+      "title": "整理 RRREALLL 過渡頁需求與現行站風格",
+      "status": "done",
+      "track": "discovery",
+      "completed_at": "2026-06-22",
+      "done_condition": "已讀 RRREALLL_V2.0/or 文字與簡報、確認現行 rrrealll.com 風格參考，整理過渡頁角色與內容邊界。",
+      "summary": "過渡頁任務定義為 7/1 前合法合規營運公告、LINE/粉專通知入口與 8 月洗髮精試用預告；風格沿用現行站白底、深綠、灰綠與理性保養語氣。"
+    },
+    {
+      "id": "w1-2",
+      "title": "以 hiblocks 模組製作 RRREALLL 過渡網站",
+      "status": "completed",
+      "track": "website",
+      "depends_on": [
+        "w1-1"
+      ],
+      "done_condition": "Astro 靜態站可 build，首頁使用 hiblocks 模組呈現 RRREALLL 過渡公告、LINE/粉專通知入口、FAQ，並符合現行站視覺語氣。",
+      "acceptance": [
+        "使用 hiblocks layout / blocks / theme token 建站",
+        "保留 RRREALLL 現行站的 logo、深綠/灰綠/白底品牌語言",
+        "首屏明確說明網站更新中與洗髮精試用活動預告",
+        "文案避開未確認療效與法規敏感宣稱",
+        "npm run build 通過",
+        "回報 MC task / Heptabase / Obsidian Canvas 三層同步狀態"
+      ],
+      "hc_decision": {
+        "task_scope": "rrrealll-v2-transition/w1-2",
+        "hc_refs": [
+          "#rightProblem",
+          "#risk",
+          "#scopeControl"
+        ],
+        "hc_reasoning": "把目標收斂為過渡公告與名單承接，不在此 task 擴張到正式產品一頁式、AI 成分辨識工具或部署。",
+        "hc_confidence": 0.82,
+        "evidence_refs": [
+          "$COLLAB/RRREALLL_V2.0/or/會議記錄_260617.md",
+          "$COLLAB/RRREALLL_V2.0/or/20260618 rrrealll網站過渡架構.pdf",
+          "https://rrrealll.com/"
+        ],
+        "source_boundary": "HC 是 thinking check；MC tasks.json 與專案素材才是 source of truth。"
+      },
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "RRREALLL 過渡期網站",
+          "whiteboard_id": "238f74f6-5ae7-4cc3-b7f3-c1c5b2f3121d",
+          "card_id": "68167809-6219-4f3a-9c36-76c3c79ff591",
+          "synced_at": "2026-06-22",
+          "sync_mode": "appended"
+        }
+      },
+      "completed_at": "2026-06-22",
+      "summary": "已以 hiblocks/Astro 建立 RRREALLL 過渡網站首頁，包含營運公告、8 月洗髮精試用預告、品牌原則、AI 成分工具伏筆、FAQ 與通知 CTA；npm run build 通過，桌面/手機首屏檢查無重疊。",
+      "commits": [
+        "0d685bf"
+      ]
+    },
+    {
+      "id": "w1-3",
+      "title": "補齊正式通知連結與法規文案檢查",
+      "status": "todo",
+      "track": "website",
+      "depends_on": [
+        "w1-2"
+      ],
+      "done_condition": "LINE/粉專正式 URL、隱私權政策、服務條款與法規敏感字檢查完成，首頁無 placeholder。",
+      "acceptance": [
+        "LINE 或官方通知入口為正式連結",
+        "粉專或社群入口為正式連結或明確移除",
+        "隱私權政策與服務條款可點擊",
+        "產品/試用文案已避開未確認療效宣稱"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "RRREALLL 過渡期網站",
+          "whiteboard_id": "238f74f6-5ae7-4cc3-b7f3-c1c5b2f3121d",
+          "card_id": "f00c2f2b-f6f3-472a-8521-745259a7288f",
+          "synced_at": "2026-06-22",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "w1-verify",
+      "title": "過渡網站本機驗收",
+      "status": "todo",
+      "track": "website",
+      "depends_on": [
+        "w1-2",
+        "w1-3"
+      ],
+      "done_condition": "本機 build 與預覽截圖通過，首屏、手機版、FAQ、CTA、footer 無明顯重疊或錯字。",
+      "acceptance": [
+        "npm run build 通過",
+        "桌面首屏截圖符合 RRREALLL 風格",
+        "手機版文字可讀且不溢出",
+        "FAQ accordion 可操作",
+        "所有 CTA 連結狀態明確"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "RRREALLL 過渡期網站",
+          "whiteboard_id": "238f74f6-5ae7-4cc3-b7f3-c1c5b2f3121d",
+          "card_id": "a534cf6c-8f17-40cd-ba7b-be02cff36839",
+          "synced_at": "2026-06-22",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "launch-1",
+      "title": "Cloudways / DNS 上線前檢查",
+      "status": "todo",
+      "track": "launch",
+      "depends_on": [
+        "w1-verify"
+      ],
+      "done_condition": "確認部署資料夾、DNS 切換方式、回復方案與正式上線檔案。",
+      "acceptance": [
+        "dist/ 可作為靜態部署輸出",
+        "已記錄 Cloudways 目標資料夾或交付方式",
+        "有 rollback 路徑",
+        "上線後首頁 HTTP 200"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "RRREALLL 過渡期網站",
+          "whiteboard_id": "238f74f6-5ae7-4cc3-b7f3-c1c5b2f3121d",
+          "card_id": "32a895de-030e-4b91-b9c3-f9751f935181",
+          "synced_at": "2026-06-22",
+          "sync_mode": "created"
+        }
+      }
+    }
+  ]
+}

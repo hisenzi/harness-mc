@@ -1,0 +1,142 @@
+{
+  "name": "RRREALLL V2.0 過渡網站",
+  "description": "以 hiblocks 模組製作 RRREALLL 7/1 前過渡公告頁，承接現行品牌風格、名單收集與 8 月試用活動預告。",
+  "type": "standalone",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-06-22",
+  "estimated_completion": "2026-06-30",
+  "repo_path": "Claude_協作/RRREALLL_V2.0",
+  "visual_surface": {
+    "heptabase_whiteboard": "RRREALLL 過渡期網站",
+    "obsidian_canvas": "RRREALLL 過渡期網站"
+  },
+  "tracks": {
+    "discovery": "資料盤點與定位",
+    "website": "過渡網站製作",
+    "launch": "上線與驗收"
+  },
+  "goals": [
+    "把 RRREALLL 現行官網、過渡架構簡報與會議紀錄收斂成一個可追蹤的過渡網站工作包。",
+    "以 hiblocks layout / blocks / theme token 製作 Astro 靜態頁，避免直接在 WordPress 上堆外掛與資料庫風險。",
+    "在 2026-07-01 前提供合法合規的營運公告頁，明確導向 LINE / 粉專通知與 8 月洗髮精試用活動預告。",
+    "保留 RRREALLL 現行站的白底、深綠、灰綠、留白與理性保養語氣，避免變成泛用維護頁。",
+    "建立 MC task → Heptabase 白板 → Obsidian Canvas 的追蹤閉環，後續設計、文案、上線都可驗收。"
+  ],
+  "risks": [
+    {
+      "risk": "未先建立 task anchor 就進入實作，導致 scope、驗收與交接失去追蹤。",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "所有實作前先通過 work-anchor preflight；本專案以 tasks.json 為 source of truth。"
+    },
+    {
+      "risk": "過渡頁文案若沿用產品療效或未確認宣稱，可能踩到 7/1 後法規與廣告風險。",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "第一版只保留營運公告、品牌理念、試用活動預告與通知入口；產品功效細節留待正式一頁式頁面與法規審稿。"
+    },
+    {
+      "risk": "hiblocks demo 預設偏 MaxModel/深色區塊，若未建立 RRREALLL theme 會偏離品牌。",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "建立 theme-rrrealll.css 覆寫 token；以現行站色票、字體、CTA 語氣與產品圖為 reference。"
+    },
+    {
+      "risk": "LINE/粉專正式連結、隱私權與服務條款內容尚未提供，會阻塞上線。",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "先用明確 placeholder 與待補清單標示；上線 task 驗收前必須補齊正式連結與政策頁。"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "MC 追蹤建立完成",
+      "verify_cmd": "test -f $COLLAB/harness-mc/milestones/rrrealll-v2-transition/tasks.json && node -e \"JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'));\" $COLLAB/harness-mc/milestones/rrrealll-v2-transition/tasks.json",
+      "expected": "tasks.json 可解析，且存在 website track active task"
+    },
+    {
+      "criterion": "首頁可用 hiblocks 模組 build 成靜態站",
+      "verify_cmd": "cd $COLLAB/RRREALLL_V2.0 && npm run build",
+      "expected": "Astro build completed without errors"
+    },
+    {
+      "criterion": "首屏完成過渡期任務",
+      "verify_cmd": "人工/截圖檢查首頁首屏",
+      "expected": "可看見 RRREALLL logo、網站更新中、洗髮精試用活動預計 8 月登場、通知 CTA"
+    },
+    {
+      "criterion": "品牌風格符合現行站",
+      "verify_cmd": "檢查 theme-rrrealll.css 與頁面截圖",
+      "expected": "使用深霧綠/鼠尾草綠/冷白、Noto Sans TC/微軟正黑體語系、克制留白與理性文案"
+    },
+    {
+      "criterion": "視覺層同步狀態清楚",
+      "verify_cmd": "檢查 task external_refs 或本次回報的 visual sync coverage",
+      "expected": "MC task、Heptabase 白板、Obsidian Canvas 狀態明確標示 synced/pending/gap"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "開案與追蹤方式",
+      "decision": "先建立 MC project 與 task anchor，再繼續任何 hiblocks 實作。",
+      "reason": "Vincent 指出尚未開案就實作會無法追蹤管理；MC tasks.json 必須成為 source of truth。",
+      "alternatives_rejected": [
+        "繼續把 RRREALLL_V2.0 當本機草稿直接做完 - 缺少任務狀態、驗收與視覺層同步",
+        "只在聊天列待辦 - 無法進入 MC/Heptabase/Canvas 追蹤"
+      ],
+      "hc_used": [
+        "#rightProblem",
+        "#systemDynamics"
+      ]
+    },
+    {
+      "topic": "專案類型",
+      "decision": "project.json 標記為 standalone，但不使用 new-project.py 的 standalone 自動 GitHub repo create。",
+      "reason": "此案有獨立程式碼與可能部署需求，所以語義上是 standalone；但已有本機資料夾 RRREALLL_V2.0，目前不應觸發外部 GitHub 建 repo。",
+      "alternatives_rejected": [
+        "用 new-project.py --type standalone - 會觸發 gh repo create，超出目前需求",
+        "標成 internal - 會低估此案的獨立網站與部署邊界"
+      ],
+      "hc_used": [
+        "#risk",
+        "#sourceBoundary"
+      ]
+    },
+    {
+      "topic": "製作技術",
+      "decision": "使用 hiblocks 模組與 Astro 靜態輸出製作過渡頁。",
+      "reason": "過渡期目標是快速、低風險、可部署、無資料庫依賴；hiblocks 可提供可追蹤的 block/theme 結構。",
+      "alternatives_rejected": [
+        "直接改 WordPress - 會延續外掛與資料庫複雜度",
+        "從零手刻無模組頁 - 不利於後續複用與驗證"
+      ],
+      "hc_used": [
+        "#breakItDown",
+        "#systemsThinking"
+      ]
+    },
+    {
+      "topic": "HC decision block gate",
+      "decision": "本次 website task 不改共享 agent 行為、同步流程、verifier 或 dashboard read model，HC gate 記錄為輕量決策。",
+      "reason": "此案是客戶網站製作與 MC task 建立，不是 control-plane / MorroWise / workflow 規則變更。",
+      "alternatives_rejected": [
+        "靜默跳過 HC - 會違反 project-init v3.9 的明確性",
+        "把網站製作誤歸類成系統流程變更 - 會增加不必要流程負擔"
+      ],
+      "hc_used": [
+        "#scopeControl"
+      ]
+    }
+  ],
+  "system_growth_gate": {
+    "trigger": "Vincent 提到 RRREALLL 新專案、補充現行站風格、指定用 hiblocks 製作，且指出尚未開案/無 task 無法追蹤時啟用。",
+    "data_flow": "RRREALLL_V2.0/or 素材 + rrrealll.com 現行站觀察 + hiblocks blocks/theme → Astro transition site → build/preview evidence → MC task completion summary。",
+    "visible_surface": "MC project rrrealll-v2-transition；Heptabase 白板與 Obsidian Canvas 均使用「RRREALLL 過渡期網站」。",
+    "feedback_loop": "每次完成網站製作、法規文案、上線驗收後回寫 tasks.json status/completed_at/summary/commits；未完成 gap 留在 active task。"
+  },
+  "repo": "hisenzi/rrrealll-v2-transition",
+  "github_url": "https://github.com/hisenzi/rrrealll-v2-transition",
+  "repo_status": "private main initialized",
+  "updated_at": "2026-06-22"
+}

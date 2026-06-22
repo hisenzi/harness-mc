@@ -8,6 +8,9 @@
       "track": "v0-foundation",
       "done_condition": "project.json 明確記錄 morrowise project 與 harness-mc/morrowise-system track 的邊界、source_refs、不得雙正本規則，且 tasks.json 不重開既有同義 implementation task。",
       "completed_at": "2026-06-22",
+      "commits": [
+        "591b9f3"
+      ],
       "summary": "正式建立 morrowise internal project，並以 project decisions / hc_decision 記錄新 project 與既有 harness-mc morrowise-system track 的邊界：morrowise 承接 2026-06-22 v0 規格與活性驗證，既有 MC track 作為 implementation lineage，不重開同義 task。",
       "acceptance": [
         "project.json decisions 說明為何 2026-06-22 正式開 morrowise project，同時不複製既有 harness-mc/morrowise-system task chain。",

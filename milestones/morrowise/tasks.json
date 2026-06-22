@@ -1,0 +1,194 @@
+{
+  "project": "morrowise",
+  "tasks": [
+    {
+      "id": "v0-boundary-lineage-map",
+      "title": "對齊 MorroWise v0 專案邊界與既有 MC lineage",
+      "status": "done",
+      "track": "v0-foundation",
+      "done_condition": "project.json 明確記錄 morrowise project 與 harness-mc/morrowise-system track 的邊界、source_refs、不得雙正本規則，且 tasks.json 不重開既有同義 implementation task。",
+      "completed_at": "2026-06-22",
+      "summary": "正式建立 morrowise internal project，並以 project decisions / hc_decision 記錄新 project 與既有 harness-mc morrowise-system track 的邊界：morrowise 承接 2026-06-22 v0 規格與活性驗證，既有 MC track 作為 implementation lineage，不重開同義 task。",
+      "acceptance": [
+        "project.json decisions 說明為何 2026-06-22 正式開 morrowise project，同時不複製既有 harness-mc/morrowise-system task chain。",
+        "每個後續 task 都能指出 source_refs 或 dependencies，不以聊天內容作為唯一依據。",
+        "Heptabase / Obsidian Canvas 使用 Vincent 指定的 exact whiteboard：MorroWise；已完成 task 不強制發布為 open-task card。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/README.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/source-map-v0.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/auditor-mvp.md",
+        "$COLLAB/harness-mc/milestones/harness-mc/project.json",
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json"
+      ],
+      "hc_decision": {
+        "task_scope": "morrowise/v0-boundary-lineage-map",
+        "hc_refs": [
+          "#sift",
+          "#rightProblem",
+          "#systemDynamics",
+          "#confirmationBias"
+        ],
+        "hc_reasoning": "SIFT 找到 Option C：正式開 morrowise project，但只承接 v0 規格與活性驗證；既有 harness-mc track 作為 implementation lineage。#rightProblem 將問題從『是否開案』轉為『如何不製造雙正本』。#systemDynamics 指出雙 task chain 會讓 MorroWise 自己漂移。#confirmationBias 要求保留既有不另開 milestone 決策作為反證與邊界。",
+        "hc_confidence": 0.82,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/000_Agent/docs/morrowise/README.md",
+          "$COLLAB/harness-mc/milestones/harness-mc/project.json"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth；正式 source of truth 仍是 MC tasks.json、MorroWise v0 docs、report/read model/verifier。"
+      },
+      "visual_layer": {
+        "mc_task": "created",
+        "heptabase": "n/a - done task; MorroWise whiteboard sync scope is todo,in_progress",
+        "obsidian_canvas": "n/a - done task; MorroWise.canvas sync scope is todo,in_progress"
+      }
+    },
+    {
+      "id": "v0-source-map-mc-reconcile",
+      "title": "整併 source-map-v0 與既有 harness-mc MorroWise specs",
+      "status": "todo",
+      "track": "v0-foundation",
+      "dependencies": [
+        "v0-boundary-lineage-map"
+      ],
+      "done_condition": "產出 source-map -> existing MC spec 對照，標示 merge / reference / supersede / gap；不得新增第二份架構總表。",
+      "acceptance": [
+        "13 個 source family 至少對照到現有 spec、future scanner 或 known_gap。",
+        "local_runtime_boundary、knowledge_health_metrics_missing、dashboard_not_connected 有明確 next_action。",
+        "既有 $COLLAB/harness-mc/system-workflow/docs/specs/morrowise-* 被分類為 source evidence，不直接被複製進新正本。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/source-map-v0.md",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-source-inventory.md",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-read-model-contract.md"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "2f6df104-ce98-4ade-a0eb-35f8291db667",
+          "synced_at": "2026-06-22",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "auditor-manual-architecture-report",
+      "title": "手動產出第一份 ARCHITECTURE.md drift report",
+      "status": "todo",
+      "track": "auditor-mvp",
+      "dependencies": [
+        "v0-boundary-lineage-map"
+      ],
+      "done_condition": "依 auditor-mvp finding contract 對 $COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md 產出 read-only markdown report，包含 findings、evidence_refs、next_actions、draft_tasks。",
+      "acceptance": [
+        "每個 finding 有 target_id、category、severity、evidence_ref、declared_state、observed_state、why_it_matters、suggested_action。",
+        "findings 能對應回 source-map-v0 的 source family。",
+        "report 不修改 ARCHITECTURE.md、CORE.md、TOOLS.md、tasks.json、ADR、skills 或 dashboard data。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/auditor-mvp.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/architecture-pulse-mvp.md",
+        "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "758608cc-4b90-4554-b37b-a7e76a2a855c",
+          "synced_at": "2026-06-22",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "auditor-json-read-model-schema",
+      "title": "定義 MorroWise auditor JSON read model schema",
+      "status": "todo",
+      "track": "auditor-mvp",
+      "dependencies": [
+        "auditor-manual-architecture-report"
+      ],
+      "done_condition": "定義 morrowise-auditor.json v0 schema，至少含 generated_at、read_only、targets、summary、findings、next_actions、write_boundary。",
+      "acceptance": [
+        "schema 欄位能承接 manual report 的 finding contract。",
+        "write_boundary 明確禁止 edit_source、close_task、commit、push、external_sync。",
+        "verifier 或 fixture 設計能驗證 missing_header、source_missing、stale、fake_live_risk。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/auditor-mvp.md"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "43dfbb60-7254-427c-b3f8-7d0ac20a67b7",
+          "synced_at": "2026-06-22",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "mc-morrowise-v0-card",
+      "title": "MC 顯示 MorroWise v0 活性卡片",
+      "status": "todo",
+      "track": "mc-surface",
+      "dependencies": [
+        "auditor-json-read-model-schema"
+      ],
+      "done_condition": "MC dashboard 可見 MorroWise v0 read-only card，資料來自 generated/read model，而不是硬寫 UI 文案。",
+      "acceptance": [
+        "card 顯示 source、generator、generated_at、stale_rule、next_action、write_boundary、verifier_ref。",
+        "card 可區分 fresh、manual、unknown、stale、fake_live_risk，不把候選 surface 宣稱為 live。",
+        "card 不寫回 task state、commit、push、deploy、Heptabase 或 Obsidian。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/source-map-v0.md",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-read-model-contract.md"
+      ],
+      "visual_layer": {
+        "mc_dashboard": "target surface",
+        "heptabase": "MorroWise",
+        "obsidian_canvas": "MorroWise"
+      },
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "60a3e940-4806-4b84-b76f-42b057c1c56a",
+          "synced_at": "2026-06-22",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "v0-live-loop-verify",
+      "title": "驗證 MorroWise v0 source -> report -> MC surface 閉環",
+      "status": "todo",
+      "track": "mc-surface",
+      "dependencies": [
+        "mc-morrowise-v0-card"
+      ],
+      "done_condition": "用一個受管 source 變更或 fixture 證明 report/read model/MC card 會更新 freshness、finding summary 與 next_action；未通過時不得宣稱 MorroWise 是完整活系統。",
+      "acceptance": [
+        "驗證鏈包含 source、generator、generated_at、stale_rule、next_action、write_boundary、verifier。",
+        "至少覆蓋正常、stale、fake_live_risk 三種狀態。",
+        "驗證結果能回寫 task summary 或產生下一輪 draft task，形成 feedback loop。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/auditor-mvp.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/source-map-v0.md",
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "0d1d6c47-251e-4b09-be40-66ab821939ca",
+          "synced_at": "2026-06-22",
+          "sync_mode": "created"
+        }
+      }
+    }
+  ]
+}

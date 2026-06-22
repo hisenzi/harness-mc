@@ -1,0 +1,157 @@
+{
+  "name": "MorroWise 活系統",
+  "description": "讓 $COLLAB 的 AI Agent 架構可被觀測、稽核、連動更新並在 MC 顯示狀態",
+  "type": "internal",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-06-22",
+  "estimated_completion": "TBD",
+  "tracks": {
+    "v0-foundation": "v0 開案邊界與既有 lineage 對齊",
+    "auditor-mvp": "Auditor / Architecture Pulse MVP",
+    "mc-surface": "MC read-only surface 與閉環驗證"
+  },
+  "goals": [
+    "把 000_Agent/docs/morrowise/ 的 v0 評估文件轉成正式、task-backed 的 MorroWise 專案邊界。",
+    "建立第一個可驗證閉環：ARCHITECTURE.md source -> auditor/report -> read model -> MC read-only surface -> next action。",
+    "用 source map 管住服務串接、script、安全、記憶、第二大腦、專案、commit、skills、dashboard、mirror 等 source family，避免 dashboard 或 mirror 變成第二正本。",
+    "把既有 harness-mc morrowise-system track 納入 implementation lineage，後續只做引用、整併或 supersede，不重複維護同一批 task。"
+  ],
+  "risks": [
+    {
+      "risk": "新開 MorroWise milestone 與既有 harness-mc/morrowise-system track 形成雙正本。",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "第一個 v0 task 先做 boundary / lineage 對齊；morrowise 專案只承接正式 v0 規格與活性驗證，既有 harness-mc tasks 作為 implementation source，不在兩邊重複開同義 task。"
+    },
+    {
+      "risk": "MC 畫面看起來有卡片，但資料沒有 source、generator、generated_at、stale_rule、next_action、write_boundary、verifier，造成假活。",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "套用 MC-LIVE-SYS-01 style checklist；未達標時只能標為 manual、unknown、static_display、half-live 或 fake_live_risk。"
+    },
+    {
+      "risk": "MCP、CLI、LaunchAgent、local app state 等 runtime source 在 $COLLAB 外，若直接掃描可能碰到 secrets 或不可攜狀態。",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "依 source-map-v0 的 local_runtime_boundary，只記錄 safe metadata、safe probe、owner、secret_policy；不得讀 secrets、tokens、runtime auth content。"
+    },
+    {
+      "risk": "第二大腦健康度只檢查 note 是否存在，無法回答使用頻率、完善度、workflow link 與缺口。",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "v0 先把 last_used_at、reference_count_30d、completeness_state、workflow_links、known_gaps 設為 read model 欄位；scanner 未實作前標 manual/unknown。"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "MorroWise project / task 邊界不與既有 harness-mc morrowise-system track 互相複製。",
+      "verify_cmd": "manual review: compare harness-mc/milestones/morrowise/tasks.json with harness-mc/milestones/harness-mc/tasks.json track=morrowise-system",
+      "expected": "新增 task 只處理 v0 source-map/auditor/MC surface 閉環，既有 implementation work 以 evidence/source_refs 連回，不重開同義任務。"
+    },
+    {
+      "criterion": "第一份 Architecture drift report 可由 source-map-v0 + auditor-mvp 手動重跑。",
+      "verify_cmd": "manual report: ARCHITECTURE.md -> morrowise auditor finding contract",
+      "expected": "每個 finding 有 target、category、evidence_ref、declared_state、observed_state、why_it_matters、suggested_action 或 draft_task。"
+    },
+    {
+      "criterion": "MC surface 不是靜態展示，而是讀取 generated/read model 並標明 freshness 與 write boundary。",
+      "verify_cmd": "npm run build && node scripts/generate-data.mjs",
+      "expected": "MC 可見 MorroWise v0 狀態；surface 明確顯示 source、generator、generated_at、stale_rule、next_action、write_boundary、verifier_ref。"
+    },
+    {
+      "criterion": "System Growth Gate 成立。",
+      "verify_cmd": "manual checklist",
+      "expected": "有 trigger、source -> process -> output、MC/Canvas/Heptabase 視覺層策略、feedback loop 與下一輪 task 候選。"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "正式開案邊界",
+      "decision": "建立 morrowise internal project，但不把它變成既有 harness-mc MorroWise tasks 的第二正本。",
+      "reason": "SIFT 的 Option C：不是只沿用舊 track，也不是無腦另開平行專案；新 project 承接 2026-06-22 v0 文件、source-map/auditor/MC live-surface 的正式驗證閉環，既有 track 作為 implementation lineage。",
+      "alternatives_rejected": [
+        "只留在 harness-mc/morrowise-system track - 今天的 v0 文件會缺少正式開案邊界，future agents 仍可能把 docs 當草稿。",
+        "另開完全獨立專案並重建所有 MorroWise tasks - 會立即違反單一資料原則，造成雙正本。"
+      ],
+      "hc_used": [
+        "#sift",
+        "#rightProblem",
+        "#systemDynamics",
+        "#confirmationBias"
+      ]
+    },
+    {
+      "topic": "第一個 MVP",
+      "decision": "先做 ARCHITECTURE.md auditor manual report，再接 JSON read model 與 MC read-only surface。",
+      "reason": "真正要驗證的是資料連動與腐爛偵測，不是先做漂亮 dashboard；手動 report 是最小可重跑的 source -> finding -> next_action loop。",
+      "alternatives_rejected": [
+        "直接做完整知識圖譜 - 範圍過大且會拖慢 v0 驗證。",
+        "只做 MC 一張卡片 - 可見性不等於活系統，缺 source/generator/verifier 會變成假活。"
+      ],
+      "hc_used": [
+        "#rightProblem",
+        "#systemDynamics",
+        "#sift"
+      ]
+    },
+    {
+      "topic": "Auditor 與 Architecture Pulse 職責",
+      "decision": "Auditor 是通用引擎；Architecture Pulse 是第一個 target profile。",
+      "reason": "若兩份規格各自定義 scanner/output/write boundary，MorroWise 自己也會 drift；target profile 承接特殊檢查，auditor contract 保持單一。",
+      "alternatives_rejected": [
+        "讓 architecture-pulse-mvp 與 auditor-mvp 各自演化 - 會形成兩套 scanner 規格。",
+        "只保留 architecture-pulse-mvp - 未來 TOOLS.md、SKILLS-INDEX.md、source map 難以擴充。"
+      ],
+      "hc_used": [
+        "#systemDynamics",
+        "#confirmationBias"
+      ]
+    },
+    {
+      "topic": "HC source boundary",
+      "decision": "HC 是 decision framing 與偏誤檢查，不是 project state、task state 或 dashboard state 的 source of truth。",
+      "reason": "MorroWise 需要可重跑證據；HC 可以解釋為什麼選這條路，但不能取代 tasks.json、source map、report、read model 或 verifier。",
+      "alternatives_rejected": [
+        "把 HC 結論當完成證據 - 會把思考過程誤當系統狀態。",
+        "開案時不記 HC - future agents 會看不懂為什麼今天推翻舊的不另開 milestone 決策。"
+      ],
+      "hc_used": [
+        "#sift",
+        "#confirmationBias",
+        "#risk"
+      ]
+    }
+  ],
+  "hc_decision": {
+    "task_scope": "morrowise/project-init",
+    "hc_refs": [
+      "#sift",
+      "#rightProblem",
+      "#systemDynamics",
+      "#risk",
+      "#confirmationBias"
+    ],
+    "hc_reasoning": "SIFT 先暫停顯而易見的二選一：不是只沿用既有 harness-mc track，也不是開完全獨立第二套。#rightProblem 將問題從「要不要開案」改成「如何讓 v0 規格成為可驗證活系統而不破壞單一資料原則」。#systemDynamics 指出重複 task 會形成 drift feedback loop；#confirmationBias 要求承認既有不另開 milestone 決策是反證；#risk 將 local runtime、假活 dashboard、第二大腦健康度列為 v0 風險。",
+    "hc_confidence": 0.82,
+    "evidence_refs": [
+      "$COLLAB/notyet-harness/000_Agent/docs/morrowise/README.md",
+      "$COLLAB/notyet-harness/000_Agent/docs/morrowise/source-map-v0.md",
+      "$COLLAB/notyet-harness/000_Agent/docs/morrowise/auditor-mvp.md",
+      "$COLLAB/notyet-harness/000_Agent/docs/morrowise/architecture-pulse-mvp.md",
+      "$COLLAB/harness-mc/milestones/harness-mc/project.json",
+      "$COLLAB/harness-mc/milestones/harness-mc/tasks.json"
+    ],
+    "source_boundary": "HC is a thinking check only. Canonical task state stays in MC tasks.json; MorroWise v0 source contracts live in notyet-harness docs until implemented as generated read models/verifiers."
+  },
+  "system_growth_gate": {
+    "trigger": [
+      "Vincent 說 MorroWise / 活系統 / 架構漂移 / AI Agent 共享腦。",
+      "$COLLAB shared docs、source-map、skills、MC read model、dashboard surface 或 local runtime probe 改變。",
+      "weekly review、stale/blocked task、new project growth gate、commit boundary 或 sync failure 出現未閉合 loop。"
+    ],
+    "source_process_output": "source-map / target profile / canonical files -> auditor scanner or manual report -> findings / read model / MC surface / draft next task",
+    "surface": "MC MorroWise read-only surface first; Obsidian Canvas / Heptabase 只作 mirror，需 Vincent 指定 exact whiteboard 後才同步。",
+    "feedback_loop": "report finding 產生 next_action 或 draft_task；完成後由 verifier 或 manual report 更新 freshness_state，再由 MC generated data 反映到 surface。"
+  }
+}

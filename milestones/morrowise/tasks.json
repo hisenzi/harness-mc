@@ -196,7 +196,7 @@
     {
       "id": "runtime-delivery-lineage-map",
       "title": "整併 agent-agnostic scheduler / notification lineage 到 MorroWise",
-      "status": "todo",
+      "status": "completed",
       "track": "runtime-delivery",
       "dependencies": [
         "v0-source-map-mc-reconcile"
@@ -230,7 +230,12 @@
           "$COLLAB/harness-mc/milestones/morrowise/tasks.json"
         ],
         "source_boundary": "HC is a thinking check only, not source of truth. Canonical state stays in MC tasks.json; runtime specs live in $COLLAB/notyet-harness/schedule and MorroWise docs/read models."
-      }
+      },
+      "completed_at": "2026-06-23",
+      "commits": [
+        "755f323"
+      ],
+      "summary": "已將 agent-agnostic scheduler、notification adapter 與 Reality Tax Gate ownership 收編到 MorroWise runtime-delivery track；agnostic-scheduler 未執行 tasks 與 harness-mc sentinel 出口 tasks 已關閉並保留 superseded lineage。"
     },
     {
       "id": "runtime-scheduler-v0",

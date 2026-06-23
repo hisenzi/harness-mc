@@ -4,123 +4,234 @@
     {
       "id": "t1",
       "title": "建 schedule/ 骨架目錄 + .gitignore",
-      "status": "todo",
+      "status": "completed",
       "track": "scaffold",
       "done_condition": "notyet-harness/schedule/{tasks,runners,lib,runs} 目錄存在 + .gitignore 排除 .env 和 runs/",
-      "priority": "critical"
+      "priority": "critical",
+      "completed_at": "2026-06-12",
+      "summary": "由 harness-mc sn-1 完成：schedule/{tasks,runners,lib,runs} + .gitignore 排除 .env 與 runs/（check-ignore 驗證）"
     },
     {
       "id": "t2",
-      "title": "dispatch.sh 薄分派器（純 bash，不依賴 yq）",
-      "status": "todo",
+      "title": "dispatch.sh 薄分派器（純 bash，不依賴 yq）（未執行，已由 MorroWise 承接）",
+      "status": "cancelled",
       "track": "scaffold",
-      "depends_on": ["t1"],
+      "depends_on": [
+        "t1"
+      ],
       "done_condition": "dispatch.sh 可解析 YAML 的 runner/timeout/task 欄位（grep fallback）+ 呼叫對應 runner + 寫 log 到 runs/",
       "priority": "critical",
-      "note": "Grounding: yq 不在 PATH，必須用純 bash/grep 解析"
+      "note": "Grounding: yq 不在 PATH，必須用純 bash/grep 解析",
+      "closed_at": "2026-06-23",
+      "superseded_by": [
+        "morrowise/runtime-scheduler-v0"
+      ],
+      "close_reason": "agnostic-scheduler 未執行 runtime / notification tasks 已移到 MorroWise runtime-delivery track，避免排程系統與 MorroWise 活系統分裂。",
+      "summary": "未執行關閉：原 task 已整合到 morrowise/runtime-scheduler-v0；保留此卡作為 lineage，不再作為 execution anchor。",
+      "history_note": "2026-06-23：依 Vincent 指示，相關排程/通知/Reality Tax Gate 工作移到 MorroWise 專案；此舊 task 關閉但保留脈絡，避免 future agents 重開平行任務。"
     },
     {
       "id": "t3",
-      "title": "runners/cc.sh + runners/shell.sh",
-      "status": "todo",
+      "title": "runners/cc.sh + runners/shell.sh（未執行，已由 MorroWise 承接）",
+      "status": "cancelled",
       "track": "scaffold",
-      "depends_on": ["t1"],
+      "depends_on": [
+        "t1"
+      ],
       "done_condition": "cc.sh 呼叫 claude -p + shell.sh 呼叫 bash -c，統一介面 PROMPT env var",
-      "priority": "critical"
+      "priority": "critical",
+      "closed_at": "2026-06-23",
+      "superseded_by": [
+        "morrowise/runtime-scheduler-v0"
+      ],
+      "close_reason": "agnostic-scheduler 未執行 runtime / notification tasks 已移到 MorroWise runtime-delivery track，避免排程系統與 MorroWise 活系統分裂。",
+      "summary": "未執行關閉：原 task 已整合到 morrowise/runtime-scheduler-v0；保留此卡作為 lineage，不再作為 execution anchor。",
+      "history_note": "2026-06-23：依 Vincent 指示，相關排程/通知/Reality Tax Gate 工作移到 MorroWise 專案；此舊 task 關閉但保留脈絡，避免 future agents 重開平行任務。"
     },
     {
       "id": "t4",
-      "title": "lib/notify.sh（從 .env 讀 token，curl Telegram）",
-      "status": "todo",
+      "title": "lib/notify.sh（從 .env 讀 token，curl Telegram）（未執行，已由 MorroWise 承接）",
+      "status": "cancelled",
       "track": "scaffold",
-      "depends_on": ["t1"],
+      "depends_on": [
+        "t1"
+      ],
       "done_condition": "notify.sh 從 schedule/.env 讀 TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID → curl sendMessage 成功",
       "priority": "critical",
-      "note": "token 不進 git。.env.example 進 git 作為範本"
+      "note": "notify.sh 已建（讀 schedule/.env、缺 token exit 2 降級、curl sendMessage + 錯誤碼回報）。送達驗證 blocked：等新 bot token（舊 token 已外洩進 git 必須 revoke 重發）",
+      "closed_at": "2026-06-23",
+      "superseded_by": [
+        "morrowise/notification-adapter-contract"
+      ],
+      "close_reason": "agnostic-scheduler 未執行 runtime / notification tasks 已移到 MorroWise runtime-delivery track，避免排程系統與 MorroWise 活系統分裂。",
+      "summary": "未執行關閉：原 task 已整合到 morrowise/notification-adapter-contract；保留此卡作為 lineage，不再作為 execution anchor。",
+      "history_note": "2026-06-23：依 Vincent 指示，相關排程/通知/Reality Tax Gate 工作移到 MorroWise 專案；此舊 task 關閉但保留脈絡，避免 future agents 重開平行任務。"
     },
     {
       "id": "t5",
-      "title": "改 cc-log skill：成功後寫 session_id 到 cc-logged.log",
-      "status": "todo",
+      "title": "改 cc-log skill：成功後寫 session_id 到 cc-logged.log（未執行，已由 MorroWise 承接）",
+      "status": "cancelled",
       "track": "first-task",
       "done_condition": "cc-log append 完成後，把 session_id 寫一行到 schedule/runs/cc-logged.log",
       "priority": "critical",
-      "note": "標記機制前置——盤點判定依賴此標記"
+      "note": "標記機制前置——盤點判定依賴此標記",
+      "closed_at": "2026-06-23",
+      "superseded_by": [
+        "morrowise/runtime-scheduler-v0"
+      ],
+      "close_reason": "agnostic-scheduler 未執行 runtime / notification tasks 已移到 MorroWise runtime-delivery track，避免排程系統與 MorroWise 活系統分裂。",
+      "summary": "未執行關閉：原 task 已整合到 morrowise/runtime-scheduler-v0；保留此卡作為 lineage，不再作為 execution anchor。",
+      "history_note": "2026-06-23：依 Vincent 指示，相關排程/通知/Reality Tax Gate 工作移到 MorroWise 專案；此舊 task 關閉但保留脈絡，避免 future agents 重開平行任務。"
     },
     {
       "id": "t6",
-      "title": "tasks/cc-log-sweep.yaml 任務契約",
-      "status": "todo",
+      "title": "tasks/cc-log-sweep.yaml 任務契約（未執行，已由 MorroWise 承接）",
+      "status": "cancelled",
       "track": "first-task",
-      "depends_on": ["t2"],
+      "depends_on": [
+        "t2"
+      ],
       "done_condition": "YAML 含 id/schedule(15 21 * * *)/runner/timeout/task/done_condition/delivery 欄位",
       "priority": "critical",
-      "note": "Grounding: 21:15 是 21:00~22:00 唯一空檔"
+      "note": "Grounding: 21:15 是 21:00~22:00 唯一空檔",
+      "closed_at": "2026-06-23",
+      "superseded_by": [
+        "morrowise/runtime-scheduler-v0"
+      ],
+      "close_reason": "agnostic-scheduler 未執行 runtime / notification tasks 已移到 MorroWise runtime-delivery track，避免排程系統與 MorroWise 活系統分裂。",
+      "summary": "未執行關閉：原 task 已整合到 morrowise/runtime-scheduler-v0；保留此卡作為 lineage，不再作為 execution anchor。",
+      "history_note": "2026-06-23：依 Vincent 指示，相關排程/通知/Reality Tax Gate 工作移到 MorroWise 專案；此舊 task 關閉但保留脈絡，避免 future agents 重開平行任務。"
     },
     {
       "id": "t7",
-      "title": "手動試跑 dispatch.sh cc-log-sweep 驗證",
-      "status": "todo",
+      "title": "手動試跑 dispatch.sh cc-log-sweep 驗證（未執行，已由 MorroWise 承接）",
+      "status": "cancelled",
       "track": "first-task",
-      "depends_on": ["t2", "t3", "t5", "t6"],
+      "depends_on": [
+        "t2",
+        "t3",
+        "t5",
+        "t6"
+      ],
       "done_condition": "手動執行 → daily memory 有新 [CC] block + runs/ 有 log + cc-logged.log 有記錄",
-      "priority": "critical"
+      "priority": "critical",
+      "closed_at": "2026-06-23",
+      "superseded_by": [
+        "morrowise/runtime-scheduler-v0"
+      ],
+      "close_reason": "agnostic-scheduler 未執行 runtime / notification tasks 已移到 MorroWise runtime-delivery track，避免排程系統與 MorroWise 活系統分裂。",
+      "summary": "未執行關閉：原 task 已整合到 morrowise/runtime-scheduler-v0；保留此卡作為 lineage，不再作為 execution anchor。",
+      "history_note": "2026-06-23：依 Vincent 指示，相關排程/通知/Reality Tax Gate 工作移到 MorroWise 專案；此舊 task 關閉但保留脈絡，避免 future agents 重開平行任務。"
     },
     {
       "id": "t8",
-      "title": "install.sh 生成 launchd plist + launchctl load",
-      "status": "todo",
+      "title": "install.sh 生成 launchd plist + launchctl load（未執行，已由 MorroWise 承接）",
+      "status": "cancelled",
       "track": "first-task",
-      "depends_on": ["t7"],
+      "depends_on": [
+        "t7"
+      ],
       "done_condition": "~/Library/LaunchAgents/com.hisenzi.schedule.cc-log-sweep.plist 存在 + launchctl list 可見",
-      "priority": "high"
+      "priority": "high",
+      "closed_at": "2026-06-23",
+      "superseded_by": [
+        "morrowise/runtime-scheduler-v0"
+      ],
+      "close_reason": "agnostic-scheduler 未執行 runtime / notification tasks 已移到 MorroWise runtime-delivery track，避免排程系統與 MorroWise 活系統分裂。",
+      "summary": "未執行關閉：原 task 已整合到 morrowise/runtime-scheduler-v0；保留此卡作為 lineage，不再作為 execution anchor。",
+      "history_note": "2026-06-23：依 Vincent 指示，相關排程/通知/Reality Tax Gate 工作移到 MorroWise 專案；此舊 task 關閉但保留脈絡，避免 future agents 重開平行任務。"
     },
     {
       "id": "t9",
-      "title": "驗證 runner 可換：同一 task --runner shell 可跑",
-      "status": "todo",
+      "title": "驗證 runner 可換：同一 task --runner shell 可跑（未執行，已由 MorroWise 承接）",
+      "status": "cancelled",
       "track": "scaffold",
-      "depends_on": ["t7"],
+      "depends_on": [
+        "t7"
+      ],
       "done_condition": "dispatch.sh cc-log-sweep --runner shell 被呼叫且不報錯",
-      "priority": "medium"
+      "priority": "medium",
+      "closed_at": "2026-06-23",
+      "superseded_by": [
+        "morrowise/runtime-scheduler-v0"
+      ],
+      "close_reason": "agnostic-scheduler 未執行 runtime / notification tasks 已移到 MorroWise runtime-delivery track，避免排程系統與 MorroWise 活系統分裂。",
+      "summary": "未執行關閉：原 task 已整合到 morrowise/runtime-scheduler-v0；保留此卡作為 lineage，不再作為 execution anchor。",
+      "history_note": "2026-06-23：依 Vincent 指示，相關排程/通知/Reality Tax Gate 工作移到 MorroWise 專案；此舊 task 關閉但保留脈絡，避免 future agents 重開平行任務。"
     },
     {
       "id": "t10",
-      "title": "git commit notyet-harness（schedule/ + cc-log skill）",
-      "status": "todo",
+      "title": "git commit notyet-harness（schedule/ + cc-log skill）（未執行，已由 MorroWise 承接）",
+      "status": "cancelled",
       "track": "first-task",
-      "depends_on": ["t7"],
+      "depends_on": [
+        "t7"
+      ],
       "done_condition": "git commit 含 schedule/ 目錄 + cc-log skill 變更",
-      "priority": "critical"
+      "priority": "critical",
+      "closed_at": "2026-06-23",
+      "superseded_by": [
+        "morrowise/runtime-scheduler-v0"
+      ],
+      "close_reason": "agnostic-scheduler 未執行 runtime / notification tasks 已移到 MorroWise runtime-delivery track，避免排程系統與 MorroWise 活系統分裂。",
+      "summary": "未執行關閉：原 task 已整合到 morrowise/runtime-scheduler-v0；保留此卡作為 lineage，不再作為 execution anchor。",
+      "history_note": "2026-06-23：依 Vincent 指示，相關排程/通知/Reality Tax Gate 工作移到 MorroWise 專案；此舊 task 關閉但保留脈絡，避免 future agents 重開平行任務。"
     },
     {
       "id": "t11",
-      "title": "dispatch.sh log 格式統一（加 exit code + 耗時 + runner 名）",
-      "status": "todo",
+      "title": "dispatch.sh log 格式統一（加 exit code + 耗時 + runner 名）（未執行，已由 MorroWise 承接）",
+      "status": "cancelled",
       "track": "mc-integration",
-      "depends_on": ["t2"],
+      "depends_on": [
+        "t2"
+      ],
       "done_condition": "runs/{task}-{date}.log 含 JSON header：exit_code, duration_sec, runner, task_id, timestamp",
       "priority": "high",
-      "note": "MC scanner 讀這個 header 產生 schedule.json"
+      "note": "MC scanner 讀這個 header 產生 schedule.json",
+      "closed_at": "2026-06-23",
+      "superseded_by": [
+        "morrowise/runtime-scheduler-v0"
+      ],
+      "close_reason": "agnostic-scheduler 未執行 runtime / notification tasks 已移到 MorroWise runtime-delivery track，避免排程系統與 MorroWise 活系統分裂。",
+      "summary": "未執行關閉：原 task 已整合到 morrowise/runtime-scheduler-v0；保留此卡作為 lineage，不再作為 execution anchor。",
+      "history_note": "2026-06-23：依 Vincent 指示，相關排程/通知/Reality Tax Gate 工作移到 MorroWise 專案；此舊 task 關閉但保留脈絡，避免 future agents 重開平行任務。"
     },
     {
       "id": "t12",
-      "title": "generate-schedule-data.mjs（000_Agent/scripts/）",
-      "status": "todo",
+      "title": "generate-schedule-data.mjs（000_Agent/scripts/）（未執行，已由 MorroWise 承接）",
+      "status": "cancelled",
       "track": "mc-integration",
-      "depends_on": ["t11"],
+      "depends_on": [
+        "t11"
+      ],
       "done_condition": "讀 schedule/tasks/*.yaml + schedule/runs/*.log → 輸出 harness-mc/public/data/schedule.json",
       "priority": "high",
-      "note": "住共享層 000_Agent/scripts/，MC prebuild 從那邊呼叫"
+      "note": "住共享層 000_Agent/scripts/，MC prebuild 從那邊呼叫",
+      "closed_at": "2026-06-23",
+      "superseded_by": [
+        "morrowise/runtime-scheduler-v0"
+      ],
+      "close_reason": "agnostic-scheduler 未執行 runtime / notification tasks 已移到 MorroWise runtime-delivery track，避免排程系統與 MorroWise 活系統分裂。",
+      "summary": "未執行關閉：原 task 已整合到 morrowise/runtime-scheduler-v0；保留此卡作為 lineage，不再作為 execution anchor。",
+      "history_note": "2026-06-23：依 Vincent 指示，相關排程/通知/Reality Tax Gate 工作移到 MorroWise 專案；此舊 task 關閉但保留脈絡，避免 future agents 重開平行任務。"
     },
     {
       "id": "t13",
-      "title": "首頁 ScheduleCard + harness-mc prebuild 串接",
-      "status": "todo",
+      "title": "首頁 ScheduleCard + harness-mc prebuild 串接（未執行，已由 MorroWise 承接）",
+      "status": "cancelled",
       "track": "mc-integration",
-      "depends_on": ["t12"],
+      "depends_on": [
+        "t12"
+      ],
       "done_condition": "MC 首頁顯示排程健康狀態（今日 N 成功 / N 失敗）+ prebuild 自動跑 generate-schedule-data.mjs",
-      "priority": "high"
+      "priority": "high",
+      "closed_at": "2026-06-23",
+      "superseded_by": [
+        "morrowise/runtime-scheduler-v0"
+      ],
+      "close_reason": "agnostic-scheduler 未執行 runtime / notification tasks 已移到 MorroWise runtime-delivery track，避免排程系統與 MorroWise 活系統分裂。",
+      "summary": "未執行關閉：原 task 已整合到 morrowise/runtime-scheduler-v0；保留此卡作為 lineage，不再作為 execution anchor。",
+      "history_note": "2026-06-23：依 Vincent 指示，相關排程/通知/Reality Tax Gate 工作移到 MorroWise 專案；此舊 task 關閉但保留脈絡，避免 future agents 重開平行任務。"
     },
     {
       "id": "plan-doc",
@@ -128,9 +239,12 @@
       "status": "completed",
       "track": "infrastructure",
       "completed_at": "2026-06-08",
-      "commits": ["8f9a279"],
+      "commits": [
+        "8f9a279"
+      ],
       "summary": "HC 6 視角分析 + 四層架構 + cc-log-sweep 任務設計。檔在 notyet-harness/100_Todo/plan/（注意：此 hash 屬 notyet-harness repo）",
-      "note": "auto-task：commit 時無對應 task，自動建立"
+      "note": "auto-task：commit 時無對應 task，自動建立",
+      "done_condition": "規劃書已存在於 $COLLAB/notyet-harness/100_Todo/plan/agnostic-scheduler-260607.md，並記錄 agent-agnostic scheduler 的四層架構與 cc-log-sweep 設計。"
     },
     {
       "id": "init-project",
@@ -138,9 +252,12 @@
       "status": "completed",
       "track": "infrastructure",
       "completed_at": "2026-06-08",
-      "commits": ["b7f4661"],
+      "commits": [
+        "b7f4661"
+      ],
       "summary": "4 goals / 4 risks / 6 decisions / 13 tasks (3 tracks)。harness-mc/milestones/",
-      "note": "auto-task：commit 時無對應 task，自動建立"
+      "note": "auto-task：commit 時無對應 task，自動建立",
+      "done_condition": "agnostic-scheduler project.json / tasks.json 已建立，作為 2026-06-08 設計 lineage；2026-06-23 後未執行 tasks 由 MorroWise runtime-delivery 承接。"
     }
   ]
 }

@@ -977,33 +977,51 @@
     },
     {
       "id": "sn-5",
-      "title": "Notion 重要提醒寫入（sentinel-notion.mjs）",
-      "status": "blocked",
+      "title": "Notion 重要提醒寫入（sentinel-notion.mjs）（未執行，已由 MorroWise 承接）",
+      "status": "cancelled",
       "track": "sentinel",
       "done_condition": "讀 changes.json 把待裁決事項（new blocked / stale）upsert 進 PAI 行動庫並出現在重要提醒 view，同日重跑不重複建卡",
       "priority": "high",
       "note": "腳本完成（upsert 防重 + object_not_found 降級驗證 exit 2）。已用 MCP 代打建今日卡 37d714fb-14c6-81cb-9350-e3c913278387，狀態=待追蹤命中重要提醒 view filter（狀態=待追蹤 OR 是否逾期，實際取得 view 定義確認）。blocked：等 Vincent 把 PAI 行動庫分享給 \"MC Sync\" integration（Notion → ⋯ → Connections）",
-      "history_note": "不是刪除；此 task 屬於外部通知/排程出口。HC 驗證後列為第二階段之後的接線工作：先完成 trigger rules / recommendation / approval policy，再接 Notion、Telegram、launchd。"
+      "history_note": "不是刪除；此 task 屬於外部通知/排程出口。HC 驗證後列為第二階段之後的接線工作：先完成 trigger rules / recommendation / approval policy，再接 Notion、Telegram、launchd。 2026-06-23：依 Vincent 指示，相關排程/通知/Reality Tax Gate 工作移到 MorroWise 專案；此舊 task 關閉但保留脈絡，避免 future agents 重開平行任務。",
+      "closed_at": "2026-06-23",
+      "superseded_by": [
+        "morrowise/notification-adapter-contract"
+      ],
+      "close_reason": "sentinel 外部通知/排程出口改由 MorroWise runtime-delivery track 統一承接，避免 harness-mc sentinel 與 MorroWise 各自維護 delivery ownership。",
+      "summary": "未執行關閉：原 task 已整合到 morrowise/notification-adapter-contract；保留此卡作為 lineage，不再作為 execution anchor。"
     },
     {
       "id": "sn-6",
-      "title": "Telegram 出口接上（sentinel → notify.sh）",
-      "status": "blocked",
+      "title": "Telegram 出口接上（sentinel → notify.sh）（未執行，已由 MorroWise 承接）",
+      "status": "cancelled",
       "track": "sentinel",
       "done_condition": "sentinel-diff --push 經 notify.sh 推 Telegram 送達",
       "priority": "medium",
       "note": "blocked：等 Vincent BotFather 重發 token（舊 token 已外洩需 revoke）填入 schedule/.env",
-      "history_note": "不是刪除；此 task 屬於外部通知/排程出口。HC 驗證後列為第二階段之後的接線工作：先完成 trigger rules / recommendation / approval policy，再接 Notion、Telegram、launchd。"
+      "history_note": "不是刪除；此 task 屬於外部通知/排程出口。HC 驗證後列為第二階段之後的接線工作：先完成 trigger rules / recommendation / approval policy，再接 Notion、Telegram、launchd。 2026-06-23：依 Vincent 指示，相關排程/通知/Reality Tax Gate 工作移到 MorroWise 專案；此舊 task 關閉但保留脈絡，避免 future agents 重開平行任務。",
+      "closed_at": "2026-06-23",
+      "superseded_by": [
+        "morrowise/notification-adapter-contract"
+      ],
+      "close_reason": "sentinel 外部通知/排程出口改由 MorroWise runtime-delivery track 統一承接，避免 harness-mc sentinel 與 MorroWise 各自維護 delivery ownership。",
+      "summary": "未執行關閉：原 task 已整合到 morrowise/notification-adapter-contract；保留此卡作為 lineage，不再作為 execution anchor。"
     },
     {
       "id": "sn-7",
-      "title": "launchd 每日排程（收編進 agnostic-scheduler 框架）",
-      "status": "todo",
+      "title": "launchd 每日排程（收編進 agnostic-scheduler 框架）（未執行，已由 MorroWise 承接）",
+      "status": "cancelled",
       "track": "sentinel",
       "done_condition": "mc-sentinel 任務經 dispatch.sh + install.sh 上 launchd 每日自動跑",
       "priority": "medium",
       "note": "依賴 agnostic-scheduler t2/t8；過渡期由 sn-4 的 session 自檢觸發推送，CC 本人就是排程器",
-      "history_note": "不是刪除；此 task 屬於外部通知/排程出口。HC 驗證後列為第二階段之後的接線工作：先完成 trigger rules / recommendation / approval policy，再接 Notion、Telegram、launchd。"
+      "history_note": "不是刪除；此 task 屬於外部通知/排程出口。HC 驗證後列為第二階段之後的接線工作：先完成 trigger rules / recommendation / approval policy，再接 Notion、Telegram、launchd。 2026-06-23：依 Vincent 指示，相關排程/通知/Reality Tax Gate 工作移到 MorroWise 專案；此舊 task 關閉但保留脈絡，避免 future agents 重開平行任務。",
+      "closed_at": "2026-06-23",
+      "superseded_by": [
+        "morrowise/runtime-scheduler-v0"
+      ],
+      "close_reason": "sentinel 外部通知/排程出口改由 MorroWise runtime-delivery track 統一承接，避免 harness-mc sentinel 與 MorroWise 各自維護 delivery ownership。",
+      "summary": "未執行關閉：原 task 已整合到 morrowise/runtime-scheduler-v0；保留此卡作為 lineage，不再作為 execution anchor。"
     },
     {
       "id": "p2-1",

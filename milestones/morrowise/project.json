@@ -9,13 +9,15 @@
   "tracks": {
     "v0-foundation": "v0 開案邊界與既有 lineage 對齊",
     "auditor-mvp": "Auditor / Architecture Pulse MVP",
-    "mc-surface": "MC read-only surface 與閉環驗證"
+    "mc-surface": "MC read-only surface 與閉環驗證",
+    "runtime-delivery": "Agent-agnostic scheduler、notification adapter 與 Reality Tax Gate"
   },
   "goals": [
     "把 000_Agent/docs/morrowise/ 的 v0 評估文件轉成正式、task-backed 的 MorroWise 專案邊界。",
     "建立第一個可驗證閉環：ARCHITECTURE.md source -> auditor/report -> read model -> MC read-only surface -> next action。",
     "用 source map 管住服務串接、script、安全、記憶、第二大腦、專案、commit、skills、dashboard、mirror 等 source family，避免 dashboard 或 mirror 變成第二正本。",
-    "把既有 harness-mc morrowise-system track 納入 implementation lineage，後續只做引用、整併或 supersede，不重複維護同一批 task。"
+    "把既有 harness-mc morrowise-system track 納入 implementation lineage，後續只做引用、整併或 supersede，不重複維護同一批 task。",
+    "把 agent-agnostic schedule / delivery / Reality Tax Gate 收編為 MorroWise runtime-delivery 能力，讓提醒與輸出閘門所有 Agent 通用，不綁 Codex thread automation。"
   ],
   "risks": [
     {
@@ -121,6 +123,20 @@
         "#confirmationBias",
         "#risk"
       ]
+    },
+    {
+      "topic": "Agent-agnostic scheduler ownership",
+      "decision": "agnostic-scheduler 不再作為獨立 active project；其未執行 runtime / notification / schedule tasks 由 MorroWise runtime-delivery track 承接。",
+      "reason": "Reality Tax Gate、每日排程、Telegram/LINE/Notion/thread delivery 都是 MorroWise 活系統的 trigger / delivery / feedback loop 能力；若留在獨立專案，會讓 runtime ownership 與 MorroWise surface/read model 分裂。",
+      "alternatives_rejected": [
+        "保留 agnostic-scheduler active project - 會讓所有 Agent 通用 runtime 變成 MorroWise 外部第二正本。",
+        "只用 Codex app automation - 只能在單一 thread 生效，不符合 Vincent 要求的所有 Agent 通用。"
+      ],
+      "hc_used": [
+        "#rightProblem",
+        "#systemDynamics",
+        "#constraints"
+      ]
     }
   ],
   "hc_decision": {
@@ -148,7 +164,8 @@
     "trigger": [
       "Vincent 說 MorroWise / 活系統 / 架構漂移 / AI Agent 共享腦。",
       "$COLLAB shared docs、source-map、skills、MC read model、dashboard surface 或 local runtime probe 改變。",
-      "weekly review、stale/blocked task、new project growth gate、commit boundary 或 sync failure 出現未閉合 loop。"
+      "weekly review、stale/blocked task、new project growth gate、commit boundary 或 sync failure 出現未閉合 loop。",
+      "同一概念研究/討論超過 30 分鐘，尚未指定 24 小時內實質 output。"
     ],
     "source_process_output": "source-map / target profile / canonical files -> auditor scanner or manual report -> findings / read model / MC surface / draft next task",
     "surface": "MC MorroWise read-only surface first; Obsidian Canvas / Heptabase 只作 mirror，需 Vincent 指定 exact whiteboard 後才同步。",

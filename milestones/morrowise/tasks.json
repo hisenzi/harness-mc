@@ -192,6 +192,130 @@
           "sync_mode": "created"
         }
       }
+    },
+    {
+      "id": "runtime-delivery-lineage-map",
+      "title": "整併 agent-agnostic scheduler / notification lineage 到 MorroWise",
+      "status": "todo",
+      "track": "runtime-delivery",
+      "dependencies": [
+        "v0-source-map-mc-reconcile"
+      ],
+      "done_condition": "產出 MorroWise runtime / delivery lineage map，將 agnostic-scheduler 與 harness-mc sentinel 通知/排程 tasks 標示為 migrate_to / superseded_by / archive_reason，並明確 Reality Tax Gate 屬於 MorroWise 工作流閘門而非 Codex 專屬排程。",
+      "acceptance": [
+        "agnostic-scheduler 未執行 tasks 已關閉並指向 MorroWise 承接 task，completed scaffold 只保留為歷史 evidence。",
+        "harness-mc sentinel 的 Notion / Telegram / launchd 出口 tasks 已關閉或標示由 MorroWise runtime-delivery 承接。",
+        "LINE / Telegram / Notion / Codex thread 被定義為 delivery adapter；Reality Tax Gate 被定義為 workflow gate，不綁單一 agent 或 app automation。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/agnostic-scheduler/project.json",
+        "$COLLAB/harness-mc/milestones/agnostic-scheduler/tasks.json",
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json",
+        "$COLLAB/notyet-harness/100_Todo/plan/agnostic-scheduler-260607.md",
+        "$COLLAB/notyet-harness/schedule/"
+      ],
+      "hc_decision": {
+        "task_scope": "morrowise/runtime-delivery-lineage-map",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#constraints",
+          "#confirmationBias"
+        ],
+        "hc_reasoning": "真正問題不是多做一個提醒，而是避免排程、通知、Reality Tax Gate 分裂在 Codex app / agnostic-scheduler / sentinel 三處。#systemDynamics 指出多個 task source 會形成 drift；#constraints 要求通知 token 與 runner 能力留在 adapter 邊界；#confirmationBias 防止因既有 agnostic-scheduler 專案存在而保留第二正本。",
+        "hc_confidence": 0.84,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/agnostic-scheduler/tasks.json",
+          "$COLLAB/harness-mc/milestones/harness-mc/tasks.json",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical state stays in MC tasks.json; runtime specs live in $COLLAB/notyet-harness/schedule and MorroWise docs/read models."
+      }
+    },
+    {
+      "id": "runtime-scheduler-v0",
+      "title": "MorroWise agent-agnostic scheduler runtime v0",
+      "status": "todo",
+      "track": "runtime-delivery",
+      "dependencies": [
+        "runtime-delivery-lineage-map"
+      ],
+      "done_condition": "完成 $COLLAB/notyet-harness/schedule 的通用 runtime：dispatch.sh、runner adapter、install.sh、runs log contract 與 schedule health read model；同一 task spec 可由 shell / Claude Code / Codex 或 future agent runner 承接。",
+      "acceptance": [
+        "dispatch.sh 可解析 tasks/*.yaml、選 runner、寫 runs log，且不依賴 yq。",
+        "runner adapter 至少定義 shell 與 Claude Code；Codex / future agent 可用 placeholder contract 延後實作。",
+        "install.sh 生成本機 launchd plist；plist 不進 git，task spec 保持 agent-agnostic。",
+        "MC 可讀 schedule health，不把排程狀態藏在本機 app automation。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/schedule/",
+        "$COLLAB/notyet-harness/100_Todo/plan/agnostic-scheduler-260607.md",
+        "$COLLAB/harness-mc/milestones/agnostic-scheduler/tasks.json"
+      ]
+    },
+    {
+      "id": "notification-adapter-contract",
+      "title": "MorroWise notification adapter contract（Telegram / LINE / Notion / thread）",
+      "status": "todo",
+      "track": "runtime-delivery",
+      "dependencies": [
+        "runtime-delivery-lineage-map"
+      ],
+      "done_condition": "定義並落地 notification adapter contract：Telegram 走 schedule/lib/notify.sh；LINE 走 Messaging API 而非 LINE Notify；Notion / Codex thread 為可選 delivery；所有 token / channel id 僅放本機 .env，不進 git。",
+      "acceptance": [
+        "Telegram adapter 保留既有 notify.sh，缺 token 時 graceful skip，不中斷上游。",
+        "LINE adapter 明確使用 LINE Messaging API，記錄 channel access token、user/group id 的 .env 欄位，不使用已停用的 LINE Notify。",
+        "delivery adapter 只負責送達，不決定 task state、不關閉 Reality Tax Gate、不寫 secrets。",
+        "通知送達驗證可重跑；未有 token 時 task 狀態保持 blocked 或 degraded，不偽裝為 live。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/schedule/lib/notify.sh",
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json",
+        "$COLLAB/harness-mc/milestones/agnostic-scheduler/tasks.json"
+      ]
+    },
+    {
+      "id": "reality-tax-gate-protocol",
+      "title": "Reality Tax Gate 通用工作流協定",
+      "status": "todo",
+      "track": "runtime-delivery",
+      "dependencies": [
+        "runtime-delivery-lineage-map"
+      ],
+      "done_condition": "產出所有 Agent 通用的 Reality Tax Gate protocol：同一概念研究/討論超過 30 分鐘時，必須指定 24 小時內實質 output；無 output 標記 reality_gap 並選擇砍掉 / 建 task anchor / 做最小 demo。",
+      "acceptance": [
+        "協定明確區分 Reality Tax Gate（workflow gate）與 Reality Tax Daily Review（schedule task）。",
+        "可接受 output 列為 task、demo、流程圖、dashboard、decision log、客戶驗證問題、公開承諾、verifier、文章草稿、pitch。",
+        "HC refs 使用 #rightProblem、#constraints、#utility、#risk、#systemDynamics、#responsibility 作 reasoning layer，不取代 MC task state。",
+        "協定放在 $COLLAB/notyet-harness 的共享 agent 文件或 MorroWise docs，Codex / Claude Code / future agents 都能讀。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/CORE.md",
+        "$COLLAB/notyet-harness/300_Obsidian_brain/HC/_index/hc-registry.md",
+        "$COLLAB/harness-mc/milestones/morrowise/project.json"
+      ]
+    },
+    {
+      "id": "reality-tax-daily-review-task",
+      "title": "Reality Tax Daily Review 排程任務契約",
+      "status": "todo",
+      "track": "runtime-delivery",
+      "dependencies": [
+        "runtime-scheduler-v0",
+        "notification-adapter-contract",
+        "reality-tax-gate-protocol"
+      ],
+      "done_condition": "新增 $COLLAB/notyet-harness/schedule/tasks/reality-tax-daily-review.yaml，21:30 檢查當日研究概念、30 分鐘觸發門檻、24 小時 output 與 reality_gap，並透過 configured delivery adapter 提醒 Vincent。",
+      "acceptance": [
+        "task spec 是 agent-agnostic YAML，不綁 Codex thread automation。",
+        "prompt 要求實質 output，不接受「再研究 / 再想想 / 之後看看」。",
+        "delivery 可配置 Telegram / LINE / Notion / thread；未配置 token 時輸出 runs log 並標 degraded。",
+        "MC MorroWise surface 可看見此 daily review 的 freshness / last_run / next_action。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/schedule/tasks/",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json"
+      ]
     }
   ]
 }

@@ -2,7 +2,7 @@
   "name": "Agent-Agnostic 排程系統",
   "description": "不綁任何 agent 的萬用任務排程框架——任務即資料、執行者即外掛",
   "type": "internal",
-  "status": "active",
+  "status": "archived",
   "priority": "high",
   "created": "2026-06-08",
   "estimated_completion": "2026-06-09",
@@ -70,43 +70,96 @@
       "topic": "觸發引擎",
       "decision": "macOS launchd（系統級，agent 無關）",
       "reason": "#rightProblem + #abstraction：真正要解的是觸發/任務/執行三者解耦，launchd 是 OS 原生不綁任何 agent runtime",
-      "alternatives_rejected": ["OC cron Gateway（綁 OC runtime，CC 不能改 Gateway）", "CC 內建 /schedule（綁 CC，違反 agent-agnostic 需求）"],
-      "hc_used": ["#rightProblem", "#abstraction", "#constraints"]
+      "alternatives_rejected": [
+        "OC cron Gateway（綁 OC runtime，CC 不能改 Gateway）",
+        "CC 內建 /schedule（綁 CC，違反 agent-agnostic 需求）"
+      ],
+      "hc_used": [
+        "#rightProblem",
+        "#abstraction",
+        "#constraints"
+      ]
     },
     {
       "topic": "任務契約存放",
       "decision": "git 共享層 notyet-harness/schedule/（雙端同步）",
       "reason": "#levelsOfAnalysis：契約層要所有 agent + 雙端都讀得到，git 是既有同步管道",
-      "alternatives_rejected": ["本機獨立目錄（綁單機，不同步）"],
-      "hc_used": ["#levelsOfAnalysis", "#constraints"]
+      "alternatives_rejected": [
+        "本機獨立目錄（綁單機，不同步）"
+      ],
+      "hc_used": [
+        "#levelsOfAnalysis",
+        "#constraints"
+      ]
     },
     {
       "topic": "架構路線",
       "decision": "自建輕量版（tasks/*.yaml + runners/*.sh + dispatch.sh）",
       "reason": "場景比 Composio/Docker Agent 等企業框架簡單，用 notyet-harness 生態，.sh + .yaml 就夠；業界已驗證此模式可行",
-      "alternatives_rejected": ["直接採用 Composio + opencode-scheduler（過重）", "先評估再決定（時間不允許）"],
-      "hc_used": ["#breakItDown", "#constraints"]
+      "alternatives_rejected": [
+        "直接採用 Composio + opencode-scheduler（過重）",
+        "先評估再決定（時間不允許）"
+      ],
+      "hc_used": [
+        "#breakItDown",
+        "#constraints"
+      ]
     },
     {
       "topic": "通知管道",
       "decision": "CC 自推 Telegram（curl Bot API），token 放 schedule/.env（gitignore）",
       "reason": "Telegram Bot API 是純 HTTP，任何能 curl 的都能推，不依賴 OC。舊腳本 token 已外洩進 git → 新設計必須隔離",
-      "alternatives_rejected": ["借 OC Gateway 推播（多一層依賴）", "只寫 runs/ 不通知（不夠主動）"],
-      "hc_used": ["#constraints"]
+      "alternatives_rejected": [
+        "借 OC Gateway 推播（多一層依賴）",
+        "只寫 runs/ 不通知（不夠主動）"
+      ],
+      "hc_used": [
+        "#constraints"
+      ]
     },
     {
       "topic": "第一個任務",
       "decision": "cc-log-sweep（21:30，safety net 補網未 log 的 session）",
       "reason": "模擬驗證發現 22:00 撞車（6 個 OC job 同時段），改 21:30 避開；定位為補網不是主力路徑",
-      "alternatives_rejected": ["daily-summary（不夠具體）", "排在 22:00（跟現有排程撞車）"],
-      "hc_used": ["#rightProblem", "#systemDynamics", "#constraints"]
+      "alternatives_rejected": [
+        "daily-summary（不夠具體）",
+        "排在 22:00（跟現有排程撞車）"
+      ],
+      "hc_used": [
+        "#rightProblem",
+        "#systemDynamics",
+        "#constraints"
+      ]
     },
     {
       "topic": "盤點判定機制",
       "decision": "標記法——cc-log 成功後記 session_id 到 cc-logged.log，盤點 = 今日 session 減已標記",
       "reason": "[CC] block 不記 session id，靠標題語意猜會漏報/重複；標記法可靠可審計",
-      "alternatives_rejected": ["語意猜 + 人工確認（不可靠）", "session 結束自動 cc-log（SessionEnd hook 不能 spawn 新 session）"],
-      "hc_used": ["#constraints", "#infoNeeded"]
+      "alternatives_rejected": [
+        "語意猜 + 人工確認（不可靠）",
+        "session 結束自動 cc-log（SessionEnd hook 不能 spawn 新 session）"
+      ],
+      "hc_used": [
+        "#constraints",
+        "#infoNeeded"
+      ]
+    },
+    {
+      "topic": "Ownership transfer to MorroWise",
+      "decision": "agnostic-scheduler archived; open runtime / delivery tasks migrate to MorroWise runtime-delivery.",
+      "reason": "Vincent 要求 Reality Tax Gate 與通知機制為所有 Agent 通用；MorroWise 是 active live-system project，應承接 trigger / delivery / feedback loop ownership。",
+      "hc_used": [
+        "#rightProblem",
+        "#systemDynamics",
+        "#constraints"
+      ]
     }
+  ],
+  "archived_at": "2026-06-23",
+  "archive_reason": "未執行 runtime / notification / schedule tasks 已由 MorroWise runtime-delivery track 承接；本 project 保留為 2026-06-08 設計與 scaffold lineage。",
+  "superseded_by": [
+    "morrowise/runtime-delivery-lineage-map",
+    "morrowise/runtime-scheduler-v0",
+    "morrowise/notification-adapter-contract"
   ]
 }

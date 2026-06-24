@@ -20,6 +20,24 @@
       "note": "由 yutianlaw 關於我們手機版排版暴露：HiBlocks 目前有 --hi-text-xs/sm/base/md/lg/xl/2xl/3xl 與 font/type-scale A1 概念，但缺少像 Mapelon 一樣的語義 typography contract。此 task 是 p1-s 的補強：不是把 Mapelon 數值直接套用，而是採用其方法（semantic token → selector 對應 → RWD override），建立 HiBlocks 自己的 type scale 與行長/行距規則。需參考 CSS 可讀性與 WCAG text spacing：unitless line-height、主段落至少可承受 1.5 line-height、文字容器以 ch/em/rem 等相對單位控制，避免 px 零散微調。"
     },
     {
+      "id": "p1-navbar-mobile-overlay",
+      "title": "HiNavbar 手機選單滿版遮罩與關閉行為修正",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "HiNavbar 手機選單在捲動後開啟仍維持 viewport 滿版遮罩，不被 navbar backdrop-filter 困住；選單項目與 mobile CTA 點擊後會關閉選單、復原 aria 狀態並解鎖 body scroll；src/public hi-blocks.js 同步；新增 verifier，npm run verify:mobile-navbar、npm run validate:typography、npm run build 通過；完成 390x844 手機瀏覽器 QA 或記錄受限原因。",
+      "estimate": "2hr",
+      "note": "由 yutianlaw fix-mobile-menu（9ec4577）與 RRREALLL 手機截圖回饋暴露：HiBlocks 上游 HiNavbar mobile overlay contract 不完整。此 task 獨立於 p1-s-typography，範圍是 navigation 行為、overlay 定位、themeable mobile menu bg/border、source/public script sync 與 verifier。2026-06-24 已在 hiblocks working tree 實作初版並通過 verify:mobile-navbar / validate:typography / build；待 commit 與瀏覽器/真機 QA 後再標完成。"
+    },
+    {
+      "id": "p1-navbar-mobile-qa-hardening",
+      "title": "HiNavbar 手機選單 QA 強化：theme token、實色背景、390x844 實測 verifier",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "在 theme-default.css 與既有 theme 中正式宣告 --hi-nav-mobile-bg / --hi-nav-mobile-border；.hi-navbar.hi-menu-open 提供不透明背景策略，避免半透明 navbar 透底；verify:mobile-navbar 升級為可執行 390x844 手機 viewport 實測（先 scroll 再開 menu，檢查 overlay 滿版、第一層連結與 mobile CTA 可點、點擊後 menu 關閉、aria 復原、body overflow 解鎖）；若本機瀏覽器受限，需輸出明確 skip reason 與可重跑指令。",
+      "estimate": "2hr",
+      "note": "2026-06-24 檢查 p1-navbar-mobile-overlay 初版後新增：目前已修 backdrop-filter、visibility、link/CTA close、src/public sync，但 mobile bg/border token 只在 component fallback 使用，theme 尚未正式宣告；verifier 仍是靜態 CSS/JS contract，不是 390x844 實瀏覽器檢查；menu-open 也尚未提供跨 theme 的不透明 navbar 背景策略。此 task 是 QA/hardening，不混入 p1-s-typography。"
+    },
+    {
       "id": "p1-0",
       "title": "內容架構分離（頁面資料抽離 + Content Schema 擴充）",
       "status": "todo",

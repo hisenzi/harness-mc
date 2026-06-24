@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-live-system-admission-gate-5893ad6-20260624T024930Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "5893ad6",
+  "project": "morrowise",
+  "task_id": "live-system-admission-gate",
+  "status": "updated",
+  "summary": "記錄 MorroWise live-system admission gate 與 commit planning gate session log，保留 completed task、open runtime-scheduler-v0 / v0-live-loop-verify 與後續 commit cleanup handoff。",
+  "created_at": "2026-06-24T02:49:30.799Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-24-morrowise-live-system-gate"
+}

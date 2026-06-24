@@ -1,0 +1,79 @@
+{
+  "registry_id": "morrowise-commit-planning-gate.v0",
+  "task_id": "runtime-scheduler-v0",
+  "updated_at": "2026-06-24",
+  "status": "formal_registry",
+  "purpose": "Define how an Agent turns commit-attention output into a commit cleanup plan without staging, committing, pushing, or mutating task state.",
+  "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
+  "input": [
+    "$COLLAB/harness-mc/public/data/commit-attention.json",
+    "$COLLAB/harness-mc/public/data/worktrees.json",
+    "$COLLAB/harness-mc/milestones/*/tasks.json"
+  ],
+  "output": [
+    "commit cleanup plan in the current Agent thread",
+    "optional future read model: $COLLAB/harness-mc/public/data/commit-cleanup-plan.json"
+  ],
+  "write_boundary": {
+    "allowed": [
+      "read generated commit-attention/worktree status",
+      "read task metadata",
+      "run git status and git diff --stat",
+      "read per-file diff only after task anchor is allowed",
+      "produce commit cleanup plan"
+    ],
+    "forbidden": [
+      "git add",
+      "git commit",
+      "git push",
+      "close task",
+      "mutate tasks.json",
+      "send external notification"
+    ],
+    "handoff_gate": "$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/SKILL.md"
+  },
+  "classification": [
+    {
+      "input_state": "needs_reconcile",
+      "planning_state": "blocked",
+      "next_action": "Resolve branch divergence or detached HEAD before commit planning."
+    },
+    {
+      "input_state": "missing_or_unclear_task_anchor",
+      "planning_state": "blocked",
+      "next_action": "Create or select MC task anchor before dirty diff review."
+    },
+    {
+      "input_state": "task_anchor_available",
+      "planning_state": "plan_allowed",
+      "next_action": "Run work-anchor preflight, inspect scoped status/diff, and produce grouped commit cleanup plan."
+    },
+    {
+      "input_state": "local_commits",
+      "planning_state": "push_decision_required",
+      "next_action": "Do not rewrite local commits; verify task/event linkage and ask Vincent whether to push."
+    }
+  ],
+  "required_plan_fields": [
+    "repo",
+    "repo_status",
+    "candidate_task_anchor",
+    "preflight_result",
+    "commit_groups",
+    "excluded_files",
+    "verification_commands",
+    "risks",
+    "approval_required"
+  ],
+  "decision_order": [
+    "Read commit-attention and worktree status.",
+    "Classify each repo into blocked, plan_allowed, or push_decision_required.",
+    "For blocked repos, stop at reason and next_action.",
+    "For plan_allowed repos, run work-anchor preflight before reading detailed diffs.",
+    "Inspect dirty scope and propose logical commit groups.",
+    "List excluded files explicitly.",
+    "Wait for Vincent confirmation before entering worktree-commit.",
+    "Actual git add/commit/push remains outside this gate."
+  ],
+  "verifier": "npm run test:commit-planning-gate"
+}

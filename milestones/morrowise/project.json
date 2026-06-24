@@ -10,14 +10,16 @@
     "v0-foundation": "v0 開案邊界與既有 lineage 對齊",
     "auditor-mvp": "Auditor / Architecture Pulse MVP",
     "mc-surface": "MC read-only surface 與閉環驗證",
-    "runtime-delivery": "Agent-agnostic scheduler、notification adapter 與 Reality Tax Gate"
+    "runtime-delivery": "Agent-agnostic scheduler、notification adapter 與 Reality Tax Gate",
+    "governance": "MorroWise 元件入場規則、live-system gate 與跨功能治理"
   },
   "goals": [
     "把 000_Agent/docs/morrowise/ 的 v0 評估文件轉成正式、task-backed 的 MorroWise 專案邊界。",
     "建立第一個可驗證閉環：ARCHITECTURE.md source -> auditor/report -> read model -> MC read-only surface -> next action。",
     "用 source map 管住服務串接、script、安全、記憶、第二大腦、專案、commit、skills、dashboard、mirror 等 source family，避免 dashboard 或 mirror 變成第二正本。",
     "把既有 harness-mc morrowise-system track 納入 implementation lineage，後續只做引用、整併或 supersede，不重複維護同一批 task。",
-    "把 agent-agnostic schedule / delivery / Reality Tax Gate 收編為 MorroWise runtime-delivery 能力，讓提醒與輸出閘門所有 Agent 通用，不綁 Codex thread automation。"
+    "把 agent-agnostic schedule / delivery / Reality Tax Gate 收編為 MorroWise runtime-delivery 能力，讓提醒與輸出閘門所有 Agent 通用，不綁 Codex thread automation。",
+    "建立 Live-System Admission Gate，讓任何新 component / scheduler / surface / runner / read model 進 MorroWise 前先證明自己在 trigger -> source -> process -> output -> surface -> next_action -> feedback -> verifier loop 裡的角色。"
   ],
   "risks": [
     {

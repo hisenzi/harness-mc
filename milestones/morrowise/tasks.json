@@ -176,12 +176,14 @@
       "acceptance": [
         "驗證鏈包含 source、generator、generated_at、stale_rule、next_action、write_boundary、verifier。",
         "至少覆蓋正常、stale、fake_live_risk 三種狀態。",
-        "驗證結果能回寫 task summary 或產生下一輪 draft task，形成 feedback loop。"
+        "驗證結果能回寫 task summary 或產生下一輪 draft task，形成 feedback loop。",
+        "引用 live-system-admission-gate 作為新 component 入場制度；v0-live-loop-verify 只驗證已入場元件是否形成 end-to-end loop，不把 Admission Gate 當一次性驗收項目。"
       ],
       "source_refs": [
         "$COLLAB/notyet-harness/000_Agent/docs/morrowise/auditor-mvp.md",
         "$COLLAB/notyet-harness/000_Agent/docs/morrowise/source-map-v0.md",
-        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json"
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-live-system-admission.json"
       ],
       "external_refs": {
         "heptabase": {
@@ -250,13 +252,56 @@
         "dispatch.sh 可解析 tasks/*.yaml、選 runner、寫 runs log，且不依賴 yq。",
         "runner adapter 至少定義 shell 與 Claude Code；Codex / future agent 可用 placeholder contract 延後實作。",
         "install.sh 生成本機 launchd plist；plist 不進 git，task spec 保持 agent-agnostic。",
-        "MC 可讀 schedule health，不把排程狀態藏在本機 app automation。"
+        "MC 可讀 schedule health，不把排程狀態藏在本機 app automation。",
+        "commit-attention-sweep 可固定偵測 $COLLAB repo 未 commit / 未 push / 分歧狀態，並核對 candidate MC task anchor；缺 task 時提醒先建立或指定 task，再進 worktree-commit。",
+        "commit-planning-gate 定義提醒後 Agent 的標準分流：blocked / plan_allowed / push_decision_required；只產 cleanup plan，不 stage、不 commit、不 push。"
       ],
       "source_refs": [
         "$COLLAB/notyet-harness/schedule/",
         "$COLLAB/notyet-harness/100_Todo/plan/agnostic-scheduler-260607.md",
         "$COLLAB/harness-mc/milestones/agnostic-scheduler/tasks.json"
       ]
+    },
+    {
+      "id": "live-system-admission-gate",
+      "title": "MorroWise Live-System Admission Gate",
+      "status": "todo",
+      "track": "governance",
+      "dependencies": [
+        "runtime-delivery-lineage-map"
+      ],
+      "done_condition": "定義並落地 MorroWise Live-System Admission Gate：任何新 component / scheduler / surface / runner / read model 進系統前，必須提供 trigger、source、process、output、surface、next_action、feedback_loop、write_boundary、degraded_states、verifier，並由 verifier 判定 accepted / prototype / blocked / static_display。",
+      "acceptance": [
+        "Admission gate contract 是 machine-readable registry，不只存在聊天或文件敘述。",
+        "每個 component 必須列出 owner_task、type、loop_role、source_of_truth、output、next_action、feedback_loop、write_boundary、degraded_states、verifier 與 admission_state。",
+        "verifier 會阻擋缺 source/process/output/write_boundary/verifier 的 component，並要求缺 feedback_loop 的項目只能是 prototype 或 static_display。",
+        "commit-attention 作為第一個 fixture：可被 accepted，但實際 commit/push 仍停在 worktree-commit confirmation gate。",
+        "v0-live-loop-verify 引用 Admission Gate 作為入場制度，不把它當成一次性驗收項目。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-system-verification-standard.md",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-read-model-contract.md",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
+        "$COLLAB/harness-mc/public/data/commit-attention.json"
+      ],
+      "hc_decision": {
+        "task_scope": "morrowise/live-system-admission-gate",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#constraints",
+          "#risk",
+          "#confirmationBias"
+        ],
+        "hc_reasoning": "真正問題不是逐項問『這有沒有符合活系統』，而是把活系統入場條件變成每個新元件都要通過的制度。#systemDynamics 指出若 admission 只放在單一驗證 task，未來新功能會繞過 loop contract；#constraints 要求 gate 不執行外部副作用，只判斷 component 能否被 MorroWise 引用；#risk 防止 static display 被誤稱 live；#confirmationBias 要求第一個 fixture 必須包含 commit-attention 這個剛新增的實例。",
+        "hc_confidence": 0.86,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
+          "$COLLAB/harness-mc/scripts/generate-commit-attention.mjs"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical gate rules live in the admission registry, spec, verifier, and MC task state."
+      }
     },
     {
       "id": "notification-adapter-contract",

@@ -26,7 +26,10 @@
     "test:morrowise-live-dashboard": "node scripts/verify-morrowise-live-dashboard-data.mjs",
     "test:morrowise-live-loop": "node scripts/verify-morrowise-live-dashboard-loop.mjs",
     "test:worktree-status": "node scripts/generate-worktree-status.mjs",
-    "prebuild": "node scripts/check-adr-backlinks.mjs && node scripts/validate-skills.mjs --changed-only && node scripts/generate-data.mjs && node scripts/generate-tools-data.mjs && node scripts/generate-task-event-data.mjs && node scripts/generate-morrowise-proactive-loop.mjs && node scripts/generate-worktree-status.mjs && node scripts/sentinel-diff.mjs && node scripts/generate-morrowise-live-dashboard.mjs",
+    "test:commit-attention": "node scripts/verify-commit-attention.mjs",
+    "test:commit-planning-gate": "node scripts/verify-morrowise-commit-planning-gate.mjs",
+    "test:live-system-admission": "node scripts/verify-morrowise-live-system-admission.mjs",
+    "prebuild": "node scripts/check-adr-backlinks.mjs && node scripts/validate-skills.mjs --changed-only && node scripts/generate-data.mjs && node scripts/generate-tools-data.mjs && node scripts/generate-task-event-data.mjs && node scripts/generate-morrowise-proactive-loop.mjs && node scripts/generate-worktree-status.mjs && node scripts/generate-commit-attention.mjs && node scripts/sentinel-diff.mjs && node scripts/generate-morrowise-live-dashboard.mjs",
     "build": "next build",
     "start": "next start -p 3001"
   },

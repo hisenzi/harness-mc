@@ -1,0 +1,198 @@
+{
+  "registry_id": "morrowise-live-system-admission.v0",
+  "task_id": "live-system-admission-gate",
+  "updated_at": "2026-06-24",
+  "status": "formal_registry",
+  "purpose": "Classify whether a new MorroWise component may be treated as part of the live system before it is referenced by dashboards, schedulers, runners, or workflows.",
+  "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
+  "admission_states": {
+    "accepted": "The component has enough loop contract, boundary, degraded states, and verifier evidence to be referenced as live-system capability.",
+    "prototype": "The component may exist for exploration, but must not be described as live or used as required workflow infrastructure.",
+    "blocked": "The component is missing required evidence or safety boundary and must not be connected to MorroWise.",
+    "static_display": "The component is display-only; it may be shown as static/manual evidence but cannot claim feedback-loop behavior."
+  },
+  "required_contract_fields": [
+    "component_id",
+    "type",
+    "owner_task",
+    "loop_role",
+    "trigger",
+    "source_of_truth",
+    "process",
+    "output",
+    "surface",
+    "next_action",
+    "feedback_loop",
+    "write_boundary",
+    "degraded_states",
+    "verifier",
+    "admission_state"
+  ],
+  "gate_rules": [
+    {
+      "rule_id": "admission.required_loop_contract",
+      "meaning": "Accepted components must define trigger, source_of_truth, process, output, surface, next_action, feedback_loop, write_boundary, degraded_states, and verifier.",
+      "blocks_state": "accepted"
+    },
+    {
+      "rule_id": "admission.feedback_loop_required_for_live",
+      "meaning": "A component without feedback_loop cannot be accepted; it must be prototype or static_display.",
+      "blocks_state": "accepted"
+    },
+    {
+      "rule_id": "admission.write_boundary_required",
+      "meaning": "A component must explicitly state what it cannot write or execute. Unknown write boundary defaults to blocked.",
+      "blocks_state": "accepted"
+    },
+    {
+      "rule_id": "admission.verifier_required",
+      "meaning": "A component without a repeatable verifier cannot be accepted into MorroWise.",
+      "blocks_state": "accepted"
+    },
+    {
+      "rule_id": "admission.side_effects_need_approval_policy",
+      "meaning": "Components that can commit, push, send messages, sync external systems, mutate task state, or touch schedules must route through approval policy or worktree-commit gate.",
+      "blocks_state": "accepted"
+    }
+  ],
+  "components": [
+    {
+      "component_id": "commit-attention",
+      "type": "read_model",
+      "owner_task": "runtime-scheduler-v0",
+      "loop_role": "Detect unfinished local git work, connect it to candidate MC task anchors, and route the next step to commit planning gate.",
+      "trigger": [
+        "$COLLAB/notyet-harness/schedule/tasks/commit-attention-sweep.yaml",
+        "manual command: cd \"$COLLAB/harness-mc\" && node scripts/generate-commit-attention.mjs"
+      ],
+      "source_of_truth": [
+        "$COLLAB/*/.git",
+        "$COLLAB/harness-mc/milestones/*/tasks.json",
+        "$COLLAB/harness-mc/public/data/worktrees.json"
+      ],
+      "process": [
+        "$COLLAB/harness-mc/scripts/generate-worktree-status.mjs",
+        "$COLLAB/harness-mc/scripts/generate-commit-attention.mjs"
+      ],
+      "output": [
+        "$COLLAB/harness-mc/public/data/commit-attention.json"
+      ],
+      "surface": [
+        "notification adapter",
+        "future MorroWise dashboard surface",
+        "commit cleanup planning gate"
+      ],
+      "next_action": [
+        "If task anchor exists, enter commit cleanup planning gate.",
+        "If task anchor is missing or unclear, create or select MC task before commit planning.",
+        "If repo needs reconcile, resolve branch/reconcile state before commit planning."
+      ],
+      "feedback_loop": [
+        "worktree-commit updates task state or writes task-event outbox after Vincent-confirmed commit",
+        "subsequent commit-attention sweep reflects cleaner repo state or remaining open loops"
+      ],
+      "write_boundary": {
+        "allowed": [
+          "read git porcelain status",
+          "read MC task metadata",
+          "write generated local read model",
+          "optionally call configured notification adapter"
+        ],
+        "forbidden": [
+          "read git diff contents",
+          "stage files",
+          "commit",
+          "push",
+          "close task",
+          "read secrets"
+        ],
+        "approval_gate": "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
+        "commit_gate": "$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/SKILL.md"
+      },
+      "degraded_states": [
+        "missing_or_unclear_task_anchor",
+        "repo_needs_reconcile",
+        "notify_token_missing",
+        "generated_read_model_stale"
+      ],
+      "verifier": [
+        "npm run test:commit-attention",
+        "npm run test:live-system-admission"
+      ],
+      "admission_state": "accepted",
+      "evidence_refs": [
+        "$COLLAB/harness-mc/scripts/verify-commit-attention.mjs",
+        "$COLLAB/harness-mc/public/data/commit-attention.json",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json"
+      ]
+    },
+    {
+      "component_id": "commit-planning-gate",
+      "type": "workflow_gate",
+      "owner_task": "runtime-scheduler-v0",
+      "loop_role": "Turn commit-attention output into a scoped commit cleanup plan before any worktree-commit action is allowed.",
+      "trigger": [
+        "commit-attention summary reports repos needing attention",
+        "Vincent asks to plan commit cleanup"
+      ],
+      "source_of_truth": [
+        "$COLLAB/harness-mc/public/data/commit-attention.json",
+        "$COLLAB/harness-mc/public/data/worktrees.json",
+        "$COLLAB/harness-mc/milestones/*/tasks.json"
+      ],
+      "process": [
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-commit-planning-gate.json",
+        "Agent work-anchor preflight and scoped dirty-tree review"
+      ],
+      "output": [
+        "commit cleanup plan in current Agent thread",
+        "optional future read model: $COLLAB/harness-mc/public/data/commit-cleanup-plan.json"
+      ],
+      "surface": [
+        "current Agent thread",
+        "future MorroWise dashboard surface"
+      ],
+      "next_action": [
+        "Blocked repos stop with reason and next required step.",
+        "Allowed repos produce grouped commit plan for Vincent confirmation.",
+        "Confirmed groups hand off to worktree-commit."
+      ],
+      "feedback_loop": [
+        "worktree-commit outcome updates MC task state or task-event outbox",
+        "next commit-attention sweep verifies whether repo attention cleared"
+      ],
+      "write_boundary": {
+        "allowed": [
+          "read generated commit-attention and worktree status",
+          "read task metadata",
+          "run git status and git diff --stat",
+          "produce commit cleanup plan"
+        ],
+        "forbidden": [
+          "git add",
+          "git commit",
+          "git push",
+          "close task",
+          "mutate tasks.json",
+          "send external notification"
+        ],
+        "commit_gate": "$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/SKILL.md"
+      },
+      "degraded_states": [
+        "repo_needs_reconcile",
+        "missing_or_unclear_task_anchor",
+        "preflight_blocked",
+        "diff_scope_too_mixed"
+      ],
+      "verifier": [
+        "npm run test:commit-planning-gate",
+        "npm run test:live-system-admission"
+      ],
+      "admission_state": "accepted",
+      "evidence_refs": [
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-commit-planning-gate.json",
+        "$COLLAB/harness-mc/scripts/verify-morrowise-commit-planning-gate.mjs"
+      ]
+    }
+  ]
+}

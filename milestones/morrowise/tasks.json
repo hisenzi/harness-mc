@@ -265,7 +265,7 @@
     {
       "id": "live-system-admission-gate",
       "title": "MorroWise Live-System Admission Gate",
-      "status": "todo",
+      "status": "completed",
       "track": "governance",
       "dependencies": [
         "runtime-delivery-lineage-map"
@@ -301,7 +301,12 @@
           "$COLLAB/harness-mc/scripts/generate-commit-attention.mjs"
         ],
         "source_boundary": "HC is a thinking check only, not source of truth. Canonical gate rules live in the admission registry, spec, verifier, and MC task state."
-      }
+      },
+      "completed_at": "2026-06-24",
+      "commits": [
+        "f8c7268"
+      ],
+      "summary": "建立 MorroWise Live-System Admission Gate 與 Commit Planning Gate，將新元件入場條件、commit-attention fixture、commit cleanup planning boundary 與 repeatable verifiers 正式納入 MorroWise governance。"
     },
     {
       "id": "notification-adapter-contract",

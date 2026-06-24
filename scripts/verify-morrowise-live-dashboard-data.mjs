@@ -36,6 +36,7 @@ const expectedSurfaces = [
   "morrowise_proactive_loop",
   "task_event_pipeline",
   "worktree_status",
+  "api_cli_mcp_capabilities",
   "approval_queue",
 ];
 
@@ -56,6 +57,8 @@ for (const requiredSource of [
   "$COLLAB/harness-mc/public/data/task-events.json",
   "$COLLAB/harness-mc/sync-events/**/*.json",
   "$COLLAB/harness-mc/public/data/worktrees.json",
+  "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+  "$COLLAB/harness-mc/public/data/morrowise-capabilities.json",
   "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
   "$COLLAB/harness-mc/public/data/morrowise-proactive-loop.json",
 ]) {
@@ -65,6 +68,7 @@ for (const requiredSource of [
 assert.equal(data.completion_gate.worktree_commit.required_before_verification_result, true);
 assert.ok(data.verification.verifier_ref.includes("test:morrowise-live-dashboard"));
 assert.ok(Array.isArray(data.loop_chain), "loop_chain should be present");
+assert.ok(data.routes.some((route) => route.id === "api_cli_mcp_capabilities.drilldown"), "capability drilldown route required");
 
 for (const surface of data.surfaces) {
   assert.ok(["fresh", "stale", "degraded", "unknown"].includes(surface.freshness_state), `${surface.id} has invalid freshness_state`);

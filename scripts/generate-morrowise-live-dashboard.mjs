@@ -22,6 +22,7 @@ export function generateMorrowiseLiveDashboard(options = {}) {
     morrowiseProactiveLoopSurface(sources),
     taskEventPipelineSurface(sources),
     worktreeStatusSurface(sources),
+    capabilityRegistrySurface(sources),
     approvalQueueSurface(sources),
   ];
 
@@ -38,6 +39,7 @@ export function generateMorrowiseLiveDashboard(options = {}) {
         "$COLLAB/harness-mc/public/data/worktrees.json",
         "$COLLAB/harness-mc/public/data/changes.json",
         "$COLLAB/harness-mc/public/data/morrowise-proactive-loop.json",
+        "$COLLAB/harness-mc/public/data/morrowise-capabilities.json",
       ],
       policy_registry: "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
       visual_layers_are: "mirrors_only",
@@ -52,7 +54,7 @@ export function generateMorrowiseLiveDashboard(options = {}) {
       contract_ref: CONTRACT_REF,
       standard_ref: STANDARD_REF,
       audit_ref: AUDIT_REF,
-      verifier_ref: "npm run test:morrowise-live-loop",
+      verifier_ref: "npm run test:morrowise-live-dashboard",
       verifier_refs: ["npm run test:morrowise-live-dashboard", "npm run test:morrowise-live-loop"],
       last_verified_at: null,
     },
@@ -76,6 +78,7 @@ function readSources(root) {
     worktrees: readJsonOrNull(path.join(root, DATA_DIR, "worktrees.json")),
     changes: readJsonOrNull(path.join(root, DATA_DIR, "changes.json")),
     proactiveLoop: readJsonOrNull(path.join(root, DATA_DIR, "morrowise-proactive-loop.json")),
+    capabilities: readJsonOrNull(path.join(root, DATA_DIR, "morrowise-capabilities.json")),
     approvalPolicy: readJsonOrNull(path.join(root, "system-workflow", "registries", "morrowise-approval-policy.json")),
     fileTimes: {
       projects: fileGeneratedAt(root, path.join(DATA_DIR, "projects.json")),
@@ -83,6 +86,7 @@ function readSources(root) {
       worktrees: fileGeneratedAt(root, path.join(DATA_DIR, "worktrees.json")),
       changes: fileGeneratedAt(root, path.join(DATA_DIR, "changes.json")),
       proactiveLoop: fileGeneratedAt(root, path.join(DATA_DIR, "morrowise-proactive-loop.json")),
+      capabilities: fileGeneratedAt(root, path.join(DATA_DIR, "morrowise-capabilities.json")),
       approvalPolicy: fileGeneratedAt(root, path.join("system-workflow", "registries", "morrowise-approval-policy.json")),
     },
   };
@@ -264,6 +268,47 @@ function worktreeStatusSurface(sources) {
   });
 }
 
+function capabilityRegistrySurface(sources) {
+  const capabilities = sources.capabilities || {};
+  const summary = capabilities.summary || {};
+  const needsAttention = summary.needs_attention || 0;
+  const total = summary.total || 0;
+
+  return surface({
+    id: "api_cli_mcp_capabilities",
+    label: "API / CLI / MCP capabilities",
+    source_of_truth: "morrowise_capability_registry_and_generated_read_model",
+    source_files: [
+      "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+      "$COLLAB/harness-mc/public/data/morrowise-capabilities.json",
+      "$COLLAB/harness-mc/AGENTS.md",
+    ],
+    generator: ["scripts/generate-morrowise-capabilities.mjs", "npm run prebuild"],
+    generated_at: latest([capabilities.generated_at, sources.fileTimes.capabilities]),
+    stale_after_minutes: 60,
+    stale_rule: "stale when API / CLI / MCP registry history changes without regenerating morrowise-capabilities.json, or when local runtime probes are unresolved during active capability work",
+    missing_sources: missingSources(sources, ["capabilities"]),
+    freshness_action: action("generator", "node scripts/generate-morrowise-capabilities.mjs", "Regenerate capability read model before trusting API / CLI / MCP status."),
+    next_action: needsAttention > 0
+      ? action("task", "api-cli-mcp-capability-registry-v0", "Review blocked, legacy, or unknown API / CLI / MCP capabilities.")
+      : action("none", null, "All tracked API / CLI / MCP capabilities are ready or only need monitoring."),
+    write_boundary: readOnlyBoundary(
+      ["display capability status", "display latest history", "route next_action to owner task"],
+      ["execute CLI", "call external API", "invoke MCP tools", "read secrets", "write task state"],
+    ),
+    verifier_ref: "npm run test:capability-registry",
+    classification: "semi_live",
+    attention_level: needsAttention > 0 ? "needs_review" : "normal",
+    evidence_refs: [
+      "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+      "$COLLAB/harness-mc/public/data/morrowise-capabilities.json",
+      "$COLLAB/harness-mc/AGENTS.md",
+    ],
+    drilldown_route: "api_cli_mcp_capabilities.drilldown",
+    metrics: { total, needs_attention: needsAttention, by_status: summary.by_status || {}, by_type: summary.by_type || {} },
+  });
+}
+
 function approvalQueueSurface(sources) {
   const approvals = buildApprovalQueue(sources);
   return surface({
@@ -331,6 +376,7 @@ function buildSummary(surfaces, sources) {
       sync_events_pending: sources.taskEvents?.sync_events?.pending || 0,
       worktree_repos_scanned: sources.worktrees?.summary?.scanned || 0,
       proactive_scenarios: sources.proactiveLoop?.summary?.scenarios || 0,
+      capabilities: sources.capabilities?.summary?.total || 0,
       loop_chain: Array.isArray(sources.proactiveLoop?.scenarios) ? sources.proactiveLoop.scenarios.length : 0,
     },
   };
@@ -421,6 +467,7 @@ function buildRoutes() {
     route("morrowise_living_system.drilldown", "MorroWise living system details", ["morrowise_living_system", "morrowise_proactive_loop"], "/morrowise", ["task_chain", "open_loops", "trigger_recommendation_approval_action_feedback"]),
     route("task_event_pipeline.drilldown", "Task Event Pipeline details", ["task_event_pipeline"], "/task-events", ["pending", "applied", "rejected", "sync_events", "reducer_report"]),
     route("worktree_status.drilldown", "Worktree Status details", ["worktree_status"], "/worktrees", ["dirty_files", "local_commits", "remote_divergence", "commit_gate"]),
+    route("api_cli_mcp_capabilities.drilldown", "API / CLI / MCP capability details", ["api_cli_mcp_capabilities"], "/capabilities", ["status", "latest_history", "boundary", "owner_task", "next_action"]),
     route("approval_queue.drilldown", "Approval Queue details", ["approval_queue"], "/approvals", ["requested_action", "destination", "owner", "age", "payload_preview", "closure_condition"]),
   ];
 }

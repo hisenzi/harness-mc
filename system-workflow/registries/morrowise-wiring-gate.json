@@ -1,0 +1,51 @@
+{
+  "registry_id": "morrowise-wiring-gate.v0",
+  "task_id": "morrowise-wiring-gate-verifier",
+  "updated_at": "2026-06-24",
+  "status": "prototype_gate",
+  "purpose": "Verify whether a MorroWise component is fully wired from source to read model, dashboard surface, homepage visibility, verifier, routing, and next action.",
+  "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-wiring-gate.json",
+  "required_wiring_fields": [
+    "id",
+    "label",
+    "owner_task",
+    "source_registry",
+    "generated_read_model",
+    "read_model_generator",
+    "live_dashboard_surface_id",
+    "homepage_anchor",
+    "verifier_refs",
+    "routing_refs",
+    "next_action_task",
+    "fixture_scope"
+  ],
+  "state_policy": {
+    "pass": "All wiring layers exist and are mutually referenced.",
+    "prototype": "The component is intentionally partial and must not be called ready.",
+    "blocked": "A required layer is missing or unsafe.",
+    "unknown": "The wiring state cannot be determined from tracked metadata."
+  },
+  "fixtures": [
+    {
+      "id": "api-cli-mcp-first-fixture",
+      "label": "API / CLI / MCP 首批接線",
+      "owner_task": "api-cli-mcp-capability-registry-v0",
+      "source_registry": "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+      "generated_read_model": "$COLLAB/harness-mc/public/data/morrowise-capabilities.json",
+      "read_model_generator": "$COLLAB/harness-mc/scripts/generate-morrowise-capabilities.mjs",
+      "live_dashboard_surface_id": "api_cli_mcp_capabilities",
+      "homepage_anchor": "api-cli-mcp-capabilities",
+      "verifier_refs": [
+        "npm run test:capability-registry",
+        "npm run test:morrowise-live-dashboard",
+        "npm run test:morrowise-wiring"
+      ],
+      "routing_refs": [
+        "$COLLAB/harness-mc/AGENTS.md",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-wiring-gate-verifier"
+      ],
+      "next_action_task": "api-cli-mcp-capability-registry-v0",
+      "fixture_scope": "first_fixture_only"
+    }
+  ]
+}

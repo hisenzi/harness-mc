@@ -128,6 +128,39 @@ interface WorktreeStatusData {
   repositories: WorktreeRepo[];
 }
 
+interface CapabilityReadModel {
+  generated_at: string;
+  source: string;
+  generator: string;
+  summary: {
+    total: number;
+    by_status: Record<string, number>;
+    by_type: Record<string, number>;
+    needs_attention: number;
+  };
+  capabilities: {
+    id: string;
+    type: string;
+    provider: string;
+    owner_task: string;
+    status: "ready" | "blocked" | "legacy" | "prototype" | "unknown";
+    next_action: {
+      type: string;
+      task_id: string;
+      description: string;
+    };
+    latest_history?: {
+      date: string;
+      event_type: string;
+      from_state: string;
+      to_state: string;
+      reason: string;
+      next_action: string;
+    };
+    history_count: number;
+  }[];
+}
+
 interface ProactiveLoopScenario {
   scenario_id: string;
   label: string;
@@ -256,6 +289,7 @@ const surfaceAnchors: Record<string, string> = {
   morrowise_proactive_loop: "#morrowise-loop",
   task_event_pipeline: "#task-event-pipeline",
   worktree_status: "#worktree-status",
+  api_cli_mcp_capabilities: "#api-cli-mcp-capabilities",
   approval_queue: "#approval-queue",
 };
 
@@ -1169,6 +1203,79 @@ function visualSyncRank(task: VisualSyncTask) {
   return 2;
 }
 
+function ApiCliMcpCapabilityCard({ data }: { data: CapabilityReadModel | null }) {
+  if (!data) {
+    return (
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
+        <div className="text-[13px] text-[var(--text-muted)]">API / CLI / MCP capability read model 載入中</div>
+      </div>
+    );
+  }
+
+  const needsAttention = data.summary.needs_attention;
+  const topItems = [...data.capabilities]
+    .sort((a, b) => capabilityStatusRank(b.status) - capabilityStatusRank(a.status) || a.id.localeCompare(b.id))
+    .slice(0, 4);
+
+  return (
+    <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
+      <div className="mb-4 flex items-start justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <StatusDot status={needsAttention > 0 ? "needs_fix" : "completed"} />
+            <div className="font-semibold text-heading">API / CLI / MCP</div>
+          </div>
+          <div className="mt-1 text-[11px] text-[var(--text-muted)]">Capability Registry</div>
+        </div>
+        <span className={needsAttention > 0 ? statePillClass("degraded") : statePillClass("fresh")}>
+          {needsAttention > 0 ? `${needsAttention} attention` : "ready"}
+        </span>
+      </div>
+
+      <div className="grid grid-cols-3 gap-2">
+        <SummaryMetric label="tracked" value={String(data.summary.total)} tone="blue" />
+        <SummaryMetric label="ready" value={String(data.summary.by_status.ready || 0)} tone="green" />
+        <SummaryMetric label="attention" value={String(needsAttention)} tone={needsAttention > 0 ? "yellow" : "green"} />
+      </div>
+
+      <div className="mt-4 space-y-2">
+        {topItems.map((item) => (
+          <div key={item.id} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 rounded-lg border border-[var(--border)] bg-black/10 px-3 py-2">
+            <div className="min-w-0">
+              <div className="truncate text-[12px] font-medium text-[var(--text)]">{item.id}</div>
+              <div className="truncate text-[11px] text-[var(--text-muted)]">
+                {item.latest_history?.event_type || "no history"} · {item.next_action.task_id}
+              </div>
+            </div>
+            <span className={capabilityPillClass(item.status)}>{item.status}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-4 rounded-lg border border-[var(--border)] bg-black/10 p-3 text-[11px] leading-relaxed text-[var(--text-muted)]">
+        source: morrowise-capabilities.json · verifier: npm run test:capability-registry · read-only surface
+      </div>
+    </div>
+  );
+}
+
+function capabilityStatusRank(status: CapabilityReadModel["capabilities"][number]["status"]) {
+  if (status === "blocked") return 4;
+  if (status === "unknown") return 3;
+  if (status === "legacy") return 2;
+  if (status === "prototype") return 1;
+  return 0;
+}
+
+function capabilityPillClass(status: CapabilityReadModel["capabilities"][number]["status"]) {
+  const base = "shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-mono";
+  if (status === "ready") return `${base} border-green-400/30 text-green-400`;
+  if (status === "blocked") return `${base} border-red-400/30 text-red-400`;
+  if (status === "legacy") return `${base} border-yellow-400/30 text-yellow-400`;
+  if (status === "unknown") return `${base} border-orange-400/30 text-orange-400`;
+  return `${base} border-blue-400/30 text-blue-400`;
+}
+
 function LearningCard() {
   const [data, setData] = useState<LearningSummary | null>(null);
 
@@ -1294,6 +1401,7 @@ function EvaluationCard({ projects }: { projects: Project[] }) {
 export default function HomePage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [liveDashboard, setLiveDashboard] = useState<LiveDashboardData | null>(null);
+  const [capabilities, setCapabilities] = useState<CapabilityReadModel | null>(null);
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/projects.json`)
@@ -1304,6 +1412,11 @@ export default function HomePage() {
     fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/morrowise-live-dashboard.json`)
       .then((r) => r.json())
       .then(setLiveDashboard)
+      .catch(() => {});
+
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/morrowise-capabilities.json`)
+      .then((r) => r.json())
+      .then(setCapabilities)
       .catch(() => {});
   }, []);
 
@@ -1375,6 +1488,10 @@ export default function HomePage() {
             <div className="flex-1 border-t border-[var(--border)]"></div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div id="api-cli-mcp-capabilities">
+          <ApiCliMcpCapabilityCard data={capabilities} />
+        </div>
+
         {/* 記憶 */}
         <div className="rounded-xl border border-[var(--border)]/50 bg-[var(--card)] p-5 opacity-40">
           <div className="flex items-center gap-3 mb-2">

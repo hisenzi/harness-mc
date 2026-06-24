@@ -1,0 +1,219 @@
+{
+  "registry_id": "morrowise-api-cli-mcp-capability-registry.v0",
+  "task_id": "api-cli-mcp-capability-registry-v0",
+  "updated_at": "2026-06-24",
+  "status": "prototype_registry",
+  "purpose": "Track API / CLI / MCP capabilities as verifiable MorroWise system components with update history, boundaries, owner tasks, and next actions.",
+  "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+  "generated_read_model": "$COLLAB/harness-mc/public/data/morrowise-capabilities.json",
+  "discovery": {
+    "repo_agent_entry": "$COLLAB/harness-mc/AGENTS.md",
+    "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#api-cli-mcp-capability-registry-v0",
+    "test_command": "npm run test:capability-registry",
+    "read_model_command": "node scripts/generate-morrowise-capabilities.mjs",
+    "rule": "Any harness-mc session handling API / CLI / MCP capabilities must check this registry before relying on chat, memory, Heptabase, Canvas, or local runtime assumptions."
+  },
+  "required_capability_fields": [
+    "id",
+    "type",
+    "provider",
+    "entrypoint",
+    "owner_task",
+    "scope",
+    "source_of_truth",
+    "auth_boundary",
+    "read_write_boundary",
+    "secret_policy",
+    "status",
+    "verifier",
+    "next_action",
+    "history"
+  ],
+  "required_history_fields": [
+    "date",
+    "event_type",
+    "from_state",
+    "to_state",
+    "reason",
+    "evidence_ref",
+    "actor_or_task",
+    "next_action"
+  ],
+  "status_values": {
+    "ready": "Capability has a clear entrypoint, boundary, owner task, verifier, and current history.",
+    "blocked": "Capability cannot be used until blocker is resolved.",
+    "legacy": "Capability remains documented as fallback or history, not normal path.",
+    "prototype": "Capability is being shaped and must not be treated as stable infrastructure.",
+    "unknown": "Capability was reported or discovered but lacks enough verified metadata."
+  },
+  "capabilities": [
+    {
+      "id": "heptabase-cli-task-cards",
+      "type": "cli",
+      "provider": "Heptabase Desktop Local CLI Server",
+      "entrypoint": [
+        "heptabase card",
+        "$COLLAB/notyet-harness/000_Agent/skills/heptabase-task-cards/scripts/create-task-cards.mjs"
+      ],
+      "owner_task": "heptabase-cli-task-card-adapter",
+      "scope": "control_plane",
+      "source_of_truth": [
+        "$COLLAB/harness-mc/milestones/dual-blade/tasks.json",
+        "$COLLAB/notyet-harness/000_Agent/skills/heptabase-task-cards/SKILL.md"
+      ],
+      "auth_boundary": "Uses local Heptabase CLI session; registry stores metadata only and must not read CLI auth storage.",
+      "read_write_boundary": {
+        "read": [
+          "MC tasks.json metadata",
+          "existing external_refs.heptabase metadata"
+        ],
+        "write": [
+          "Heptabase note card via explicit sync command",
+          "external_refs.heptabase write-back when sync succeeds"
+        ],
+        "forbidden": [
+          "read Heptabase auth tokens",
+          "treat Heptabase as task source of truth",
+          "overwrite MC task state from Heptabase card content"
+        ]
+      },
+      "secret_policy": "No token or local auth path content may be stored in registry or generated read model.",
+      "status": "ready",
+      "verifier": [
+        "npm run test:capability-registry"
+      ],
+      "next_action": {
+        "type": "monitor",
+        "task_id": "api-cli-mcp-capability-registry-v0",
+        "description": "Keep CLI mainline and card sync history visible in MorroWise capability read model."
+      },
+      "history": [
+        {
+          "date": "2026-06-20",
+          "event_type": "route_confirmed",
+          "from_state": "mcp_oauth_fallback",
+          "to_state": "cli_mainline",
+          "reason": "Local Heptabase CLI via Desktop Local CLI Server became the working mainline; MCP/OAuth remains fallback/history.",
+          "evidence_ref": "$COLLAB/harness-mc/milestones/dual-blade/tasks.json#heptabase-cli-integration-record",
+          "actor_or_task": "heptabase-cli-integration-record",
+          "next_action": "Keep MCP/OAuth fallback explicitly labeled legacy when building PAI sync migration."
+        }
+      ]
+    },
+    {
+      "id": "heptabase-pai-legacy-mcp-oauth",
+      "type": "mcp",
+      "provider": "Notion / Heptabase legacy MCP OAuth route",
+      "entrypoint": [
+        "$COLLAB/notyet-harness/000_Agent/scripts/heptabase-to-pai.py"
+      ],
+      "owner_task": "heptabase-pai-legacy-archive",
+      "scope": "control_plane",
+      "source_of_truth": [
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json"
+      ],
+      "auth_boundary": "Legacy OAuth/MCP route is tracked as fallback metadata only; do not inspect local auth files or token stores.",
+      "read_write_boundary": {
+        "read": [
+          "documented migration task state",
+          "script path metadata"
+        ],
+        "write": [
+          "none from registry"
+        ],
+        "forbidden": [
+          "run legacy sync as normal path",
+          "read OAuth token content",
+          "archive or delete script without migration verifier"
+        ]
+      },
+      "secret_policy": "Never store OAuth token, MCP auth content, Notion token, or local runtime auth paths.",
+      "status": "legacy",
+      "verifier": [
+        "npm run test:capability-registry"
+      ],
+      "next_action": {
+        "type": "task",
+        "task_id": "heptabase-pai-legacy-archive",
+        "description": "After CLI dry-run parity passes, mark legacy MCP/OAuth fallback or archive it with a recovery path."
+      },
+      "history": [
+        {
+          "date": "2026-06-20",
+          "event_type": "migration_planned",
+          "from_state": "normal_path",
+          "to_state": "legacy_fallback",
+          "reason": "Heptabase CLI path is the intended mainline; MCP/OAuth route remains only as fallback until decouple/archive tasks finish.",
+          "evidence_ref": "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#heptabase-pai-legacy-archive",
+          "actor_or_task": "heptabase-pai-legacy-archive",
+          "next_action": "Complete heptabase-cli-pai-decouple before final legacy archive."
+        }
+      ]
+    },
+    {
+      "id": "playwright-cli",
+      "type": "cli",
+      "provider": "Microsoft Playwright",
+      "entrypoint": [
+        "playwright",
+        "npx --no-install playwright"
+      ],
+      "owner_task": "api-cli-mcp-capability-registry-v0",
+      "scope": "local_runtime",
+      "source_of_truth": [
+        "manual report from sibling Codex session",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json"
+      ],
+      "auth_boundary": "No auth expected for CLI version checks; browser install/cache paths are local runtime metadata and should not be treated as portable source.",
+      "read_write_boundary": {
+        "read": [
+          "CLI version output",
+          "local project test targets"
+        ],
+        "write": [
+          "Playwright screenshots or reports only when a task explicitly requests browser verification"
+        ],
+        "forbidden": [
+          "download browsers without explicit approval when network is required",
+          "read browser cookies or logged-in sessions",
+          "treat local install as portable dependency without package/script evidence"
+        ]
+      },
+      "secret_policy": "Do not read browser profiles, cookies, storage state, or auth files while verifying CLI availability.",
+      "status": "unknown",
+      "verifier": [
+        "npm run test:capability-registry",
+        "which playwright",
+        "playwright --version",
+        "npx --no-install playwright --version"
+      ],
+      "next_action": {
+        "type": "probe",
+        "task_id": "api-cli-mcp-capability-registry-v0",
+        "description": "Resolve whether Playwright CLI is globally available, project-local, or only installed in another session/environment."
+      },
+      "history": [
+        {
+          "date": "2026-06-24",
+          "event_type": "install_reported",
+          "from_state": "unknown",
+          "to_state": "reported_installed",
+          "reason": "Vincent reported another session just installed Playwright CLI.",
+          "evidence_ref": "current Codex thread user report",
+          "actor_or_task": "api-cli-mcp-capability-registry-v0",
+          "next_action": "Probe PATH and project-local CLI availability before using Playwright as verified capability."
+        },
+        {
+          "date": "2026-06-24",
+          "event_type": "local_probe",
+          "from_state": "reported_installed",
+          "to_state": "unknown",
+          "reason": "In this session, `which playwright` and `playwright --version` did not find a PATH command; `npx --no-install playwright --version` did not return before manual interrupt.",
+          "evidence_ref": "current Codex thread local command output",
+          "actor_or_task": "api-cli-mcp-capability-registry-v0",
+          "next_action": "Find the sibling session install path or add project-local Playwright dependency/script if this repo should own it."
+        }
+      ]
+    }
+  ]
+}

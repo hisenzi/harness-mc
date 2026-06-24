@@ -309,6 +309,94 @@
       "summary": "建立 MorroWise Live-System Admission Gate 與 Commit Planning Gate，將新元件入場條件、commit-attention fixture、commit cleanup planning boundary 與 repeatable verifiers 正式納入 MorroWise governance。"
     },
     {
+      "id": "api-cli-mcp-capability-registry-v0",
+      "title": "MorroWise 接線系統 v0（API / CLI / MCP 首批）",
+      "status": "in_progress",
+      "track": "governance",
+      "dependencies": [
+        "live-system-admission-gate"
+      ],
+      "done_condition": "建立 MorroWise API / CLI / MCP capability registry v0，將 API、CLI、MCP server/tool、local script、connector、delivery adapter 納入同一個可驗證且可追溯的 capability loop：source scan/manual intake -> registry -> update history -> boundary policy -> verifier -> MC surface -> next_action/task proposal。",
+      "acceptance": [
+        "registry 是 machine-readable，不只是 markdown 表格；每個 capability 至少包含 id、type、provider、entrypoint、owner_task、source_of_truth、auth_boundary、read_write_boundary、secret_policy、status、verifier、next_action、history。",
+        "先納入已知 lineage：dual-blade 的 MCP/tools boundary 與 Heptabase CLI tasks、harness-mc 的 ACP-SYNC CLI/MCP migration tasks、MorroWise notification adapter task；產品專案 API task 只標記為 product_scope，不混入 control-plane ownership。",
+        "每個 API / CLI / MCP capability 的 history 至少能記錄 date、event_type、from_state、to_state、reason、evidence_ref、actor_or_task、next_action；支援查出某個 capability 為何從 MCP/OAuth fallback 改成 CLI mainline、何時標 legacy、哪個 migration task 還沒完成。",
+        "Heptabase CLI / MCP migration 線必須作為 fixture：能從 registry 查到 Heptabase CLI mainline、legacy MCP/OAuth fallback、相關 MC task、已完成接入紀錄、待完成 ACP-SYNC decouple/archive tasks，以及目前 blocker/next_action。",
+        "verifier 能檢查缺欄位、auth/secret boundary 不明、write boundary 不明、legacy fallback 未標示、capability 沒有 owner_task 或 next_action；未通過時狀態只能是 blocked、unknown、legacy 或 prototype。",
+        "verifier 能檢查 history 斷裂：status 改變但沒有 event、legacy fallback 沒有 archive reason、migration lineage 沒有 evidence_ref、next_action 指向不存在的 task。",
+        "MC read-only surface 或 generated data 能顯示 capability 狀態、freshness、blocked reason、最近更新紀錄與 next_action；surface 不直接呼叫外部 API、不執行 CLI、不寫回 task state。",
+        "registry 能產生下一步 task proposal，例如封存 legacy MCP fallback、補 CLI path verifier、補 read-only wrapper 或拆出 delivery adapter；不把 inventory 本身誤稱為活系統完成。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/dual-blade/tasks.json",
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-live-system-admission.json"
+      ],
+      "note": "2026-06-24 啟動 v0 骨架：新增 MorroWise API / CLI / MCP capability registry、verifier、generated read model，並用 harness-mc/AGENTS.md 接到新 session 啟動路徑。已把 Playwright CLI 另一 session 安裝回報記為 capability history；本 session PATH 尚未驗證，狀態保留 unknown，next_action 是確認安裝位置或補 project-local script。已開始接 MC 儀表板：live-dashboard read model 新增 api_cli_mcp_capabilities surface，首頁能力層新增 API / CLI / MCP read-only card。",
+      "hc_decision": {
+        "task_scope": "morrowise/api-cli-mcp-capability-registry-v0",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#constraints",
+          "#risk"
+        ],
+        "hc_reasoning": "真正問題不是缺一張 API / CLI / MCP 清單，而是 capability 沒有統一 source、boundary、update history、verifier、surface 與 feedback loop。#systemDynamics 指出若 task 散在 dual-blade、harness-mc、morrowise 與產品專案，future agents 會反覆重查與重複決策，也查不到 Heptabase CLI / MCP migration 這類變更脈絡；#constraints 要求 registry 只管理 metadata 與 read-only surface，不讀 secrets、不直接執行外部副作用；#risk 防止把靜態 inventory 誤稱為系統。",
+        "hc_confidence": 0.84,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/dual-blade/tasks.json",
+          "$COLLAB/harness-mc/milestones/harness-mc/tasks.json",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical capability state must live in the registry, verifier output, generated read model, and MC task state."
+      }
+    },
+    {
+      "id": "morrowise-wiring-gate-verifier",
+      "title": "MorroWise 接線驗證器",
+      "status": "todo",
+      "track": "governance",
+      "dependencies": [
+        "api-cli-mcp-capability-registry-v0"
+      ],
+      "done_condition": "建立通用 MorroWise 接線 gate/verifier，能判斷任一 MorroWise 元件是否完成 source/registry -> generated read model -> live dashboard surface -> homepage/drilldown anchor -> verifier -> AGENTS/doc routing -> next_action/task proposal 的完整接線；未通過者不得標 ready，只能是 prototype、unknown、blocked 或 legacy。",
+      "acceptance": [
+        "新增可重跑 verifier（例如 scripts/verify-morrowise-wiring-gate.mjs），輸入至少包含接線 registry 或 manifest，輸出 pass/fail 與缺口原因。",
+        "驗證項目覆蓋 source/registry、generated read model、update history、boundary policy、live dashboard surface、homepage/drilldown anchor、verifier_ref、AGENTS/doc routing、next_action/task proposal。",
+        "API / CLI / MCP 首批接線作為 fixture：api_cli_mcp_capabilities 必須通過 gate；若移除 read model、surface、homepage anchor、AGENTS routing 或 verifier 任一層，測試應失敗。",
+        "gate 明確區分首批 fixture 與通用接線系統：API / CLI / MCP 只是第一組案例，不是 MorroWise 接線系統的全部定義。",
+        "package script 提供穩定入口（例如 npm run test:morrowise-wiring），prebuild 或相關 verifier 鏈能阻止未接完的 surface 被宣稱為 ready。",
+        "文件路由寫入 harness-mc/AGENTS.md 或 MorroWise routing doc，讓新 session 知道新增 MorroWise 元件時必須走接線 gate。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
+        "$COLLAB/harness-mc/AGENTS.md",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+        "$COLLAB/harness-mc/scripts/verify-morrowise-capability-registry.mjs",
+        "$COLLAB/harness-mc/scripts/verify-morrowise-live-dashboard-data.mjs",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-read-model-contract.md"
+      ],
+      "note": "2026-06-24 已進行 API / CLI / MCP 第一組 fixture：新增 morrowise-wiring-gate.json、scripts/verify-morrowise-wiring-gate.mjs、npm run test:morrowise-wiring，並把 AGENTS.md 接線規則更新為通用 gate。fixture 驗證 source registry、generated read model、live dashboard surface、homepage/sidebar anchor、verifier refs、routing 與 next_action 均可追溯。狀態仍保留 todo，因為後續應補負向 fixture / fail case，確保缺任一層時 gate 真的會擋。",
+      "hc_decision": {
+        "task_scope": "morrowise/morrowise-wiring-gate-verifier",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#constraints",
+          "#risk"
+        ],
+        "hc_reasoning": "真正問題不是 API / CLI / MCP 首批能否顯示在 MC，而是未來任何 MorroWise 元件是否都能被系統判斷有沒有完成上下游接線。#systemDynamics 指出若只靠 AGENTS.md 或人工記憶，下一個 surface 會再次漏掉 read model、dashboard、verifier 或 routing。#constraints 要求 gate 只讀 metadata 與 generated data，不執行外部副作用；#risk 防止 prototype 被誤標 ready。",
+        "hc_confidence": 0.86,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-capability-registry.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-live-dashboard-data.mjs"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical gate behavior must live in verifier code, registry/manifest fixtures, generated read models, and MC task state."
+      }
+    },
+    {
       "id": "notification-adapter-contract",
       "title": "MorroWise notification adapter contract（Telegram / LINE / Notion / thread）",
       "status": "todo",

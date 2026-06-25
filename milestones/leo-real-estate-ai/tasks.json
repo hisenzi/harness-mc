@@ -8,12 +8,15 @@
       "track": "discovery",
       "done_condition": "需求確認書已記錄 HC 分析、Leo 11 題補充、單一案件探索方向與分潤降級邊界",
       "completed_at": "2026-06-25",
-      "summary": "已將房仲 AI 案件陪跑方向收斂為單一案件探索原型，並記錄語音/模糊輸入、資訊追問、行動卡 UX、固定分潤規則等需求。",
+      "summary": "已建立 Leo 房仲 AI 案件陪跑系統的 MC 開案資料，包含需求來源合約、Phase 1 任務、風險、驗收條件與 10 天後追溯需求書的路徑。",
       "evidence_refs": [
         "$COLLAB/CC本機協作_無Git/Leo/or/Leo 房仲 AI MVP 需求確認書.md",
         "$COLLAB/CC本機協作_無Git/Leo/or"
       ],
-      "note": "需求確認書與原始素材位置已寫入 project.json.source_contract，10 天後應先讀 primary_requirement_doc，再回看 source_materials。"
+      "note": "需求確認書與原始素材位置已寫入 project.json.source_contract，10 天後應先讀 primary_requirement_doc，再回看 source_materials。",
+      "commits": [
+        "c434621"
+      ]
     },
     {
       "id": "p1-1",

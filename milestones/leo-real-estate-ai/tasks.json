@@ -1,0 +1,85 @@
+{
+  "project": "leo-real-estate-ai",
+  "tasks": [
+    {
+      "id": "p0-1",
+      "title": "完成 HC 需求確認書與 Leo 回饋整理",
+      "status": "completed",
+      "track": "discovery",
+      "done_condition": "需求確認書已記錄 HC 分析、Leo 11 題補充、單一案件探索方向與分潤降級邊界",
+      "completed_at": "2026-06-25",
+      "summary": "已將房仲 AI 案件陪跑方向收斂為單一案件探索原型，並記錄語音/模糊輸入、資訊追問、行動卡 UX、固定分潤規則等需求。",
+      "evidence_refs": [
+        "$COLLAB/CC本機協作_無Git/Leo/or/Leo 房仲 AI MVP 需求確認書.md",
+        "$COLLAB/CC本機協作_無Git/Leo/or"
+      ],
+      "note": "需求確認書與原始素材位置已寫入 project.json.source_contract，10 天後應先讀 primary_requirement_doc，再回看 source_materials。"
+    },
+    {
+      "id": "p1-1",
+      "title": "選定第一輪單一物件頁與對應謄本",
+      "status": "todo",
+      "track": "discovery",
+      "done_condition": "已從中信房屋商仲部頁面選定 1 個單一物件頁，並取得 Leo 提供的對應謄本",
+      "acceptance": [
+        "列出單一物件頁 URL",
+        "取得或登記對應謄本來源",
+        "確認內部驗證資料不外流邊界"
+      ],
+      "evidence_refs": [
+        "https://www.cthouse.com.tw/0285012225/",
+        "$COLLAB/CC本機協作_無Git/Leo/or/Leo 房仲 AI MVP 需求確認書.md"
+      ]
+    },
+    {
+      "id": "p1-2",
+      "title": "產出單一案件探索原型 v1",
+      "status": "todo",
+      "track": "prototype",
+      "done_condition": "同一案件已產出案件紀錄、資訊足夠度判斷、最多 3 題追問、第一版行動卡 UX、跟催提醒建議",
+      "acceptance": [
+        "案件紀錄含目前階段、資料來源、信心等級",
+        "AI 明確標示資訊足夠或不足",
+        "不足時追問不超過 3 題",
+        "行動卡含現在狀態、AI 判斷、缺資料、下一步、可複製話術"
+      ]
+    },
+    {
+      "id": "p1-3",
+      "title": "驗證語音或模糊輸入的追問流程",
+      "status": "todo",
+      "track": "prototype",
+      "done_condition": "已用一段口語/模糊案件描述測試 AI 是否能整理狀態、判斷缺口並提出必要追問",
+      "acceptance": [
+        "保留原始口語/模糊輸入",
+        "產出整理後案件狀態",
+        "列出缺少的關鍵資訊",
+        "追問問題可用一句話或語音回答"
+      ]
+    },
+    {
+      "id": "p1-4",
+      "title": "取得洪兆君或 Leo 對行動卡 v1 的回饋",
+      "status": "todo",
+      "track": "validation",
+      "done_condition": "已取得第一輪回饋，包含願不願意用、判斷是否準確、哪裡不像現場、缺哪些資料",
+      "acceptance": [
+        "回饋記錄包含可用/不可用/需調整欄位",
+        "記錄 AI 判斷準確與不準確處",
+        "產出第二版行動卡調整清單"
+      ]
+    },
+    {
+      "id": "p1-verify",
+      "title": "Phase 1 探索驗收與下一步產品化判斷",
+      "status": "todo",
+      "track": "validation",
+      "done_condition": "根據單一案件探索結果判斷是否擴到 3-5 案例、是否進入 Web App / 案件 CRM / 店務管理模組設計",
+      "acceptance": [
+        "四項 success_criteria 逐項對照",
+        "列出下一輪是否擴大案例",
+        "列出仍需補的資料庫/UX/語音輸入風險"
+      ]
+    }
+  ]
+}

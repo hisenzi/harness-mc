@@ -1,0 +1,154 @@
+{
+  "name": "Leo 房仲 AI 案件陪跑系統",
+  "description": "以單一真實房仲案件驗證 AI 追問、行動卡、案件紀錄與跟催提醒的探索原型",
+  "type": "internal",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-06-25",
+  "estimated_completion": "TBD",
+  "tracks": {
+    "discovery": "需求探索與單一案件原型",
+    "prototype": "行動卡 UX 與回饋循環",
+    "validation": "房仲回饋與產品化判斷"
+  },
+  "goals": [
+    "用 1 個中信房屋商仲部單一物件頁與對應謄本跑完資訊輸入、AI 追問、行動卡 UX、房仲回饋、再產出的最小循環。",
+    "驗證 AI 在資料不足或房仲語音/模糊輸入時，能否判斷資訊足夠度、追問最多 3 個必要問題，並避免高信心亂判斷。",
+    "驗證行動卡是否能讓房仲 10 秒內看懂案件狀態、AI 判斷、缺資料、下一步與可複製話術。",
+    "確認個人業務案件陪跑與店務管理/分潤生態的邊界，第一輪不做教育訓練平台、不做店務管理、不做 AI 分潤裁決。"
+  ],
+  "risks": [
+    {
+      "risk": "房仲回饋模糊或不願打字，導致 AI 只能產出低信心或聊勝於無的建議。",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "把語音/口語輸入列為第一輪情境，設計資訊足夠度檢查與最多 3 題追問規則。"
+    },
+    {
+      "risk": "Leo 提供資料完整度高，可能高估一般房仲使用時的 AI 準確度。",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "原型中刻意保留資訊不足情境，分別測 Leo 完整輸入與房仲模糊輸入。"
+    },
+    {
+      "risk": "分潤制度牽涉仲介代銷生態與不成文規則，若過早產品化會歪樓。",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "第一輪只記錄固定規則與訪談假說，不讓 AI 依貢獻度調整比例。"
+    },
+    {
+      "risk": "缺少不動產資料庫支撐時，AI 判斷可信度可能不足。",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "行動卡標示資料來源、資料日期、信心等級與推測項目；先用單一物件頁 + 謄本驗證。"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "已選定 1 個中信房屋商仲部單一物件頁，並取得對應謄本作為第一輪案例。",
+      "verify_cmd": "人工檢查需求文件與測試資料清單",
+      "expected": "文件列出單一物件頁 URL、謄本來源與案件目的。"
+    },
+    {
+      "criterion": "第一版探索原型包含案件紀錄、資訊足夠度判斷、最多 3 題追問、行動卡 UX 與跟催提醒。",
+      "verify_cmd": "人工檢查原型輸出文件",
+      "expected": "五個構件皆存在，且能用同一案件脈絡串起。"
+    },
+    {
+      "criterion": "行動卡明確標示 AI 判斷信心、缺少資料、下一步動作與可複製話術。",
+      "verify_cmd": "人工檢查行動卡",
+      "expected": "房仲能在 10 秒內看懂結論與下一步。"
+    },
+    {
+      "criterion": "完成第一輪房仲回饋記錄，至少包含願不願意用、判斷是否準確、哪裡不像現場、缺哪些資料。",
+      "verify_cmd": "人工檢查回饋紀錄",
+      "expected": "回饋能導出第二版行動卡調整項目。"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "開案範圍",
+      "decision": "先開 internal 專案，聚焦單一案件探索原型，不建立 standalone repo。",
+      "reason": "目前仍在需求確認與原型驗證階段，尚未確認產品形態與技術棧。",
+      "alternatives_rejected": [
+        "直接開發完整 Web App：證據不足且容易範圍爆炸。",
+        "先做房仲教育訓練平台：會偏離案件陪跑的第一輪驗證。"
+      ],
+      "hc_used": [
+        "#rightProblem",
+        "#constraints"
+      ]
+    },
+    {
+      "topic": "第一輪驗證方法",
+      "decision": "使用 1 個中信房屋商仲部單一物件頁 + 對應謄本，跑資訊輸入、AI 追問、行動卡 UX、房仲回饋、再產出。",
+      "reason": "Leo 回饋指出抽象問題難進核心，必須用真實案件檢查輸入品質、判斷準確度與 UX 可用性。",
+      "alternatives_rejected": [
+        "先訪談大量房仲：回饋品質可能不穩，成本較高。",
+        "先做 3-5 筆完整案例：在流程未定前會增加無效工作量。"
+      ],
+      "hc_used": [
+        "#systemDynamics",
+        "#hypothesisDriven",
+        "#infoNeeded"
+      ]
+    },
+    {
+      "topic": "語音與模糊輸入",
+      "decision": "第一輪把語音/口語輸入視為主要風險情境，要求 AI 能判斷資訊不足並追問。",
+      "reason": "Leo 指出房仲可能不打字，若狀態回報不精準，AI 輸出會低信心或聊勝於無。",
+      "alternatives_rejected": [
+        "假設房仲會填完整表單：不符合現場使用習慣。"
+      ],
+      "hc_used": [
+        "#audience",
+        "#infoNeeded"
+      ]
+    },
+    {
+      "topic": "分潤定位",
+      "decision": "分潤先採固定規則展示或訪談假說，不讓 AI 依貢獻度裁決比例。",
+      "reason": "分潤涉及仲介代銷生態與不成文規則，過早做智能分潤會挑戰既有制度並歪樓。",
+      "alternatives_rejected": [
+        "用 AI 貢獻度自動切比例：缺乏生態驗證且公平風險高。"
+      ],
+      "hc_used": [
+        "#payoffs",
+        "#fairness"
+      ]
+    },
+    {
+      "topic": "資料來源與需求書定位",
+      "decision": "以 Leo/or 需求確認書作為第一輪探索的 primary requirement doc，原始會議與議題整理文件作為 source materials。",
+      "reason": "10 天後應能從 MC project.json 直接找到需求書與原始素材，不依賴聊天紀錄。",
+      "alternatives_rejected": [
+        "只在 tasks.json evidence_refs 放需求書：可追溯但不夠顯眼。",
+        "只靠聊天紀錄找資料：不可持久。"
+      ],
+      "hc_used": [
+        "#infoNeeded",
+        "#evidenceBased"
+      ]
+    }
+  ],
+  "system_growth": {
+    "trigger": "Leo 提供單一物件頁與對應謄本，或房仲提供一段案件狀態語音/文字輸入。",
+    "data_flow": "物件頁/謄本/口語狀態 -> 資訊足夠度檢查 -> 必要追問 -> 行動卡 UX -> 房仲回饋 -> 第二版行動卡與案件紀錄更新。",
+    "surface": "MC 專案任務、需求確認書、後續單一案件探索原型文件；Heptabase/Canvas 待 Vincent 指定白板。",
+    "feedback_loop": "洪兆君或 Leo 對第一版行動卡回饋準確度與可用性，回寫成第二版行動卡調整項目。"
+  },
+  "source_contract": {
+    "collab_root": "$COLLAB",
+    "source_root": "$COLLAB/CC本機協作_無Git/Leo/or",
+    "primary_requirement_doc": "$COLLAB/CC本機協作_無Git/Leo/or/Leo 房仲 AI MVP 需求確認書.md",
+    "source_materials": [
+      "$COLLAB/CC本機協作_無Git/Leo/or/會議記錄260625.md",
+      "$COLLAB/CC本機協作_無Git/Leo/or/房屋買賣過程中重要的資料及功能.md",
+      "$COLLAB/CC本機協作_無Git/Leo/or/年長房仲最在意的工具細節有哪些？.md",
+      "$COLLAB/CC本機協作_無Git/Leo/or/開發AI自動產出不動產價格調查書的具體流程？.md"
+    ],
+    "external_seed_url": "https://www.cthouse.com.tw/0285012225/",
+    "next_required_input": "從外部頁面選定 1 個單一物件頁 URL，並由 Leo 提供對應謄本。",
+    "privacy_boundary": "內部驗證可使用未去識別化資料；資料、人員資訊、謄本與聯絡資料不可外流。"
+  }
+}

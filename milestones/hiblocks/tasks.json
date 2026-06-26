@@ -20,6 +20,15 @@
       "note": "由 yutianlaw 關於我們手機版排版暴露：HiBlocks 目前有 --hi-text-xs/sm/base/md/lg/xl/2xl/3xl 與 font/type-scale A1 概念，但缺少像 Mapelon 一樣的語義 typography contract。此 task 是 p1-s 的補強：不是把 Mapelon 數值直接套用，而是採用其方法（semantic token → selector 對應 → RWD override），建立 HiBlocks 自己的 type scale 與行長/行距規則。需參考 CSS 可讀性與 WCAG text spacing：unitless line-height、主段落至少可承受 1.5 line-height、文字容器以 ch/em/rem 等相對單位控制，避免 px 零散微調。"
     },
     {
+      "id": "p1-s-typography-adoption",
+      "title": "HiBlocks 手機中文字級基線導入與新站防退化",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "HiBlocks 的手機中文字級基線不只存在於 theme-default.css，而是成為新站導入與部署前驗證規範：astro-site-launcher / 新站模板文件明確要求 theme 覆寫不得低於 caption 11px、small 14px、body 16px/1.65、heading 22px/1.36、title 28px/1.25；HiBlocks validate:typography 可檢查 theme 與 block raw font-size 退化；RRREALLL 與 yutianlaw 作為回歸案例，手機 390x844 檢查主要內容、FAQ、card description、legal paragraph 不再出現閱讀型文字偏小。",
+      "estimate": "3hr",
+      "note": "由 RRREALLL 手機版回饋「字偏小」確認：單站補 global.css 不是長期解法。既有 p1-s-typography 已建立 --hi-type-* 語意 token 與中文 mobile baseline；本 task 補 adoption/hardening：把 baseline 寫入新站流程、模板/skill 指引與驗證命令，並掃 downstream 常見偏小來源（card desc / FAQ answer / footer/legal / raw 13px-14px）。原則：caption 只給 eyebrow/meta，不承載閱讀型內容；新 theme 可放大品牌字級，但不能低於中文手機基線。"
+    },
+    {
       "id": "p1-navbar-mobile-overlay",
       "title": "HiNavbar 手機選單滿版遮罩與關閉行為修正",
       "status": "todo",

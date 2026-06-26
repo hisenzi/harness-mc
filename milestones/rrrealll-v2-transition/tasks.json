@@ -112,19 +112,50 @@
     },
     {
       "id": "launch-1",
-      "title": "Cloudways / DNS 上線前檢查",
-      "status": "todo",
+      "title": "Zeabur / DNS 上線前檢查與部署",
+      "status": "in_progress",
       "track": "launch",
       "depends_on": [
         "w1-verify"
       ],
-      "done_condition": "確認部署資料夾、DNS 切換方式、回復方案與正式上線檔案。",
+      "done_condition": "確認 RRREALLL_V2.0 可由 GitHub 匯入 Zeabur 部署，build/output 設定、DNS 切換方式、回復方案與正式上線檔案皆已完成。",
       "acceptance": [
         "dist/ 可作為靜態部署輸出",
-        "已記錄 Cloudways 目標資料夾或交付方式",
-        "有 rollback 路徑",
-        "上線後首頁 HTTP 200"
+        "Zeabur 專案已從 GitHub repo 匯入並完成 build",
+        "Zeabur build command / output directory 設定明確，且與 Astro 靜態輸出一致",
+        "已記錄 Zeabur custom domain 與 Cloudflare DNS 切換方式",
+        "Cloudflare Proxy 已關閉（灰雲），舊 Cloudways A/CNAME 記錄已確認清理或保留理由明確",
+        "有 rollback 路徑，可回到前一版部署或舊 DNS 指向",
+        "上線後首頁 HTTPS 200，SSL 正常"
       ],
+      "deployment": {
+        "provider": "zeabur",
+        "project_id": "6a3dc6eb4e37f058abc5e234",
+        "service_id": "6a3dca9cbdba1c7a91f8f6b8",
+        "service_name": "rrrealll-v2-transition-foly",
+        "environment_id": "6a3dc6ebe33d94ef307b1d60",
+        "repo": "hisenzi/rrrealll-v2-transition",
+        "branch": "main",
+        "commit": "4e5d7b5ca187499aac19e1681f221cdf7e8c1964",
+        "generated_domain": "https://rrrealll.zeabur.app/",
+        "build_command": "npm run build",
+        "output_directory": "dist",
+        "git_trigger": "enabled",
+        "verified_at": "2026-06-26",
+        "verification": [
+          "npm run build passed locally",
+          "Zeabur GitHub deployment status RUNNING",
+          "https://rrrealll.zeabur.app/ HTTP 200",
+          "https://rrrealll.zeabur.app/privacy/ HTTP 200",
+          "https://rrrealll.zeabur.app/terms/ HTTP 200"
+        ],
+        "pending": [
+          "Rename Zeabur service to rrrealll-v2-transition",
+          "Bind production custom domain",
+          "Set Cloudflare DNS with proxy disabled",
+          "Confirm production domain HTTPS 200 before cleaning old Cloudways DNS"
+        ]
+      },
       "external_refs": {
         "heptabase": {
           "whiteboard": "RRREALLL 過渡期網站",

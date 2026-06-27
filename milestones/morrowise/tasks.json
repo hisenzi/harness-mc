@@ -73,6 +73,106 @@
           "synced_at": "2026-06-22",
           "sync_mode": "created"
         }
+      },
+      "note": "2026-06-27 task integration：此 task 是 MorroWise 說明書 / morrowise-system.json generator 的上游清理點；執行時需標明既有 morrowise-anatomy-read-model schema 已完成、morrowise-system.json generator 尚缺、MANUAL.md 只能作為 live entry shell，不得新增第二份架構總表。"
+    },
+    {
+      "id": "morrowise-system-json-generator-v0",
+      "title": "MorroWise system read model generator v0",
+      "status": "todo",
+      "track": "governance",
+      "order_label": "MW-READMODEL-01",
+      "dependencies": [
+        "v0-source-map-mc-reconcile",
+        "auditor-json-read-model-schema",
+        "live-system-admission-gate"
+      ],
+      "done_condition": "實作 $COLLAB/harness-mc/public/data/morrowise-system.json 的 generator / verifier / build 接線，承接既有 morrowise-system.schema.json 與 source-map/auditor/registry/generated data，不重定義 schema、不手寫 current status。",
+      "acceptance": [
+        "generator 讀取 canonical task state、source-map / MorroWise specs、已生成 read models、admission/wiring/approval registries 與 auditor output；不得讀 secrets、browser cookies、runtime auth files 或外部 mirror 作為唯一 source。",
+        "輸出的 morrowise-system.json 符合 $COLLAB/harness-mc/system-workflow/schemas/morrowise-system.schema.json，至少包含 source_of_truth、portable_agent_verification、dna、memory、senses、muscles、immune、heartbeat、feedback、open_loops。",
+        "open_loops 會表示未知、stale、generator_missing、manual_only、second_source_risk 與 next_action，不把缺口藏在 markdown 敘述。",
+        "verifier 能檢查 schema、generated_at、$COLLAB path policy、source refs 是否存在、visual layers 是否只被標為 mirror、write_boundary 是否 read-only。",
+        "package scripts 或 prebuild chain 可重跑 generator/verifier；失敗時不得更新 MC surface 為 fresh。",
+        "既有 harness-mc/morrowise-system track 的 morrowise-anatomy-read-model 只作為 historical implementation lineage / schema evidence，不重新開 schema task。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/system-workflow/schemas/morrowise-system.schema.json",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-anatomy-read-model.md",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-living-system-index.md",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-control-console-verify.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/source-map-v0.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/auditor-mvp.md",
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-anatomy-read-model"
+      ],
+      "note": "此 task 補的是 generator 缺口，不是 schema 缺口。schema 已由歷史 harness-mc task morrowise-anatomy-read-model 完成；本 task 要把 current state 變成可重跑 read model，供 MANUAL.md marker sync 與 MC surface 使用。",
+      "hc_decision": {
+        "task_scope": "morrowise/morrowise-system-json-generator-v0",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#constraints",
+          "#risk",
+          "#confirmationBias"
+        ],
+        "hc_reasoning": "真正問題不是再寫一份 MorroWise 說明，而是讓 MorroWise current state 先有可重跑、可驗證、可攜的 read model。#systemDynamics 指出若 MANUAL.md、README、ARCHITECTURE.md 各自承載現況，系統會形成第二正本與文件腐爛；#constraints 要求 generator 只讀 canonical source 與 safe metadata，不讀 secrets 或 mirror-only state；#risk 防止把 schema 已完成誤判為系統已活；#confirmationBias 要求承認既有 harness-mc morrowise-anatomy-read-model 已完成，不能重開同義 schema task。",
+        "hc_confidence": 0.86,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-anatomy-read-model.md",
+          "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-living-system-index.md",
+          "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-anatomy-read-model",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#v0-source-map-mc-reconcile"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical current state must live in tasks.json, registries, generated read models, verifier output, and MorroWise specs."
+      }
+    },
+    {
+      "id": "morrowise-manual-live-sync",
+      "title": "MorroWise 說明書 live sync",
+      "status": "todo",
+      "track": "governance",
+      "order_label": "MW-MANUAL-01",
+      "dependencies": [
+        "morrowise-system-json-generator-v0",
+        "task-ownership-routing-rule"
+      ],
+      "done_condition": "建立 $COLLAB/notyet-harness/000_Agent/docs/morrowise/MANUAL.md 作為人與 Agent 的 MorroWise 入口文件，手寫段落只保留身份、邊界與閱讀路徑；current state / system map / open loops / next anchors 由 morrowise-system.json 透過 marker block 自動同步。",
+      "acceptance": [
+        "MANUAL.md 明確宣告自己不是 ARCHITECTURE.md、不是 README replacement、不是 task state source of truth；current state 只來自 generated marker block。",
+        "同步腳本只更新標記區塊，例如 current-system-map、agent-routing、open-loops、next-anchors；不得覆蓋手寫原則段落。",
+        "verifier 能在 morrowise-system.json 變動但 MANUAL.md marker 未同步時 fail，並能在手動改 generated block 時指出 drift。",
+        "MANUAL.md 的啟動閱讀量保持薄：指向 CORE、README、ARCHITECTURE、morrowise-system.json 與 relevant task anchors，不複製整份內容。",
+        "ARCHITECTURE.md 仍由 Architecture Pulse / auditor loop 管，不因 MANUAL.md 新增而手動同步另一份架構總表。",
+        "若未來要在 MC 顯示 MANUAL 狀態，另開 harness-mc surface task；本 task 只處理 system doc sync 與 verifier。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/README.md",
+        "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+        "$COLLAB/notyet-harness/000_Agent/CORE.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/marker-based-auto-doc/SKILL.md",
+        "$COLLAB/harness-mc/public/data/morrowise-system.json",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-system-json-generator-v0",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-ownership-routing-rule"
+      ],
+      "note": "此 task 等 morrowise-system.json generator 可重跑後再執行；若先寫完整 MANUAL.md，會重複 README / ARCHITECTURE / living-system-index，形成第二正本。",
+      "hc_decision": {
+        "task_scope": "morrowise/morrowise-manual-live-sync",
+        "hc_refs": [
+          "#sift",
+          "#rightProblem",
+          "#systemDynamics",
+          "#constraints",
+          "#risk"
+        ],
+        "hc_reasoning": "SIFT 的非顯見選項不是『不要說明書』，也不是『再寫一份完整總表』，而是把說明書降格為薄入口與 generated state 的外殼。#rightProblem 將問題從『文件寫在哪』改成『未來 Agent 如何用低 context 找到最新且可驗證的系統狀態』；#systemDynamics 指出靜態 MANUAL.md 會快速腐爛；#constraints 要求手寫段落只放身份/邊界/路徑，狀態由 marker block 同步；#risk 防止 ARCHITECTURE.md 與 README 被複製成第三份正本。",
+        "hc_confidence": 0.87,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/000_Agent/docs/morrowise/README.md",
+          "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+          "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-anatomy-read-model.md",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-system-json-generator-v0"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. MANUAL.md must be an entry shell; current state remains in generated read models, tasks.json, specs, and verifiers."
       }
     },
     {
@@ -201,7 +301,7 @@
       "status": "completed",
       "track": "runtime-delivery",
       "dependencies": [
-        "v0-source-map-mc-reconcile"
+        "v0-boundary-lineage-map"
       ],
       "done_condition": "產出 MorroWise runtime / delivery lineage map，將 agnostic-scheduler 與 harness-mc sentinel 通知/排程 tasks 標示為 migrate_to / superseded_by / archive_reason，並明確 Reality Tax Gate 屬於 MorroWise 工作流閘門而非 Codex 專屬排程。",
       "acceptance": [
@@ -237,7 +337,8 @@
       "commits": [
         "755f323"
       ],
-      "summary": "已將 agent-agnostic scheduler、notification adapter 與 Reality Tax Gate ownership 收編到 MorroWise runtime-delivery track；agnostic-scheduler 未執行 tasks 與 harness-mc sentinel 出口 tasks 已關閉並保留 superseded lineage。"
+      "summary": "已將 agent-agnostic scheduler、notification adapter 與 Reality Tax Gate ownership 收編到 MorroWise runtime-delivery track；agnostic-scheduler 未執行 tasks 與 harness-mc sentinel 出口 tasks 已關閉並保留 superseded lineage。",
+      "dependency_note": "2026-06-27 metadata repair：此 task 已於 2026-06-23 以 runtime/delivery lineage scope 完成；原 dependency 指向仍 todo 的 v0-source-map-mc-reconcile 會造成 completed task 依賴未完成 task 的語意矛盾，因此改回 v0-boundary-lineage-map。v0-source-map-mc-reconcile 仍保留為 architecture/read-model/manual live sync 的上游清理點。"
     },
     {
       "id": "runtime-scheduler-v0",
@@ -469,6 +570,7 @@
       "title": "MorroWise 接線驗證器",
       "status": "todo",
       "track": "governance",
+      "order_label": "MW-WIRING-01",
       "dependencies": [
         "api-cli-mcp-capability-registry-v0"
       ],

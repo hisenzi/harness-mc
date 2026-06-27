@@ -19,7 +19,8 @@
     "用 source map 管住服務串接、script、安全、記憶、第二大腦、專案、commit、skills、dashboard、mirror 等 source family，避免 dashboard 或 mirror 變成第二正本。",
     "把既有 harness-mc morrowise-system track 納入 implementation lineage，後續只做引用、整併或 supersede，不重複維護同一批 task。",
     "把 agent-agnostic schedule / delivery / Reality Tax Gate 收編為 MorroWise runtime-delivery 能力，讓提醒與輸出閘門所有 Agent 通用，不綁 Codex thread automation。",
-    "建立 Live-System Admission Gate，讓任何新 component / scheduler / surface / runner / read model 進 MorroWise 前先證明自己在 trigger -> source -> process -> output -> surface -> next_action -> feedback -> verifier loop 裡的角色。"
+    "建立 Live-System Admission Gate，讓任何新 component / scheduler / surface / runner / read model 進 MorroWise 前先證明自己在 trigger -> source -> process -> output -> surface -> next_action -> feedback -> verifier loop 裡的角色。",
+    "建立 morrowise-system.json generated read model 與 MorroWise 說明書 live sync，讓人讀入口可薄且最新，current state 不落到另一份手寫總表。"
   ],
   "risks": [
     {
@@ -149,6 +150,23 @@
         "所有顯示 task 都放 MorroWise - 會讓 system project 被 UI 細節塞滿，降低 future agent 載入效率。"
       ],
       "hc_used": [
+        "#rightProblem",
+        "#systemDynamics",
+        "#constraints",
+        "#risk"
+      ]
+    },
+    {
+      "topic": "MorroWise 說明書與 current state",
+      "decision": "MorroWise 可以有 $COLLAB/notyet-harness/000_Agent/docs/morrowise/MANUAL.md，但它只能是薄的人讀/Agent 入口；current system state 必須由 generated morrowise-system.json 與 marker sync 區塊提供。",
+      "reason": "README、ARCHITECTURE.md、living-system-index 與 anatomy read model 已各有身份；若 MANUAL.md 手寫完整架構與現況，會形成第二或第三正本。正確路徑是先補 morrowise-system.json generator，再讓 MANUAL.md 只同步 generated sections。",
+      "alternatives_rejected": [
+        "先手寫完整 MANUAL.md - 會和 README、ARCHITECTURE.md、living-system-index 重疊，且 current status 會腐爛。",
+        "只靠 ARCHITECTURE.md 當說明書 - ARCHITECTURE.md 已是受管 source / audit target，不應再承擔所有 current state。",
+        "只在 MC dashboard 顯示 - dashboard 是 surface，不是人與 Agent 的可攜閱讀入口。"
+      ],
+      "hc_used": [
+        "#sift",
         "#rightProblem",
         "#systemDynamics",
         "#constraints",

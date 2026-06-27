@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-task-ownership-routing-rule-57ed3a9-20260627T111222Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "57ed3a9",
+  "project": "morrowise",
+  "task_id": "task-ownership-routing-rule",
+  "status": "updated",
+  "summary": "Documented MorroWise / harness-mc task ownership routing in shared CORE and MorroWise README so future agents can find the system-vs-surface boundary from startup docs.",
+  "created_at": "2026-06-27T11:12:22.789Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-27-morrowise-task-ownership-routing"
+}

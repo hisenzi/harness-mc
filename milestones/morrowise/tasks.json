@@ -372,7 +372,7 @@
     {
       "id": "task-ownership-routing-rule",
       "title": "MorroWise / harness-mc task ownership routing rule",
-      "status": "in_progress",
+      "status": "completed",
       "track": "governance",
       "dependencies": [
         "live-system-admission-gate"
@@ -394,7 +394,12 @@
         "$COLLAB/harness-mc/milestones/morrowise/project.json",
         "$COLLAB/harness-mc/milestones/harness-mc/project.json"
       ],
-      "note": "2026-06-27：task ownership routing rule 已寫入 CORE.md、harness-mc/AGENTS.md、MorroWise README、morrowise/project.json 與 harness-mc/project.json，並通過 JSON parse、rg discoverability、diff --check 與 validate-tasks；status 暫留 in_progress，等待 worktree-commit evidence 後再標 completed。",
+      "note": "2026-06-27：task ownership routing rule 已寫入 CORE.md、harness-mc/AGENTS.md、MorroWise README、morrowise/project.json 與 harness-mc/project.json，並通過 JSON parse、rg discoverability、diff --check 與 validate-tasks；notyet-harness commit 57ed3a9 已寫入 task-events/pending，等待 reducer 套用為 cross-repo commit evidence。",
+      "completed_at": "2026-06-27",
+      "commits": [
+        "2d905a7"
+      ],
+      "summary": "建立 MorroWise / harness-mc task ownership routing：系統本體 task 歸 MorroWise，MC 顯示與操作 surface task 歸 harness-mc，並把規則寫入跨 Agent 入口、repo 操作入口與 project decisions。",
       "hc_decision": {
         "task_scope": "morrowise/task-ownership-routing-rule",
         "hc_refs": [

@@ -116,6 +116,9 @@
         "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-anatomy-read-model"
       ],
       "completed_at": "2026-06-27",
+      "commits": [
+        "0988dbc"
+      ],
       "summary": "實作 MorroWise system read model generator 與 verifier，產出 gitignored 的 public/data/morrowise-system.json，從 canonical tasks、registries、generated read models、Architecture Pulse auditor output 與 source-map reconciliation 建立 read-only system state，並以 open_loops 顯示 pending events、stale surfaces、residual ledger、capability gaps 與下一個 task anchor。",
       "note": "此 task 補的是 generator 缺口，不是 schema 缺口。schema 已由歷史 harness-mc task morrowise-anatomy-read-model 完成；本 task 要把 current state 變成可重跑 read model，供 MANUAL.md marker sync 與 MC surface 使用。",
       "hc_decision": {

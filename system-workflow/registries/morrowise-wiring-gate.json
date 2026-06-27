@@ -1,8 +1,8 @@
 {
   "registry_id": "morrowise-wiring-gate.v0",
   "task_id": "morrowise-wiring-gate-verifier",
-  "updated_at": "2026-06-24",
-  "status": "prototype_gate",
+  "updated_at": "2026-06-27",
+  "status": "formal_gate",
   "purpose": "Verify whether a MorroWise component is fully wired from source to read model, dashboard surface, homepage visibility, verifier, routing, and next action.",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-wiring-gate.json",
   "required_wiring_fields": [
@@ -24,6 +24,16 @@
     "prototype": "The component is intentionally partial and must not be called ready.",
     "blocked": "A required layer is missing or unsafe.",
     "unknown": "The wiring state cannot be determined from tracked metadata."
+  },
+  "negative_fixture_policy": {
+    "purpose": "The verifier must fail when any required wiring layer is removed, so prototype surfaces cannot be called ready by accident.",
+    "covered_missing_layers": [
+      "generated_read_model",
+      "live_dashboard_surface",
+      "homepage_anchor",
+      "AGENTS_routing",
+      "verifier_script"
+    ]
   },
   "fixtures": [
     {

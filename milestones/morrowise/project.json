@@ -139,6 +139,21 @@
         "#systemDynamics",
         "#constraints"
       ]
+    },
+    {
+      "topic": "Task ownership routing",
+      "decision": "有關 MorroWise 系統本體的 task 統一寫入 morrowise project；單純顯示或操作介面的 task 寫入 harness-mc project。",
+      "reason": "MorroWise 是 system loop、source-of-truth、read model、verifier、policy、routing、scheduler 與 agent workflow boundary 的 owner；harness-mc 是 MC dashboard、page、card、route、drilldown 與 visual surface 的 owner。若不分層，dashboard task 會再次承接系統本體，形成第二正本。",
+      "alternatives_rejected": [
+        "所有 MorroWise 相關 task 都放 harness-mc - 會讓顯示層與系統層混在一起，且與正式 MorroWise project 邊界衝突。",
+        "所有顯示 task 都放 MorroWise - 會讓 system project 被 UI 細節塞滿，降低 future agent 載入效率。"
+      ],
+      "hc_used": [
+        "#rightProblem",
+        "#systemDynamics",
+        "#constraints",
+        "#risk"
+      ]
     }
   ],
   "hc_decision": {

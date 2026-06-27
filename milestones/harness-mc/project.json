@@ -13,7 +13,7 @@
     "data": "資料與開案",
     "sentinel": "哨兵模式（變化偵測與送達：diff 引擎 + Notion/Telegram/自檢出口）",
     "control-plane": "Agent Control Plane observability（MC 作為 shared brain / ADR / runtime / policy 的 read-only console）",
-    "morrowise-system": "MorroWise 活系統（意圖→行動→回饋→成長；舊 Jarvis/system-ops 為歷史參照）"
+    "morrowise-system": "MorroWise historical implementation lineage / MC surface（系統本體新 task 歸 morrowise project；harness-mc 只承接顯示與操作介面）"
   },
   "goals": [
     "雙層架構（紀律層＋能力層）各有獨立頁面，首頁分層呈現",
@@ -60,8 +60,10 @@
   "decisions": [
     {
       "topic": "開案位置",
+      "status": "historical_superseded",
       "decision": "不另開獨立 milestone，先在 harness-mc 內新增 morrowise-system track。",
       "reason": "MorroWise 的落地介面是 MC / control-plane / task event pipeline；另開專案會把入口切散，反而不利於日常使用。",
+      "superseded_by": "$COLLAB/harness-mc/milestones/morrowise/project.json#Task ownership routing",
       "alternatives_rejected": [
         "新開 morrowise-system milestone — 容易變成平行願景專案，無法直接統整 MC task 與 control-plane surface",
         "只整理成聊天摘要 — future agents 無法穩定重用，也不能進 MC workflow"
@@ -70,6 +72,20 @@
         "#rightProblem",
         "#systemDynamics",
         "#organization"
+      ]
+    },
+    {
+      "topic": "MorroWise surface ownership",
+      "decision": "harness-mc 只承接 MorroWise 的 MC dashboard、page、card、route、drilldown、visual summary 與 user-facing operation task；系統本體 task 歸 $COLLAB/harness-mc/milestones/morrowise/tasks.json。",
+      "reason": "harness-mc 是 Mission Control 的顯示與操作介面，不是 MorroWise system loop 的 source of truth。歷史 morrowise-system track 保留為 implementation lineage 與 evidence；未來新增 system task 應回到 MorroWise project。",
+      "alternatives_rejected": [
+        "沿用 harness-mc/morrowise-system track 當 active system owner - 會與正式 MorroWise project 形成雙正本。",
+        "把所有 MorroWise dashboard task 放回 MorroWise - 會讓 system project 承擔 UI 細節，削弱 task routing。"
+      ],
+      "hc_used": [
+        "#rightProblem",
+        "#systemDynamics",
+        "#constraints"
       ]
     },
     {

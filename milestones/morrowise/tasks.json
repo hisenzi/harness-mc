@@ -370,6 +370,52 @@
       "summary": "建立 MorroWise Live-System Admission Gate 與 Commit Planning Gate，將新元件入場條件、commit-attention fixture、commit cleanup planning boundary 與 repeatable verifiers 正式納入 MorroWise governance。"
     },
     {
+      "id": "task-ownership-routing-rule",
+      "title": "MorroWise / harness-mc task ownership routing rule",
+      "status": "in_progress",
+      "track": "governance",
+      "dependencies": [
+        "live-system-admission-gate"
+      ],
+      "done_condition": "把 MorroWise system task 與 harness-mc surface/display task 的 ownership routing 寫入跨 Agent 啟動入口、repo 操作入口與 project decisions，讓 10 天後新增系統 task 時可查到規則並避免雙正本。",
+      "acceptance": [
+        "$COLLAB/notyet-harness/000_Agent/CORE.md 有跨 Agent 最小規則：system loop / source-of-truth / read model / verifier / policy / routing / scheduler 歸 MorroWise；dashboard / page / card / route / visual surface 歸 harness-mc。",
+        "$COLLAB/harness-mc/AGENTS.md 有操作判斷表與 examples，新增或調整 task 前能決定寫入 milestones/morrowise/tasks.json 或 milestones/harness-mc/tasks.json。",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/README.md 說明 MorroWise 是系統本體，harness-mc 是顯示與操作 surface，不把 dashboard 當 source of truth。",
+        "$COLLAB/harness-mc/milestones/morrowise/project.json 記錄 task ownership routing decision。",
+        "$COLLAB/harness-mc/milestones/harness-mc/project.json 將舊 morrowise-system track 標為 historical implementation lineage，未來只承接 surface/display task。",
+        "用 rg 可查到 task ownership routing、system task、surface task、milestones/morrowise 與 milestones/harness-mc；JSON 可 parse；diff check 通過。"
+      ],
+      "source_refs": [
+        "$COLLAB/AGENTS.md",
+        "$COLLAB/notyet-harness/000_Agent/CORE.md",
+        "$COLLAB/harness-mc/AGENTS.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/README.md",
+        "$COLLAB/harness-mc/milestones/morrowise/project.json",
+        "$COLLAB/harness-mc/milestones/harness-mc/project.json"
+      ],
+      "note": "2026-06-27：task ownership routing rule 已寫入 CORE.md、harness-mc/AGENTS.md、MorroWise README、morrowise/project.json 與 harness-mc/project.json，並通過 JSON parse、rg discoverability、diff --check 與 validate-tasks；status 暫留 in_progress，等待 worktree-commit evidence 後再標 completed。",
+      "hc_decision": {
+        "task_scope": "morrowise/task-ownership-routing-rule",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#constraints",
+          "#risk"
+        ],
+        "hc_reasoning": "真正問題不是這次要把 task 放哪裡，而是 future agents 在 10 天後新增 system task 時能不能從啟動入口自動找到 ownership rule。#systemDynamics 指出若 MorroWise system tasks 與 harness-mc surface tasks 混在同一層，dashboard 會再次變成第二正本；#constraints 要求 CORE 只放最小跨 Agent 規則，操作細節放 harness-mc/AGENTS.md，project 語意放 MorroWise docs/project decisions；#risk 防止歷史 harness-mc morrowise-system track 繼續誤導新 task ownership。",
+        "hc_confidence": 0.86,
+        "evidence_refs": [
+          "$COLLAB/AGENTS.md",
+          "$COLLAB/notyet-harness/000_Agent/CORE.md",
+          "$COLLAB/harness-mc/AGENTS.md",
+          "$COLLAB/harness-mc/milestones/morrowise/project.json",
+          "$COLLAB/harness-mc/milestones/harness-mc/project.json"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical task routing must live in CORE.md, harness-mc/AGENTS.md, MorroWise project decisions, and MC tasks.json."
+      }
+    },
+    {
       "id": "api-cli-mcp-capability-registry-v0",
       "title": "MorroWise 接線系統 v0（API / CLI / MCP 首批）",
       "status": "in_progress",

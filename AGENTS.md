@@ -7,6 +7,22 @@ Before changing project state, task state, generated data, MorroWise registries,
 1. `$COLLAB/AGENTS.md`
 2. `$COLLAB/notyet-harness/000_Agent/CORE.md`
 
+## MorroWise / harness-mc Task Ownership Routing
+
+When adding or changing tasks, decide ownership before editing `tasks.json`.
+
+| Work type | Task source | Rule |
+|---|---|---|
+| MorroWise system task | `$COLLAB/harness-mc/milestones/morrowise/tasks.json` | Use for system loops, source-of-truth contracts, generated read models, verifiers, policies, routing rules, schedulers, agent workflow boundaries, runtime/delivery adapters, and governance gates. |
+| harness-mc surface task | `$COLLAB/harness-mc/milestones/harness-mc/tasks.json` | Use for dashboard pages, cards, routes, homepage sections, drilldown views, visual summaries, and user-facing MC operations that only display or operate on existing MorroWise state. |
+
+Examples:
+
+- `architecture-live-marker-sync`, `runtime-scheduler-v0`, `task-ownership-routing-rule`, `morrowise-system-json-generator`, and verifier/gate work belong to MorroWise.
+- `/attention` UI, `/worktrees` UI, homepage MorroWise cards, route labels, and dashboard drilldowns belong to harness-mc.
+
+If a change includes both layers, split the work: put the system/read-model/verifier task in MorroWise, then create a dependent harness-mc surface task for the display layer. Historical `harness-mc` MorroWise tasks remain implementation lineage and evidence; do not use them as the active owner for new system tasks.
+
 ## API / CLI / MCP Capability Registry
 
 For any question or change involving API, CLI, MCP, local scripts, connectors, adapters, browser automation, or external tool access, check the MorroWise capability registry first:

@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-mc-morrowise-v0-card-0fa01e3-20260627T151723Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "0fa01e3",
+  "project": "morrowise",
+  "task_id": "mc-morrowise-v0-card",
+  "status": "updated",
+  "summary": "記錄 MorroWise task ownership、state override、Canvas mirror 與 pending event closeout 到 2026-06-27 daily memory、HTML report 與小未 mood image。",
+  "created_at": "2026-06-27T15:17:23.363Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-morrowise-cc-log"
+}

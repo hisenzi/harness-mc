@@ -137,10 +137,20 @@
       "summary": "建立 MorroWise / harness-mc task ownership routing：系統本體 task 歸 MorroWise，MC 顯示與操作 surface task 歸 harness-mc，並把規則寫入跨 Agent 入口、repo 操作入口與 project decisions。"
     },
     "api-cli-mcp-capability-registry-v0": {
-      "status": "in_progress"
+      "status": "completed",
+      "completed_at": "2026-06-27",
+      "commits": [
+        "a84b7d6"
+      ],
+      "summary": "API / CLI / MCP capability registry v0 已正式化：machine-readable registry、history/boundary verifier、generated read model、MC surface 與 AGENTS routing 均可追溯；Playwright CLI 本機可用性疑點已拆成獨立 follow-up task。"
     },
     "morrowise-wiring-gate-verifier": {
-      "status": "todo"
+      "status": "completed",
+      "completed_at": "2026-06-27",
+      "commits": [
+        "15a2378"
+      ],
+      "summary": "MorroWise wiring gate verifier 已正式化：正向 fixture 驗證 API / CLI / MCP 首批完整接線，負向 fixture 確認缺 read model、surface、homepage anchor、AGENTS routing 或 verifier script 時會失敗，避免 prototype 被誤標 ready。"
     },
     "notification-adapter-contract": {
       "status": "todo"

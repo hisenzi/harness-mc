@@ -144,7 +144,7 @@
     {
       "id": "morrowise-manual-live-sync",
       "title": "MorroWise 說明書 live sync",
-      "status": "completed",
+      "status": "todo",
       "track": "governance",
       "order_label": "MW-MANUAL-01",
       "dependencies": [
@@ -602,7 +602,7 @@
     {
       "id": "morrowise-wiring-gate-verifier",
       "title": "MorroWise 接線驗證器",
-      "status": "todo",
+      "status": "completed",
       "track": "governance",
       "order_label": "MW-WIRING-01",
       "dependencies": [

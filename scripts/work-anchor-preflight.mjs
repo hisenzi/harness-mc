@@ -180,7 +180,7 @@ export function runPreflight(args) {
   return result;
 }
 
-function formatMarkdown(result) {
+export function formatMarkdown(result) {
   const lines = [
     "## Work Anchor Preflight",
     `project: ${result.project}`,
@@ -194,6 +194,15 @@ function formatMarkdown(result) {
   ];
 
   if (result.decision === "blocked") {
+    if (result.blocked_reason) {
+      lines.push("", `blocked reason: ${result.blocked_reason}`);
+    }
+    if (result.hc_gate?.required_fields?.length) {
+      lines.push(`required fields: ${result.hc_gate.required_fields.join(", ")}`);
+    }
+  }
+
+  if (result.decision === "blocked" && result.proposed_task) {
     const proposed = result.proposed_task;
     lines.push("", "proposed task:");
     lines.push(`- id: ${proposed.task.id}`);

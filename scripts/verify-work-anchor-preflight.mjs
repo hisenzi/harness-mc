@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { runPreflight } from "./work-anchor-preflight.mjs";
+import { formatMarkdown, runPreflight } from "./work-anchor-preflight.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
 
@@ -85,6 +85,10 @@ assert.equal(missingHcResult.hc_gate.required, true);
 assert.match(missingHcResult.blocked_reason, /HC decision block is required/);
 assert.match(missingHcResult.next_required_step, /HC decision block/);
 assert.match(missingHcResult.next_required_step, /implementation flow/);
+const missingHcMarkdown = formatMarkdown(missingHcResult);
+assert.match(missingHcMarkdown, /blocked reason: HC decision block is required/);
+assert.match(missingHcMarkdown, /required fields: task_scope/);
+assert.doesNotMatch(missingHcMarkdown, /proposed task:/);
 
 const withHcFixturePath = path.join(tmpDir, "hc-gate-ready-tasks.json");
 fs.writeFileSync(

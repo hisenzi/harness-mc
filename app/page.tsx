@@ -285,9 +285,62 @@ interface LiveDashboardData {
   };
 }
 
-interface VisualSyncTask extends Task {
+interface VisualSyncCoverageItem {
   project: string;
-  projectName: string;
+  project_name: string;
+  task_id: string;
+  title: string;
+  status: string;
+  track: string;
+  order_label: string;
+  heptabase: {
+    card_id: string | null;
+    whiteboard: string | null;
+    synced_at: string | null;
+    sync_mode: string | null;
+  };
+  sync_events: { id: string; queue: string; target: string; created_at: string; file: string }[];
+  gaps: string[];
+  coverage_state: "aligned" | "failed" | "pending_sync" | "missing_refs";
+}
+
+interface VisualSyncCoverageData {
+  schema_version: string;
+  generated_at: string;
+  read_only: boolean;
+  source_files: string[];
+  generator: string;
+  summary: {
+    tracked_tasks: number;
+    aligned: number;
+    coverage_gaps: number;
+    coverage_percent: number;
+    missing_heptabase_card: number;
+    missing_heptabase_whiteboard: number;
+    missing_canvas_synced_at: number;
+    pending_heptabase_sync: number;
+    pending_canvas_sync: number;
+    failed_heptabase_sync: number;
+    failed_canvas_sync: number;
+    sync_events_pending: number;
+    sync_events_failed: number;
+  };
+  columns: {
+    missing_heptabase: VisualSyncCoverageItem[];
+    canvas_pending: VisualSyncCoverageItem[];
+    heptabase_pending: VisualSyncCoverageItem[];
+    aligned: VisualSyncCoverageItem[];
+  };
+  next_action: {
+    type: string;
+    target: string | null;
+    label: string;
+  };
+  write_boundary: {
+    mode: string;
+    forbidden: string[];
+  };
+  verifier_ref: string;
 }
 
 const surfaceAnchors: Record<string, string> = {
@@ -296,6 +349,7 @@ const surfaceAnchors: Record<string, string> = {
   morrowise_proactive_loop: "#morrowise-loop",
   task_event_pipeline: "#task-event-pipeline",
   worktree_status: "#worktree-status",
+  visual_sync_coverage: "#visual-sync",
   api_cli_mcp_capabilities: "#api-cli-mcp-capabilities",
   approval_queue: "#approval-queue",
 };
@@ -1110,37 +1164,61 @@ function WorktreeStatusColumn({
   );
 }
 
-function TaskVisualSyncCard({ projects }: { projects: Project[] }) {
-  const tasks = buildVisualSyncTasks(projects);
-  if (projects.length === 0 || tasks.length === 0) return null;
+function TaskVisualSyncCard({ coverage }: { coverage: VisualSyncCoverageData | null }) {
+  if (!coverage) {
+    return (
+      <div>
+        <div className="flex items-center gap-3 mb-3">
+          <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">Task 視覺同步</div>
+          <div className="text-[11px] text-[var(--text-muted)]">visual-sync-coverage.json 載入中</div>
+          <div className="flex-1 border-t border-[var(--border)]"></div>
+        </div>
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 text-[13px] text-[var(--text-muted)]">
+          visual sync coverage read model 尚未載入
+        </div>
+      </div>
+    );
+  }
 
-  const missingHeptabase = tasks.filter((task) => !task.external_refs?.heptabase?.card_id);
-  const canvasPending = tasks.filter((task) => task.external_refs?.heptabase?.card_id && !task.external_refs.heptabase.synced_at);
-  const aligned = tasks.filter((task) => task.external_refs?.heptabase?.card_id && task.external_refs.heptabase.synced_at);
-  const shownMissing = missingHeptabase.slice(0, 4);
-  const shownCanvas = canvasPending.slice(0, 4);
-  const shownAligned = aligned.slice(0, 5);
+  const pendingSync = uniqueVisualSyncItems([
+    ...coverage.columns.canvas_pending,
+    ...coverage.columns.heptabase_pending,
+  ]).slice(0, 5);
+  const generatedLabel = new Date(coverage.generated_at).toLocaleString("zh-TW", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" });
+  const attentionTone = coverage.summary.sync_events_failed > 0
+    ? "red"
+    : coverage.summary.sync_events_pending > 0 || coverage.summary.coverage_gaps > 0
+      ? "yellow"
+      : "green";
 
   return (
     <div>
       <div className="flex items-center gap-3 mb-3">
         <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">Task 視覺同步</div>
-        <div className="text-[11px] text-[var(--text-muted)]">MC source · Heptabase 白板 · Obsidian Canvas</div>
+        <div className="text-[11px] text-[var(--text-muted)]">read model · {generatedLabel} 更新</div>
         <div className="flex-1 border-t border-[var(--border)]"></div>
       </div>
 
       <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <VisualSyncColumn title="待補 Heptabase" count={missingHeptabase.length} tone="yellow" tasks={shownMissing} emptyText="目前追蹤範圍都有 card_id" />
-          <VisualSyncColumn title="Canvas 待確認" count={canvasPending.length} tone="red" tasks={shownCanvas} emptyText="沒有缺 synced_at 的 task" />
-          <VisualSyncColumn title="已對齊" count={aligned.length} tone="green" tasks={shownAligned} emptyText="尚無完整 refs" />
+          <VisualSyncColumn title="待補 Heptabase" count={coverage.summary.missing_heptabase_card} tone="yellow" tasks={coverage.columns.missing_heptabase.slice(0, 5)} emptyText="目前追蹤範圍都有 card_id" />
+          <VisualSyncColumn title="Sync 待處理" count={coverage.summary.sync_events_pending + coverage.summary.sync_events_failed + coverage.summary.missing_canvas_synced_at} tone={attentionTone === "red" ? "red" : "yellow"} tasks={pendingSync} emptyText="沒有 pending / failed sync" />
+          <VisualSyncColumn title="已對齊" count={coverage.summary.aligned} tone="green" tasks={coverage.columns.aligned.slice(0, 5)} emptyText="尚無完整 refs" />
         </div>
 
         <div className="mt-4 pt-3 border-t border-[var(--border)] flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-[var(--text-muted)]">
-          <span>tracked <span className="font-mono text-[var(--text)]">{tasks.length}</span></span>
-          <span>Heptabase gaps <span className="font-mono text-[var(--text)]">{missingHeptabase.length}</span></span>
-          <span>Canvas gaps <span className="font-mono text-[var(--text)]">{canvasPending.length}</span></span>
-          <span>source <span className="font-mono text-[var(--text)]">projects.json</span></span>
+          <span>tracked <span className="font-mono text-[var(--text)]">{coverage.summary.tracked_tasks}</span></span>
+          <span>coverage <span className="font-mono text-[var(--text)]">{coverage.summary.coverage_percent}%</span></span>
+          <span>pending Heptabase <span className="font-mono text-[var(--text)]">{coverage.summary.pending_heptabase_sync}</span></span>
+          <span>pending Canvas <span className="font-mono text-[var(--text)]">{coverage.summary.pending_canvas_sync}</span></span>
+          <span>failed sync <span className="font-mono text-[var(--text)]">{coverage.summary.sync_events_failed}</span></span>
+          <span>source <span className="font-mono text-[var(--text)]">visual-sync-coverage.json</span></span>
+        </div>
+
+        <div className="mt-3 rounded-md border border-[var(--border)] bg-black/10 px-3 py-2 text-[11px] leading-relaxed text-[var(--text-muted)]">
+          <span className="font-mono text-[var(--text)]">{coverage.next_action.type}</span>
+          <span> · {coverage.next_action.label}</span>
+          <span className="ml-2 font-mono">verifier: {coverage.verifier_ref}</span>
         </div>
       </div>
     </div>
@@ -1157,7 +1235,7 @@ function VisualSyncColumn({
   title: string;
   count: number;
   tone: "yellow" | "red" | "green";
-  tasks: VisualSyncTask[];
+  tasks: VisualSyncCoverageItem[];
   emptyText: string;
 }) {
   const color = tone === "yellow" ? "text-yellow-400" : tone === "red" ? "text-red-400" : "text-green-400";
@@ -1173,15 +1251,15 @@ function VisualSyncColumn({
       {tasks.length > 0 ? (
         <div className="space-y-2">
           {tasks.map((task) => (
-            <div key={`${task.project}-${task.id}`} className="min-w-0">
+            <div key={`${task.project}-${task.task_id}`} className="min-w-0">
               <div className="flex items-center gap-2 min-w-0">
                 <StatusDot status={dotStatus} />
-                <span className="font-mono text-[11px] text-[var(--text)] truncate">{task.order_label || task.id}</span>
-                <span className={visualSyncTagClass(tone)}>{task.external_refs?.heptabase?.sync_mode || (tone === "yellow" ? "no card" : "sync")}</span>
+                <span className="font-mono text-[11px] text-[var(--text)] truncate">{task.order_label || task.task_id}</span>
+                <span className={visualSyncTagClass(tone)}>{visualSyncLabel(task, tone)}</span>
               </div>
               <div className="mt-0.5 pl-4 text-[11px] text-[var(--text-muted)] truncate">
-                {task.projectName} · {task.external_refs?.heptabase?.whiteboard || task.track || "no whiteboard"}
-                {task.external_refs?.heptabase?.card_id ? ` · ${task.external_refs.heptabase.card_id.slice(0, 8)}` : ""}
+                {task.project_name} · {task.heptabase.whiteboard || task.track || "no whiteboard"}
+                {task.heptabase.card_id ? ` · ${task.heptabase.card_id.slice(0, 8)}` : ""}
               </div>
             </div>
           ))}
@@ -1200,33 +1278,21 @@ function visualSyncTagClass(tone: "yellow" | "red" | "green") {
   return `${base} border-green-400/30 text-green-400`;
 }
 
-function buildVisualSyncTasks(projects: Project[]): VisualSyncTask[] {
-  const trackedProjects = new Set(["harness-mc", "notyet-md", "writing-system"]);
-  const trackedNeedles = ["morrowise", "visual-sync", "brand-", "article-seed", "morrowise"];
-
-  return projects
-    .flatMap((project) =>
-      project.tasks.map((task) => ({
-        ...task,
-        project: project.project,
-        projectName: project.name,
-      }))
-    )
-    .filter((task) => {
-      const haystack = `${task.id} ${task.title || ""} ${task.summary || ""}`.toLowerCase();
-      return (
-        Boolean(task.external_refs?.heptabase) ||
-        task.completed_at === "2026-06-20" ||
-        (trackedProjects.has(task.project) && trackedNeedles.some((needle) => haystack.includes(needle)))
-      );
-    })
-    .sort((a, b) => visualSyncRank(a) - visualSyncRank(b) || a.project.localeCompare(b.project) || a.id.localeCompare(b.id));
+function visualSyncLabel(task: VisualSyncCoverageItem, tone: "yellow" | "red" | "green") {
+  if (task.coverage_state === "failed") return "failed";
+  if (task.coverage_state === "pending_sync") return "pending";
+  if (!task.heptabase.card_id) return "no card";
+  return task.heptabase.sync_mode || (tone === "green" ? "aligned" : "sync");
 }
 
-function visualSyncRank(task: VisualSyncTask) {
-  if (!task.external_refs?.heptabase?.card_id) return 0;
-  if (!task.external_refs.heptabase.synced_at) return 1;
-  return 2;
+function uniqueVisualSyncItems(items: VisualSyncCoverageItem[]) {
+  const seen = new Set<string>();
+  return items.filter((item) => {
+    const key = `${item.project}/${item.task_id}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 function ApiCliMcpCapabilityCard({ data }: { data: CapabilityReadModel | null }) {
@@ -1428,6 +1494,7 @@ export default function HomePage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [liveDashboard, setLiveDashboard] = useState<LiveDashboardData | null>(null);
   const [capabilities, setCapabilities] = useState<CapabilityReadModel | null>(null);
+  const [visualSyncCoverage, setVisualSyncCoverage] = useState<VisualSyncCoverageData | null>(null);
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/projects.json`)
@@ -1443,6 +1510,11 @@ export default function HomePage() {
     fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/morrowise-capabilities.json`)
       .then((r) => r.json())
       .then(setCapabilities)
+      .catch(() => {});
+
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/visual-sync-coverage.json`)
+      .then((r) => r.json())
+      .then(setVisualSyncCoverage)
       .catch(() => {});
   }, []);
 
@@ -1476,7 +1548,7 @@ export default function HomePage() {
               <section id="morrowise-system"><MorroWiseSurfaceCard liveDashboard={liveDashboard} /></section>
               <section id="morrowise-loop"><MorroWiseProactiveLoopCard /></section>
               <section id="worktree-status"><WorktreeStatusCard /></section>
-              <section id="visual-sync"><TaskVisualSyncCard projects={projects} /></section>
+              <section id="visual-sync"><TaskVisualSyncCard coverage={visualSyncCoverage} /></section>
 
         <div id="discipline">
           <div className="flex items-center gap-3 mb-3">

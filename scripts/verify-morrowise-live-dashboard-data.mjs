@@ -35,6 +35,7 @@ const expectedSurfaces = [
   "morrowise_living_system",
   "morrowise_proactive_loop",
   "task_event_pipeline",
+  "visual_sync_coverage",
   "worktree_status",
   "closeout_residual_ledger",
   "api_cli_mcp_capabilities",
@@ -56,6 +57,7 @@ const sourceFiles = new Set(data.surfaces.flatMap((surface) => surface.source_fi
 for (const requiredSource of [
   "$COLLAB/harness-mc/public/data/projects.json",
   "$COLLAB/harness-mc/public/data/task-events.json",
+  "$COLLAB/harness-mc/public/data/visual-sync-coverage.json",
   "$COLLAB/harness-mc/sync-events/**/*.json",
   "$COLLAB/harness-mc/public/data/worktrees.json",
   "$COLLAB/harness-mc/public/data/closeout-residual-ledger.json",

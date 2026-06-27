@@ -413,7 +413,25 @@
       "commits": [
         "2f507b0",
         "7cebf4e"
-      ]
+      ],
+      "hc_decision": {
+        "task_scope": "harness-mc/acp-visual-sync-coverage-report",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#constraints",
+          "#risk"
+        ],
+        "hc_reasoning": "真正問題不是首頁少一個視覺同步摘要，而是 visual sync coverage 目前由 UI 從 projects.json 現算，缺少可重跑、可驗證、可被 closeout ledger / MorroWise next_action 引用的 read model。#systemDynamics 指出 MC task、Heptabase refs、Obsidian Canvas mirror 與 sync-events 若分散在多個 surface，future agents 會不知道下一步是同步、補 refs 還是只讀報告；#constraints 要求此 task 先產生 read-only coverage report，不直接寫 Heptabase、Canvas 或 task state；#risk 防止把 pending sync queue 誤稱為已同步完成。",
+        "hc_confidence": 0.84,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#acp-visual-sync-coverage-report",
+          "$COLLAB/harness-mc/app/page.tsx#Task 視覺同步",
+          "$COLLAB/harness-mc/public/data/task-events.json",
+          "$COLLAB/harness-mc/sync-events"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical state remains MC tasks.json/state.json, task-events/sync-events queues, generated read models, and verifier output."
+      }
     },
     {
       "id": "acp-control-plane-read-model-v0",

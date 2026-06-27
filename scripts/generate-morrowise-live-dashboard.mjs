@@ -21,6 +21,7 @@ export function generateMorrowiseLiveDashboard(options = {}) {
     morrowiseLivingSystemSurface(sources),
     morrowiseProactiveLoopSurface(sources),
     taskEventPipelineSurface(sources),
+    visualSyncCoverageSurface(sources),
     worktreeStatusSurface(sources),
     closeoutResidualLedgerSurface(sources),
     capabilityRegistrySurface(sources),
@@ -37,6 +38,7 @@ export function generateMorrowiseLiveDashboard(options = {}) {
       generated_data: [
         "$COLLAB/harness-mc/public/data/projects.json",
         "$COLLAB/harness-mc/public/data/task-events.json",
+        "$COLLAB/harness-mc/public/data/visual-sync-coverage.json",
         "$COLLAB/harness-mc/public/data/worktrees.json",
         "$COLLAB/harness-mc/public/data/closeout-residual-ledger.json",
         "$COLLAB/harness-mc/public/data/changes.json",
@@ -77,6 +79,7 @@ function readSources(root) {
     root,
     projects: readJsonOrNull(path.join(root, DATA_DIR, "projects.json")),
     taskEvents: readJsonOrNull(path.join(root, DATA_DIR, "task-events.json")),
+    visualSyncCoverage: readJsonOrNull(path.join(root, DATA_DIR, "visual-sync-coverage.json")),
     worktrees: readJsonOrNull(path.join(root, DATA_DIR, "worktrees.json")),
     closeoutResidualLedger: readJsonOrNull(path.join(root, DATA_DIR, "closeout-residual-ledger.json")),
     changes: readJsonOrNull(path.join(root, DATA_DIR, "changes.json")),
@@ -86,6 +89,7 @@ function readSources(root) {
     fileTimes: {
       projects: fileGeneratedAt(root, path.join(DATA_DIR, "projects.json")),
       taskEvents: fileGeneratedAt(root, path.join(DATA_DIR, "task-events.json")),
+      visualSyncCoverage: fileGeneratedAt(root, path.join(DATA_DIR, "visual-sync-coverage.json")),
       worktrees: fileGeneratedAt(root, path.join(DATA_DIR, "worktrees.json")),
       closeoutResidualLedger: fileGeneratedAt(root, path.join(DATA_DIR, "closeout-residual-ledger.json")),
       changes: fileGeneratedAt(root, path.join(DATA_DIR, "changes.json")),
@@ -234,6 +238,49 @@ function taskEventPipelineSurface(sources) {
     evidence_refs: ["$COLLAB/harness-mc/public/data/task-events.json", "$COLLAB/harness-mc/task-events", "$COLLAB/harness-mc/sync-events"],
     drilldown_route: "task_event_pipeline.drilldown",
     metrics: { pending_task_events: taskCounts.pending || 0, rejected_task_events: rejected, pending_sync_events: syncCounts.pending || 0, failed_sync_events: failed },
+  });
+}
+
+function visualSyncCoverageSurface(sources) {
+  const coverage = sources.visualSyncCoverage || {};
+  const summary = coverage.summary || {};
+  const pending = summary.sync_events_pending || 0;
+  const failed = summary.sync_events_failed || 0;
+  const gaps = summary.coverage_gaps || 0;
+  const next = coverage.next_action || {};
+
+  return surface({
+    id: "visual_sync_coverage",
+    label: "Visual Sync Coverage",
+    source_of_truth: "canonical_mc_tasks_and_sync_event_queues",
+    source_files: [
+      "$COLLAB/harness-mc/public/data/visual-sync-coverage.json",
+      "$COLLAB/harness-mc/milestones/*/tasks.json",
+      "$COLLAB/harness-mc/milestones/*/state.json",
+      "$COLLAB/harness-mc/sync-events/**/*.json",
+    ],
+    generator: ["scripts/generate-visual-sync-coverage.mjs", "npm run prebuild"],
+    generated_at: latest([coverage.generated_at, sources.fileTimes.visualSyncCoverage]),
+    stale_after_minutes: 30,
+    stale_rule: "stale when task refs or sync-events queues change without regenerated visual-sync coverage data",
+    missing_sources: missingSources(sources, ["visualSyncCoverage"]),
+    freshness_action: action("generator", "node scripts/generate-visual-sync-coverage.mjs", "Regenerate visual sync coverage before deciding whether Canvas or Heptabase sync is pending."),
+    next_action: next.label
+      ? action(next.type || "route_or_command", next.target || "visual_sync_coverage.drilldown", next.label)
+      : action("none", null, "No visual sync coverage action required."),
+    write_boundary: readOnlyBoundary(["display Heptabase refs", "display Canvas/sync queue gaps", "route next sync action"], ["write Heptabase", "write Obsidian Canvas", "move sync-events", "change task state"]),
+    verifier_ref: "npm run test:visual-sync-coverage",
+    classification: "semi_live",
+    attention_level: failed > 0 ? "needs_review" : pending > 0 || gaps > 0 ? "watch" : "normal",
+    evidence_refs: ["$COLLAB/harness-mc/public/data/visual-sync-coverage.json", "$COLLAB/harness-mc/sync-events"],
+    drilldown_route: "visual_sync_coverage.drilldown",
+    metrics: {
+      tracked_tasks: summary.tracked_tasks || 0,
+      aligned: summary.aligned || 0,
+      coverage_gaps: gaps,
+      pending_sync_events: pending,
+      failed_sync_events: failed,
+    },
   });
 }
 

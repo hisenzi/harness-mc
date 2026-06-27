@@ -1934,7 +1934,12 @@
     {
       "id": "morrowise-living-system-read-model-card",
       "title": "MorroWise 活系統 read-model card",
-      "status": "todo",
+      "status": "completed",
+      "completed_at": "2026-06-27",
+      "commits": [
+        "de4b53a"
+      ],
+      "summary": "MC 首頁 MorroWise 活系統卡片已改為直接讀取 morrowise-live-dashboard.json 的 morrowise_living_system surface，顯示 source/generator/freshness/classification/next_action/write_boundary/verifier contract，並新增 verifier 防止 UI 再自行從 projects、changes 或 task-events 派生第二套狀態。",
       "track": "morrowise-system",
       "order_label": "MC-LIVE-SURFACE-01",
       "priority": "high",

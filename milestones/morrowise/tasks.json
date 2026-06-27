@@ -247,6 +247,9 @@
         }
       },
       "completed_at": "2026-06-27",
+      "commits": [
+        "6fa4314"
+      ],
       "summary": "定義 morrowise-auditor.json v0 schema 與可重跑 verifier，schema 承接 manual Architecture Pulse finding contract，固定 read_only=true，要求 generated_at/targets/summary/findings/next_actions/write_boundary，並用 fixture 驗證 missing_header、source_missing、stale_warning、fake_live_risk 與禁止 edit_source/close_task/commit/push/external_sync。"
     },
     {

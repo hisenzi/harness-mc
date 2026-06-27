@@ -390,7 +390,7 @@
     {
       "id": "acp-visual-sync-coverage-report",
       "title": "Visual sync coverage report read model",
-      "status": "in_progress",
+      "status": "completed",
       "track": "control-plane",
       "order_label": "ACP-MC-REPORT-01",
       "priority": "medium",
@@ -412,8 +412,11 @@
       },
       "commits": [
         "2f507b0",
-        "7cebf4e"
+        "7cebf4e",
+        "a84e7cf"
       ],
+      "completed_at": "2026-06-27",
+      "summary": "新增 visual-sync-coverage read model、generator、verifier、prebuild 串接與 MorroWise live dashboard surface；首頁 Task 視覺同步卡片改讀 visual-sync-coverage.json，顯示 tracked coverage、missing Heptabase refs、pending Canvas/Heptabase sync、failed sync 與 read-only next action，並修正 work-anchor preflight 在 HC-blocked control-plane task 時的 markdown 輸出。",
       "hc_decision": {
         "task_scope": "harness-mc/acp-visual-sync-coverage-report",
         "hc_refs": [

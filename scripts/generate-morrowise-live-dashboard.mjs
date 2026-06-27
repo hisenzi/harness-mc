@@ -22,6 +22,7 @@ export function generateMorrowiseLiveDashboard(options = {}) {
     morrowiseProactiveLoopSurface(sources),
     taskEventPipelineSurface(sources),
     worktreeStatusSurface(sources),
+    closeoutResidualLedgerSurface(sources),
     capabilityRegistrySurface(sources),
     approvalQueueSurface(sources),
   ];
@@ -37,6 +38,7 @@ export function generateMorrowiseLiveDashboard(options = {}) {
         "$COLLAB/harness-mc/public/data/projects.json",
         "$COLLAB/harness-mc/public/data/task-events.json",
         "$COLLAB/harness-mc/public/data/worktrees.json",
+        "$COLLAB/harness-mc/public/data/closeout-residual-ledger.json",
         "$COLLAB/harness-mc/public/data/changes.json",
         "$COLLAB/harness-mc/public/data/morrowise-proactive-loop.json",
         "$COLLAB/harness-mc/public/data/morrowise-capabilities.json",
@@ -76,6 +78,7 @@ function readSources(root) {
     projects: readJsonOrNull(path.join(root, DATA_DIR, "projects.json")),
     taskEvents: readJsonOrNull(path.join(root, DATA_DIR, "task-events.json")),
     worktrees: readJsonOrNull(path.join(root, DATA_DIR, "worktrees.json")),
+    closeoutResidualLedger: readJsonOrNull(path.join(root, DATA_DIR, "closeout-residual-ledger.json")),
     changes: readJsonOrNull(path.join(root, DATA_DIR, "changes.json")),
     proactiveLoop: readJsonOrNull(path.join(root, DATA_DIR, "morrowise-proactive-loop.json")),
     capabilities: readJsonOrNull(path.join(root, DATA_DIR, "morrowise-capabilities.json")),
@@ -84,6 +87,7 @@ function readSources(root) {
       projects: fileGeneratedAt(root, path.join(DATA_DIR, "projects.json")),
       taskEvents: fileGeneratedAt(root, path.join(DATA_DIR, "task-events.json")),
       worktrees: fileGeneratedAt(root, path.join(DATA_DIR, "worktrees.json")),
+      closeoutResidualLedger: fileGeneratedAt(root, path.join(DATA_DIR, "closeout-residual-ledger.json")),
       changes: fileGeneratedAt(root, path.join(DATA_DIR, "changes.json")),
       proactiveLoop: fileGeneratedAt(root, path.join(DATA_DIR, "morrowise-proactive-loop.json")),
       capabilities: fileGeneratedAt(root, path.join(DATA_DIR, "morrowise-capabilities.json")),
@@ -268,6 +272,51 @@ function worktreeStatusSurface(sources) {
   });
 }
 
+function closeoutResidualLedgerSurface(sources) {
+  const ledger = sources.closeoutResidualLedger || {};
+  const summary = ledger.summary || {};
+  const residualCount = summary.residual_count || 0;
+  const blockedCount = (summary.repositories_behind || 0) + (summary.repositories_diverged || 0) + (summary.missing_next_anchor || 0);
+
+  return surface({
+    id: "closeout_residual_ledger",
+    label: "Closeout Residual Ledger",
+    source_of_truth: "generated_closeout_residual_read_model",
+    source_files: [
+      "$COLLAB/harness-mc/public/data/closeout-residual-ledger.json",
+      "$COLLAB/harness-mc/public/data/commit-attention.json",
+      "$COLLAB/harness-mc/public/data/worktrees.json",
+      "$COLLAB/harness-mc/public/data/commit-cleanup-plan.json",
+      "$COLLAB/harness-mc/public/data/task-events.json",
+      "$COLLAB/harness-mc/milestones/*/tasks.json",
+    ],
+    generator: ["scripts/generate-closeout-residual-ledger.mjs", "npm run prebuild"],
+    generated_at: latest([ledger.generated_at, sources.fileTimes.closeoutResidualLedger]),
+    stale_after_minutes: 5,
+    stale_rule: "stale after cc-log, worktree-commit, task-event reducer runs, file edits, commits, checkouts, pushes, or agent handoff",
+    missing_sources: missingSources(sources, ["closeoutResidualLedger"]),
+    freshness_action: action("generator", "node scripts/generate-closeout-residual-ledger.mjs", "Regenerate residual ledger after closeout, commit, task-event, or handoff activity."),
+    next_action: ledger.next_action || action("none", null, "No residual closeout action required."),
+    write_boundary: readOnlyBoundary(
+      ["display closeout residuals", "route next_action to existing gates", "show missing evidence and pending event counts"],
+      ["commit", "push", "apply task events", "mutate task state", "close task", "send external notification"],
+    ),
+    verifier_ref: "npm run test:closeout-residual-ledger",
+    classification: "semi_live",
+    attention_level: blockedCount > 0 ? "blocked" : residualCount > 0 ? "needs_review" : "normal",
+    evidence_refs: ["$COLLAB/harness-mc/public/data/closeout-residual-ledger.json"],
+    drilldown_route: "worktree_status.drilldown",
+    metrics: {
+      residual_count: residualCount,
+      repositories_dirty: summary.repositories_dirty || 0,
+      pending_task_events: summary.pending_task_events || 0,
+      cleanup_plan_leftovers: summary.cleanup_plan_leftovers || 0,
+      completed_without_commit_evidence: summary.completed_without_commit_evidence || 0,
+      next_action_type: ledger.next_action?.type || null,
+    },
+  });
+}
+
 function capabilityRegistrySurface(sources) {
   const capabilities = sources.capabilities || {};
   const summary = capabilities.summary || {};
@@ -375,6 +424,7 @@ function buildSummary(surfaces, sources) {
       task_events_pending: sources.taskEvents?.task_events?.pending || 0,
       sync_events_pending: sources.taskEvents?.sync_events?.pending || 0,
       worktree_repos_scanned: sources.worktrees?.summary?.scanned || 0,
+      closeout_residuals: sources.closeoutResidualLedger?.summary?.residual_count || 0,
       proactive_scenarios: sources.proactiveLoop?.summary?.scenarios || 0,
       capabilities: sources.capabilities?.summary?.total || 0,
       loop_chain: Array.isArray(sources.proactiveLoop?.scenarios) ? sources.proactiveLoop.scenarios.length : 0,

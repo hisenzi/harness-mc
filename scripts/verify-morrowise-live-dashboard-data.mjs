@@ -36,6 +36,7 @@ const expectedSurfaces = [
   "morrowise_proactive_loop",
   "task_event_pipeline",
   "worktree_status",
+  "closeout_residual_ledger",
   "api_cli_mcp_capabilities",
   "approval_queue",
 ];
@@ -57,6 +58,7 @@ for (const requiredSource of [
   "$COLLAB/harness-mc/public/data/task-events.json",
   "$COLLAB/harness-mc/sync-events/**/*.json",
   "$COLLAB/harness-mc/public/data/worktrees.json",
+  "$COLLAB/harness-mc/public/data/closeout-residual-ledger.json",
   "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
   "$COLLAB/harness-mc/public/data/morrowise-capabilities.json",
   "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",

@@ -254,17 +254,71 @@
         "install.sh 生成本機 launchd plist；plist 不進 git，task spec 保持 agent-agnostic。",
         "MC 可讀 schedule health，不把排程狀態藏在本機 app automation。",
         "commit-attention-sweep 可固定偵測 $COLLAB repo 未 commit / 未 push / 分歧狀態，並核對 candidate MC task anchor；缺 task 時提醒先建立或指定 task，再進 worktree-commit。",
-        "commit-planning-gate 定義提醒後 Agent 的標準分流：blocked / plan_allowed / push_decision_required；只產 cleanup plan，不 stage、不 commit、不 push。"
+        "commit-planning-gate 定義提醒後 Agent 的標準分流：blocked / plan_allowed / push_decision_required；只產 cleanup plan，不 stage、不 commit、不 push。",
+        "runtime-closeout-residual-ledger slice：每次 cc-log + worktree-commit 後產生 closeout residual ledger / read model，列出仍 dirty / ahead / behind / diverged 的 repo、刻意排除在本次 commit 外的變更、尚未套用的 task-events/pending、completed work 缺 commit evidence、cleanup-plan 未處理項目，以及下一次 closeout 應接的 MC task anchor。",
+        "runtime-closeout-residual-ledger 的上下游接線必須明確：upstream 讀 commit-attention、worktrees、commit-cleanup-plan、task-events、tasks.json 與 worktree-commit closeout evidence；process 只做 read-only audit / residual classification / next-anchor selection；output 產生 residual ledger read model、MC /worktrees 或 /attention surface 摘要與可驗證 next_action；downstream 接 work-anchor preflight、apply-task-events reducer、worktree-commit gate 或新 task proposal。"
       ],
       "source_refs": [
         "$COLLAB/notyet-harness/schedule/",
         "$COLLAB/notyet-harness/100_Todo/plan/agnostic-scheduler-260607.md",
-        "$COLLAB/harness-mc/milestones/agnostic-scheduler/tasks.json"
+        "$COLLAB/harness-mc/milestones/agnostic-scheduler/tasks.json",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-system-audit.md",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-commit-planning-gate.json",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-read-model-contract.md",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-drilldown-pages.md"
       ],
       "commits": [
         "4e09b8e"
       ],
-      "note": "2026-06-27 進度：已完成 commit-attention 之後的 read-only cleanup-plan slice，新增 commit-cleanup-plan generator/verifier、diff_scope_too_mixed 分流、prebuild 串接與 live-system admission evidence；runtime-scheduler-v0 仍維持 todo，因 dispatch.sh、runner adapter、install.sh、runs log contract 與 schedule health read model 尚未完成。"
+      "note": "2026-06-27 進度：已完成 commit-attention 之後的 read-only cleanup-plan slice，新增 commit-cleanup-plan generator/verifier、diff_scope_too_mixed 分流、prebuild 串接與 live-system admission evidence；新增 runtime-closeout-residual-ledger acceptance，要求 cc-log + worktree-commit 後留下 residual ledger / read model，記錄 repo dirty/ahead/behind/diverged、excluded changes、pending task events、completed work missing commit evidence、cleanup-plan leftovers 與 next closeout task anchor；補上 residual ledger 上下游接線：upstream 讀 commit-attention/worktrees/cleanup-plan/task-events/tasks.json/worktree-commit evidence，process 只做 read-only audit/classification/next-anchor selection，output 接 residual read model 與 MC surface next_action，downstream 接 work-anchor preflight、apply-task-events、worktree-commit gate 或新 task proposal；2026-06-27 已完成 residual ledger implementation slice，新增 generator/verifier、prebuild 串接與 MC live dashboard surface；runtime-scheduler-v0 仍維持 todo，因 dispatch.sh、runner adapter、install.sh、runs log contract 與 schedule health read model 尚未完成。"
+    },
+    {
+      "id": "runtime-closeout-residual-ledger",
+      "title": "Runtime Closeout Residual Ledger read model",
+      "status": "completed",
+      "track": "runtime-delivery",
+      "parent_task": "runtime-scheduler-v0",
+      "dependencies": [
+        "runtime-delivery-lineage-map",
+        "live-system-admission-gate"
+      ],
+      "done_condition": "建立 runtime-closeout-residual-ledger 的 machine-readable read model、generator/verifier 與 MC next_action 接線，讓每次 cc-log + worktree-commit 後可查出殘留工作、來源、分類、下一個 task anchor 與應走的下游流程。",
+      "acceptance": [
+        "定義 residual ledger read model contract，至少包含 generated_at、source_files、summary、repositories、excluded_changes、pending_task_events、completed_without_commit_evidence、cleanup_plan_leftovers、next_closeout_anchor、write_boundary、verifier_ref。",
+        "generator 只讀 commit-attention、worktrees、commit-cleanup-plan、task-events、tasks.json 與 closeout evidence；不得 stage、commit、push、apply task events、修改 task state 或送外部通知。",
+        "verifier 覆蓋正常、無殘留、dirty repo、pending event、completed missing commit evidence、cleanup-plan leftover、missing next anchor 與 stale source 狀態；缺必要欄位或 write_boundary 不明時必須 fail。",
+        "MC surface 接到 /worktrees 或 /attention 的 next_action，能指向 work-anchor preflight、apply-task-events reducer、worktree-commit gate 或新 task proposal；不得提供一鍵 commit / push / reset。",
+        "完成後更新 runtime-scheduler-v0 note 或 summary，標明 residual ledger slice 已完成且仍未代表整個 scheduler runtime 完成。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#runtime-scheduler-v0",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-commit-planning-gate.json",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-system-audit.md",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-read-model-contract.md",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-drilldown-pages.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/SKILL.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/cc-log/SKILL.md"
+      ],
+      "note": "2026-06-27 由 runtime-scheduler-v0 acceptance 拆出 implementation slice。此 task 只處理 closeout residual ledger/read model/verifier/MC next_action，不處理 dispatch.sh、runner adapter、install.sh 或完整 schedule health。",
+      "completed_at": "2026-06-27",
+      "summary": "建立 Closeout Residual Ledger read model、generator、verifier、prebuild 串接與 MorroWise live dashboard surface，讓 cc-log + worktree-commit 後的 dirty repo、excluded changes、pending events、缺 commit evidence、cleanup leftovers 與下一個 closeout anchor 可被重跑查詢。",
+      "hc_decision": {
+        "task_scope": "morrowise/runtime-closeout-residual-ledger",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#constraints",
+          "#risk"
+        ],
+        "hc_reasoning": "真正問題不是每次 closeout 多寫一段文字，而是讓 MorroWise 能在 cc-log + worktree-commit 後保留可重跑、可分類、可接下游的殘留帳。#systemDynamics 指出 dirty repo、pending events、missing commit evidence 與 cleanup-plan leftovers 若散在聊天或 local status 裡，會形成下一次 session 無法接續的狀態漂移；#constraints 要求 ledger 只能 read-only 產生 next_action，不得越過 worktree-commit、apply-task-events 或 Vincent approval；#risk 防止把殘留清單誤稱為已收尾。",
+        "hc_confidence": 0.84,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#runtime-scheduler-v0",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-commit-planning-gate.json",
+          "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-system-audit.md"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical state remains MC tasks.json, generated read models, verifier output, and MorroWise specs."
+      }
     },
     {
       "id": "live-system-admission-gate",

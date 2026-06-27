@@ -40,9 +40,14 @@
     {
       "id": "p1-1",
       "title": "定義 Search Ops 初診服務規格",
-      "status": "todo",
+      "status": "completed",
       "track": "discovery",
-      "done_condition": "已產出初診服務規格，包含 ICP、輸入資料、檢查項目、交付物、非承諾項目與報價/方案草案",
+      "done_condition": "已產出初診服務規格，包含 ICP、輸入資料、檢查項目、交付物、非承諾項目與方案草案",
+      "completed_at": "2026-06-27",
+      "summary": "已完成 Search Ops 初診服務規格，明確定義 ICP、三層服務方案、onboarding 輸入、檢查項目、URL 級 backlog 欄位、優先級與不承諾項目。",
+      "evidence_refs": [
+        "$COLLAB/harness-mc/milestones/search-ops-agent/service-diagnostic-spec.md"
+      ],
       "acceptance": [
         "明確列出一次性健檢、月維護、實作代管三層方案",
         "明確寫出不承諾強制收錄、排名或流量保證",

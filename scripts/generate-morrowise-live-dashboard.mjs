@@ -25,6 +25,7 @@ export function generateMorrowiseLiveDashboard(options = {}) {
     worktreeStatusSurface(sources),
     closeoutResidualLedgerSurface(sources),
     capabilityRegistrySurface(sources),
+    scheduleRuntimeHealthSurface(sources),
     approvalQueueSurface(sources),
   ];
 
@@ -44,6 +45,7 @@ export function generateMorrowiseLiveDashboard(options = {}) {
         "$COLLAB/harness-mc/public/data/changes.json",
         "$COLLAB/harness-mc/public/data/morrowise-proactive-loop.json",
         "$COLLAB/harness-mc/public/data/morrowise-capabilities.json",
+        "$COLLAB/harness-mc/public/data/schedule-health.json",
       ],
       policy_registry: "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
       visual_layers_are: "mirrors_only",
@@ -85,6 +87,7 @@ function readSources(root) {
     changes: readJsonOrNull(path.join(root, DATA_DIR, "changes.json")),
     proactiveLoop: readJsonOrNull(path.join(root, DATA_DIR, "morrowise-proactive-loop.json")),
     capabilities: readJsonOrNull(path.join(root, DATA_DIR, "morrowise-capabilities.json")),
+    scheduleHealth: readJsonOrNull(path.join(root, DATA_DIR, "schedule-health.json")),
     approvalPolicy: readJsonOrNull(path.join(root, "system-workflow", "registries", "morrowise-approval-policy.json")),
     fileTimes: {
       projects: fileGeneratedAt(root, path.join(DATA_DIR, "projects.json")),
@@ -95,6 +98,7 @@ function readSources(root) {
       changes: fileGeneratedAt(root, path.join(DATA_DIR, "changes.json")),
       proactiveLoop: fileGeneratedAt(root, path.join(DATA_DIR, "morrowise-proactive-loop.json")),
       capabilities: fileGeneratedAt(root, path.join(DATA_DIR, "morrowise-capabilities.json")),
+      scheduleHealth: fileGeneratedAt(root, path.join(DATA_DIR, "schedule-health.json")),
       approvalPolicy: fileGeneratedAt(root, path.join("system-workflow", "registries", "morrowise-approval-policy.json")),
     },
   };
@@ -405,6 +409,49 @@ function capabilityRegistrySurface(sources) {
   });
 }
 
+function scheduleRuntimeHealthSurface(sources) {
+  const health = sources.scheduleHealth || {};
+  const summary = health.summary || {};
+  const blocked = (summary.tasks_missing_runner || 0) > 0 || health.runtime?.dispatch_present === false || health.runtime?.install_present === false;
+  const needsReview = (summary.last_run_failures || 0) > 0 || (summary.missing_plists || 0) > 0 || (summary.tasks_without_run_log || 0) > 0;
+
+  return surface({
+    id: "schedule_runtime_health",
+    label: "Schedule Runtime Health",
+    source_of_truth: "agent_agnostic_scheduler_read_model",
+    source_files: [
+      "$COLLAB/harness-mc/public/data/schedule-health.json",
+      "$COLLAB/notyet-harness/schedule/tasks/*.yaml",
+      "$COLLAB/notyet-harness/schedule/runs/*.log",
+      "$HOME/Library/LaunchAgents/com.hisenzi.schedule.*.plist",
+    ],
+    generator: ["scripts/generate-schedule-health.mjs", "npm run prebuild"],
+    generated_at: latest([health.generated_at, sources.fileTimes.scheduleHealth]),
+    stale_after_minutes: 10,
+    stale_rule: "stale after schedule task edits, dispatch/install changes, scheduler runs, local launchd install/load changes, or agent handoff",
+    missing_sources: missingSources(sources, ["scheduleHealth"]),
+    freshness_action: action("generator", "node scripts/generate-schedule-health.mjs", "Regenerate schedule health before trusting scheduler runtime state."),
+    next_action: health.next_action || action("task", "runtime-scheduler-v0", "Generate schedule health and verify runtime scheduler state."),
+    write_boundary: readOnlyBoundary(
+      ["display scheduler task specs", "display last run headers", "display local plist presence", "route next runtime action"],
+      ["read schedule/.env", "load launchd jobs", "execute scheduled tasks", "send notifications", "commit", "push"],
+    ),
+    verifier_ref: "npm run test:schedule-health",
+    classification: "semi_live",
+    attention_level: blocked ? "blocked" : needsReview ? "needs_review" : "normal",
+    evidence_refs: ["$COLLAB/harness-mc/public/data/schedule-health.json", "$COLLAB/notyet-harness/schedule"],
+    drilldown_route: "schedule_runtime_health.drilldown",
+    metrics: {
+      tasks_total: summary.tasks_total || 0,
+      installed_plists: summary.installed_plists || 0,
+      missing_plists: summary.missing_plists || 0,
+      tasks_missing_runner: summary.tasks_missing_runner || 0,
+      tasks_without_run_log: summary.tasks_without_run_log || 0,
+      last_run_failures: summary.last_run_failures || 0,
+    },
+  });
+}
+
 function approvalQueueSurface(sources) {
   const approvals = buildApprovalQueue(sources);
   return surface({
@@ -474,6 +521,7 @@ function buildSummary(surfaces, sources) {
       closeout_residuals: sources.closeoutResidualLedger?.summary?.residual_count || 0,
       proactive_scenarios: sources.proactiveLoop?.summary?.scenarios || 0,
       capabilities: sources.capabilities?.summary?.total || 0,
+      schedule_tasks: sources.scheduleHealth?.summary?.tasks_total || 0,
       loop_chain: Array.isArray(sources.proactiveLoop?.scenarios) ? sources.proactiveLoop.scenarios.length : 0,
     },
   };
@@ -565,6 +613,7 @@ function buildRoutes() {
     route("task_event_pipeline.drilldown", "Task Event Pipeline details", ["task_event_pipeline"], "/task-events", ["pending", "applied", "rejected", "sync_events", "reducer_report"]),
     route("worktree_status.drilldown", "Worktree Status details", ["worktree_status"], "/worktrees", ["dirty_files", "local_commits", "remote_divergence", "commit_gate"]),
     route("api_cli_mcp_capabilities.drilldown", "API / CLI / MCP capability details", ["api_cli_mcp_capabilities"], "/capabilities", ["status", "latest_history", "boundary", "owner_task", "next_action"]),
+    route("schedule_runtime_health.drilldown", "Schedule Runtime Health details", ["schedule_runtime_health"], "/schedule", ["tasks", "runners", "last_runs", "launchd_plists", "write_boundary"]),
     route("approval_queue.drilldown", "Approval Queue details", ["approval_queue"], "/approvals", ["requested_action", "destination", "owner", "age", "payload_preview", "closure_condition"]),
   ];
 }

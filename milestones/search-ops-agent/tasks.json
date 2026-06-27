@@ -44,6 +44,9 @@
       "track": "discovery",
       "done_condition": "已產出初診服務規格，包含 ICP、輸入資料、檢查項目、交付物、非承諾項目與方案草案",
       "completed_at": "2026-06-27",
+      "commits": [
+        "cf3e473"
+      ],
       "summary": "已完成 Search Ops 初診服務規格，明確定義 ICP、三層服務方案、onboarding 輸入、檢查項目、URL 級 backlog 欄位、優先級與不承諾項目。",
       "evidence_refs": [
         "$COLLAB/harness-mc/milestones/search-ops-agent/service-diagnostic-spec.md"

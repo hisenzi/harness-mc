@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-auditor-manual-architecture-report-f304f65-20260627T120312Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "f304f65",
+  "project": "morrowise",
+  "task_id": "auditor-manual-architecture-report",
+  "status": "updated",
+  "summary": "Committed the read-only Architecture Pulse report for ARCHITECTURE.md, with eight findings and a JSON read model candidate for the MorroWise auditor pipeline.",
+  "created_at": "2026-06-27T12:03:12.299Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-auditor-manual-architecture-report"
+}

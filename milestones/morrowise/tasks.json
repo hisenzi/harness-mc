@@ -185,7 +185,7 @@
     {
       "id": "auditor-manual-architecture-report",
       "title": "手動產出第一份 ARCHITECTURE.md drift report",
-      "status": "todo",
+      "status": "completed",
       "track": "auditor-mvp",
       "dependencies": [
         "v0-boundary-lineage-map"
@@ -197,6 +197,7 @@
         "report 不修改 ARCHITECTURE.md、CORE.md、TOOLS.md、tasks.json、ADR、skills 或 dashboard data。"
       ],
       "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/reports/architecture-pulse-2026-06-27.md",
         "$COLLAB/notyet-harness/000_Agent/docs/morrowise/auditor-mvp.md",
         "$COLLAB/notyet-harness/000_Agent/docs/morrowise/architecture-pulse-mvp.md",
         "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md"
@@ -209,7 +210,12 @@
           "synced_at": "2026-06-22",
           "sync_mode": "created"
         }
-      }
+      },
+      "completed_at": "2026-06-27",
+      "commits": [
+        "f304f65"
+      ],
+      "summary": "產出第一份 read-only Architecture Pulse report，對 $COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md 做 header/source-of-truth/freshness/path-policy/generated-boundary/missing-verifier/section-identity 檢查，列出 8 個可追溯 findings、章節分類、next actions 與 JSON read model candidate，未直接修改 ARCHITECTURE.md。"
     },
     {
       "id": "auditor-json-read-model-schema",

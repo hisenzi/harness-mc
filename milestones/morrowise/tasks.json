@@ -260,7 +260,11 @@
         "$COLLAB/notyet-harness/schedule/",
         "$COLLAB/notyet-harness/100_Todo/plan/agnostic-scheduler-260607.md",
         "$COLLAB/harness-mc/milestones/agnostic-scheduler/tasks.json"
-      ]
+      ],
+      "commits": [
+        "4e09b8e"
+      ],
+      "note": "2026-06-27 進度：已完成 commit-attention 之後的 read-only cleanup-plan slice，新增 commit-cleanup-plan generator/verifier、diff_scope_too_mixed 分流、prebuild 串接與 live-system admission evidence；runtime-scheduler-v0 仍維持 todo，因 dispatch.sh、runner adapter、install.sh、runs log contract 與 schedule health read model 尚未完成。"
     },
     {
       "id": "live-system-admission-gate",

@@ -49,7 +49,7 @@
     {
       "id": "v0-source-map-mc-reconcile",
       "title": "整併 source-map-v0 與既有 harness-mc MorroWise specs",
-      "status": "todo",
+      "status": "completed",
       "track": "v0-foundation",
       "dependencies": [
         "v0-boundary-lineage-map"
@@ -62,6 +62,7 @@
       ],
       "source_refs": [
         "$COLLAB/notyet-harness/000_Agent/docs/morrowise/source-map-v0.md",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-source-map-reconciliation.md",
         "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-source-inventory.md",
         "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-read-model-contract.md"
       ],
@@ -77,7 +78,9 @@
       "commits": [
         "484e9f2"
       ],
-      "note": "2026-06-27 task integration：此 task 是 MorroWise 說明書 / morrowise-system.json generator 的上游清理點；執行時需標明既有 morrowise-anatomy-read-model schema 已完成、morrowise-system.json generator 尚缺、MANUAL.md 只能作為 live entry shell，不得新增第二份架構總表。Commit 484e9f2 已完成 task-chain anchor / project decision / metadata repair；此 task 仍為 todo，因完整 source-map -> existing MC spec 對照尚未產出。"
+      "completed_at": "2026-06-27",
+      "summary": "完成 source-map-v0 與既有 MC MorroWise specs 的 reconciliation：14 個 current source family 已分類為 merge/reference/gap，local_runtime_boundary、knowledge_health_metrics_missing、scanner_not_implemented 與 dashboard_not_connected 已映射到下一步 generator/open loop，不新增第二份架構總表。",
+      "note": "2026-06-27 task integration：此 task 是 MorroWise 說明書 / morrowise-system.json generator 的上游清理點；執行時需標明既有 morrowise-anatomy-read-model schema 已完成、morrowise-system.json generator 尚缺、MANUAL.md 只能作為 live entry shell，不得新增第二份架構總表。Commit 484e9f2 已完成 task-chain anchor / project decision / metadata repair；正式 reconciliation artifact 位於 $COLLAB/harness-mc/system-workflow/docs/specs/morrowise-source-map-reconciliation.md。"
     },
     {
       "id": "morrowise-system-json-generator-v0",

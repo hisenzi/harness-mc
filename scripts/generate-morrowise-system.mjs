@@ -5,6 +5,8 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const outPath = path.join(root, "public", "data", "morrowise-system.json");
+const DONE_STATUSES = new Set(["completed", "done", "cancelled", "canceled"]);
+const ACTIVE_STATUSES = new Set(["todo", "in_progress", "doing", "blocked"]);
 
 const PATHS = {
   rootAgents: "$COLLAB/AGENTS.md",
@@ -53,7 +55,7 @@ export function generateMorroWiseSystem(options = {}) {
 
   const tasks = morrowiseProject.tasks || [];
   const taskCounts = countBy(tasks, (task) => task.status || "unknown");
-  const openTasks = tasks.filter((task) => !["completed", "done"].includes(task.status));
+  const openTasks = tasks.filter((task) => !DONE_STATUSES.has(task.status));
   const nextTask = selectNextTask(tasks);
   const staleSurfaces = (liveDashboard?.surfaces || []).filter((surface) => surface.freshness_state === "stale");
   const pendingEvents = taskEvents?.task_events?.pending || 0;
@@ -504,9 +506,9 @@ function buildOpenLoops({ openTasks, nextTask, pendingEvents, staleSurfaces, res
 }
 
 function selectNextTask(tasks) {
-  const done = new Set(tasks.filter((task) => ["completed", "done"].includes(task.status)).map((task) => task.id));
+  const done = new Set(tasks.filter((task) => DONE_STATUSES.has(task.status)).map((task) => task.id));
   return tasks.find((task) => {
-    if (["completed", "done"].includes(task.status)) return false;
+    if (!ACTIVE_STATUSES.has(task.status || "todo")) return false;
     return (task.dependencies || []).every((dep) => done.has(dep));
   }) || null;
 }

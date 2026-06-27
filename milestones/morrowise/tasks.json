@@ -270,8 +270,12 @@
     {
       "id": "mc-morrowise-v0-card",
       "title": "MC 顯示 MorroWise v0 活性卡片",
-      "status": "todo",
+      "status": "done",
+      "completed_at": "2026-06-27",
+      "summary": "未在 MorroWise project 直接執行：依 task ownership routing，MC dashboard/card/route 屬 harness-mc surface task；本 task 保留為 v0 lineage，實作改由 harness-mc/morrowise-living-system-read-model-card 承接。",
       "track": "mc-surface",
+      "close_reason": "delegated_to_harness_mc_surface_task",
+      "superseded_by": "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-living-system-read-model-card",
       "dependencies": [
         "auditor-json-read-model-schema"
       ],
@@ -303,7 +307,7 @@
     {
       "id": "v0-live-loop-verify",
       "title": "驗證 MorroWise v0 source -> report -> MC surface 閉環",
-      "status": "todo",
+      "status": "deferred",
       "track": "mc-surface",
       "dependencies": [
         "mc-morrowise-v0-card"
@@ -321,6 +325,8 @@
         "$COLLAB/harness-mc/milestones/harness-mc/tasks.json",
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-live-system-admission.json"
       ],
+      "blocked_by": "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-living-system-read-model-card",
+      "note": "2026-06-27 暫緩：原 dependencies 指向 morrowise/mc-morrowise-v0-card，但該 task 已依 ownership routing delegated 給 harness-mc surface task。需先完成 harness-mc/morrowise-living-system-read-model-card，再重新啟用此閉環驗證，避免驗證尚未實作的 UI surface。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise",

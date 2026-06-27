@@ -1930,6 +1930,52 @@
       "commits": [
         "7cebf4e"
       ]
+    },
+    {
+      "id": "morrowise-living-system-read-model-card",
+      "title": "MorroWise 活系統 read-model card",
+      "status": "todo",
+      "track": "morrowise-system",
+      "order_label": "MC-LIVE-SURFACE-01",
+      "priority": "high",
+      "dependencies": [
+        "morrowise-live-dashboard-real-data-flow",
+        "morrowise-live-dashboard-homepage-implementation"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/app/page.tsx#MorroWiseSurfaceCard",
+        "$COLLAB/harness-mc/public/data/morrowise-live-dashboard.json#surfaces.morrowise_living_system",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-read-model-contract.md",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-system-verification-standard.md",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mc-morrowise-v0-card"
+      ],
+      "done_condition": "MC 首頁 MorroWise 活系統卡片直接讀取 morrowise-live-dashboard.json 的 morrowise_living_system surface，而不是在 UI 內重新派生狀態；卡片顯示 source、generator、generated_at、stale_rule、freshness_state、classification、next_action、write_boundary、verifier_ref，並維持 read-only。",
+      "acceptance": [
+        "MorroWiseSurfaceCard 使用 live dashboard read model 的 morrowise_living_system surface 作為主要資料來源。",
+        "卡片可見 source_of_truth、generator、generated_at、stale_rule、freshness_state、classification、next_action、write_boundary、verifier_ref。",
+        "卡片顯示分類時不得把 semi_live、manual、unknown、stale、fake_live_risk 說成 live。",
+        "卡片不提供任何寫入 task state、commit、push、deploy、Heptabase 或 Obsidian 的操作。",
+        "若要建立 /morrowise drilldown route，另開 route task；本 task 只處理首頁 read-model card。"
+      ],
+      "note": "2026-06-27 檢查發現：public/data/morrowise-live-dashboard.json 已有 morrowise_living_system surface 與完整 source/generator/freshness/boundary/verifier 欄位；首頁既有 MorroWiseSurfaceCard 仍從 projects/task-events/changes 自行派生摘要，未完整呈現 read-model contract。此 task 承接 morrowise/mc-morrowise-v0-card 的 UI scope。",
+      "hc_decision": {
+        "task_scope": "harness-mc/morrowise-living-system-read-model-card",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#constraints",
+          "#risk"
+        ],
+        "hc_reasoning": "真正問題不是 MorroWise 是否已有資料，而是首頁可見卡片是否直接呈現 generated read model 的 source/generator/freshness/boundary/verifier contract。#rightProblem 將 execution anchor 從 MorroWise system task 轉成 harness-mc surface task；#systemDynamics 避免 UI 重新派生狀態形成第二套 dashboard logic；#constraints 保持 card read-only 且不處理 /morrowise route；#risk 防止 semi_live 或 fake_live_risk 被 UI 文案誤說成 live。",
+        "hc_confidence": 0.88,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/public/data/morrowise-live-dashboard.json#surfaces.morrowise_living_system",
+          "$COLLAB/harness-mc/app/page.tsx#MorroWiseSurfaceCard",
+          "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-read-model-contract.md",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mc-morrowise-v0-card"
+        ],
+        "source_boundary": "HC is a thinking check, not source of truth. Canonical current data remains in morrowise-live-dashboard.json and MC task state; this task only changes the homepage surface."
+      }
     }
   ]
 }

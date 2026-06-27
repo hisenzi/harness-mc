@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-notification-adapter-contract-162c1df-20260627T163534Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "162c1df",
+  "project": "morrowise",
+  "task_id": "notification-adapter-contract",
+  "status": "updated",
+  "summary": "Documented local schedule env names for LINE Messaging API, optional Notion delivery, and Codex thread delivery without committing secret values.",
+  "created_at": "2026-06-27T16:35:34.224Z",
+  "actor": "codex",
+  "session_id": "codex-notification-adapter-contract-20260628"
+}

@@ -696,7 +696,7 @@
     {
       "id": "notification-adapter-contract",
       "title": "MorroWise notification adapter contract（Telegram / LINE / Notion / thread）",
-      "status": "todo",
+      "status": "completed",
       "track": "runtime-delivery",
       "dependencies": [
         "runtime-delivery-lineage-map"
@@ -710,9 +710,15 @@
       ],
       "source_refs": [
         "$COLLAB/notyet-harness/schedule/lib/notify.sh",
+        "$COLLAB/notyet-harness/schedule/.env.example",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-adapter-contract.json",
+        "$COLLAB/harness-mc/scripts/verify-morrowise-notification-adapter-contract.mjs",
         "$COLLAB/harness-mc/milestones/harness-mc/tasks.json",
         "$COLLAB/harness-mc/milestones/agnostic-scheduler/tasks.json"
-      ]
+      ],
+      "completed_at": "2026-06-28",
+      "summary": "完成 MorroWise notification adapter contract：Telegram 保留 notify.sh 並驗證缺 env 時 graceful skip；LINE 明確改用 Messaging API push endpoint 並禁止 LINE Notify；Notion / Codex thread 保留為 optional boundary；所有 token / destination id 僅允許在本機 schedule/.env，contract、capability registry 與 verifier 均不儲存 secret 值。",
+      "note": "2026-06-28 新增 morrowise-notification-adapter-contract registry、notification contract verifier、schedule/.env.example 欄位與 capability registry item；prebuild 會先驗證 contract 再生成 MorroWise capability read model。"
     },
     {
       "id": "reality-tax-gate-protocol",

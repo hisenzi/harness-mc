@@ -1,0 +1,160 @@
+{
+  "contract_id": "morrowise-notification-adapter-contract.v0",
+  "task_id": "notification-adapter-contract",
+  "updated_at": "2026-06-28",
+  "status": "contract_ready",
+  "read_only": true,
+  "purpose": "Define MorroWise delivery adapters without letting delivery mutate task state, close workflow gates, or store secrets.",
+  "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-adapter-contract.json",
+  "source_refs": [
+    "$COLLAB/notyet-harness/schedule/lib/notify.sh",
+    "$COLLAB/notyet-harness/schedule/.env.example",
+    "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
+    "https://notify-bot.line.me/closing-announce",
+    "https://developers.line.biz/en/docs/messaging-api/sending-messages/"
+  ],
+  "write_boundary": {
+    "allowed": [
+      "format a notification payload",
+      "send via an explicitly configured adapter after approval when the action leaves the machine",
+      "write local run logs",
+      "report degraded or skipped delivery state"
+    ],
+    "forbidden": [
+      "read or print token values",
+      "write secrets to git",
+      "decide task state",
+      "close Reality Tax Gate",
+      "commit or push",
+      "send external notifications without explicit approval or an approved scheduled task"
+    ]
+  },
+  "env_contract": [
+    {
+      "name": "TELEGRAM_BOT_TOKEN",
+      "adapter_id": "telegram_notify_sh",
+      "secret": true,
+      "required_when": "telegram adapter is enabled",
+      "storage": "$COLLAB/notyet-harness/schedule/.env only"
+    },
+    {
+      "name": "TELEGRAM_CHAT_ID",
+      "adapter_id": "telegram_notify_sh",
+      "secret": false,
+      "required_when": "telegram adapter is enabled",
+      "storage": "$COLLAB/notyet-harness/schedule/.env only"
+    },
+    {
+      "name": "LINE_CHANNEL_ACCESS_TOKEN",
+      "adapter_id": "line_messaging_api_push",
+      "secret": true,
+      "required_when": "LINE adapter is enabled",
+      "storage": "$COLLAB/notyet-harness/schedule/.env only"
+    },
+    {
+      "name": "LINE_TO_ID",
+      "adapter_id": "line_messaging_api_push",
+      "secret": false,
+      "required_when": "LINE adapter is enabled",
+      "storage": "$COLLAB/notyet-harness/schedule/.env only"
+    },
+    {
+      "name": "NOTION_DELIVERY_TOKEN",
+      "adapter_id": "notion_optional_delivery",
+      "secret": true,
+      "required_when": "Notion delivery is explicitly implemented and enabled",
+      "storage": "$COLLAB/notyet-harness/schedule/.env only"
+    },
+    {
+      "name": "NOTION_DELIVERY_TARGET",
+      "adapter_id": "notion_optional_delivery",
+      "secret": false,
+      "required_when": "Notion delivery is explicitly implemented and enabled",
+      "storage": "$COLLAB/notyet-harness/schedule/.env only"
+    },
+    {
+      "name": "CODEX_THREAD_DELIVERY_MODE",
+      "adapter_id": "codex_thread_manual_delivery",
+      "secret": false,
+      "required_when": "Codex thread delivery is used as a manual handoff mode",
+      "storage": "$COLLAB/notyet-harness/schedule/.env only"
+    }
+  ],
+  "adapters": [
+    {
+      "id": "telegram_notify_sh",
+      "provider": "Telegram Bot API",
+      "status": "implemented_degraded_without_env",
+      "entrypoint": "$COLLAB/notyet-harness/schedule/lib/notify.sh",
+      "env": [
+        "TELEGRAM_BOT_TOKEN",
+        "TELEGRAM_CHAT_ID"
+      ],
+      "graceful_skip": {
+        "missing_env_exit_code": 2,
+        "meaning": "Upstream scheduler should record degraded/skipped delivery and continue its local run."
+      },
+      "allowed_payloads": [
+        "plain text notification summary"
+      ],
+      "forbidden": [
+        "read git diff content for notification",
+        "send secrets",
+        "mutate MC task state"
+      ]
+    },
+    {
+      "id": "line_messaging_api_push",
+      "provider": "LINE Messaging API",
+      "status": "contract_ready_not_configured",
+      "endpoint": "https://api.line.me/v2/bot/message/push",
+      "method": "POST",
+      "env": [
+        "LINE_CHANNEL_ACCESS_TOKEN",
+        "LINE_TO_ID"
+      ],
+      "recipient": "LINE userId, groupId, or roomId that has permission to receive messages from the official account",
+      "legacy_forbidden": [
+        "LINE_NOTIFY_TOKEN",
+        "notify-bot.line.me API"
+      ],
+      "allowed_payloads": [
+        "text message object for approved MorroWise delivery"
+      ],
+      "degraded_without_env": true
+    },
+    {
+      "id": "notion_optional_delivery",
+      "provider": "Notion API",
+      "status": "optional_not_implemented",
+      "entrypoint": null,
+      "env": [
+        "NOTION_DELIVERY_TOKEN",
+        "NOTION_DELIVERY_TARGET"
+      ],
+      "rule": "Notion delivery is allowed only through an explicit future adapter task and approval policy; current contract records boundary only.",
+      "degraded_without_env": true
+    },
+    {
+      "id": "codex_thread_manual_delivery",
+      "provider": "Codex thread handoff",
+      "status": "manual_handoff_only",
+      "entrypoint": null,
+      "env": [
+        "CODEX_THREAD_DELIVERY_MODE"
+      ],
+      "rule": "Thread delivery is a manual handoff/logging mode unless a future approved thread automation adapter exists.",
+      "degraded_without_env": false
+    }
+  ],
+  "verification": {
+    "verifier": "npm run test:notification-adapter-contract",
+    "checks": [
+      "notify.sh exists and missing env exits 2 in a temp fixture",
+      ".env.example documents required adapter env names without values",
+      "LINE adapter uses Messaging API push endpoint and forbids LINE Notify",
+      "delivery adapters do not claim task-state authority",
+      "optional adapters are not marked live when unimplemented"
+    ]
+  }
+}

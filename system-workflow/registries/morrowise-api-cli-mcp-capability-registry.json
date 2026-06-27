@@ -224,6 +224,64 @@
           "next_action": "Use playwright-cli-capability-probe to decide whether to add a project-local dependency/script, document a global install path, or rely on Codex browser/chrome tools instead."
         }
       ]
+    },
+    {
+      "id": "morrowise-notification-delivery-adapters",
+      "type": "delivery_adapter",
+      "provider": "Telegram Bot API / LINE Messaging API / optional Notion / Codex thread",
+      "entrypoint": [
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-adapter-contract.json",
+        "$COLLAB/notyet-harness/schedule/lib/notify.sh",
+        "$COLLAB/notyet-harness/schedule/.env.example"
+      ],
+      "owner_task": "notification-adapter-contract",
+      "scope": "runtime_delivery",
+      "source_of_truth": [
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-adapter-contract.json",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#notification-adapter-contract"
+      ],
+      "auth_boundary": "All token and destination values remain in $COLLAB/notyet-harness/schedule/.env only; registry stores env names and adapter boundaries, never values.",
+      "read_write_boundary": {
+        "read": [
+          "adapter contract metadata",
+          "blank env example names",
+          "notify.sh exit behavior in temp fixture"
+        ],
+        "write": [
+          "local run logs",
+          "external delivery only after explicit approval or approved scheduled task"
+        ],
+        "forbidden": [
+          "read or print .env values",
+          "use LINE Notify",
+          "send external notifications from registry generation",
+          "mutate task state",
+          "close Reality Tax Gate"
+        ]
+      },
+      "secret_policy": "Never store Telegram token, LINE channel access token, Notion token, chat id values, user/group/room ids, or thread auth data in git or generated read models.",
+      "status": "ready",
+      "verifier": [
+        "npm run test:notification-adapter-contract",
+        "npm run test:capability-registry"
+      ],
+      "next_action": {
+        "type": "task",
+        "task_id": "reality-tax-daily-review-task",
+        "description": "Use the delivery contract when wiring the daily review schedule; unconfigured adapters must stay degraded or skipped, not live."
+      },
+      "history": [
+        {
+          "date": "2026-06-28",
+          "event_type": "contract_confirmed",
+          "from_state": "lineage_only",
+          "to_state": "ready",
+          "reason": "Notification delivery is now represented as a MorroWise adapter contract: Telegram keeps notify.sh graceful skip, LINE uses Messaging API instead of discontinued LINE Notify, and Notion/thread remain optional boundaries.",
+          "evidence_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-adapter-contract.json",
+          "actor_or_task": "notification-adapter-contract",
+          "next_action": "Wire reality-tax-daily-review-task against this delivery contract without reading secrets or pretending unconfigured adapters are live."
+        }
+      ]
     }
   ]
 }

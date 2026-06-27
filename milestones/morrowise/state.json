@@ -171,7 +171,12 @@
       "summary": "MorroWise wiring gate verifier 已正式化：正向 fixture 驗證 API / CLI / MCP 首批完整接線，負向 fixture 確認缺 read model、surface、homepage anchor、AGENTS routing 或 verifier script 時會失敗，避免 prototype 被誤標 ready。"
     },
     "notification-adapter-contract": {
-      "status": "todo"
+      "status": "completed",
+      "completed_at": "2026-06-28",
+      "commits": [
+        "162c1df"
+      ],
+      "summary": "完成 MorroWise notification adapter contract：Telegram 保留 notify.sh 並驗證缺 env 時 graceful skip；LINE 明確改用 Messaging API push endpoint 並禁止 LINE Notify；Notion / Codex thread 保留為 optional boundary；所有 token / destination id 僅允許在本機 schedule/.env，contract、capability registry 與 verifier 均不儲存 secret 值。"
     },
     "reality-tax-gate-protocol": {
       "status": "todo"

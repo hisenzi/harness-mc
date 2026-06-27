@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-06-27T16:22:53.917Z",
+  "generated_at": "2026-06-27T16:35:40.439Z",
   "applied": [
     {
-      "file": "20260627T162112Z-notyet-harness-0c712e3-morrowise-runtime-scheduler-v0.json",
-      "event_id": "task.commit_attached-morrowise-runtime-scheduler-v0-0c712e3-20260627T162112Z",
+      "file": "20260627T163534Z-notyet-harness-162c1df-morrowise-notification-adapter-contract.json",
+      "event_id": "task.commit_attached-morrowise-notification-adapter-contract-162c1df-20260627T163534Z",
       "project": "morrowise",
-      "task_id": "runtime-scheduler-v0",
+      "task_id": "notification-adapter-contract",
       "type": "task.commit_attached"
     }
   ],

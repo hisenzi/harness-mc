@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-mc-morrowise-v0-card-7974f1d-20260627T145521Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "7974f1d",
+  "project": "morrowise",
+  "task_id": "mc-morrowise-v0-card",
+  "status": "updated",
+  "summary": "刷新 MorroWise Obsidian Canvas mirror，讓 delegated MC card 顯示 done、v0 live-loop 驗證顯示 deferred，並與修正後的 MC projects read model 對齊。",
+  "created_at": "2026-06-27T14:55:21.828Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-morrowise-canvas-mirror"
+}

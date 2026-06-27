@@ -144,7 +144,7 @@
     {
       "id": "morrowise-manual-live-sync",
       "title": "MorroWise 說明書 live sync",
-      "status": "todo",
+      "status": "completed",
       "track": "governance",
       "order_label": "MW-MANUAL-01",
       "dependencies": [
@@ -625,7 +625,12 @@
         "$COLLAB/harness-mc/scripts/verify-morrowise-live-dashboard-data.mjs",
         "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-read-model-contract.md"
       ],
-      "note": "2026-06-24 已進行 API / CLI / MCP 第一組 fixture：新增 morrowise-wiring-gate.json、scripts/verify-morrowise-wiring-gate.mjs、npm run test:morrowise-wiring，並把 AGENTS.md 接線規則更新為通用 gate。fixture 驗證 source registry、generated read model、live dashboard surface、homepage/sidebar anchor、verifier refs、routing 與 next_action 均可追溯。狀態仍保留 todo，因為後續應補負向 fixture / fail case，確保缺任一層時 gate 真的會擋。",
+      "note": "2026-06-24 已進行 API / CLI / MCP 第一組 fixture：新增 morrowise-wiring-gate.json、scripts/verify-morrowise-wiring-gate.mjs、npm run test:morrowise-wiring，並把 AGENTS.md 接線規則更新為通用 gate。fixture 驗證 source registry、generated read model、live dashboard surface、homepage/sidebar anchor、verifier refs、routing 與 next_action 均可追溯。2026-06-27 收斂：wiring gate 升級為 formal_gate，verifier 補上 generated read model、live dashboard surface、homepage anchor、AGENTS routing、npm verifier script 五個負向 fixture，確保缺任一層會 fail。",
+      "completed_at": "2026-06-27",
+      "commits": [
+        "15a2378"
+      ],
+      "summary": "MorroWise wiring gate verifier 已正式化：正向 fixture 驗證 API / CLI / MCP 首批完整接線，負向 fixture 確認缺 read model、surface、homepage anchor、AGENTS routing 或 verifier script 時會失敗，避免 prototype 被誤標 ready。",
       "hc_decision": {
         "task_scope": "morrowise/morrowise-wiring-gate-verifier",
         "hc_refs": [

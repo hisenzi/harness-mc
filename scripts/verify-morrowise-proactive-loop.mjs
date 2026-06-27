@@ -39,7 +39,7 @@ for (const scenario of data.scenarios) {
 }
 assert.equal(requiredScenarios.size, 0, `missing scenarios: ${[...requiredScenarios].join(", ")}`);
 
-for (const text of ["正常閉環", "等待 approval", "runner blocked", "read-only boundary", "trigger → recommendation → approval → action → feedback"]) {
+for (const text of ["正常閉環", "等待審批", "runner blocked", "唯讀邊界", "觸發 → 建議 → 審批 → 動作 → 回饋"]) {
   assert.ok(mockup.includes(text), `mockup missing ${text}`);
 }
 

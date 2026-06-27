@@ -15,6 +15,10 @@ commit-attention -> commit planning gate -> worktree-commit confirmation gate
 
 This gate turns generated repo/task signals into a commit cleanup plan. It never stages files, commits, pushes, closes tasks, or mutates task state.
 
+The repeatable read model is generated at:
+
+`$COLLAB/harness-mc/public/data/commit-cleanup-plan.json`
+
 ## Decision Order
 
 1. Read `commit-attention.json` and `worktrees.json`.
@@ -27,12 +31,19 @@ This gate turns generated repo/task signals into a commit cleanup plan. It never
 8. Wait for Vincent confirmation.
 9. Hand off to `worktree-commit`.
 
+The generator for the repeatable plan is:
+
+```bash
+node scripts/generate-commit-cleanup-plan.mjs
+```
+
 ## Classification
 
 | Input State | Planning State | Next Action |
 |---|---|---|
 | `needs_reconcile` | `blocked` | Resolve branch divergence or detached HEAD first. |
 | `missing_or_unclear_task_anchor` | `blocked` | Create or select MC task anchor first. |
+| `diff_scope_too_mixed` | `blocked` | Split or narrow the dirty scope to one MC task anchor first. |
 | `task_anchor_available` | `plan_allowed` | Run preflight, inspect scope, propose commit groups. |
 | `local_commits` | `push_decision_required` | Verify task/event linkage and ask whether to push. |
 
@@ -71,3 +82,10 @@ Forbidden:
 - send external notification
 
 Actual history mutation remains in `worktree-commit`.
+
+## Verification
+
+```bash
+npm run test:commit-planning-gate
+npm run test:commit-cleanup-plan
+```

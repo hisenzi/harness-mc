@@ -142,11 +142,12 @@
       ],
       "process": [
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-commit-planning-gate.json",
+        "$COLLAB/harness-mc/scripts/generate-commit-cleanup-plan.mjs",
         "Agent work-anchor preflight and scoped dirty-tree review"
       ],
       "output": [
         "commit cleanup plan in current Agent thread",
-        "optional future read model: $COLLAB/harness-mc/public/data/commit-cleanup-plan.json"
+        "$COLLAB/harness-mc/public/data/commit-cleanup-plan.json"
       ],
       "surface": [
         "current Agent thread",
@@ -186,12 +187,15 @@
       ],
       "verifier": [
         "npm run test:commit-planning-gate",
+        "npm run test:commit-cleanup-plan",
         "npm run test:live-system-admission"
       ],
       "admission_state": "accepted",
       "evidence_refs": [
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-commit-planning-gate.json",
-        "$COLLAB/harness-mc/scripts/verify-morrowise-commit-planning-gate.mjs"
+        "$COLLAB/harness-mc/scripts/generate-commit-cleanup-plan.mjs",
+        "$COLLAB/harness-mc/scripts/verify-morrowise-commit-planning-gate.mjs",
+        "$COLLAB/harness-mc/scripts/verify-morrowise-commit-cleanup-plan.mjs"
       ]
     }
   ]

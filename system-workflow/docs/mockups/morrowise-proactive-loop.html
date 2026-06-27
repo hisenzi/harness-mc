@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MorroWise Proactive Loop Mockup</title>
+  <title>MorroWise 主動閉環 Mockup</title>
   <style>
     :root {
       color-scheme: dark;
@@ -175,74 +175,74 @@
 </head>
 <body>
   <main>
-    <h1>MorroWise Proactive Loop</h1>
-    <div class="sub">MC-LIVE-20 mockup · trigger → recommendation → approval → action → feedback · read-only boundary</div>
+    <h1>MorroWise 主動閉環</h1>
+    <div class="sub">MC-LIVE-20 mockup · 觸發 → 建議 → 審批 → 動作 → 回饋 · 唯讀邊界</div>
 
-    <div class="section-title">Proactive Loop <span>local read model · no task-state write</span></div>
+    <div class="section-title">主動閉環 <span>本機 read model · 不寫入任務狀態</span></div>
     <section class="panel">
       <div class="summary">
-        <div class="metric"><div class="label">closed</div><div class="value green">1</div></div>
-        <div class="metric"><div class="label">waiting approval</div><div class="value yellow">1</div></div>
-        <div class="metric"><div class="label">open loop</div><div class="value red">1</div></div>
-        <div class="metric"><div class="label">runner applied</div><div class="value">0</div></div>
-        <div class="metric"><div class="label">source</div><div class="value blue">RO</div></div>
+        <div class="metric"><div class="label">已閉環</div><div class="value green">1</div></div>
+        <div class="metric"><div class="label">等待審批</div><div class="value yellow">1</div></div>
+        <div class="metric"><div class="label">未閉合 loop</div><div class="value red">1</div></div>
+        <div class="metric"><div class="label">runner 已執行</div><div class="value">0</div></div>
+        <div class="metric"><div class="label">資料來源</div><div class="value blue">唯讀</div></div>
       </div>
 
       <div class="loops">
         <article class="loop">
           <div>
             <h2>正常閉環</h2>
-            <div class="meta">weekly_review · produce_summary · local read model</div>
+            <div class="meta">weekly_review · produce_summary · 本機 read model</div>
           </div>
           <div class="stage-grid">
-            <div class="stage"><b>trigger</b><p>Sentinel heartbeat requests a weekly review.</p></div>
-            <div class="stage"><b>recommendation</b><p>Produce a local summary with evidence refs.</p></div>
-            <div class="stage"><b>approval</b><p>Allowed because it only writes generated local data.</p></div>
-            <div class="stage"><b>action</b><p>Runner outputs summary; applied remains false.</p></div>
-            <div class="stage"><b>feedback</b><p>Dashboard reads <code>morrowise-proactive-loop.json</code>.</p></div>
+            <div class="stage"><b>觸發</b><p>Sentinel heartbeat 要求產生週期檢視。</p></div>
+            <div class="stage"><b>建議</b><p>產生本機摘要，並保留 evidence refs。</p></div>
+            <div class="stage"><b>審批</b><p>只寫入本機 generated data，因此允許通過。</p></div>
+            <div class="stage"><b>動作</b><p>Runner 輸出摘要；applied 仍維持 false。</p></div>
+            <div class="stage"><b>回饋</b><p>Dashboard 讀取 <code>morrowise-proactive-loop.json</code>。</p></div>
           </div>
-          <div class="pill green">closed</div>
+          <div class="pill green">已閉環</div>
         </article>
 
         <article class="loop">
           <div>
-            <h2>等待 approval</h2>
-            <div class="meta">visual_sync_gap · external write · Vincent gate</div>
+            <h2>等待審批</h2>
+            <div class="meta">visual_sync_gap · 外部寫入 · Vincent gate</div>
           </div>
           <div class="stage-grid">
-            <div class="stage"><b>trigger</b><p>Visual mirror looks stale or incomplete.</p></div>
-            <div class="stage"><b>recommendation</b><p>Request external write approval with payload preview.</p></div>
-            <div class="stage"><b>approval</b><p>Policy requires explicit Vincent confirmation.</p></div>
-            <div class="stage"><b>action</b><p>Runner returns approval_request; no sync.</p></div>
-            <div class="stage"><b>feedback</b><p>Open until approval or cancellation is recorded.</p></div>
+            <div class="stage"><b>觸發</b><p>視覺鏡像看起來老舊或不完整。</p></div>
+            <div class="stage"><b>建議</b><p>帶著 payload preview 請求外部寫入審批。</p></div>
+            <div class="stage"><b>審批</b><p>Policy 要求 Vincent 明確確認。</p></div>
+            <div class="stage"><b>動作</b><p>Runner 回傳 approval_request，不執行同步。</p></div>
+            <div class="stage"><b>回饋</b><p>直到審批或取消被記錄前，維持 open。</p></div>
           </div>
-          <div class="pill yellow">waiting</div>
+          <div class="pill yellow">等待中</div>
         </article>
 
         <article class="loop">
           <div>
-            <h2>runner blocked / open loop</h2>
-            <div class="meta">commit boundary · worktree-commit required</div>
+            <h2>runner blocked / 未閉合 loop</h2>
+            <div class="meta">commit 邊界 · 需要 worktree-commit</div>
           </div>
           <div class="stage-grid">
-            <div class="stage"><b>trigger</b><p>Completed work appears to need git history.</p></div>
-            <div class="stage"><b>recommendation</b><p>Commit boundary is suggested, not executed.</p></div>
-            <div class="stage"><b>approval</b><p>commit / push / deploy class is gated.</p></div>
-            <div class="stage"><b>action</b><p>Runner blocks and emits approval_request.</p></div>
-            <div class="stage"><b>feedback</b><p>Loop stays open until worktree-commit gate completes.</p></div>
+            <div class="stage"><b>觸發</b><p>完成的工作看起來需要進入 git history。</p></div>
+            <div class="stage"><b>建議</b><p>只建議 commit 邊界，不直接執行。</p></div>
+            <div class="stage"><b>審批</b><p>commit / push / deploy 類動作都必須過 gate。</p></div>
+            <div class="stage"><b>動作</b><p>Runner 擋下動作並輸出 approval_request。</p></div>
+            <div class="stage"><b>回饋</b><p>直到 worktree-commit gate 完成前，loop 維持未閉合。</p></div>
           </div>
-          <div class="pill red">open</div>
+          <div class="pill red">未閉合</div>
         </article>
       </div>
 
       <div class="boundary">
         <div>
-          <b>read-only boundary</b><br>
-          Dashboard can display loop state only. It cannot close tasks, commit, push, deploy, sync external tools, or reverse-write from visual layers.
+          <b>唯讀邊界</b><br>
+          Dashboard 只能顯示 loop 狀態，不能關閉 task、commit、push、deploy、同步外部工具，也不能從視覺層反向寫回。
         </div>
         <div>
-          <b>source of truth</b><br>
-          Canonical state remains <code>tasks.json</code>, <code>task-events</code>, <code>sync-events</code>, and approval policy. Mockup validates semantics before UI polish.
+          <b>單一事實來源</b><br>
+          Canonical state 仍是 <code>tasks.json</code>、<code>task-events</code>、<code>sync-events</code> 與 approval policy。Mockup 先驗證狀態語意，再談 UI 修飾。
         </div>
       </div>
     </section>

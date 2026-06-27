@@ -1,7 +1,7 @@
 {
   "registry_id": "morrowise-commit-planning-gate.v0",
   "task_id": "runtime-scheduler-v0",
-  "updated_at": "2026-06-24",
+  "updated_at": "2026-06-26",
   "status": "formal_registry",
   "purpose": "Define how an Agent turns commit-attention output into a commit cleanup plan without staging, committing, pushing, or mutating task state.",
   "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
@@ -12,7 +12,7 @@
   ],
   "output": [
     "commit cleanup plan in the current Agent thread",
-    "optional future read model: $COLLAB/harness-mc/public/data/commit-cleanup-plan.json"
+    "$COLLAB/harness-mc/public/data/commit-cleanup-plan.json"
   ],
   "write_boundary": {
     "allowed": [
@@ -44,6 +44,11 @@
       "next_action": "Create or select MC task anchor before dirty diff review."
     },
     {
+      "input_state": "diff_scope_too_mixed",
+      "planning_state": "blocked",
+      "next_action": "Split or narrow the dirty scope to one MC task anchor before dirty diff review."
+    },
+    {
       "input_state": "task_anchor_available",
       "planning_state": "plan_allowed",
       "next_action": "Run work-anchor preflight, inspect scoped status/diff, and produce grouped commit cleanup plan."
@@ -69,11 +74,14 @@
     "Read commit-attention and worktree status.",
     "Classify each repo into blocked, plan_allowed, or push_decision_required.",
     "For blocked repos, stop at reason and next_action.",
+    "For mixed-scope repos, require narrowing to one task anchor before diff review.",
     "For plan_allowed repos, run work-anchor preflight before reading detailed diffs.",
     "Inspect dirty scope and propose logical commit groups.",
     "List excluded files explicitly.",
     "Wait for Vincent confirmation before entering worktree-commit.",
     "Actual git add/commit/push remains outside this gate."
   ],
-  "verifier": "npm run test:commit-planning-gate"
+  "generator": "$COLLAB/harness-mc/scripts/generate-commit-cleanup-plan.mjs",
+  "read_model": "$COLLAB/harness-mc/public/data/commit-cleanup-plan.json",
+  "verifier": "npm run test:commit-planning-gate && npm run test:commit-cleanup-plan"
 }

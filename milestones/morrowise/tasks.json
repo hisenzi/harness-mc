@@ -86,7 +86,7 @@
     {
       "id": "morrowise-system-json-generator-v0",
       "title": "MorroWise system read model generator v0",
-      "status": "todo",
+      "status": "completed",
       "track": "governance",
       "order_label": "MW-READMODEL-01",
       "dependencies": [
@@ -104,6 +104,9 @@
         "既有 harness-mc/morrowise-system track 的 morrowise-anatomy-read-model 只作為 historical implementation lineage / schema evidence，不重新開 schema task。"
       ],
       "source_refs": [
+        "$COLLAB/harness-mc/scripts/generate-morrowise-system.mjs",
+        "$COLLAB/harness-mc/scripts/verify-morrowise-system-json.mjs",
+        "$COLLAB/harness-mc/public/data/morrowise-system.json",
         "$COLLAB/harness-mc/system-workflow/schemas/morrowise-system.schema.json",
         "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-anatomy-read-model.md",
         "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-living-system-index.md",
@@ -112,6 +115,8 @@
         "$COLLAB/notyet-harness/000_Agent/docs/morrowise/auditor-mvp.md",
         "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-anatomy-read-model"
       ],
+      "completed_at": "2026-06-27",
+      "summary": "實作 MorroWise system read model generator 與 verifier，產出 gitignored 的 public/data/morrowise-system.json，從 canonical tasks、registries、generated read models、Architecture Pulse auditor output 與 source-map reconciliation 建立 read-only system state，並以 open_loops 顯示 pending events、stale surfaces、residual ledger、capability gaps 與下一個 task anchor。",
       "note": "此 task 補的是 generator 缺口，不是 schema 缺口。schema 已由歷史 harness-mc task morrowise-anatomy-read-model 完成；本 task 要把 current state 變成可重跑 read model，供 MANUAL.md marker sync 與 MC surface 使用。",
       "hc_decision": {
         "task_scope": "morrowise/morrowise-system-json-generator-v0",

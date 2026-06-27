@@ -152,9 +152,10 @@ function buildDna() {
 }
 
 function buildMemory({ tasks, taskCounts, residualLedger, nextTask }) {
+  const completedCount = (taskCounts.completed || 0) + (taskCounts.done || 0);
   return {
     context: [
-      contextRef("morrowise-task-state", sourceRef("task", `${PATHS.morrowiseTasks}#tasks`), `MorroWise currently tracks ${tasks.length} tasks; ${taskCounts.completed || 0} completed, ${taskCounts.todo || 0} todo, ${(taskCounts.in_progress || 0)} in progress.`),
+      contextRef("morrowise-task-state", sourceRef("task", `${PATHS.morrowiseTasks}#tasks`), `MorroWise currently tracks ${tasks.length} tasks; ${completedCount} completed, ${taskCounts.todo || 0} todo, ${(taskCounts.in_progress || 0)} in progress.`),
       contextRef("source-map-reconciliation", sourceRef("file", PATHS.sourceMapReconcile), "Source-map families are mapped to MC specs, registries, generated data, and known gaps."),
       contextRef("auditor-loop", sourceRef("file", PATHS.architectureReport), "Architecture Pulse report and auditor schema provide document drift input for the system generator."),
       contextRef("next-anchor", sourceRef("task", `${PATHS.morrowiseTasks}#${nextTask?.id || "none"}`), nextTask ? `Next executable MorroWise task is ${nextTask.id}.` : "No executable MorroWise task selected."),

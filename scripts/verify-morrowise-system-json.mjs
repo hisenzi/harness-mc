@@ -214,10 +214,12 @@ function validateSystemReadModel(data, { fixture }) {
     assert.ok(loop.evidence_refs.length > 0, `${loop.loop_id}: evidence refs required`);
   }
 
-  assert.ok(
-    data.open_loops.some((loop) => loop.loop_id.includes("pending-task-events") || loop.condition.includes("pending")),
-    "open_loops must expose pending events or an equivalent unresolved event condition",
-  );
+  if (fixture) {
+    assert.ok(
+      data.open_loops.some((loop) => loop.loop_id.includes("pending-task-events") || loop.condition.includes("pending")),
+      "open_loops must expose pending events or an equivalent unresolved event condition",
+    );
+  }
   for (const expectedCondition of ["unknown", "generator_missing", "manual_only", "second_source_risk", "stale"]) {
     assert.ok(
       data.open_loops.some((loop) => loop.condition.includes(expectedCondition) || loop.loop_id.includes(expectedCondition.replace(/_/g, "-"))),

@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-runtime-scheduler-v0-0c712e3-20260627T162112Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "0c712e3",
+  "project": "morrowise",
+  "task_id": "runtime-scheduler-v0",
+  "status": "updated",
+  "summary": "Added agent-agnostic scheduler dispatcher, runner adapters, launchd plist generator, and runtime self-verifier.",
+  "created_at": "2026-06-27T16:21:12.394Z",
+  "actor": "codex",
+  "session_id": "codex-runtime-scheduler-v0-20260628"
+}

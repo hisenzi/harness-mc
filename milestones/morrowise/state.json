@@ -119,11 +119,15 @@
       "summary": "已將 agent-agnostic scheduler、notification adapter 與 Reality Tax Gate ownership 收編到 MorroWise runtime-delivery track；agnostic-scheduler 未執行 tasks 與 harness-mc sentinel 出口 tasks 已關閉並保留 superseded lineage。"
     },
     "runtime-scheduler-v0": {
-      "status": "todo",
+      "status": "completed",
+      "completed_at": "2026-06-28",
       "commits": [
         "4e09b8e",
-        "52f7411"
-      ]
+        "52f7411",
+        "0c712e3",
+        "27bda0b"
+      ],
+      "summary": "完成 MorroWise agent-agnostic scheduler runtime v0：notyet-harness/schedule 已有 dispatch.sh、shell/Claude Code/Codex runner contract、install.sh、runs log contract 與 runtime verifier；harness-mc 已有 schedule-health read model 與 MorroWise live dashboard surface，可觀測 task spec、runner、run log、local plist presence 與 next_action。"
     },
     "runtime-closeout-residual-ledger": {
       "status": "completed",

@@ -388,7 +388,7 @@
     {
       "id": "runtime-scheduler-v0",
       "title": "MorroWise agent-agnostic scheduler runtime v0",
-      "status": "todo",
+      "status": "completed",
       "track": "runtime-delivery",
       "dependencies": [
         "runtime-delivery-lineage-map"
@@ -414,9 +414,14 @@
         "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-drilldown-pages.md"
       ],
       "commits": [
-        "4e09b8e"
+        "4e09b8e",
+        "52f7411",
+        "0c712e3",
+        "27bda0b"
       ],
-      "note": "2026-06-27 進度：已完成 commit-attention 之後的 read-only cleanup-plan slice，新增 commit-cleanup-plan generator/verifier、diff_scope_too_mixed 分流、prebuild 串接與 live-system admission evidence；新增 runtime-closeout-residual-ledger acceptance，要求 cc-log + worktree-commit 後留下 residual ledger / read model，記錄 repo dirty/ahead/behind/diverged、excluded changes、pending task events、completed work missing commit evidence、cleanup-plan leftovers 與 next closeout task anchor；補上 residual ledger 上下游接線：upstream 讀 commit-attention/worktrees/cleanup-plan/task-events/tasks.json/worktree-commit evidence，process 只做 read-only audit/classification/next-anchor selection，output 接 residual read model 與 MC surface next_action，downstream 接 work-anchor preflight、apply-task-events、worktree-commit gate 或新 task proposal；2026-06-27 已完成 residual ledger implementation slice，新增 generator/verifier、prebuild 串接與 MC live dashboard surface；runtime-scheduler-v0 仍維持 todo，因 dispatch.sh、runner adapter、install.sh、runs log contract 與 schedule health read model 尚未完成。"
+      "completed_at": "2026-06-28",
+      "summary": "完成 MorroWise agent-agnostic scheduler runtime v0：notyet-harness/schedule 已有 dispatch.sh、shell/Claude Code/Codex runner contract、install.sh、runs log contract 與 runtime verifier；harness-mc 已有 schedule-health read model 與 MorroWise live dashboard surface，可觀測 task spec、runner、run log、local plist presence 與 next_action。",
+      "note": "2026-06-27 進度：已完成 commit-attention 之後的 read-only cleanup-plan slice，新增 commit-cleanup-plan generator/verifier、diff_scope_too_mixed 分流、prebuild 串接與 live-system admission evidence；新增 runtime-closeout-residual-ledger acceptance，要求 cc-log + worktree-commit 後留下 residual ledger / read model，記錄 repo dirty/ahead/behind/diverged、excluded changes、pending task events、completed work missing commit evidence、cleanup-plan leftovers 與 next closeout task anchor；補上 residual ledger 上下游接線：upstream 讀 commit-attention/worktrees/cleanup-plan/task-events/tasks.json/worktree-commit evidence，process 只做 read-only audit/classification/next-anchor selection，output 接 residual read model 與 MC surface next_action，downstream 接 work-anchor preflight、apply-task-events、worktree-commit gate 或新 task proposal；2026-06-27 已完成 residual ledger implementation slice，新增 generator/verifier、prebuild 串接與 MC live dashboard surface；2026-06-28 完成 scheduler runtime v0，新增 dispatch/install/runner/runs-log verifier 與 schedule-health generated read model/live dashboard surface。"
     },
     {
       "id": "runtime-closeout-residual-ledger",

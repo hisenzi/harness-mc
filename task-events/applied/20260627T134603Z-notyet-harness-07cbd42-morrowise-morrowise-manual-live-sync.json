@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-morrowise-manual-live-sync-07cbd42-20260627T134603Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "07cbd42",
+  "project": "morrowise",
+  "task_id": "morrowise-manual-live-sync",
+  "status": "updated",
+  "summary": "新增 MorroWise MANUAL.md 薄入口與 marker 同步/漂移驗證腳本，讓說明書 current state 由 morrowise-system.json 自動產生。",
+  "created_at": "2026-06-27T13:46:03.290Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-27-morrowise-manual-live-sync"
+}

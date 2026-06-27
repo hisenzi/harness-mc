@@ -144,7 +144,14 @@
     {
       "id": "morrowise-manual-live-sync",
       "title": "MorroWise 說明書 live sync",
-      "status": "todo",
+      "status": "completed",
+      "completed_at": "2026-06-27",
+      "commits": [
+        "07cbd42",
+        "af3cc2d",
+        "b386a8a"
+      ],
+      "summary": "建立 MorroWise 薄入口 MANUAL.md 與 marker 同步/漂移驗證腳本，讓 current-system-map、agent-routing、open-loops、next-anchors 從 morrowise-system.json 生成，並修正 system read model 在 pending task-events 為 0 時的 verifier 口徑。",
       "track": "governance",
       "order_label": "MW-MANUAL-01",
       "dependencies": [

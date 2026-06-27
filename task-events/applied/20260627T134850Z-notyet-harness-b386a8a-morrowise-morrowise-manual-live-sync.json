@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-morrowise-manual-live-sync-b386a8a-20260627T134850Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "b386a8a",
+  "project": "morrowise",
+  "task_id": "morrowise-manual-live-sync",
+  "status": "updated",
+  "summary": "任務完成後重新同步 MANUAL.md generated marker blocks，將 next anchor 更新為 mc-morrowise-v0-card。",
+  "created_at": "2026-06-27T13:48:50.207Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-27-morrowise-manual-live-sync"
+}

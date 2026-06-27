@@ -35,7 +35,14 @@
       "summary": "實作 MorroWise system read model generator 與 verifier，產出 gitignored 的 public/data/morrowise-system.json，從 canonical tasks、registries、generated read models、Architecture Pulse auditor output 與 source-map reconciliation 建立 read-only system state，並以 open_loops 顯示 pending events、stale surfaces、residual ledger、capability gaps 與下一個 task anchor。"
     },
     "morrowise-manual-live-sync": {
-      "status": "todo"
+      "status": "completed",
+      "completed_at": "2026-06-27",
+      "commits": [
+        "07cbd42",
+        "af3cc2d",
+        "b386a8a"
+      ],
+      "summary": "建立 MorroWise 薄入口 MANUAL.md 與 marker 同步/漂移驗證腳本，讓 current-system-map、agent-routing、open-loops、next-anchors 從 morrowise-system.json 生成，並修正 system read model 在 pending task-events 為 0 時的 verifier 口徑。"
     },
     "auditor-manual-architecture-report": {
       "status": "completed",
@@ -159,6 +166,9 @@
       "status": "todo"
     },
     "reality-tax-daily-review-task": {
+      "status": "todo"
+    },
+    "playwright-cli-capability-probe": {
       "status": "todo"
     }
   }

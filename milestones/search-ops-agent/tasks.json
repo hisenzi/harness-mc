@@ -8,6 +8,9 @@
       "track": "discovery",
       "done_condition": "已確認 GSC API 可做診斷/監控/URL Inspection/Search Analytics/sitemap，但不可強制一般頁面收錄；已用 SIFT 重新定位為 Search Ops Agent 搜尋維運服務",
       "completed_at": "2026-06-27",
+      "commits": [
+        "a32d876"
+      ],
       "summary": "已將 GSC/SEO Agent 想法重新框成 Search Ops Agent：把 GSC 訊號轉成每月可執行、可追蹤、可驗證的搜尋維運服務，而非 SEO 報告或 dashboard。",
       "evidence_refs": [
         "$COLLAB/harness-mc/milestones/search-ops-agent/project.json",

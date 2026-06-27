@@ -17,6 +17,7 @@
     "test:required-publish-flow": "node scripts/verify-required-publish-flow.mjs",
     "test:hc-framing-gate": "node scripts/verify-hc-framing-gate.mjs",
     "test:morrowise-schema": "node scripts/verify-morrowise-system-schema.mjs",
+    "test:morrowise-auditor": "node scripts/verify-morrowise-auditor-schema.mjs",
     "test:morrowise-console": "node scripts/verify-morrowise-control-console.mjs",
     "test:morrowise-triggers": "node scripts/verify-morrowise-trigger-rules.mjs",
     "test:morrowise-recommendations": "node scripts/verify-morrowise-recommendations.mjs",

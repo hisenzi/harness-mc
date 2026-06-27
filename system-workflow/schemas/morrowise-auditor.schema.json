@@ -1,0 +1,443 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "morrowise-auditor.schema.json",
+  "title": "MorroWise Auditor Read Model v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "read_only",
+    "targets",
+    "summary",
+    "findings",
+    "next_actions",
+    "write_boundary"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "morrowise-auditor.v0"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "read_only": {
+      "type": "boolean",
+      "const": true
+    },
+    "targets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/target"
+      },
+      "minItems": 1
+    },
+    "summary": {
+      "$ref": "#/$defs/summary"
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/finding"
+      }
+    },
+    "next_actions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/nextAction"
+      }
+    },
+    "write_boundary": {
+      "$ref": "#/$defs/writeBoundary"
+    }
+  },
+  "$defs": {
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_id",
+        "target_path",
+        "source_family",
+        "expected_identity",
+        "classification",
+        "checks",
+        "verifier_ref",
+        "write_boundary"
+      ],
+      "properties": {
+        "target_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target_path": {
+          "type": "string",
+          "pattern": "^\\$COLLAB/"
+        },
+        "source_family": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected_identity": {
+          "enum": [
+            "canonical",
+            "protocol",
+            "schema",
+            "boundary-map",
+            "evidence",
+            "mirror",
+            "generated",
+            "draft",
+            "historical"
+          ]
+        },
+        "classification": {
+          "enum": [
+            "active",
+            "semi_live",
+            "generated",
+            "mixed",
+            "historical",
+            "unknown"
+          ]
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/check"
+          },
+          "minItems": 1
+        },
+        "sections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/section"
+          }
+        },
+        "verifier_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "write_boundary": {
+          "$ref": "#/$defs/writeBoundary"
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_count",
+        "finding_count",
+        "blocking_count",
+        "error_count",
+        "warning_count",
+        "missing_verifier_count",
+        "stale_count",
+        "fake_live_risk_count",
+        "path_policy_risk_count",
+        "primary_next_action"
+      ],
+      "properties": {
+        "target_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "finding_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "blocking_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "error_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "warning_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_verifier_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stale_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "fake_live_risk_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "path_policy_risk_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "primary_next_action": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "target_id",
+        "source_family",
+        "severity",
+        "category",
+        "evidence_ref",
+        "declared_state",
+        "observed_state",
+        "why_it_matters",
+        "suggested_action"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_family": {
+          "type": "string",
+          "minLength": 1
+        },
+        "severity": {
+          "enum": [
+            "info",
+            "warning",
+            "error",
+            "blocking"
+          ]
+        },
+        "category": {
+          "enum": [
+            "missing_header",
+            "missing_source_of_truth",
+            "source_missing",
+            "source_conflict",
+            "stale_warning",
+            "stale_error",
+            "missing_verifier",
+            "generated_manual_conflict",
+            "mirror_as_canonical",
+            "historical_used_as_active",
+            "path_policy_violation",
+            "fake_live_risk"
+          ]
+        },
+        "evidence_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "declared_state": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observed_state": {
+          "type": "string",
+          "minLength": 1
+        },
+        "why_it_matters": {
+          "type": "string",
+          "minLength": 1
+        },
+        "suggested_action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "draft_task": {
+          "type": "string"
+        },
+        "next_action_id": {
+          "type": "string"
+        }
+      }
+    },
+    "nextAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "priority",
+        "action",
+        "owner_task",
+        "source_finding_ids",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner_task": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_finding_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "enum": [
+            "draft",
+            "ready",
+            "blocked"
+          ]
+        }
+      }
+    },
+    "writeBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed",
+        "forbidden"
+      ],
+      "properties": {
+        "allowed": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "report",
+              "recommend",
+              "draft_task"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "forbidden": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "edit_source",
+              "close_task",
+              "commit",
+              "push",
+              "external_sync",
+              "read_secret"
+            ]
+          },
+          "allOf": [
+            {
+              "contains": {
+                "const": "edit_source"
+              }
+            },
+            {
+              "contains": {
+                "const": "close_task"
+              }
+            },
+            {
+              "contains": {
+                "const": "commit"
+              }
+            },
+            {
+              "contains": {
+                "const": "push"
+              }
+            },
+            {
+              "contains": {
+                "const": "external_sync"
+              }
+            }
+          ],
+          "minItems": 5,
+          "uniqueItems": true
+        }
+      }
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "result"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "header",
+            "path_policy",
+            "source_existence",
+            "source_hierarchy",
+            "freshness",
+            "generated_boundary",
+            "reference",
+            "live_surface"
+          ]
+        },
+        "result": {
+          "enum": [
+            "pass",
+            "warning",
+            "fail",
+            "missing",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "line_ref",
+        "classification",
+        "reason"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "line_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "classification": {
+          "enum": [
+            "active",
+            "generated",
+            "mixed",
+            "historical",
+            "unknown"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

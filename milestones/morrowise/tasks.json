@@ -553,7 +553,7 @@
     {
       "id": "api-cli-mcp-capability-registry-v0",
       "title": "MorroWise 接線系統 v0（API / CLI / MCP 首批）",
-      "status": "in_progress",
+      "status": "completed",
       "track": "governance",
       "dependencies": [
         "live-system-admission-gate"
@@ -575,7 +575,12 @@
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-live-system-admission.json"
       ],
-      "note": "2026-06-24 啟動 v0 骨架：新增 MorroWise API / CLI / MCP capability registry、verifier、generated read model，並用 harness-mc/AGENTS.md 接到新 session 啟動路徑。已把 Playwright CLI 另一 session 安裝回報記為 capability history；本 session PATH 尚未驗證，狀態保留 unknown，next_action 是確認安裝位置或補 project-local script。已開始接 MC 儀表板：live-dashboard read model 新增 api_cli_mcp_capabilities surface，首頁能力層新增 API / CLI / MCP read-only card。",
+      "note": "2026-06-24 啟動 v0 骨架：新增 MorroWise API / CLI / MCP capability registry、verifier、generated read model，並用 harness-mc/AGENTS.md 接到新 session 啟動路徑。已把 Playwright CLI 另一 session 安裝回報記為 capability history；本 session PATH 尚未驗證，狀態保留 unknown，next_action 是確認安裝位置或補 project-local script。已開始接 MC 儀表板：live-dashboard read model 新增 api_cli_mcp_capabilities surface，首頁能力層新增 API / CLI / MCP read-only card。2026-06-27 收斂：registry 升級為 formal_registry，Playwright CLI unresolved runtime probe 拆到 playwright-cli-capability-probe，不阻塞 registry v0 完成。",
+      "completed_at": "2026-06-27",
+      "commits": [
+        "a84b7d6"
+      ],
+      "summary": "API / CLI / MCP capability registry v0 已正式化：machine-readable registry、history/boundary verifier、generated read model、MC surface 與 AGENTS routing 均可追溯；Playwright CLI 本機可用性疑點已拆成獨立 follow-up task。",
       "hc_decision": {
         "task_scope": "morrowise/api-cli-mcp-capability-registry-v0",
         "hc_refs": [

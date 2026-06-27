@@ -52,6 +52,7 @@ const requiredHistoryFields = [
 
 assert.equal(registry.registry_id, "morrowise-api-cli-mcp-capability-registry.v0");
 assert.equal(registry.task_id, "api-cli-mcp-capability-registry-v0");
+assert.equal(registry.status, "formal_registry");
 assert.ok(taskIds.has(registry.task_id), "registry task_id must exist");
 assert.ok(registry.discovery && typeof registry.discovery === "object", "registry discovery block required");
 assert.equal(registry.discovery.repo_agent_entry, "$COLLAB/harness-mc/AGENTS.md");
@@ -134,8 +135,14 @@ assert.equal(heptabaseLegacy.next_action.task_id, "heptabase-pai-legacy-archive"
 const playwright = registry.capabilities.find((capability) => capability.id === "playwright-cli");
 assert.ok(playwright, "Playwright CLI fixture required");
 assert.equal(playwright.status, "unknown");
+assert.equal(playwright.owner_task, "playwright-cli-capability-probe");
+assert.equal(playwright.next_action.task_id, "playwright-cli-capability-probe");
 assert.ok(playwright.history.some((event) => event.event_type === "install_reported"), "Playwright must record install report");
 assert.ok(playwright.history.some((event) => event.event_type === "local_probe"), "Playwright must record local probe result");
+assert.ok(
+  playwright.history.some((event) => event.date === "2026-06-27" && /no PATH command/.test(event.reason)),
+  "Playwright must record the latest unresolved local probe",
+);
 
 console.log("MorroWise API / CLI / MCP capability registry verification OK");
 

@@ -640,6 +640,29 @@
       }
     },
     {
+      "id": "playwright-cli-capability-probe",
+      "title": "Playwright CLI capability probe",
+      "status": "todo",
+      "track": "governance",
+      "order_label": "MW-CAP-02",
+      "dependencies": [
+        "api-cli-mcp-capability-registry-v0"
+      ],
+      "done_condition": "確認 Playwright 對 MorroWise / harness-mc 的正式能力邊界：若採 project-local，新增 package/script/verifier；若採 global CLI，記錄可重跑的安裝與 version probe；若改用 Codex browser/chrome tools，將 playwright-cli capability 標為 legacy/unused 並更新 registry history。",
+      "acceptance": [
+        "不得讀取 browser cookies、profiles、storage state 或任何 runtime auth 檔案。",
+        "若需要安裝或下載 browser binaries，必須先取得 Vincent 明確同意。",
+        "registry 的 playwright-cli capability 必須更新 history、status、entrypoint、verifier 與 next_action；不得只用聊天紀錄作為證據。",
+        "npm run test:capability-registry 通過，且 generated morrowise-capabilities.json 顯示最新狀態。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+        "$COLLAB/harness-mc/scripts/verify-morrowise-capability-registry.mjs",
+        "$COLLAB/harness-mc/AGENTS.md"
+      ],
+      "note": "2026-06-27 從 api-cli-mcp-capability-registry-v0 拆出。當前 probe：command -v playwright 無全域命令；harness-mc package.json / package-lock.json 無 Playwright dependency；npx --no-install playwright --version 未在 probe window 內回應並被中止。此 task 只處理 Playwright 能力歸屬，不阻塞 registry v0 成為正式 registry。"
+    },
+    {
       "id": "notification-adapter-contract",
       "title": "MorroWise notification adapter contract（Telegram / LINE / Notion / thread）",
       "status": "todo",

@@ -1,8 +1,8 @@
 {
   "registry_id": "morrowise-api-cli-mcp-capability-registry.v0",
   "task_id": "api-cli-mcp-capability-registry-v0",
-  "updated_at": "2026-06-24",
-  "status": "prototype_registry",
+  "updated_at": "2026-06-27",
+  "status": "formal_registry",
   "purpose": "Track API / CLI / MCP capabilities as verifiable MorroWise system components with update history, boundaries, owner tasks, and next actions.",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
   "generated_read_model": "$COLLAB/harness-mc/public/data/morrowise-capabilities.json",
@@ -158,7 +158,7 @@
         "playwright",
         "npx --no-install playwright"
       ],
-      "owner_task": "api-cli-mcp-capability-registry-v0",
+      "owner_task": "playwright-cli-capability-probe",
       "scope": "local_runtime",
       "source_of_truth": [
         "manual report from sibling Codex session",
@@ -189,8 +189,8 @@
       ],
       "next_action": {
         "type": "probe",
-        "task_id": "api-cli-mcp-capability-registry-v0",
-        "description": "Resolve whether Playwright CLI is globally available, project-local, or only installed in another session/environment."
+        "task_id": "playwright-cli-capability-probe",
+        "description": "Resolve whether Playwright should be project-local, global, or handled through the Codex browser/chrome tools before using it as a verified CLI capability."
       },
       "history": [
         {
@@ -212,6 +212,16 @@
           "evidence_ref": "current Codex thread local command output",
           "actor_or_task": "api-cli-mcp-capability-registry-v0",
           "next_action": "Find the sibling session install path or add project-local Playwright dependency/script if this repo should own it."
+        },
+        {
+          "date": "2026-06-27",
+          "event_type": "local_probe",
+          "from_state": "unknown",
+          "to_state": "unknown",
+          "reason": "`command -v playwright` returned no PATH command, harness-mc has no Playwright dependency, and `npx --no-install playwright --version` did not return within the probe window before manual interrupt.",
+          "evidence_ref": "$COLLAB/harness-mc current session probe output",
+          "actor_or_task": "playwright-cli-capability-probe",
+          "next_action": "Use playwright-cli-capability-probe to decide whether to add a project-local dependency/script, document a global install path, or rely on Codex browser/chrome tools instead."
         }
       ]
     }

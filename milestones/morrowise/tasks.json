@@ -76,7 +76,8 @@
         }
       },
       "commits": [
-        "484e9f2"
+        "484e9f2",
+        "d3a27ab"
       ],
       "completed_at": "2026-06-27",
       "summary": "完成 source-map-v0 與既有 MC MorroWise specs 的 reconciliation：14 個 current source family 已分類為 merge/reference/gap，local_runtime_boundary、knowledge_health_metrics_missing、scanner_not_implemented 與 dashboard_not_connected 已映射到下一步 generator/open loop，不新增第二份架構總表。",

@@ -1,0 +1,17 @@
+{
+  "rejected_at": "2026-06-27T13:00:46.198Z",
+  "reason": "unknown_task",
+  "event": {
+    "event_id": "task.commit_attached-hiblocks-site-prefill-contract-bd04740-20260626T041446Z",
+    "type": "task.commit_attached",
+    "repo": "notyet-harness",
+    "commit": "bd04740",
+    "project": "hiblocks",
+    "task_id": "site-prefill-contract",
+    "status": "updated",
+    "summary": "astro-site-launcher 已新增網站預填契約與 Zeabur 部署 SOP，讓 HiBlocks/Astro 新案先讀基本資料與架構，再處理內容文件。",
+    "created_at": "2026-06-26T04:14:46.693Z",
+    "actor": "codex",
+    "session_id": "codex-2026-06-26-hiblocks-astro-prefill"
+  }
+}

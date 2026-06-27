@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-dual-blade-notyet-harness-cleanup-260603-8f362ce-20260627T092725Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "8f362ce",
+  "project": "dual-blade",
+  "task_id": "notyet-harness-cleanup-260603",
+  "status": "updated",
+  "summary": "補記 2026-06-27 Search Ops Agent 初診服務規格 session 到 daily memory markdown/html。",
+  "created_at": "2026-06-27T09:27:25.491Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-notyet-cleanup"
+}

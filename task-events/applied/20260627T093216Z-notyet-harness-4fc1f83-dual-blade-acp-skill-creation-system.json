@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-dual-blade-acp-skill-creation-system-4fc1f83-20260627T093216Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "4fc1f83",
+  "project": "dual-blade",
+  "task_id": "acp-skill-creation-system",
+  "status": "updated",
+  "summary": "Added the jpmodel-case-page shared skill with generation references and scripts for JPmodel case pages and success-list insertion.",
+  "created_at": "2026-06-27T09:32:16.170Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-notyet-harness-cleanup"
+}

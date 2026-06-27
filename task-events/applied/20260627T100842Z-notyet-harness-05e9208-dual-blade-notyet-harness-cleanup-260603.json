@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-dual-blade-notyet-harness-cleanup-260603-05e9208-20260627T100842Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "05e9208",
+  "project": "dual-blade",
+  "task_id": "notyet-harness-cleanup-260603",
+  "status": "updated",
+  "summary": "Added the KJ bilingual-program article seed about AI, learning value, judgment, and identity formation.",
+  "created_at": "2026-06-27T10:08:42.975Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-notyet-harness-cleanup"
+}

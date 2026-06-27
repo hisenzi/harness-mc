@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-dual-blade-notyet-harness-cleanup-260603-c667cef-20260627T093755Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "c667cef",
+  "project": "dual-blade",
+  "task_id": "notyet-harness-cleanup-260603",
+  "status": "updated",
+  "summary": "Imported the remote 2026-06-13 notyet-harness health check report into local main during divergence reconciliation.",
+  "created_at": "2026-06-27T09:37:55.486Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-notyet-harness-cleanup"
+}

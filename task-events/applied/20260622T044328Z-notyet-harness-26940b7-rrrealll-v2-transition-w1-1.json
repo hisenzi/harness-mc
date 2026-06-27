@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-rrrealll-v2-transition-w1-1-26940b7-20260622T044328Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "26940b7",
+  "project": "rrrealll-v2-transition",
+  "task_id": "w1-1",
+  "status": "updated",
+  "summary": "補上 RRREALLL 過渡網站的 shared repo registry、Obsidian project note、Canvas mirror 與 session log，讓開案追蹤可被跨工具找到。",
+  "created_at": "2026-06-22T04:43:28.449Z",
+  "actor": "codex",
+  "session_id": "rrrealll-transition-site-20260622"
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-harness-mc-morrowise-growth-gate-spec-45c06d1-20260627T092233Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "45c06d1",
+  "project": "harness-mc",
+  "task_id": "morrowise-growth-gate-spec",
+  "status": "updated",
+  "summary": "把 System Growth Gate 接入 project-init 開案規則，要求長期工作流專案補齊 trigger、資料流、surface 與 feedback loop。",
+  "created_at": "2026-06-27T09:22:33.724Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-notyet-cleanup"
+}

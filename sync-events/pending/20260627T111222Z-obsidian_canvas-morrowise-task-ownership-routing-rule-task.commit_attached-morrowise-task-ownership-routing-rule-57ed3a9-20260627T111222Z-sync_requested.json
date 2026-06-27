@@ -1,0 +1,16 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-morrowise-task-ownership-routing-rule-task.commit_attached-morrowise-task-ownership-routing-rule-57ed3a9-20260627T111222Z-20260627T111222Z",
+  "type": "sync_requested",
+  "target": "obsidian_canvas",
+  "status": "pending",
+  "source_event_id": "task.commit_attached-morrowise-task-ownership-routing-rule-57ed3a9-20260627T111222Z",
+  "project": "morrowise",
+  "task_id": "task-ownership-routing-rule",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-06-27T11:12:22.789Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-27-morrowise-task-ownership-routing"
+}

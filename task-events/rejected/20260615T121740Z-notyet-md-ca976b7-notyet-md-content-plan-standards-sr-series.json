@@ -1,0 +1,17 @@
+{
+  "rejected_at": "2026-06-27T13:00:46.174Z",
+  "reason": "unknown_task",
+  "event": {
+    "event_id": "task.completed-notyet-md-content-plan-standards-sr-series-ca976b7-20260615T121740Z",
+    "type": "task.completed",
+    "repo": "notyet-md",
+    "commit": "ca976b7",
+    "project": "notyet-md",
+    "task_id": "content-plan-standards-sr-series",
+    "status": "completed",
+    "summary": "CONTENT-PLAN 補副歌規則、冷讀者測試逐段五問 gate 與系統存活報告 SR-01~10 系列規劃，補齊 WRITING-PIPELINE 已引用但懸空的『發布前檢查』章節",
+    "created_at": "2026-06-15T12:17:40.714Z",
+    "actor": "cc",
+    "session_id": "cc-20260615-notyet"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-v0-boundary-lineage-map-33c05d1-20260622T043737Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "33c05d1",
+  "project": "morrowise",
+  "task_id": "v0-boundary-lineage-map",
+  "status": "updated",
+  "summary": "MorroWise visual mirror and session log were committed in notyet-harness after syncing five open tasks to the MorroWise whiteboard and Canvas.",
+  "created_at": "2026-06-22T04:37:37.888Z",
+  "actor": "codex",
+  "session_id": "codex-morrowise-2026-06-22"
+}

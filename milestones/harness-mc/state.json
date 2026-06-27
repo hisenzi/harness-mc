@@ -1,0 +1,993 @@
+{
+  "tasks": {
+    "morrowise-source-inventory": {
+      "status": "completed",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "2f507b0"
+      ],
+      "summary": "建立 system-workflow/docs/specs/morrowise-source-inventory.md，將現行 MC 正本、舊 system-ops project/reference、Obsidian mirror、daily memory、Heptabase/Canvas 視覺層分級，並列出 MorroWise 後續 index/task-map 應接的來源與鄰近 control-plane/sentinel tasks。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "414606d6-14fe-438b-b51b-fb17d3762114",
+          "synced_at": "2026-06-20",
+          "sync_mode": "refreshed"
+        }
+      }
+    },
+    "morrowise-system-index": {
+      "status": "completed",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "0ca01fe"
+      ],
+      "summary": "產出 MorroWise Living System Index：定義活系統能力 anatomy、source hierarchy、歷史 system-ops/Jarvis 來源、現行 MC/ACP 對應、過時假設、未落地缺口與下一步入口。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "b4d7759d-0ff2-4af8-a4cf-db7bb8c02324",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "morrowise-mc-task-map": {
+      "status": "completed",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "110afc0"
+      ],
+      "summary": "產出 MorroWise → MC Task Map：將舊 system-ops t1-t30 映射到現行 MC-LIVE、ACP、sentinel 與 ACP-SYNC 任務，結論是不新增新 task，改由既有主線吸收與延伸。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "12b795e8-6273-405b-845f-e1f291d6ecdd",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "morrowise-growth-gate-spec": {
+      "status": "completed",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "3155e48",
+        "45c06d1"
+      ],
+      "summary": "產出 MorroWise Growth Gate 正式規格：把活系統啟動條件定義成 trigger→source→process→output→surface→close-rule 路由，涵蓋使用者語句、weekly review、stale/blocked task、new project、task completion、commit boundary、external sync、docs drift 與 approval wait。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "3d22653b-5d9b-4c1c-9cb3-f465be4e1d5e",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "acp-task-schema-validator": {
+      "status": "completed",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "f072545"
+      ],
+      "summary": "新增 task schema validator：支援 --project、--track、--changed-only，對 changed/new control-plane 與 MorroWise tasks 缺欄位時 fail，歷史 legacy 問題維持 warn，讓任何 Agent 寫 task 前有可重跑的 schema gate。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "36fac29a-0796-42e1-b439-b494fa25eea8",
+          "synced_at": "2026-06-16",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    "acp-task-write-command-map": {
+      "status": "completed",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "ec3389b"
+      ],
+      "summary": "新增 Task Write Command Map，將「寫 task / 更新 task / task 寫到 Heptabase / 完成 task」路由到對應 skills、scripts、validators 與 stop conditions，並明確 MC tasks.json 是 source of truth、Heptabase/Canvas/dashboard 是 visual/read-model mirror。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "b372b6a8-c594-4e25-88e3-d600d666a052",
+          "synced_at": "2026-06-16",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    "acp-task-event-outbox": {
+      "status": "completed",
+      "completed_at": "2026-06-16",
+      "commits": [
+        "ac10c35",
+        "aa56dcc"
+      ],
+      "summary": "新增 append-only task event writer 與驗證，讓跨 repo commit 能產生 task event 而不是直接寫 MC canonical tasks。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "7d301abd-8bbc-4610-b70b-8ce01d4b036a",
+          "synced_at": "2026-06-16",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-apply-task-events": {
+      "status": "completed",
+      "completed_at": "2026-06-16",
+      "commits": [
+        "ac10c35"
+      ],
+      "summary": "新增 single-writer reducer，支援 pending events 套用、duplicate 去重、unknown task/type rejection、commit append 與 basic status transitions。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "de58542e-54bb-46de-bc2b-4cbbd0fe439a",
+          "synced_at": "2026-06-16",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-external-sync-queue": {
+      "status": "completed",
+      "completed_at": "2026-06-16",
+      "commits": [
+        "ac10c35"
+      ],
+      "summary": "新增 sync-event queue writer，讓 reducer 在任務狀態變更後排入 Obsidian Canvas、Heptabase append 與 Notion sentinel sync_requested events。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "286dd312-fb22-4edb-9dab-005ce84d9e3c",
+          "synced_at": "2026-06-16",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-task-event-dashboard": {
+      "status": "completed",
+      "completed_at": "2026-06-16",
+      "commits": [
+        "ac10c35",
+        "757c809"
+      ],
+      "summary": "首頁新增 Task Event Pipeline 卡片，顯示 task/sync event pending、rejected、latest reducer 與 queue pressure，並把 task-events/sentinel data generation 接入 prebuild。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "7be3dedc-4f91-4947-aaee-5a6503feca2a",
+          "synced_at": "2026-06-16",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-worktree-status-inventory": {
+      "status": "completed",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "053a327"
+      ],
+      "summary": "新增 worktree status generator 並接入 MC 首頁，將未提交變更、本機未推送、需要對帳三類狀態分欄顯示，讓首頁能回答哪些 repo 還沒收尾。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Willgrow / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "dcb8099b-6805-48a3-a3d1-70cc4ac5ad86",
+          "synced_at": "2026-06-20",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    "acp-system-attention-freshness-contract": {
+      "status": "completed",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "9b44afc"
+      ],
+      "summary": "完成 ACP-MC-19 首頁 System Attention：以 stale、blocked、queue pending 與 data freshness 取代大面積今日變化清單，並保留 freshness contract 讓資料可信度可判斷。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "7e5f4e33-33e6-420a-931a-e71476d1b4ea",
+          "synced_at": "2026-06-20",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "acp-control-plane-operating-loop": {
+      "status": "completed",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "a80b899",
+        "93d58b3",
+        "334f671"
+      ],
+      "summary": "完成 ACP-MC-20 Control Plane 運行迴路：正式化討論到 task、Heptabase、Obsidian Canvas、MC read model/freshness 的必經流程，並以 Agent Control Plane README 路由 protocol、schema、boundary map 與 planning 文件。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "4daedcbb-2aa0-4e6f-9618-d07f7c88047b",
+          "synced_at": "2026-06-21",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    "acp-visual-sync-coverage-report": {
+      "status": "in_progress",
+      "commits": [
+        "2f507b0",
+        "7cebf4e"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "3a002909-5ee3-4bd8-9df9-71d3c4c6c0f0",
+          "synced_at": "2026-06-20",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    "acp-control-plane-read-model-v0": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "d4e60f6f-96c8-4444-8b46-ff081dea2650",
+          "synced_at": "2026-06-16",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    "morrowise-anatomy-read-model": {
+      "status": "completed",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "a966779"
+      ],
+      "summary": "定義 morrowise-system.json v0 schema 與 companion spec：涵蓋 DNA、memory/context、senses/events、muscles、immune validators、heartbeat、feedback、open_loops，並加入 portable_agent_verification，讓任何 Agent 可由 $COLLAB 接手驗證。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "74cd3657-8300-48e9-a43b-c5eb94ef6d65",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "morrowise-dashboard-surface": {
+      "status": "completed",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "14c8496"
+      ],
+      "summary": "MC 首頁新增 MorroWise 活系統 surface：從 projects.json、task-events.json 與 changes.json 派生顯示 trigger sources、next executable task、open loops、feedback/pending events 與 canonical task state，不再只藏在 project detail。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "1c37d31b-0f99-4f36-903e-7944d0969d0f",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "morrowise-control-console-verify": {
+      "status": "completed",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "b062825"
+      ],
+      "summary": "完成 MorroWise 第一批 control-console 驗收：報告確認 MC 能回答 source-of-truth、現行 task map、啟動條件、狀態管線、read model、dashboard surface 與 feedback/open loops，並明確標示尚未具備 proactive/autonomous 能力。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "6b345e36-ec8e-4a49-a1c2-92c2b1860266",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "morrowise-trigger-rules-registry": {
+      "status": "completed",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "ebe4dc2"
+      ],
+      "summary": "定義 MorroWise trigger registry：新增機器可讀 registry、spec 與 verifier，覆蓋 stale/blocked task、sync failed、rejected event、weekly review、session startup、project-init growth gate missing，且每個 trigger 都有 source、condition、cooldown、output_event；trigger 只喚醒與輸出 recommendation input，不直接執行動作。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "974eae6e-d972-438d-83bd-11ac31e97f24",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "morrowise-recommendation-engine-v0": {
+      "status": "completed",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "72abe9d"
+      ],
+      "summary": "定義 MorroWise recommendation engine v0：新增機器可讀 recommendation registry、正式 spec、schema 欄位與 verifier，讓 trigger / read model 產生 next-best-action 候選；候選至少包含 reason、evidence_refs、risk_level、requires_approval、suggested_task_id、hc_refs、hc_reasoning、hc_confidence。HC 接為方法選擇器，不取代 tasks.json / read model / task-events evidence，也不得直接執行高風險動作。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "54d84d6d-a55a-4ef7-99c4-84d6d79ff705",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "morrowise-approval-policy": {
+      "status": "completed",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "519e9c5",
+        "9a66e90"
+      ],
+      "summary": "定義 MorroWise approval policy：新增機器可讀 policy、正式 spec、schema 欄位與 verifier，將 action 分成 allowed、approval_required、forbidden 三層；覆蓋 task/memory/schedule 變更、外部 sync/write、第三方 intake、commit/push/deploy、visual-layer overwrite/reverse sync、browser submit/message、secret/runtime auth/app storage/local DB/private key/history rewrite 等邊界。未知 runner action 預設需 approval，且 direction agreement 不等於 operation approval。 追加防呆：runner 最多產生 commit plan / draft patch；實際 commit 必須走 worktree-commit confirmation gate，push/deploy 需 Vincent 明確同意。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "8cf001fb-fe0d-48ec-961e-4a129e27b558",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "morrowise-autonomous-action-runner-v0": {
+      "status": "completed",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "448b98a"
+      ],
+      "summary": "實作 MorroWise low-risk action runner v0：新增 runner module、spec、schema 欄位與 verifier；預設 dry-run，只產 summary、reorder_suggestion、sync_requested_event_plan、draft_patch；只有低風險 queue_sync_requested 且明確啟用 writeSyncEvents 時才排本地 sync_requested event；所有中高風險或 approval-required action 只產 approval_request，不自動 apply。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "cf2baa5f-91b7-4f6b-9a66-62c0b3a51291",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "morrowise-proactive-loop-dashboard": {
+      "status": "completed",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "acf4787"
+      ],
+      "summary": "MC 首頁已顯示 MorroWise proactive loop read model，覆蓋正常閉環、等待 approval、runner blocked/open loop，並以驗證器守住 read-only boundary。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "06a39600-e2ee-438e-8605-426f41f8ff64",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "morrowise-proactive-loop-verify": {
+      "status": "completed",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "acf4787",
+        "42c6ad6"
+      ],
+      "summary": "MorroWise 主動化閉環已有可重跑驗收，覆蓋 trigger、recommendation、approval policy、runner action、feedback write-back、dashboard read model 與 forbidden runner case；test:morrowise-loop 與 test:morrowise-live-loop 皆通過。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "0bf72cb5-f545-4096-a9f5-060a1eba3c5a",
+          "synced_at": "2026-06-16",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "morrowise-live-system-verification-standard": {
+      "status": "completed",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "ab92e23"
+      ],
+      "summary": "定義 MorroWise 活系統 surface 驗證標準，要求 source、generator、generated_at、stale_rule、next_action、write_boundary、verifier 並規定未達標分類。"
+    },
+    "morrowise-live-surface-audit": {
+      "status": "completed",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "ab92e23"
+      ],
+      "summary": "依活系統標準盤點六個 MC surface，全部分類為 semi_live 並列出後續 read model、stale、verifier 與 homepage 缺口。"
+    },
+    "morrowise-live-dashboard-mockup": {
+      "status": "completed",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "ab92e23"
+      ],
+      "summary": "新增 MC 首頁 live dashboard mockup，納入 sidebar 分流、首頁摘要、drill-down、approval queue、freshness、surface contract 與 read-only boundary。"
+    },
+    "morrowise-live-dashboard-read-model-contract": {
+      "status": "completed",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "db5a57e"
+      ],
+      "summary": "新增 MorroWise live dashboard read model contract，定義 public/data/morrowise-live-dashboard.json top-level shape、surface contract、freshness/classification enum、六個 audited surfaces、drill-down routes、approval queue item contract，並在 verification result 前加入 worktree-commit completion gate。"
+    },
+    "morrowise-live-dashboard-real-data-flow": {
+      "status": "completed",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "4aa784d"
+      ],
+      "summary": "新增 MorroWise live dashboard generator 與 verifier，將 projects、task-events/sync-events、worktrees、approval policy、proactive loop、changes 接成 public/data/morrowise-live-dashboard.json，並串入 prebuild。"
+    },
+    "morrowise-live-dashboard-stale-degraded-state": {
+      "status": "completed",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "8d095c2"
+      ],
+      "summary": "在 MorroWise live dashboard generator 加入 per-surface freshness evaluator，輸出 fresh、stale、degraded、unknown、last_updated_at、freshness_reason 與 stale/degraded 修復 next_action；verifier 覆蓋四種 freshness state。"
+    },
+    "morrowise-live-dashboard-loop-verifier": {
+      "status": "completed",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "42c6ad6"
+      ],
+      "summary": "新增 MorroWise live dashboard closed-loop verifier，驗證 dashboard loop_chain 串起 trigger、recommendation、approval、runner output、feedback，並確認 approval_required / commit_push_deploy / forbidden cases 不會自動執行。"
+    },
+    "morrowise-live-dashboard-homepage-implementation": {
+      "status": "completed",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "7eedf5c",
+        "1a7cdb1"
+      ],
+      "summary": "把 MC 首頁改成 MorroWise live dashboard 入口：新增 sidebar 分流、首頁摘要、surface drill-down anchors、approval queue preview、freshness 與 read-only boundary，首頁只讀取 read model，不直接改 task state、commit、push、deploy 或外部同步。"
+    },
+    "morrowise-live-dashboard-doc-routing": {
+      "status": "completed",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "7ae2b9d"
+      ],
+      "summary": "新增 MorroWise live dashboard 文件路由圖，整理 task source、spec、mockup、read model、generator、homepage UI、verifier 的閱讀順序、權威邊界、surface route map、更新邊界與 handoff checklist，並在 read-model contract 加入 routing map 入口。"
+    },
+    "heptabase-pai-sync-migration-spec": {
+      "status": "todo",
+      "commits": [
+        "ef1a6cf"
+      ]
+    },
+    "heptabase-cli-pai-shared-lib": {
+      "status": "todo"
+    },
+    "heptabase-cli-pai-decouple": {
+      "status": "todo"
+    },
+    "heptabase-pai-legacy-archive": {
+      "status": "todo"
+    },
+    "heptabase-sync-skill-version-record": {
+      "status": "todo"
+    },
+    "sn-5": {
+      "status": "cancelled",
+      "summary": "未執行關閉：原 task 已整合到 morrowise/notification-adapter-contract；保留此卡作為 lineage，不再作為 execution anchor。"
+    },
+    "sn-6": {
+      "status": "cancelled",
+      "summary": "未執行關閉：原 task 已整合到 morrowise/notification-adapter-contract；保留此卡作為 lineage，不再作為 execution anchor。"
+    },
+    "sn-7": {
+      "status": "cancelled",
+      "summary": "未執行關閉：原 task 已整合到 morrowise/runtime-scheduler-v0；保留此卡作為 lineage，不再作為 execution anchor。"
+    },
+    "p2-1": {
+      "status": "deferred"
+    },
+    "p2-2": {
+      "status": "deferred"
+    },
+    "inf-8": {
+      "status": "deferred"
+    },
+    "acp-dashboard-spec": {
+      "status": "deferred",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "abd5b0e9-dee6-402a-8227-7ee7e3a12c20",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-system-workflow-migration-note": {
+      "status": "deferred",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "11cb9561-da59-4d09-8054-0adbcaa1396a",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-control-plane-data-generator": {
+      "status": "deferred",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "14c4195c-8d78-4c0a-be46-715b11828480",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-home-control-plane-card": {
+      "status": "deferred",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "6faab7ad-f053-478b-ae53-e36665a98c0e",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-projects-sidebar-search": {
+      "status": "deferred",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "279e27d3-1720-41ca-a2ed-df9f45083f7d",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-project-detail-control-plane": {
+      "status": "deferred",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "7f35efa7-fad4-4d3b-8f0b-bdb154cd89a8",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-runtime-policy-surface": {
+      "status": "deferred",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "f3f232ce-ea1e-48d5-b5bb-b343fe1c8f7f",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-task-state-split": {
+      "status": "completed",
+      "completed_at": "2026-06-16",
+      "commits": [
+        "ac10c35"
+      ],
+      "summary": "新增 task-state helper，讓 generate-data.mjs 可用 milestones/<project>/state.json overlay 合併任務狀態，降低 tasks.json 寫入衝突面。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise / system-ops",
+          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "card_id": "47d0db3b-d8e4-422d-b8d0-8eab09e496f2",
+          "synced_at": "2026-06-16",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-skill-validator": {
+      "status": "completed",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "757f283"
+      ],
+      "summary": "新增 validate-skills.mjs + verify-validate-skills.mjs，changed SKILL.md 缺版本行、版本歷史、description 或含硬編本機路徑會 fail；舊 skill 只列 legacy warning，並接入 npm run test:skills / prebuild。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "74e3f6a1-5751-4312-9ea3-d651156242dc",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "p1-1": {
+      "status": "done"
+    },
+    "p1-2": {
+      "status": "done"
+    },
+    "p1-3": {
+      "status": "done"
+    },
+    "p1-4": {
+      "status": "done"
+    },
+    "p3-1": {
+      "status": "done",
+      "completed_at": "2026-05-15",
+      "commits": [
+        "3bb29a4"
+      ],
+      "summary": "三類資料源定義：skills（YAML frontmatter）、scripts（.py/.sh/.mjs/.js）、hooks（settings.json）+ git log 變更紀錄"
+    },
+    "p3-2": {
+      "status": "done",
+      "completed_at": "2026-05-15",
+      "commits": [
+        "3bb29a4"
+      ],
+      "summary": "generate-tools-data.mjs 掃描產出 tools.json。/tools 頁 4 tabs + 搜尋。首頁工具卡片即時摘要 + 可點擊"
+    },
+    "inf-1": {
+      "status": "done"
+    },
+    "inf-2": {
+      "status": "done"
+    },
+    "inf-3": {
+      "status": "done"
+    },
+    "dat-1": {
+      "status": "done"
+    },
+    "dat-2": {
+      "status": "done"
+    },
+    "dat-3": {
+      "status": "done"
+    },
+    "dat-4": {
+      "status": "done"
+    },
+    "dat-5": {
+      "status": "done"
+    },
+    "inf-5": {
+      "status": "done"
+    },
+    "inf-4": {
+      "status": "done"
+    },
+    "inf-6": {
+      "status": "done",
+      "completed_at": "2026-05-15",
+      "commits": [
+        "ca1234b"
+      ],
+      "summary": "腳本從 000_Agent/scripts/ 搬到 harness-mc/scripts/，輸出路徑改為 harness-mc/milestones/。模板加 done_condition + phase-verify + 結構化 success_criteria"
+    },
+    "inf-7": {
+      "status": "done",
+      "completed_at": "2026-05-15",
+      "commits": [
+        "2ea5bd2"
+      ],
+      "summary": "tasks.json 加 completed_at/commits/summary 欄位，前端 details toggle 展開顯示完成紀錄 + ▶ 指示器。generate-data.mjs 同步 pass-through 新欄位"
+    },
+    "mapelon2-init": {
+      "status": "done",
+      "completed_at": "2026-05-15",
+      "commits": [
+        "69ef81b"
+      ],
+      "summary": "Mapelon 2.0 前台交接完成，在 MC 建立 16 task 追蹤（8 completed + 8 pending/blocked）"
+    },
+    "tasks-backfill-260515": {
+      "status": "done",
+      "completed_at": "2026-05-15",
+      "commits": [
+        "c4fb1fa"
+      ],
+      "summary": "inf-7 上線後回填 dual-blade + harness-mc 既有 completed task 的 completed_at/commits/summary"
+    },
+    "launch-autoport": {
+      "status": "done",
+      "completed_at": "2026-05-15",
+      "commits": [
+        "4eb6666"
+      ],
+      "summary": "加 autoPort: true，port 被占用時自動遞增，不用手動換 port"
+    },
+    "tasks-backfill-batch-260515": {
+      "status": "done",
+      "completed_at": "2026-05-15",
+      "commits": [
+        "66ef9d4"
+      ],
+      "summary": "worktree-commit 流程回填：inf-6/inf-7/p3-1/p3-2 補 commits + 3 個 auto-task 建立 + mapelon-2 project.json 補漏"
+    },
+    "auto-task-backfill-a137dac": {
+      "status": "done",
+      "completed_at": "2026-05-15",
+      "commits": [
+        "a137dac"
+      ],
+      "summary": "66ef9d4 批次回填 commit + worktree-commit-skill append 35f5266 的 task 紀錄寫入"
+    },
+    "homepage-dual-layer": {
+      "status": "done",
+      "completed_at": "2026-05-18",
+      "commits": [
+        "5528390"
+      ],
+      "summary": "首頁從平面 2×2 grid 重構為紀律層＋能力層兩區，每區有標籤行（中文名 + 英文說明 + 分隔線）"
+    },
+    "dat-milestones-260518": {
+      "status": "done",
+      "completed_at": "2026-05-18",
+      "commits": [
+        "a0effe5"
+      ],
+      "summary": "3 個新專案加入 MC 追蹤。hiblocks task 經 HC 驗證修正（14 block 非 6、已有 Props）"
+    },
+    "dat-status-type-normalize": {
+      "status": "done",
+      "completed_at": "2026-05-19",
+      "commits": [
+        "3ff9224"
+      ],
+      "summary": "task status 統一為 5 種值（done/todo/in_progress/blocked/deferred），project type 改為 service/knowledge/system。新增 exam-prep-6yr、wealth-system milestone"
+    },
+    "projects-card-filter-rebuild": {
+      "status": "done",
+      "completed_at": "2026-05-19",
+      "commits": [
+        "1556b1e"
+      ],
+      "summary": "卡片標題固定兩行高、StatusDot 取代 emoji、filter 改 service/knowledge/system/completed、ProgressBar 分類上色、移除目前清空區塊"
+    },
+    "projects-completed-filter-task-progress-bug": {
+      "status": "completed",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "0d2b454"
+      ],
+      "summary": "/projects completed 分類改為只依 task 完成度判斷；project.status=completed 但仍有 open task 的專案會回到對應 type 的進行中列表。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "95c7d3a1-2e5a-46ce-9dc4-f2a2503cf8ce",
+          "synced_at": "2026-06-21",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    "config-launch-newproject": {
+      "status": "done",
+      "completed_at": "2026-05-19",
+      "commits": [
+        "e36d5e2"
+      ],
+      "summary": "launch.json 改用 npx next dev，new-project.py 路徑從 ~/.openclaw/ 遷移至 Claude_協作/"
+    },
+    "learning-page-and-milestones": {
+      "status": "done",
+      "completed_at": "2026-05-24",
+      "commits": [
+        "5c90622"
+      ],
+      "summary": "學習進度詳細頁、首頁 LearningCard、generate-data 拆分 learning.json、Notion 課程同步腳本、新增 fontcard-120 / notion-finance / self-learning milestone"
+    },
+    "backfill-learning-auto-task": {
+      "status": "done",
+      "completed_at": "2026-05-24",
+      "commits": [
+        "bec1d7a"
+      ],
+      "summary": "前 session commit 5c90622 漏做 Step 7 auto-task 回填，本次補上"
+    },
+    "tools-skill-changelog": {
+      "status": "done",
+      "completed_at": "2026-06-08",
+      "commits": [
+        "62f669b",
+        "334f671"
+      ],
+      "summary": "generate-tools-data.mjs 加 parseChangelog() 讀各 skill CHANGELOG.md；tools 頁 skill 卡片可點擊展開版本時間軸（版號 badge＋summary＋commit hash），最新版綠色高亮。"
+    },
+    "tools-cards-3col": {
+      "status": "completed",
+      "completed_at": "2026-06-08",
+      "commits": [
+        "3489c82"
+      ],
+      "summary": "skills/scripts/hooks/變更紀錄 四 tab 從單欄改 md:2/lg:3 欄 grid，卡片對齊專案頁（rounded-xl p-4、標題 line-clamp-2 min-h-52 等高、items-start 不拉長展開列）"
+    },
+    "sn-1": {
+      "status": "completed",
+      "completed_at": "2026-06-12",
+      "summary": "schedule/{tasks,runners,lib,runs} 骨架 + .gitignore（排除 .env/runs/）+ lib/notify.sh（無 token exit 2 優雅降級）+ .env.example 範本 + tasks/mc-sentinel.yaml 任務契約。git check-ignore 驗證通過"
+    },
+    "sn-2": {
+      "status": "completed",
+      "completed_at": "2026-06-12",
+      "summary": "sentinel-diff.mjs：git 24h 基線（git 即快照庫）、多格式 tasks parser、衰老掃描（blocked 14d / in_progress 7d / deferred 30d 專案級）、--brief/--push/--since、錯誤時產合法空殼不擋 CI。prebuild 串接。實跑驗證：39 events · 3 stale · 41 blocked_now，正確涵蓋未 commit 變更"
+    },
+    "sn-3": {
+      "status": "completed",
+      "completed_at": "2026-06-12",
+      "summary": "首頁 SentinelCard：brief + stale 黃色警示 + 前 8 筆 events（+N 筆摺疊）+ 基線 rev 與產生時戳（誠實時間，不假即時）。安靜狀態顯示 blocked 持平數。headless 截圖驗證渲染正確"
+    },
+    "sn-4": {
+      "status": "completed",
+      "completed_at": "2026-06-12",
+      "summary": "cc-claude-md.md 啟動自檢新增 Step 2 哨兵簡報（--brief 看變化、stale 主動條列、未推送加 --push、失敗不阻斷 session）。已 cp 本機，md5 雙端一致。⚠️ 對端 MBA-2 git pull 後待 cp"
+    },
+    "acp-obsidian-canvas-sync-hook": {
+      "status": "done",
+      "completed_at": "2026-06-14",
+      "commits": [
+        "3efeaa1",
+        "0c6b65f",
+        "bd89778"
+      ],
+      "summary": "把 Visual Layer Transition Protocol 接進 planning、project-init、worktree-commit、heptabase-task-cards 四個 skill hook；改 MC task 後會同步 Obsidian Canvas，Heptabase refs 回寫後再同步一次。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "b396bb3f-31f8-43da-8663-f6ad4fd22f59",
+          "synced_at": "2026-06-15",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    "acp-task-before-work-gate": {
+      "status": "completed",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "8ecc66d",
+        "2f507b0"
+      ],
+      "summary": "新增 Task-before-work gate：可行提案不可直接動工；planning 必須建立或更新 task，execution 開始前必須確認 work anchor，project-init 開案後也要先有 task anchor。"
+    },
+    "acp-visual-sync-coverage-gate": {
+      "status": "completed",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "8ecc66d",
+        "2f507b0"
+      ],
+      "summary": "新增 visual sync coverage gate：有 task 的項目不能只停在 tasks.json；回報時要說明是否同步到 Heptabase 白板、是否已跑 Obsidian Canvas sync、哪些 task 尚缺 external_refs.heptabase 或 Canvas mirror。"
+    },
+    "acp-work-anchor-preflight-flow": {
+      "status": "completed",
+      "completed_at": "2026-06-21",
+      "commits": [
+        "8c13f68",
+        "b4443a2",
+        "7837076"
+      ],
+      "summary": "新增 work-anchor preflight CLI/verifier 並接入 shared skills；開始/可以/進行前會列 active task 與 allow/block，無 active task 時只能提出 proposed task，house123-buy 歷史 fixture 已可重跑驗證。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "4194d28c-7a2f-4048-90ec-ce8a19948462",
+          "synced_at": "2026-06-21",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    "acp-required-heptabase-canvas-publish-flow": {
+      "status": "completed",
+      "completed_at": "2026-06-22",
+      "commits": [
+        "28c594a",
+        "fb64d9b"
+      ],
+      "summary": "完成：task 發布流程已改為必須取得 Vincent 指定的 Heptabase 白板名稱；該白板名稱同時作為 Obsidian Canvas 名稱。planning、project-init、visual-layer-transition-protocol、heptabase-task-cards skill 與 adapter/verifier 均已補上禁止 project id / 預設白板推論、coverage report 與同名 Canvas 規則。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "b7876337-bc60-487a-b26a-826cd3fa03a6",
+          "synced_at": "2026-06-22",
+          "sync_mode": "refreshed"
+        }
+      }
+    },
+    "acp-hc-framing-gate": {
+      "status": "completed",
+      "completed_at": "2026-06-22",
+      "commits": [
+        "8baa72d",
+        "1cbcd27"
+      ],
+      "summary": "完成：HC framing gate 已落地為 planning / execution / project-init shared skill hook、work-anchor preflight target task gate、validate-tasks hc_decision schema 與 test:hc-framing-gate verifier；系統型 task 缺 HC decision block 時會先被擋下或警告，HC 明確作為 thinking check 而非 source of truth。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "2f7c37e6-c158-4ff8-bb06-5da909944ab6",
+          "synced_at": "2026-06-22",
+          "sync_mode": "refreshed"
+        }
+      }
+    },
+    "morrowise-rename-impact-inventory": {
+      "status": "completed",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "2f507b0"
+      ],
+      "summary": "改名盤點結論：品牌/MC 顯示名稱先改，task id / track / docs 檔名屬 structural rename 應另做一批；daily memory 與 commit message 保留 Willgrow 作歷史狀態。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "c1a6712d-e3fe-4669-913c-dc4d22596dd2",
+          "synced_at": "2026-06-20",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    "morrowise-structural-rename": {
+      "status": "completed",
+      "completed_at": "2026-06-20",
+      "commits": [
+        "7cebf4e"
+      ],
+      "summary": "完成 MC canonical source 與 system-workflow docs 的 Willgrow → MorroWise 結構改名：track、task ids、dependencies、display titles、docs 檔名/標題與 dashboard tracking needles 已改用 MorroWise；Willgrow 保留為歷史參照。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "5ee4fae5-a2f4-4dd6-a750-939e63556816",
+          "synced_at": "2026-06-20",
+          "sync_mode": "appended"
+        }
+      }
+    }
+  }
+}

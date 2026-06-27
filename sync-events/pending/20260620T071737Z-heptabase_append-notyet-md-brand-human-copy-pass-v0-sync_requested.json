@@ -1,0 +1,20 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-notyet-md-brand-human-copy-pass-v0-task.completed-notyet-md-brand-human-copy-pass-v0-4bc4918-20260620T071737Z-20260620T071737Z",
+  "type": "sync_requested",
+  "target": "heptabase_append",
+  "status": "pending",
+  "source_event_id": "task.completed-notyet-md-brand-human-copy-pass-v0-4bc4918-20260620T071737Z",
+  "project": "notyet-md",
+  "task_id": "brand-human-copy-pass-v0",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "24e7963a-0cf9-4029-a15c-c4c565a463ca",
+    "whiteboard": "MC 儀表版",
+    "status": "completed",
+    "summary": "Reworked early MorroWise and notyet wording toward concrete human language and documented AI-flavored terms to avoid.",
+    "commit": "4bc4918"
+  },
+  "created_at": "2026-06-20T07:17:37Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-20-morrowise"
+}

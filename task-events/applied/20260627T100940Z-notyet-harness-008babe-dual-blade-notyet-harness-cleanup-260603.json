@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-dual-blade-notyet-harness-cleanup-260603-008babe-20260627T100940Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "008babe",
+  "project": "dual-blade",
+  "task_id": "notyet-harness-cleanup-260603",
+  "status": "updated",
+  "summary": "Ignored local Obsidian workspace state to keep notyet-harness dirty scope focused on shared brain artifacts.",
+  "created_at": "2026-06-27T10:09:40.944Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-notyet-harness-cleanup"
+}

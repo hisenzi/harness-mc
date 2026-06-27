@@ -1,0 +1,20 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-harness-mc-acp-task-event-outbox-task.commit_attached-harness-mc-acp-task-event-outbox-aa56dcc-20260627T091923Z-20260627T091923Z",
+  "type": "sync_requested",
+  "target": "heptabase_append",
+  "status": "pending",
+  "source_event_id": "task.commit_attached-harness-mc-acp-task-event-outbox-aa56dcc-20260627T091923Z",
+  "project": "harness-mc",
+  "task_id": "acp-task-event-outbox",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "7d301abd-8bbc-4610-b70b-8ce01d4b036a",
+    "whiteboard": "MorroWise / system-ops",
+    "status": "completed",
+    "summary": "更新 worktree-commit v1.6：跨 repo commit 改寫 append-only task event，不直接修改 harness-mc canonical tasks；ACP-MC-13 已完成，本次補掛 skill commit evidence。",
+    "commit": "aa56dcc"
+  },
+  "created_at": "2026-06-27T09:19:23.412Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-worktree-commit-event-rule"
+}

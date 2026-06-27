@@ -1,0 +1,307 @@
+{
+  "tasks": {
+    "p1-1": {
+      "status": "done",
+      "completed_at": "2026-06-10",
+      "commits": [
+        "0c1769e",
+        "1c662a4"
+      ],
+      "summary": "區塊對應矩陣的兩個關鍵待決項已由後續實作落地：團隊區採客製 HiTeam（p1-5），文章列表採 news collection/list/detail（p1-6）；Phase 1 驗收時確認實質完成。"
+    },
+    "p1-2": {
+      "status": "done",
+      "completed_at": "2026-05-30",
+      "commits": [
+        "5d9f004"
+      ],
+      "summary": "HiBlocks 全套導入 yutianlaw repo，npm build 通過、dev server 可跑"
+    },
+    "p1-3": {
+      "status": "done",
+      "completed_at": "2026-05-30",
+      "commits": [
+        "5d9f004"
+      ],
+      "summary": "套 theme-yutian（深藏藍#1e2e4f+香檳金+明體），navbar/footer/hero 雨田化，移除展創 demo；真 Logo 圖待 p1-7"
+    },
+    "p1-4": {
+      "status": "done",
+      "completed_at": "2026-05-30",
+      "commits": [
+        "5d9f004"
+      ],
+      "summary": "首頁組裝 + 內容同步自雨田官網（沉穩辯護文案/4大服務領域/8位律師/完整聯絡）"
+    },
+    "p1-5": {
+      "status": "done",
+      "completed_at": "2026-06-01",
+      "commits": [
+        "0c1769e"
+      ],
+      "summary": "客製 HiTeam flip card 區塊：8 位律師正面名/職稱(官網)/學歷，點擊 3D 翻轉看背面 bio（學經歷/專業領域/重大案件）；4 真照片+4 姓氏圓圈 fallback，圓形統一 96px"
+    },
+    "p1-6": {
+      "status": "done",
+      "completed_at": "2026-06-02",
+      "commits": [
+        "1c662a4"
+      ],
+      "summary": "news collection（複製 portfolio glob+zod）+ 兩欄響應式列表 + 720px 詳情頁；匯入官網 5 篇法律觀點（商事/民事/行政），每篇末尾加常見問題 FAQ；對應 navbar /news。超原訂「1 篇測試文」"
+    },
+    "p1-7": {
+      "status": "done",
+      "completed_at": "2026-06-10",
+      "commits": [
+        "949c9a1",
+        "ac0f47d",
+        "2de395a",
+        "bd99d77",
+        "55e393e"
+      ],
+      "summary": "全站圖片管線完成：logo/hero/OG/favicon/合照（ac0f47d）+ 律師頭像 webp 管線（2de395a）+ 詹秉恆資料入 team（bd99d77）；*.psd 出 repo/dist。命名沿用既有 surname-givenname 慣例（非原訂 YYMMDD_slug，全資料夾一致性優先）。"
+    },
+    "p1-verify": {
+      "status": "done",
+      "completed_at": "2026-06-10",
+      "commits": [
+        "fe0f6b8"
+      ],
+      "summary": "4/5 criteria 通過：build 7 頁零錯、五區段+footer 齊、news 5 篇渲染、og/meta 齊+桌機/手機響應式 preview 驗證。C1（公開訪問）屬 p1-deploy 部署後驗。驗收抓到兩個部署阻斷並修除（fe0f6b8）：展創 demo 殘留（/portfolio ×2 + /demo/monaka 仍被建出）、PSD 28M 隨 public/ 進 dist。dist 最終 14M 無 psd 無殘留"
+    },
+    "p1-deploy": {
+      "status": "todo",
+      "commits": [
+        "d95e64b",
+        "c369ac7"
+      ]
+    },
+    "p1-init": {
+      "status": "done",
+      "completed_at": "2026-05-30",
+      "commits": [
+        "5d3bec3"
+      ],
+      "summary": "經 HC 分析開案，建 project.json(4 decisions)+9 tasks，登錄 repos.json/ARCHITECTURE"
+    },
+    "navbar-two-stage-260602": {
+      "status": "done",
+      "completed_at": "2026-06-02",
+      "commits": [
+        "80b168a"
+      ],
+      "summary": "雨田 navbar 兩段式：首屏實色、捲動玻璃霧面 + menu/CTA 配色修正"
+    },
+    "navbar-faq-anchor-260607": {
+      "status": "done",
+      "completed_at": "2026-06-10",
+      "commits": [
+        "842fb51"
+      ],
+      "summary": "常見問題 /#faq 入 navbar 與 footer 關於雨田欄，選單順序對齊首頁區段流；五錨點（about/services/team/faq/contact）全數存在且定位無 navbar 覆蓋，#contact 由 CTA 預約諮詢覆蓋。桌機+手機抽屜皆 preview 驗證"
+    },
+    "faq-section-260607": {
+      "status": "done",
+      "completed_at": "2026-06-07",
+      "commits": [
+        "339be49"
+      ]
+    },
+    "team-spotlight-rail-260607": {
+      "status": "done",
+      "completed_at": "2026-06-07",
+      "commits": [
+        "339be49"
+      ]
+    },
+    "yt-A1": {
+      "status": "todo"
+    },
+    "yt-A2": {
+      "status": "todo"
+    },
+    "yt-A3": {
+      "status": "blocked"
+    },
+    "yt-A4": {
+      "status": "blocked"
+    },
+    "yt-B0": {
+      "status": "todo"
+    },
+    "yt-B-gate": {
+      "status": "todo"
+    },
+    "yt-B1": {
+      "status": "blocked"
+    },
+    "yt-B2": {
+      "status": "todo"
+    },
+    "yt-B3": {
+      "status": "backlog"
+    },
+    "fix-mobile-menu": {
+      "status": "completed",
+      "completed_at": "2026-06-09",
+      "commits": [
+        "9ec4577"
+      ],
+      "summary": "修手機選單捲動後塌掉/內容透出（navbar 的 backdrop-filter 把 fixed 選單困在 ~72px 容器內）→ 開啟時關掉 backdrop-filter 恢復滿版；顯隱改 visibility 避開 opacity transition 卡住；背景改純色；點項目即關閉選單並捲至該區塊。"
+    },
+    "yt-c1": {
+      "status": "done",
+      "completed_at": "2026-06-21",
+      "summary": "需求取消：客戶沒有官方 LINE，因此不新增 LINE 官方帳號入口、QR 或加好友連結；全站聯絡管道維持電話、email 與後續表單。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "b2c089e5-ceb5-4583-a4b8-1d9afaaa0818",
+          "synced_at": "2026-06-21",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    "yt-c2": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "7208a822-ac85-4030-82c5-f9a0dd4a4019",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "yt-c3": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "c2e92ae1-9ee9-40e6-9e1f-45ccd1b59f27",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "yt-c4": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "cae598d1-4f49-40ab-8d80-129f52e5b2ae",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "yt-c5": {
+      "status": "blocked",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "aa826e3a-1280-4b71-b22e-3943f7c6e8c8",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "yt-c6": {
+      "status": "done",
+      "completed_at": "2026-06-22",
+      "commits": [
+        "9627c69"
+      ],
+      "summary": "完成「關於我們」第一版擴充：HiAbout 支援 story/facts，首頁新增 ABOUT/BELIEF 敘事與手機圖上文下 RWD；build 通過，客戶確認由 Vincent 後續管理。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "58ca3996-1477-4172-b84c-6833ce13b3ca",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "yt-c7": {
+      "status": "blocked",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "9e74b538-6a44-4eb4-8646-6a71d2713355",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "yt-c8": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "282e6c11-d8e8-414c-b651-79222901dbc3",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "yt-c9": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "ccc47fee-2a68-494d-9234-e307c6c9c2de",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "yt-c10": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "b4dadc72-302e-4b27-a0fc-d0923efbfb2b",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "yt-c11": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "4e361d94-74bd-4d4f-8971-cdc8e55a92e8",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "yt-c12": {
+      "status": "backlog",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "雨田律師事務所網站",
+          "whiteboard_id": "efdd8a54-a24a-4ef4-9ceb-ed8749db77ca",
+          "card_id": "88e8f444-8d2f-46e6-a2e1-f5e129d8d095",
+          "synced_at": "2026-06-18",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "yt-c13": {
+      "status": "in_progress"
+    }
+  }
+}

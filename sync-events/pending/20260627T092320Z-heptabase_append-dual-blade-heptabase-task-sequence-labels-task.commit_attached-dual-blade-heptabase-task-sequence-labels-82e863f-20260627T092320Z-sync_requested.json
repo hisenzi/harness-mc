@@ -1,0 +1,20 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-dual-blade-heptabase-task-sequence-labels-task.commit_attached-dual-blade-heptabase-task-sequence-labels-82e863f-20260627T092320Z-20260627T092320Z",
+  "type": "sync_requested",
+  "target": "heptabase_append",
+  "status": "pending",
+  "source_event_id": "task.commit_attached-dual-blade-heptabase-task-sequence-labels-82e863f-20260627T092320Z",
+  "project": "dual-blade",
+  "task_id": "heptabase-task-sequence-labels",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "b2c15224-e761-4c3b-a798-71ff21734240",
+    "whiteboard": "MC 儀表版",
+    "status": "done",
+    "summary": "修正 Heptabase task card title 產生邏輯，避免 order_label 已在 title 開頭時被重複顯示。",
+    "commit": "82e863f"
+  },
+  "created_at": "2026-06-27T09:23:20.682Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-notyet-cleanup"
+}

@@ -1,0 +1,20 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-dual-blade-skill-version-record-rule-patch-task.commit_attached-dual-blade-skill-version-record-rule-patch-25067c2-20260627T092146Z-20260627T092146Z",
+  "type": "sync_requested",
+  "target": "heptabase_append",
+  "status": "pending",
+  "source_event_id": "task.commit_attached-dual-blade-skill-version-record-rule-patch-25067c2-20260627T092146Z",
+  "project": "dual-blade",
+  "task_id": "skill-version-record-rule-patch",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "8aa718f2-a6f3-447e-a2bf-9f80a7113834",
+    "whiteboard": "MC 儀表版",
+    "status": "in_progress",
+    "summary": "補上 build-skill 與 skill-authoring 的版本紀錄規則，要求 skill 更新時同步 bump version 並記錄版本歷史。",
+    "commit": "25067c2"
+  },
+  "created_at": "2026-06-27T09:21:46.905Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-notyet-cleanup"
+}

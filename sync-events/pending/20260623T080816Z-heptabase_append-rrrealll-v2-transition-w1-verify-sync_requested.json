@@ -1,0 +1,20 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-rrrealll-v2-transition-w1-verify-task.completed-rrrealll-v2-transition-w1-verify-6e75de3-20260623T080816Z-20260623T080816Z",
+  "type": "sync_requested",
+  "target": "heptabase_append",
+  "status": "pending",
+  "source_event_id": "task.completed-rrrealll-v2-transition-w1-verify-6e75de3-20260623T080816Z",
+  "project": "rrrealll-v2-transition",
+  "task_id": "w1-verify",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "a534cf6c-8f17-40cd-ba7b-be02cff36839",
+    "whiteboard": "RRREALLL 過渡期網站",
+    "status": "completed",
+    "summary": "RRREALLL 過渡網站本機驗收通過：npm run build 與 astro check 通過；桌面首屏、手機版主要區塊、FAQ 展開、CTA mailto、/privacy/ 與 /terms/ 連結皆確認，未發現橫向溢出或明顯重疊。",
+    "commit": "6e75de3"
+  },
+  "created_at": "2026-06-23T08:08:16.694Z",
+  "actor": "codex",
+  "session_id": "codex-rrrealll-w1-verify-20260623"
+}

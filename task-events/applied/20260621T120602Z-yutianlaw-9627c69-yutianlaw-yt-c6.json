@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-yutianlaw-yt-c6-9627c69-20260621T120602Z",
+  "type": "task.commit_attached",
+  "repo": "yutianlaw",
+  "commit": "9627c69",
+  "project": "yutianlaw",
+  "task_id": "yt-c6",
+  "status": "updated",
+  "summary": "首頁關於區套用 Option D：HiAbout 支援 story/facts，首頁新增 ABOUT/BELIEF 敘事與手機圖上文下 RWD；客戶確認前不標完成。",
+  "created_at": "2026-06-21T12:06:02.012Z",
+  "actor": "codex",
+  "session_id": "yutianlaw-about-option-d-20260621"
+}

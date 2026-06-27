@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-leo-real-estate-ai-p0-1-d488c20-20260625T160806Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "d488c20",
+  "project": "leo-real-estate-ai",
+  "task_id": "p0-1",
+  "status": "updated",
+  "summary": "補上 2026-06-26 cc-log 與 HTML daily handoff，記錄 Leo 房仲 AI 開案、需求追溯、驗證與待補風險。",
+  "created_at": "2026-06-25T16:08:06.039Z",
+  "actor": "codex",
+  "session_id": "codex-leo-real-estate-ai-20260626"
+}

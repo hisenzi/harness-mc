@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-harness-mc-heptabase-cli-pai-decouple-e22979b-20260620T044644Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "e22979b",
+  "project": "harness-mc",
+  "task_id": "heptabase-cli-pai-decouple",
+  "status": "updated",
+  "summary": "Tracked heptabase-cli-to-pai.py as the local CLI entrypoint for the PAI sync migration; decoupling from heptabase-to-pai.py remains pending.",
+  "created_at": "2026-06-20T04:46:44.120Z",
+  "actor": "codex",
+  "session_id": "codex-heptabase-cli-to-pai-2026-06-20"
+}

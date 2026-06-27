@@ -1,0 +1,16 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-kids-reward-p1-2-task.blocked-kids-reward-p1-2-uncommitted-p1-2-verifier-20260624T022000Z-20260624T022000Z",
+  "type": "sync_requested",
+  "target": "obsidian_canvas",
+  "status": "pending",
+  "source_event_id": "task.blocked-kids-reward-p1-2-uncommitted-p1-2-verifier-20260624T022000Z",
+  "project": "kids-reward",
+  "task_id": "p1-2",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-06-24T02:20:00.563Z",
+  "actor": "codex",
+  "session_id": "codex-20260624-kids-reward-p1-2-blocked"
+}

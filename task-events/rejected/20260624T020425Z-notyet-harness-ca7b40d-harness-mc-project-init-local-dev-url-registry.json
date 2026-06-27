@@ -1,0 +1,17 @@
+{
+  "rejected_at": "2026-06-27T13:00:46.194Z",
+  "reason": "unknown_task",
+  "event": {
+    "event_id": "task.commit_attached-harness-mc-project-init-local-dev-url-registry-ca7b40d-20260624T020425Z",
+    "type": "task.commit_attached",
+    "repo": "notyet-harness",
+    "commit": "ca7b40d",
+    "project": "harness-mc",
+    "task_id": "project-init-local-dev-url-registry",
+    "status": "updated",
+    "summary": "新增 local-dev-urls registry，並把 standalone 本機網址登記接進 project-init 流程。",
+    "created_at": "2026-06-24T02:04:25.641Z",
+    "actor": "codex",
+    "session_id": "codex-20260624-local-dev-url-registry"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "tasks": {
+    "w1-1": {
+      "status": "done",
+      "completed_at": "2026-06-22",
+      "summary": "過渡頁任務定義為 7/1 前合法合規營運公告、LINE/粉專通知入口與 8 月洗髮精試用預告；風格沿用現行站白底、深綠、灰綠與理性保養語氣。"
+    },
+    "w1-2": {
+      "status": "completed",
+      "completed_at": "2026-06-22",
+      "commits": [
+        "0d685bf"
+      ],
+      "summary": "已以 hiblocks/Astro 建立 RRREALLL 過渡網站首頁，包含營運公告、8 月洗髮精試用預告、品牌原則、AI 成分工具伏筆、FAQ 與通知 CTA；npm run build 通過，桌面/手機首屏檢查無重疊。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "RRREALLL 過渡期網站",
+          "whiteboard_id": "238f74f6-5ae7-4cc3-b7f3-c1c5b2f3121d",
+          "card_id": "68167809-6219-4f3a-9c36-76c3c79ff591",
+          "synced_at": "2026-06-22",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    "w1-3": {
+      "status": "todo",
+      "commits": [
+        "43cc2ba"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "RRREALLL 過渡期網站",
+          "whiteboard_id": "238f74f6-5ae7-4cc3-b7f3-c1c5b2f3121d",
+          "card_id": "f00c2f2b-f6f3-472a-8521-745259a7288f",
+          "synced_at": "2026-06-22",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "w1-verify": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "RRREALLL 過渡期網站",
+          "whiteboard_id": "238f74f6-5ae7-4cc3-b7f3-c1c5b2f3121d",
+          "card_id": "a534cf6c-8f17-40cd-ba7b-be02cff36839",
+          "synced_at": "2026-06-22",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "launch-1": {
+      "status": "in_progress",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "RRREALLL 過渡期網站",
+          "whiteboard_id": "238f74f6-5ae7-4cc3-b7f3-c1c5b2f3121d",
+          "card_id": "32a895de-030e-4b91-b9c3-f9751f935181",
+          "synced_at": "2026-06-22",
+          "sync_mode": "created"
+        }
+      }
+    }
+  }
+}

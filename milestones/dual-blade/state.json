@@ -1,0 +1,706 @@
+{
+  "tasks": {
+    "brain-migration-m1": {
+      "status": "done",
+      "completed_at": "2026-05-13",
+      "commits": [
+        "f8ac0e6",
+        "40804c3",
+        "c668afd"
+      ],
+      "summary": "notyet-harness git repo 建立，000_Agent 內容驗證通過。or/ 21M 移出 git tracking（.gitignore），plan/SOP/Obsidian 加入 repo"
+    },
+    "brain-migration-m2": {
+      "status": "done",
+      "completed_at": "2026-05-13",
+      "commits": [
+        "ab00657",
+        "77a5119"
+      ],
+      "summary": "cc-claude-md.md source path 從 GD 切到 notyet-harness。本機 cp 到 ~/.claude/CLAUDE.md，md5 驗證一致"
+    },
+    "brain-migration-m2-cleanup": {
+      "status": "done",
+      "completed_at": "2026-05-13",
+      "commits": [],
+      "summary": "本機手動操作：skills symlink 指向 notyet-harness、plansDirectory 改路徑、舊 launchd plist unload + 移 _deprecated/。無對應 git commit（純本機設定）"
+    },
+    "brain-migration-m3": {
+      "status": "done",
+      "completed_at": "2026-05-14",
+      "commits": [
+        "8c6add1"
+      ],
+      "summary": "原定 deprecated，改為保留並更新路徑。GD_AGENT 硬編碼改為 SCRIPT_DIR 相對路徑，MBA-2 git pull 即可用"
+    },
+    "brain-migration-m3b": {
+      "status": "done",
+      "completed_at": "2026-05-14",
+      "commits": [
+        "8c6add1"
+      ],
+      "summary": "4 支腳本全面改相對路徑：heptabase-to-notion.py（GD_AGENT → AGENT_DIR）、update-skills-index.py、multi_project_backup_v4.sh、gd_mirror.sh（GD_ALERT_* → ALERT_*）"
+    },
+    "brain-migration-m4": {
+      "status": "blocked"
+    },
+    "migration-verify-mba1": {
+      "status": "todo"
+    },
+    "migration-verify-mba2": {
+      "status": "deferred"
+    },
+    "migration-backup-config": {
+      "status": "todo"
+    },
+    "migration-oc-cron-path": {
+      "status": "deferred"
+    },
+    "migration-gd-residual": {
+      "status": "done",
+      "completed_at": "2026-05-14",
+      "commits": [
+        "e0a6ac1"
+      ],
+      "summary": "heptabase-clients.json notyet client name 從 \"notyet.md\" 修正為 \"notyet\"。GD 上的舊檔不再被讀取（腳本已改用 repo 內 config）"
+    },
+    "migration-skills-gd-path": {
+      "status": "done",
+      "completed_at": "2026-05-14",
+      "commits": [
+        "8c6add1"
+      ],
+      "summary": "3 個 skill SKILL.md 的 GD 硬編碼路徑改為 notyet-harness：cc-log daily memory 路徑、capture-insight 根路徑、marker-based-auto-doc TARGET_DOC"
+    },
+    "migration-docs-gd-path": {
+      "status": "done",
+      "completed_at": "2026-05-14",
+      "commits": [
+        "8c6add1"
+      ],
+      "summary": "7 份文件 GD 路徑更新：ARCHITECTURE.md symlink 表 + Layer 1 改 Git、BACKUP-PLAN/RESTORE Layer 1 改 Git、MBA-2-sync-setup 加 DEPRECATED、MBA-2-statusline-setup cp 路徑、cross-machine-sync-design 加歷史標記、BACKUP-SCRIPTS.md 執行路徑"
+    },
+    "brain-migration-m5": {
+      "status": "todo"
+    },
+    "adr-system": {
+      "status": "done",
+      "completed_at": "2026-05-13",
+      "commits": [
+        "de1cfca"
+      ],
+      "summary": "建立 000_Agent/decisions/ ADR 系統。ADR-001 記錄 brain migration 決策，ADR-002 記錄 portability 評估（deferred）"
+    },
+    "portability-evaluation": {
+      "status": "in_progress"
+    },
+    "codex-prototype": {
+      "status": "done",
+      "completed_at": "2026-06-13",
+      "commits": [],
+      "summary": "Codex 已可透過全域 ~/.codex/AGENTS.md、$COLLAB/AGENTS.md、notyet-harness/AGENTS.md 讀取共享入口；skills 透過 ~/.agents/skills 與 $COLLAB/.agents/skills 指向 notyet-harness/000_Agent/skills。"
+    },
+    "openclaw-hisenzi-retire": {
+      "status": "done",
+      "completed_at": "2026-06-13",
+      "commits": [],
+      "summary": "雙刀流定位調整：OpenClaw / HiSenzi 之後不再作為日常共同參與者；保留為歷史資料來源與架構萃取來源。主要入口轉為 Claude Code / Codex / 未來 agent 共用 $COLLAB 與 notyet-harness。"
+    },
+    "client-share-structure": {
+      "status": "deferred"
+    },
+    "backup-phase-7": {
+      "status": "todo"
+    },
+    "backup-phase-8": {
+      "status": "blocked"
+    },
+    "mba-2-status-bar": {
+      "status": "todo"
+    },
+    "mba-2-cc-token-count": {
+      "status": "todo"
+    },
+    "obsidian-integration": {
+      "status": "todo"
+    },
+    "or-archive-decision": {
+      "status": "deferred"
+    },
+    "memory-md-trim": {
+      "status": "todo"
+    },
+    "cc-boundary-mc-write": {
+      "status": "done",
+      "completed_at": "2026-05-14",
+      "commits": [
+        "57c8b3a"
+      ],
+      "summary": "cc-claude-md.md 邊界表新增 harness-mc/ 為 CC 讀寫範圍。MEMORY.md/CORE.md 改為「需授權才寫」。已 cp 到本機，MBA-2 待 git pull + cp"
+    },
+    "mc-auto-rebuild-hook": {
+      "status": "done",
+      "completed_at": "2026-05-14",
+      "commits": [],
+      "summary": ".claude/settings.json 加 PostToolUse hook：Edit/Write tasks.json 後自動執行 generate-data.mjs 重建 MC 資料。純設定檔，無對應 repo commit"
+    },
+    "heptabase-notion-sync": {
+      "status": "todo"
+    },
+    "starter-kit-publish": {
+      "status": "todo"
+    },
+    "collab-path-convention": {
+      "status": "done",
+      "completed_at": "2026-05-14",
+      "commits": [
+        "4fb9b6a"
+      ],
+      "summary": "CORE.md 新增路徑規範 + 路徑檢查。cc-claude-md.md 硬編路徑全改 $COLLAB/。project-init skill 路徑改 $COLLAB/。雙端通用"
+    },
+    "path-check-cc-hook": {
+      "status": "todo"
+    },
+    "worktree-commit-skill": {
+      "status": "done",
+      "completed_at": "2026-05-14",
+      "commits": [
+        "2f172a3",
+        "35f5266"
+      ],
+      "summary": "建立 worktree-commit skill（7 步防呆流程 + auto-task 機制）。v1.2 加 10 天自驗 + push 部署 + 刪 Co-Authored-By。project-init v3.0 路徑改 $COLLAB/"
+    },
+    "harness-framework-v2": {
+      "status": "done",
+      "completed_at": "2026-05-18",
+      "commits": [
+        "e5aeaea"
+      ],
+      "summary": "四大支柱重構為能力層（Memory+Tools）＋紀律層（Planning+Evaluation）。ARCHITECTURE.md §九新增雙層視角，cc-claude-md.md 加 Planning 鐵律，新建 planning-preflight skill（HC 條件觸發閘門）"
+    },
+    "sop-verification-260524": {
+      "status": "done",
+      "completed_at": "2026-05-24",
+      "commits": [
+        "da773fc"
+      ],
+      "summary": "驗證 MBA-2-migration-sop-260513.md 發現 5 處過時（$COLLAB 定義缺失、路徑硬編碼、MEMORY.md 位置錯、repo 清單不全、過時清單未標狀態）。修正後合併 pending-tasks 為 Steps 8-9，檔名改 260524"
+    },
+    "dual-blade-timeline": {
+      "status": "done",
+      "completed_at": "2026-05-24",
+      "commits": [
+        "da773fc"
+      ],
+      "summary": "建立 000_Agent/docs/dual-blade-timeline.md — 6 Phase 完整演化脈絡（4/11→5/24），36+ 檔案按狀態分類索引，26 git commits，30 MC tasks 快照，瓶頸分析（M4），待辦三層分類"
+    },
+    "xiao-wei-mood-codex-autogen": {
+      "status": "done",
+      "completed_at": "2026-05-28",
+      "commits": [
+        "e8a5505"
+      ],
+      "summary": "心情圖管線從『輸出 prompt 等人工貼 ChatGPT』改為呼叫 mcp__codex__codex 自動生圖存檔；新增 Step 1.5 專案母題（思考健身房=思維啞鈴）讓場景多變化；修參考圖/存圖路徑 + 改 $COLLAB 合規"
+    },
+    "xiao-wei-mood-image-gen-rewire": {
+      "status": "in_progress"
+    },
+    "skill-dual-path-fix": {
+      "status": "done",
+      "completed_at": "2026-05-30",
+      "commits": [
+        "6235f6c"
+      ],
+      "summary": "11 skill references/scripts 路徑原寫死 OC 路徑（~/.openclaw/workspace/skills/），CC 透過 symlink 共用同份 skill 但無此路徑致 Step 0 cat rules.md 失敗；改 $S 雙端偵測（先試 ~/.claude/skills，不存在才用 ~/.openclaw/workspace/skills），OC 零影響"
+    },
+    "project-init-v3.1": {
+      "status": "done",
+      "completed_at": "2026-06-03",
+      "commits": [
+        "92f00b2"
+      ],
+      "summary": "開案流程 v3.0→v3.1：CORE.md 加 track 制執行規則、project-init Step2 加 decisions(HC決策)/Step3 Planning Preflight 閘門、project.json schema 加 tracks、planning-preflight 加非 code 專案驗證表"
+    },
+    "notyet-harness-cleanup-260603": {
+      "status": "done",
+      "completed_at": "2026-06-03",
+      "commits": [
+        "fd27ee7",
+        "708695f",
+        "6803b10",
+        "23ce087",
+        "faf7192",
+        "6ce4869",
+        "b174fec",
+        "6c94b7a",
+        "8f362ce",
+        "28b4666",
+        "3c8cc94",
+        "84de42d",
+        "c667cef",
+        "05e9208",
+        "008babe"
+      ],
+      "summary": "盤點未commit後清理：腳本/憑證路徑遷git repo(fd27ee7)、heptabase→PAI管線+task卡skill(708695f)、heptabase clients加life-focus+state(6803b10)、repos監控清單+sync-projects+ARCHITECTURE(23ce087)、小未人設v2+mood圖(faf7192)、daily memory 05-14~06-02歸檔(6ce4869)、AI大紀元生成影像指南(b174fec)"
+    },
+    "notyet-article-skill": {
+      "status": "done",
+      "completed_at": "2026-06-08",
+      "commits": [
+        "ce86e9a",
+        "8febf7f"
+      ],
+      "summary": "引擎九步＋可插拔風格（styles/）。整合 editorial-rules.md（threads-writer/CONTENT-PLAN/EDITORIAL/session 踩坑四源）、Step 0 強制讀正本硬閘門、Step 6 去 AI 味判準、Step 10 寫完貼全文。住 notyet-harness/000_Agent/skills/（hash 屬 notyet-harness repo）"
+    },
+    "build-skill-skill": {
+      "status": "done",
+      "completed_at": "2026-06-08",
+      "commits": [
+        "f8a9a14"
+      ],
+      "summary": "CC 原生重寫，移除 OpenClaw skill-creator/obsidian-note.py 依賴（CC 機不存在會卡死）；周邊整合改 best-effort 不當閘門。住 notyet-harness/000_Agent/skills/（hash 屬 notyet-harness repo）"
+    },
+    "agent-control-plane-sift-validation": {
+      "status": "done",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "82e9573"
+      ],
+      "summary": "產出 000_Agent/docs/agent-control-plane/sift-validation-260613.md。用 HC #sift 驗證 agent harness / runtime / control plane 趨勢，結論是先定位 Vincent-owned personal agent infrastructure，不急著新開案或全面 MCP 化。"
+    },
+    "agent-control-plane-adr": {
+      "status": "done",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "82e9573"
+      ],
+      "summary": "產出 000_Agent/decisions/ADR-003-agent-control-plane.md，並更新 decisions/README.md。記錄 dual-blade 轉型為 Vincent Agent Control Plane，ADR-002 的 Codex 真用觸發條件已發生。"
+    },
+    "agent-runtime-layer-map": {
+      "status": "done",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "82e9573"
+      ],
+      "summary": "更新 000_Agent/ARCHITECTURE.md，新增 Agent Control Plane Reference Architecture。完成 Entry / Rules / Capabilities / Runtime / Governance 五層映射與 Minimum Viable Control Plane 定義。"
+    },
+    "openclaw-architecture-extract": {
+      "status": "done",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "82e9573"
+      ],
+      "summary": "產出三份 historical extract：openclaw-schedule-extract-260613.md、openclaw-security-extract-260613.md、openclaw-memory-extract-260613.md。每份都標出可沿用、需改寫、淘汰三類。"
+    },
+    "scheduler-security-memory-roadmap": {
+      "status": "done",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "82e9573"
+      ],
+      "summary": "產出 000_Agent/docs/agent-control-plane/scheduler-security-memory-roadmap-260613.md。將排程、安全、記憶分成 Phase 0 立即微調、Phase 1 schema/document、Phase 2 runtime adapter、Phase 3 MCP 接入。"
+    },
+    "mcp-tools-boundary-map": {
+      "status": "done",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "82e9573"
+      ],
+      "summary": "產出 000_Agent/docs/agent-control-plane/mcp-tools-boundary-map-260613.md。定義 MCP 化判斷條件，先推 read-only MCP candidates，寫入、secret、外部發布與破壞性操作保留 approval/manual 邊界。"
+    },
+    "control-plane-mc-dashboard-update": {
+      "status": "done",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "f3fa211"
+      ],
+      "summary": "更新 app/projects/page.tsx，專案 modal 的 track header 會顯示 project.json tracks 說明，並替 control-plane 加上專屬顏色。重建 MC data 後可在 dual-blade 看到 control-plane track 與相關任務進度。"
+    },
+    "adr-project-backlink-system": {
+      "status": "done",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "f3fa211"
+      ],
+      "summary": "建立完整系統解法：ADR metadata 加 Projects，project.json 加 decision_refs，generate-data 帶出 decision_refs，MC 專案 modal 顯示關鍵決策，check-adr-backlinks.mjs 在 prebuild 檢查雙向索引。"
+    },
+    "agent-control-plane-execution-plan": {
+      "status": "done",
+      "completed_at": "2026-06-13",
+      "commits": [],
+      "summary": "補上 000_Agent/docs/agent-control-plane/execution-plan-260613.md，將 roadmap 轉成可執行 task sequence，並讓 roadmap 結尾指向 execution plan。"
+    },
+    "heptabase-cli-task-card-adapter": {
+      "status": "done",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "e23b5e5"
+      ],
+      "summary": "建立 heptabase-task-cards/scripts/create-task-cards.mjs，讓 MC tasks.json 可透過官方 Heptabase CLI 建立 note card 並加入既有白板；同步更新 skill 與 MCP/tools boundary，採 CLI adapter first、MCP later。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "1a9234dd-e943-4514-9574-ea9471627f70",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "heptabase-cli-append-mode": {
+      "status": "done",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "e23b5e5"
+      ],
+      "summary": "為 Heptabase task card adapter 新增 --append-existing；既有卡片會追加更新紀錄，不重建、不覆蓋原內容，並補上測試與 skill 文件。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "ba3a5d99-3f47-40b2-a250-760e75137cb0",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "heptabase-cli-integration-record": {
+      "status": "done",
+      "completed_at": "2026-06-14",
+      "commits": [
+        "e23b5e5"
+      ],
+      "summary": "回填 Heptabase CLI 接入治理紀錄：boundary map 記錄 CLI adapter first / MCP later 的原因與 card color 限制，daily log 記錄今日決策脈絡，Heptabase card 追加同步紀錄。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "aed428dc-09d7-4f0b-a586-a36f2f967d8a",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "heptabase-task-external-refs-schema": {
+      "status": "done",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "e23b5e5"
+      ],
+      "summary": "定義 tasks.json 的 external_refs.heptabase 欄位，並讓 generate-data.mjs 保留 external_refs；已將 7 張 MC 儀表版 Heptabase 卡片 ID 回填到對應 dual-blade tasks。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "2e551a3d-5eea-4672-8300-d28e162b5139",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "heptabase-task-sync-write-back": {
+      "status": "done",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "e23b5e5"
+      ],
+      "summary": "create-task-cards.mjs 新增 --write-back，正式同步 Heptabase 成功後會把 card_id、whiteboard、synced_at、sync_mode 回寫到 tasks.json 的 external_refs.heptabase；dry-run 不寫檔。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "ae201d33-c941-4bbc-9b66-3f4eb32e4c8e",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "heptabase-task-sync-mode": {
+      "status": "done",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "e23b5e5"
+      ],
+      "summary": "create-task-cards.mjs 新增 --sync lifecycle mode；dry-run 會列出 create/append plan，正式同步會依 external_refs.heptabase.card_id append 或建立卡片，並自動 write-back。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "accac7fc-19e8-4667-9940-18da662a2cfb",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "heptabase-task-sequence-labels": {
+      "status": "done",
+      "completed_at": "2026-06-13",
+      "commits": [
+        "e23b5e5",
+        "82e863f"
+      ],
+      "summary": "為 Heptabase task lifecycle 加入 order/order_label 欄位，並讓 Heptabase 卡片標題使用穩定順序標籤，例如 [ACP-HB-01] [task-id] title。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "b2c15224-e761-4c3b-a798-71ff21734240",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "heptabase-task-lifecycle-hooks": {
+      "status": "done",
+      "completed_at": "2026-06-14",
+      "commits": [
+        "e23b5e5"
+      ],
+      "summary": "補上 Heptabase task lifecycle hooks：project-init 在開案後可 dry-run / sync task cards，planning 在寫 tasks.json 後要求 MC build 與 Heptabase 發布判斷，worktree-commit 在 task 回填後 append 既有 Heptabase card；同時記錄 CLI 目前不支援 card color。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "519add72-b283-45e1-aab3-bc6c38b97a2b",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "heptabase-task-refresh-existing": {
+      "status": "done",
+      "completed_at": "2026-06-14",
+      "commits": [
+        "e23b5e5"
+      ],
+      "summary": "新增 --refresh-existing 模式：用 note read/save 更新既有 Heptabase card 的頂部 H1、Status、內容與完成標準，同時保留下方更新紀錄，修正 append 後卡片頂部仍顯示舊 todo 的問題。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "12ce2444-5b97-418b-b4f1-008aa3227b41",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "cc-log-worktree-commit-bridge": {
+      "status": "done",
+      "completed_at": "2026-06-14",
+      "commits": [
+        "e23b5e5"
+      ],
+      "summary": "優化階段性完成流程：cc-log 在專案階段完成時輸出 commit-handoff 並接到 worktree-commit；worktree-commit 的 4C 10 天自驗改成必填表格 gate，禁止用 OK/PASS/看得懂帶過。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "2eb67d5e-9f5b-4913-86da-0c6f3cc8c953",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "agent-control-plane-schedule-inventory": {
+      "status": "todo"
+    },
+    "agent-control-plane-security-policy": {
+      "status": "todo"
+    },
+    "agent-control-plane-memory-policy": {
+      "status": "todo"
+    },
+    "agent-control-plane-schedule-schema": {
+      "status": "todo"
+    },
+    "agent-control-plane-readonly-query-schema": {
+      "status": "todo"
+    },
+    "agent-control-plane-mcp-v1-evaluation": {
+      "status": "todo"
+    },
+    "acp-control-plane-bootstrap-tasks": {
+      "status": "done",
+      "completed_at": "2026-06-14",
+      "summary": "用一次性 bootstrap exception 把 Task Authoring、Skill Creation、registry、event log、evals 等 ACP MVP 任務寫入 MC，讓後續控制面工作不再只存在聊天紀錄。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "ca102657-87b0-449a-9709-e0560d0aa2df",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "skill-version-record-rule-patch": {
+      "status": "in_progress",
+      "commits": [
+        "25067c2"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "8aa718f2-a6f3-447e-a2bf-9f80a7113834",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-task-authoring-protocol": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "3a5187e9-0656-47b9-b616-a3e30bcb6583",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-skill-creation-system": {
+      "status": "todo",
+      "commits": [
+        "4fc1f83"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "f4f72ec0-3c68-4593-8021-2db0ba1d7470",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-skill-authoring-protocol": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "332faccb-71c7-431a-aa49-df31494a64d0",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-skill-routes": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "498950b0-db26-4a11-a23b-9ea4e78cfc79",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "deprecate-hisenzi-skill-builder": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "3e8c96b3-a4bc-4fef-b389-d2eeb4cba255",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-agent-registry-and-permissions": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "216c6175-429d-484d-9051-4c46d6125ccc",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-agent-event-log-schema": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "9383e2f1-3ac6-4e18-8eea-ecb554a43340",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-eval-scenarios": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "7ea56c87-19bd-4825-9339-2f14e3d3c301",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    "acp-obsidian-visual-layer-protocol": {
+      "status": "done",
+      "completed_at": "2026-06-14",
+      "commits": [
+        "3efeaa1"
+      ],
+      "summary": "建立 Visual Layer Transition Protocol，定義 MC tasks.json 為唯一 task source of truth，Heptabase 與 Obsidian Canvas 僅作視覺/討論層，並規範同步方向、禁止反向覆蓋、驗證流程與 stop conditions。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "a7dfd4e7-6434-4ff7-94ce-3708c2d8f1f7",
+          "synced_at": "2026-06-15",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    "acp-visual-layer-boundary-map": {
+      "status": "todo",
+      "summary": "",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "6a55703e-9410-4950-a7c2-da66f01bc668",
+          "synced_at": "2026-06-14",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "acp-canvas-artifact-policy": {
+      "status": "todo",
+      "summary": "",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "c390d45c-68e2-469a-98fa-72d64fd1ee45",
+          "synced_at": "2026-06-14",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "architecture-pulse-probe": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "AI Agent 共享腦系統（原雙刀流）",
+          "whiteboard_id": "9f79160d-28be-44c1-ab94-034dbacd342d",
+          "card_id": "24e69d9c-d958-4463-aec2-f2f3be1f29f5",
+          "synced_at": "2026-06-22",
+          "sync_mode": "refreshed"
+        }
+      }
+    }
+  }
+}

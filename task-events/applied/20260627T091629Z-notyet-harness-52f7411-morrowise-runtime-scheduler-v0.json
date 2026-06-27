@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-runtime-scheduler-v0-52f7411-20260627T091629Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "52f7411",
+  "project": "morrowise",
+  "task_id": "runtime-scheduler-v0",
+  "status": "updated",
+  "summary": "新增 schedule scaffold：commit-attention sweep、MC sentinel task 契約與 Telegram notify adapter；runtime-scheduler-v0 尚未完成，dispatch、runner、runs log、health read model 待續。",
+  "created_at": "2026-06-27T09:16:29.560Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-runtime-scheduler-cleanup"
+}

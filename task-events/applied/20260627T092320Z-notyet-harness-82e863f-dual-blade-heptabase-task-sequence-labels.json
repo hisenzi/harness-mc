@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-dual-blade-heptabase-task-sequence-labels-82e863f-20260627T092320Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "82e863f",
+  "project": "dual-blade",
+  "task_id": "heptabase-task-sequence-labels",
+  "status": "updated",
+  "summary": "修正 Heptabase task card title 產生邏輯，避免 order_label 已在 title 開頭時被重複顯示。",
+  "created_at": "2026-06-27T09:23:20.682Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-notyet-cleanup"
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-harness-mc-acp-obsidian-canvas-sync-hook-bd89778-20260627T092643Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "bd89778",
+  "project": "harness-mc",
+  "task_id": "acp-obsidian-canvas-sync-hook",
+  "status": "updated",
+  "summary": "同步 Obsidian Canvas visual mirrors：MC 儀表版、MorroWise system-ops 與網頁提醒功能 MVP；MC canvas 節點/邊數保持一致。",
+  "created_at": "2026-06-27T09:26:43.487Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-notyet-cleanup"
+}

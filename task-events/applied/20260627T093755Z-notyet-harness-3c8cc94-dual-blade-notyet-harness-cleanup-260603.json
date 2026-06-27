@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-dual-blade-notyet-harness-cleanup-260603-3c8cc94-20260627T093755Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "3c8cc94",
+  "project": "dual-blade",
+  "task_id": "notyet-harness-cleanup-260603",
+  "status": "updated",
+  "summary": "Reconciled notyet-harness main with origin/main while preserving existing local commit hashes and task-event references.",
+  "created_at": "2026-06-27T09:37:55.488Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-notyet-harness-cleanup"
+}

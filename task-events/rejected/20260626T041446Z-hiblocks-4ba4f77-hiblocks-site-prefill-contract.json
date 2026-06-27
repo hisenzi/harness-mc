@@ -1,0 +1,17 @@
+{
+  "rejected_at": "2026-06-27T13:00:46.198Z",
+  "reason": "unknown_task",
+  "event": {
+    "event_id": "task.completed-hiblocks-site-prefill-contract-4ba4f77-20260626T041446Z",
+    "type": "task.completed",
+    "repo": "hiblocks",
+    "commit": "4ba4f77",
+    "project": "hiblocks",
+    "task_id": "site-prefill-contract",
+    "status": "completed",
+    "summary": "HiBlocks starter 已新增 AGENTS.md、docs/site-prefill.md、src/site.config.ts 與 README 入口，未來可用 PREFILL markers 找到開案必填點。",
+    "created_at": "2026-06-26T04:14:46.695Z",
+    "actor": "codex",
+    "session_id": "codex-2026-06-26-hiblocks-astro-prefill"
+  }
+}

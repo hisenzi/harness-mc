@@ -1,0 +1,16 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-rrrealll-v2-transition-w1-3-task.commit_attached-rrrealll-v2-transition-w1-3-4e5d7b5-20260625T152603Z-20260625T152603Z",
+  "type": "sync_requested",
+  "target": "obsidian_canvas",
+  "status": "pending",
+  "source_event_id": "task.commit_attached-rrrealll-v2-transition-w1-3-4e5d7b5-20260625T152603Z",
+  "project": "rrrealll-v2-transition",
+  "task_id": "w1-3",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "RRREALLL 過渡期網站"
+  },
+  "created_at": "2026-06-25T15:26:03.717Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-25-rrrealll-transition"
+}

@@ -1,0 +1,20 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-rrrealll-v2-transition-w1-verify-task.commit_attached-rrrealll-v2-transition-w1-verify-602e0c7-20260624T031926Z-20260624T031926Z",
+  "type": "sync_requested",
+  "target": "heptabase_append",
+  "status": "pending",
+  "source_event_id": "task.commit_attached-rrrealll-v2-transition-w1-verify-602e0c7-20260624T031926Z",
+  "project": "rrrealll-v2-transition",
+  "task_id": "w1-verify",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "a534cf6c-8f17-40cd-ba7b-be02cff36839",
+    "whiteboard": "RRREALLL 過渡期網站",
+    "status": "completed",
+    "summary": "RRREALLL 過渡站完成品牌視覺收斂：navbar/footer 使用正式 wordmark，首頁移除重複 hero logo，hero 改用洗髮精開發中圖，並修正手機選單開關狀態。驗證通過 build、astro check、DOM 與 390px mobile menu check。",
+    "commit": "602e0c7"
+  },
+  "created_at": "2026-06-24T03:19:26.657Z",
+  "actor": "codex",
+  "session_id": "codex-20260624-rrrealll-visual-refresh"
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": "task.blocked-kids-reward-p1-2-uncommitted-p1-2-verifier-20260624T022000Z",
+  "type": "task.blocked",
+  "repo": "kids-reward",
+  "commit": "uncommitted-p1-2-verifier",
+  "project": "kids-reward",
+  "task_id": "p1-2",
+  "status": "blocked",
+  "summary": "p1-2 離線 schema/RLS contract 與前端 backend/family login 驗證通過；live Supabase probe 在 DNS ENOTFOUND，需確認 project ref 是否正確或專案是否啟用。",
+  "created_at": "2026-06-24T02:20:00.563Z",
+  "actor": "codex",
+  "session_id": "codex-20260624-kids-reward-p1-2-blocked"
+}

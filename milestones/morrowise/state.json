@@ -1,0 +1,155 @@
+{
+  "tasks": {
+    "v0-boundary-lineage-map": {
+      "status": "done",
+      "completed_at": "2026-06-22",
+      "commits": [
+        "591b9f3"
+      ],
+      "summary": "正式建立 morrowise internal project，並以 project decisions / hc_decision 記錄新 project 與既有 harness-mc morrowise-system track 的邊界：morrowise 承接 2026-06-22 v0 規格與活性驗證，既有 MC track 作為 implementation lineage，不重開同義 task。"
+    },
+    "v0-source-map-mc-reconcile": {
+      "status": "completed",
+      "completed_at": "2026-06-27",
+      "commits": [
+        "484e9f2",
+        "d3a27ab"
+      ],
+      "summary": "完成 source-map-v0 與既有 MC MorroWise specs 的 reconciliation：14 個 current source family 已分類為 merge/reference/gap，local_runtime_boundary、knowledge_health_metrics_missing、scanner_not_implemented 與 dashboard_not_connected 已映射到下一步 generator/open loop，不新增第二份架構總表。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "2f6df104-ce98-4ade-a0eb-35f8291db667",
+          "synced_at": "2026-06-22",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "morrowise-system-json-generator-v0": {
+      "status": "completed",
+      "completed_at": "2026-06-27",
+      "commits": [
+        "0988dbc"
+      ],
+      "summary": "實作 MorroWise system read model generator 與 verifier，產出 gitignored 的 public/data/morrowise-system.json，從 canonical tasks、registries、generated read models、Architecture Pulse auditor output 與 source-map reconciliation 建立 read-only system state，並以 open_loops 顯示 pending events、stale surfaces、residual ledger、capability gaps 與下一個 task anchor。"
+    },
+    "morrowise-manual-live-sync": {
+      "status": "todo"
+    },
+    "auditor-manual-architecture-report": {
+      "status": "completed",
+      "completed_at": "2026-06-27",
+      "commits": [
+        "f304f65",
+        "044957f"
+      ],
+      "summary": "產出第一份 read-only Architecture Pulse report，對 $COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md 做 header/source-of-truth/freshness/path-policy/generated-boundary/missing-verifier/section-identity 檢查，列出 8 個可追溯 findings、章節分類、next actions 與 JSON read model candidate，未直接修改 ARCHITECTURE.md。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "758608cc-4b90-4554-b37b-a7e76a2a855c",
+          "synced_at": "2026-06-22",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "auditor-json-read-model-schema": {
+      "status": "completed",
+      "completed_at": "2026-06-27",
+      "commits": [
+        "6fa4314"
+      ],
+      "summary": "定義 morrowise-auditor.json v0 schema 與可重跑 verifier，schema 承接 manual Architecture Pulse finding contract，固定 read_only=true，要求 generated_at/targets/summary/findings/next_actions/write_boundary，並用 fixture 驗證 missing_header、source_missing、stale_warning、fake_live_risk 與禁止 edit_source/close_task/commit/push/external_sync。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "43dfbb60-7254-427c-b3f8-7d0ac20a67b7",
+          "synced_at": "2026-06-22",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "mc-morrowise-v0-card": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "60a3e940-4806-4b84-b76f-42b057c1c56a",
+          "synced_at": "2026-06-22",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "v0-live-loop-verify": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "0d1d6c47-251e-4b09-be40-66ab821939ca",
+          "synced_at": "2026-06-22",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "runtime-delivery-lineage-map": {
+      "status": "completed",
+      "completed_at": "2026-06-23",
+      "commits": [
+        "755f323"
+      ],
+      "summary": "已將 agent-agnostic scheduler、notification adapter 與 Reality Tax Gate ownership 收編到 MorroWise runtime-delivery track；agnostic-scheduler 未執行 tasks 與 harness-mc sentinel 出口 tasks 已關閉並保留 superseded lineage。"
+    },
+    "runtime-scheduler-v0": {
+      "status": "todo",
+      "commits": [
+        "4e09b8e",
+        "52f7411"
+      ]
+    },
+    "runtime-closeout-residual-ledger": {
+      "status": "completed",
+      "completed_at": "2026-06-27",
+      "commits": [
+        "79f6143"
+      ],
+      "summary": "建立 Closeout Residual Ledger read model、generator、verifier、prebuild 串接與 MorroWise live dashboard surface，讓 cc-log + worktree-commit 後的 dirty repo、excluded changes、pending events、缺 commit evidence、cleanup leftovers 與下一個 closeout anchor 可被重跑查詢。"
+    },
+    "live-system-admission-gate": {
+      "status": "completed",
+      "completed_at": "2026-06-24",
+      "commits": [
+        "f8c7268"
+      ],
+      "summary": "建立 MorroWise Live-System Admission Gate 與 Commit Planning Gate，將新元件入場條件、commit-attention fixture、commit cleanup planning boundary 與 repeatable verifiers 正式納入 MorroWise governance。"
+    },
+    "task-ownership-routing-rule": {
+      "status": "completed",
+      "completed_at": "2026-06-27",
+      "commits": [
+        "2d905a7",
+        "57ed3a9"
+      ],
+      "summary": "建立 MorroWise / harness-mc task ownership routing：系統本體 task 歸 MorroWise，MC 顯示與操作 surface task 歸 harness-mc，並把規則寫入跨 Agent 入口、repo 操作入口與 project decisions。"
+    },
+    "api-cli-mcp-capability-registry-v0": {
+      "status": "in_progress"
+    },
+    "morrowise-wiring-gate-verifier": {
+      "status": "todo"
+    },
+    "notification-adapter-contract": {
+      "status": "todo"
+    },
+    "reality-tax-gate-protocol": {
+      "status": "todo"
+    },
+    "reality-tax-daily-review-task": {
+      "status": "todo"
+    }
+  }
+}

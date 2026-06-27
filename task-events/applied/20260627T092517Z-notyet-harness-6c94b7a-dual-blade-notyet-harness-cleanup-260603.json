@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-dual-blade-notyet-harness-cleanup-260603-6c94b7a-20260627T092517Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "6c94b7a",
+  "project": "dual-blade",
+  "task_id": "notyet-harness-cleanup-260603",
+  "status": "updated",
+  "summary": "歸檔 2026-06-11 至 2026-06-27 多日 daily memory markdown/html 與 2026-06-13 mood image，並補 MEMORY.md harness-mc runtime note。",
+  "created_at": "2026-06-27T09:25:17.965Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-notyet-cleanup"
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-v0-boundary-lineage-map-d2996c1-20260622T043635Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "d2996c1",
+  "project": "morrowise",
+  "task_id": "v0-boundary-lineage-map",
+  "status": "updated",
+  "summary": "MorroWise v0 source contracts and evaluation lineage were committed in notyet-harness and linked back to the opened MC project.",
+  "created_at": "2026-06-22T04:36:35.983Z",
+  "actor": "codex",
+  "session_id": "codex-morrowise-2026-06-22"
+}

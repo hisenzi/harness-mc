@@ -83,7 +83,9 @@
       "status": "done",
       "completed_at": "2026-06-27",
       "commits": [
-        "f237d63"
+        "f237d63",
+        "7974f1d",
+        "0fa01e3"
       ],
       "summary": "未在 MorroWise project 直接執行：依 task ownership routing，MC dashboard/card/route 屬 harness-mc surface task；本 task 保留為 v0 lineage，實作改由 harness-mc/morrowise-living-system-read-model-card 承接。",
       "external_refs": {

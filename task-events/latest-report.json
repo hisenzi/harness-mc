@@ -1,11 +1,18 @@
 {
-  "generated_at": "2026-06-27T13:48:55.879Z",
+  "generated_at": "2026-06-27T15:38:15.776Z",
   "applied": [
     {
-      "file": "20260627T134850Z-notyet-harness-b386a8a-morrowise-morrowise-manual-live-sync.json",
-      "event_id": "task.commit_attached-morrowise-morrowise-manual-live-sync-b386a8a-20260627T134850Z",
+      "file": "20260627T145521Z-notyet-harness-7974f1d-morrowise-mc-morrowise-v0-card.json",
+      "event_id": "task.commit_attached-morrowise-mc-morrowise-v0-card-7974f1d-20260627T145521Z",
       "project": "morrowise",
-      "task_id": "morrowise-manual-live-sync",
+      "task_id": "mc-morrowise-v0-card",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260627T151723Z-notyet-harness-0fa01e3-morrowise-mc-morrowise-v0-card.json",
+      "event_id": "task.commit_attached-morrowise-mc-morrowise-v0-card-0fa01e3-20260627T151723Z",
+      "project": "morrowise",
+      "task_id": "mc-morrowise-v0-card",
       "type": "task.commit_attached"
     }
   ],

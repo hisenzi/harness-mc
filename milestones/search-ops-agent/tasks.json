@@ -1,0 +1,104 @@
+{
+  "project": "search-ops-agent",
+  "tasks": [
+    {
+      "id": "p0-1",
+      "title": "完成 GSC API 邊界、AI Agent 維護方法與 SIFT 服務定位",
+      "status": "completed",
+      "track": "discovery",
+      "done_condition": "已確認 GSC API 可做診斷/監控/URL Inspection/Search Analytics/sitemap，但不可強制一般頁面收錄；已用 SIFT 重新定位為 Search Ops Agent 搜尋維運服務",
+      "completed_at": "2026-06-27",
+      "summary": "已將 GSC/SEO Agent 想法重新框成 Search Ops Agent：把 GSC 訊號轉成每月可執行、可追蹤、可驗證的搜尋維運服務，而非 SEO 報告或 dashboard。",
+      "evidence_refs": [
+        "$COLLAB/harness-mc/milestones/search-ops-agent/project.json",
+        "$COLLAB/notyet-harness/300_Obsidian_brain/HC/creative-thinking-創意思考/facilitating-discovery-促進發現/041-sift-非顯見思維.md",
+        "https://developers.google.com/webmaster-tools",
+        "https://developers.google.com/webmaster-tools/v1/urlInspection.index/inspect",
+        "https://developers.google.com/webmaster-tools/v1/searchanalytics/query"
+      ],
+      "hc_decision": {
+        "task_scope": "search-ops-agent/p0-1",
+        "hc_refs": [
+          "#sift",
+          "#rightProblem",
+          "#constraints",
+          "#designThinking",
+          "#utility"
+        ],
+        "hc_reasoning": "SIFT 將顯而易見的 SEO 報告/API dashboard 方向轉為 Search Ops 維運服務；#rightProblem 指出真正問題是 GSC 狀態未被轉成行動；#constraints 排除強制收錄與過早 SaaS；#designThinking 導向 human-in-the-loop 試點；#utility 優先選能直接修改網站的客戶。",
+        "hc_confidence": 0.82,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/search-ops-agent/project.json",
+          "$COLLAB/notyet-harness/300_Obsidian_brain/HC/creative-thinking-創意思考/facilitating-discovery-促進發現/041-sift-非顯見思維.md"
+        ],
+        "source_boundary": "HC is a thinking check, not source of truth; project.json/source_contract and future service specs remain canonical."
+      }
+    },
+    {
+      "id": "p1-1",
+      "title": "定義 Search Ops 初診服務規格",
+      "status": "todo",
+      "track": "discovery",
+      "done_condition": "已產出初診服務規格，包含 ICP、輸入資料、檢查項目、交付物、非承諾項目與報價/方案草案",
+      "acceptance": [
+        "明確列出一次性健檢、月維護、實作代管三層方案",
+        "明確寫出不承諾強制收錄、排名或流量保證",
+        "定義客戶 onboarding 需要的 GSC 權限或匯出檔、sitemap URL、網站修改權限",
+        "定義可直接拒接或延後的客戶情境"
+      ]
+    },
+    {
+      "id": "p1-2",
+      "title": "設計第一次 GSC 健檢 MVP 輸出樣板",
+      "status": "todo",
+      "track": "service-mvp",
+      "done_condition": "已定義 URL 級 backlog 樣板與分類規則，可把 GSC 匯出/API、sitemap、crawler 結果合併成優先修正清單",
+      "acceptance": [
+        "每筆 backlog 含 URL、問題類型、證據、建議修正、優先級、驗證方式",
+        "分類至少包含應修、應 noindex/canonical、應忽略、待觀察",
+        "覆蓋索引狀態、sitemap、canonical、noindex、title/description/H1、內部連結與高曝光低 CTR",
+        "保留人工審核欄位，避免 Agent 直接自動改站"
+      ]
+    },
+    {
+      "id": "p1-3",
+      "title": "選定第一個試點網站並完成初診",
+      "status": "todo",
+      "track": "service-mvp",
+      "done_condition": "已用一個可修改的網站跑完整初診，產出 30 天修正計畫與前 5-10 個高優先任務",
+      "acceptance": [
+        "記錄試點網站、GSC 資料來源、sitemap URL 與可修改範圍",
+        "產出 URL 級問題清單與優先級",
+        "前 5-10 個任務可直接交給 Vincent 或網站維護者執行",
+        "標示哪些項目需要內容、設計、工程或客戶確認"
+      ]
+    },
+    {
+      "id": "p1-4",
+      "title": "設計 Search Ops 月維護迴路",
+      "status": "todo",
+      "track": "ops-loop",
+      "done_condition": "已定義每日/每週/每月檢查節奏、資料流、回寫欄位與 30 天回看格式",
+      "acceptance": [
+        "定義每日安全檢查：robots/sitemap/重要頁 noindex/404/redirect",
+        "定義每週檢查：Search Analytics 7 天比較、高曝光低 CTR、排名 4-20、已檢索未索引新增 URL",
+        "定義每月檢查：全站 crawl、sitemap 清理、canonical/noindex/redirect audit、內容 refresh、Core Web Vitals",
+        "定義每輪完成後回寫 backlog 狀態與下一輪候選任務"
+      ]
+    },
+    {
+      "id": "p1-verify",
+      "title": "Phase 1 服務驗收與產品化判斷",
+      "status": "todo",
+      "track": "validation",
+      "done_condition": "根據初診服務規格、試點輸出與 30 天回看，判斷是否產品化為重複服務、內部 SOP、或 standalone SaaS/Agent 工具",
+      "acceptance": [
+        "逐項對照 project.json success_criteria",
+        "記錄試點客戶/網站是否願意持續付費或續做月維護",
+        "判斷下一步是服務 SOP、Agent 腳本、自動化 dashboard 或 standalone repo",
+        "列出仍需補的 API 串接、權限流程、crawler 與報表模板"
+      ],
+      "note": "前置任務 p1-1 到 p1-4 完成後執行"
+    }
+  ]
+}

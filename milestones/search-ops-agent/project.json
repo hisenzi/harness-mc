@@ -1,0 +1,154 @@
+{
+  "name": "Search Ops Agent 搜尋維運服務",
+  "description": "把 Google Search Console 資料轉成每月可執行、可追蹤、可修正的搜尋維運服務",
+  "type": "internal",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-06-27",
+  "estimated_completion": "TBD",
+  "tracks": {
+    "discovery": "服務定位與客戶假設",
+    "service-mvp": "第一次健檢 MVP",
+    "ops-loop": "月維護迴路設計",
+    "validation": "試點驗證與產品化判斷"
+  },
+  "goals": [
+    "把 Google Search Console 的索引、搜尋成效與 sitemap 訊號轉成 URL 級可執行 backlog，而不是只產出報表。",
+    "設計一套 Search Ops 月維護服務，固定檢查 GSC、網站 crawl、metadata、canonical、noindex、sitemap、內部連結與成效變化。",
+    "先以 human-in-the-loop 服務 MVP 驗證，不承諾排名或強制收錄，交付可追蹤的修正任務、驗證紀錄與下月優先級。",
+    "優先服務能直接修改 code 或內容的網站，避免只能診斷不能修正的低價值顧問循環。"
+  ],
+  "risks": [
+    {
+      "risk": "客戶期待保證收錄或排名提升，但 GSC / URL Inspection API 只能診斷，無法強制一般頁面收錄。",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "服務定位明確寫成搜尋維運與可讀性改善；報價與合約避免排名保證，改用 backlog 完成率、索引健康、CTR/曝光變化作為追蹤指標。"
+    },
+    {
+      "risk": "若只交 AI 報告，客戶仍然不知道怎麼修，服務會落回一般 SEO audit。",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "每次交付必須包含 URL、問題證據、建議改法、優先級、驗證方式與修正狀態，不以長篇報告作為主要交付物。"
+    },
+    {
+      "risk": "GSC 權限、OAuth 與 API quota 會增加 onboarding 摩擦。",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "MVP 階段可先用 GSC 匯出 + URL Inspection 抽樣 + 自建 crawler；等服務流程被驗證後再產品化 API 串接。"
+    },
+    {
+      "risk": "接到無法修改網站的客戶，Agent 只能診斷不能形成改善迴路。",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "第一階段 ICP 限定為 Vincent 可直接改 code / CMS / content 的網站，或客戶有可配合的工程/內容窗口。"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "完成 Search Ops 初診服務定義，包含服務邊界、ICP、交付物、非承諾項目與三層方案。",
+      "verify_cmd": "人工檢查 project.json decisions 與後續服務規格文件",
+      "expected": "文件明確區分一次性健檢、月維護、實作代管，且不承諾強制收錄或排名。"
+    },
+    {
+      "criterion": "完成第一次健檢 MVP 規格，能把 GSC 匯出 / Search Analytics / sitemap / crawler 結果合併成 URL 級 backlog。",
+      "verify_cmd": "人工檢查 MVP 規格與任務輸出樣板",
+      "expected": "每筆 backlog 至少含 URL、問題類型、證據、建議修正、優先級、驗證方式。"
+    },
+    {
+      "criterion": "完成一個試點網站的初診，產出 30 天修正計畫與前 5-10 個高優先任務。",
+      "verify_cmd": "人工檢查試點輸出資料夾或服務報告",
+      "expected": "有實際 URL 級清單，且可區分應修、應 noindex/canonical、應忽略、待觀察。"
+    },
+    {
+      "criterion": "完成第一輪修正後回看，記錄索引狀態、曝光、CTR、排名機會頁或問題數的變化。",
+      "verify_cmd": "人工檢查 30 天回看紀錄",
+      "expected": "能說明哪些修正已完成、哪些 GSC 訊號變化、哪些仍待下一輪觀察。"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "服務定位",
+      "decision": "定位為 Search Ops Agent 搜尋維運服務，而不是一般 SEO 報告工具或 GSC dashboard。",
+      "reason": "SIFT 分析指出真正痛點不是資料不足，而是 GSC 狀態沒有被翻譯成可執行、可驗證、可追蹤的維護迴路。",
+      "alternatives_rejected": [
+        "GSC API dashboard：只顯示資料，無法解決客戶不知道怎麼修的問題。",
+        "AI SEO 報告：容易變成漂亮但不可執行的文件。",
+        "保證收錄服務：Google API 邊界不支持，商業承諾風險過高。"
+      ],
+      "hc_used": [
+        "#sift",
+        "#rightProblem",
+        "#constraints"
+      ]
+    },
+    {
+      "topic": "開案類型",
+      "decision": "先開 internal 專案，不建立 standalone repo。",
+      "reason": "目前要驗證的是服務型 MVP、流程與交付物，不是已確定要部署的 SaaS 產品。",
+      "alternatives_rejected": [
+        "直接做 SaaS：會過早產品化，還沒驗證客戶是否為維運循環付費。",
+        "只保留聊天結論：10 天後難以追蹤來源、決策與下一步任務。"
+      ],
+      "hc_used": [
+        "#constraints",
+        "#utility"
+      ]
+    },
+    {
+      "topic": "第一階段服務方式",
+      "decision": "先做 human-in-the-loop 服務 MVP，Agent 負責巡檢、分類、產任務與追蹤，人負責審核與實作決策。",
+      "reason": "SEO 修正牽涉內容品質、商業意圖與技術邊界，全自動容易誤修；但例行巡檢與差異比對非常適合 Agent。",
+      "alternatives_rejected": [
+        "全自動修站：風險高，且可能改壞 canonical/noindex/內容語氣。",
+        "純人工顧問：無法累積成可重複的 agent 維運系統。"
+      ],
+      "hc_used": [
+        "#sift",
+        "#designThinking",
+        "#utility"
+      ]
+    },
+    {
+      "topic": "客戶與網站範圍",
+      "decision": "優先選可直接修改 code、CMS 或內容的網站作為試點。",
+      "reason": "Search Ops 的價值在修正迴路；若只能診斷不能改，服務會卡在報告層，無法驗證改善效果。",
+      "alternatives_rejected": [
+        "服務所有有 GSC 的網站：onboarding 廣但交付品質不可控。",
+        "只做顧問診斷：容易失去可追蹤的修正與 feedback loop。"
+      ],
+      "hc_used": [
+        "#constraints",
+        "#breakItDown"
+      ]
+    }
+  ],
+  "system_growth": {
+    "trigger": "客戶提供 GSC 權限 / 匯出檔、sitemap URL、網站網址，或既有網站出現索引、曝光、CTR、canonical、sitemap 相關問題。",
+    "data_flow": "GSC 匯出或 API -> sitemap/crawler/URL Inspection 抽樣 -> AI 分類與優先級 -> 人工審核 -> 修正任務 backlog -> 實作或交付 -> 30 天後回看 GSC 變化。",
+    "surface": "MC 專案任務與後續服務規格文件；Heptabase/Obsidian Canvas 待 Vincent 指定白板名稱。",
+    "feedback_loop": "每次初診與月維護完成後，將已修正 URL、驗證結果、未解問題與下輪優先級回寫 tasks/backlog，形成下一輪 Search Ops 任務。"
+  },
+  "source_contract": {
+    "collab_root": "$COLLAB",
+    "primary_context": "本次 2026-06-27 對話：Google Search Console API -> AI Agent 維護方法 -> HC/SIFT 服務定位 -> 開案。",
+    "hc_primary": "$COLLAB/notyet-harness/300_Obsidian_brain/HC/creative-thinking-創意思考/facilitating-discovery-促進發現/041-sift-非顯見思維.md",
+    "supporting_hc": [
+      "$COLLAB/notyet-harness/300_Obsidian_brain/HC/critical-thinking-批判思考/analyzing-problems-分析問題/001-right-problem-問對問題.md",
+      "$COLLAB/notyet-harness/300_Obsidian_brain/HC/critical-thinking-批判思考/analyzing-problems-分析問題/002-break-it-down-拆解問題.md",
+      "$COLLAB/notyet-harness/300_Obsidian_brain/HC/creative-thinking-創意思考/solving-problems-解決問題/003-constraints-限制條件求解.md",
+      "$COLLAB/notyet-harness/300_Obsidian_brain/HC/creative-thinking-創意思考/creating-products-創造產品/012-design-thinking-設計思考.md",
+      "$COLLAB/notyet-harness/300_Obsidian_brain/HC/critical-thinking-批判思考/weighing-decisions-權衡決策/030-utility-效用分析.md"
+    ],
+    "official_api_refs": [
+      "https://developers.google.com/webmaster-tools",
+      "https://developers.google.com/webmaster-tools/v1/api_reference_index",
+      "https://developers.google.com/webmaster-tools/v1/searchanalytics/query",
+      "https://developers.google.com/webmaster-tools/v1/urlInspection.index/inspect",
+      "https://developers.google.com/search/apis/indexing-api/v3/quickstart",
+      "https://developers.google.com/speed/docs/insights/v5/get-started"
+    ],
+    "next_required_input": "選一個試點網站，提供 GSC 權限或匯出檔、sitemap URL、可修改範圍與希望先驗證的服務方案。",
+    "boundary": "Search Ops Agent 診斷與維護搜尋可讀性、索引健康和任務迴路；不承諾 Google 收錄、排名或流量保證。"
+  }
+}

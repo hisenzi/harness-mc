@@ -301,6 +301,9 @@
       ],
       "note": "2026-06-27 由 runtime-scheduler-v0 acceptance 拆出 implementation slice。此 task 只處理 closeout residual ledger/read model/verifier/MC next_action，不處理 dispatch.sh、runner adapter、install.sh 或完整 schedule health。",
       "completed_at": "2026-06-27",
+      "commits": [
+        "79f6143"
+      ],
       "summary": "建立 Closeout Residual Ledger read model、generator、verifier、prebuild 串接與 MorroWise live dashboard surface，讓 cc-log + worktree-commit 後的 dirty repo、excluded changes、pending events、缺 commit evidence、cleanup leftovers 與下一個 closeout anchor 可被重跑查詢。",
       "hc_decision": {
         "task_scope": "morrowise/runtime-closeout-residual-ledger",

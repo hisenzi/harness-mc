@@ -213,7 +213,8 @@
       },
       "completed_at": "2026-06-27",
       "commits": [
-        "f304f65"
+        "f304f65",
+        "044957f"
       ],
       "summary": "產出第一份 read-only Architecture Pulse report，對 $COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md 做 header/source-of-truth/freshness/path-policy/generated-boundary/missing-verifier/section-identity 檢查，列出 8 個可追溯 findings、章節分類、next actions 與 JSON read model candidate，未直接修改 ARCHITECTURE.md。"
     },

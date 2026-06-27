@@ -74,7 +74,10 @@
           "sync_mode": "created"
         }
       },
-      "note": "2026-06-27 task integration：此 task 是 MorroWise 說明書 / morrowise-system.json generator 的上游清理點；執行時需標明既有 morrowise-anatomy-read-model schema 已完成、morrowise-system.json generator 尚缺、MANUAL.md 只能作為 live entry shell，不得新增第二份架構總表。"
+      "commits": [
+        "484e9f2"
+      ],
+      "note": "2026-06-27 task integration：此 task 是 MorroWise 說明書 / morrowise-system.json generator 的上游清理點；執行時需標明既有 morrowise-anatomy-read-model schema 已完成、morrowise-system.json generator 尚缺、MANUAL.md 只能作為 live entry shell，不得新增第二份架構總表。Commit 484e9f2 已完成 task-chain anchor / project decision / metadata repair；此 task 仍為 todo，因完整 source-map -> existing MC spec 對照尚未產出。"
     },
     {
       "id": "morrowise-system-json-generator-v0",

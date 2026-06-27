@@ -273,6 +273,9 @@
       "status": "done",
       "completed_at": "2026-06-27",
       "summary": "未在 MorroWise project 直接執行：依 task ownership routing，MC dashboard/card/route 屬 harness-mc surface task；本 task 保留為 v0 lineage，實作改由 harness-mc/morrowise-living-system-read-model-card 承接。",
+      "commits": [
+        "f237d63"
+      ],
       "track": "mc-surface",
       "close_reason": "delegated_to_harness_mc_surface_task",
       "superseded_by": "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-living-system-read-model-card",
@@ -299,8 +302,8 @@
           "whiteboard": "MorroWise",
           "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
           "card_id": "60a3e940-4806-4b84-b76f-42b057c1c56a",
-          "synced_at": "2026-06-22",
-          "sync_mode": "created"
+          "synced_at": "2026-06-27",
+          "sync_mode": "appended"
         }
       }
     },

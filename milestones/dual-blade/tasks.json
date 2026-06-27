@@ -545,7 +545,7 @@
     },
     {
       "id": "heptabase-cli-task-card-adapter",
-      "title": "Heptabase CLI task card adapter",
+      "title": "Heptabase CLI 任務卡片轉接器",
       "status": "done",
       "track": "control-plane",
       "order": 1,
@@ -563,13 +563,13 @@
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "1a9234dd-e943-4514-9574-ea9471627f70",
           "synced_at": "2026-06-14",
-          "sync_mode": "appended"
+          "sync_mode": "renamed"
         }
       }
     },
     {
       "id": "heptabase-cli-append-mode",
-      "title": "Heptabase CLI append mode",
+      "title": "Heptabase CLI 追加模式",
       "status": "done",
       "track": "control-plane",
       "order": 2,
@@ -590,7 +590,7 @@
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "ba3a5d99-3f47-40b2-a250-760e75137cb0",
           "synced_at": "2026-06-14",
-          "sync_mode": "appended"
+          "sync_mode": "renamed"
         }
       }
     },
@@ -615,7 +615,7 @@
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "aed428dc-09d7-4f0b-a586-a36f2f967d8a",
           "synced_at": "2026-06-14",
-          "sync_mode": "appended"
+          "sync_mode": "renamed"
         }
       },
       "commits": [
@@ -624,7 +624,7 @@
     },
     {
       "id": "heptabase-task-external-refs-schema",
-      "title": "MC task external_refs.heptabase schema",
+      "title": "MC task external_refs.heptabase 欄位規格",
       "status": "done",
       "track": "control-plane",
       "order": 4,
@@ -645,13 +645,13 @@
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "2e551a3d-5eea-4672-8300-d28e162b5139",
           "synced_at": "2026-06-14",
-          "sync_mode": "appended"
+          "sync_mode": "renamed"
         }
       }
     },
     {
       "id": "heptabase-task-sync-write-back",
-      "title": "Heptabase task sync write-back",
+      "title": "Heptabase task 同步回寫",
       "status": "done",
       "track": "control-plane",
       "order": 5,
@@ -672,13 +672,13 @@
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "ae201d33-c941-4bbc-9b66-3f4eb32e4c8e",
           "synced_at": "2026-06-14",
-          "sync_mode": "appended"
+          "sync_mode": "renamed"
         }
       }
     },
     {
       "id": "heptabase-task-sync-mode",
-      "title": "Heptabase task sync mode",
+      "title": "Heptabase task 同步模式",
       "status": "done",
       "track": "control-plane",
       "order": 6,
@@ -700,13 +700,13 @@
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "accac7fc-19e8-4667-9940-18da662a2cfb",
           "synced_at": "2026-06-14",
-          "sync_mode": "appended"
+          "sync_mode": "renamed"
         }
       }
     },
     {
       "id": "heptabase-task-sequence-labels",
-      "title": "Heptabase task sequence labels",
+      "title": "Heptabase task 順序編號標籤",
       "status": "done",
       "track": "control-plane",
       "order": 7,
@@ -727,13 +727,13 @@
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "b2c15224-e761-4c3b-a798-71ff21734240",
           "synced_at": "2026-06-14",
-          "sync_mode": "appended"
+          "sync_mode": "renamed"
         }
       }
     },
     {
       "id": "heptabase-task-lifecycle-hooks",
-      "title": "Task lifecycle Heptabase sync hooks",
+      "title": "Task 生命週期 Heptabase 同步 hook",
       "status": "done",
       "track": "control-plane",
       "order": 8,
@@ -751,7 +751,7 @@
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "519add72-b283-45e1-aab3-bc6c38b97a2b",
           "synced_at": "2026-06-14",
-          "sync_mode": "appended"
+          "sync_mode": "renamed"
         }
       },
       "commits": [
@@ -760,7 +760,7 @@
     },
     {
       "id": "heptabase-task-refresh-existing",
-      "title": "Heptabase existing card summary refresh mode",
+      "title": "Heptabase 既有卡片摘要刷新模式",
       "status": "done",
       "track": "control-plane",
       "order": 9,
@@ -778,7 +778,7 @@
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "12ce2444-5b97-418b-b4f1-008aa3227b41",
           "synced_at": "2026-06-14",
-          "sync_mode": "appended"
+          "sync_mode": "renamed"
         }
       },
       "commits": [
@@ -787,7 +787,7 @@
     },
     {
       "id": "cc-log-worktree-commit-bridge",
-      "title": "cc-log to worktree-commit handoff and strict 4C gate",
+      "title": "cc-log 到 worktree-commit 交接與嚴格 4C 閘門",
       "status": "done",
       "track": "control-plane",
       "order": 10,
@@ -802,7 +802,7 @@
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "2eb67d5e-9f5b-4913-86da-0c6f3cc8c953",
           "synced_at": "2026-06-14",
-          "sync_mode": "appended"
+          "sync_mode": "renamed"
         }
       },
       "commits": [
@@ -811,7 +811,7 @@
     },
     {
       "id": "agent-control-plane-schedule-inventory",
-      "title": "Agent Control Plane schedule inventory",
+      "title": "Agent Control Plane 排程盤點",
       "status": "todo",
       "track": "control-plane",
       "done_condition": "產出 schedule-inventory-260613.md，盤點 active schedules、OpenClaw historical jobs、Codex App automations；每筆都有 source/status/executor kind/migration decision。",
@@ -819,7 +819,7 @@
     },
     {
       "id": "agent-control-plane-security-policy",
-      "title": "Agent-neutral security policy draft",
+      "title": "跨 Agent 安全政策草案",
       "status": "todo",
       "track": "control-plane",
       "done_condition": "產出 security-policy-260613.md 或 CORE.md 精簡段落，包含 secret denylist、operation tiers、third-party intake、shared memory rule。",
@@ -827,7 +827,7 @@
     },
     {
       "id": "agent-control-plane-memory-policy",
-      "title": "Agent-neutral memory policy draft",
+      "title": "跨 Agent 記憶政策草案",
       "status": "todo",
       "track": "control-plane",
       "done_condition": "產出 memory-policy-260613.md，明列 L0/L1/L2/Daily/Adapter memory 與 canonical vs cache 邊界。",
@@ -835,7 +835,7 @@
     },
     {
       "id": "agent-control-plane-schedule-schema",
-      "title": "Agent-neutral schedule schema",
+      "title": "跨 Agent 排程 schema",
       "status": "todo",
       "track": "control-plane",
       "depends_on": [
@@ -846,7 +846,7 @@
     },
     {
       "id": "agent-control-plane-readonly-query-schema",
-      "title": "Read-only MC / architecture query schema",
+      "title": "MC / architecture 唯讀查詢 schema",
       "status": "todo",
       "track": "control-plane",
       "depends_on": [
@@ -857,7 +857,7 @@
     },
     {
       "id": "agent-control-plane-mcp-v1-evaluation",
-      "title": "MCP v1 評估（read-only first）",
+      "title": "MCP v1 評估（唯讀優先）",
       "status": "todo",
       "track": "control-plane",
       "depends_on": [
@@ -866,6 +866,342 @@
       ],
       "done_condition": "根據 schedule schema 與 read-only query schema，決定 MCP v1 是否只做 read-only tools；列出採用/暫緩理由。",
       "note": "不得跳過 inventory / schema 直接 MCP 化。"
+    },
+    {
+      "id": "acp-control-plane-bootstrap-tasks",
+      "title": "Agent Control Plane 啟動 task 集",
+      "status": "done",
+      "track": "control-plane",
+      "order": 11,
+      "order_label": "ACP-BOOT-01",
+      "completed_at": "2026-06-14",
+      "summary": "用一次性 bootstrap exception 把 Task Authoring、Skill Creation、registry、event log、evals 等 ACP MVP 任務寫入 MC，讓後續控制面工作不再只存在聊天紀錄。",
+      "done_condition": "dual-blade 與 harness-mc tasks.json 補上 ACP MVP 任務；跑過 JSON parse 與 MC generate-data；Heptabase 外部同步另行確認。",
+      "note": "Bootstrap exception：此任務本身允許在 task-authoring-protocol / validator 尚未完成前寫入，但後續 ACP task 必須走 protocol + validator。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "ca102657-87b0-449a-9709-e0560d0aa2df",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    {
+      "id": "skill-version-record-rule-patch",
+      "title": "Skill 更新版本紀錄規則補丁",
+      "status": "in_progress",
+      "track": "control-plane",
+      "order": 12,
+      "order_label": "ACP-SKILL-02",
+      "depends_on": [
+        "cc-log-worktree-commit-bridge"
+      ],
+      "done_condition": "commit 已補的 planning / build-skill / skill-authoring 版本紀錄規則；commit message 通過 worktree-commit 4C，且 MC task 回填 hash。",
+      "note": "目前檔案已改但尚未 commit；這是控制面 hygiene 收尾，避免新規則漂在工作樹。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "8aa718f2-a6f3-447e-a2bf-9f80a7113834",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    {
+      "id": "acp-task-authoring-protocol",
+      "title": "Task 撰寫控制協定",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 13,
+      "order_label": "ACP-TASK-01",
+      "depends_on": [
+        "acp-control-plane-bootstrap-tasks"
+      ],
+      "done_condition": "產出 $COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/task-authoring-protocol.md，定義寫 task 的 lifecycle：planning-preflight → planning → tasks.json → validate → MC rebuild → optional Heptabase sync → cc-log/worktree-commit。",
+      "note": "必須寫明 bootstrap exception、validator scope、Heptabase optional、stop conditions、event log 非正本。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "3a5187e9-0656-47b9-b616-a3e30bcb6583",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    {
+      "id": "acp-skill-creation-system",
+      "title": "Skill 產生系統整合",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 14,
+      "order_label": "ACP-SKILL-03",
+      "depends_on": [
+        "acp-task-authoring-protocol"
+      ],
+      "done_condition": "統整產 skill 的 skill：輸出 skill-authoring-control-plane.md、SKILL-ROUTES.md 規格、validate-skills.mjs 規格、hisenzi-skill-builder deprecation plan；下一個 agent 聽到「做 skill / 更新 skill」不用猜流程。",
+      "note": "Umbrella task。底下拆 protocol / routes / validator / deprecation；不得再靠聊天記憶判斷用哪個 skill。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "f4f72ec0-3c68-4593-8021-2db0ba1d7470",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    {
+      "id": "acp-skill-authoring-protocol",
+      "title": "Skill 撰寫控制平面協定",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 15,
+      "order_label": "ACP-SKILL-04",
+      "depends_on": [
+        "acp-skill-creation-system"
+      ],
+      "done_condition": "產出 $COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/skill-authoring-control-plane.md，定義 skill-authoring / build-skill / writing-skills / Codex skill-creator / skill-installer / hisenzi-skill-builder 的角色邊界。",
+      "note": "skill-authoring = 是否值得固化；build-skill = 實作入口；writing-skills = 高風險品質 gate；hisenzi-skill-builder = historical/deprecated。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "332faccb-71c7-431a-aa49-df31494a64d0",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    {
+      "id": "acp-skill-routes",
+      "title": "Skill 產生路由圖",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 16,
+      "order_label": "ACP-SKILL-05",
+      "depends_on": [
+        "acp-skill-authoring-protocol"
+      ],
+      "done_condition": "產出 $COLLAB/notyet-harness/000_Agent/skills/SKILL-ROUTES.md，明確列出 create/update/install/high-risk/deprecate skill 時的 routing、必要驗證與 stop condition。",
+      "note": "route map 是 agent-facing 入口；之後 AGENTS.md / CORE.md 應指向它。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "498950b0-db26-4a11-a23b-9ea4e78cfc79",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    {
+      "id": "deprecate-hisenzi-skill-builder",
+      "title": "停用歷史 hisenzi-skill-builder",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 17,
+      "order_label": "ACP-SKILL-06",
+      "depends_on": [
+        "acp-skill-routes"
+      ],
+      "done_condition": "只加 deprecation header 與轉向 build-skill / skill-authoring-control-plane；更新 SKILLS-INDEX.md active / quality-gate / deprecated / system-reference 狀態，不刪歷史流程。",
+      "note": "保留 historical evidence；避免未來 agent 被舊 OpenClaw init_skill.py / Obsidian sync 依賴帶偏。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "3e8c96b3-a4bc-4fef-b389-d2eeb4cba255",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    {
+      "id": "acp-agent-registry-and-permissions",
+      "title": "Agent 註冊表與權限模型",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 18,
+      "order_label": "ACP-RUNTIME-01",
+      "depends_on": [
+        "agent-control-plane-security-policy"
+      ],
+      "done_condition": "產出 agent-registry.md 或 agent-registry.json，列 Codex / Claude / future agents / local scripts / Heptabase CLI 的 capabilities、allowed operations、approval boundaries。",
+      "note": "補業界 control plane 常見的 registry / identity / permission 層；不得讀 secret 或 auth profile。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "216c6175-429d-484d-9051-4c46d6125ccc",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    {
+      "id": "acp-agent-event-log-schema",
+      "title": "Agent 事件紀錄 schema",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 19,
+      "order_label": "ACP-RUNTIME-02",
+      "depends_on": [
+        "acp-task-authoring-protocol"
+      ],
+      "done_condition": "產出 agent-events-schema.md，定義 task.write、skill.update、validator.pass/fail、heptabase.sync、commit、cc-log 等事件；event 只做 audit/provenance，不成為 task 狀態正本。",
+      "note": "避免 tasks.json / event log 雙正本；event 只能引用 task id、commit、card id、protocol id。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "9383e2f1-3ac6-4e18-8eea-ecb554a43340",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    {
+      "id": "acp-eval-scenarios",
+      "title": "Agent Control Plane 評估情境",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 20,
+      "order_label": "ACP-EVAL-01",
+      "depends_on": [
+        "acp-task-authoring-protocol",
+        "acp-skill-authoring-protocol"
+      ],
+      "done_condition": "建立 $COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/evals/，至少包含寫 task、改 skill 忘記版本、commit 後回填、Heptabase append、tasks.json 寫壞五個 dry-run scenario。",
+      "note": "把「模擬驗證」變成 scenario bank；不得只留聊天結論。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "7ea56c87-19bd-4825-9339-2f14e3d3c301",
+          "synced_at": "2026-06-14",
+          "sync_mode": "renamed"
+        }
+      }
+    },
+    {
+      "id": "acp-obsidian-visual-layer-protocol",
+      "title": "Obsidian Canvas 視覺層過渡協定",
+      "status": "done",
+      "track": "control-plane",
+      "order": 21,
+      "order_label": "ACP-OBS-01",
+      "depends_on": [
+        "heptabase-task-external-refs-schema",
+        "acp-control-plane-bootstrap-tasks"
+      ],
+      "summary": "建立 Visual Layer Transition Protocol，定義 MC tasks.json 為唯一 task source of truth，Heptabase 與 Obsidian Canvas 僅作視覺/討論層，並規範同步方向、禁止反向覆蓋、驗證流程與 stop conditions。",
+      "done_condition": "產出 $COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/visual-layer-transition-protocol.md，定義 MC tasks.json、Heptabase、Obsidian Canvas 的 source of truth、同步方向、禁止反向覆蓋與驗證流程。",
+      "note": "正本文件：$COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/visual-layer-transition-protocol.md。後續由 ACP-OBS-02/03/04 分別接 skill hooks、boundary map、Canvas artifact policy。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "a7dfd4e7-6434-4ff7-94ce-3708c2d8f1f7",
+          "synced_at": "2026-06-15",
+          "sync_mode": "appended"
+        }
+      },
+      "completed_at": "2026-06-14",
+      "commits": [
+        "3efeaa1"
+      ]
+    },
+    {
+      "id": "acp-visual-layer-boundary-map",
+      "title": "Heptabase / Obsidian 視覺層邊界圖",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 22,
+      "order_label": "ACP-OBS-03",
+      "depends_on": [
+        "acp-obsidian-visual-layer-protocol"
+      ],
+      "summary": "",
+      "done_condition": "更新 $COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/mcp-tools-boundary-map-260613.md 或新增 visual-layer-boundary-map.md，清楚標示 Heptabase 是討論/外部視覺層，Obsidian Canvas 是本機可攜鏡像，MC 仍是正本。",
+      "note": "避免未來 agent 把 Heptabase 或 Canvas 當成可反向寫回 task 狀態的 source of truth。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "6a55703e-9410-4950-a7c2-da66f01bc668",
+          "synced_at": "2026-06-14",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "acp-canvas-artifact-policy",
+      "title": "Obsidian Canvas artifact 管理政策",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 23,
+      "order_label": "ACP-OBS-04",
+      "depends_on": [
+        "acp-obsidian-visual-layer-protocol"
+      ],
+      "summary": "",
+      "done_condition": "定義 $COLLAB/notyet-harness/300_Obsidian_brain/ACP/canvas/*.canvas 是否 commit、何時重建、是否允許手改、手改如何回到 MC source of truth，並補到 ARCHITECTURE 或 ACP README 索引。",
+      "note": "Canvas 是產物還是手作白板要先定義；否則 agent 可能覆蓋 Vincent 在 Obsidian 裡手排的內容。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MC 儀表版",
+          "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
+          "card_id": "c390d45c-68e2-469a-98fa-72d64fd1ee45",
+          "synced_at": "2026-06-14",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "architecture-pulse-probe",
+      "title": "Architecture Pulse Live MVP：驗證資料連動閉環",
+      "status": "todo",
+      "track": "control-plane",
+      "order": 24,
+      "order_label": "ACP-ARCH-01",
+      "depends_on": [
+        "agent-control-plane-readonly-query-schema",
+        "acp-task-authoring-protocol"
+      ],
+      "done_condition": "完成 Architecture Pulse Live MVP：修改一個受管 source（例如 dual-blade task、ADR-003、schedule/*.yaml 或 package scripts）後，npm run prebuild 會自動重生 public/data/architecture-pulse.json，MC 儀表板的 read-only Architecture Pulse 卡片會反映新狀態，npm run build 通過；新增 npm run test:architecture-pulse 驗證 source 變更會造成 read model 變更、generated_at 更新、stale_rule/freshness 可判斷，且不需要人工手改 architecture-pulse.json 或新增手寫 Trust Map / 第二正本。",
+      "note": "此 task 驗證的是活系統第一步：資料連動閉環，而不是只在 MC 顯示一張靜態卡。MorroWise 只作壓力測試案例，不是此 task 的專案歸屬；v0 只讀不寫、不自動改 task。保留原 id architecture-pulse-probe 以維持既有 Heptabase / Canvas refs 穩定。",
+      "hc_decision": {
+        "task_scope": "驗證 Architecture Pulse 是否值得做：建立資料連動閉環，確認受管 source 變更後能自動重生 read model、更新 MC 儀表板卡片並通過 build，不建立新的手寫架構正本。",
+        "hc_refs": [
+          "#sift",
+          "#constraints",
+          "#hypothesisDriven",
+          "#infoNeeded"
+        ],
+        "hc_reasoning": "SIFT 後排除手寫 Trust Map 這個顯而易見但會腐爛的方案；constraints 守住單一資料原則與不改日常 workflow；hypothesisDriven 把提案縮成可證偽 MVP；infoNeeded 限定只回答哪些來源可用、缺哪些欄位、是否值得 productize。Vincent 修正：活系統驗證不是看得到卡片，而是改 source 後相關 read model 與 MC 儀表板會自行更新，所以 v0 必須驗證資料連動閉環。",
+        "hc_confidence": 0.82,
+        "source_boundary": "HC is a thinking check, not a source of truth; MC tasks.json、ADR、schedule、scripts/verifier 才是此 task 讀取與驗證的 source of truth。",
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/dual-blade/project.json",
+          "$COLLAB/harness-mc/milestones/harness-mc/tasks.json",
+          "$COLLAB/notyet-harness/000_Agent/decisions/ADR-003-agent-control-plane.md",
+          "$COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/visual-layer-transition-protocol.md",
+          "$COLLAB/harness-mc/system-workflow/docs/task-write-command-map.md"
+        ]
+      },
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "AI Agent 共享腦系統（原雙刀流）",
+          "whiteboard_id": "9f79160d-28be-44c1-ab94-034dbacd342d",
+          "card_id": "24e69d9c-d958-4463-aec2-f2f3be1f29f5",
+          "synced_at": "2026-06-22",
+          "sync_mode": "refreshed"
+        }
+      }
     }
   ]
 }

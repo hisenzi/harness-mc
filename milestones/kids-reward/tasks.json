@@ -4,72 +4,150 @@
     {
       "id": "p1-1",
       "title": "本地 git init + 連接 GitHub remote + 同步",
-      "status": "todo",
+      "status": "done",
       "track": "phase-1",
-      "done_condition": "git remote -v 顯示 hisenzi/kids-reward，本地與 remote 同步"
+      "done_condition": "git remote -v 顯示 hisenzi/kids-reward，本地與 remote 同步",
+      "note": "2026-06-10 盤點回填：remote 已存在且 main 與 origin/main 同步"
     },
     {
       "id": "p1-2",
-      "title": "願望清單系統（提交＋為什麼想要＋父母填點數＋進度條＋70/30 兌換）",
+      "title": "Supabase 專案建立 + schema 設計 + RLS",
       "status": "todo",
       "track": "phase-1",
-      "depends_on": ["p1-1"],
-      "done_condition": "孩子可提交願望（含理由）→ 家長待審核列表 → 父母填入點數 → 進度條顯示 → 兌換時 70/30 計算正確（1點=$5）"
+      "done_condition": "families/children/wishes/point_claims/history/settings 資料表建立，RLS 確保家庭間與小孩間資料隔離，前端可用 anon key 連線",
+      "note": "2026-06-24 收斂驗收：kids-reward repo 已有 supabase/schema.sql 實作稿，涵蓋 families/children/wishes/point_claims/history/settings、RLS、trigger、child_stats view 與 realtime publication。已新增前端 backend mode 切換（?backend=mock / ?backend=supabase、登入頁切換按鈕、Supabase client 載入失敗自動落回 mock、scripts/verify-backend-mode.mjs 驗證）。Live schema/RLS probe 已嘗試用 anon REST 查 families/settings，但 wgxnvfaqykbgbqmfdzoe.supabase.co DNS 解析失敗；本機也沒有 supabase CLI。p1-2 仍保持 todo，待 Supabase 專案可連線後跑完整 RLS 驗證清單再標 done。"
     },
     {
       "id": "p1-3",
-      "title": "得點申報＋父母審核流程",
+      "title": "帳號系統（家長註冊登入 + 小孩帳密建立管理）",
       "status": "todo",
       "track": "phase-1",
-      "depends_on": ["p1-1"],
-      "done_condition": "孩子點擊得分按鈕 → 進入待審核 → 父母批准後點數入帳 / 拒絕後不入帳"
+      "depends_on": ["p1-2"],
+      "done_condition": "家長可註冊/登入；家長端可新增/停用/重設小孩帳密；小孩帳密可登入且只見自己資料、無審核與設定權限"
     },
     {
       "id": "p1-4",
-      "title": "保留現有得分項目（小考/段考/模擬考/複習講義/自訂加點）",
+      "title": "資料層遷移 localStorage → Supabase + 歷史紀錄統計",
       "status": "todo",
       "track": "phase-1",
       "depends_on": ["p1-3"],
-      "done_condition": "所有計分規則與舊版一致：小考（一般/理化加倍）、段考（國中/高中）、模擬考、複習講義、自訂加點"
+      "done_condition": "讀寫全走 Supabase；舊版 JSON 匯出檔可匯入新 schema；紀錄/統計（累計獲得/已兌換/餘額）讀雲端資料正確"
     },
     {
-      "id": "p1-5",
-      "title": "歷史紀錄＋統計",
+      "id": "p2-1",
+      "title": "願望流程（提交＋理由＋建議點數 → 家長審核可調 → 進度追蹤）",
       "status": "todo",
-      "track": "phase-1",
-      "depends_on": ["p1-3"],
-      "done_condition": "累計獲得/已兌換/餘額統計正確，紀錄可刪除（PIN 保護），得點與兌換紀錄分開顯示"
+      "track": "phase-2",
+      "depends_on": ["p1-4"],
+      "done_condition": "小孩提交願望（內容＋為什麼想要＋建議點數）→ 家長待審核列表 → 家長可調整點數後核定 → 進度條按核定點數計算"
     },
     {
-      "id": "p1-6",
+      "id": "p2-2",
+      "title": "得點申報流程（含舊版得分項目規則）",
+      "status": "todo",
+      "track": "phase-2",
+      "depends_on": ["p1-4"],
+      "done_condition": "小孩申報 → 家長批准入帳/拒絕不入帳；計分規則與舊版一致：小考（一般/理化加倍）、段考（國中/高中）、模擬考、複習講義、自訂加點"
+    },
+    {
+      "id": "p2-3",
+      "title": "email 通知（Edge Function + 寄信服務）＋ 站內通知",
+      "status": "todo",
+      "track": "phase-2",
+      "depends_on": ["p2-1", "p2-2"],
+      "done_condition": "小孩提交願望/申報得點 → 家長信箱收到通知信；家長審核後產生站內通知給小孩"
+    },
+    {
+      "id": "p2-4",
+      "title": "兌換流程接全域參數",
+      "status": "todo",
+      "track": "phase-2",
+      "depends_on": ["p2-1"],
+      "done_condition": "兌換計算讀 settings（預設 1 點=$5、折抵 70%），核定點數 × 參數計算正確，70/30 顯示與入帳一致"
+    },
+    {
+      "id": "p3-1",
+      "title": "CRUD 完善（小孩/願望/得分項目/紀錄 增刪改查）",
+      "status": "todo",
+      "track": "phase-3",
+      "depends_on": ["p2-1", "p2-2"],
+      "done_condition": "家長端：小孩增刪改、願望編輯、得分項目增刪改（含倍率設定）、紀錄刪除，全部可操作且即時同步"
+    },
+    {
+      "id": "p3-2",
+      "title": "自訂兌換規則設定頁（全域參數）",
+      "status": "todo",
+      "track": "phase-3",
+      "depends_on": ["p2-4"],
+      "done_condition": "家長可修改「1 點 = $X」「折抵 Y%」，改動後新兌換即套用新參數，既有紀錄不回溯"
+    },
+    {
+      "id": "p3-3",
       "title": "使用規則說明頁",
       "status": "todo",
-      "track": "phase-1",
-      "done_condition": "含六區塊：基本規則（1點=$5、70/30）、願望定價說明、閱讀加成規則（對話加成/洞見紀錄/多元加成）、教學加倍、得分項目說明、季度規則會議"
+      "track": "phase-3",
+      "depends_on": ["p3-2"],
+      "done_condition": "含六區塊：基本規則（顯示當前全域參數）、願望定價說明（建議點數機制）、閱讀加成規則（對話加成/洞見紀錄/多元加成）、教學加倍、得分項目說明、季度規則會議"
     },
     {
-      "id": "p1-7",
-      "title": "家長管理（PIN、孩子設定、匯出匯入）",
+      "id": "p3-4",
+      "title": "JSON 匯出匯入（雲端資料備份/還原）",
       "status": "todo",
-      "track": "phase-1",
-      "depends_on": ["p1-3"],
-      "done_condition": "PIN 保護進入、孩子名稱修改、JSON 匯出匯入、待審核列表（得點＋願望統一顯示）"
+      "track": "phase-3",
+      "depends_on": ["p1-4"],
+      "done_condition": "家長端可匯出全家資料 JSON、匯入還原，格式與 Supabase schema 對應"
     },
     {
-      "id": "p1-8",
-      "title": "更新 repos.json + 推送 GitHub",
+      "id": "d-1",
+      "title": "部署（啟用 GitHub Pages）＋ repos.json 登錄 + push",
       "status": "todo",
-      "track": "phase-1",
-      "depends_on": ["p1-2", "p1-3", "p1-4", "p1-5", "p1-6", "p1-7"],
-      "done_condition": "repos.json 有 kids-reward 條目，GitHub main 分支為最新版本"
+      "track": "deploy",
+      "depends_on": ["p2-3", "p3-1", "p3-2", "p3-3", "p3-4"],
+      "done_condition": "GitHub Pages 啟用且線上可用（2026-06-10 確認目前未啟用）；000_Agent/config/repos.json 加入 kids-reward 條目；GitHub main 為最新版本"
     },
     {
-      "id": "p1-verify",
-      "title": "Phase 1 驗收（5 條 success criteria）",
+      "id": "d-keepalive",
+      "title": "每日 API ping 排程，防 Supabase 免費層 7 天無活動休眠",
       "status": "todo",
-      "track": "phase-1",
-      "depends_on": ["p1-8"],
+      "track": "deploy",
+      "depends_on": ["p1-2"],
+      "done_condition": "每日一次 API ping 排程啟用（GitHub Actions schedule 或 OC cron 擇一）且實際成功執行 ≥1 次；確認 ping 會重置 inactivity 計時器（任何 API 請求皆可）",
+      "note": "起因：260611 發現 nsg-system 暫停且 90 天復原視窗只剩 6 天。免費層 7 天無 API/連線/dashboard 活動即暫停。若選 OC cron 需 HiSenzi 配置（CC 邊界不可改 OC cron）；GitHub Actions 路線 CC 可全做"
+    },
+    {
+      "id": "d-verify",
+      "title": "驗收（5 條 success criteria）",
+      "status": "todo",
+      "track": "deploy",
+      "depends_on": ["d-1"],
       "done_condition": "project.json 5 條 success_criteria 全部通過"
+    },
+    {
+      "id": "trial-1",
+      "title": "邀請碼註冊閘門",
+      "status": "todo",
+      "track": "trial",
+      "depends_on": ["p1-3"],
+      "done_condition": "家長註冊需輸入有效邀請碼，無碼或失效碼被擋；邀請碼可產生/停用（Vincent 端管理）；invite_codes 表＋RLS 入 schema",
+      "note": "目的：控試用量＋控濫用面＋間接控 email 額度。260611 公開試用評估產出"
+    },
+    {
+      "id": "trial-2",
+      "title": "通知降級（email 改 opt-in，站內通知為主）",
+      "status": "todo",
+      "track": "trial",
+      "depends_on": ["p2-3"],
+      "done_condition": "試用家庭預設只有站內通知；email 通知為家長設定頁明確開啟才寄；Resend 100 封/天額度有保護（超量靜默降級不報錯）",
+      "note": "Resend 免費層 100 封/天是公開試用第一道隱形牆，先於所有 Supabase 額度"
+    },
+    {
+      "id": "trial-3",
+      "title": "Realtime 輪詢降級",
+      "status": "todo",
+      "track": "trial",
+      "depends_on": ["p2-1", "p2-2"],
+      "done_condition": "Realtime 連線失敗或超量時自動 fallback 輪詢（30s 級）；可全域關閉 Realtime 純輪詢運行；家長待審核列表兩種模式下行為一致",
+      "note": "免費層 Realtime 並發 200 是第一道會撞的 Supabase 額度牆；待審核列表是唯一 realtime 用點，降級成本低"
     }
   ]
 }

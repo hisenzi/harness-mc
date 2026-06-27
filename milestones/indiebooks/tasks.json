@@ -29,9 +29,11 @@
     {
       "id": "spike-verify",
       "title": "Spike 驗收：契約表 + 缺口決策 完成",
-      "status": "todo",
+      "status": "completed",
       "track": "spike",
       "done_condition": "兩份產出完成並可作為 refactor 依據",
+      "completed_at": "2026-06-16",
+      "summary": "驗收通過：spike-1 契約盤點與 spike-2 欄位確認規則已足夠支撐 refactor-1 theme config 設計；產出 indiebooks/docs/spike-verification.md",
       "note": "前置：spike-1, spike-2"
     },
     {

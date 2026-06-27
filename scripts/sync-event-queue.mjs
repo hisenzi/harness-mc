@@ -37,7 +37,7 @@ export function writeSyncEvent(input) {
   const queueDir = path.join(input.root || process.cwd(), "sync-events", queueNameForType(input.type));
   fs.mkdirSync(queueDir, { recursive: true });
 
-  const fileName = `${timestampSlug(createdAt)}-${slug(input.target)}-${slug(input.project)}-${slug(input.task_id)}-${slug(input.type)}.json`;
+  const fileName = `${timestampSlug(createdAt)}-${slug(input.target)}-${slug(input.project)}-${slug(input.task_id)}-${slug(input.source_event_id)}-${slug(input.type)}.json`;
   const target = path.join(queueDir, fileName);
   fs.writeFileSync(target, `${JSON.stringify(event, null, 2)}\n`, { flag: "wx" });
 

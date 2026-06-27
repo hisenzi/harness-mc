@@ -224,7 +224,13 @@ interface LiveDashboardAction {
 interface LiveDashboardSurface {
   id: string;
   label: string;
-  freshness_state: "fresh" | "stale" | "degraded" | "unknown";
+  source_of_truth?: string;
+  source_files?: string[];
+  generator?: string | string[];
+  generated_at?: string | null;
+  stale_rule?: string;
+  classification?: "live" | "semi_live" | "static_display" | "fake_live_risk";
+  freshness_state: "fresh" | "stale" | "degraded" | "manual" | "unknown";
   freshness_reason: string;
   last_updated_at: string | null;
   attention_level: "normal" | "watch" | "needs_review" | "blocked";
@@ -234,6 +240,7 @@ interface LiveDashboardSurface {
     allowed?: string[];
     forbidden?: string[];
   };
+  verifier_ref?: string;
   drilldown_route?: string;
   metrics?: Record<string, number | string | null>;
 }
@@ -505,81 +512,92 @@ function statePillClass(state: LiveDashboardSurface["freshness_state"]) {
   if (state === "fresh") return `${base} border-green-400/30 text-green-400`;
   if (state === "stale") return `${base} border-yellow-400/30 text-yellow-400`;
   if (state === "degraded") return `${base} border-red-400/30 text-red-400`;
+  if (state === "manual") return `${base} border-blue-400/30 text-blue-400`;
   return `${base} border-[var(--border)] text-[var(--text-muted)]`;
 }
 
-function MorroWiseSurfaceCard({ projects }: { projects: Project[] }) {
-  const [sentinel, setSentinel] = useState<SentinelData | null>(null);
-  const [pipeline, setPipeline] = useState<TaskEventPipelineData | null>(null);
+function MorroWiseSurfaceCard({ liveDashboard }: { liveDashboard: LiveDashboardData | null }) {
+  const surface = liveDashboard?.surfaces.find((item) => item.id === "morrowise_living_system") || null;
 
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/changes.json`)
-      .then((r) => r.json())
-      .then(setSentinel)
-      .catch(() => {});
+  if (!surface) {
+    return (
+      <div>
+        <div className="flex items-center gap-3 mb-3">
+          <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">MorroWise 活系統</div>
+          <div className="text-[11px] text-[var(--text-muted)]">read model 載入中</div>
+          <div className="flex-1 border-t border-[var(--border)]"></div>
+        </div>
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 text-[13px] text-[var(--text-muted)]">
+          morrowise-live-dashboard.json 尚未載入
+        </div>
+      </div>
+    );
+  }
 
-    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/task-events.json`)
-      .then((r) => r.json())
-      .then(setPipeline)
-      .catch(() => {});
-  }, []);
-
-  const harness = projects.find((project) => project.project === "harness-mc");
-  const morrowiseTasks = (harness?.tasks || [])
-    .filter((task) => task.track === "morrowise-system" || task.id.startsWith("morrowise-"))
-    .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || a.id.localeCompare(b.id));
-  const completed = morrowiseTasks.filter((task) => isDoneStatus(task.status));
-  const openTasks = morrowiseTasks.filter((task) => !isDoneStatus(task.status) && task.status !== "deferred" && task.status !== "archived");
-  const blockedTasks = morrowiseTasks.filter((task) => task.status === "blocked");
-  const nextTask = openTasks[0] || null;
-  const pendingEvents = (pipeline?.task_events.pending || 0) + (pipeline?.sync_events.pending || 0);
-  const staleMorroWise = (sentinel?.stale || []).filter((item) => item.project === "harness-mc").length;
-  const generatedAt = latestDate([sentinel?.generated_at, pipeline?.generated_at]);
+  const generatedAt = surface.generated_at || surface.last_updated_at;
   const generatedLabel = generatedAt
-    ? generatedAt.toLocaleString("zh-TW", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
-    : "讀取中";
-  const surfaceStatus = blockedTasks.length > 0 || pendingEvents > 0 ? "needs_fix" : nextTask ? "in_progress" : "completed";
-  const openLoopCount = openTasks.length + pendingEvents + staleMorroWise;
-  if (!harness || morrowiseTasks.length === 0) return null;
+    ? new Date(generatedAt).toLocaleString("zh-TW", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
+    : "unknown";
+  const generator = Array.isArray(surface.generator) ? surface.generator.join(" -> ") : surface.generator || "unknown";
+  const sourceFiles = (surface.source_files || []).slice(0, 3).join(" · ") || "none";
+  const forbiddenWrites = surface.write_boundary.forbidden?.join(" · ") || "No forbidden write list";
+  const allowedReads = surface.write_boundary.allowed?.join(" · ") || "Read-only summary";
+  const metrics = surface.metrics || {};
+  const sourceStatus = attentionStatus(surface.attention_level);
 
   return (
     <div>
       <div className="flex items-center gap-3 mb-3">
         <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">MorroWise 活系統</div>
         <div className="text-[11px] text-[var(--text-muted)]">
-          只顯示決策摘要 · {generatedLabel} 更新
+          read model · {generatedLabel} 更新
         </div>
         <div className="flex-1 border-t border-[var(--border)]"></div>
       </div>
 
       <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4">
-        <div className="grid grid-cols-1 xl:grid-cols-[1fr_1.05fr] gap-4 items-stretch">
+        <div className="grid grid-cols-1 xl:grid-cols-[0.96fr_1.04fr] gap-4 items-stretch">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <StatusDot status={surfaceStatus} />
-              <div className="text-[12px] font-semibold text-[var(--text)]">目前狀態</div>
-              <div className="ml-auto font-mono text-[11px] text-[var(--text-muted)]">{completed.length}/{morrowiseTasks.length}</div>
+              <StatusDot status={sourceStatus} />
+              <div className="text-[12px] font-semibold text-[var(--text)]">{surface.label}</div>
+              <span className={statePillClass(surface.freshness_state)}>{surface.freshness_state}</span>
+              <span className={classificationPillClass(surface.classification)}>{surface.classification || "unknown"}</span>
             </div>
-            <div className="mt-3 grid grid-cols-4 gap-2">
-              <MorroWiseMetric label="完成" value={String(completed.length)} tone="green" />
-              <MorroWiseMetric label="未閉合" value={String(openLoopCount)} tone={openLoopCount > 0 ? "yellow" : "green"} />
-              <MorroWiseMetric label="待處理" value={String(pendingEvents)} tone={pendingEvents > 0 ? "blue" : "green"} />
-              <MorroWiseMetric label="老舊" value={String(staleMorroWise)} tone={staleMorroWise > 0 ? "yellow" : "green"} />
+
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <ReadModelField label="source_of_truth" value={surface.source_of_truth || "unknown"} mono />
+              <ReadModelField label="freshness_state" value={surface.freshness_state} mono />
+              <ReadModelField label="classification" value={surface.classification || "unknown"} mono />
+              <ReadModelField label="generated_at" value={generatedLabel} mono />
+              <ReadModelField label="verifier_ref" value={surface.verifier_ref || "unknown"} mono />
+              <ReadModelField label="metrics" value={`tasks ${metrics.tasks ?? "?"} · completed ${metrics.completed ?? "?"}`} mono />
+            </div>
+
+            <div className="mt-3 rounded-lg border border-[var(--border)] bg-black/10 p-3">
+              <div className="text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)]">source_files</div>
+              <div className="mt-1 line-clamp-2 font-mono text-[11px] leading-relaxed text-[var(--text)]">{sourceFiles}</div>
             </div>
           </div>
 
           <div className="rounded-lg border border-[var(--border)] bg-black/10 p-3 min-w-0">
-            <div className="text-[11px] text-[var(--text-muted)]">下一個可執行工作</div>
-            {nextTask ? (
-              <div className="mt-1 min-w-0">
-                <div className="font-mono text-[12px] text-[var(--text)] truncate">{nextTask.order_label || nextTask.id}</div>
-                <div className="mt-1 text-[12px] text-[var(--text-muted)] line-clamp-2">{nextTask.title || nextTask.id}</div>
+            <div className="grid grid-cols-1 gap-3">
+              <ReadModelField label="generator" value={generator} mono />
+              <ReadModelField label="stale_rule" value={surface.stale_rule || surface.freshness_reason} />
+              <div className="rounded-md border border-[var(--border)] bg-white/[0.018] p-3">
+                <div className="text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)]">next_action</div>
+                <div className="mt-1 flex items-center gap-2 min-w-0">
+                  <span className="shrink-0 rounded-full border border-blue-400/30 px-2 py-0.5 font-mono text-[10px] text-blue-400">{surface.next_action.type}</span>
+                  <span className="truncate text-[12px] text-[var(--text)]">{surface.next_action.label}</span>
+                </div>
+                <div className="mt-1 truncate font-mono text-[11px] text-[var(--text-muted)]">{surface.next_action.target || "no target"}</div>
               </div>
-            ) : (
-              <div className="mt-1 text-[12px] text-green-400">第一段 control-console loop 已完成</div>
-            )}
-            <div className="mt-3 pt-3 border-t border-[var(--border)] text-[11px] text-[var(--text-muted)] truncate">
-              source: <span className="font-mono text-[var(--text)]">tasks.json / task-events / changes</span>
+              <div className="rounded-md border border-[var(--border)] bg-white/[0.018] p-3">
+                <div className="text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)]">write_boundary</div>
+                <div className="mt-1 font-mono text-[11px] text-[var(--text)]">{surface.write_boundary.mode}</div>
+                <div className="mt-2 line-clamp-2 text-[11px] leading-relaxed text-green-400/90">{allowedReads}</div>
+                <div className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-red-400/90">{forbiddenWrites}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -588,14 +606,22 @@ function MorroWiseSurfaceCard({ projects }: { projects: Project[] }) {
   );
 }
 
-function MorroWiseMetric({ label, value, tone }: { label: string; value: string; tone: "green" | "yellow" | "blue" }) {
-  const color = tone === "green" ? "text-green-400" : tone === "yellow" ? "text-yellow-400" : "text-blue-400";
+function ReadModelField({ label, value, mono = false }: { label: string; value: string; mono?: boolean }) {
   return (
-    <div className="rounded-md border border-[var(--border)] bg-white/[0.018] p-2 min-w-0">
-      <div className="text-[10px] text-[var(--text-muted)] truncate">{label}</div>
-      <div className={`mt-1 font-mono text-[20px] leading-none font-semibold ${color}`}>{value}</div>
+    <div className="rounded-md border border-[var(--border)] bg-white/[0.018] p-3 min-w-0">
+      <div className="text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)] truncate">{label}</div>
+      <div className={`mt-1 line-clamp-2 text-[12px] leading-relaxed text-[var(--text)] ${mono ? "font-mono" : ""}`}>{value}</div>
     </div>
   );
+}
+
+function classificationPillClass(classification: LiveDashboardSurface["classification"]) {
+  const base = "shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-mono";
+  if (classification === "live") return `${base} border-green-400/30 text-green-400`;
+  if (classification === "semi_live") return `${base} border-yellow-400/30 text-yellow-400`;
+  if (classification === "static_display") return `${base} border-blue-400/30 text-blue-400`;
+  if (classification === "fake_live_risk") return `${base} border-red-400/30 text-red-400`;
+  return `${base} border-[var(--border)] text-[var(--text-muted)]`;
 }
 
 function MorroWiseProactiveLoopCard() {
@@ -1447,7 +1473,7 @@ export default function HomePage() {
               <LiveDashboardSummary data={liveDashboard} />
               <section id="system-attention"><SystemAttentionCard /></section>
               <section id="task-event-pipeline"><TaskEventPipelineCard /></section>
-              <section id="morrowise-system"><MorroWiseSurfaceCard projects={projects} /></section>
+              <section id="morrowise-system"><MorroWiseSurfaceCard liveDashboard={liveDashboard} /></section>
               <section id="morrowise-loop"><MorroWiseProactiveLoopCard /></section>
               <section id="worktree-status"><WorktreeStatusCard /></section>
               <section id="visual-sync"><TaskVisualSyncCard projects={projects} /></section>

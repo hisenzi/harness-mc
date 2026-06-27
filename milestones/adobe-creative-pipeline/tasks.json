@@ -1,0 +1,176 @@
+{
+  "project": "adobe-creative-pipeline",
+  "tasks": [
+    {
+      "id": "acp-001",
+      "title": "Capability Probe：確認 Firefly / Photoshop / Illustrator 可控方式",
+      "status": "todo",
+      "track": "probe",
+      "order": 10,
+      "order_label": "01",
+      "done_condition": "產出 capability-report.md，分別列出 Firefly API、Photoshop UXP/Actions/API、Illustrator script/plugin/template 的可用方式、限制、fallback、需 Vincent 確認項",
+      "note": "不得讀取或輸出 Adobe secrets；只記錄需要哪些環境變數或授權",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Adobe 創意素材產線",
+          "whiteboard_id": "85f57a6e-2c4a-4591-ad36-4c67ada06cf3",
+          "card_id": "82b95d21-27c2-4382-8d6b-efcb1ec7e1e9",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "acp-002",
+      "title": "定義素材包資料契約與資料夾結構",
+      "status": "todo",
+      "track": "control",
+      "order": 20,
+      "order_label": "02",
+      "done_condition": "產出 pipeline-contract.md，定義 brief.json、brand-dna.yaml、prompt-plan.json、photoshop-recipe.json、illustrator-recipe.json、selection.json、package-manifest.json 與標準資料夾結構",
+      "note": "核心原則：圖可重生，manifest 與 recipe 必須可追溯",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Adobe 創意素材產線",
+          "whiteboard_id": "85f57a6e-2c4a-4591-ad36-4c67ada06cf3",
+          "card_id": "d175c080-0f5c-4f05-a6fe-b138b6491420",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "acp-003",
+      "title": "建立 Prompt / Recipe Planning 規格",
+      "status": "todo",
+      "track": "control",
+      "order": 30,
+      "order_label": "03",
+      "done_condition": "產出 prompt-recipe-planning.md，描述 Codex 如何從 brief + brand DNA 生成 Firefly prompts、negative prompts、Photoshop recipe、Illustrator recipe 與人工確認點",
+      "note": "需納入 HC design checks：brand coherence、imagery style、visual consistency",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Adobe 創意素材產線",
+          "whiteboard_id": "85f57a6e-2c4a-4591-ad36-4c67ada06cf3",
+          "card_id": "e092a582-c805-4378-b743-429d74185969",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "acp-004",
+      "title": "Spike A：Firefly 生成節點最小驗證",
+      "status": "todo",
+      "track": "adobe-spikes",
+      "order": 40,
+      "order_label": "04",
+      "done_condition": "在 spike-report.md 記錄 Firefly API 是否可呼叫、最小生成流程、輸出檔/回應範例位置、錯誤/fallback；若缺 credentials，列出待 Vincent 提供的最小資訊",
+      "note": "不把 credentials 寫入 repo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Adobe 創意素材產線",
+          "whiteboard_id": "85f57a6e-2c4a-4591-ad36-4c67ada06cf3",
+          "card_id": "6fd21e61-f8f7-42e4-bfc3-74b03547425f",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "acp-005",
+      "title": "Spike B：Photoshop 後製節點最小驗證",
+      "status": "todo",
+      "track": "adobe-spikes",
+      "order": 50,
+      "order_label": "05",
+      "done_condition": "在 spike-report.md 記錄 Photoshop 可用控制方式，完成或規劃一個固定 recipe：裁切/尺寸輸出/mockup/色彩處理至少擇一，並列出可驗證輸出",
+      "note": "優先使用 script/API/Actions；Computer Use 只作 fallback",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Adobe 創意素材產線",
+          "whiteboard_id": "85f57a6e-2c4a-4591-ad36-4c67ada06cf3",
+          "card_id": "4d31e481-eb86-4f97-a983-fb6005534d04",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "acp-006",
+      "title": "Spike C：Illustrator 版型或向量輸出節點最小驗證",
+      "status": "todo",
+      "track": "adobe-spikes",
+      "order": 60,
+      "order_label": "06",
+      "done_condition": "在 spike-report.md 記錄 Illustrator 可用控制方式，完成或規劃一個 template/layout/vector export 流程，輸出 PDF/SVG/AI 至少一種",
+      "note": "依媒介分流，只有 vector/layout/PDF 類素材需要進 Illustrator",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Adobe 創意素材產線",
+          "whiteboard_id": "85f57a6e-2c4a-4591-ad36-4c67ada06cf3",
+          "card_id": "aab95b04-c35f-43c5-b2de-647eb04d7241",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "acp-007",
+      "title": "組裝 sample-package 並建立 package manifest",
+      "status": "todo",
+      "track": "package",
+      "order": 70,
+      "order_label": "07",
+      "done_condition": "建立 sample-package/package-manifest.json，至少追蹤一個輸出檔的 source、prompt、recipe、tool_node、version、qa_status",
+      "note": "若 Adobe spike 尚未能產真實檔，可用 placeholder artifact，但必須標明 simulated",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Adobe 創意素材產線",
+          "whiteboard_id": "85f57a6e-2c4a-4591-ad36-4c67ada06cf3",
+          "card_id": "1b8440bd-192d-42f8-90fa-afbee82a9bcb",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "acp-008",
+      "title": "QA checklist：品牌、影像、檔案規格、授權與 secrets 檢查",
+      "status": "todo",
+      "track": "package",
+      "order": 80,
+      "order_label": "08",
+      "done_condition": "產出 qa-report.md 或 qa-checklist.md，覆蓋品牌一致性、影像風格、尺寸/格式、商用授權風險、secrets 檢查，且列出 high-risk 項處理狀態",
+      "note": "QA 結果要能回寫 package-manifest.json 的 qa_status",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Adobe 創意素材產線",
+          "whiteboard_id": "85f57a6e-2c4a-4591-ad36-4c67ada06cf3",
+          "card_id": "479e69b4-d0d2-4ac6-ab2e-11762e326a90",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "acp-verify",
+      "title": "Phase 1 驗收：Adobe pipeline MVP 是否值得升級為 standalone",
+      "status": "todo",
+      "track": "package",
+      "order": 90,
+      "order_label": "09",
+      "done_condition": "彙整 capability-report.md、pipeline-contract.md、spike-report.md、sample-package/package-manifest.json、qa-report.md，給出 promote standalone / keep internal / stop 的建議",
+      "note": "驗收重點是降低不確定性，不是完成所有自動化",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "Adobe 創意素材產線",
+          "whiteboard_id": "85f57a6e-2c4a-4591-ad36-4c67ada06cf3",
+          "card_id": "7272243c-0561-4b70-b774-f0e9f0011422",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    }
+  ]
+}

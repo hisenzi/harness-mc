@@ -1,0 +1,118 @@
+{
+  "name": "Adobe 創意素材產線",
+  "description": "Codex 控制 brief、prompt、manifest 與 recipe，串接 Firefly 生成、Photoshop 後製、Illustrator 版型輸出，形成可回溯素材包流程",
+  "type": "internal",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-06-15",
+  "estimated_completion": "TBD",
+  "tracks": {
+    "probe": "能力探測與邊界確認",
+    "control": "Codex 控制層與資料契約",
+    "adobe-spikes": "Adobe 節點 Spike",
+    "package": "素材包輸出與驗收"
+  },
+  "goals": [
+    "建立一條可回溯的創意素材生產流程：brief → prompt → Firefly generation → selection → Photoshop processing → Illustrator layout/vector → export package",
+    "讓 Codex 管控 brief、manifest、recipe、狀態與人工閘門，而不是依賴不可觀測的螢幕操作",
+    "完成 Firefly、Photoshop、Illustrator 三個最小可行 spike，確認每個 Adobe 節點的實際可控方式",
+    "建立素材包資料契約，讓每個輸出檔都能回溯 prompt、來源、處理 recipe、版本與 QA 狀態",
+    "保留 designer-in-the-loop 的人工決策點，避免生成量爆炸與品牌一致性失控"
+  ],
+  "risks": [
+    {
+      "risk": "Adobe 產品控制方式不一致，Firefly 是 API-first，但 Photoshop / Illustrator 可能依版本與權限只能走本機 script、UXP 或人工操作",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "先做 capability probe；每個 Adobe 節點都記錄可用控制方式、限制與 fallback，不先假設全自動"
+    },
+    {
+      "risk": "生成素材數量快速膨脹，導致挑選、後製與版本追蹤失控",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "加入 selection gate；只有 selected 素材進入 Photoshop / Illustrator；所有生成結果寫入 manifest"
+    },
+    {
+      "risk": "品牌一致性與影像風格無法只靠 prompt 穩定維持",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "建立 brand-dna.yaml 與 qa checklist；使用 HC design checks 檢查 brand coherence、imagery style、visual consistency"
+    },
+    {
+      "risk": "Adobe credentials、OAuth token 或客戶素材授權資訊誤入共享 repo",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "credentials 只放本機環境或安全 secret store；shared files 只記錄變數名稱與設定方式，不寫秘密值"
+    },
+    {
+      "risk": "一開始做成 mega-plugin，範圍過大且難以驗證",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "第一版只做 CLI / file-manifest pipeline；跑通三個 spike 後再決定是否升級為 standalone repo 或 Adobe plugin"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "Capability probe 完成，明確列出 Firefly、Photoshop、Illustrator 各自可用的控制方式、限制與 fallback",
+      "verify_cmd": "test -f harness-mc/milestones/adobe-creative-pipeline/capability-report.md",
+      "expected": "capability-report.md 存在且包含 Firefly / Photoshop / Illustrator 三節"
+    },
+    {
+      "criterion": "素材包資料契約完成，包含 brief、brand DNA、prompt plan、recipe、selection、package manifest 的 schema 草案",
+      "verify_cmd": "test -f harness-mc/milestones/adobe-creative-pipeline/pipeline-contract.md",
+      "expected": "pipeline-contract.md 存在且列出每個 JSON/YAML artifact 的欄位"
+    },
+    {
+      "criterion": "三個 Adobe spike 都有可驗證輸出或明確 fallback：Firefly 生成、Photoshop 後製、Illustrator 套版/向量輸出",
+      "verify_cmd": "grep -n \"Spike A\\|Spike B\\|Spike C\" harness-mc/milestones/adobe-creative-pipeline/spike-report.md",
+      "expected": "spike-report.md 記錄三個 spike 的結果、輸出路徑、失敗原因或 fallback"
+    },
+    {
+      "criterion": "可組出一個最小素材包，且每個輸出檔可回溯來源 prompt 與處理 recipe",
+      "verify_cmd": "test -f harness-mc/milestones/adobe-creative-pipeline/sample-package/package-manifest.json",
+      "expected": "package-manifest.json 存在並包含 files、prompts、recipes、qa_status"
+    },
+    {
+      "criterion": "QA 報告涵蓋品牌一致性、影像風格、檔案規格、授權/商用風險與 secrets 檢查",
+      "verify_cmd": "test -f harness-mc/milestones/adobe-creative-pipeline/qa-report.md",
+      "expected": "qa-report.md 存在且無未處理的 high-risk 項"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "問題定義",
+      "decision": "本專案定義為「可回溯創意素材生產系統」，不是單純把 Adobe 三個工具串起來",
+      "reason": "HC #rightProblem 驗證後，工具串接只是手段；真正要解決的是創意素材從 brief 到交付的可控、可追蹤、可重跑",
+      "alternatives_rejected": "直接做 Adobe mega-plugin：範圍過大且早期不可驗證｜只寫 prompt 模板：無法處理後製、版型、素材包追蹤",
+      "hc_used": "#rightProblem, #breakItDown"
+    },
+    {
+      "topic": "控制架構",
+      "decision": "Codex 管控 brief、manifest、recipe、狀態與人工閘門；Adobe 工具只作為可替換的處理節點",
+      "reason": "Firefly、Photoshop、Illustrator 的可控方式不同。用檔案契約和 manifest 串接，能避免把流程綁死在單一 UI 或 plugin 實作",
+      "alternatives_rejected": "全靠 Computer Use 操作桌面 App：不穩且不可回溯｜直接做 UXP 全包：會過早綁定 Photoshop/Illustrator 的 plugin surface",
+      "hc_used": "#medium, #constraints, #systemDynamics"
+    },
+    {
+      "topic": "第一版實作策略",
+      "decision": "先做 MVP spike：Firefly API、Photoshop 批次後製、Illustrator 套版輸出各跑一個最小案例，再決定是否升級為 standalone repo",
+      "reason": "HC #evidenceBased 指出最大不確定性在 Adobe 實際控制能力；先驗證不確定性比直接規劃完整平台更合理",
+      "alternatives_rejected": "先建完整 CLI 平台：容易把未驗證假設寫成架構｜先做完整 UI/dashboard：會延後真正風險的暴露",
+      "hc_used": "#evidenceBased, #hypothesisDriven, #designThinking"
+    },
+    {
+      "topic": "媒介分流",
+      "decision": "素材不固定走 Firefly → Photoshop → Illustrator 全鏈；依產出媒介分流，bitmap 走 Photoshop，vector/layout/PDF 才進 Illustrator",
+      "reason": "HC #medium 判斷不同輸出媒介有不同承載力與成本；固定全鏈會增加不必要加工與失敗點",
+      "alternatives_rejected": "所有素材都經過三個 Adobe 工具：流程重、成本高、容易產生多餘版本｜只用 Firefly：無法滿足後製、版型與交付格式需求",
+      "hc_used": "#medium, #optimization"
+    },
+    {
+      "topic": "安全與授權",
+      "decision": "Adobe credentials、OAuth token、客戶素材授權內容不進 shared repo；shared layer 只保存流程、schema、任務與非秘密設定",
+      "reason": "符合 shared-agent CORE 安全規則，也避免多 agent 共用資料時誤讀或輸出 secrets",
+      "alternatives_rejected": "把完整 API token 寫進範例檔：方便但高風險｜把客戶素材授權細節混入 task：會污染共享追蹤層",
+      "hc_used": "#ethicalFraming, #constraints"
+    }
+  ]
+}

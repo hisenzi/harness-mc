@@ -1,0 +1,166 @@
+{
+  "project": "kj-bilingual",
+  "tasks": [
+    {
+      "id": "M1",
+      "title": "交接判定就緒",
+      "status": "in_progress",
+      "track": "A-handover",
+      "done_condition": "遠見三題有答案 + 在校生盤點完 + 教材初判 → 定「接管 vs 重建」",
+      "target_date": "2026-07",
+      "estimate": null,
+      "note": "Gate 1 — 最高優先。沒有它，方案定案是猜的"
+    },
+    {
+      "id": "M2",
+      "title": "方案定案",
+      "status": "todo",
+      "track": "C-product",
+      "done_condition": "月費/課程/分組/師資模式/差異化/入學篩選 全定稿，可賣",
+      "target_date": "2026-08~09",
+      "estimate": null,
+      "depends_on": ["M1"],
+      "note": "Gate 2 — 近期 deadline。沒有它，行銷無料可賣"
+    },
+    {
+      "id": "M3",
+      "title": "行銷就緒",
+      "status": "todo",
+      "track": "E-marketing",
+      "done_condition": "招生物料、方案說明、口碑素材到位",
+      "target_date": "2026-09",
+      "depends_on": ["M2"]
+    },
+    {
+      "id": "M4",
+      "title": "招生開跑",
+      "status": "todo",
+      "track": "E-marketing",
+      "done_condition": "116 國一新生對外招生啟動",
+      "target_date": "2026-10",
+      "depends_on": ["M3"]
+    },
+    {
+      "id": "M5",
+      "title": "建置推進",
+      "status": "todo",
+      "track": "D-teacher",
+      "done_condition": "招生達標進度 + 師資招募/簽證啟動 + 系統建置",
+      "target_date": "2026-10~2027-03",
+      "depends_on": ["M4"]
+    },
+    {
+      "id": "M6",
+      "title": "上線前就緒",
+      "status": "todo",
+      "track": "D-teacher",
+      "done_condition": "外師到位/合約、教材、系統、國二三轉換準備完成",
+      "target_date": "2027-06",
+      "depends_on": ["M5"],
+      "note": "Gate 3 — 師資到位 + 系統 + 轉換準備 → 上線前總集結"
+    },
+    {
+      "id": "M7",
+      "title": "116 上線",
+      "status": "todo",
+      "track": "A-handover",
+      "done_condition": "國一 greenfield 開課 + 國二三從遠見銜接完成",
+      "target_date": "2027-07",
+      "depends_on": ["M6"]
+    },
+    {
+      "id": "A1",
+      "title": "遠見三題（合約/教材/外師）",
+      "status": "in_progress",
+      "track": "A-handover",
+      "done_condition": "三組 🔴 答案到齊，判定接管 vs 重建",
+      "target_date": "2026-06底",
+      "owner": "校方",
+      "note": "blocking Gate 1。問題清單已備，等校方拿去問遠見"
+    },
+    {
+      "id": "A2",
+      "title": "釐清雙語班法律 entity（1b vs 1a）",
+      "status": "todo",
+      "track": "F-compliance",
+      "done_condition": "確認雙語班掛學校還是補習班牌照",
+      "target_date": "2026-06底",
+      "owner": "校方"
+    },
+    {
+      "id": "B1",
+      "title": "盤點國二三在校生",
+      "status": "in_progress",
+      "track": "B-transition",
+      "done_condition": "人數/年級/程度/節數清單完成",
+      "target_date": "2026-07",
+      "owner": "校方"
+    },
+    {
+      "id": "C1",
+      "title": "Smart Choice 教材評估",
+      "status": "in_progress",
+      "track": "C-product",
+      "done_condition": "週二看完教材，有初步評估",
+      "target_date": "本週二",
+      "owner": "顧問+校方"
+    },
+    {
+      "id": "C2",
+      "title": "主教材 + 雜誌 + 測驗定案",
+      "status": "todo",
+      "track": "C-product",
+      "done_condition": "教材套組確定，可寫進招生方案",
+      "target_date": "M2",
+      "depends_on": ["C1"]
+    },
+    {
+      "id": "C3",
+      "title": "月費定價精算",
+      "status": "todo",
+      "track": "C-product",
+      "done_condition": "外師薪資 + 學生數 → 精算月費區間",
+      "target_date": "M2",
+      "depends_on": ["A1"],
+      "note": "等遠見三題拿到外師薪資數字"
+    },
+    {
+      "id": "C4",
+      "title": "差異化敘事（AI-proof 核心）",
+      "status": "todo",
+      "track": "C-product",
+      "done_condition": "SIFT 分析轉化為招生可用敘事",
+      "target_date": "M2",
+      "owner": "V"
+    },
+    {
+      "id": "D1",
+      "title": "定師資模式（JD/師生比/合格外師）",
+      "status": "todo",
+      "track": "D-teacher",
+      "done_condition": "M2 前定稿，可放進行銷物料",
+      "target_date": "M2",
+      "owner": "顧問+V"
+    },
+    {
+      "id": "E1",
+      "title": "行銷物料設計",
+      "status": "todo",
+      "track": "E-marketing",
+      "done_condition": "招生用物料到位",
+      "target_date": "M3",
+      "depends_on": ["M2"],
+      "owner": "V"
+    },
+    {
+      "id": "F1",
+      "title": "月費 vs 代收代辦界線查證",
+      "status": "todo",
+      "track": "F-compliance",
+      "done_condition": "法務/主管機關確認合規",
+      "target_date": "M2",
+      "depends_on": ["A2"],
+      "owner": "校方"
+    }
+  ]
+}

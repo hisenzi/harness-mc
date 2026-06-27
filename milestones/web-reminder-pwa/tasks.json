@@ -1,0 +1,272 @@
+{
+  "project": "web-reminder-pwa",
+  "tasks": [
+    {
+      "id": "p0-1",
+      "title": "確認 MVP 使用情境與提醒類型",
+      "status": "todo",
+      "track": "phase-0",
+      "done_condition": "列出 1 個主要使用者情境、提醒觸發來源、提醒內容格式、以及是否需要重複提醒",
+      "note": "目前假設：先驗證一筆指定時間提醒，不先做完整產品流程",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "網頁提醒功能 MVP",
+          "whiteboard_id": "17bb2bee-43bd-4af9-8b1a-be8d60638ff8",
+          "card_id": "ca485a2b-3ff6-4be6-827c-dd627ad5104e",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "p0-2",
+      "title": "整理 Web Notification / Web Push / PWA 限制文件",
+      "status": "todo",
+      "track": "phase-0",
+      "done_condition": "docs/compatibility.md 或等效文件列出 HTTPS、permission、service worker、Web Push、iOS Home Screen PWA 限制與來源連結",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "網頁提醒功能 MVP",
+          "whiteboard_id": "17bb2bee-43bd-4af9-8b1a-be8d60638ff8",
+          "card_id": "c617d9b2-f108-4a03-96ff-14df16a4c794",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "p0-verify",
+      "title": "Phase 0 驗收：需求與平台限制已對齊",
+      "status": "todo",
+      "track": "phase-0",
+      "depends_on": [
+        "p0-1",
+        "p0-2"
+      ],
+      "done_condition": "Vincent 確認 MVP 只驗證最小提醒閉環，且已知 iOS / 背景執行限制不等同原生 App",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "網頁提醒功能 MVP",
+          "whiteboard_id": "17bb2bee-43bd-4af9-8b1a-be8d60638ff8",
+          "card_id": "b8dd0eb2-008e-4369-ac79-b85553e3c56e",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "p1-1",
+      "title": "建立 PWA 最小原型",
+      "status": "todo",
+      "track": "phase-1",
+      "depends_on": [
+        "p0-verify"
+      ],
+      "done_condition": "原型包含 manifest、service worker 註冊、安裝提示狀態、通知權限狀態 UI",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "網頁提醒功能 MVP",
+          "whiteboard_id": "17bb2bee-43bd-4af9-8b1a-be8d60638ff8",
+          "card_id": "c1bd1e84-5d1e-49d3-98ed-0f8b5873fb09",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "p1-2",
+      "title": "實作通知授權與測試通知",
+      "status": "todo",
+      "track": "phase-1",
+      "depends_on": [
+        "p1-1"
+      ],
+      "done_condition": "使用者點擊啟用提醒後才 requestPermission；granted/denied/default 三狀態皆有 UI；測試通知可成功顯示",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "網頁提醒功能 MVP",
+          "whiteboard_id": "17bb2bee-43bd-4af9-8b1a-be8d60638ff8",
+          "card_id": "0f8299f5-016a-4f7c-b972-690df648f2f1",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "p1-3",
+      "title": "實作最小 Web Push 後端閉環",
+      "status": "todo",
+      "track": "phase-1",
+      "depends_on": [
+        "p1-2"
+      ],
+      "done_condition": "可產生 push subscription、保存訂閱、由測試 endpoint 或腳本送出 push，service worker 收到後 showNotification",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "網頁提醒功能 MVP",
+          "whiteboard_id": "17bb2bee-43bd-4af9-8b1a-be8d60638ff8",
+          "card_id": "87758e14-2760-4c14-bfc7-f07fc11e73e0",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "p1-4",
+      "title": "實作一筆指定時間提醒",
+      "status": "todo",
+      "track": "phase-1",
+      "depends_on": [
+        "p1-3"
+      ],
+      "done_condition": "使用者可建立 1 分鐘後提醒；提醒由後端排程或測試排程觸發；到點後裝置收到通知",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "網頁提醒功能 MVP",
+          "whiteboard_id": "17bb2bee-43bd-4af9-8b1a-be8d60638ff8",
+          "card_id": "614adc3c-8b3a-4c05-b327-d69ca87f62c2",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "p1-verify",
+      "title": "Phase 1 驗收：最小提醒閉環可跑通",
+      "status": "todo",
+      "track": "phase-1",
+      "depends_on": [
+        "p1-1",
+        "p1-2",
+        "p1-3",
+        "p1-4"
+      ],
+      "done_condition": "success_criteria 前 3 條通過：授權、push event、指定時間提醒皆在至少 1 個支援環境成功",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "網頁提醒功能 MVP",
+          "whiteboard_id": "17bb2bee-43bd-4af9-8b1a-be8d60638ff8",
+          "card_id": "27dbbf90-bdef-4ec2-8828-7555d45261c3",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "p2-1",
+      "title": "桌面瀏覽器驗證",
+      "status": "todo",
+      "track": "phase-2",
+      "depends_on": [
+        "p1-verify"
+      ],
+      "done_condition": "Desktop Chrome 或 Edge 完成授權、背景通知、通知點擊回流測試並記錄結果",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "網頁提醒功能 MVP",
+          "whiteboard_id": "17bb2bee-43bd-4af9-8b1a-be8d60638ff8",
+          "card_id": "9c801bfb-ac72-4693-bb72-cfde4330f0b9",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "p2-2",
+      "title": "Android Chrome 驗證",
+      "status": "todo",
+      "track": "phase-2",
+      "depends_on": [
+        "p1-verify"
+      ],
+      "done_condition": "Android Chrome 完成 PWA 安裝、授權、背景通知、通知點擊回流測試並記錄結果",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "網頁提醒功能 MVP",
+          "whiteboard_id": "17bb2bee-43bd-4af9-8b1a-be8d60638ff8",
+          "card_id": "5b48b461-38a2-4453-8810-dd4ba41de1a9",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "p2-3",
+      "title": "iOS Home Screen PWA 驗證",
+      "status": "todo",
+      "track": "phase-2",
+      "depends_on": [
+        "p1-verify"
+      ],
+      "done_condition": "iPhone/iPad 以 Home Screen PWA 路徑完成安裝與通知測試；若不支援或失敗，記錄 iOS 版本、瀏覽器、失敗原因",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "網頁提醒功能 MVP",
+          "whiteboard_id": "17bb2bee-43bd-4af9-8b1a-be8d60638ff8",
+          "card_id": "0934defd-d1ef-43df-9708-67b78627067f",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "p2-verify",
+      "title": "Phase 2 驗收：相容性矩陣完成",
+      "status": "todo",
+      "track": "phase-2",
+      "depends_on": [
+        "p2-1",
+        "p2-2",
+        "p2-3"
+      ],
+      "done_condition": "docs/compatibility.md 或等效文件完成桌面、Android、iOS 三類環境測試結果與限制矩陣",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "網頁提醒功能 MVP",
+          "whiteboard_id": "17bb2bee-43bd-4af9-8b1a-be8d60638ff8",
+          "card_id": "ed8ed7b8-9336-4b35-89f8-eef670192041",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "d-1",
+      "title": "決定是否升級 standalone repo 與部署目標",
+      "status": "todo",
+      "track": "deploy",
+      "depends_on": [
+        "p2-verify"
+      ],
+      "done_condition": "根據實機驗證決定 promote standalone / 改用原生 App / 改搭配 LINE 或 email fallback，並更新 project.json decisions",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "網頁提醒功能 MVP",
+          "whiteboard_id": "17bb2bee-43bd-4af9-8b1a-be8d60638ff8",
+          "card_id": "173207fe-96c9-4a23-a1ea-680bc4a9d98f",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "d-verify",
+      "title": "MVP 最終驗收",
+      "status": "todo",
+      "track": "deploy",
+      "depends_on": [
+        "d-1"
+      ],
+      "done_condition": "project.json 5 條 success_criteria 對應驗收結果已完成，且環境異動、限制、下一步決策都有紀錄",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "網頁提醒功能 MVP",
+          "whiteboard_id": "17bb2bee-43bd-4af9-8b1a-be8d60638ff8",
+          "card_id": "71f98d54-562d-4467-8d99-8d505de6fa6c",
+          "synced_at": "2026-06-15",
+          "sync_mode": "created"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "name": "KJ 雙語班收回自營",
+  "description": "KJ 學校雙語班從遠見外包轉自營。ESL 跑班路線，外師 Only 雙語班。116 學年（2027.07）上線，國一 greenfield + 國二三遠見銜接雙軌並行",
+  "type": "consulting",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-06-12",
+  "estimated_completion": "2027-07-01",
+  "repo": null,
+  "repo_path": "CC本機協作_無Git/KJ/260612_KJ_雙語班",
+  "tracks": {
+    "A-handover": "A 交接線（遠見）",
+    "B-transition": "B 在校生線（國二三轉換）",
+    "C-product": "C 產品線（教材/收費/系統/敘事）",
+    "D-teacher": "D 師資線",
+    "E-marketing": "E 招生/行銷線",
+    "F-compliance": "F 法規/合規線"
+  },
+  "goals": [
+    "2026.09 方案定案（月費/課程/分組/師資/差異化/篩選全定稿）",
+    "2026.10 招生開跑（116 國一新生）",
+    "2027.07 上線（國一 greenfield 開課 + 國二三遠見銜接完成）"
+  ],
+  "risks": [
+    {
+      "risk": "遠見三題拖太久 → 方案定案趕不上 9 月",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "即刻問、設回覆死線；不行就先賣模式與承諾"
+    },
+    {
+      "risk": "外師不能留用 → 全新招",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "runway 仍夠（上線 2027.07），及早啟動簽證"
+    },
+    {
+      "risk": "在校生家長信任危機",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "升級敘事 + 師資延續 + 尊榮面談（腳本已備）"
+    },
+    {
+      "risk": "月費法規界線（代收代辦）",
+      "impact": "medium",
+      "probability": "low",
+      "mitigation": "落地前法務查證"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "2026.09 方案定案，可對外招生",
+      "verify_cmd": "月費/課程/師資/差異化/篩選全定稿文件齊備",
+      "expected": "所有 open loops 關閉，Gate 2 通過"
+    },
+    {
+      "criterion": "2026.10 招生啟動，物料到位",
+      "verify_cmd": "行銷物料 + 方案說明 + 口碑素材 ready",
+      "expected": "M3 → M4 順利進入"
+    },
+    {
+      "criterion": "2027.07 國一 + 國二三全面上線",
+      "verify_cmd": "外師到位/教材/系統/轉換全完成",
+      "expected": "116 學年第一天正常開課"
+    }
+  ],
+  "decisions": [
+    {"date": "2026-06-11", "item": "路線", "result": "ESL 跑班（如輔大聖心）"},
+    {"date": "2026-06-11", "item": "外師範疇", "result": "Only 雙語班（不支援一般班）"},
+    {"date": null, "item": "入學篩選", "result": "待定（面試 vs 成績分發）"}
+  ]
+}

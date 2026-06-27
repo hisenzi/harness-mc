@@ -1,0 +1,107 @@
+{
+  "name": "網頁提醒功能 MVP",
+  "description": "網頁以 PWA、Service Worker 與 Web Push 實作接近 App 的提醒功能原型與驗證",
+  "type": "internal",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-06-15",
+  "estimated_completion": "2026-06-30",
+  "tracks": {
+    "phase-0": "Phase 0 — 需求與限制確認",
+    "phase-1": "Phase 1 — PWA 提醒 MVP 原型",
+    "phase-2": "Phase 2 — 裝置相容性驗證",
+    "deploy": "部署與驗收"
+  },
+  "goals": [
+    "驗證網頁是否能提供接近 App 的提醒體驗：使用者授權後，網頁可在背景或未開啟頁面時收到系統通知",
+    "完成一個可實測的 PWA MVP：包含 manifest、service worker、通知授權流程、測試通知、以及提醒排程的最小流程",
+    "釐清雲端推播與本機定時提醒的邊界：MVP 以伺服器排程推送為主，不把瀏覽器背景 timer 當可靠方案",
+    "建立 iOS / Android / Desktop 的限制清單與驗收矩陣，特別標註 iOS Home Screen PWA 的安裝與通知條件",
+    "決定後續是否需要升級成 standalone repo 與正式部署，避免在不可行假設上投入完整產品開發"
+  ],
+  "risks": [
+    {
+      "risk": "iOS 通知能力依賴 Home Screen PWA 與 Safari/WebKit 限制，使用者安裝流程比原生 App 不直覺",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "MVP 驗收把 iOS 安裝流程列為獨立測試項；產品文案需引導加入主畫面，不能假設一般瀏覽器分頁即可達成完整體驗"
+    },
+    {
+      "risk": "本機定時提醒在 Web 平台不如原生 App 穩定，瀏覽器可能停止背景 timer 或限制背景行為",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "提醒時間由後端排程或 serverless cron 控制，到點後走 Web Push；本機 timer 只作為頁面開啟時的輔助體驗"
+    },
+    {
+      "risk": "通知權限被使用者拒絕或被瀏覽器自動降權，導致提醒無法送達",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "只在明確使用者手勢後請求權限；建立權限狀態 UI 與 fallback（站內提醒、email 或 LINE 通知視後續產品決策）"
+    },
+    {
+      "risk": "Web Push 需要 HTTPS、service worker、push subscription 與後端保存訂閱資訊，MVP 若只做前端 demo 會誤判可行性",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "Phase 1 必須包含最小後端或 serverless endpoint；驗收時以真實裝置收到推播為準，不只看瀏覽器 console"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "使用者能完成通知授權與測試通知",
+      "verify_cmd": "手動測試：開啟 PWA → 點擊啟用提醒 → 瀏覽器/系統顯示權限提示 → 授權後點擊測試通知",
+      "expected": "系統通知成功出現；拒絕權限時 UI 顯示可理解的 fallback 狀態"
+    },
+    {
+      "criterion": "Service Worker 可接收 push event 並顯示 persistent notification",
+      "verify_cmd": "手動測試：後端或測試腳本送出 Web Push → service worker showNotification",
+      "expected": "即使 PWA 不在前景，支援裝置仍收到通知；點擊通知可回到指定頁面"
+    },
+    {
+      "criterion": "可建立一筆提醒並在指定時間收到通知",
+      "verify_cmd": "手動測試：建立 1 分鐘後提醒 → 關閉頁面或切到背景 → 等待通知",
+      "expected": "到點後收到通知；提醒紀錄狀態更新為已送出或送達待確認"
+    },
+    {
+      "criterion": "完成跨平台限制矩陣",
+      "verify_cmd": "檢查 docs/compatibility.md 或等效文件",
+      "expected": "至少列出 Desktop Chrome/Edge、Android Chrome、iOS Safari Home Screen PWA 的支援狀態、限制、測試結果"
+    },
+    {
+      "criterion": "MVP 後續決策清楚",
+      "verify_cmd": "檢查 project.json decisions 與最終驗收紀錄",
+      "expected": "明確判斷：可繼續做 PWA、需混合原生 App、或只適合搭配 LINE/email 等外部通知通道"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "MVP 類型",
+      "decision": "先以 internal MC 專案開案，不立刻建立 GitHub repo；完成需求與驗證規格後，再決定是否 promote 成 standalone PWA 原型",
+      "reason": "建立 GitHub repo 是對外動作，且目前核心問題是可行性與限制驗證。先用 MC 管理 MVP 範圍，可避免在尚未確認 iOS/背景提醒限制前投入完整產品化。",
+      "alternatives_rejected": [
+        "立即 standalone 開 repo — 會先碰外部 GitHub，且可能在需求邊界未定時產生空 repo",
+        "只停留在口頭討論 — 無法累積任務、驗收與後續決策"
+      ],
+      "hc_used": ["#rightProblem", "#breakItDown"]
+    },
+    {
+      "topic": "提醒技術路線",
+      "decision": "MVP 以 Web Push + Service Worker 作為核心；本機 timer 只當頁面開啟時的輔助，不作為可靠背景提醒方案",
+      "reason": "瀏覽器能顯示系統通知，但背景執行不是原生 App 等級。若目標是『像 App 一樣提醒』，可靠路線應是伺服器排程後推送，而不是期待網頁長時間在背景跑 JavaScript。",
+      "alternatives_rejected": [
+        "純前端 setTimeout/setInterval — 背景或關閉頁面後不可依賴",
+        "一開始就做原生 App — 過早放棄 Web/PWA 的低部署成本優勢"
+      ],
+      "hc_used": ["#levelsOfAnalysis", "#systemDynamics"]
+    },
+    {
+      "topic": "驗收重點",
+      "decision": "成功標準不只看桌面瀏覽器，而是以真實手機裝置、背景狀態、通知點擊回流與 iOS 安裝限制為主要驗收",
+      "reason": "桌面通知 demo 容易成功，但產品風險集中在手機與 iOS。MVP 的價值是降低平台限制的不確定性，而不是證明 Notification API 可以在桌面彈出通知。",
+      "alternatives_rejected": [
+        "只驗桌面 Chrome — 不能代表目標使用者的手機體驗",
+        "只讀文件不做實機 — 無法確認權限、安裝、背景與系統設定造成的真實摩擦"
+      ],
+      "hc_used": ["#rightProblem", "#abstraction"]
+    }
+  ]
+}

@@ -1609,7 +1609,7 @@
     {
       "id": "projects-pai-domain-filter-alignment",
       "title": "/projects 分類改參照 Notion PAI「領域」",
-      "status": "in_progress",
+      "status": "completed",
       "track": "phase-1",
       "priority": "high",
       "depends_on": [
@@ -1622,7 +1622,12 @@
         "domain 選項與 PAI「領域」一致，不再新增平行的 MC-only category 名稱。",
         "project.type 仍輸出但不再作為主要分類 chip。"
       ],
-      "note": "Vincent 從 /projects 截圖指出分類應參照 Notion『領域』才一致。現況 chips 來自 project.json type（consulting/internal/knowledge/learning/service/standalone/system），這是 MC 內部專案型態，不是 PAI 領域；需要拆成 domain(primary filter) + type(secondary metadata)。"
+      "note": "Vincent 從 /projects 截圖指出分類應參照 Notion『領域』才一致。現況 chips 來自 project.json type（consulting/internal/knowledge/learning/service/standalone/system），這是 MC 內部專案型態，不是 PAI 領域；需要拆成 domain(primary filter) + type(secondary metadata)。",
+      "completed_at": "2026-06-28",
+      "commits": [
+        "b089a30"
+      ],
+      "summary": "/projects 主分類已改用 PAI / Notion「領域」taxonomy；project.type 保留為次要 metadata，資料產生器輸出 domain/domainLabel/domainColor，並以 verifier 確認 taxonomy 對齊 heptabase-to-pai WHITEBOARDS 與所有 active projects 都有有效領域 mapping。"
     },
     {
       "id": "config-launch-newproject",

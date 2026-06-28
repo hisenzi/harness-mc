@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-28T06:24:50.509Z",
+  "generatedAt": "2026-06-28T06:34:30.304Z",
   "sourceStatus": {
     "skills": "scanned",
     "scripts": {
@@ -1006,10 +1006,31 @@
   "recentChanges": [
     {
       "date": "2026-06-28",
+      "message": "chore(skills): backfill frontmatter versions for tracked skills",
+      "repo": "notyet-harness",
+      "files": [
+        "000_Agent/skills/build-skill/SKILL.md",
+        "000_Agent/skills/heptabase-task-cards/SKILL.md",
+        "000_Agent/skills/hisenzi-skill-builder/SKILL.md",
+        "000_Agent/skills/jpmodel-case-page/SKILL.md",
+        "000_Agent/skills/project-init/SKILL.md"
+      ]
+    },
+    {
+      "date": "2026-06-28",
       "message": "docs(worktree): record github push auth troubleshooting",
       "repo": "notyet-harness",
       "files": [
         "000_Agent/skills/worktree-commit/SKILL.md"
+      ]
+    },
+    {
+      "date": "2026-06-28",
+      "message": "feat(skill-dashboard): add skill version backfill tooling",
+      "repo": "harness-mc",
+      "files": [
+        "scripts/backfill-skill-frontmatter-versions.mjs",
+        "scripts/verify-skill-version-backfill.mjs"
       ]
     },
     {
@@ -1123,23 +1144,6 @@
       "repo": "notyet-harness",
       "files": [
         "000_Agent/skills/project-init/references/rules.md"
-      ]
-    },
-    {
-      "date": "2026-06-27",
-      "message": "docs(skills): require version history for skill updates",
-      "repo": "notyet-harness",
-      "files": [
-        "000_Agent/skills/build-skill/SKILL.md",
-        "000_Agent/skills/vincent-superpowers/06-skill-authoring/SKILL.md"
-      ]
-    },
-    {
-      "date": "2026-06-27",
-      "message": "docs(worktree-commit): route cross-repo task updates through events",
-      "repo": "notyet-harness",
-      "files": [
-        "000_Agent/skills/worktree-commit/SKILL.md"
       ]
     }
   ]

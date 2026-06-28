@@ -33,11 +33,14 @@
     {
       "id": "meta-1",
       "title": "frontmatter version 半自動補齊腳本",
-      "status": "todo",
+      "status": "completed",
       "track": "metadata",
       "priority": "high",
       "done_condition": "腳本從 SKILL.md body '> version:' 行抽值寫入 frontmatter version，對 20 個有 body 行的 skill 可批次補",
-      "note": "2026-06-28：已新增 dry-run 預設的 backfill 腳本與驗證腳本；實測 42 skill 中 3 個已有 frontmatter version、22 個有 body version 可抽、1 個有 body version 但缺 frontmatter。為避免 validate-skills --changed-only 被 legacy skill 缺版本歷史擋下，本輪用 --require-version-history 先套用 9 個已有 ## 版本歷史 的 skill，其餘 metadata debt 接到 meta-2。待 commit evidence 後標 completed。"
+      "note": "2026-06-28：已新增 dry-run 預設的 backfill 腳本與驗證腳本；實測 42 skill 中 3 個已有 frontmatter version、22 個有 body version 可抽、1 個有 body version 但缺 frontmatter。為避免 validate-skills --changed-only 被 legacy skill 缺版本歷史擋下，本輪用 --require-version-history 先套用 9 個已有 ## 版本歷史 的 skill，其餘 metadata debt 接到 meta-2。",
+      "completed_at": "2026-06-28",
+      "commits": ["41712b8", "7ca529b"],
+      "summary": "完成 skill frontmatter version 半自動補齊流程：新增 dry-run/apply backfill 腳本與 verifier，安全套用 9 個已有版本歷史的 skill，並把 13 個 legacy metadata debt 明確串到 meta-2。"
     },
     {
       "id": "meta-2",

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-28T00:54:13.957Z",
+  "generatedAt": "2026-06-28T02:15:10.149Z",
   "sourceStatus": {
     "skills": "scanned",
     "scripts": {
@@ -990,6 +990,15 @@
     },
     {
       "date": "2026-06-28",
+      "message": "fix(skill-dashboard): preserve tools data snapshot in ci",
+      "repo": "harness-mc",
+      "files": [
+        "scripts/generate-tools-data.mjs",
+        "scripts/verify-generate-tools-data.mjs"
+      ]
+    },
+    {
+      "date": "2026-06-28",
       "message": "feat(morrowise): define reality tax gate protocol",
       "repo": "harness-mc",
       "files": [
@@ -1103,15 +1112,6 @@
       "repo": "harness-mc",
       "files": [
         "scripts/generate-morrowise-system.mjs"
-      ]
-    },
-    {
-      "date": "2026-06-27",
-      "message": "fix(morrowise): allow empty pending event loop",
-      "repo": "harness-mc",
-      "files": [
-        "scripts/generate-morrowise-system.mjs",
-        "scripts/verify-morrowise-system-json.mjs"
       ]
     }
   ]

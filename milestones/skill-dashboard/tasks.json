@@ -10,6 +10,9 @@
       "done_condition": "決策寫入 project.json decisions：committed 快照 / PAT checkout / scan fallback 三選一定案",
       "note": "Grounding：生產 tools.json 已驗 skills:0、hooks:0、scripts:4；根因 deploy.yml 單 checkout harness-mc。傾向快照法（免 PAT、無私有 repo 密鑰進 CI）",
       "completed_at": "2026-06-28",
+      "commits": [
+        "2fe5390"
+      ],
       "summary": "定案採用 committed tools.json 快照＋缺正本時保留快照段落；排除 PAT checkout 與純 scan fallback，避免私有 repo 密鑰進 CI 並防止 production /tools 被覆寫成空。"
     },
     {

@@ -1,0 +1,105 @@
+{
+  "name": "Maxmodel-內部工作流",
+  "description": "展創模型（MaxModel）案件工作流程控管的 Notion 系統，含案件管理／任務追蹤／影音整合製作",
+  "type": "internal",
+  "domain": "Maxmodel",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-06-28",
+  "estimated_completion": "TBD",
+  "tracks": {
+    "phase-1": "Phase 1：開案・需求・架構設計",
+    "av-workflow": "影音整合製作工作流（Max One／M6）建置"
+  },
+  "goals": [
+    "在已上線的 MaxModel Notion 系統新增「影音整合製作工作流」，支援兩種模式：純影音案（standalone）與模型附帶影音（embedded）",
+    "把 max-one 賣點「同一團隊共用同一份 3D」做成系統行為——影音案可追溯母模型案的 3D 來源並看到母案進度（3D 來源案 relation + rollup 母案階段）",
+    "全程不破壞既有五大視窗與既有資料；所有結構改動純新增、可逆，示範資料一律標 假資料=✓ 供逐項驗收",
+    "讓既有 E 採購控管自動涵蓋影音的版權素材／道具採購；D 人員案量補上影音案量，解掉方案 2 的案量統計分裂"
+  ],
+  "risks": [
+    {
+      "risk": "live 系統改動——既有團隊正在使用，誤改現有欄位/視窗會影響運作",
+      "impact": "high",
+      "probability": "low",
+      "mitigation": "只做純新增（新 DB、新欄位、新 view），不改名/不刪既有選項、不動 A~E 五大視窗；示範資料標假資料；Vincent 逐項驗收，不對即刪"
+    },
+    {
+      "risk": "方案 2 副作用：D 人員與案量只統計 📁 案件管理，看不到純影音案",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "D 區補一個「影音案量」view（🎬 group by 負責人），把影音工作納回人員案量視角"
+    },
+    {
+      "risk": "3D 血緣欄位對純實拍／2D／商品照影音案不適用，硬填會誤導",
+      "impact": "low",
+      "probability": "medium",
+      "mitigation": "3D 來源案/rollup 設為條件性——只在 影片類型 含「3D動畫」時才有意義，其餘留空"
+    },
+    {
+      "risk": "Notion select 選項改名/刪除會波及既有資料列",
+      "impact": "medium",
+      "probability": "low",
+      "mitigation": "對 ⚡ 子項目/大類別 一律 ADD 新選項，絕不 RENAME/DROP 既有選項"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "🎬 影音製作 DB 建立，含 10 步影音階段 + 3D來源案 relation + rollup 母案階段 + 影片類型/校稿輪次",
+      "verify_cmd": "notion-fetch 🎬 影音製作 data source schema",
+      "expected": "schema 含 影音階段(status 10步)、3D來源案(relation→📁)、母案階段(rollup)、影片類型(multi)、校稿輪次(select)"
+    },
+    {
+      "criterion": "一筆 embedded 假資料影音案連到既有假資料模型案，Notion 上能看到母案階段",
+      "verify_cmd": "notion-fetch 該影音案 page",
+      "expected": "3D來源案=某假資料模型案，母案階段 rollup 顯示該模型案的流程階段值"
+    },
+    {
+      "criterion": "⚡ 加 所屬影音案 relation + 影音子項目/大類別；📁 加 需要影音 checkbox；既有資料零接觸",
+      "verify_cmd": "notion-fetch ⚡ 與 📁 schema + query 既有列",
+      "expected": "新欄位/選項存在；既有 24 任務、既有案件在新欄位上皆空白"
+    },
+    {
+      "criterion": "hub 頁加 F. 影音製作 section（影音流程看板 + 校稿待辦）+ D 補影音案量；A~E 既有視窗不變",
+      "verify_cmd": "notion-fetch Maxmodel-內部工作流 page",
+      "expected": "新增 F 區與影音案量 view；A~E 區塊內容與改動前一致"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "影音工作流的承載結構（方案 1 極簡擴充 / 方案 2 獨立 DB / 方案 3 混合）",
+      "decision": "方案 2——建獨立「🎬 影音製作」DB，用 relation 連回模型案",
+      "reason": "SIFT 技法21解謎得出 M6 = MaxModel 服務模組代碼（非流程階段），影音是獨立產品線，本就該是獨立實體；有自己的編號/客戶/1.5–3 月時程，獨立 DB + relation 回母案使 3D 血緣關係更乾淨。Vincent 在看過 CC『不建議方案 2』後仍明選方案 2，CC 的反對理由（案量哲學）被 M6 事實削弱後收回。",
+      "alternatives_rejected": "方案 3 混合（同 📁 加案件類型分流）雖貼合『單 DB 多 view』哲學、案量自動統一，但 stage 語意混裝、看板分組複雜；方案 1 極簡（只擴充選項）會讓影音案混在模型看板裡。",
+      "hc_used": "#rightProblem #confirmationBias #sift"
+    },
+    {
+      "topic": "影音『插入點不一樣』（有時純影音、有時模型一環）如何建模",
+      "decision": "不建模插入點，改建模觸發點——📁 加『需要影音』checkbox 當觸發器，誰勾誰就生影音案",
+      "reason": "SIFT 技法20 Find Option C：『預測插入點插在流程哪一步』是在預測未來的偽問題；翻轉成『需要時勾一下』讓問題本身消失，並可做『已勾但尚未開影音案』的漏單防呆 view。",
+      "alternatives_rejected": "把影音 10 步硬映射進模型 8 階段——會失真（『客戶影像需求』≠『2.確認用途』），且校稿/動畫發包/交件在模型 8 步根本不存在。",
+      "hc_used": "#sift #rightProblem"
+    },
+    {
+      "topic": "max-one 賣點『共用 3D』如何落地",
+      "decision": "關聯欄正名為『3D 來源案』+ 加 rollup 拉母案『流程階段』；條件性（影片類型含 3D動畫 才用）",
+      "reason": "SIFT Focus(技法13/18)：方案 1/2/3 之爭是症狀層，3D 血緣沒做才是 max-one 本質缺失（結構層）。技法24命名讓非顯見的血緣關係一眼可懂；rollup 讓動畫師打開影音案直接看到母案 3D 好了沒、能不能發動畫包。技法16自我反駁：純實拍/2D/商品照案不用 3D → 設為條件性，不強制。",
+      "alternatives_rejected": "把 3D 留作 📁 的死資料（既有 18.已有資料 checkbox + file），影音案看不到——抓不到 max-one 的共用 3D 本質。",
+      "hc_used": "#sift #constraints"
+    },
+    {
+      "topic": "embedded 模式下兩條流程（模型 8 步 / 影音 10 步）的關係",
+      "decision": "平行不合併——案件層級 relation 連整張母案 + rollup 互看進度；不把兩條 stage 焊死",
+      "reason": "Notion relation 只能連頁面不能連 select 選項；影音的 8.動畫發包依賴母案 6.3D整理完成（3D 鎖定），此依賴用 rollup『母案階段』表達為『可見』而非硬綁。影音保留自己 10 步因為含校稿 A/B copy、動畫發包、交件，模型 8 步沒有這些。",
+      "alternatives_rejected": "把 embedded 影音降為模型案下的任務、不給獨立階段——會丟失校稿/動畫發包/交件的影音專屬流程。",
+      "hc_used": "#rightProblem #sift"
+    },
+    {
+      "topic": "校稿（Acopy/Bcopy）建模顆粒度",
+      "decision": "先用單一 select『校稿輪次』(未校稿/A copy/B copy/已定稿)，不追求完美",
+      "reason": "SIFT 技法15 satisficer：先求夠好可用，A/B 各自的日期+通過狀態等真有需要再拆，避免一開始過度設計。",
+      "alternatives_rejected": "一開始就拆成 A copy／B copy 各自的日期+狀態兩組欄位——尚無需求，過早最佳化。",
+      "hc_used": "#sift #constraints"
+    }
+  ]
+}

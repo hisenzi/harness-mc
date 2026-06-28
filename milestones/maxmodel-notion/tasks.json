@@ -1,0 +1,92 @@
+{
+  "project": "maxmodel-notion",
+  "tasks": [
+    {
+      "id": "p1-1",
+      "title": "需求確認 + HC/SIFT 決策（影音工作流範圍、模式、結構選路）",
+      "status": "completed",
+      "completed_at": "2026-06-28",
+      "track": "phase-1",
+      "done_condition": "goals + success_criteria + decisions 已填入 project.json，非 placeholder",
+      "summary": "用 #rightProblem/#confirmationBias + SIFT(041) 框架，定案方案 2（獨立 🎬 DB）+ 三調整（3D來源案 relation+rollup、需要影音觸發器、條件性 3D 血緣）；5 條決策入庫。"
+    },
+    {
+      "id": "p1-2",
+      "title": "Notion schema 架構設計（影音 DB 欄位 + 關聯/血緣/平行流程）",
+      "status": "completed",
+      "completed_at": "2026-06-28",
+      "track": "phase-1",
+      "done_condition": "影音 DB 欄位表 + 兩條流程關係寫入 project.json decisions",
+      "summary": "🎬 16 欄含 10 步影音階段；embedded 用案件層級 relation + rollup 母案階段，兩流程平行不合併。"
+    },
+    {
+      "id": "av-1",
+      "title": "建 🎬 影音製作 DB（欄位 + 3D來源案 relation→📁 + rollup 母案階段 + 自有 views）",
+      "status": "completed",
+      "completed_at": "2026-06-28",
+      "track": "av-workflow",
+      "done_condition": "🎬 DB 建立含全部欄位；影音流程看板(board by 影音階段) + 校稿待辦 view 就緒",
+      "summary": "🎬 DB(collection 242abf59) 16 欄+rollup 母案階段；DB url af2294fd…；建 🎬影音流程看板(board) + 📝校稿待辦(table A/B copy)。relation 同時生 📁端相關影音案、⚡端所屬影音案反向欄。",
+      "hc_decision": {
+        "task_scope": "maxmodel-notion/av-1",
+        "hc_refs": ["#sift", "#rightProblem", "#confirmationBias", "#constraints"],
+        "hc_reasoning": "SIFT 把問題從『DB 怎麼擺』重構為『共用 3D 血緣怎麼做成一等公民』；解謎 M6=服務模組代碼支持獨立 DB；confirmationBias 收回 CC 對方案 2 的反對。",
+        "hc_confidence": 0.8,
+        "evidence_refs": ["harness-mc/milestones/maxmodel-notion/project.json", "max-one 頁", "📁/⚡ data source schema"],
+        "source_boundary": "HC 是 thinking check，非 source of truth；Notion 實際 schema 以建立後 fetch 為準"
+      }
+    },
+    {
+      "id": "av-2",
+      "title": "改 ⚡ 任務追蹤（加 所屬影音案 relation + 子項目影音 6 項 + 大類別『影音』）",
+      "status": "completed",
+      "completed_at": "2026-06-28",
+      "track": "av-workflow",
+      "done_condition": "⚡ 新增 relation→🎬；子項目加影音製作項；大類別加 影音；既有任務在新欄位/選項上皆空白",
+      "summary": "⚡ 大類別+影音；子項目+3D動畫發包/2D動畫發包/實拍發包/剪輯（採購改用既有購入品預估→自動進 E）；所屬影音案 relation 由 av-1 dual 生成。驗證既有選項 ID 未變＝既有資料零接觸。",
+      "note": "只 ADD 不 RENAME/DROP；版權素材/道具採購不另開子項目，用既有購入品預估保 E 採購控管自動生效"
+    },
+    {
+      "id": "av-3",
+      "title": "改 📁 案件管理（加 需要影音 checkbox；驗證 🎬 反向關聯欄）",
+      "status": "completed",
+      "completed_at": "2026-06-28",
+      "track": "av-workflow",
+      "done_condition": "📁 加 需要影音 checkbox；av-1 的 relation 自動在 📁 生反向欄；既有案件預設未勾",
+      "summary": "📁 + 需要影音 checkbox（觸發器）+ 相關影音案 反向 relation；既有案件預設未勾，既有選項 ID 全未變。"
+    },
+    {
+      "id": "av-4",
+      "title": "建示範假資料（1 embedded + 1 純影音 影音案 + 對應影音任務，全標 假資料=✓）",
+      "status": "completed",
+      "completed_at": "2026-06-28",
+      "track": "av-workflow",
+      "done_condition": "embedded 案連既有假資料模型案、母案階段 rollup 顯示正確；影音任務含一筆購入品預估能進 E 採購控管；全部假資料=✓",
+      "summary": "AV-1 embedded（連美術館光雕主件模型，母案 6.3D整理→rollup 母案階段）+ AV-2 純影音（電商實拍）；2 筆影音任務（3D動畫發包 + 背景音樂版權素材購入品預估）掛 embedded 案。全 假資料=✓。"
+    },
+    {
+      "id": "av-5",
+      "title": "hub 頁加 F. 影音製作 section（影音流程看板 + 校稿待辦）+ D 補影音案量 view",
+      "status": "todo",
+      "track": "av-workflow",
+      "done_condition": "Maxmodel-內部工作流 新增 F 區與影音案量 view；A~E 既有視窗內容不變",
+      "note": "最後做，最高可見度；新增區塊置於 E 之後、原始資料庫 details 之前"
+    },
+    {
+      "id": "av-verify",
+      "title": "逐項驗收（Vincent 逐項驗 + 既有系統零接觸確認）",
+      "status": "todo",
+      "track": "av-workflow",
+      "done_condition": "4 條 success_criteria 全 PASS；既有五大視窗與既有資料確認未受影響；Vincent 確認示範資料正確或指出要改的點",
+      "note": "前置 av-1~av-5 全 done 後執行；不對的部分改/刪假資料"
+    },
+    {
+      "id": "av-6",
+      "title": "更新操作指南／系統說明補影音流程說明（交付團隊用）",
+      "status": "todo",
+      "track": "av-workflow",
+      "done_condition": "操作指南補『影音案怎麼開、embedded 怎麼連母案、校稿怎麼填』；系統說明補 🎬 DB 角色",
+      "note": "av-verify 通過後做；非阻斷"
+    }
+  ]
+}

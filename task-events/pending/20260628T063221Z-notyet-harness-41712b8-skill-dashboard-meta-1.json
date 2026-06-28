@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-skill-dashboard-meta-1-41712b8-20260628T063221Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "41712b8",
+  "project": "skill-dashboard",
+  "task_id": "meta-1",
+  "status": "updated",
+  "summary": "Backfilled frontmatter versions for 9 tracked skills from existing body version lines as the safe notyet-harness batch for skill-dashboard/meta-1.",
+  "created_at": "2026-06-28T06:32:21.815Z",
+  "actor": "codex",
+  "session_id": "codex-20260628-skill-dashboard-meta-1"
+}

@@ -94,6 +94,13 @@
       "reason": "FACTLOCK——不在不存在的資料上假裝有統計",
       "alternatives_rejected": ["直接讀現有 jsonl 做統計（資料僅 1~3 行，等於假數據）"],
       "hc_used": ["#infoNeeded"]
+    },
+    {
+      "topic": "metadata 補齊順序（meta-1 → meta-2）",
+      "decision": "frontmatter version 先用半自動腳本補可驗證的安全批次；缺 `## 版本歷史` 或缺 frontmatter 的 legacy skill 不在 meta-1 硬改，改由 meta-2 先補版本歷史／CHANGELOG／frontmatter 後再回填 version。",
+      "reason": "validate-skills --changed-only 對已修改 skill 會要求版本歷史，且缺 frontmatter 的 skill 不能只插入一行 version。若 meta-1 直接批次修改所有 body version 候選，會把 metadata 補齊和歷史整理混成一包，驗證與回溯都變差。",
+      "alternatives_rejected": ["一次修改所有 body version 候選（會碰到 legacy skill 缺版本歷史或缺 frontmatter，且 task 邊界過大）"],
+      "hc_used": ["#breakItDown", "#constraints"]
     }
   ]
 }

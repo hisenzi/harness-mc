@@ -13,6 +13,7 @@
     "test:task-event-dashboard": "node scripts/verify-task-event-dashboard-data.mjs",
     "test:visual-sync-coverage": "node scripts/verify-visual-sync-coverage.mjs",
     "test:tools-data": "node scripts/verify-generate-tools-data.mjs",
+    "test:skill-version-backfill": "node scripts/verify-skill-version-backfill.mjs",
     "test:skills": "node scripts/verify-validate-skills.mjs && node scripts/validate-skills.mjs --changed-only",
     "test:tasks": "node scripts/verify-validate-tasks.mjs && node scripts/validate-tasks.mjs --changed-only --project harness-mc",
     "test:work-anchor-preflight": "node scripts/verify-work-anchor-preflight.mjs",

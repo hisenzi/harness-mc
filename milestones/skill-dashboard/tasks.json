@@ -37,7 +37,7 @@
       "track": "metadata",
       "priority": "high",
       "done_condition": "腳本從 SKILL.md body '> version:' 行抽值寫入 frontmatter version，對 20 個有 body 行的 skill 可批次補",
-      "note": "Grounding：40 skill 中僅 2 有 frontmatter version、20 有 body version 行（可抽）、其餘 18 需手動定版"
+      "note": "2026-06-28：已新增 dry-run 預設的 backfill 腳本與驗證腳本；實測 42 skill 中 3 個已有 frontmatter version、22 個有 body version 可抽、1 個有 body version 但缺 frontmatter。為避免 validate-skills --changed-only 被 legacy skill 缺版本歷史擋下，本輪用 --require-version-history 先套用 9 個已有 ## 版本歷史 的 skill，其餘 metadata debt 接到 meta-2。待 commit evidence 後標 completed。"
     },
     {
       "id": "meta-2",
@@ -47,7 +47,7 @@
       "priority": "medium",
       "depends_on": ["meta-1"],
       "done_condition": "定義核心 skill 清單；每個補 CHANGELOG.md（沿用 notyet-article 格式），版本歷史視圖有資料",
-      "note": "Grounding：現僅 notyet-article 1 個有 CHANGELOG；build-skill 已有 body version、無 CHANGELOG，列首批"
+      "note": "接 meta-1 下游：先處理因缺 ## 版本歷史 或缺 frontmatter 而未自動補 frontmatter version 的候選 skill，再補 CHANGELOG。2026-06-28 盤點 blocked candidates：agent-training、astro-site-launcher、blog-writer、browser-setup、cross-agent-memory、exam-pipeline、fix-bug、git-worktree、nextjs-gh-pages、schedule-cron、security-scan、subagent-tracker（missing-version-history）；planning-preflight（missing-frontmatter）。"
     },
     {
       "id": "view-trigger",

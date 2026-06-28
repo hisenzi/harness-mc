@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-28T03:20:36.616Z",
+  "generatedAt": "2026-06-28T06:24:50.509Z",
   "sourceStatus": {
     "skills": "scanned",
     "scripts": {
@@ -10,7 +10,7 @@
   },
   "summary": {
     "totalSkills": 41,
-    "totalScripts": 80,
+    "totalScripts": 82,
     "totalHooks": 2
   },
   "skills": [
@@ -61,7 +61,7 @@
       "version": "1.1",
       "category": "技能系統",
       "groups": [],
-      "lastModified": "2026-06-14T01:20:12.566Z",
+      "lastModified": "2026-06-28T06:16:55.634Z",
       "changelog": []
     },
     {
@@ -204,7 +204,7 @@
         "MorroWise",
         "視覺層同步"
       ],
-      "lastModified": "2026-06-21T16:09:35.478Z",
+      "lastModified": "2026-06-28T06:16:55.634Z",
       "changelog": []
     },
     {
@@ -214,7 +214,7 @@
       "version": "1.3",
       "category": "技能系統",
       "groups": [],
-      "lastModified": "2026-05-30T15:38:37.893Z",
+      "lastModified": "2026-06-28T06:16:55.635Z",
       "changelog": []
     },
     {
@@ -224,7 +224,7 @@
       "version": "1.1",
       "category": "技能系統",
       "groups": [],
-      "lastModified": "2026-06-15T07:09:05.193Z",
+      "lastModified": "2026-06-28T06:16:55.635Z",
       "changelog": []
     },
     {
@@ -292,7 +292,7 @@
         "驗收規範",
         "視覺層同步"
       ],
-      "lastModified": "2026-06-24T01:51:15.606Z",
+      "lastModified": "2026-06-28T06:16:55.636Z",
       "changelog": []
     },
     {
@@ -325,7 +325,7 @@
         "MorroWise",
         "驗收規範"
       ],
-      "lastModified": "2026-06-21T08:26:08.041Z",
+      "lastModified": "2026-06-28T06:16:55.636Z",
       "changelog": [
         {
           "version": "1.0",
@@ -445,7 +445,7 @@
       "version": "1.2",
       "category": "一般工具",
       "groups": [],
-      "lastModified": "2026-06-21T14:46:41.883Z",
+      "lastModified": "2026-06-28T06:16:55.637Z",
       "changelog": []
     },
     {
@@ -459,7 +459,7 @@
         "視覺層同步",
         "Commit gate"
       ],
-      "lastModified": "2026-06-28T00:40:03.796Z",
+      "lastModified": "2026-06-28T06:16:55.637Z",
       "changelog": []
     },
     {
@@ -489,7 +489,7 @@
       "version": "1.1",
       "category": "一般工具",
       "groups": [],
-      "lastModified": "2026-06-21T15:11:31.838Z",
+      "lastModified": "2026-06-28T06:16:55.638Z",
       "changelog": []
     }
   ],
@@ -505,6 +505,12 @@
       "description": "",
       "location": "harness-mc",
       "lastModified": "2026-06-15T07:09:55.459Z"
+    },
+    {
+      "name": "backfill-skill-frontmatter-versions.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-06-28T06:22:59.803Z"
     },
     {
       "name": "cc-statusline.sh",
@@ -919,6 +925,12 @@
       "description": "",
       "location": "harness-mc",
       "lastModified": "2026-06-27T16:16:48.624Z"
+    },
+    {
+      "name": "verify-skill-version-backfill.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-06-28T06:23:41.808Z"
     },
     {
       "name": "verify-sync-event-queue.mjs",

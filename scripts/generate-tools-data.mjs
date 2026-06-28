@@ -4,16 +4,29 @@ import { execSync } from "child_process";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const mcDir = path.resolve(__dirname, "..");
-const collabDir = path.resolve(mcDir, "..");
+const mcDir = process.env.HARNESS_MC_DIR ? path.resolve(process.env.HARNESS_MC_DIR) : path.resolve(__dirname, "..");
+const collabDir = process.env.COLLAB_DIR ? path.resolve(process.env.COLLAB_DIR) : path.resolve(mcDir, "..");
 const agentDir = path.join(collabDir, "notyet-harness", "000_Agent");
-const outPath = path.join(mcDir, "public", "data", "tools.json");
+const outPath = process.env.TOOLS_OUT_PATH ? path.resolve(process.env.TOOLS_OUT_PATH) : path.join(mcDir, "public", "data", "tools.json");
+
+function readPreviousSnapshot() {
+  if (!fs.existsSync(outPath)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(outPath, "utf-8"));
+  } catch {
+    return null;
+  }
+}
+
+function fallbackArray(snapshot, key) {
+  return Array.isArray(snapshot?.[key]) ? snapshot[key] : [];
+}
 
 // ── Skills ──────────────────────────────────────────────────────────────
 
 function scanSkills() {
   const skillsDir = path.join(agentDir, "skills");
-  if (!fs.existsSync(skillsDir)) return [];
+  if (!fs.existsSync(skillsDir)) return { items: [], sourceAvailable: false };
 
   const results = [];
   for (const dir of fs.readdirSync(skillsDir)) {
@@ -46,7 +59,7 @@ function scanSkills() {
     });
   }
 
-  return results.sort((a, b) => a.name.localeCompare(b.name));
+  return { items: results.sort((a, b) => a.name.localeCompare(b.name)), sourceAvailable: true };
 }
 
 function parseFrontmatter(content) {
@@ -175,8 +188,10 @@ function scanScripts() {
   ];
 
   const results = [];
+  const sourceAvailability = {};
   for (const { dir, location } of sources) {
-    if (!fs.existsSync(dir)) continue;
+    sourceAvailability[location] = fs.existsSync(dir);
+    if (!sourceAvailability[location]) continue;
 
     for (const file of fs.readdirSync(dir)) {
       if (file.startsWith(".") || file.endsWith(".example") || file.endsWith(".plist")) continue;
@@ -198,7 +213,7 @@ function scanScripts() {
     }
   }
 
-  return results.sort((a, b) => a.name.localeCompare(b.name));
+  return { items: results.sort((a, b) => a.name.localeCompare(b.name)), sourceAvailability };
 }
 
 function extractDescription(content, filename) {
@@ -221,7 +236,7 @@ function extractDescription(content, filename) {
 
 function scanHooks() {
   const settingsPath = path.join(collabDir, ".claude", "settings.json");
-  if (!fs.existsSync(settingsPath)) return [];
+  if (!fs.existsSync(settingsPath)) return { items: [], sourceAvailable: false };
 
   try {
     const settings = JSON.parse(fs.readFileSync(settingsPath, "utf-8"));
@@ -241,9 +256,9 @@ function scanHooks() {
         }
       }
     }
-    return results;
+    return { items: results, sourceAvailable: true };
   } catch {
-    return [];
+    return { items: [], sourceAvailable: true };
   }
 }
 
@@ -291,13 +306,29 @@ function getRecentChanges() {
 
 // ── Main ────────────────────────────────────────────────────────────────
 
-const skills = scanSkills();
-const scripts = scanScripts();
-const hooks = scanHooks();
+const previousSnapshot = readPreviousSnapshot();
+const skillsScan = scanSkills();
+const scriptsScan = scanScripts();
+const hooksScan = scanHooks();
+
+const skills = skillsScan.sourceAvailable ? skillsScan.items : fallbackArray(previousSnapshot, "skills");
+const previousScripts = fallbackArray(previousSnapshot, "scripts");
+const scripts = mergeScriptSnapshotFallback(scriptsScan, previousScripts);
+const hooks = hooksScan.sourceAvailable ? hooksScan.items : fallbackArray(previousSnapshot, "hooks");
 const recentChanges = getRecentChanges();
 
 const output = {
   generatedAt: new Date().toISOString(),
+  sourceStatus: {
+    skills: skillsScan.sourceAvailable ? "scanned" : "snapshot",
+    scripts: Object.fromEntries(
+      Object.entries(scriptsScan.sourceAvailability).map(([location, available]) => [
+        location,
+        available ? "scanned" : "snapshot",
+      ])
+    ),
+    hooks: hooksScan.sourceAvailable ? "scanned" : "snapshot",
+  },
   summary: {
     totalSkills: skills.length,
     totalScripts: scripts.length,
@@ -314,3 +345,18 @@ fs.writeFileSync(outPath, JSON.stringify(output, null, 2));
 console.log(
   `Generated ${outPath} — ${skills.length} skills, ${scripts.length} scripts, ${hooks.length} hooks, ${recentChanges.length} changes`
 );
+
+function mergeScriptSnapshotFallback(scan, previousScripts) {
+  const byKey = new Map();
+
+  for (const script of scan.items) {
+    byKey.set(`${script.location}/${script.name}`, script);
+  }
+
+  for (const script of previousScripts) {
+    if (scan.sourceAvailability[script.location] !== false) continue;
+    byKey.set(`${script.location}/${script.name}`, script);
+  }
+
+  return [...byKey.values()].sort((a, b) => a.name.localeCompare(b.name));
+}

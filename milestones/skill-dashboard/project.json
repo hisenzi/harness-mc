@@ -82,10 +82,10 @@
       "hc_used": ["#levelsOfAnalysis", "#constraints"]
     },
     {
-      "topic": "CI 資料缺口修法（暫定，ci-1 task 階段定案）",
-      "decision": "傾向 committed tools.json 快照＋prebuild 改為缺正本時不覆寫",
-      "reason": "PAT checkout 會把私有 repo 密鑰帶進 CI（安全成本）；快照法最簡、免密鑰",
-      "alternatives_rejected": ["CI 加 checkout notyet-harness（需 PAT，私有 repo 密鑰進 CI）", "維持現況（生產永遠空、功能等於沒上線）"],
+      "topic": "CI 資料缺口修法（ci-1 定案）",
+      "decision": "採用 committed tools.json 快照＋generate-tools-data 在缺正本時保留快照段落，不讓 CI 覆寫成空",
+      "reason": "PAT checkout 會把私有 repo 密鑰帶進 CI；scan fallback 若無快照仍無資料。快照法免 PAT、可審計，且本機有正本時仍會重新掃描最新 skills/hooks。",
+      "alternatives_rejected": ["CI 加 checkout notyet-harness（需 PAT，私有 repo 密鑰進 CI）", "純 scan fallback（CI 沒有正本時仍掃不到 skill/hook）", "維持現況（生產永遠空、功能等於沒上線）"],
       "hc_used": ["#constraints", "#rightProblem"]
     },
     {

@@ -28,6 +28,8 @@ const PATHS = {
   admissionRegistry: "$COLLAB/harness-mc/system-workflow/registries/morrowise-live-system-admission.json",
   approvalPolicy: "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
   triggerRules: "$COLLAB/harness-mc/system-workflow/registries/morrowise-trigger-rules.json",
+  realityTaxGate: "$COLLAB/harness-mc/system-workflow/registries/morrowise-reality-tax-gate.json",
+  realityTaxProtocol: "$COLLAB/notyet-harness/000_Agent/docs/morrowise/reality-tax-gate-protocol.md",
   capabilityRegistry: "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
   wiringGate: "$COLLAB/harness-mc/system-workflow/registries/morrowise-wiring-gate.json",
   commitPlanningGate: "$COLLAB/harness-mc/system-workflow/registries/morrowise-commit-planning-gate.json",
@@ -49,6 +51,7 @@ export function generateMorroWiseSystem(options = {}) {
   const admission = options.admission ?? readJson(repoRoot, "system-workflow/registries/morrowise-live-system-admission.json");
   const approval = options.approval ?? readJson(repoRoot, "system-workflow/registries/morrowise-approval-policy.json");
   const triggers = options.triggers ?? readJson(repoRoot, "system-workflow/registries/morrowise-trigger-rules.json");
+  const realityTaxGate = options.realityTaxGate ?? readJson(repoRoot, "system-workflow/registries/morrowise-reality-tax-gate.json");
   const capabilityRegistry = options.capabilityRegistry ?? readJson(repoRoot, "system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json");
   const wiringGate = options.wiringGate ?? readJson(repoRoot, "system-workflow/registries/morrowise-wiring-gate.json");
   const commitPlanningGate = options.commitPlanningGate ?? readJson(repoRoot, "system-workflow/registries/morrowise-commit-planning-gate.json");
@@ -71,8 +74,8 @@ export function generateMorroWiseSystem(options = {}) {
     senses: buildSenses({ generatedAt, triggers, taskEvents, liveDashboard, staleSurfaces, pendingEvents }),
     muscles: buildMuscles({ capabilities, capabilityRegistry, proactiveLoop }),
     immune: buildImmune({ approval }),
-    heartbeat: buildHeartbeat(),
-    feedback: buildFeedback({ admission, wiringGate, commitPlanningGate, taskEvents, proactiveLoop, approval }),
+    heartbeat: buildHeartbeat({ realityTaxGate }),
+    feedback: buildFeedback({ admission, wiringGate, commitPlanningGate, realityTaxGate, taskEvents, proactiveLoop, approval }),
     open_loops: buildOpenLoops({
       openTasks,
       nextTask,
@@ -282,12 +285,13 @@ function buildImmune({ approval }) {
   };
 }
 
-function buildHeartbeat() {
+function buildHeartbeat({ realityTaxGate }) {
   return {
     schedules: [
       { schedule_id: "commit-attention-sweep", source: sourceRef("file", "$COLLAB/notyet-harness/schedule/tasks/commit-attention-sweep.yaml"), status: "active" },
       { schedule_id: "runtime-scheduler-v0", source: sourceRef("task", `${PATHS.morrowiseTasks}#runtime-scheduler-v0`), status: "pending" },
       { schedule_id: "reality-tax-daily-review", source: sourceRef("task", `${PATHS.morrowiseTasks}#reality-tax-daily-review-task`), status: "pending" },
+      { schedule_id: "reality-tax-gate", source: sourceRef("file", PATHS.realityTaxGate), status: realityTaxGate.status || "protocol_ready" },
     ],
     review_cadence: [
       { cadence_id: "session-closeout", interval: "each session closeout", gate_id: "closeout-residual-ledger" },
@@ -297,11 +301,12 @@ function buildHeartbeat() {
       { rule_id: "generated-read-model-stale", condition: "Generated data predates task, registry, event, or worktree changes.", gate_id: "morrowise-system-json-generator-v0" },
       { rule_id: "pending-task-events", condition: "Task events remain pending after closeout.", gate_id: "apply_task_events" },
       { rule_id: "dashboard-stale", condition: "Dashboard surface exceeds stale_after_minutes.", gate_id: "morrowise-live-dashboard" },
+      { rule_id: "reality-tax-gate", condition: `Same concept is discussed for ${realityTaxGate.trigger?.same_concept_minutes || 30} minutes without a ${realityTaxGate.trigger?.requires_output_within_hours || 24}-hour output.`, gate_id: "morrowise-reality-tax-gate" },
     ],
   };
 }
 
-function buildFeedback({ admission, wiringGate, commitPlanningGate, taskEvents, proactiveLoop, approval }) {
+function buildFeedback({ admission, wiringGate, commitPlanningGate, realityTaxGate, taskEvents, proactiveLoop, approval }) {
   const taskEventRefs = (taskEvents?.recent_task_events || []).slice(0, 12).map((event) => ({
     event_id: event.id,
     type: event.type,
@@ -337,6 +342,7 @@ function buildFeedback({ admission, wiringGate, commitPlanningGate, taskEvents, 
       ...((admission.components || []).map((component) => gateFromComponent(component))),
       gateFromRegistry("morrowise-wiring-gate", PATHS.wiringGate, wiringGate.status || "formal_registry"),
       gateFromRegistry("morrowise-commit-planning-gate", PATHS.commitPlanningGate, commitPlanningGate.status || "formal_registry"),
+      gateFromRegistry("morrowise-reality-tax-gate", PATHS.realityTaxGate, realityTaxGate.status || "protocol_ready"),
       gateFromRegistry("morrowise-approval-policy", PATHS.approvalPolicy, approval.status || "formal_policy"),
     ],
     task_events: taskEventRefs,

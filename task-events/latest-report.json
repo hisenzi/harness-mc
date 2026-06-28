@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-06-27T16:35:40.439Z",
+  "generated_at": "2026-06-28T00:11:39.450Z",
   "applied": [
     {
-      "file": "20260627T163534Z-notyet-harness-162c1df-morrowise-notification-adapter-contract.json",
-      "event_id": "task.commit_attached-morrowise-notification-adapter-contract-162c1df-20260627T163534Z",
+      "file": "20260628T001132Z-notyet-harness-66a56d3-morrowise-reality-tax-gate-protocol.json",
+      "event_id": "task.commit_attached-morrowise-reality-tax-gate-protocol-66a56d3-20260628T001132Z",
       "project": "morrowise",
-      "task_id": "notification-adapter-contract",
+      "task_id": "reality-tax-gate-protocol",
       "type": "task.commit_attached"
     }
   ],

@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-reality-tax-gate-protocol-66a56d3-20260628T001132Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "66a56d3",
+  "project": "morrowise",
+  "task_id": "reality-tax-gate-protocol",
+  "status": "updated",
+  "summary": "Added the shared MorroWise Reality Tax Gate protocol and Manual entry for all-agent workflow routing.",
+  "created_at": "2026-06-28T00:11:32.387Z",
+  "actor": "codex",
+  "session_id": "codex-20260628-reality-tax-gate-protocol"
+}

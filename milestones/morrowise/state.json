@@ -179,7 +179,12 @@
       "summary": "完成 MorroWise notification adapter contract：Telegram 保留 notify.sh 並驗證缺 env 時 graceful skip；LINE 明確改用 Messaging API push endpoint 並禁止 LINE Notify；Notion / Codex thread 保留為 optional boundary；所有 token / destination id 僅允許在本機 schedule/.env，contract、capability registry 與 verifier 均不儲存 secret 值。"
     },
     "reality-tax-gate-protocol": {
-      "status": "todo"
+      "status": "completed",
+      "completed_at": "2026-06-28",
+      "commits": [
+        "66a56d3"
+      ],
+      "summary": "完成 Reality Tax Gate 通用工作流協定：同一概念研究或討論超過 30 分鐘且沒有 24 小時內實質 output 時，Agent 必須選擇 attach_output、create_task_anchor、make_small_demo、kill_loop 或 mark_reality_gap；協定已明確區分 workflow gate 與 daily review scheduler task，並以 HC refs 作 reasoning layer 而非 task state authority。"
     },
     "reality-tax-daily-review-task": {
       "status": "todo"

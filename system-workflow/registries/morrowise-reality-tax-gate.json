@@ -1,0 +1,158 @@
+{
+  "gate_id": "morrowise-reality-tax-gate.v0",
+  "task_id": "reality-tax-gate-protocol",
+  "updated_at": "2026-06-28",
+  "status": "protocol_ready",
+  "read_only": true,
+  "purpose": "Force long-running concept discussion to choose a 24-hour real-world output, task anchor, small demo, kill decision, or explicit reality_gap.",
+  "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-reality-tax-gate.json",
+  "human_protocol": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/reality-tax-gate-protocol.md",
+  "trigger": {
+    "id": "concept_discussion_over_30m_without_24h_output",
+    "same_concept_minutes": 30,
+    "requires_output_within_hours": 24,
+    "applies_to": [
+      "concept research",
+      "system design",
+      "service idea",
+      "strategic decision",
+      "repeated discussion loop"
+    ],
+    "exclusions": [
+      "tiny clarification",
+      "translation",
+      "one-line command",
+      "already bounded implementation task"
+    ]
+  },
+  "routes": [
+    {
+      "id": "attach_output",
+      "meaning": "Commit to a concrete output due within 24 hours.",
+      "required_fields": [
+        "output_type",
+        "owner",
+        "due_within_hours",
+        "task_anchor_or_file"
+      ]
+    },
+    {
+      "id": "create_task_anchor",
+      "meaning": "Create or attach an MC task before implementation continues.",
+      "required_fields": [
+        "project",
+        "task_id",
+        "done_condition",
+        "acceptance"
+      ]
+    },
+    {
+      "id": "make_small_demo",
+      "meaning": "Build the smallest artifact that proves or disproves the idea.",
+      "required_fields": [
+        "demo_path",
+        "verification_method"
+      ]
+    },
+    {
+      "id": "kill_loop",
+      "meaning": "Stop the idea intentionally.",
+      "required_fields": [
+        "reason",
+        "evidence",
+        "revisit_condition"
+      ]
+    },
+    {
+      "id": "mark_reality_gap",
+      "meaning": "Record that no safe output route exists yet.",
+      "required_fields": [
+        "reason",
+        "blocker",
+        "next_review_anchor"
+      ]
+    }
+  ],
+  "acceptable_outputs": [
+    "task",
+    "demo",
+    "flow_diagram",
+    "dashboard",
+    "decision_log",
+    "customer_validation_question",
+    "public_commitment",
+    "verifier",
+    "article_draft",
+    "pitch"
+  ],
+  "non_outputs": [
+    "research_more",
+    "think_later",
+    "keep_monitoring",
+    "we_should_consider",
+    "unanchored_chat_summary"
+  ],
+  "hc_layer": {
+    "required_refs": [
+      "#rightProblem",
+      "#constraints",
+      "#utility",
+      "#risk",
+      "#systemDynamics",
+      "#responsibility"
+    ],
+    "role": "reasoning_support_only",
+    "forbidden_authority": [
+      "close_task",
+      "overwrite_tasks_json",
+      "bypass_approval_policy",
+      "send_notification",
+      "commit_or_push",
+      "replace_verifier_evidence"
+    ]
+  },
+  "boundaries": {
+    "gate_is": "workflow_gate",
+    "daily_review_is": "scheduler_task",
+    "daily_review_task_id": "reality-tax-daily-review-task",
+    "delivery_adapter_contract": "notification-adapter-contract",
+    "approval_policy": "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
+    "task_state_authority": "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
+    "forbidden": [
+      "treat delivery success as task completion",
+      "treat HC reasoning as task state",
+      "treat daily reminder as approval",
+      "send external notification without approved adapter route",
+      "write secrets"
+    ]
+  },
+  "record_shape": {
+    "gate_id": "reality-tax-gate",
+    "trigger": "concept_discussion_over_30m_without_24h_output",
+    "route": "attach_output | create_task_anchor | make_small_demo | kill_loop | mark_reality_gap",
+    "output_type": "task | demo | flow_diagram | dashboard | decision_log | customer_validation_question | public_commitment | verifier | article_draft | pitch | none",
+    "due_within_hours": 24,
+    "task_anchor": "project/task-id or null",
+    "hc_refs": [
+      "#rightProblem",
+      "#constraints",
+      "#utility",
+      "#risk",
+      "#systemDynamics",
+      "#responsibility"
+    ],
+    "hc_boundary": "HC is reasoning support only; MC task state and verifiers remain canonical.",
+    "evidence_refs": []
+  },
+  "verification": {
+    "verifier": "npm run test:reality-tax-gate",
+    "checks": [
+      "30-minute trigger and 24-hour output window are machine-readable",
+      "all required routes exist",
+      "acceptable outputs match the MorroWise task acceptance",
+      "HC refs are required but cannot mutate task state",
+      "workflow gate is separated from the scheduled daily review task",
+      "human protocol exists in notyet-harness when sibling repo is present"
+    ]
+  }
+}

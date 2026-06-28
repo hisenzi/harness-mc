@@ -723,7 +723,7 @@
     {
       "id": "reality-tax-gate-protocol",
       "title": "Reality Tax Gate 通用工作流協定",
-      "status": "todo",
+      "status": "completed",
       "track": "runtime-delivery",
       "dependencies": [
         "runtime-delivery-lineage-map"
@@ -737,9 +737,38 @@
       ],
       "source_refs": [
         "$COLLAB/notyet-harness/000_Agent/CORE.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/reality-tax-gate-protocol.md",
         "$COLLAB/notyet-harness/300_Obsidian_brain/HC/_index/hc-registry.md",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-reality-tax-gate.json",
+        "$COLLAB/harness-mc/scripts/verify-morrowise-reality-tax-gate.mjs",
         "$COLLAB/harness-mc/milestones/morrowise/project.json"
-      ]
+      ],
+      "completed_at": "2026-06-28",
+      "commits": [
+        "66a56d3"
+      ],
+      "summary": "完成 Reality Tax Gate 通用工作流協定：同一概念研究或討論超過 30 分鐘且沒有 24 小時內實質 output 時，Agent 必須選擇 attach_output、create_task_anchor、make_small_demo、kill_loop 或 mark_reality_gap；協定已明確區分 workflow gate 與 daily review scheduler task，並以 HC refs 作 reasoning layer 而非 task state authority。",
+      "hc_decision": {
+        "task_scope": "morrowise/reality-tax-gate-protocol",
+        "hc_refs": [
+          "#rightProblem",
+          "#constraints",
+          "#utility",
+          "#risk",
+          "#systemDynamics",
+          "#responsibility"
+        ],
+        "hc_reasoning": "#rightProblem 將問題從『多提醒一次』改成『長時間討論何時必須付現實稅』；#constraints 固定 30 分鐘與 24 小時窗口，避免無限研究；#utility 要求輸出能產生決策價值；#risk 區分太早行動、太晚行動與假裝有進展；#systemDynamics 防止 discussion loop 變成第二套狀態；#responsibility 要求 owner、task anchor 或 reality_gap evidence。",
+        "hc_confidence": 0.86,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/000_Agent/docs/morrowise/reality-tax-gate-protocol.md",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-reality-tax-gate.json",
+          "npm run test:reality-tax-gate",
+          "npm run test:morrowise-system-json"
+        ],
+        "source_boundary": "HC is a thinking check, not source of truth; MC task/spec/verifier remain canonical."
+      },
+      "note": "2026-06-28 新增 shared protocol doc、machine-readable gate registry、verifier、MorroWise system read model wiring 與 MANUAL entry。Reality Tax Daily Review 仍是下一個 scheduler task，不由本 task 建立。"
     },
     {
       "id": "reality-tax-daily-review-task",

@@ -61,7 +61,7 @@
     {
       "id": "w1-3",
       "title": "補齊正式通知連結與法規文案檢查",
-      "status": "todo",
+      "status": "completed",
       "track": "website",
       "depends_on": [
         "w1-2"
@@ -81,12 +81,23 @@
           "synced_at": "2026-06-22",
           "sync_mode": "created"
         }
-      }
+      },
+      "completed_at": "2026-06-28",
+      "commits": [
+        "91b24a6"
+      ],
+      "summary": "RRREALLL 過渡頁已完成正式通知入口與法規文案檢查：未確認粉專入口已移除，通知入口收斂為官方 LINE 與 Email，隱私權政策與服務條款可點擊且正式站已同步。",
+      "verification": [
+        "source audit confirmed no homepage copy points to unavailable fan page channel",
+        "https://rrrealll.com/ contains official LINE and Email notification copy and no fan page copy",
+        "https://rrrealll.com/privacy/ contains privacy policy page",
+        "https://rrrealll.com/terms/ contains service terms and medical-advice disclaimer"
+      ]
     },
     {
       "id": "w1-verify",
       "title": "過渡網站本機驗收",
-      "status": "todo",
+      "status": "completed",
       "track": "website",
       "depends_on": [
         "w1-2",
@@ -108,7 +119,21 @@
           "synced_at": "2026-06-22",
           "sync_mode": "created"
         }
-      }
+      },
+      "completed_at": "2026-06-28",
+      "commits": [
+        "be5316d",
+        "91b24a6"
+      ],
+      "summary": "RRREALLL 過渡網站已完成本機與正式站驗收：Astro check/build 通過、Playwright desktop/mobile 驗收通過，正式站首頁、隱私權政策、服務條款與通知文案皆已確認。",
+      "verification": [
+        "npm run astro -- check passed with 0 errors",
+        "npm run build passed and generated 3 static pages",
+        "npm run test:e2e passed with 10 passed and 2 skipped mobile-only desktop skips",
+        "https://rrrealll.com/ HTTP 200 with updated notification copy",
+        "https://rrrealll.com/privacy/ verified",
+        "https://rrrealll.com/terms/ verified"
+      ]
     },
     {
       "id": "launch-1",

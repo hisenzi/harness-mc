@@ -22,6 +22,10 @@ function fallbackArray(snapshot, key) {
   return Array.isArray(snapshot?.[key]) ? snapshot[key] : [];
 }
 
+function normalizeSharedPaths(value) {
+  return String(value || "").split(collabDir).join("$COLLAB");
+}
+
 // ── Skills ──────────────────────────────────────────────────────────────
 
 function scanSkills() {
@@ -250,7 +254,7 @@ function scanHooks() {
             event,
             matcher: matcher.matcher || "*",
             type: hook.type || "command",
-            command: (hook.command || "").slice(0, 150),
+            command: normalizeSharedPaths(hook.command).slice(0, 150),
             statusMessage: hook.statusMessage || null,
           });
         }
@@ -314,7 +318,7 @@ const hooksScan = scanHooks();
 const skills = skillsScan.sourceAvailable ? skillsScan.items : fallbackArray(previousSnapshot, "skills");
 const previousScripts = fallbackArray(previousSnapshot, "scripts");
 const scripts = mergeScriptSnapshotFallback(scriptsScan, previousScripts);
-const hooks = hooksScan.sourceAvailable ? hooksScan.items : fallbackArray(previousSnapshot, "hooks");
+const hooks = (hooksScan.sourceAvailable ? hooksScan.items : fallbackArray(previousSnapshot, "hooks")).map(normalizeHook);
 const recentChanges = getRecentChanges();
 
 const output = {
@@ -359,4 +363,11 @@ function mergeScriptSnapshotFallback(scan, previousScripts) {
   }
 
   return [...byKey.values()].sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function normalizeHook(hook) {
+  return {
+    ...hook,
+    command: normalizeSharedPaths(hook.command).slice(0, 150),
+  };
 }

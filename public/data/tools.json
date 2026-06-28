@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-28T02:15:10.149Z",
+  "generatedAt": "2026-06-28T02:30:23.743Z",
   "sourceStatus": {
     "skills": "scanned",
     "scripts": {
@@ -600,7 +600,7 @@
       "name": "generate-tools-data.mjs",
       "description": "── Skills ──────────────────────────────────────────────────────────────",
       "location": "harness-mc",
-      "lastModified": "2026-06-28T00:52:13.947Z"
+      "lastModified": "2026-06-28T02:27:25.243Z"
     },
     {
       "name": "generate-visual-sync-coverage.mjs",
@@ -768,7 +768,7 @@
       "name": "verify-generate-tools-data.mjs",
       "description": "Live harness script\\n\");",
       "location": "harness-mc",
-      "lastModified": "2026-06-28T00:52:44.064Z"
+      "lastModified": "2026-06-28T02:27:50.342Z"
     },
     {
       "name": "verify-hc-framing-gate.mjs",
@@ -968,7 +968,7 @@
       "event": "PostToolUse",
       "matcher": "Edit|Write",
       "type": "command",
-      "command": "jq -r '.tool_input.file_path // .tool_response.filePath' | { read -r f; echo \"$f\" | grep -q 'harness-mc/milestones/.*tasks\\.json' && cd /Users/somedes",
+      "command": "jq -r '.tool_input.file_path // .tool_response.filePath' | { read -r f; echo \"$f\" | grep -q 'harness-mc/milestones/.*tasks\\.json' && cd $COLLAB/harnes",
       "statusMessage": "Rebuilding MC dashboard..."
     },
     {

@@ -50,7 +50,7 @@ const snapshot = {
       event: "PreToolUse",
       matcher: "*",
       type: "command",
-      command: "snapshot hook",
+      command: `cd ${tmpCollab}/harness-mc && node scripts/generate-tools-data.mjs`,
       statusMessage: null,
     },
   ],
@@ -80,5 +80,11 @@ assert.equal(output.sourceStatus.scripts["harness-mc"], "scanned");
 assert.ok(output.scripts.some((script) => script.location === "000_Agent" && script.name === "agent-script.mjs"));
 assert.ok(output.scripts.some((script) => script.location === "harness-mc" && script.name === "live-tool.mjs"));
 assert.ok(!output.scripts.some((script) => script.name === "old-harness-script.mjs"));
+assert.match(output.hooks[0].command, /\$COLLAB\/harness-mc/);
+assert.doesNotMatch(JSON.stringify(output), new RegExp(escapeRegExp(tmpRoot)));
 
 console.log("generate-tools-data verification passed");
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}

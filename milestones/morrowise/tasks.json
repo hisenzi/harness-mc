@@ -768,6 +768,9 @@
         "source_boundary": "HC is a thinking check, not source of truth; MC task/spec/verifier/generated read model remain canonical."
       },
       "summary": "已新增 capability-runtime-status read model、verifier、prebuild 接線、MorroWise live dashboard source/metrics 更新，並讓首頁 API / CLI / MCP card 同時呈現 registry、runtime、auth、contract 狀態。最後一輪 probe：CC heptabase-mcp connected；Heptabase local CLI connected；Codex Heptabase MCP configured；Notion MCP needs_auth；Playwright CLI missing；notification adapter contract_ready；legacy Heptabase PAI MCP/OAuth 保持 legacy/not_applicable。",
+      "commits": [
+        "273d921"
+      ],
       "note": "2026-06-28 Vincent 檢查首頁 Capability Platform 卡片後指出：原畫面可作為 registry 台帳，但不足以代表各 connector 的即時串接狀態。已建立可重跑 read model / probe / surface vocabulary，並保留 playwright-cli-capability-probe 處理 Playwright 歸屬；notification adapter 的 contract_ready 仍不等於外部 delivery live。驗證：npm run test:capability-runtime-status、npm run test:capability-registry、npm run test:morrowise-live-dashboard、npm run prebuild、npm run build。"
     },
     {

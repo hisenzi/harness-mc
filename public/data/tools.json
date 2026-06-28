@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-28T03:13:23.874Z",
+  "generatedAt": "2026-06-28T03:20:36.616Z",
   "sourceStatus": {
     "skills": "scanned",
     "scripts": {
@@ -1002,6 +1002,17 @@
     },
     {
       "date": "2026-06-28",
+      "message": "feat(morrowise): add capability runtime status read model",
+      "repo": "harness-mc",
+      "files": [
+        "scripts/generate-capability-runtime-status.mjs",
+        "scripts/generate-morrowise-live-dashboard.mjs",
+        "scripts/verify-capability-runtime-status.mjs",
+        "scripts/verify-morrowise-live-dashboard-data.mjs"
+      ]
+    },
+    {
+      "date": "2026-06-28",
       "message": "fix(skill-dashboard): sanitize tools snapshot and complete ci",
       "repo": "harness-mc",
       "files": [
@@ -1117,14 +1128,6 @@
       "repo": "notyet-harness",
       "files": [
         "000_Agent/skills/worktree-commit/SKILL.md"
-      ]
-    },
-    {
-      "date": "2026-06-27",
-      "message": "feat(morrowise): render living system read model card",
-      "repo": "harness-mc",
-      "files": [
-        "scripts/verify-morrowise-read-model-card.mjs"
       ]
     }
   ]

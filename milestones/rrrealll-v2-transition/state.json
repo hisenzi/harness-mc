@@ -23,10 +23,12 @@
       }
     },
     "w1-3": {
-      "status": "todo",
+      "status": "completed",
+      "completed_at": "2026-06-28",
       "commits": [
-        "43cc2ba"
+        "91b24a6"
       ],
+      "summary": "RRREALLL 過渡頁已完成正式通知入口與法規文案檢查：未確認粉專入口已移除，通知入口收斂為官方 LINE 與 Email，隱私權政策與服務條款可點擊且正式站已同步。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "RRREALLL 過渡期網站",
@@ -38,7 +40,13 @@
       }
     },
     "w1-verify": {
-      "status": "todo",
+      "status": "completed",
+      "completed_at": "2026-06-28",
+      "commits": [
+        "be5316d",
+        "91b24a6"
+      ],
+      "summary": "RRREALLL 過渡網站已完成本機與正式站驗收：Astro check/build 通過、Playwright desktop/mobile 驗收通過，正式站首頁、隱私權政策、服務條款與通知文案皆已確認。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "RRREALLL 過渡期網站",
@@ -50,7 +58,9 @@
       }
     },
     "launch-1": {
-      "status": "in_progress",
+      "status": "completed",
+      "completed_at": "2026-06-28",
+      "summary": "RRREALLL 已完成 Zeabur GitHub service 部署與正式 apex domain 切換；rrrealll.com 首頁、隱私權、服務條款皆 HTTPS 200，www 明確不處理，Cloudflare proxy 明確保留。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "RRREALLL 過渡期網站",

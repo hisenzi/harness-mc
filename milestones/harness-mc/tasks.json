@@ -1607,6 +1607,24 @@
       ]
     },
     {
+      "id": "projects-pai-domain-filter-alignment",
+      "title": "/projects 分類改參照 Notion PAI「領域」",
+      "status": "in_progress",
+      "track": "phase-1",
+      "priority": "high",
+      "depends_on": [
+        "projects-card-filter-rebuild"
+      ],
+      "done_condition": "/projects 上方分類 chip 與卡片主分類改用 Notion / PAI 行動庫「領域」欄位，而不是 MC 內部 project.type；project.type 保留為次要 metadata。領域選項需有 machine-readable source contract，指向 PAI 同步腳本的 WHITEBOARDS mapping，並由 verifier 確認 active projects 皆有 domain mapping。",
+      "acceptance": [
+        "public/data/projects.json 每個非 archived project 都有 domain 欄位。",
+        "/projects filter 使用 domain；completed filter 仍以 task 完成度判斷。",
+        "domain 選項與 PAI「領域」一致，不再新增平行的 MC-only category 名稱。",
+        "project.type 仍輸出但不再作為主要分類 chip。"
+      ],
+      "note": "Vincent 從 /projects 截圖指出分類應參照 Notion『領域』才一致。現況 chips 來自 project.json type（consulting/internal/knowledge/learning/service/standalone/system），這是 MC 內部專案型態，不是 PAI 領域；需要拆成 domain(primary filter) + type(secondary metadata)。"
+    },
+    {
       "id": "config-launch-newproject",
       "title": "launch.json 改 npx next dev + new-project.py 路徑遷移",
       "status": "done",

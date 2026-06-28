@@ -1,0 +1,66 @@
+{
+  "schema_version": "pai-domain-taxonomy.v0",
+  "source_of_truth": {
+    "system": "Notion PAI 行動庫",
+    "field": "領域",
+    "local_contract": "$COLLAB/notyet-harness/000_Agent/scripts/heptabase-to-pai.py#WHITEBOARDS",
+    "dedupe_key": "(領域, 專案標題)"
+  },
+  "write_boundary": "MC reads this taxonomy for display/filter consistency. Do not write Notion or PAI from the /projects surface.",
+  "domains": [
+    { "id": "Roger", "label": "Roger", "color": "#8b5cf6" },
+    { "id": "臨時", "label": "臨時", "color": "#64748b" },
+    { "id": "Life-Focus", "label": "Life-Focus", "color": "#14b8a6" },
+    { "id": "notyet", "label": "notyet", "color": "#a855f7" },
+    { "id": "KJ", "label": "KJ", "color": "#2563eb" },
+    { "id": "FJSH", "label": "FJSH", "color": "#0ea5e9" },
+    { "id": "公司", "label": "公司", "color": "#16a34a" },
+    { "id": "Cleanup", "label": "Cleanup", "color": "#71717a" },
+    { "id": "Harness", "label": "Harness", "color": "#22c55e" },
+    { "id": "Thinking-Gym", "label": "Thinking-Gym", "color": "#f59e0b" },
+    { "id": "Maxmodel", "label": "Maxmodel", "color": "#f97316" },
+    { "id": "Kate", "label": "Kate", "color": "#ec4899" }
+  ],
+  "project_domains": {
+    "adobe-creative-pipeline": "notyet",
+    "agnostic-scheduler": "Harness",
+    "design-hc": "notyet",
+    "digital-ops-sub": "公司",
+    "dual-blade": "Harness",
+    "exam-prep-6yr": "KJ",
+    "fontcard-120": "notyet",
+    "harness-mc": "Harness",
+    "hc-validation": "Harness",
+    "hiblocks": "notyet",
+    "house123-buy": "Life-Focus",
+    "indiebooks": "Roger",
+    "kids-reward": "Thinking-Gym",
+    "kj-bilingual": "KJ",
+    "leo-real-estate-ai": "臨時",
+    "mapelon-2": "Roger",
+    "morrowise": "Harness",
+    "notion-finance": "Life-Focus",
+    "notyet-md": "notyet",
+    "notyet-scope": "notyet",
+    "rrrealll-v2-transition": "臨時",
+    "search-ops-agent": "公司",
+    "self-learning": "Life-Focus",
+    "skill-dashboard": "Harness",
+    "survival-report": "Harness",
+    "taiwan-art": "notyet",
+    "thinking-gym": "Thinking-Gym",
+    "wealth-system": "Life-Focus",
+    "web-reminder-pwa": "notyet",
+    "writing-system": "notyet",
+    "xw-worldview": "notyet",
+    "yutianlaw": "臨時"
+  },
+  "history": [
+    {
+      "date": "2026-06-28",
+      "event": "created",
+      "reason": "Align MC /projects classification chips with Notion PAI `領域` instead of MC internal project.type.",
+      "task": "harness-mc/projects-pai-domain-filter-alignment"
+    }
+  ]
+}

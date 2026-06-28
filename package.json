@@ -14,6 +14,7 @@
     "test:visual-sync-coverage": "node scripts/verify-visual-sync-coverage.mjs",
     "test:tools-data": "node scripts/verify-generate-tools-data.mjs",
     "test:skill-version-backfill": "node scripts/verify-skill-version-backfill.mjs",
+    "test:pai-domain-taxonomy": "node scripts/verify-pai-domain-taxonomy.mjs",
     "test:skills": "node scripts/verify-validate-skills.mjs && node scripts/validate-skills.mjs --changed-only",
     "test:tasks": "node scripts/verify-validate-tasks.mjs && node scripts/validate-tasks.mjs --changed-only --project harness-mc",
     "test:work-anchor-preflight": "node scripts/verify-work-anchor-preflight.mjs",
@@ -43,7 +44,7 @@
     "test:capability-registry": "node scripts/verify-morrowise-capability-registry.mjs",
     "test:capability-runtime-status": "node scripts/verify-capability-runtime-status.mjs",
     "test:morrowise-wiring": "node scripts/verify-morrowise-wiring-gate.mjs",
-    "prebuild": "node scripts/check-adr-backlinks.mjs && node scripts/validate-skills.mjs --changed-only && node scripts/verify-generate-tools-data.mjs && node scripts/generate-data.mjs && node scripts/generate-tools-data.mjs && node scripts/generate-task-event-data.mjs && node scripts/generate-visual-sync-coverage.mjs && node scripts/generate-morrowise-proactive-loop.mjs && node scripts/generate-worktree-status.mjs && node scripts/generate-commit-attention.mjs && node scripts/generate-commit-cleanup-plan.mjs && node scripts/generate-closeout-residual-ledger.mjs && node scripts/verify-morrowise-notification-adapter-contract.mjs && node scripts/verify-morrowise-reality-tax-gate.mjs && node scripts/generate-morrowise-capabilities.mjs && node scripts/generate-capability-runtime-status.mjs && node scripts/generate-schedule-health.mjs && node scripts/sentinel-diff.mjs && node scripts/generate-morrowise-live-dashboard.mjs && node scripts/generate-morrowise-system.mjs",
+    "prebuild": "node scripts/check-adr-backlinks.mjs && node scripts/validate-skills.mjs --changed-only && node scripts/verify-generate-tools-data.mjs && node scripts/verify-pai-domain-taxonomy.mjs && node scripts/generate-data.mjs && node scripts/generate-tools-data.mjs && node scripts/generate-task-event-data.mjs && node scripts/generate-visual-sync-coverage.mjs && node scripts/generate-morrowise-proactive-loop.mjs && node scripts/generate-worktree-status.mjs && node scripts/generate-commit-attention.mjs && node scripts/generate-commit-cleanup-plan.mjs && node scripts/generate-closeout-residual-ledger.mjs && node scripts/verify-morrowise-notification-adapter-contract.mjs && node scripts/verify-morrowise-reality-tax-gate.mjs && node scripts/generate-morrowise-capabilities.mjs && node scripts/generate-capability-runtime-status.mjs && node scripts/generate-schedule-health.mjs && node scripts/sentinel-diff.mjs && node scripts/generate-morrowise-live-dashboard.mjs && node scripts/generate-morrowise-system.mjs",
     "build": "next build",
     "start": "next start -p 3001"
   },

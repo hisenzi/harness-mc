@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-28T06:34:30.304Z",
+  "generatedAt": "2026-06-28T08:04:21.317Z",
   "sourceStatus": {
     "skills": "scanned",
     "scripts": {
@@ -10,7 +10,7 @@
   },
   "summary": {
     "totalSkills": 41,
-    "totalScripts": 82,
+    "totalScripts": 83,
     "totalHooks": 2
   },
   "skills": [
@@ -570,7 +570,7 @@
       "name": "generate-data.mjs",
       "description": "lastModified 取「最後 commit 該專案的時間」而非檔案 mtime——",
       "location": "harness-mc",
-      "lastModified": "2026-06-15T07:03:57.855Z"
+      "lastModified": "2026-06-28T07:51:09.359Z"
     },
     {
       "name": "generate-morrowise-capabilities.mjs",
@@ -909,10 +909,16 @@
       "lastModified": "2026-06-27T13:25:04.856Z"
     },
     {
+      "name": "verify-pai-domain-taxonomy.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-06-28T07:51:38.950Z"
+    },
+    {
       "name": "verify-projects-filter.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-21T12:01:53.817Z"
+      "lastModified": "2026-06-28T07:55:06.868Z"
     },
     {
       "name": "verify-required-publish-flow.mjs",

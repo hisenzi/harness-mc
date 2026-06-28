@@ -1,11 +1,12 @@
 import assert from "node:assert/strict";
-import { getDisplayedProjects, isProjectComplete } from "../app/projects/projectFilters.mjs";
+import { filterProjectsByDomain, getDisplayedProjects, isProjectComplete } from "../app/projects/projectFilters.mjs";
 
 const projects = [
   {
     project: "house123-buy",
     status: "completed",
     type: "service",
+    domain: "Life-Focus",
     done: 9,
     total: 10,
   },
@@ -13,6 +14,7 @@ const projects = [
     project: "hc-validation",
     status: "completed",
     type: "knowledge",
+    domain: "Harness",
     done: 30,
     total: 30,
   },
@@ -20,6 +22,15 @@ const projects = [
     project: "active-service",
     status: "active",
     type: "service",
+    domain: "公司",
+    done: 1,
+    total: 3,
+  },
+  {
+    project: "active-service-same-type",
+    status: "active",
+    type: "service",
+    domain: "Life-Focus",
     done: 1,
     total: 3,
   },
@@ -35,9 +46,21 @@ assert.deepEqual(
 );
 
 assert.deepEqual(
+  filterProjectsByDomain(projects, "Life-Focus").map((project) => project.project),
+  ["house123-buy", "active-service-same-type"],
+  "domain filter should use PAI domain, not project.type",
+);
+
+assert.deepEqual(
+  getDisplayedProjects(projects, "Life-Focus").map((project) => project.project),
+  ["house123-buy", "active-service-same-type"],
+  "domain tab should show incomplete projects even if project.status is completed",
+);
+
+assert.deepEqual(
   getDisplayedProjects(projects, "service").map((project) => project.project),
-  ["house123-buy", "active-service"],
-  "service tab should show incomplete service projects even if project.status is completed",
+  [],
+  "legacy project.type values should no longer drive /projects filters",
 );
 
 console.log("Projects filter verification OK");

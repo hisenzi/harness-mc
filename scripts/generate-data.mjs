@@ -8,6 +8,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const milestonesDir = path.join(root, "milestones");
 const outPath = path.join(root, "public", "data", "projects.json");
+const domainTaxonomyPath = path.join(root, "system-workflow", "registries", "pai-domain-taxonomy.json");
+const domainTaxonomy = loadDomainTaxonomy(domainTaxonomyPath);
 
 // lastModified 取「最後 commit 該專案的時間」而非檔案 mtime——
 // CI checkout 會把所有檔案 mtime 重設成 build 時間，導致線上「最近修改」排序失效。
@@ -93,6 +95,7 @@ for (const dir of fs.readdirSync(milestonesDir)) {
 
     const projectStatus = meta.status || "active";
     if (projectStatus === "archived") continue;
+    const domain = resolveProjectDomain(dir, meta, domainTaxonomy);
 
     results.push({
       project: dir,
@@ -100,6 +103,9 @@ for (const dir of fs.readdirSync(milestonesDir)) {
       description: meta.description || "",
       status: projectStatus,
       type: meta.type || "other",
+      domain: domain?.id || "未對應",
+      domainLabel: domain?.label || domain?.id || "未對應",
+      domainColor: domain?.color || "#71717a",
       priority: meta.priority || "medium",
       tasks,
       lastModified: gitTime(path.join(milestonesDir, dir), stat.mtime.toISOString()),
@@ -165,4 +171,16 @@ console.log(`Generated ${outPath} — ${results.length} projects, ${results.redu
 if (learningData) {
   fs.writeFileSync(learningOutPath, JSON.stringify(learningData, null, 2));
   console.log(`Generated ${learningOutPath} — ${learningData.summary.total} courses`);
+}
+
+function loadDomainTaxonomy(filePath) {
+  if (!fs.existsSync(filePath)) return { domains: [], project_domains: {} };
+  return JSON.parse(fs.readFileSync(filePath, "utf-8").replace(/^﻿/, ""));
+}
+
+function resolveProjectDomain(projectId, meta, taxonomy) {
+  const domainId = meta.domain || meta.pai_domain || taxonomy.project_domains?.[projectId] || null;
+  if (!domainId) return null;
+  const domain = (taxonomy.domains || []).find((item) => item.id === domainId);
+  return domain || { id: domainId, label: domainId, color: "#71717a" };
 }

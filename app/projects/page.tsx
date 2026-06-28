@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { StatusDot } from "../components/StatusDot";
-import { filterProjectsByType, getDisplayedProjects } from "./projectFilters.mjs";
+import { getDisplayedProjects } from "./projectFilters.mjs";
 
 interface Task {
   id: string;
@@ -27,6 +27,9 @@ interface Project {
   description: string;
   status: string;
   type: string;
+  domain: string;
+  domainLabel?: string;
+  domainColor?: string;
   priority: string;
   tasks: Task[];
   lastModified: string;
@@ -78,22 +81,22 @@ function foundationBadge(f: string | null | undefined) {
   return <span className={`text-caption ${colors[f] || "text-gray-400"}`}>根據:{f}</span>;
 }
 
-const catBarColor: Record<string, string> = {
+const legacyTypeColor: Record<string, string> = {
   service: "#3b82f6",
   knowledge: "#a855f7",
   system: "#22c55e",
   learning: "#ec4899",
 };
 
-function ProgressBar({ done, total, type }: { done: number; total: number; type?: string }) {
+function ProgressBar({ done, total, color }: { done: number; total: number; color?: string }) {
   const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-  const color = pct === 100 ? "#22c55e" : (type && catBarColor[type]) || "var(--accent)";
+  const barColor = pct === 100 ? "#22c55e" : color || "var(--accent)";
   return (
     <div className="flex items-center gap-2 mt-2">
       <div className="flex-1 h-1.5 rounded-full bg-[var(--border)] overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-300"
-          style={{ width: `${pct}%`, background: color }}
+          style={{ width: `${pct}%`, background: barColor }}
         />
       </div>
       <span className="text-caption text-[var(--text-muted)]">
@@ -107,7 +110,7 @@ export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [selected, setSelected] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
-  const [typeFilter, setTypeFilter] = useState("all");
+  const [domainFilter, setDomainFilter] = useState("all");
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/projects.json`)
@@ -121,9 +124,19 @@ export default function ProjectsPage() {
 
   const totalTasks = projects.reduce((s, p) => s + p.total, 0);
   const doneTasks = projects.reduce((s, p) => s + p.done, 0);
-  const types = [...new Set(projects.map((p) => p.type))].sort();
-  const filtered: Project[] = filterProjectsByType(projects, typeFilter);
-  const displayed: Project[] = getDisplayedProjects(projects, typeFilter);
+  const domains = Array.from(
+    new Map(
+      projects.map((p) => [
+        p.domain || "未對應",
+        {
+          id: p.domain || "未對應",
+          label: p.domainLabel || p.domain || "未對應",
+          color: p.domainColor || legacyTypeColor[p.type] || "var(--accent)",
+        },
+      ]),
+    ).values(),
+  ).sort((a, b) => a.label.localeCompare(b.label, "zh-Hant"));
+  const displayed: Project[] = getDisplayedProjects(projects, domainFilter);
 
   if (loading) {
     return (
@@ -145,33 +158,60 @@ export default function ProjectsPage() {
         <p className="text-[var(--text-muted)] text-body mt-1">
           共 {projects.length} 個專案 · {doneTasks}/{totalTasks} tasks 完成
         </p>
-        <div className="flex gap-1.5 mt-3">
-          {["all", ...types, "completed"].map((t) => (
+        <div className="flex gap-1.5 mt-3 overflow-x-auto pb-1">
+          <button
+            type="button"
+            onClick={() => setDomainFilter("all")}
+            className={`shrink-0 whitespace-nowrap px-2.5 py-1 text-[12px] rounded-md transition ${
+              domainFilter === "all" ? "text-white" : "text-[var(--text-muted)] hover:text-[var(--text)]"
+            }`}
+            style={{
+              background:
+                domainFilter === "all"
+                  ? "var(--accent)"
+                  : "color-mix(in srgb, var(--border) 30%, transparent)",
+            }}
+          >
+            全部 {projects.length}
+          </button>
+          {domains.map((domain) => (
             <button
-              key={t}
+              key={domain.id}
               type="button"
-              onClick={() => setTypeFilter(t)}
-              className={`px-2.5 py-1 text-[12px] rounded-md transition ${
-                typeFilter === t ? "text-white" : "text-[var(--text-muted)] hover:text-[var(--text)]"
+              onClick={() => setDomainFilter(domain.id)}
+              className={`shrink-0 whitespace-nowrap px-2.5 py-1 text-[12px] rounded-md transition ${
+                domainFilter === domain.id ? "text-white" : "text-[var(--text-muted)] hover:text-[var(--text)]"
               }`}
               style={{
-                background: catBarColor[t]
-                  ? typeFilter === t
-                    ? `color-mix(in srgb, ${catBarColor[t]} 50%, black)`
-                    : `color-mix(in srgb, ${catBarColor[t]} 25%, black)`
-                  : typeFilter === t
-                    ? "var(--accent)"
-                    : "color-mix(in srgb, var(--border) 30%, transparent)",
+                background:
+                  domainFilter === domain.id
+                    ? `color-mix(in srgb, ${domain.color} 50%, black)`
+                    : `color-mix(in srgb, ${domain.color} 22%, black)`,
               }}
             >
-              {t === "all" ? `全部 ${projects.length}` : t}
+              {domain.label}
             </button>
           ))}
+          <button
+            type="button"
+            onClick={() => setDomainFilter("completed")}
+            className={`shrink-0 whitespace-nowrap px-2.5 py-1 text-[12px] rounded-md transition ${
+              domainFilter === "completed" ? "text-white" : "text-[var(--text-muted)] hover:text-[var(--text)]"
+            }`}
+            style={{
+              background:
+                domainFilter === "completed"
+                  ? "color-mix(in srgb, #22c55e 50%, black)"
+                  : "color-mix(in srgb, var(--border) 30%, transparent)",
+            }}
+          >
+            completed
+          </button>
         </div>
       </div>
 
       <div className="flex items-center gap-3 mb-3">
-        <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">{typeFilter === "completed" ? "已完成" : "進行中"}</div>
+        <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">{domainFilter === "completed" ? "已完成" : "進行中"}</div>
         <div className="text-[11px] text-[var(--text-muted)]">{displayed.length} 專案</div>
         <div className="flex-1 border-t border-[var(--border)]"></div>
       </div>
@@ -187,11 +227,12 @@ export default function ProjectsPage() {
               <span className="font-semibold text-body line-clamp-2 min-h-[52px] block">{proj.name}</span>
             </div>
             <div className="flex justify-between w-full text-caption text-[var(--text-muted)] mt-1">
-              <span>{proj.type}</span>
+              <span style={{ color: proj.domainColor || undefined }}>{proj.domainLabel || proj.domain}</span>
               <span>{new Date(proj.lastModified).toLocaleDateString("zh-TW")}</span>
             </div>
+            <div className="text-caption text-[var(--text-muted)] opacity-70 mt-0.5">{proj.type}</div>
             <p className="text-small text-[var(--text-muted)] line-clamp-2 mt-1.5 w-full">{proj.description}</p>
-            <ProgressBar done={proj.done} total={proj.total} type={proj.type} />
+            <ProgressBar done={proj.done} total={proj.total} color={proj.domainColor} />
             <div className="flex gap-2 mt-1.5 text-caption min-h-[20px]">
               {(() => {
                 const blocked = proj.tasks.filter((t) => t.status === "blocked").length;
@@ -217,7 +258,7 @@ export default function ProjectsPage() {
               <div className="min-w-0">
                 <div className="text-heading font-semibold truncate">{selected.name}</div>
                 <div className="text-body text-[var(--text-muted)]">
-                  {selected.done}/{selected.total} 完成
+                  {selected.domainLabel || selected.domain} · {selected.type} · {selected.done}/{selected.total} 完成
                 </div>
               </div>
               <button
@@ -230,7 +271,7 @@ export default function ProjectsPage() {
             </div>
 
             <div className="flex-1 overflow-auto p-4">
-              <ProgressBar done={selected.done} total={selected.total} type={selected.type} />
+              <ProgressBar done={selected.done} total={selected.total} color={selected.domainColor} />
 
               {selected.decision_refs && selected.decision_refs.length > 0 && (
                 <div className="mt-4 rounded-lg border border-[var(--border)] bg-[var(--bg)]/50 p-3">

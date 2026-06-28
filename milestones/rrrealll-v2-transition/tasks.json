@@ -113,7 +113,7 @@
     {
       "id": "launch-1",
       "title": "Zeabur / DNS 上線前檢查與部署",
-      "status": "in_progress",
+      "status": "completed",
       "track": "launch",
       "depends_on": [
         "w1-verify"
@@ -123,10 +123,11 @@
         "dist/ 可作為靜態部署輸出",
         "Zeabur 專案已從 GitHub repo 匯入並完成 build",
         "Zeabur build command / output directory 設定明確，且與 Astro 靜態輸出一致",
-        "已記錄 Zeabur custom domain 與 Cloudflare DNS 切換方式",
-        "Cloudflare Proxy 已關閉（灰雲），舊 Cloudways A/CNAME 記錄已確認清理或保留理由明確",
+        "已記錄 Zeabur custom domain 與 Cloudflare DNS 切換方式 / proxy 狀態",
         "有 rollback 路徑，可回到前一版部署或舊 DNS 指向",
-        "上線後首頁 HTTPS 200，SSL 正常"
+        "正式 apex domain 首頁 HTTPS 200，SSL 正常",
+        "www domain 明確不處理",
+        "Cloudflare proxy 明確保留"
       ],
       "deployment": {
         "provider": "zeabur",
@@ -141,20 +142,36 @@
         "build_command": "npm run build",
         "output_directory": "dist",
         "git_trigger": "enabled",
-        "verified_at": "2026-06-26",
+        "verified_at": "2026-06-28",
         "verification": [
           "npm run build passed locally",
           "Zeabur GitHub deployment status RUNNING",
           "https://rrrealll.zeabur.app/ HTTP 200",
           "https://rrrealll.zeabur.app/privacy/ HTTP 200",
-          "https://rrrealll.zeabur.app/terms/ HTTP 200"
+          "https://rrrealll.zeabur.app/terms/ HTTP 200",
+          "https://rrrealll.com/ HTTP 200",
+          "https://rrrealll.com/privacy/ HTTP 200",
+          "https://rrrealll.com/terms/ HTTP 200",
+          "http://rrrealll.com/ HTTP 301 -> https://rrrealll.com/"
         ],
-        "pending": [
-          "Rename Zeabur service to rrrealll-v2-transition",
-          "Bind production custom domain",
-          "Set Cloudflare DNS with proxy disabled",
-          "Confirm production domain HTTPS 200 before cleaning old Cloudways DNS"
-        ]
+        "pending": [],
+        "production_domain": "https://rrrealll.com/",
+        "production_domain_verified_at": "2026-06-28",
+        "dns_provider": "cloudflare",
+        "dns_observation": {
+          "apex_https": "https://rrrealll.com/ HTTP 200",
+          "apex_http": "http://rrrealll.com/ HTTP 301 -> https://rrrealll.com/",
+          "privacy_https": "https://rrrealll.com/privacy/ HTTP 200",
+          "terms_https": "https://rrrealll.com/terms/ HTTP 200",
+          "www_https": "https://www.rrrealll.com/ HTTP 404; explicitly not handled",
+          "cloudflare_proxy": "intentionally kept enabled; observed via server: cloudflare / cf-ray headers",
+          "zeabur_origin": "observed via x-zeabur-request-id header"
+        },
+        "domain_decisions": {
+          "www_domain": "do_not_handle",
+          "cloudflare_proxy": "keep_enabled",
+          "decided_at": "2026-06-28"
+        }
       },
       "external_refs": {
         "heptabase": {
@@ -164,7 +181,9 @@
           "synced_at": "2026-06-22",
           "sync_mode": "created"
         }
-      }
+      },
+      "completed_at": "2026-06-28",
+      "summary": "RRREALLL 已完成 Zeabur GitHub service 部署與正式 apex domain 切換；rrrealll.com 首頁、隱私權、服務條款皆 HTTPS 200，www 明確不處理，Cloudflare proxy 明確保留。"
     }
   ]
 }

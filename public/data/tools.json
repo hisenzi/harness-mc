@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-28T02:30:23.743Z",
+  "generatedAt": "2026-06-28T02:33:21.199Z",
   "sourceStatus": {
     "skills": "scanned",
     "scripts": {
@@ -990,6 +990,15 @@
     },
     {
       "date": "2026-06-28",
+      "message": "fix(skill-dashboard): sanitize tools snapshot and complete ci",
+      "repo": "harness-mc",
+      "files": [
+        "scripts/generate-tools-data.mjs",
+        "scripts/verify-generate-tools-data.mjs"
+      ]
+    },
+    {
+      "date": "2026-06-28",
       "message": "fix(skill-dashboard): preserve tools data snapshot in ci",
       "repo": "harness-mc",
       "files": [
@@ -1104,14 +1113,6 @@
       "repo": "harness-mc",
       "files": [
         "scripts/verify-morrowise-read-model-card.mjs"
-      ]
-    },
-    {
-      "date": "2026-06-27",
-      "message": "chore(morrowise): route live system card ownership",
-      "repo": "harness-mc",
-      "files": [
-        "scripts/generate-morrowise-system.mjs"
       ]
     }
   ]

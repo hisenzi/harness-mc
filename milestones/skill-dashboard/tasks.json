@@ -25,6 +25,9 @@
       "done_condition": "curl 線上 tools.json，skills 陣列 length > 0；hooks 同步處理或記為後續 task",
       "note": "原 harness-mc/tools-skills-ci-data-gap task 依邊界決策搬移至此。2026-06-28 已實作 generator snapshot fallback、tools.json 快照追蹤與 verifier；待 push/deploy 後 curl 線上 tools.json 驗 skills/hooks 非空再標 completed。",
       "completed_at": "2026-06-28",
+      "commits": [
+        "edfd8b0"
+      ],
       "summary": "完成技能儀表板 CI 資料缺口修復：GitHub Pages build 在缺 notyet-harness 與本機 hook settings 時會保留 committed tools.json 快照；線上 /data/tools.json 已驗證為 41 skills / 78 scripts / 2 hooks，且 sourceStatus 顯示 skills/hooks 來自 snapshot。"
     },
     {

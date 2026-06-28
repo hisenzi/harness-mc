@@ -64,6 +64,7 @@ for (const requiredSource of [
   "$COLLAB/harness-mc/public/data/closeout-residual-ledger.json",
   "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
   "$COLLAB/harness-mc/public/data/morrowise-capabilities.json",
+  "$COLLAB/harness-mc/public/data/capability-runtime-status.json",
   "$COLLAB/harness-mc/public/data/schedule-health.json",
   "$COLLAB/notyet-harness/schedule/tasks/*.yaml",
   "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
@@ -77,6 +78,7 @@ assert.ok(data.verification.verifier_ref.includes("test:morrowise-live-dashboard
 assert.ok(Array.isArray(data.loop_chain), "loop_chain should be present");
 assert.ok(data.routes.some((route) => route.id === "api_cli_mcp_capabilities.drilldown"), "capability drilldown route required");
 assert.ok(data.routes.some((route) => route.id === "schedule_runtime_health.drilldown"), "schedule runtime drilldown route required");
+assert.ok(data.summary.source_counts.capability_runtime_items >= 0, "capability runtime source count should be present");
 
 for (const surface of data.surfaces) {
   assert.ok(["fresh", "stale", "degraded", "unknown"].includes(surface.freshness_state), `${surface.id} has invalid freshness_state`);

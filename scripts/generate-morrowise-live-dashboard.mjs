@@ -45,6 +45,7 @@ export function generateMorrowiseLiveDashboard(options = {}) {
         "$COLLAB/harness-mc/public/data/changes.json",
         "$COLLAB/harness-mc/public/data/morrowise-proactive-loop.json",
         "$COLLAB/harness-mc/public/data/morrowise-capabilities.json",
+        "$COLLAB/harness-mc/public/data/capability-runtime-status.json",
         "$COLLAB/harness-mc/public/data/schedule-health.json",
       ],
       policy_registry: "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
@@ -87,6 +88,7 @@ function readSources(root) {
     changes: readJsonOrNull(path.join(root, DATA_DIR, "changes.json")),
     proactiveLoop: readJsonOrNull(path.join(root, DATA_DIR, "morrowise-proactive-loop.json")),
     capabilities: readJsonOrNull(path.join(root, DATA_DIR, "morrowise-capabilities.json")),
+    capabilityRuntimeStatus: readJsonOrNull(path.join(root, DATA_DIR, "capability-runtime-status.json")),
     scheduleHealth: readJsonOrNull(path.join(root, DATA_DIR, "schedule-health.json")),
     approvalPolicy: readJsonOrNull(path.join(root, "system-workflow", "registries", "morrowise-approval-policy.json")),
     fileTimes: {
@@ -98,6 +100,7 @@ function readSources(root) {
       changes: fileGeneratedAt(root, path.join(DATA_DIR, "changes.json")),
       proactiveLoop: fileGeneratedAt(root, path.join(DATA_DIR, "morrowise-proactive-loop.json")),
       capabilities: fileGeneratedAt(root, path.join(DATA_DIR, "morrowise-capabilities.json")),
+      capabilityRuntimeStatus: fileGeneratedAt(root, path.join(DATA_DIR, "capability-runtime-status.json")),
       scheduleHealth: fileGeneratedAt(root, path.join(DATA_DIR, "schedule-health.json")),
       approvalPolicy: fileGeneratedAt(root, path.join("system-workflow", "registries", "morrowise-approval-policy.json")),
     },
@@ -370,42 +373,67 @@ function closeoutResidualLedgerSurface(sources) {
 
 function capabilityRegistrySurface(sources) {
   const capabilities = sources.capabilities || {};
+  const runtimeStatus = sources.capabilityRuntimeStatus || {};
   const summary = capabilities.summary || {};
+  const runtimeSummary = runtimeStatus.summary || {};
   const needsAttention = summary.needs_attention || 0;
+  const needsAuth = runtimeSummary.by_runtime_status?.needs_auth || 0;
+  const missingRuntime = runtimeSummary.by_runtime_status?.missing || 0;
+  const unknownRuntime = runtimeSummary.by_runtime_status?.unknown || 0;
   const total = summary.total || 0;
 
   return surface({
     id: "api_cli_mcp_capabilities",
-    label: "API / CLI / MCP capabilities",
-    source_of_truth: "morrowise_capability_registry_and_generated_read_model",
+    label: "API / CLI / MCP capabilities and runtime status",
+    source_of_truth: "morrowise_capability_registry_runtime_status_and_generated_read_models",
     source_files: [
       "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
       "$COLLAB/harness-mc/public/data/morrowise-capabilities.json",
+      "$COLLAB/harness-mc/public/data/capability-runtime-status.json",
       "$COLLAB/harness-mc/AGENTS.md",
     ],
-    generator: ["scripts/generate-morrowise-capabilities.mjs", "npm run prebuild"],
-    generated_at: latest([capabilities.generated_at, sources.fileTimes.capabilities]),
+    generator: ["scripts/generate-morrowise-capabilities.mjs", "scripts/generate-capability-runtime-status.mjs", "npm run prebuild"],
+    generated_at: latest([capabilities.generated_at, runtimeStatus.generated_at, sources.fileTimes.capabilities, sources.fileTimes.capabilityRuntimeStatus]),
     stale_after_minutes: 60,
-    stale_rule: "stale when API / CLI / MCP registry history changes without regenerating morrowise-capabilities.json, or when local runtime probes are unresolved during active capability work",
-    missing_sources: missingSources(sources, ["capabilities"]),
-    freshness_action: action("generator", "node scripts/generate-morrowise-capabilities.mjs", "Regenerate capability read model before trusting API / CLI / MCP status."),
-    next_action: needsAttention > 0
-      ? action("task", "api-cli-mcp-capability-registry-v0", "Review blocked, legacy, or unknown API / CLI / MCP capabilities.")
-      : action("none", null, "All tracked API / CLI / MCP capabilities are ready or only need monitoring."),
+    stale_rule: "stale when API / CLI / MCP registry history or runtime probe evidence changes without regenerating morrowise-capabilities.json and capability-runtime-status.json",
+    missing_sources: missingSources(sources, ["capabilities", "capabilityRuntimeStatus"]),
+    freshness_action: action("generator", "npm run prebuild", "Regenerate capability registry and runtime status read models before trusting API / CLI / MCP status."),
+    next_action: needsAuth > 0
+      ? action("auth", "notion-mcp-auth", "Authenticate Notion MCP before using Notion runtime writes.")
+      : missingRuntime > 0 || unknownRuntime > 0
+        ? action("task", "capability-runtime-status-read-model", "Review missing or unknown runtime probes.")
+        : needsAttention > 0
+          ? action("task", "api-cli-mcp-capability-registry-v0", "Review blocked, legacy, or unknown API / CLI / MCP registry entries.")
+          : action("none", null, "Capability registry and runtime probes have no generated action."),
     write_boundary: readOnlyBoundary(
       ["display capability status", "display latest history", "route next_action to owner task"],
       ["execute CLI", "call external API", "invoke MCP tools", "read secrets", "write task state"],
     ),
     verifier_ref: "npm run test:capability-registry",
     classification: "semi_live",
-    attention_level: needsAttention > 0 ? "needs_review" : "normal",
+    attention_level: needsAuth > 0 || missingRuntime > 0 ? "needs_review" : needsAttention > 0 || unknownRuntime > 0 ? "watch" : "normal",
     evidence_refs: [
       "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
       "$COLLAB/harness-mc/public/data/morrowise-capabilities.json",
+      "$COLLAB/harness-mc/public/data/capability-runtime-status.json",
       "$COLLAB/harness-mc/AGENTS.md",
     ],
     drilldown_route: "api_cli_mcp_capabilities.drilldown",
-    metrics: { total, needs_attention: needsAttention, by_status: summary.by_status || {}, by_type: summary.by_type || {} },
+    metrics: {
+      total,
+      registry_ready: summary.by_status?.ready || 0,
+      registry_legacy: summary.by_status?.legacy || 0,
+      registry_unknown: summary.by_status?.unknown || 0,
+      runtime_connected: runtimeSummary.by_runtime_status?.connected || 0,
+      runtime_configured: runtimeSummary.by_runtime_status?.configured || 0,
+      runtime_needs_auth: needsAuth,
+      runtime_missing: missingRuntime,
+      runtime_unknown: unknownRuntime,
+      contract_ready: runtimeSummary.by_contract_status?.contract_ready || 0,
+      needs_attention: needsAttention,
+      by_status: summary.by_status || {},
+      by_type: summary.by_type || {},
+    },
   });
 }
 
@@ -521,6 +549,7 @@ function buildSummary(surfaces, sources) {
       closeout_residuals: sources.closeoutResidualLedger?.summary?.residual_count || 0,
       proactive_scenarios: sources.proactiveLoop?.summary?.scenarios || 0,
       capabilities: sources.capabilities?.summary?.total || 0,
+      capability_runtime_items: sources.capabilityRuntimeStatus?.summary?.total || 0,
       schedule_tasks: sources.scheduleHealth?.summary?.tasks_total || 0,
       loop_chain: Array.isArray(sources.proactiveLoop?.scenarios) ? sources.proactiveLoop.scenarios.length : 0,
     },

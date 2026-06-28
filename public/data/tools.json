@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-28T02:33:21.199Z",
+  "generatedAt": "2026-06-28T03:13:23.874Z",
   "sourceStatus": {
     "skills": "scanned",
     "scripts": {
@@ -10,7 +10,7 @@
   },
   "summary": {
     "totalSkills": 41,
-    "totalScripts": 78,
+    "totalScripts": 80,
     "totalHooks": 2
   },
   "skills": [
@@ -537,6 +537,12 @@
       "lastModified": "2026-05-14T06:38:56.683Z"
     },
     {
+      "name": "generate-capability-runtime-status.mjs",
+      "description": "Generate the MorroWise API / CLI / MCP runtime status read model.",
+      "location": "harness-mc",
+      "lastModified": "2026-06-28T03:11:52.684Z"
+    },
+    {
       "name": "generate-closeout-residual-ledger.mjs",
       "description": "",
       "location": "harness-mc",
@@ -570,7 +576,7 @@
       "name": "generate-morrowise-live-dashboard.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-27T16:17:26.832Z"
+      "lastModified": "2026-06-28T03:04:04.931Z"
     },
     {
       "name": "generate-morrowise-proactive-loop.mjs",
@@ -753,6 +759,12 @@
       "lastModified": "2026-06-15T07:09:39.774Z"
     },
     {
+      "name": "verify-capability-runtime-status.mjs",
+      "description": "Verify the MorroWise API / CLI / MCP runtime status read model.",
+      "location": "harness-mc",
+      "lastModified": "2026-06-28T03:11:52.761Z"
+    },
+    {
       "name": "verify-closeout-residual-ledger.mjs",
       "description": "",
       "location": "harness-mc",
@@ -822,7 +834,7 @@
       "name": "verify-morrowise-live-dashboard-data.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-27T16:17:34.424Z"
+      "lastModified": "2026-06-28T03:03:50.676Z"
     },
     {
       "name": "verify-morrowise-live-dashboard-loop.mjs",

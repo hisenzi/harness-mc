@@ -161,6 +161,30 @@ interface CapabilityReadModel {
   }[];
 }
 
+interface CapabilityRuntimeStatusReadModel {
+  generated_at: string;
+  summary: {
+    total: number;
+    by_registry_status: Record<string, number>;
+    by_runtime_status: Record<string, number>;
+    by_contract_status: Record<string, number>;
+    by_auth_status: Record<string, number>;
+  };
+  items: {
+    id: string;
+    label: string;
+    source_layer: "registry_snapshot" | "runtime_probe" | "contract_verifier" | "manual_evidence";
+    registry_status: "ready" | "legacy" | "unknown" | "blocked" | "prototype" | "not_applicable";
+    runtime_status: "connected" | "configured" | "missing" | "needs_auth" | "unknown" | "not_applicable" | "degraded";
+    contract_status: "ready" | "contract_ready" | "not_verified" | "not_applicable" | "degraded";
+    auth_status: "authenticated" | "needs_auth" | "not_required" | "unknown";
+    next_action: {
+      target: string;
+      label: string;
+    };
+  }[];
+}
+
 interface ProactiveLoopScenario {
   scenario_id: string;
   label: string;
@@ -1295,7 +1319,7 @@ function uniqueVisualSyncItems(items: VisualSyncCoverageItem[]) {
   });
 }
 
-function ApiCliMcpCapabilityCard({ data }: { data: CapabilityReadModel | null }) {
+function ApiCliMcpCapabilityCard({ data, runtimeStatus }: { data: CapabilityReadModel | null; runtimeStatus: CapabilityRuntimeStatusReadModel | null }) {
   if (!data) {
     return (
       <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
@@ -1305,8 +1329,18 @@ function ApiCliMcpCapabilityCard({ data }: { data: CapabilityReadModel | null })
   }
 
   const needsAttention = data.summary.needs_attention;
+  const runtimeNeedsAuth = runtimeStatus?.summary.by_runtime_status.needs_auth || 0;
+  const runtimeMissing = runtimeStatus?.summary.by_runtime_status.missing || 0;
+  const runtimeUnknown = runtimeStatus?.summary.by_runtime_status.unknown || 0;
+  const runtimeConnected = runtimeStatus?.summary.by_runtime_status.connected || 0;
+  const contractReady = runtimeStatus?.summary.by_contract_status.contract_ready || 0;
+  const runtimeActionCount = runtimeNeedsAuth + runtimeMissing + runtimeUnknown;
   const topItems = [...data.capabilities]
     .sort((a, b) => capabilityStatusRank(b.status) - capabilityStatusRank(a.status) || a.id.localeCompare(b.id))
+    .slice(0, 3);
+  const runtimeItems = [...(runtimeStatus?.items || [])]
+    .filter((item) => item.runtime_status !== "not_applicable" || item.contract_status === "contract_ready")
+    .sort((a, b) => runtimeStatusRank(b) - runtimeStatusRank(a) || a.id.localeCompare(b.id))
     .slice(0, 4);
 
   return (
@@ -1314,23 +1348,37 @@ function ApiCliMcpCapabilityCard({ data }: { data: CapabilityReadModel | null })
       <div className="mb-4 flex items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <StatusDot status={needsAttention > 0 ? "needs_fix" : "completed"} />
+            <StatusDot status={runtimeActionCount > 0 || needsAttention > 0 ? "needs_fix" : "completed"} />
             <div className="font-semibold text-heading">API / CLI / MCP</div>
           </div>
-          <div className="mt-1 text-[11px] text-[var(--text-muted)]">Capability Registry</div>
+          <div className="mt-1 text-[11px] text-[var(--text-muted)]">Registry + runtime status</div>
         </div>
-        <span className={needsAttention > 0 ? statePillClass("degraded") : statePillClass("fresh")}>
-          {needsAttention > 0 ? `${needsAttention} attention` : "ready"}
+        <span className={runtimeActionCount > 0 ? statePillClass("degraded") : needsAttention > 0 ? capabilityPillClass("legacy") : statePillClass("fresh")}>
+          {runtimeNeedsAuth > 0 ? `${runtimeNeedsAuth} needs auth` : runtimeMissing > 0 ? `${runtimeMissing} missing` : needsAttention > 0 ? `${needsAttention} registry` : "connected"}
         </span>
       </div>
 
       <div className="grid grid-cols-3 gap-2">
         <SummaryMetric label="tracked" value={String(data.summary.total)} tone="blue" />
         <SummaryMetric label="ready" value={String(data.summary.by_status.ready || 0)} tone="green" />
-        <SummaryMetric label="attention" value={String(needsAttention)} tone={needsAttention > 0 ? "yellow" : "green"} />
+        <SummaryMetric label="legacy" value={String(data.summary.by_status.legacy || 0)} tone="yellow" />
+        <SummaryMetric label="connected" value={String(runtimeConnected)} tone="green" />
+        <SummaryMetric label="needs auth" value={String(runtimeNeedsAuth)} tone={runtimeNeedsAuth > 0 ? "yellow" : "green"} />
+        <SummaryMetric label="contract" value={String(contractReady)} tone="blue" />
       </div>
 
       <div className="mt-4 space-y-2">
+        {runtimeItems.map((item) => (
+          <div key={item.id} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 rounded-lg border border-[var(--border)] bg-black/10 px-3 py-2">
+            <div className="min-w-0">
+              <div className="truncate text-[12px] font-medium text-[var(--text)]">{item.id}</div>
+              <div className="truncate text-[11px] text-[var(--text-muted)]">
+                {item.source_layer} · {item.next_action.target}
+              </div>
+            </div>
+            <span className={runtimePillClass(item)}>{runtimeLabel(item)}</span>
+          </div>
+        ))}
         {topItems.map((item) => (
           <div key={item.id} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 rounded-lg border border-[var(--border)] bg-black/10 px-3 py-2">
             <div className="min-w-0">
@@ -1345,7 +1393,7 @@ function ApiCliMcpCapabilityCard({ data }: { data: CapabilityReadModel | null })
       </div>
 
       <div className="mt-4 rounded-lg border border-[var(--border)] bg-black/10 p-3 text-[11px] leading-relaxed text-[var(--text-muted)]">
-        source: morrowise-capabilities.json · verifier: npm run test:capability-registry · read-only surface
+        source: morrowise-capabilities.json + capability-runtime-status.json · verifiers: test:capability-registry / test:capability-runtime-status · read-only surface
       </div>
     </div>
   );
@@ -1366,6 +1414,30 @@ function capabilityPillClass(status: CapabilityReadModel["capabilities"][number]
   if (status === "legacy") return `${base} border-yellow-400/30 text-yellow-400`;
   if (status === "unknown") return `${base} border-orange-400/30 text-orange-400`;
   return `${base} border-blue-400/30 text-blue-400`;
+}
+
+function runtimeStatusRank(item: CapabilityRuntimeStatusReadModel["items"][number]) {
+  if (item.runtime_status === "needs_auth" || item.runtime_status === "missing" || item.runtime_status === "degraded") return 5;
+  if (item.runtime_status === "unknown") return 4;
+  if (item.contract_status === "contract_ready") return 3;
+  if (item.runtime_status === "configured") return 2;
+  if (item.runtime_status === "connected") return 1;
+  return 0;
+}
+
+function runtimeLabel(item: CapabilityRuntimeStatusReadModel["items"][number]) {
+  if (item.runtime_status !== "not_applicable") return item.runtime_status;
+  if (item.contract_status === "contract_ready") return "contract";
+  return item.registry_status;
+}
+
+function runtimePillClass(item: CapabilityRuntimeStatusReadModel["items"][number]) {
+  const base = "shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-mono";
+  if (item.runtime_status === "connected") return `${base} border-green-400/30 text-green-400`;
+  if (item.runtime_status === "needs_auth" || item.runtime_status === "missing" || item.runtime_status === "degraded") return `${base} border-red-400/30 text-red-400`;
+  if (item.runtime_status === "configured" || item.contract_status === "contract_ready") return `${base} border-blue-400/30 text-blue-400`;
+  if (item.runtime_status === "unknown") return `${base} border-orange-400/30 text-orange-400`;
+  return `${base} border-zinc-400/30 text-zinc-400`;
 }
 
 function LearningCard() {
@@ -1494,6 +1566,7 @@ export default function HomePage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [liveDashboard, setLiveDashboard] = useState<LiveDashboardData | null>(null);
   const [capabilities, setCapabilities] = useState<CapabilityReadModel | null>(null);
+  const [capabilityRuntimeStatus, setCapabilityRuntimeStatus] = useState<CapabilityRuntimeStatusReadModel | null>(null);
   const [visualSyncCoverage, setVisualSyncCoverage] = useState<VisualSyncCoverageData | null>(null);
 
   useEffect(() => {
@@ -1510,6 +1583,11 @@ export default function HomePage() {
     fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/morrowise-capabilities.json`)
       .then((r) => r.json())
       .then(setCapabilities)
+      .catch(() => {});
+
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/capability-runtime-status.json`)
+      .then((r) => r.json())
+      .then(setCapabilityRuntimeStatus)
       .catch(() => {});
 
     fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/visual-sync-coverage.json`)
@@ -1587,7 +1665,7 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div id="api-cli-mcp-capabilities">
-          <ApiCliMcpCapabilityCard data={capabilities} />
+          <ApiCliMcpCapabilityCard data={capabilities} runtimeStatus={capabilityRuntimeStatus} />
         </div>
 
         {/* 記憶 */}

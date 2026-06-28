@@ -694,6 +694,83 @@
       "note": "2026-06-27 從 api-cli-mcp-capability-registry-v0 拆出。當前 probe：command -v playwright 無全域命令；harness-mc package.json / package-lock.json 無 Playwright dependency；npx --no-install playwright --version 未在 probe window 內回應並被中止。此 task 只處理 Playwright 能力歸屬，不阻塞 registry v0 成為正式 registry。"
     },
     {
+      "id": "capability-runtime-status-read-model",
+      "title": "Capability runtime status read model",
+      "status": "completed",
+      "completed_at": "2026-06-28",
+      "track": "governance",
+      "order_label": "MW-CAP-03",
+      "dependencies": [
+        "api-cli-mcp-capability-registry-v0",
+        "morrowise-wiring-gate-verifier",
+        "notification-adapter-contract"
+      ],
+      "done_condition": "新增 capability runtime status 的 machine-readable read model、probe script 與 MC surface labeling，明確區分 capability registry 台帳狀態、runtime connection probe、contract readiness；讓 CC MCP、Codex MCP、Heptabase CLI、Playwright CLI、Notion MCP、notification adapters 的現況不再混成單一 ready/attention 數字。",
+      "acceptance": [
+        "read model 必須標出資料來源與時間：registry_snapshot、runtime_probe、contract_verifier、manual_evidence 不得混用為同一種狀態。",
+        "至少覆蓋 CC MCP heptabase-mcp、Codex heptabase MCP 設定、Heptabase local CLI、Playwright CLI、Notion MCP、notification adapter contract；未能安全 probe 的項目必須標 unknown/degraded 並列 next_action。",
+        "不得讀取或輸出 OAuth token、Notion token、MCP auth storage、browser cookies、local app private storage、schedule/.env 實值；只允許讀設定形狀、CLI health output、verifier output 與 mtime/存在性等非 secret metadata。",
+        "首頁 API / CLI / MCP card 或相鄰 surface 必須把 legacy、unknown、degraded、contract_ready、connected 分開呈現；不得把 legacy fallback 與 broken runtime 都算成同一種 attention。",
+        "verifier 必須能檢查 read model freshness、必要 capability coverage、status vocabulary、secret boundary、以及 UI 文案是否清楚說明 read-only registry 不等於 live runtime health。",
+        "保留 playwright-cli-capability-probe 作為 Playwright 能力歸屬 task；本 task 可以呈現 Playwright unknown，但不必完成 Playwright 安裝或選型。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+        "$COLLAB/harness-mc/public/data/morrowise-capabilities.json",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-adapter-contract.json",
+        "$COLLAB/harness-mc/app/page.tsx#api-cli-mcp-capabilities",
+        "$COLLAB/harness-mc/AGENTS.md"
+      ],
+      "flow_contract": {
+        "upstream": [
+          "capability registry snapshot：既有 API / CLI / MCP 台帳、history、owner_task、boundary 與 next_action",
+          "runtime probe evidence：claude mcp list / get 的非 secret health output、Heptabase CLI list/version、Playwright CLI version probe、Codex MCP 設定形狀",
+          "contract verifier evidence：notification adapter contract verifier、capability registry verifier、wiring gate verifier",
+          "manual evidence：Vincent 授權後的外部登入狀態或截圖只作為 evidence，不成為 source of truth"
+        ],
+        "process": [
+          "只做 read-only probe 與 status normalization，不執行外部寫入、不同步 Heptabase / Notion / notification",
+          "把 registry_status、runtime_status、contract_status、auth_status、freshness 分成不同欄位，不用單一 ready/attention 覆蓋全部語意",
+          "把 legacy fallback、unknown install、needs_auth、connected、contract_ready、degraded_delivery 分別映射到可驗證 vocabulary",
+          "遇到 probe 需要網路下載、讀 secret、讀 browser profile、讀 app private storage 時停止並標 unknown/degraded + next_action"
+        ],
+        "outputs": [
+          "$COLLAB/harness-mc/public/data/capability-runtime-status.json",
+          "runtime status verifier，例如 npm run test:capability-runtime-status",
+          "MC surface vocabulary 更新：首頁 API / CLI / MCP card 或相鄰 runtime status card",
+          "next_action routing：Playwright 歸 playwright-cli-capability-probe；Heptabase PAI legacy 歸 heptabase-pai-legacy-archive；Notion needs_auth 歸 explicit auth action；notification live delivery 歸 runtime/delivery task"
+        ],
+        "downstream": [
+          "MorroWise live dashboard / homepage 能回答：台帳有哪些能力、哪些 runtime 目前 connected、哪些只是 contract ready、哪些需要授權或探測",
+          "morrowise-wiring-gate-verifier 應能追蹤這個 read model 是否已接到 dashboard surface、homepage anchor、verifier 與 AGENTS routing",
+          "work-anchor / future agent preflight 查能力時先讀 registry，再讀 runtime status；不得再用 chat memory 或單次截圖判斷 connector 現況",
+          "完成後若只改 surface label，另拆 harness-mc UI task；若新增 probe/read model/verifier，維持本 MorroWise system task 為執行錨點"
+        ]
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/capability-runtime-status-read-model",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#constraints",
+          "#risk",
+          "#confirmationBias"
+        ],
+        "hc_reasoning": "真正問題不是首頁卡片少幾個 label，而是 capability registry 台帳、runtime connection、auth 狀態、contract readiness 被壓成同一個 ready/attention 語意，會讓 future agents 誤把 inventory 當 live health。#systemDynamics 要求把 upstream evidence、probe、read model、surface、next_action 串成可重跑閉環；#constraints 要求只讀非 secret metadata，不碰 token、cookie、env 實值或 app private storage；#risk 防止 needs_auth / legacy / unknown 被誤判成同一種故障或同一種完成；#confirmationBias 防止因剛剛 CC Heptabase 已 connected 就推論所有 connector 都完善。",
+        "hc_confidence": 0.87,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-runtime-status-read-model",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+          "$COLLAB/harness-mc/public/data/morrowise-capabilities.json",
+          "claude mcp list",
+          "heptabase whiteboard list --limit 1"
+        ],
+        "source_boundary": "HC is a thinking check, not source of truth; MC task/spec/verifier/generated read model remain canonical."
+      },
+      "summary": "已新增 capability-runtime-status read model、verifier、prebuild 接線、MorroWise live dashboard source/metrics 更新，並讓首頁 API / CLI / MCP card 同時呈現 registry、runtime、auth、contract 狀態。最後一輪 probe：CC heptabase-mcp connected；Heptabase local CLI connected；Codex Heptabase MCP configured；Notion MCP needs_auth；Playwright CLI missing；notification adapter contract_ready；legacy Heptabase PAI MCP/OAuth 保持 legacy/not_applicable。",
+      "note": "2026-06-28 Vincent 檢查首頁 Capability Platform 卡片後指出：原畫面可作為 registry 台帳，但不足以代表各 connector 的即時串接狀態。已建立可重跑 read model / probe / surface vocabulary，並保留 playwright-cli-capability-probe 處理 Playwright 歸屬；notification adapter 的 contract_ready 仍不等於外部 delivery live。驗證：npm run test:capability-runtime-status、npm run test:capability-registry、npm run test:morrowise-live-dashboard、npm run prebuild、npm run build。"
+    },
+    {
       "id": "notification-adapter-contract",
       "title": "MorroWise notification adapter contract（Telegram / LINE / Notion / thread）",
       "status": "completed",

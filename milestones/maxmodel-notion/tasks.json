@@ -47,7 +47,7 @@
     },
     {
       "id": "av-2",
-      "title": "改 ⚡ 任務追蹤（加 所屬影音案 relation + 子項目影音 6 項 + 大類別『影音』）",
+      "title": "改 ⚡ 任務追蹤（加 所屬影音案 relation + 子項目影音 4 製作項 + 大類別『影音』）",
       "status": "completed",
       "completed_at": "2026-06-28",
       "track": "av-workflow",
@@ -76,7 +76,7 @@
       "status": "completed",
       "completed_at": "2026-06-28",
       "track": "av-workflow",
-      "done_condition": "embedded 案連既有假資料模型案、母案階段 rollup 顯示正確；影音任務含一筆購入品預估能進 E 採購控管；全部假資料=✓",
+      "done_condition": "embedded 案連既有假資料模型案、母案階段 rollup 結構正確（來源6.3D整理+relation+config 已驗，渲染值待 UI）；影音任務含一筆購入品預估能進 E 採購控管；全部假資料=✓",
       "summary": "AV-1 embedded（連美術館光雕主件模型，母案 6.3D整理→rollup 母案階段）+ AV-2 純影音（電商實拍）；2 筆影音任務（3D動畫發包 + 背景音樂版權素材購入品預估）掛 embedded 案。全 假資料=✓。",
       "commits": [
         "25d48e2"
@@ -87,16 +87,16 @@
       "title": "hub 頁加 F. 影音製作 section（影音流程看板 + 校稿待辦）+ D 補影音案量 view",
       "status": "todo",
       "track": "av-workflow",
-      "done_condition": "Maxmodel-內部工作流 新增 F 區與影音案量 view；A~E 既有視窗內容不變",
-      "note": "最後做，最高可見度；新增區塊置於 E 之後、原始資料庫 details 之前"
+      "done_condition": "Maxmodel-內部工作流 新增 F 區（影音流程看板 + 校稿待辦 + 漏單防呆 view『需要影音✓但無相關影音案』）+ D 補影音案量 view；A~E 既有視窗內容不變",
+      "note": "最後做，最高可見度；新增區塊置於 E 之後、原始資料庫 details 之前。漏單防呆 view = SIFT decision『觸發器』的 payoff"
     },
     {
       "id": "av-verify",
-      "title": "逐項驗收（Vincent 逐項驗 + 既有系統零接觸確認）",
-      "status": "todo",
+      "title": "逐項驗收（CC 模擬驗證 + Vincent UI 簽核）",
+      "status": "in_progress",
       "track": "av-workflow",
       "done_condition": "4 條 success_criteria 全 PASS；既有五大視窗與既有資料確認未受影響；Vincent 確認示範資料正確或指出要改的點",
-      "note": "前置 av-1~av-5 全 done 後執行；不對的部分改/刪假資料"
+      "note": "CC 模擬驗證已過(2026-06-28，HC #confirmationBias/#hypothesisDriven)：H2既有資料零接觸✅、H3 E自動涵蓋✅、H5校稿filter✅、H6雙向relation✅、H4看板分組✅、H7條件性血緣✅；H1 rollup渲染值API讀不到(通例非故障)待Vincent UI。剩 av-5 後 Vincent 最終 UI 簽核。"
     },
     {
       "id": "av-6",

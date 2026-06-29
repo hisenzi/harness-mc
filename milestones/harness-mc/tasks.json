@@ -1626,9 +1626,10 @@
       "note": "Vincent 從 /projects 截圖指出分類應參照 Notion『領域』才一致。現況 chips 來自 project.json type（consulting/internal/knowledge/learning/service/standalone/system），這是 MC 內部專案型態，不是 PAI 領域；需要拆成 domain(primary filter) + type(secondary metadata)。",
       "completed_at": "2026-06-28",
       "commits": [
-        "b089a30"
+        "b089a30",
+        "7c4981a"
       ],
-      "summary": "/projects 主分類已改用 PAI / Notion「領域」taxonomy；project.type 保留為次要 metadata，資料產生器輸出 domain/domainLabel/domainColor，並以 verifier 確認 taxonomy 對齊 heptabase-to-pai WHITEBOARDS 與所有 active projects 都有有效領域 mapping。"
+      "summary": "/projects 主分類已改用 PAI / Notion「領域」taxonomy；project.type 保留為次要 metadata，資料產生器輸出 domain/domainLabel/domainColor，並以 verifier 確認 taxonomy 對齊 heptabase-to-pai WHITEBOARDS 與所有 active projects 都有有效領域 mapping。2026-06-30 追加 CI hotfix：GitHub Pages 缺 sibling notyet-harness 時跳過 WHITEBOARDS cross-check，並補 english-for-future-work / travel-finance-dashboard domain mapping。"
     },
     {
       "id": "config-launch-newproject",

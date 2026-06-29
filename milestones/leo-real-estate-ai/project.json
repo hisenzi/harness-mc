@@ -129,6 +129,19 @@
         "#infoNeeded",
         "#evidenceBased"
       ]
+    },
+    {
+      "topic": "260626 會議記錄來源補充",
+      "decision": "將 260626 會議記錄納入 source_contract.source_materials，作為守則驅動、模組化行動卡與低摩擦輸入策略的新增證據。",
+      "reason": "會議記錄改變第一輪策略重心：從深度訪談與手動回饋，轉向教育訓練手冊 / 業務交戰守則作為知識底座。",
+      "alternatives_rejected": [
+        "只把 260626 內容留在聊天或需求書末段：可讀但 MC 追溯不完整。"
+      ],
+      "hc_used": [
+        "#sift",
+        "#rightProblem",
+        "#constraints"
+      ]
     }
   ],
   "system_growth": {
@@ -145,7 +158,8 @@
       "$COLLAB/CC本機協作_無Git/Leo/or/會議記錄260625.md",
       "$COLLAB/CC本機協作_無Git/Leo/or/房屋買賣過程中重要的資料及功能.md",
       "$COLLAB/CC本機協作_無Git/Leo/or/年長房仲最在意的工具細節有哪些？.md",
-      "$COLLAB/CC本機協作_無Git/Leo/or/開發AI自動產出不動產價格調查書的具體流程？.md"
+      "$COLLAB/CC本機協作_無Git/Leo/or/開發AI自動產出不動產價格調查書的具體流程？.md",
+      "$COLLAB/CC本機協作_無Git/Leo/or/會議記錄260626.md"
     ],
     "external_seed_url": "https://www.cthouse.com.tw/0285012225/",
     "next_required_input": "從外部頁面選定 1 個單一物件頁 URL，並由 Leo 提供對應謄本。",

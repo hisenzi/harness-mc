@@ -110,6 +110,15 @@
       "note": "此 task 是新增 block 的自動守門器。重複判斷先採保守 heuristics：component/id/name/props/category/decision_tags/content_role 相似時警告「可能應做 variant」；編號先由現有最大序號推算建議值，但 commit 前仍需人工確認。字體檢查延伸既有 validate:typography，避免新 block 破壞中文手機字級基線。"
     },
     {
+      "id": "p1-block-template-library",
+      "title": "HTML Template Library：sample HTML 可搜尋樣版清單與抽取驗證",
+      "status": "todo",
+      "track": "phase-1",
+      "done_condition": "建立 sample/hiblocks-templates/templates.manifest.json，至少登錄 brand-landing.html 與 portfolio-case.html，含 id/title/file/template_type/recommended_for/category_tags/block_sequence/required_content/extraction_status/notes；新增 npm script（例如 verify:templates）檢查 manifest JSON、HTML 檔案存在、PREFILL_ placeholder 邊界、existing_block / existing_block_variant 必須引用 blocks.manifest.json 現有 block，missing_block_candidate 必須明確標 candidate_id；驗證通過後，輸出每個 template 的 block sequence 與缺口清單，作為 p1-block-layout-recipes 的資料來源。",
+      "estimate": "3hr",
+      "note": "由 sample/hiblocks-templates 新增兩個 HTML template 後確認：HTML template 不應直接登錄到 blocks.manifest.json，因為它們是頁面級樣版 / recipe source，不是正式 Astro block。此 task 先建立可搜尋 template manifest 與 dry-run/verifier 流程；brand-landing 預期抽出 Navbar→Hero→Feature→Steps/Process→CTA→Footer，portfolio-case 預期抽出 CaseHero/Meta/Cover/Challenge/Approach/Stats/Gallery/Quote/NextCTA。成功跑通後，再把流程整理成 skill 規範，例如 hiblocks-html-template-extraction，用於未來從 HTML template 抽取 layout recipe、block sequence 與 missing block candidates。"
+    },
+    {
       "id": "p1-block-layout-recipes",
       "title": "Layout Recipes：網站情境到 block sequence 的推薦層",
       "status": "todo",

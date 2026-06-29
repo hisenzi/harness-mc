@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-dual-blade-migration-docs-gd-path-dff4ef0-20260629T151401Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "dff4ef0",
+  "project": "dual-blade",
+  "task_id": "migration-docs-gd-path",
+  "status": "updated",
+  "summary": "Active Obsidian CLI/docs references now route to $COLLAB/notyet-harness/300_Obsidian_brain without hard-coded local /Users paths.",
+  "created_at": "2026-06-29T15:14:01.197Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-29-obsidian-vault-migration"
+}

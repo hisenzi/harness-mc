@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-runtime-closeout-residual-ledger-e5cf9c7-20260629T160323Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "e5cf9c7",
+  "project": "morrowise",
+  "task_id": "runtime-closeout-residual-ledger",
+  "status": "updated",
+  "summary": "追加 2026-06-29 daily memory/html closeout 紀錄，保留 MaxModel Notion 與 Travel Inbox schema 的 task handoff、pending items 與驗證邊界。",
+  "created_at": "2026-06-29T16:03:23.493Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-29-english-future-work-closeout"
+}

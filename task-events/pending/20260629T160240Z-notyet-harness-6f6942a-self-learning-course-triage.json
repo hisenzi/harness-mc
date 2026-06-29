@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-self-learning-course-triage-6f6942a-20260629T160240Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "6f6942a",
+  "project": "self-learning",
+  "task_id": "course-triage",
+  "status": "updated",
+  "summary": "新增「工作流改造術」外部課程 Obsidian 筆記，保留課程頁事實、擷取限制、HC 分析與 Vincent 工作流閉環研究的對照。",
+  "created_at": "2026-06-29T16:02:40.432Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-29-english-future-work-closeout"
+}

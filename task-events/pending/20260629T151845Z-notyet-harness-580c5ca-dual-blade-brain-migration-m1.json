@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-dual-blade-brain-migration-m1-580c5ca-20260629T151845Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "580c5ca",
+  "project": "dual-blade",
+  "task_id": "brain-migration-m1",
+  "status": "updated",
+  "summary": "Logged the Obsidian vault migration session in daily memory, refreshed the HTML report, and updated the 2026-06-29 mood image.",
+  "created_at": "2026-06-29T15:18:45.007Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-29-obsidian-vault-migration"
+}

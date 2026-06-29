@@ -1,0 +1,13 @@
+{
+  "event_id": "task.completed-kids-reward-p1-3-9f39387-20260629T031003Z",
+  "type": "task.completed",
+  "repo": "kids-reward",
+  "commit": "9f39387",
+  "project": "kids-reward",
+  "task_id": "p1-3",
+  "status": "completed",
+  "summary": "帳號鏈已用 live Supabase disposable account flow 驗證：家長註冊登入、Edge Function 建小孩、child login、重設密碼、停用隔離與 child 權限限制皆通過。",
+  "created_at": "2026-06-29T03:10:03.022Z",
+  "actor": "codex",
+  "session_id": "codex-20260628-kids-reward-supabase-only"
+}

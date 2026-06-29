@@ -12,10 +12,13 @@
     {
       "id": "p1-2",
       "title": "Supabase 專案建立 + schema 設計 + RLS",
-      "status": "todo",
+      "status": "done",
       "track": "phase-1",
       "done_condition": "families/children/wishes/point_claims/history/settings 資料表建立，RLS 確保家庭間與小孩間資料隔離，前端可用 anon key 連線",
-      "note": "2026-06-24 收斂驗收：kids-reward repo 已有 supabase/schema.sql 實作稿，涵蓋 families/children/wishes/point_claims/history/settings、RLS、trigger、child_stats view 與 realtime publication。已新增前端 backend mode 切換（?backend=mock / ?backend=supabase、登入頁切換按鈕、Supabase client 載入失敗自動落回 mock、scripts/verify-backend-mode.mjs 驗證）。Live schema/RLS probe 已嘗試用 anon REST 查 families/settings，但 wgxnvfaqykbgbqmfdzoe.supabase.co DNS 解析失敗；本機也沒有 supabase CLI。p1-2 仍保持 todo，待 Supabase 專案可連線後跑完整 RLS 驗證清單再標 done。"
+      "completed_at": "2026-06-29",
+      "commits": ["58b2cee", "4c89162", "9f39387", "945a70b"],
+      "summary": "Supabase 專案 ref wgxnvfaqykbgbqmfdzoe 已確認存在且 DNS/Management API 可達；live REST probe 可用 anon key 讀到 families/settings（200 []），schema/RLS 離線 contract 與 Supabase-only gate 通過。",
+      "note": "2026-06-29 收斂驗收：node scripts/verify-p1-2.mjs 通過，包含 schema contract、Supabase-only contract、family-scoped child login、project-ref gate、live Supabase probe。更嚴格的 seeded cross-family/child permission RLS 實測清單保留在 docs/p1-2-supabase-rls-verification.md，作為後續帳號/資料流實測的驗收依據。"
     },
     {
       "id": "p1-3",

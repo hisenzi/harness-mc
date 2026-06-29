@@ -79,7 +79,8 @@
       "done_condition": "embedded 案連既有假資料模型案、母案階段 rollup 結構正確（來源6.3D整理+relation+config 已驗，渲染值待 UI）；影音任務含一筆購入品預估能進 E 採購控管；全部假資料=✓",
       "summary": "5 筆影音案（embedded：美術館8.發包/故宮A copy/杜拜B copy；純影音：電商5.素材/品牌10.交件）覆蓋 F 區 4 view 皆有資料；4 張模型案勾需要影音（故宮杜拜有片＝不漏單，國小客戶A無片＝漏單）。2 筆影音任務掛 embedded。view-mode 實查待開影音案=2 筆。全 假資料=✓。",
       "commits": [
-        "25d48e2"
+        "25d48e2",
+        "09a3c16"
       ]
     },
     {
@@ -90,7 +91,10 @@
       "track": "av-workflow",
       "done_condition": "Maxmodel-內部工作流 新增 F 區（影音流程看板 + 校稿待辦 + 漏單防呆 view『需要影音✓但無相關影音案』）+ 影音案量 view；A~E 既有視窗內容不變",
       "summary": "純追加策略：F 區（標題+4 linked view）加在頁尾，fetch 驗證 A~E 與原始資料庫一字未改。影音案量放 F 區而非插入 D（避免動既有 D，更安全）。漏單防呆 view 用 relation is_empty 過濾成立。",
-      "note": "F 落在原始資料庫 details 之後（純 append 結果），位置可由 Vincent UI 拖到 E 之後；不影響功能"
+      "note": "F 落在原始資料庫 details 之後（純 append 結果），位置可由 Vincent UI 拖到 E 之後；不影響功能",
+      "commits": [
+        "09a3c16"
+      ]
     },
     {
       "id": "av-verify",
@@ -107,7 +111,10 @@
       "completed_at": "2026-06-28",
       "track": "team",
       "done_condition": "👥 團隊成員 DB（姓名+角色多選+在職）建立，12 人入庫，依角色看板就緒",
-      "summary": "👥 DB(collection 18bc6d60) 12 人：3D建模(Vivian/小濠/宗擎/Ray)、攝影(高爺/小孟/士鋐)、動畫(庫米/泰斯/大陸)、工程(綠恩)、剪輯(庫米/Melody)；庫米多選雙角色動畫+剪輯。角色多選非假資料。"
+      "summary": "👥 DB(collection 18bc6d60) 12 人：3D建模(Vivian/小濠/宗擎/Ray)、攝影(高爺/小孟/士鋐)、動畫(庫米/泰斯/大陸)、工程(綠恩)、剪輯(庫米/Melody)；庫米多選雙角色動畫+剪輯。角色多選非假資料。",
+      "commits": [
+        "09a3c16"
+      ]
     },
     {
       "id": "team-2",
@@ -116,7 +123,10 @@
       "completed_at": "2026-06-28",
       "track": "team",
       "done_condition": "📁/⚡/🎬 加 負責成員 relation→👥；👥 加 案件數/任務數/影音數 rollup + 人力負荷 view；AV demo 改派真實人員；既有 select 與資料不破壞",
-      "summary": "三庫加『負責成員』relation→👥（舊 負責人 select 保留可回復、不破壞既有資料）；👥 加 案件數/任務數/影音數 rollup + 📊人力負荷 view + 👥依角色看板；AV demo 7 筆改派（庫米/大陸/泰斯=動畫、高爺/小孟=攝影、Melody=剪輯）。泰斯 fetch 驗證負責任務+負責影音各1。"
+      "summary": "三庫加『負責成員』relation→👥（舊 負責人 select 保留可回復、不破壞既有資料）；👥 加 案件數/任務數/影音數 rollup + 📊人力負荷 view + 👥依角色看板；AV demo 7 筆改派（庫米/大陸/泰斯=動畫、高爺/小孟=攝影、Melody=剪輯）。泰斯 fetch 驗證負責任務+負責影音各1。",
+      "commits": [
+        "09a3c16"
+      ]
     },
     {
       "id": "team-3",
@@ -126,7 +136,10 @@
       "track": "team",
       "done_condition": "三庫舊 負責人 select 移除；全 demo(案件+任務+影音)負責人改派 👥 正式名單；D 案件/任務分派板 + F 影音案量 改按 負責成員 relation 分組；不加 PM/業務角色",
       "summary": "Vincent 決策①移除舊②不加PM/業務③更新正式名單。驗證 group-by-relation 可行→repoint D 案件分派板/任務分派板/F 影音案量 按負責成員；39 筆 demo 改派(一致映射 阿華→Vivian/小婷→小濠/老王→綠恩/小宇→宗擎/林姊→Ray)；drop 📁3.負責人、⚡負責人、🎬負責人 三 select。殘留待 Vincent UI 刪：📁 的 __test_group_by_relation 測試 view。",
-      "note": "人力負荷/👥 view 上 hub 未做(Vincent 未要求)；PM/業務角色依決策先不加，模型案 owner 暫由 3D建模/工程角色擔任"
+      "note": "人力負荷/👥 view 上 hub 未做(Vincent 未要求)；PM/業務角色依決策先不加，模型案 owner 暫由 3D建模/工程角色擔任",
+      "commits": [
+        "09a3c16"
+      ]
     },
     {
       "id": "av-6",
@@ -135,7 +148,10 @@
       "completed_at": "2026-06-29",
       "track": "av-workflow",
       "done_condition": "操作指南→模型製作操作指南；新建影音製作操作指南（10步+embedded+校稿）；系統說明補 🎬 影音+👥 團隊",
-      "summary": "Vincent 要求拆兩頁：操作指南改名『模型製作操作指南』+ 新建『影音製作操作指南』(id 38e714fb，含兩模式/開案/10階段/影音任務/校稿A-B/M6插入點)；系統說明 append 🎬影音整合+👥團隊兩節。主頁 callout 加影音指南連結。"
+      "summary": "Vincent 要求拆兩頁：操作指南改名『模型製作操作指南』+ 新建『影音製作操作指南』(id 38e714fb，含兩模式/開案/10階段/影音任務/校稿A-B/M6插入點)；系統說明 append 🎬影音整合+👥團隊兩節。主頁 callout 加影音指南連結。",
+      "commits": [
+        "09a3c16"
+      ]
     },
     {
       "id": "doc-1",
@@ -144,7 +160,10 @@
       "completed_at": "2026-06-29",
       "track": "av-workflow",
       "done_condition": "主頁標題字母配合 Vincent 新順序(A重點/B案件/C影音/D-Timeline/E人員/F採購)；模型指南內字母引用同步；負責人→負責成員 doc 更新",
-      "summary": "Vincent 移動主頁區塊順序(影音 F→C)。CC 改 4 標題字母(影音F→C/Timeline C→D/人員D→E/採購E→F)；模型指南內 Timeline C→D、採購 E→F×3、負責人→負責成員×2(team-3 連帶失效修補)。"
+      "summary": "Vincent 移動主頁區塊順序(影音 F→C)。CC 改 4 標題字母(影音F→C/Timeline C→D/人員D→E/採購E→F)；模型指南內 Timeline C→D、採購 E→F×3、負責人→負責成員×2(team-3 連帶失效修補)。",
+      "commits": [
+        "09a3c16"
+      ]
     },
     {
       "id": "doc-2",
@@ -153,7 +172,10 @@
       "completed_at": "2026-06-29",
       "track": "av-workflow",
       "done_condition": "全處統一為 6.3D整理／7.發包製作（= 📁欄選項現況 + 工序邏輯：先整理3D再發包）",
-      "summary": "Vincent 拍板 6.3D整理/7.發包製作（與 📁流程階段欄選項、模型指南現況一致，零欄位 rename）。只改 2 處文字：主頁 B 看板標題敘述、系統說明 8階段表兩列對調。需求文原文寫相反(發包先)，以現況+工序邏輯為準。"
+      "summary": "Vincent 拍板 6.3D整理/7.發包製作（與 📁流程階段欄選項、模型指南現況一致，零欄位 rename）。只改 2 處文字：主頁 B 看板標題敘述、系統說明 8階段表兩列對調。需求文原文寫相反(發包先)，以現況+工序邏輯為準。",
+      "commits": [
+        "09a3c16"
+      ]
     }
   ]
 }

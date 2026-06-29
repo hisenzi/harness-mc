@@ -217,14 +217,15 @@
       "priority": "critical",
       "completed_at": "2026-06-16",
       "commits": [
-        "ac10c35"
+        "ac10c35",
+        "576ca74"
       ],
       "summary": "新增 single-writer reducer，支援 pending events 套用、duplicate 去重、unknown task/type rejection、commit append 與 basic status transitions。",
       "depends_on": [
         "acp-task-event-outbox"
       ],
       "done_condition": "新增 scripts/apply-task-events.mjs：讀取 pending task events，idempotent apply 到現有 milestones/*/tasks.json；支援 duplicate event_id 去重、unknown_task/unknown_type rejected queue、commit append、completed/reopened/blocked 基本事件。apply 後跑 generate-data.mjs。",
-      "note": "已新增 apply-task-events reducer + verification script：pending events 可套用到 milestones/*/tasks.json，支援 duplicate event_id、unknown_task、unknown_type rejected queue，以及 completed/reopened/blocked/commit_attached。待完整驗證與 commit 後標 completed。",
+      "note": "已新增 apply-task-events reducer + verification script：pending events 可套用到 milestones/*/tasks.json，支援 duplicate event_id、unknown_task、unknown_type rejected queue，以及 completed/reopened/blocked/commit_attached。待完整驗證與 commit 後標 completed。2026-06-29 queue evidence：commit 576ca74 新增 7 筆 cross-repo pending events，供 reducer 後續套用。",
       "batch": "control-console",
       "external_refs": {
         "heptabase": {

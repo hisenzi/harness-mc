@@ -1,0 +1,158 @@
+{
+  "name": "旅遊財務儀表板",
+  "description": "Notion 口袋入口收集旅行花費，travel ledger 標準化後由回國會計腦完成分帳、對帳與清帳輸出",
+  "type": "internal",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-06-29",
+  "estimated_completion": "TBD",
+  "tracks": {
+    "inbox": "Notion 口袋入口",
+    "ledger": "Travel ledger 資料模型",
+    "accounting": "回國會計腦",
+    "dashboard": "旅遊清帳 dashboard",
+    "handoff": "輸出、SOP 與系統回寫"
+  },
+  "goals": [
+    "建立旅行事件專用的財務清帳系統，與日常 finance-dashboard / 信封制帳務保持資料邊界",
+    "讓旅行中用 Notion 作為低摩擦口袋入口，10 秒內能留下花費、付款方式、付款人、代買或共用線索",
+    "建立 travel ledger 作為單一資料來源，將 Notion 原始輸入標準化成可計算、可對帳、可復盤的旅行交易資料",
+    "在回國會計腦中完成外幣換算、付款方式對帳、共用支出均分、代買分帳與轉帳清單",
+    "保留去年大阪 Excel 作為驗證資料，最後可輸出 Excel 或清帳報告，但不再把 Excel 當旅行中輸入工具"
+  ],
+  "risks": [
+    {
+      "risk": "Notion inbox 欄位設計過重，旅行中不願意記",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "將 Notion 定位為 inbox，只要求原始一句話、金額、幣別、付款方式、付款人與狀態；分類與計算留到回國處理"
+    },
+    {
+      "risk": "旅遊帳資料混入既有日常 finance-dashboard，污染月度預算與信封制結算",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "建立獨立 travel ledger 與 travel mode，僅借用 finance-dashboard 的會計原則與部分邏輯，不直接寫入日常 records"
+    },
+    {
+      "risk": "一行快記解析過度自動化，系統替使用者做未確認的分類或分帳假設",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "解析結果保留 confidence/status，無法判斷時標記需確認；沿用『不替使用者假設』原則"
+    },
+    {
+      "risk": "代買、共用、個人花費與付款方式互相混淆，導致最後轉帳不可信",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "資料模型明確拆開 payer、belong/split、proxy_for、payment_method；代買獨立於一般旅費計算"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "Notion Travel Inbox schema 已定義，且能支持手機快速輸入與待整理狀態",
+      "verify_cmd": "人工檢查 schema 文件或 Notion database 欄位清單",
+      "expected": "Notion page 38e714fb14c680a58ae3ddd99437fc7c API 可讀；後續需在該頁或其 child database 定義 Travel Inbox schema"
+    },
+    {
+      "criterion": "Travel ledger schema 已定義為旅行清帳單一資料來源",
+      "verify_cmd": "檢查 docs 或 schema fixture",
+      "expected": "包含 trip、participant、transaction、payment method、split/proxy/settlement 欄位邊界"
+    },
+    {
+      "criterion": "去年大阪 Excel 可被整理成 sample ledger，並重現總花費、付款方式、代買與平均花費等核心數字",
+      "verify_cmd": "執行 sample verifier 或人工比對大阪參考檔",
+      "expected": "核心總額與分帳邏輯可追溯，差異需有註記"
+    },
+    {
+      "criterion": "回國會計腦能輸出付款方式對帳、代買分帳、共用均分與最後轉帳清單",
+      "verify_cmd": "執行清帳 fixture 測試",
+      "expected": "所有交易可追蹤到 Notion inbox 或 sample ledger，且轉帳清單無未解釋差額"
+    },
+    {
+      "criterion": "完成旅行中與回國後 SOP",
+      "verify_cmd": "檢查 SOP 文件",
+      "expected": "清楚描述旅行中怎麼記、回國後怎麼匯入、確認、清帳與輸出"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "系統邊界",
+      "decision": "建立新的 travel-finance-dashboard 專案，不把旅遊記帳直接塞進既有 finance-dashboard",
+      "reason": "旅遊帳是一次性事件帳，含外幣、多人、代買、回國對帳；日常 finance-dashboard 是月度生活帳與信封制，兩者混用會污染預算與結算語意",
+      "alternatives_rejected": [
+        "直接擴充既有 finance-dashboard：會混淆日常帳與旅行事件帳",
+        "只做新版 Excel：手機輸入摩擦太高，無法解決旅行中輕鬆記的核心問題"
+      ],
+      "hc_used": [
+        "#sift",
+        "#rightProblem",
+        "#constraints"
+      ]
+    },
+    {
+      "topic": "輸入媒介",
+      "decision": "使用指定 Notion page 作為旅行中的口袋入口，只收集原始交易證據與待整理狀態",
+      "reason": "旅行中不是在記帳，而是在捕捉證據；Notion 適合手機快速打開、填寫、附照片與後續篩選",
+      "alternatives_rejected": [
+        "手機直接填 Excel：格子操作與分類判斷負擔太高",
+        "旅行中直接進 dashboard：會讓輸入流程變重"
+      ],
+      "hc_used": [
+        "#sift",
+        "#medium",
+        "#constraints"
+      ],
+      "evidence_refs": [
+        "$COLLAB/harness-mc/milestones/travel-finance-dashboard/project.json#external_refs.notion_travel_inbox"
+      ]
+    },
+    {
+      "topic": "計算核心",
+      "decision": "finance-dashboard 僅作為會計原則與邏輯參考，新的回國會計腦使用 travel ledger 作為 source of truth",
+      "reason": "既有 finance-dashboard 的『不替使用者假設』『付款方式與歸屬分離』『轉帳結算』可借用，但資料不應直接進日常 records",
+      "alternatives_rejected": [
+        "Notion 直接算完所有帳：容易變成公式地獄且不適合對帳",
+        "手動回 Excel 清帳：可行但無法形成可重複系統"
+      ],
+      "hc_used": [
+        "#sift",
+        "#abstraction",
+        "#optimization"
+      ]
+    },
+    {
+      "topic": "系統成長閘門",
+      "decision": "先做 internal MC 專案追蹤，等架構與資料模型定案後再 promote 為 standalone repo",
+      "reason": "目前同名資料夾只有大阪 Excel 參考檔；立即 standalone 建 repo 可能撞到既有資料夾，也會過早承諾技術形態",
+      "alternatives_rejected": [
+        "立即建立 GitHub repo：資料夾衝突且架構尚未定案",
+        "只保留聊天結論：後續無 task anchor，容易失去累積性"
+      ],
+      "hc_used": [
+        "#sift",
+        "#risk",
+        "#rightProblem"
+      ]
+    }
+  ],
+  "system_growth": {
+    "trigger": "旅行前需要建立一趟旅行的記帳入口，或旅行後需要把 Notion/收據/刷卡資料整理成清帳報告時啟用",
+    "data_flow": "Notion Travel Inbox -> travel ledger JSON/schema -> travel-finance-dashboard 清帳引擎 -> dashboard / Excel / 轉帳清單",
+    "visible_surface": "MC tasks.json 追蹤開案與任務；Notion page 38e714fb14c680a58ae3ddd99437fc7c 作為 Travel Inbox 口袋入口；後續 dashboard 介面呈現旅行清帳狀態；Obsidian Project note 作為人類可讀摘要",
+    "feedback_loop": "每趟旅行結束後將差異、未能解析的一行記帳、代買/分帳例外回寫為下一版解析規則與 SOP 改進"
+  },
+  "external_refs": {
+    "notion_travel_inbox": {
+      "page_id": "38e714fb14c680a58ae3ddd99437fc7c",
+      "page_uuid": "38e714fb-14c6-80a5-8ae3-ddd99437fc7c",
+      "url": "https://app.notion.com/p/38e714fb14c680a58ae3ddd99437fc7c?source=copy_link",
+      "role": "Travel Inbox 口袋入口來源頁面",
+      "api_verified": true,
+      "verified_at": "2026-06-29",
+      "api_object": "page",
+      "title": "旅遊記帳",
+      "token_source": "$COLLAB/finance-dashboard/.env",
+      "database_status": "not_database",
+      "children_status": "empty"
+    }
+  }
+}

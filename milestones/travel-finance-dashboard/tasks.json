@@ -1,0 +1,207 @@
+{
+  "project": "travel-finance-dashboard",
+  "tasks": [
+    {
+      "id": "p1-inbox-schema",
+      "title": "定義 Notion Travel Inbox schema",
+      "status": "todo",
+      "track": "inbox",
+      "done_condition": "指定 Notion 頁面已登記為 Travel Inbox，且口袋入口欄位、狀態流與手機快記最小必填欄位已文件化",
+      "acceptance": [
+        "Notion page 38e714fb14c680a58ae3ddd99437fc7c 已透過 Notion API 驗證可讀，title 為「旅遊記帳」",
+        "目前目標是 page 而非 database，需決定在此頁建立 child database 或改指向既有 database",
+        "欄位包含 raw_text、date、amount、currency、payment_method、payer、entry_type、proxy_for、status、attachment/note",
+        "明確區分必填與回國後補填欄位",
+        "狀態至少包含 inbox、imported、needs_review、settled"
+      ],
+      "hc_decision": {
+        "task_scope": "travel-finance-dashboard/p1-inbox-schema",
+        "hc_refs": [
+          "#sift",
+          "#medium",
+          "#constraints"
+        ],
+        "hc_reasoning": "SIFT 將旅行中記帳重新定義為證據捕捉，不是當下完成會計；因此 Notion schema 必須低摩擦且容忍不完整資料。",
+        "hc_confidence": 0.86,
+        "evidence_refs": [
+          "$COLLAB/travel-finance-dashboard/出國旅遊記帳.xlsx",
+          "$COLLAB/finance-dashboard/docs/finance-accounting-principles.md",
+          "$COLLAB/harness-mc/milestones/travel-finance-dashboard/project.json#external_refs.notion_travel_inbox"
+        ],
+        "source_boundary": "HC is a thinking check, not source of truth; schema 文件與實作驗證才是後續依據。"
+      },
+      "external_refs": {
+        "notion_travel_inbox": {
+          "page_id": "38e714fb14c680a58ae3ddd99437fc7c",
+          "page_uuid": "38e714fb-14c6-80a5-8ae3-ddd99437fc7c",
+          "url": "https://app.notion.com/p/38e714fb14c680a58ae3ddd99437fc7c?source=copy_link",
+          "role": "Travel Inbox 口袋入口來源頁面",
+          "api_verified": true,
+          "verified_at": "2026-06-29",
+          "api_object": "page",
+          "title": "旅遊記帳",
+          "token_source": "$COLLAB/finance-dashboard/.env",
+          "database_status": "not_database",
+          "children_status": "empty"
+        }
+      },
+      "note": "2026-06-29 Notion API probe: page readable via finance-dashboard/.env token; object=page, title=旅遊記帳, no child blocks yet."
+    },
+    {
+      "id": "p1-notion-api-cli-mcp-wiring",
+      "title": "建立 Notion Travel Inbox API / CLI / MCP 接線契約",
+      "status": "todo",
+      "track": "inbox",
+      "depends_on": [
+        "p1-inbox-schema"
+      ],
+      "done_condition": "Notion Travel Inbox 的 upstream、API/CLI/MCP/connector 讀寫邊界、schema discovery、匯入 travel ledger downstream、MC 儀表板接線與可重跑 verifier 已文件化",
+      "acceptance": [
+        "明確列出 upstream: Notion page/database、schema source、attachment/receipt evidence，不把 Notion 當會計 source of truth",
+        "明確列出 process: Notion API probe、CLI script、MCP/connector fallback 的使用時機、auth 邊界與失敗 fallback",
+        "明確列出 downstream: travel ledger fixture/importer、needs_review queue、回國清帳 dashboard read model",
+        "接到 MC 既有 API / CLI / MCP capability surface: api_cli_mcp_capabilities，並說明 travel 專案需要新增的 project-local probe 或 registry entry",
+        "verifier 可重跑且不得輸出 token、OAuth storage、browser cookies、Notion secret 或 runtime auth file content",
+        "若 Notion 目標仍是 page 而非 database，需產生 next_action: 建 child database 或改指向既有 database",
+        "Notion API write、database 建立、MCP 寫入與任何外部同步都需 Vincent 明確 approval，不得由 verifier 自動執行"
+      ],
+      "hc_decision": {
+        "task_scope": "travel-finance-dashboard/p1-notion-api-cli-mcp-wiring",
+        "hc_refs": [
+          "#sift",
+          "#systemBoundary",
+          "#verification"
+        ],
+        "hc_reasoning": "SIFT 指向的非顯見點是：手機入口不是帳本本身，而是證據捕捉 upstream；因此要把 API/CLI/MCP 接線與 ledger/downstream 驗證分層，避免以為 Notion token 可用就代表整條清帳鏈已串好。",
+        "hc_confidence": 0.88,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+          "$COLLAB/harness-mc/public/data/capability-runtime-status.json",
+          "$COLLAB/harness-mc/scripts/generate-capability-runtime-status.mjs",
+          "$COLLAB/harness-mc/scripts/generate-morrowise-live-dashboard.mjs#api_cli_mcp_capabilities",
+          "$COLLAB/harness-mc/milestones/travel-finance-dashboard/tasks.json#p1-inbox-schema"
+        ],
+        "source_boundary": "HC is a thinking check, not source of truth; source of truth remains MC tasks.json plus generated capability/runtime read models and verifier output."
+      },
+      "external_refs": {
+        "notion_travel_inbox": {
+          "page_id": "38e714fb14c680a58ae3ddd99437fc7c",
+          "page_uuid": "38e714fb-14c6-80a5-8ae3-ddd99437fc7c",
+          "role": "Travel Inbox upstream candidate",
+          "api_object": "page",
+          "api_verified": true,
+          "database_status": "not_database"
+        },
+        "mc_capability_surface": {
+          "surface_id": "api_cli_mcp_capabilities",
+          "live_dashboard_generator": "$COLLAB/harness-mc/scripts/generate-morrowise-live-dashboard.mjs",
+          "registry": "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+          "runtime_read_model": "$COLLAB/harness-mc/public/data/capability-runtime-status.json",
+          "generator": "$COLLAB/harness-mc/scripts/generate-capability-runtime-status.mjs",
+          "verifier": "npm run test:capability-runtime-status"
+        }
+      },
+      "note": "2026-06-29 補上下游接線層：p1-inbox-schema 定入口欄位，本 task 定 API/CLI/MCP runtime probe、fallback、ledger import 與 MC dashboard surface 接線。"
+    },
+    {
+      "id": "p1-ledger-schema",
+      "title": "設計 travel ledger 中介資料模型",
+      "status": "todo",
+      "track": "ledger",
+      "done_condition": "旅行事件、旅伴、交易、付款方式、共用/個人/代買、清帳結果的 JSON schema 或文件已建立",
+      "acceptance": [
+        "ledger 明確作為 travel-finance-dashboard 的單一資料來源",
+        "資料模型不依賴 Notion 欄位名稱作為內部計算邏輯",
+        "payer、belong/split、proxy_for、payment_method 邊界清楚"
+      ],
+      "hc_decision": {
+        "task_scope": "travel-finance-dashboard/p1-ledger-schema",
+        "hc_refs": [
+          "#sift",
+          "#rightProblem",
+          "#abstraction"
+        ],
+        "hc_reasoning": "不是在做 Excel，而是在建立旅行事件的財務資料模型；ledger 層讓 Notion inbox 與會計腦解耦。",
+        "hc_confidence": 0.84,
+        "evidence_refs": [
+          "$COLLAB/finance-dashboard/docs/finance-bookkeeping-rules.md",
+          "$COLLAB/finance-dashboard/docs/finance-accounting-principles.md"
+        ],
+        "source_boundary": "HC is a thinking check, not source of truth; ledger schema 與測試 fixture 才是 source of truth。"
+      }
+    },
+    {
+      "id": "p1-quick-record-parser",
+      "title": "設計一行快記格式與解析規則",
+      "status": "todo",
+      "track": "inbox",
+      "done_condition": "旅行中一行記帳格式、範例、解析結果與需確認情境已定義",
+      "acceptance": [
+        "支援一般花費、共用花費、個人花費、代買與不確定付款方式",
+        "無法判斷時不自動猜測，標記 needs_review",
+        "至少用 10 筆旅行情境範例驗證格式可讀"
+      ]
+    },
+    {
+      "id": "p1-osaka-reference-ledger",
+      "title": "將去年大阪 Excel 整理成驗證用 sample ledger",
+      "status": "todo",
+      "track": "ledger",
+      "done_condition": "大阪參考檔的核心交易、付款方式與代買資料已整理成 sample ledger 或 mapping 文件",
+      "acceptance": [
+        "保留原始 Excel 作 reference，不覆蓋",
+        "能追溯出國前合計、旅途中合計、總計、平均一人等核心數字",
+        "無法機械解析的資料以人工 mapping 註明"
+      ]
+    },
+    {
+      "id": "p1-accounting-rules",
+      "title": "建立旅行清帳會計規則",
+      "status": "todo",
+      "track": "accounting",
+      "done_condition": "外幣換算、付款方式對帳、共用均分、個人排除、代買分帳、最後轉帳規則已文件化",
+      "acceptance": [
+        "沿用 finance-dashboard 的『不替使用者假設』與『單一資料來源』原則",
+        "代買不混入一般旅費均分",
+        "付款方式作為對帳證據，不作為消費分類"
+      ]
+    },
+    {
+      "id": "p1-dashboard-surface-plan",
+      "title": "規劃 travel-finance-dashboard 清帳介面",
+      "status": "todo",
+      "track": "dashboard",
+      "done_condition": "回國清帳 dashboard 的主要視圖、資料來源、操作流程與驗收方式已定義",
+      "acceptance": [
+        "視圖至少包含總覽、付款方式對帳、代買分帳、需確認清單、最後轉帳清單",
+        "明確與既有 finance-dashboard 的資料邊界",
+        "標記未來 promote standalone 的條件"
+      ]
+    },
+    {
+      "id": "p1-export-sop",
+      "title": "定義輸出與旅行 SOP",
+      "status": "todo",
+      "track": "handoff",
+      "done_condition": "旅行中記錄 SOP、回國清帳 SOP、Excel/報告輸出格式已建立",
+      "acceptance": [
+        "旅行中 SOP 可在手機上快速閱讀",
+        "回國 SOP 可照步驟完成匯入、確認、對帳與輸出",
+        "Excel 被定位為輸出物，不是旅行中輸入工具"
+      ]
+    },
+    {
+      "id": "p1-verify",
+      "title": "Phase 1 驗收整合",
+      "status": "todo",
+      "track": "handoff",
+      "done_condition": "Phase 1 文件、schema、sample ledger、規則與 dashboard surface plan 互相一致，且無 placeholder",
+      "acceptance": [
+        "project.json goals/risks/success_criteria/decisions 非 placeholder",
+        "所有 Phase 1 task 具備可驗收 done_condition",
+        "用大阪參考資料跑過一次紙上清帳流程"
+      ],
+      "note": "前置任務完成後執行"
+    }
+  ]
+}

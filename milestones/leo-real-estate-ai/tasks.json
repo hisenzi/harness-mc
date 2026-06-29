@@ -13,9 +13,10 @@
         "$COLLAB/CC本機協作_無Git/Leo/or/Leo 房仲 AI MVP 需求確認書.md",
         "$COLLAB/CC本機協作_無Git/Leo/or"
       ],
-      "note": "需求確認書與原始素材位置已寫入 project.json.source_contract，10 天後應先讀 primary_requirement_doc，再回看 source_materials。",
+      "note": "需求確認書與原始素材位置已寫入 project.json.source_contract，10 天後應先讀 primary_requirement_doc，再回看 source_materials。2026-06-29 補入 260626 會議記錄作為守則驅動、模組化行動卡與低摩擦輸入策略的追溯證據。",
       "commits": [
-        "c434621"
+        "c434621",
+        "a823f27"
       ]
     },
     {

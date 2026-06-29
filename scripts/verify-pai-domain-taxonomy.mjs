@@ -23,12 +23,16 @@ for (const domain of taxonomy.domains) {
   assert.ok(domain.id && domain.label && domain.color, `domain ${domain.id || "(missing)"} must include id/label/color`);
 }
 
-const paiDomains = extractPaiDomains(fs.readFileSync(paiScriptPath, "utf-8"));
-assert.deepEqual(
-  [...new Set(domainIds)].sort(),
-  [...new Set(paiDomains)].sort(),
-  "taxonomy domains must match heptabase-to-pai.py WHITEBOARDS domain values",
-);
+if (fs.existsSync(paiScriptPath)) {
+  const paiDomains = extractPaiDomains(fs.readFileSync(paiScriptPath, "utf-8"));
+  assert.deepEqual(
+    [...new Set(domainIds)].sort(),
+    [...new Set(paiDomains)].sort(),
+    "taxonomy domains must match heptabase-to-pai.py WHITEBOARDS domain values",
+  );
+} else {
+  console.warn(`PAI script not found; skipped WHITEBOARDS domain cross-check: ${paiScriptPath}`);
+}
 
 const activeProjectIds = [];
 for (const dir of fs.readdirSync(milestonesDir).sort()) {

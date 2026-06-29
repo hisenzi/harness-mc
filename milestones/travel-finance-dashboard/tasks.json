@@ -202,6 +202,19 @@
         "用大阪參考資料跑過一次紙上清帳流程"
       ],
       "note": "前置任務完成後執行"
+    },
+    {
+      "id": "project-init-source-commit",
+      "title": "開案：建立 MC milestone 與 Phase 1 tasks",
+      "status": "completed",
+      "track": "handoff",
+      "completed_at": "2026-06-29",
+      "commits": [
+        "5f04e1e"
+      ],
+      "done_condition": "travel-finance-dashboard 的 project.json 與 Phase 1 tasks.json 已建立，並保留 Notion Travel Inbox API 驗證與 API/CLI/MCP 接線 task anchor",
+      "summary": "建立旅遊財務儀表板 MC 開案資料：Notion 口袋入口、travel ledger、回國會計腦、dashboard/handoff tracks 與 9 張 Phase 1 tasks；Phase 1 tasks 保持 todo，不把規劃誤標完成。",
+      "note": "auto-task：開案 commit 無對應既有 task，依 worktree-commit Step 7 補建完成紀錄"
     }
   ]
 }

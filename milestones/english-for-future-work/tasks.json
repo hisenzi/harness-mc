@@ -7,7 +7,9 @@
       "status": "done",
       "track": "governance",
       "completed_at": "2026-06-29",
-      "commits": [],
+      "commits": [
+        "d89e9bc"
+      ],
       "done_condition": "MC project 已建立，且 content workspace 指向 $COLLAB/English-for-Future-Work",
       "summary": "建立 English for Future Work internal 專案，並將 MC 狀態層與內容工作區分開。"
     },

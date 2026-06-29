@@ -1,0 +1,185 @@
+{
+  "name": "English for Future Work",
+  "description": "20 小時輸出訓練系統的第一個應用包：以工作英文建立可複用的輸出能力與模板。",
+  "type": "internal",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-06-29",
+  "estimated_completion": "2026-07-19",
+  "content_workspace": "$COLLAB/English-for-Future-Work",
+  "tracks": {
+    "methodology": "通用 20 小時輸出方法論",
+    "templates": "可複製模板與 prompt library",
+    "english-pack": "English for Future Work 示範包",
+    "pilot": "20 天自測與回顧",
+    "governance": "專案邊界與跨領域複製規則",
+    "living-system": "活系統回饋、腳本檢查與 skill 產出"
+  },
+  "goals": [
+    "把 20 小時法則、SIFT 非顯見思維、大量輸出練習整理成可跨領域使用的方法論。",
+    "建立一套可複製的 20 天訓練包模板，讓每天 1 小時能固定完成輸入、輸出、AI 回饋與資產回寫。",
+    "以 English for Future Work 作為第一個 domain pack，驗證 Personal Vocabulary / Concept OS 是否能支援工作英文輸出。",
+    "將訓練成果沉澱為可重複使用的句型、段落、Email、Q&A、口說稿與 AI feedback prompts。",
+    "建立活系統機制：當方法論或架構原型更新時，能掃描使用該模型的應用包並產生新的 task 規劃與優化建議。",
+    "建立腳本檢查與 skill 產出流程，讓可重複流程逐步從手動模板長成驗證腳本與可復用 skill。"
+  ],
+  "risks": [
+    {
+      "risk": "範圍漂移成完整學習平台或 app，導致第一輪 20 小時無法落地。",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "第一版只做方法論、模板與英文示範包；平台化與自動化列為後續評估，不進 MVP。"
+    },
+    {
+      "risk": "把 2000 字誤做成背單字清單，沒有形成輸出能力。",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "字彙分為 active / passive；所有字都必須進入句型、段落、Q&A 或 email 輸出循環。"
+    },
+    {
+      "risk": "AI 回饋把英文改得太高級，失去 Vincent 的語氣與可複用性。",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "Prompt library 強制 B1-B2、simple/reusable、close to original meaning，並保留 speaking version。"
+    },
+    {
+      "risk": "英文包過度客製，未來難以複製到 AI、UI/UX、Brand、Business 等領域。",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "先抽象出通用 Methodology 與 Domain Adaptation Guide，再建立 English domain pack。"
+    },
+    {
+      "risk": "方法論更新後，既有 domain pack 沒有跟著重算 task，造成模板、腳本、skill 與應用包逐漸不同步。",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "新增 methodology version registry、application impact scan、task planning optimizer 與 script/skill audit 任務，將更新後的影響評估變成固定流程。"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "專屬內容工作區有方法論、模板、prompt library、English 20-day pack 的入口文件。",
+      "verify_cmd": "find \"$COLLAB/English-for-Future-Work\" -maxdepth 2 -type f",
+      "expected": "列出 Methodology / Templates / Prompt Library / English Pack 相關文件"
+    },
+    {
+      "criterion": "tasks.json 至少包含方法論、模板、英文示範包、跨領域複製、自測回顧五類 task，且無腳本樣板殘留。",
+      "verify_cmd": "rg \"（請填入|Phase 1\" \"$COLLAB/harness-mc/milestones/english-for-future-work\"",
+      "expected": "無輸出"
+    },
+    {
+      "criterion": "English for Future Work v1 能驗收 20 小時成果：active vocabulary、句型、段落、Email、Q&A、口說稿。",
+      "verify_cmd": "rg \"active|sentence patterns|Email|Q&A|speaking\" \"$COLLAB/English-for-Future-Work\"",
+      "expected": "能找到對應驗收欄位或模板"
+    },
+    {
+      "criterion": "Domain Adaptation Guide 能說明如何複製到至少 3 個非英文領域。",
+      "verify_cmd": "rg \"AI Agent|UI/UX|Brand|Business|Development\" \"$COLLAB/English-for-Future-Work\"",
+      "expected": "至少 3 個 domain adaptation 條目"
+    },
+    {
+      "criterion": "活系統規則能說明：方法論/架構更新後，如何掃描應用包、產生 task 規劃、檢查腳本、判斷是否產出 skill。",
+      "verify_cmd": "rg \"methodology version|impact scan|task planning|script audit|skill\" \"$COLLAB/English-for-Future-Work\" \"$COLLAB/harness-mc/milestones/english-for-future-work\"",
+      "expected": "找到活系統更新、掃描、腳本與 skill 相關規則"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "project_scope",
+      "decision": "第一版不做平台、不做 app、不做自動化，先做方法論、模板與 20 天訓練包。",
+      "reason": "SIFT 分析指出非顯見價值在於把領域轉成可輸出的能力包，而不是再做一個 AI 英文老師。",
+      "alternatives_rejected": [
+        "直接開發學習平台：範圍過大，會在驗證方法有效前先進入產品工程。",
+        "只做英文單字庫：太窄，無法支援未來跨領域應用。"
+      ],
+      "hc_used": [
+        "#sift",
+        "#rightProblem",
+        "#constraints"
+      ]
+    },
+    {
+      "topic": "source_boundary",
+      "decision": "MC project / tasks 是狀態 source of truth；$COLLAB/English-for-Future-Work 是內容工作區。",
+      "reason": "專案管理與內容產物分家，後續可在不污染 MC 狀態層的情況下迭代訓練包。",
+      "alternatives_rejected": [
+        "只把內容寫在 tasks.json：任務狀態會混入教材內容。",
+        "只放資料夾不建 MC project：缺少追蹤、驗收與回顧。"
+      ],
+      "hc_used": [
+        "#breakItDown"
+      ]
+    },
+    {
+      "topic": "first_domain_pack",
+      "decision": "以 English for Future Work 作為第一個示範包，但上層專案方法論要能複製到其他領域。",
+      "reason": "英文是當前最具立即工作價值的場景，也能測試 Vocabulary / Concept OS 與 AI feedback loop。",
+      "alternatives_rejected": [
+        "先做泛用模板但不跑示範：容易變成抽象方法論，缺少驗證。",
+        "只做英文，不抽象方法：未來難以用在 AI、設計、商業等領域。"
+      ],
+      "hc_used": [
+        "#sift",
+        "#optimization"
+      ]
+    },
+    {
+      "topic": "living_system_loop",
+      "decision": "20-Hour Output OS 必須被設計成活系統：方法論或架構更新時，所有使用該模型的應用包都要被重新掃描並產生 task 優化建議。",
+      "reason": "如果方法論只是一份靜態文件，後續 English、AI、UI/UX、Brand 等 domain pack 會各自分岔，無法累積成可演化系統。",
+      "alternatives_rejected": [
+        "人工記得更新每個應用包：不可持續，且容易漏掉。",
+        "只在方法論文件補 changelog：只能記錄變更，不能推動應用包產生新的 task。"
+      ],
+      "hc_used": [
+        "#systemDynamics",
+        "#breakItDown",
+        "#constraints"
+      ]
+    },
+    {
+      "topic": "script_and_skill_growth",
+      "decision": "每次方法論、模板或 domain pack 迭代後，都要檢查是否需要腳本化驗證；若同一流程重複出現，產出或更新對應 skill。",
+      "reason": "腳本負責檢查一致性與產出物存在，skill 負責保留可重複的人機協作流程，兩者合起來才會讓系統自己長出下一輪能力。",
+      "alternatives_rejected": [
+        "只靠 README 描述流程：無法驗證，且跨 session 容易失真。",
+        "過早自動化全部流程：會在第一輪 pilot 前增加太多工程負擔。"
+      ],
+      "hc_used": [
+        "#optimization",
+        "#systemDynamics"
+      ]
+    },
+    {
+      "topic": "development_sequence",
+      "decision": "開發順序必須被記錄為可追溯 rationale：先建立版本/manifest 與上下游邊界，再做 impact scan、task planning、script audit，最後才沉澱 skill。",
+      "reason": "活系統的每一步都有依賴：沒有 version registry 就不知道變更來源；沒有 domain pack manifest 就不知道影響對象；沒有 impact scan 就無法產生正確 task；沒有重複流程證據就不該過早產出 skill。",
+      "alternatives_rejected": [
+        "先寫 skill：會把尚未驗證的流程固化，後續修改成本高。",
+        "先寫腳本：沒有 manifest/schema 前，腳本只能檢查模糊狀態。",
+        "先做 English pack 全內容：會缺少活系統回饋鉤子，後續跨領域複製時要補債。"
+      ],
+      "hc_used": [
+        "#breakItDown",
+        "#constraints",
+        "#optimization"
+      ]
+    }
+  ],
+  "system_growth_gate": {
+    "trigger": "當 Vincent 想把一個領域快速變成可輸出能力包時，啟用 20-Hour Output OS；當 Methodology / Template / Domain Pack 任一層更新時，啟用 impact scan。",
+    "data_flow": "domain material -> vocabulary/concept OS -> sentence patterns -> daily micro outputs -> AI feedback -> reusable asset library -> review notes -> methodology update -> application impact scan -> task planning optimization -> script audit -> skill candidate",
+    "visible_surface": [
+      "$COLLAB/harness-mc/milestones/english-for-future-work/tasks.json",
+      "$COLLAB/English-for-Future-Work",
+      "Obsidian Projects/english-for-future-work.md"
+    ],
+    "feedback_loop": "每完成一輪 20 天 pilot，回寫 review 與 v2 修正清單，再更新 Methodology / Templates / Domain Adaptation Guide；每次方法論或架構更新後，掃描已採用模型的 domain packs，為每個受影響應用包新增或調整 tasks，並檢查是否需要 scripts / skills。",
+    "application_update_rule": {
+      "when_methodology_changes": "標記 methodology version，列出 changed primitives、affected templates、affected domain packs。",
+      "when_architecture_changes": "重跑 application impact scan，找出需要新增 task、改 acceptance、更新 prompt、補驗證腳本的應用包。",
+      "task_output": "每個受影響應用包都要輸出 proposed tasks，包含 id、title、track、done_condition、acceptance、source_methodology_version。",
+      "script_check": "檢查是否需要新增或更新 schema check、folder check、asset completeness check、prompt coverage check。",
+      "skill_growth": "若同一流程跨 2 個以上 domain pack 重複使用，建立 skill candidate；跨 3 次穩定使用後，產出正式 skill。"
+    }
+  }
+}

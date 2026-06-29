@@ -1,0 +1,183 @@
+{
+  "project": "english-for-future-work",
+  "tasks": [
+    {
+      "id": "p0-setup",
+      "title": "開案與 source boundary 建立",
+      "status": "done",
+      "track": "governance",
+      "completed_at": "2026-06-29",
+      "commits": [],
+      "done_condition": "MC project 已建立，且 content workspace 指向 $COLLAB/English-for-Future-Work",
+      "summary": "建立 English for Future Work internal 專案，並將 MC 狀態層與內容工作區分開。"
+    },
+    {
+      "id": "t1-methodology",
+      "title": "定義 20-Hour Output OS 通用方法論骨架",
+      "status": "todo",
+      "track": "methodology",
+      "done_condition": "Methodology v1 說清楚 20 小時法則、SIFT、大量輸出、AI feedback loop 如何組合",
+      "acceptance": [
+        "包含 Space / Insight / Focus / Twist 如何用於技能訓練設計",
+        "包含 active / passive knowledge 分層",
+        "包含 20 小時驗收原則：以輸出資產驗收，不以學習時間或背誦量驗收"
+      ]
+    },
+    {
+      "id": "t2-training-pack-template",
+      "title": "設計 20 天訓練包結構",
+      "status": "todo",
+      "track": "templates",
+      "done_condition": "20-Day Training Pack Template 可讓任一領域填入每日 1 小時訓練流程",
+      "acceptance": [
+        "每天包含 input、micro-output、AI feedback、asset library 回寫、口說或展示練習",
+        "定義每天 100 個 micro outputs 的可持續拆法",
+        "定義 Day 1-20 的節奏與回顧節點"
+      ]
+    },
+    {
+      "id": "t3-vocabulary-concept-os",
+      "title": "建立 Vocabulary / Concept OS 模板",
+      "status": "todo",
+      "track": "templates",
+      "done_condition": "模板可同時支援英文 vocabulary 與其他領域 concept bank",
+      "acceptance": [
+        "支援 active / passive 分層",
+        "支援 domain、topic、example sentence、output asset、review status 欄位",
+        "能套用到 AI、UI/UX、Brand、Business、Development 至少 5 類"
+      ]
+    },
+    {
+      "id": "t4-daily-output-template",
+      "title": "建立 Daily Output 模板",
+      "status": "todo",
+      "track": "templates",
+      "done_condition": "Daily Output Sheet 可引導每天完成造句、改寫、短答、段落、Email 或口說輸出",
+      "acceptance": [
+        "包含 micro-output 計數與類型",
+        "包含 AI 修正前 / 修正後 / 自己再改一次三欄",
+        "包含可回寫 phrase library 的欄位"
+      ]
+    },
+    {
+      "id": "t5-ai-feedback-prompts",
+      "title": "建立 AI Feedback Prompt Library",
+      "status": "todo",
+      "track": "templates",
+      "done_condition": "Prompt library 能讓 AI 回饋保持 B1-B2、可重用、貼近 Vincent 原意",
+      "acceptance": [
+        "包含 rewrite、grade、speaking version、email version、phrase extraction prompts",
+        "每個 prompt 都限制不要過度高級化",
+        "包含跨領域版本，不只英文學習版本"
+      ]
+    },
+    {
+      "id": "t6-english-pack-v1",
+      "title": "建立第一個示範包：English for Future Work v1",
+      "status": "todo",
+      "track": "english-pack",
+      "done_condition": "英文 20 天包可支援工作英文輸出訓練，含 2000 字分層與每日 topic",
+      "acceptance": [
+        "包含 Core English、AI、UI/UX、Brand、Business、Development、Personal Vocabulary 分類",
+        "包含 20 天 topic map",
+        "包含 20 小時成果驗收：句型、段落、Email、Q&A、口說稿"
+      ]
+    },
+    {
+      "id": "t7-domain-adaptation-guide",
+      "title": "設計可跨領域複製規則",
+      "status": "todo",
+      "track": "governance",
+      "done_condition": "Domain Adaptation Guide 說明如何從 English 複製到其他領域",
+      "acceptance": [
+        "至少覆蓋 AI Agent Literacy、UI/UX Writing、Brand Strategy、Business Communication",
+        "說明每個 domain 如何定義 vocabulary / concept OS",
+        "說明哪些模板是通用、哪些需要 domain-specific 調整"
+      ]
+    },
+    {
+      "id": "t8-20hour-pilot-review",
+      "title": "跑一次 20 小時自測與回顧",
+      "status": "todo",
+      "track": "pilot",
+      "done_condition": "完成 English for Future Work 第一輪 20 小時 pilot，並產出 v2 修正清單",
+      "acceptance": [
+        "記錄每天輸出數與完成資產",
+        "列出有效、太重、需簡化的環節",
+        "回寫 Methodology / Templates / English Pack 的 v2 修正項"
+      ]
+    },
+    {
+      "id": "t9-methodology-version-registry",
+      "title": "建立方法論版本與變更影響登記",
+      "status": "todo",
+      "track": "living-system",
+      "done_condition": "每次 Methodology / Template / Domain Pack 更新都能記錄 version、changed primitives、affected assets",
+      "acceptance": [
+        "定義 methodology version 欄位與 changelog 格式",
+        "每個 domain pack 能標示採用的 methodology version",
+        "變更記錄能指出會影響哪些 templates、prompts、daily outputs 或驗收標準"
+      ]
+    },
+    {
+      "id": "t10-application-impact-scan",
+      "title": "設計應用包 impact scan 流程",
+      "status": "todo",
+      "track": "living-system",
+      "done_condition": "方法論或架構更新後，能掃描所有使用模型的應用包並列出受影響範圍",
+      "acceptance": [
+        "定義掃描輸入：methodology diff、template diff、domain pack manifest",
+        "定義掃描輸出：affected domain packs、missing updates、proposed task groups",
+        "第一版可先用人工清單或 markdown manifest，不要求自動化"
+      ]
+    },
+    {
+      "id": "t11-task-planning-optimizer",
+      "title": "建立應用包 task 規劃優化規則",
+      "status": "todo",
+      "track": "living-system",
+      "done_condition": "impact scan 後能為每個受影響應用包產生 proposed tasks",
+      "acceptance": [
+        "proposed task 必須包含 id、title、track、done_condition、acceptance、source_methodology_version",
+        "區分新增 task、修改既有 task、關閉過期 task 三種結果",
+        "避免直接寫入應用包 tasks.json，先產出 planning review 供確認"
+      ]
+    },
+    {
+      "id": "t12-script-audit-and-checks",
+      "title": "檢查並規劃必要驗證腳本",
+      "status": "todo",
+      "track": "living-system",
+      "done_condition": "定義哪些部分需要腳本檢查，並產出第一批 script candidates",
+      "acceptance": [
+        "至少評估 folder structure、manifest completeness、prompt coverage、asset completeness 四類檢查",
+        "列出哪些檢查先人工、哪些值得寫 script",
+        "腳本產出前先定義輸入、輸出、失敗條件與使用時機"
+      ]
+    },
+    {
+      "id": "t13-skill-production-loop",
+      "title": "建立 skill 產出與升級規則",
+      "status": "todo",
+      "track": "living-system",
+      "done_condition": "定義何時把重複流程沉澱成 skill，以及如何從 candidate 升級為正式 skill",
+      "acceptance": [
+        "同一流程跨 2 個 domain pack 重複使用時，建立 skill candidate",
+        "跨 3 次穩定使用且有驗收證據時，產出正式 skill",
+        "skill 必須包含觸發條件、輸入、輸出、步驟、反模式與驗證方式"
+      ]
+    },
+    {
+      "id": "t14-sequencing-rationale",
+      "title": "記錄開發先後順序與依賴理由",
+      "status": "todo",
+      "track": "living-system",
+      "done_condition": "建立 sequencing rationale，說明為什麼每個階段要先後排列，以及哪些條件滿足後才能進下一步",
+      "acceptance": [
+        "列出 t1-t13 的依賴關係與排序原因",
+        "標明哪些 task 是 blocker、哪些可平行、哪些必須等 pilot 證據後再做",
+        "每次重排優先順序時，記錄 reason、rejected alternatives、impact on downstream tasks"
+      ]
+    }
+  ]
+}

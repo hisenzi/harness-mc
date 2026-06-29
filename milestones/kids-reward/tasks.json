@@ -23,10 +23,14 @@
     {
       "id": "p1-3",
       "title": "帳號系統（家長註冊登入 + 小孩帳密建立管理）",
-      "status": "todo",
+      "status": "done",
       "track": "phase-1",
       "depends_on": ["p1-2"],
-      "done_condition": "家長可註冊/登入；家長端可新增/停用/重設小孩帳密；小孩帳密可登入且只見自己資料、無審核與設定權限"
+      "done_condition": "家長可註冊/登入；家長端可新增/停用/重設小孩帳密；小孩帳密可登入且只見自己資料、無審核與設定權限",
+      "completed_at": "2026-06-29",
+      "commits": ["01aede0"],
+      "summary": "家長註冊/登入、家庭代碼、小孩 Edge Function 建帳、child login、重設密碼、停用後 RLS 隔離與 child 無設定/小孩管理權限皆已用 live Supabase disposable account flow 驗證通過。",
+      "note": "2026-06-29 live 驗證：部署 create-child-account、套用 supabase/schema.sql，修正 schema login_code idempotency 順序與 verifier normalize/curl fallback 後，node scripts/verify-p1-3-live-account-flow.mjs --write-live-account-test 通過。verifier 已清掉 disposable family/table rows；disposable Auth users 可能需 Dashboard/service-role cleanup。"
     },
     {
       "id": "p1-4",

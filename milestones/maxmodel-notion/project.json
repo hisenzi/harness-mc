@@ -9,7 +9,8 @@
   "estimated_completion": "TBD",
   "tracks": {
     "phase-1": "Phase 1：開案・需求・架構設計",
-    "av-workflow": "影音整合製作工作流（Max One／M6）建置"
+    "av-workflow": "影音整合製作工作流（Max One／M6）建置",
+    "team": "團隊成員與人力"
   },
   "goals": [
     "在已上線的 MaxModel Notion 系統新增「影音整合製作工作流」，支援兩種模式：純影音案（standalone）與模型附帶影音（embedded）",

@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-kj-bilingual-SYS1-6c10bfe-20260701T064705Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "6c10bfe",
+  "project": "kj-bilingual",
+  "task_id": "SYS1",
+  "status": "updated",
+  "summary": "Recorded KJ Notion source-of-truth session handoff in daily memory while SYS1 read-model work remains in progress.",
+  "created_at": "2026-07-01T06:47:05.133Z",
+  "actor": "codex",
+  "session_id": "codex-kj-20260701"
+}

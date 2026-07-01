@@ -193,7 +193,7 @@
     {
       "id": "p1-ledger-schema",
       "title": "設計 travel ledger 中介資料模型",
-      "status": "todo",
+      "status": "completed",
       "track": "ledger",
       "done_condition": "旅行事件、旅伴、交易、付款方式、共用/個人/代買、清帳結果的 JSON schema 或文件已建立",
       "acceptance": [
@@ -215,6 +215,19 @@
           "$COLLAB/finance-dashboard/docs/finance-accounting-principles.md"
         ],
         "source_boundary": "HC is a thinking check, not source of truth; ledger schema 與測試 fixture 才是 source of truth。"
+      },
+      "completed_at": "2026-07-02",
+      "summary": "Travel ledger schema contract v0 established as the calculation source of truth, separating payer, payment method, split/belong, proxy purchase, review, and settlement output.",
+      "note": "2026-07-02: Travel ledger schema contract v0 written; ledger is calculation source of truth and separates payer, payment method, split/belong, proxy purchase, review, and settlement output.",
+      "external_refs": {
+        "ledger_schema": {
+          "status": "contract_v0",
+          "doc": "$COLLAB/travel-finance-dashboard/docs/travel-ledger-schema.md",
+          "json_schema": "$COLLAB/travel-finance-dashboard/schemas/travel-ledger.schema.json",
+          "fixture": "$COLLAB/travel-finance-dashboard/fixtures/minimal-travel-ledger.json",
+          "verifier": "python3 scripts/verify-travel-ledger.py",
+          "verified_at": "2026-07-02"
+        }
       }
     },
     {

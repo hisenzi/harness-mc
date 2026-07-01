@@ -909,7 +909,7 @@
     {
       "id": "KJ-LIVE-02",
       "title": "KJ Handoff live sync + verifier",
-      "status": "todo",
+      "status": "completed",
       "track": "governance",
       "order_label": "KJ-LIVE-02",
       "priority": "high",
@@ -928,7 +928,14 @@
         "$COLLAB/CC本機協作_無Git/KJ/260612_KJ_雙語班/scripts/update-handoff.py",
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#KJ-LIVE-01"
       ],
-      "note": "這是讓 handoff 變活的系統層，不是學校端可拖拉的校務任務。"
+      "note": "這是讓 handoff 變活的系統層，不是學校端可拖拉的校務任務。",
+      "completed_at": "2026-07-02",
+      "summary": "Completed KJ handoff live sync: HANDOFF_260701.md live block is generated from the KJ-LIVE-01 Notion snapshot, update-handoff.py supports --check without writing, and the verifier detects source IDs, snapshot freshness, MC mirror count, and B2/B3 drift alignment.",
+      "verification": [
+        "python3 scripts/update-handoff.py --check",
+        "npm run test:kj-handoff-live-sync",
+        "python3 in-memory compile() for scripts/update-handoff.py"
+      ]
     },
     {
       "id": "KJ-LIVE-03",

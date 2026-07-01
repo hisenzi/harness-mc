@@ -876,7 +876,7 @@
     {
       "id": "KJ-LIVE-01",
       "title": "KJ Notion 任務 read model",
-      "status": "todo",
+      "status": "completed",
       "track": "governance",
       "order_label": "KJ-LIVE-01",
       "priority": "high",
@@ -893,7 +893,15 @@
         "$COLLAB/CC本機協作_無Git/KJ/260612_KJ_雙語班/HANDOFF_260701.md",
         "$COLLAB/harness-mc/milestones/kj-bilingual/tasks.json"
       ],
-      "note": "2026-07-01 Vincent 指定：KJ live workflow 是系統任務，應寫在 morrowise，而不是 KJ Notion 共編任務或 kj-bilingual mirror。"
+      "note": "2026-07-01 Vincent 指定：KJ live workflow 是系統任務，應寫在 morrowise，而不是 KJ Notion 共編任務或 kj-bilingual mirror。",
+      "completed_at": "2026-07-01",
+      "summary": "Completed KJ Notion source-of-truth read model snapshot from the live KJ 行動庫 data source: 43 Notion rows, schema/options, status/workstream summaries, B2/B3 authoritative titles, and MC mirror conflict detection are captured in system-workflow/snapshots/kj-notion-tasks-snapshot.json with a verifier.",
+      "verification": [
+        "notion-fetch page 381714fb14c680c1b93ec57136e95eec",
+        "notion-fetch collection://f046f40f-ac75-41ed-afa8-67379159316c",
+        "notion-query-data-sources SQL over collection://f046f40f-ac75-41ed-afa8-67379159316c returned has_more=false",
+        "npm run test:kj-notion-read-model"
+      ]
     },
     {
       "id": "KJ-LIVE-02",

@@ -37,21 +37,37 @@
           "url": "https://app.notion.com/p/38e714fb14c680a58ae3ddd99437fc7c?source=copy_link",
           "role": "Travel Inbox 口袋入口來源頁面",
           "api_verified": true,
-          "verified_at": "2026-06-29",
+          "verified_at": "2026-07-01",
           "api_object": "page",
           "title": "旅遊記帳",
           "token_source": "$COLLAB/finance-dashboard/.env",
           "database_status": "not_database",
-          "children_status": "empty"
+          "children_status": "has_child_database",
+          "child_database": {
+            "database_id": "390714fb14c6816b8b1bea142448b088",
+            "database_uuid": "390714fb-14c6-816b-8b1b-ea142448b088",
+            "title": "旅遊快記",
+            "localized_at": "2026-07-02",
+            "locale": "zh-TW",
+            "verifier": "python3 scripts/probe-notion-travel-inbox.py",
+            "schema_language": "Traditional Chinese"
+          },
+          "archived_child_database": {
+            "database_id": "390714fb14c681a2b7b4cdec895a9f81",
+            "database_uuid": "390714fb-14c6-81a2-b7b4-cdec895a9f81",
+            "title": "Travel Inbox（舊英文選項）",
+            "archived_at": "2026-07-02",
+            "archived_reason": "Notion API did not rename existing select option labels; old database only contained one all-empty row."
+          }
         },
         "schema_contract": {
           "path": "$COLLAB/travel-finance-dashboard/docs/notion-travel-inbox-schema.md",
           "status": "contract_v0",
           "placement_decision": "create_child_database_under_existing_page",
-          "notion_write_status": "not_written_requires_vincent_approval"
+          "notion_write_status": "child_database_created_and_localized_zh_tw"
         }
       },
-      "note": "2026-06-29 Notion API probe: page readable via finance-dashboard/.env token; object=page, title=旅遊記帳, no child blocks yet. Schema contract written at $COLLAB/travel-finance-dashboard/docs/notion-travel-inbox-schema.md.",
+      "note": "2026-07-02 Notion child database localized to zh-TW: active database is 旅遊快記 (390714fb-14c6-816b-8b1b-ea142448b088); old English-option database archived after confirming it only contained an all-empty row.",
       "completed_at": "2026-06-29",
       "summary": "完成 Travel Inbox schema contract v0：決定保留現有 Notion page 作入口，後續在其下建立 child database；定義 raw_text/date/amount/currency/payment_method/payer/entry_type/proxy_for/status/attachment/note 欄位、旅行中必填與回國後補填邊界、inbox/imported/needs_review/settled 狀態流與 downstream importer 約束。尚未寫 Notion，任何 database 建立與 API write 需 Vincent 明確 approval。",
       "commits": [
@@ -61,7 +77,7 @@
     {
       "id": "p1-notion-api-cli-mcp-wiring",
       "title": "建立 Notion Travel Inbox API / CLI / MCP 接線契約",
-      "status": "todo",
+      "status": "completed",
       "track": "inbox",
       "depends_on": [
         "p1-inbox-schema"
@@ -98,10 +114,31 @@
         "notion_travel_inbox": {
           "page_id": "38e714fb14c680a58ae3ddd99437fc7c",
           "page_uuid": "38e714fb-14c6-80a5-8ae3-ddd99437fc7c",
-          "role": "Travel Inbox upstream candidate",
+          "role": "Travel Inbox 口袋入口來源頁面",
           "api_object": "page",
           "api_verified": true,
-          "database_status": "not_database"
+          "database_status": "not_database",
+          "url": "https://app.notion.com/p/38e714fb14c680a58ae3ddd99437fc7c?source=copy_link",
+          "verified_at": "2026-07-01",
+          "title": "旅遊記帳",
+          "token_source": "$COLLAB/finance-dashboard/.env",
+          "children_status": "has_child_database",
+          "child_database": {
+            "database_id": "390714fb14c6816b8b1bea142448b088",
+            "database_uuid": "390714fb-14c6-816b-8b1b-ea142448b088",
+            "title": "旅遊快記",
+            "localized_at": "2026-07-02",
+            "locale": "zh-TW",
+            "verifier": "python3 scripts/probe-notion-travel-inbox.py",
+            "schema_language": "Traditional Chinese"
+          },
+          "archived_child_database": {
+            "database_id": "390714fb14c681a2b7b4cdec895a9f81",
+            "database_uuid": "390714fb-14c6-81a2-b7b4-cdec895a9f81",
+            "title": "Travel Inbox（舊英文選項）",
+            "archived_at": "2026-07-02",
+            "archived_reason": "Notion API did not rename existing select option labels; old database only contained one all-empty row."
+          }
         },
         "mc_capability_surface": {
           "surface_id": "api_cli_mcp_capabilities",
@@ -110,9 +147,44 @@
           "runtime_read_model": "$COLLAB/harness-mc/public/data/capability-runtime-status.json",
           "generator": "$COLLAB/harness-mc/scripts/generate-capability-runtime-status.mjs",
           "verifier": "npm run test:capability-runtime-status"
+        },
+        "wiring_contract": {
+          "path": "$COLLAB/travel-finance-dashboard/docs/notion-api-cli-mcp-wiring.md",
+          "status": "contract_v0",
+          "verifier": "python3 scripts/probe-notion-travel-inbox.py",
+          "write_policy": "read_only_until_vincent_approval"
+        },
+        "latest_probe": {
+          "verified_at": "2026-07-02",
+          "page_status": 200,
+          "page_object": "page",
+          "page_title": "旅遊記帳",
+          "database_status": "not_database",
+          "children_status": 200,
+          "child_database_found": true,
+          "next_action": "wire_child_database_importer_requires_vincent_approval",
+          "token_output_policy": "sanitized_token_source_only_no_token_value",
+          "child_database_id": "390714fb-14c6-816b-8b1b-ea142448b088",
+          "child_database_title": "旅遊快記"
+        },
+        "notion_reference_database": {
+          "database_id": "a5cec5a47b0a416199f195e3b693aac2",
+          "database_uuid": "a5cec5a4-7b0a-4161-99f1-95e3b693aac2",
+          "title": "消費記錄 v2",
+          "role": "reference database for naming/accounting shape only",
+          "property_schema": {
+            "備註": "title",
+            "日期": "date",
+            "金額": "number",
+            "付款方式": "select",
+            "歸屬": "select",
+            "子類別": "select"
+          }
         }
       },
-      "note": "2026-06-29 補上下游接線層：p1-inbox-schema 定入口欄位，本 task 定 API/CLI/MCP runtime probe、fallback、ledger import 與 MC dashboard surface 接線。"
+      "note": "2026-07-02: Localized Notion child database to Traditional Chinese. Old English-option database had only one all-empty row and was archived; active child database is 旅遊快記.",
+      "completed_at": "2026-07-01",
+      "summary": "完成 Notion Travel Inbox API / CLI / MCP 接線契約：確認來源頁面為「旅遊記帳」且目前仍是 page/not_database、未建立 child database；新增 project-local read-only probe `python3 scripts/probe-notion-travel-inbox.py`，明確 API/CLI mainline、MCP/connector fallback、downstream ledger 邊界、MC capability surface mapping 與所有 Notion write approval gates。"
     },
     {
       "id": "p1-ledger-schema",

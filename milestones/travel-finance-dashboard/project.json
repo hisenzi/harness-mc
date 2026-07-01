@@ -147,12 +147,42 @@
       "url": "https://app.notion.com/p/38e714fb14c680a58ae3ddd99437fc7c?source=copy_link",
       "role": "Travel Inbox 口袋入口來源頁面",
       "api_verified": true,
-      "verified_at": "2026-06-29",
+      "verified_at": "2026-07-01",
       "api_object": "page",
       "title": "旅遊記帳",
       "token_source": "$COLLAB/finance-dashboard/.env",
       "database_status": "not_database",
-      "children_status": "empty"
+      "children_status": "has_child_database",
+      "child_database": {
+        "database_id": "390714fb14c6816b8b1bea142448b088",
+        "database_uuid": "390714fb-14c6-816b-8b1b-ea142448b088",
+        "title": "旅遊快記",
+        "localized_at": "2026-07-02",
+        "locale": "zh-TW",
+        "verifier": "python3 scripts/probe-notion-travel-inbox.py",
+        "schema_language": "Traditional Chinese"
+      },
+      "archived_child_database": {
+        "database_id": "390714fb14c681a2b7b4cdec895a9f81",
+        "database_uuid": "390714fb-14c6-81a2-b7b4-cdec895a9f81",
+        "title": "Travel Inbox（舊英文選項）",
+        "archived_at": "2026-07-02",
+        "archived_reason": "Notion API did not rename existing select option labels; old database only contained one all-empty row."
+      }
+    },
+    "notion_reference_database": {
+      "database_id": "a5cec5a47b0a416199f195e3b693aac2",
+      "database_uuid": "a5cec5a4-7b0a-4161-99f1-95e3b693aac2",
+      "title": "消費記錄 v2",
+      "role": "reference database for naming/accounting shape only",
+      "property_schema": {
+        "備註": "title",
+        "日期": "date",
+        "金額": "number",
+        "付款方式": "select",
+        "歸屬": "select",
+        "子類別": "select"
+      }
     }
   }
 }

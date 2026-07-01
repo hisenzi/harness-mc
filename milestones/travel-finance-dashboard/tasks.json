@@ -228,7 +228,10 @@
           "verifier": "python3 scripts/verify-travel-ledger.py",
           "verified_at": "2026-07-02"
         }
-      }
+      },
+      "commits": [
+        "3299751"
+      ]
     },
     {
       "id": "p1-quick-record-parser",

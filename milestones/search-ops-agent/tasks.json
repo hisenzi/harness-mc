@@ -61,9 +61,21 @@
     {
       "id": "p1-2",
       "title": "設計第一次 GSC 健檢 MVP 輸出樣板",
-      "status": "todo",
+      "status": "completed",
       "track": "service-mvp",
       "done_condition": "已定義 URL 級 backlog 樣板與分類規則，可把 GSC 匯出/API、sitemap、crawler 結果合併成優先修正清單",
+      "completed_at": "2026-07-02",
+      "commits": [
+        "0ed368f"
+      ],
+      "summary": "已完成第一次 GSC 健檢 MVP 輸出樣板，定義 URL backlog CSV/JSON schema、四大分類、問題類型、優先級、資料合併流程、URL Inspection 抽樣與 30 天回看欄位。",
+      "evidence_refs": [
+        "$COLLAB/harness-mc/milestones/search-ops-agent/gsc-checkup-mvp-template.md",
+        "https://developers.google.com/webmaster-tools/v1/searchanalytics/query",
+        "https://developers.google.com/webmaster-tools/v1/urlInspection.index/inspect",
+        "https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview",
+        "https://developers.google.com/search/docs/crawling-indexing/robots/intro"
+      ],
       "acceptance": [
         "每筆 backlog 含 URL、問題類型、證據、建議修正、優先級、驗證方式",
         "分類至少包含應修、應 noindex/canonical、應忽略、待觀察",

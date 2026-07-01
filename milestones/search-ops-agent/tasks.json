@@ -86,9 +86,17 @@
     {
       "id": "p1-3",
       "title": "選定第一個試點網站並完成初診",
-      "status": "todo",
+      "status": "in_progress",
       "track": "service-mvp",
       "done_condition": "已用一個可修改的網站跑完整初診，產出 30 天修正計畫與前 5-10 個高優先任務",
+      "note": "2026-07-02：已建立 pilot-runs 試點初診工作區與 intake / diagnostic-summary / url-backlog / 30-day-plan 樣板；待 Vincent 指定試點網站、GSC 權限或匯出檔、sitemap URL、可修改範圍後才能跑完整初診並標 completed。",
+      "evidence_refs": [
+        "$COLLAB/harness-mc/milestones/search-ops-agent/pilot-runs/README.md",
+        "$COLLAB/harness-mc/milestones/search-ops-agent/pilot-runs/_template/intake.md",
+        "$COLLAB/harness-mc/milestones/search-ops-agent/pilot-runs/_template/diagnostic-summary.md",
+        "$COLLAB/harness-mc/milestones/search-ops-agent/pilot-runs/_template/url-backlog.csv",
+        "$COLLAB/harness-mc/milestones/search-ops-agent/pilot-runs/_template/30-day-plan.md"
+      ],
       "acceptance": [
         "記錄試點網站、GSC 資料來源、sitemap URL 與可修改範圍",
         "產出 URL 級問題清單與優先級",

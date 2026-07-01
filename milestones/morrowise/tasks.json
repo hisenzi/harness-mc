@@ -901,6 +901,9 @@
         "notion-fetch collection://f046f40f-ac75-41ed-afa8-67379159316c",
         "notion-query-data-sources SQL over collection://f046f40f-ac75-41ed-afa8-67379159316c returned has_more=false",
         "npm run test:kj-notion-read-model"
+      ],
+      "commits": [
+        "6e9b8d5"
       ]
     },
     {

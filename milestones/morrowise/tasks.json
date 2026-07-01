@@ -935,6 +935,9 @@
         "python3 scripts/update-handoff.py --check",
         "npm run test:kj-handoff-live-sync",
         "python3 in-memory compile() for scripts/update-handoff.py"
+      ],
+      "commits": [
+        "f5f2890"
       ]
     },
     {

@@ -69,9 +69,10 @@
       },
       "note": "2026-07-02 Notion child database localized to zh-TW: active database is 旅遊快記 (390714fb-14c6-816b-8b1b-ea142448b088); old English-option database archived after confirming it only contained an all-empty row.",
       "completed_at": "2026-06-29",
-      "summary": "完成 Travel Inbox schema contract v0：決定保留現有 Notion page 作入口，後續在其下建立 child database；定義 raw_text/date/amount/currency/payment_method/payer/entry_type/proxy_for/status/attachment/note 欄位、旅行中必填與回國後補填邊界、inbox/imported/needs_review/settled 狀態流與 downstream importer 約束。尚未寫 Notion，任何 database 建立與 API write 需 Vincent 明確 approval。",
+      "summary": "完成 Travel Inbox schema contract 並落地 Notion 繁中 child database：保留「旅遊記帳」page 作人類入口，建立並切換到「旅遊快記」database（390714fb-14c6-816b-8b1b-ea142448b088）作 API 來源；欄位與狀態流已繁中化，舊英文選項 database 因只有全空白列已歸檔。",
       "commits": [
-        "16d734f"
+        "16d734f",
+        "7c9f72d"
       ]
     },
     {
@@ -184,7 +185,10 @@
       },
       "note": "2026-07-02: Localized Notion child database to Traditional Chinese. Old English-option database had only one all-empty row and was archived; active child database is 旅遊快記.",
       "completed_at": "2026-07-01",
-      "summary": "完成 Notion Travel Inbox API / CLI / MCP 接線契約：確認來源頁面為「旅遊記帳」且目前仍是 page/not_database、未建立 child database；新增 project-local read-only probe `python3 scripts/probe-notion-travel-inbox.py`，明確 API/CLI mainline、MCP/connector fallback、downstream ledger 邊界、MC capability surface mapping 與所有 Notion write approval gates。"
+      "summary": "完成 Notion Travel Inbox API / CLI / MCP 接線契約與 MC metadata：確認「旅遊記帳」仍是 page/not_database，active child database 為繁中「旅遊快記」；記錄 read-only probe、API/CLI mainline、MCP/connector fallback、reference database、archived old database 與 importer next action。",
+      "commits": [
+        "7c9f72d"
+      ]
     },
     {
       "id": "p1-ledger-schema",

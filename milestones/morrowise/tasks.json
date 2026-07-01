@@ -872,6 +872,77 @@
         "$COLLAB/notyet-harness/schedule/tasks/",
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json"
       ]
+    },
+    {
+      "id": "KJ-LIVE-01",
+      "title": "KJ Notion 任務 read model",
+      "status": "todo",
+      "track": "governance",
+      "order_label": "KJ-LIVE-01",
+      "priority": "high",
+      "done_condition": "讀取 KJ Notion 專案任務 DB（source of truth），產出可驗證 snapshot，包含 schema、任務清單、狀態統計、B2/B3 關鍵命名與 mirror 對照所需欄位。",
+      "acceptance": [
+        "snapshot 明確標記 Notion source_of_truth 與 data_source_id，且不得從 MC tasks.json 反推 Notion。",
+        "snapshot 至少包含 generated_at、project、notion_database、data_source_id、tasks[]、summary、known_conflicts[]。",
+        "讀取過程不得輸出或讀取 secrets/token 內容，只使用已連線 MCP/API 的非敏感結果。",
+        "能辨識目前 KJ 新版行動庫與舊雙語班任務追蹤的差異，避免 agent 寫入舊庫。"
+      ],
+      "source_refs": [
+        "$COLLAB/CC本機協作_無Git/KJ/260612_KJ_雙語班/AGENTS.md",
+        "$COLLAB/CC本機協作_無Git/KJ/260612_KJ_雙語班/CODEX_NOTION_GUIDE.md",
+        "$COLLAB/CC本機協作_無Git/KJ/260612_KJ_雙語班/HANDOFF_260701.md",
+        "$COLLAB/harness-mc/milestones/kj-bilingual/tasks.json"
+      ],
+      "note": "2026-07-01 Vincent 指定：KJ live workflow 是系統任務，應寫在 morrowise，而不是 KJ Notion 共編任務或 kj-bilingual mirror。"
+    },
+    {
+      "id": "KJ-LIVE-02",
+      "title": "KJ Handoff live sync + verifier",
+      "status": "todo",
+      "track": "governance",
+      "order_label": "KJ-LIVE-02",
+      "priority": "high",
+      "dependencies": [
+        "KJ-LIVE-01"
+      ],
+      "done_condition": "讓 KJ HANDOFF_260701.md 從 KJ-LIVE-01 snapshot 更新 live 區塊，並提供 --check / verifier 偵測 Notion snapshot、HANDOFF、MC mirror 之間的 drift。",
+      "acceptance": [
+        "HANDOFF 的自動區塊只由 snapshot 產生，手寫歷史段落不得覆蓋 source-of-truth 判定。",
+        "verifier 能在 B2/B3 命名錯位、data_source_id 指到舊庫、snapshot 過期、MC mirror 筆數不一致時失敗。",
+        "提供可重跑指令與 --check 模式；--check 不改檔，只回報 drift。",
+        "驗證輸出清楚區分 Notion 權威資料、local background Markdown、MC/Heptabase/PAI mirror。"
+      ],
+      "source_refs": [
+        "$COLLAB/CC本機協作_無Git/KJ/260612_KJ_雙語班/HANDOFF_260701.md",
+        "$COLLAB/CC本機協作_無Git/KJ/260612_KJ_雙語班/scripts/update-handoff.py",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#KJ-LIVE-01"
+      ],
+      "note": "這是讓 handoff 變活的系統層，不是學校端可拖拉的校務任務。"
+    },
+    {
+      "id": "KJ-LIVE-03",
+      "title": "KJ Mirror reconcile",
+      "status": "todo",
+      "track": "governance",
+      "order_label": "KJ-LIVE-03",
+      "priority": "high",
+      "dependencies": [
+        "KJ-LIVE-01",
+        "KJ-LIVE-02"
+      ],
+      "done_condition": "以 Notion snapshot 修正 KJ 的 MC tasks.json、Heptabase、PAI 舊層 mirror，包含目前 B2/B3 錯位；同步方向維持 Notion -> mirrors。",
+      "acceptance": [
+        "先輸出差異報告，列出 Notion、MC、Heptabase、PAI 各自多出/缺少/命名不一致項目。",
+        "修正 MC mirror 時不得把舊 B2「家長溝通方案（國二三轉換）」覆蓋回 Notion；Notion 目前 B2/B3 命名為準。",
+        "Heptabase 與 PAI 只作 mirror/舊層，除 Vincent 明確確認，不得反向同步到 Notion。",
+        "完成後 verifier 能證明 B2/B3 錯位已消失，且 KJ agent startup 文件指向正確 source-of-truth。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/kj-bilingual/tasks.json",
+        "$COLLAB/CC本機協作_無Git/KJ/260612_KJ_雙語班/HANDOFF_260701.md",
+        "$COLLAB/CC本機協作_無Git/KJ/260612_KJ_雙語班/AGENTS.md"
+      ],
+      "note": "此 task 專門處理 mirror reconcile；不要把 mirror 修正和 Notion source-of-truth 建模混在同一包。"
     }
   ]
 }

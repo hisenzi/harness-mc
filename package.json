@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev -p 3001",
     "sync": "node scripts/sync-notion-courses.mjs",
+    "sync:kj-mirror": "node scripts/reconcile-kj-mirror.mjs",
     "sync:obsidian-canvas": "node scripts/generate-data.mjs && node scripts/sync-obsidian-canvas.mjs --whiteboard \"MC 儀表版\"",
     "test:task-event-outbox": "node scripts/verify-task-event-outbox.mjs",
     "test:apply-task-events": "node scripts/verify-apply-task-events.mjs",
@@ -48,7 +49,8 @@
     "build": "next build",
     "start": "next start -p 3001",
     "test:kj-notion-read-model": "node scripts/verify-kj-notion-read-model.mjs",
-    "test:kj-handoff-live-sync": "node scripts/verify-kj-handoff-live-sync.mjs"
+    "test:kj-handoff-live-sync": "node scripts/verify-kj-handoff-live-sync.mjs",
+    "test:kj-mirror-reconcile": "node scripts/verify-kj-mirror-reconcile.mjs"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.0.0",

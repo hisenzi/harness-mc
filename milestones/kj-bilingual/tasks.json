@@ -1,166 +1,939 @@
 {
   "project": "kj-bilingual",
+  "source_policy": "Notion -> MC tasks.json -> Heptabase / PAI mirrors",
+  "source_of_truth": {
+    "system": "Notion",
+    "project_page_id": "381714fb14c680c1b93ec57136e95eec",
+    "database_id": "eb0eddd212e44deaaffbb5d6da6a1be6",
+    "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c",
+    "snapshot": "$COLLAB/harness-mc/system-workflow/snapshots/kj-notion-tasks-snapshot.json"
+  },
+  "mirror_status": {
+    "task_anchor": "morrowise/KJ-LIVE-03",
+    "reconciled_at": "2026-07-02T16:29:50.653Z",
+    "source_snapshot": "$COLLAB/harness-mc/system-workflow/snapshots/kj-notion-tasks-snapshot.json",
+    "source_snapshot_generated_at": "2026-07-01T12:25:00+08:00",
+    "direction": "Notion -> MC tasks.json",
+    "write_boundary": "No Notion, Heptabase, or PAI writes were performed."
+  },
   "tasks": [
     {
-      "id": "M1",
-      "title": "交接判定就緒",
-      "status": "in_progress",
-      "track": "A-handover",
-      "done_condition": "遠見三題有答案 + 在校生盤點完 + 教材初判 → 定「接管 vs 重建」",
-      "target_date": "2026-07",
-      "estimate": null,
-      "note": "Gate 1 — 最高優先。沒有它，方案定案是猜的"
-    },
-    {
-      "id": "M2",
-      "title": "方案定案",
-      "status": "todo",
-      "track": "C-product",
-      "done_condition": "月費/課程/分組/師資模式/差異化/入學篩選 全定稿，可賣",
-      "target_date": "2026-08~09",
-      "estimate": null,
-      "depends_on": ["M1"],
-      "note": "Gate 2 — 近期 deadline。沒有它，行銷無料可賣"
-    },
-    {
-      "id": "M3",
-      "title": "行銷就緒",
-      "status": "todo",
-      "track": "E-marketing",
-      "done_condition": "招生物料、方案說明、口碑素材到位",
-      "target_date": "2026-09",
-      "depends_on": ["M2"]
-    },
-    {
-      "id": "M4",
-      "title": "招生開跑",
-      "status": "todo",
-      "track": "E-marketing",
-      "done_condition": "116 國一新生對外招生啟動",
-      "target_date": "2026-10",
-      "depends_on": ["M3"]
-    },
-    {
-      "id": "M5",
-      "title": "建置推進",
-      "status": "todo",
-      "track": "D-teacher",
-      "done_condition": "招生達標進度 + 師資招募/簽證啟動 + 系統建置",
-      "target_date": "2026-10~2027-03",
-      "depends_on": ["M4"]
-    },
-    {
-      "id": "M6",
-      "title": "上線前就緒",
-      "status": "todo",
-      "track": "D-teacher",
-      "done_condition": "外師到位/合約、教材、系統、國二三轉換準備完成",
-      "target_date": "2027-06",
-      "depends_on": ["M5"],
-      "note": "Gate 3 — 師資到位 + 系統 + 轉換準備 → 上線前總集結"
-    },
-    {
-      "id": "M7",
-      "title": "116 上線",
-      "status": "todo",
-      "track": "A-handover",
-      "done_condition": "國一 greenfield 開課 + 國二三從遠見銜接完成",
-      "target_date": "2027-07",
-      "depends_on": ["M6"]
-    },
-    {
-      "id": "A1",
-      "title": "遠見三題（合約/教材/外師）",
-      "status": "in_progress",
-      "track": "A-handover",
-      "done_condition": "三組 🔴 答案到齊，判定接管 vs 重建",
-      "target_date": "2026-06底",
-      "owner": "校方",
-      "note": "blocking Gate 1。問題清單已備，等校方拿去問遠見"
-    },
-    {
-      "id": "A2",
-      "title": "釐清雙語班法律 entity（1b vs 1a）",
-      "status": "todo",
+      "id": "notion-8aedbf1b",
+      "title": "菲師資格/官方語言認定",
+      "notion_title": "[風險·中] 菲師資格/官方語言認定",
+      "status": "blocked",
+      "notion_status": "有風險",
+      "type": "風險",
       "track": "F-compliance",
-      "done_condition": "確認雙語班掛學校還是補習班牌照",
-      "target_date": "2026-06底",
-      "owner": "校方"
-    },
-    {
-      "id": "B1",
-      "title": "盤點國二三在校生",
-      "status": "in_progress",
-      "track": "B-transition",
-      "done_condition": "人數/年級/程度/節數清單完成",
-      "target_date": "2026-07",
-      "owner": "校方"
-    },
-    {
-      "id": "C1",
-      "title": "Smart Choice 教材評估",
-      "status": "in_progress",
-      "track": "C-product",
-      "done_condition": "週二看完教材，有初步評估",
-      "target_date": "本週二",
-      "owner": "顧問+校方"
+      "done_condition": "🟡 中。送件前書面確認；篩有學士 + 教師證",
+      "owner": "校方",
+      "target_date": null,
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c6810ea66cd1168aedbf1b",
+        "url": "https://app.notion.com/381714fb14c6810ea66cd1168aedbf1b",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth."
     },
     {
       "id": "C2",
-      "title": "主教材 + 雜誌 + 測驗定案",
+      "title": "索取其他套裝教材評估（Allen待確認）",
+      "notion_title": "[C2] 索取其他套裝教材評估（Allen待確認）",
       "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
       "track": "C-product",
-      "done_condition": "教材套組確定，可寫進招生方案",
-      "target_date": "M2",
-      "depends_on": ["C1"]
+      "done_condition": "多套比較",
+      "owner": "顧問",
+      "target_date": "2026-07-31",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c6810eb2dce5af02bb12dc",
+        "url": "https://app.notion.com/381714fb14c6810eb2dce5af02bb12dc",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "depends_on": [
+        "C1"
+      ]
     },
     {
-      "id": "C3",
-      "title": "月費定價精算",
+      "id": "E1",
+      "title": "招生方案（年級範圍/規模/月費）",
+      "notion_title": "[E1] 招生方案（年級範圍/規模/月費）",
       "status": "todo",
-      "track": "C-product",
-      "done_condition": "外師薪資 + 學生數 → 精算月費區間",
-      "target_date": "M2",
-      "depends_on": ["A1"],
-      "note": "等遠見三題拿到外師薪資數字"
+      "notion_status": "未開始",
+      "type": "任務",
+      "track": "E-marketing",
+      "done_condition": "116 國一新生方案",
+      "owner": "V+校方",
+      "target_date": "2026-09-01",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c6812a8e8ec7b0c0b3bc90",
+        "url": "https://app.notion.com/381714fb14c6812a8e8ec7b0c0b3bc90",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "產品定案 (C)",
+      "depends_on": [
+        "M2"
+      ]
     },
     {
-      "id": "C4",
-      "title": "差異化敘事（AI-proof 核心）",
+      "id": "notion-98b8fb2d",
+      "title": "教材名稱：Kistone/OPT/Pieron/McNeal/Allen",
+      "notion_title": "[待確認] 教材名稱：Kistone/OPT/Pieron/McNeal/Allen",
       "status": "todo",
+      "notion_status": "未開始",
+      "type": "待查證",
       "track": "C-product",
-      "done_condition": "SIFT 分析轉化為招生可用敘事",
-      "target_date": "M2",
-      "owner": "V"
+      "done_condition": "會議音檔轉譯，待人工確認正確名稱",
+      "owner": "顧問",
+      "target_date": null,
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c6812a8f57d52a98b8fb2d",
+        "url": "https://app.notion.com/381714fb14c6812a8f57d52a98b8fb2d",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth."
+    },
+    {
+      "id": "A4",
+      "title": "遠見交接清單（學生檔/成績/家長名單/系統）",
+      "notion_title": "[A4] 遠見交接清單（學生檔/成績/家長名單/系統）",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
+      "track": "A-handover",
+      "done_condition": "上線前完成移交",
+      "owner": "校方",
+      "target_date": "2027-06-30",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681308618f399287253b7",
+        "url": "https://app.notion.com/381714fb14c681308618f399287253b7",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "合約條件"
     },
     {
       "id": "D1",
       "title": "定師資模式（JD/師生比/合格外師）",
+      "notion_title": "[D1] 定師資模式（JD/師生比/合格外師）",
       "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
       "track": "D-teacher",
-      "done_condition": "M2 前定稿，可放進行銷物料",
-      "target_date": "M2",
-      "owner": "顧問+V"
+      "done_condition": "顧問+V。為 9 月行銷打名師牌",
+      "owner": "顧問",
+      "target_date": "2026-09-01",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c68131bb67fa154808a0c0",
+        "url": "https://app.notion.com/381714fb14c68131bb67fa154808a0c0",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth."
     },
     {
-      "id": "E1",
-      "title": "行銷物料設計",
+      "id": "notion-d1b252d7",
+      "title": "外師不能留用 → 全新招",
+      "notion_title": "[風險·中] 外師不能留用 → 全新招",
+      "status": "blocked",
+      "notion_status": "有風險",
+      "type": "風險",
+      "track": "D-teacher",
+      "done_condition": "🟡 中。runway 仍夠（上線 2027.07），及早啟動簽證",
+      "owner": "校方",
+      "target_date": null,
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c68137bbc8d523d1b252d7",
+        "url": "https://app.notion.com/381714fb14c68137bbc8d523d1b252d7",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth."
+    },
+    {
+      "id": "M3",
+      "title": "行銷就緒",
+      "notion_title": "[M3] 行銷就緒",
       "status": "todo",
+      "notion_status": "未開始",
+      "type": "里程碑",
       "track": "E-marketing",
-      "done_condition": "招生用物料到位",
-      "target_date": "M3",
-      "depends_on": ["M2"],
-      "owner": "V"
+      "done_condition": "招生物料、方案說明、口碑素材到位",
+      "owner": "V+校方",
+      "target_date": "2026-09-15",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c6814d8368db664c2c93f7",
+        "url": "https://app.notion.com/381714fb14c6814d8368db664c2c93f7",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "M2",
+      "depends_on": [
+        "M2"
+      ]
+    },
+    {
+      "id": "D2",
+      "title": "釐清外師簽證/聘僱許可流程與時程",
+      "notion_title": "[D2] 釐清外師簽證/聘僱許可流程與時程",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
+      "track": "D-teacher",
+      "done_condition": "走 1a 還是 1b",
+      "owner": "校方",
+      "target_date": "2026-09-01",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c6814fa09dce45a4c8bc55",
+        "url": "https://app.notion.com/381714fb14c6814fa09dce45a4c8bc55",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "entity 身分 (A2)"
+    },
+    {
+      "id": "C7",
+      "title": "排課/收費/測驗系統",
+      "notion_title": "[C7] 排課/收費/測驗系統",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
+      "track": "C-product",
+      "done_condition": "系統承接 or 自建依 A3",
+      "owner": "待指定",
+      "target_date": "2027-06-30",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c68151b89fd41654b99e18",
+        "url": "https://app.notion.com/381714fb14c68151b89fd41654b99e18",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "接管/重建判定 (A3)"
+    },
+    {
+      "id": "B2",
+      "title": "確認轉換點＝115學年末（情境A）",
+      "notion_title": "[B2] 確認轉換點＝115學年末（情境A）",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
+      "track": "B-transition",
+      "done_condition": "對齊 116 學年自建上線",
+      "owner": "校方",
+      "target_date": "2026-07-31",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681539688ca3c27f16dce",
+        "url": "https://app.notion.com/381714fb14c681539688ca3c27f16dce",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "遠見合約 (A1)",
+      "depends_on": [
+        "A1",
+        "B1"
+      ]
+    },
+    {
+      "id": "notion-9c033ad6",
+      "title": "月費法規界線（代收代辦）",
+      "notion_title": "[風險·中] 月費法規界線（代收代辦）",
+      "status": "blocked",
+      "notion_status": "有風險",
+      "type": "風險",
+      "track": "F-compliance",
+      "done_condition": "🟡 中。落地前法務查證",
+      "owner": "校方",
+      "target_date": null,
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c68155b1a6c1649c033ad6",
+        "url": "https://app.notion.com/381714fb14c68155b1a6c1649c033ad6",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth."
+    },
+    {
+      "id": "notion-a804b3cd",
+      "title": "entity 身分/月費代收代辦/菲師官方語言頁",
+      "notion_title": "[待查證] entity 身分/月費代收代辦/菲師官方語言頁",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "待查證",
+      "track": "F-compliance",
+      "done_condition": "合規與外師管道",
+      "owner": "校方",
+      "target_date": null,
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c6815a8e29dc2ca804b3cd",
+        "url": "https://app.notion.com/381714fb14c6815a8e29dc2ca804b3cd",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "A2"
+    },
+    {
+      "id": "A2",
+      "title": "釐清雙語班法律 entity（學校1b vs 補習班1a）",
+      "notion_title": "[A2] 釐清雙語班法律 entity（學校1b vs 補習班1a）",
+      "status": "in_progress",
+      "notion_status": "進行中",
+      "type": "任務",
+      "track": "F-compliance",
+      "done_condition": "牽一髮動全身：影響外師許可管道 + 月費合規結構 + 遠見交接",
+      "owner": "校方",
+      "target_date": "2026-06-30",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c6815aa6bfc8a4bfda7e88",
+        "url": "https://app.notion.com/381714fb14c6815aa6bfc8a4bfda7e88",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth."
+    },
+    {
+      "id": "C4",
+      "title": "月費定價（精算，待外師薪資）",
+      "notion_title": "[C4] 月費定價（精算，待外師薪資）",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
+      "track": "C-product",
+      "done_condition": "3000–3600/月帶，依節數分級",
+      "owner": "V+校方",
+      "target_date": "2026-09-01",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c68166937ce3676b2957bd",
+        "url": "https://app.notion.com/381714fb14c68166937ce3676b2957bd",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "外師薪資 (A1)"
+    },
+    {
+      "id": "E4",
+      "title": "口碑證明（成果展/試聽/在校生案例）",
+      "notion_title": "[E4] 口碑證明（成果展/試聽/在校生案例）",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
+      "track": "E-marketing",
+      "done_condition": "招生差異化素材",
+      "owner": "校方",
+      "target_date": "2026-09-15",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c68166bdbfe0d1457549a6",
+        "url": "https://app.notion.com/381714fb14c68166bdbfe0d1457549a6",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth."
+    },
+    {
+      "id": "notion-3398a8ca",
+      "title": "在校生家長信任危機",
+      "notion_title": "[風險·中] 在校生家長信任危機",
+      "status": "blocked",
+      "notion_status": "有風險",
+      "type": "風險",
+      "track": "B-transition",
+      "done_condition": "🟡 中。升級敘事 + 師資延續 + 尊榮面談",
+      "owner": "V+校方",
+      "target_date": null,
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c68168bd18d9df3398a8ca",
+        "url": "https://app.notion.com/381714fb14c68168bd18d9df3398a8ca",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth."
+    },
+    {
+      "id": "F2",
+      "title": "菲師「官方語言認定」送件前書面確認",
+      "notion_title": "[F2] 菲師「官方語言認定」送件前書面確認",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
+      "track": "F-compliance",
+      "done_condition": "向勞發署/地方勞工局書面確認認定頁字樣並留存",
+      "owner": "校方",
+      "target_date": "2027-03-31",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c6816d905df37266ffb433",
+        "url": "https://app.notion.com/381714fb14c6816d905df37266ffb433",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth."
+    },
+    {
+      "id": "D3",
+      "title": "外師招募啟動（FB＋篩學士/教師證）",
+      "notion_title": "[D3] 外師招募啟動（FB＋篩學士/教師證）",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
+      "track": "D-teacher",
+      "done_condition": "篩有學歷 + 教師證的菲師（1b 門檻）",
+      "owner": "顧問+校方",
+      "target_date": "2027-03-31",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c6817cab9ac715f8008423",
+        "url": "https://app.notion.com/381714fb14c6817cab9ac715f8008423",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "師資模式 (D1)"
+    },
+    {
+      "id": "A3",
+      "title": "判定「接管 vs 重建」",
+      "notion_title": "[A3] 判定「接管 vs 重建」",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
+      "track": "A-handover",
+      "done_condition": "三題答案到齊後依判定樹判定",
+      "owner": "V+校方",
+      "target_date": "2026-07-31",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c6817e8da0e28dc6d4c04b",
+        "url": "https://app.notion.com/381714fb14c6817e8da0e28dc6d4c04b",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "A1, A2"
+    },
+    {
+      "id": "B3",
+      "title": "家長溝通方案＋通知信/說明會",
+      "notion_title": "[B3] 家長溝通方案＋通知信/說明會",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
+      "track": "B-transition",
+      "done_condition": "腳本已備（升級敘事 + 尊榮面談）",
+      "owner": "V+校方",
+      "target_date": "2027-06-30",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c68192ac38ed30d30f9335",
+        "url": "https://app.notion.com/381714fb14c68192ac38ed30d30f9335",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "師資延續確認"
+    },
+    {
+      "id": "notion-67ca4ddb",
+      "title": "關鍵數字：外師月薪/各年級人數/收費月數/目標招生數",
+      "notion_title": "[待補] 關鍵數字：外師月薪/各年級人數/收費月數/目標招生數",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "待補",
+      "track": "C-product",
+      "done_condition": "財務正算與定價前提",
+      "owner": "校方",
+      "target_date": null,
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681968fb6fa7067ca4ddb",
+        "url": "https://app.notion.com/381714fb14c681968fb6fa7067ca4ddb",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "遠見三題 (A1)"
+    },
+    {
+      "id": "M5",
+      "title": "建置推進",
+      "notion_title": "[M5] 建置推進",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "里程碑",
+      "track": "D-teacher",
+      "done_condition": "招生達標 + 師資招募/簽證啟動 + 系統建置（2026.10–2027.03）",
+      "owner": "校方",
+      "target_date": "2027-01-31",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c6819993e1f5d2b4cc85b1",
+        "url": "https://app.notion.com/381714fb14c6819993e1f5d2b4cc85b1",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "M4",
+      "depends_on": [
+        "M4"
+      ]
+    },
+    {
+      "id": "notion-95b55069",
+      "title": "遠見三題拖太久 → 定案趕不上 9 月",
+      "notion_title": "[風險·高] 遠見三題拖太久 → 定案趕不上 9 月",
+      "status": "blocked",
+      "notion_status": "受阻",
+      "type": "風險",
+      "track": "A-handover",
+      "done_condition": "🔴 高。即刻問 + 設回覆死線；不行先賣「模式與承諾」",
+      "owner": "校方",
+      "target_date": null,
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681a5a0fdd24295b55069",
+        "url": "https://app.notion.com/381714fb14c681a5a0fdd24295b55069",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "A1"
+    },
+    {
+      "id": "D4",
+      "title": "外師鐵律合約（含 Only 雙語班範疇）",
+      "notion_title": "[D4] 外師鐵律合約（含 Only 雙語班範疇）",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
+      "track": "D-teacher",
+      "done_condition": "零灰色地帶：遲到罰則/無條件解聘/寒暑假營隊義務",
+      "owner": "校方",
+      "target_date": "2027-03-31",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681abb48dea188a209dac",
+        "url": "https://app.notion.com/381714fb14c681abb48dea188a209dac",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth."
+    },
+    {
+      "id": "M1",
+      "title": "交接判定就緒",
+      "notion_title": "[M1] 交接判定就緒",
+      "status": "in_progress",
+      "notion_status": "進行中",
+      "type": "里程碑",
+      "track": "A-handover",
+      "done_condition": "定「接管 vs 重建」。Gate 1，最高優先",
+      "owner": "V+校方",
+      "target_date": "2026-07-31",
+      "key_gate": true,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681ae9a74e823c35e0c60",
+        "url": "https://app.notion.com/381714fb14c681ae9a74e823c35e0c60",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "遠見三題(A1) + 在校生盤點(B1) + 教材初判"
+    },
+    {
+      "id": "notion-39ddf377",
+      "title": "長期把雙語班當英語工廠",
+      "notion_title": "[風險·中] 長期把雙語班當英語工廠",
+      "status": "blocked",
+      "notion_status": "有風險",
+      "type": "風險",
+      "track": "C-product",
+      "done_condition": "🟡 中。加重 AI-proof 核心，動敘事（見 SIFT）",
+      "owner": "V",
+      "target_date": null,
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681b3adc8dfb639ddf377",
+        "url": "https://app.notion.com/381714fb14c681b3adc8dfb639ddf377",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth."
+    },
+    {
+      "id": "M2",
+      "title": "方案定案",
+      "notion_title": "[M2] 方案定案",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "里程碑",
+      "track": "C-product",
+      "done_condition": "月費/課程/分組/師資模式/差異化/入學篩選 全定稿可賣。Gate 2，近期 deadline",
+      "owner": "顧問+校方",
+      "target_date": "2026-09-01",
+      "key_gate": true,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681b7a1a8c092e52a9915",
+        "url": "https://app.notion.com/381714fb14c681b7a1a8c092e52a9915",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "M1",
+      "depends_on": [
+        "M1"
+      ]
+    },
+    {
+      "id": "M6",
+      "title": "上線前就緒",
+      "notion_title": "[M6] 上線前就緒",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "里程碑",
+      "track": "D-teacher",
+      "done_condition": "外師到位/合約、教材、系統、國二三轉換準備完成。Gate 3",
+      "owner": "校方",
+      "target_date": "2027-06-30",
+      "key_gate": true,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681b9b261fae09eeef518",
+        "url": "https://app.notion.com/381714fb14c681b9b261fae09eeef518",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "M5",
+      "depends_on": [
+        "M5"
+      ]
+    },
+    {
+      "id": "A1",
+      "title": "拿《遠見問題清單》問三題（合約/教材/外師）",
+      "notion_title": "[A1] 拿《遠見問題清單》問三題（合約/教材/外師）",
+      "status": "in_progress",
+      "notion_status": "進行中",
+      "type": "任務",
+      "track": "A-handover",
+      "done_condition": "🔴 blocking。決定接管 vs 重建、gate 方案定案。設回覆死線",
+      "owner": "校方",
+      "target_date": "2026-06-30",
+      "key_gate": true,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681bbaedbc87fb654bf4f",
+        "url": "https://app.notion.com/381714fb14c681bbaedbc87fb654bf4f",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth."
+    },
+    {
+      "id": "D5",
+      "title": "簽證/聘僱辦理（留緩衝）",
+      "notion_title": "[D5] 簽證/聘僱辦理（留緩衝）",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
+      "track": "D-teacher",
+      "done_condition": "留用 3–6 週/全新 8–14 週",
+      "owner": "校方",
+      "target_date": "2027-06-30",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681c1b66fdfde71795482",
+        "url": "https://app.notion.com/381714fb14c681c1b66fdfde71795482",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "招募完成 (D3)"
+    },
+    {
+      "id": "C3",
+      "title": "主教材＋雜誌＋測驗 定案",
+      "notion_title": "[C3] 主教材＋雜誌＋測驗 定案",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
+      "track": "C-product",
+      "done_condition": "Smart Choice + 雜誌升級 + OPT/多益橋",
+      "owner": "顧問+校方",
+      "target_date": "2026-09-01",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681c3b598d4ef9d0b0535",
+        "url": "https://app.notion.com/381714fb14c681c3b598d4ef9d0b0535",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "C1 看教材",
+      "depends_on": [
+        "A1"
+      ]
+    },
+    {
+      "id": "C5",
+      "title": "課程/分組/節數模型定案",
+      "notion_title": "[C5] 課程/分組/節數模型定案",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
+      "track": "C-product",
+      "done_condition": "ESL 跑班能力分組（國七八6節、9–11年級4節、高三2節）",
+      "owner": "顧問+校方",
+      "target_date": "2026-09-01",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681c4b6d1d337f8641a07",
+        "url": "https://app.notion.com/381714fb14c681c4b6d1d337f8641a07",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth."
+    },
+    {
+      "id": "C1",
+      "title": "看 Smart Choice 教材",
+      "notion_title": "[C1] 看 Smart Choice 教材",
+      "status": "in_progress",
+      "notion_status": "進行中",
+      "type": "任務",
+      "track": "C-product",
+      "done_condition": "已排程禮拜二，產品線起跑",
+      "owner": "顧問+校方",
+      "target_date": "2026-06-16",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681c697bee6e9a68d12fd",
+        "url": "https://app.notion.com/381714fb14c681c697bee6e9a68d12fd",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth."
+    },
+    {
+      "id": "F3",
+      "title": "守紅線（不觀光簽上課/不錯用補習班許可）",
+      "notion_title": "[F3] 守紅線（不觀光簽上課/不錯用補習班許可）",
+      "status": "in_progress",
+      "notion_status": "進行中",
+      "type": "任務",
+      "track": "F-compliance",
+      "done_condition": "全程。雇主罰 3–15 萬+，許可恐廢止",
+      "owner": "校方",
+      "target_date": null,
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681cb98f3e8c6c444a1d9",
+        "url": "https://app.notion.com/381714fb14c681cb98f3e8c6c444a1d9",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth."
+    },
+    {
+      "id": "E3",
+      "title": "招生啟動",
+      "notion_title": "[E3] 招生啟動",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
+      "track": "E-marketing",
+      "done_condition": "對外曝光",
+      "owner": "校方",
+      "target_date": "2026-10-01",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681d5be90ec6a525291b9",
+        "url": "https://app.notion.com/381714fb14c681d5be90ec6a525291b9",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "物料就緒 (E2)"
+    },
+    {
+      "id": "notion-9dca52b3",
+      "title": "入學篩選：面試 vs 成績分發",
+      "notion_title": "[待決策] 入學篩選：面試 vs 成績分發",
+      "status": "blocked",
+      "notion_status": "有風險",
+      "type": "待決策",
+      "track": "C-product",
+      "done_condition": "楊主任 M2 前拍板。ESL 跑班可不設硬門檻，靠能力分組 + OPT 動態升降班吸收落差",
+      "owner": "校方",
+      "target_date": "2026-09-01",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681d8b3dcebe19dca52b3",
+        "url": "https://app.notion.com/381714fb14c681d8b3dcebe19dca52b3",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth."
+    },
+    {
+      "id": "E2",
+      "title": "行銷物料設計",
+      "notion_title": "[E2] 行銷物料設計",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
+      "track": "E-marketing",
+      "done_condition": "招生物料 + 方案說明",
+      "owner": "V",
+      "target_date": "2026-09-15",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681daabf3eaa3e342dfdf",
+        "url": "https://app.notion.com/381714fb14c681daabf3eaa3e342dfdf",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "方案定案 (M2)"
     },
     {
       "id": "F1",
-      "title": "月費 vs 代收代辦界線查證",
+      "title": "月費 vs 代收代辦界線（法務/主管機關查證）",
+      "notion_title": "[F1] 月費 vs 代收代辦界線（法務/主管機關查證）",
       "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
       "track": "F-compliance",
-      "done_condition": "法務/主管機關確認合規",
-      "target_date": "M2",
-      "depends_on": ["A2"],
-      "owner": "校方"
+      "done_condition": "會議說法未驗證，落地前查證",
+      "owner": "校方",
+      "target_date": "2026-09-01",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681dd93c7dc5845d2f9bb",
+        "url": "https://app.notion.com/381714fb14c681dd93c7dc5845d2f9bb",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "entity (A2)",
+      "depends_on": [
+        "A2"
+      ]
+    },
+    {
+      "id": "M7",
+      "title": "116 上線",
+      "notion_title": "[M7] 116 上線",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "里程碑",
+      "track": "A-handover",
+      "done_condition": "國一 greenfield 開課 + 國二三從遠見銜接完成",
+      "owner": "校方",
+      "target_date": "2027-07-01",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681e5b472cfec29e2381a",
+        "url": "https://app.notion.com/381714fb14c681e5b472cfec29e2381a",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "M6",
+      "depends_on": [
+        "M6"
+      ]
+    },
+    {
+      "id": "B1",
+      "title": "盤點國二三現況（人數/年級/程度/節數）",
+      "notion_title": "[B1] 盤點國二三現況（人數/年級/程度/節數）",
+      "status": "in_progress",
+      "notion_status": "進行中",
+      "type": "任務",
+      "track": "B-transition",
+      "done_condition": "轉換規模 + 排課輸入。今天就能動",
+      "owner": "校方",
+      "target_date": "2026-07-31",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681e88b5aff5f2b2ef5dc",
+        "url": "https://app.notion.com/381714fb14c681e88b5aff5f2b2ef5dc",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth."
+    },
+    {
+      "id": "C6",
+      "title": "差異化敘事（AI-proof 核心，見 SIFT）",
+      "notion_title": "[C6] 差異化敘事（AI-proof 核心，見 SIFT）",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "任務",
+      "track": "C-product",
+      "done_condition": "賣人味溢價、沉浸與關係，非英語工廠",
+      "owner": "V",
+      "target_date": "2026-09-01",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681ff81cddf0a74b3a80a",
+        "url": "https://app.notion.com/381714fb14c681ff81cddf0a74b3a80a",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth."
+    },
+    {
+      "id": "M4",
+      "title": "招生開跑",
+      "notion_title": "[M4] 招生開跑",
+      "status": "todo",
+      "notion_status": "未開始",
+      "type": "里程碑",
+      "track": "E-marketing",
+      "done_condition": "116 國一新生對外招生啟動",
+      "owner": "校方",
+      "target_date": "2026-10-01",
+      "key_gate": false,
+      "source_ref": {
+        "system": "Notion",
+        "page_id": "381714fb14c681ff9a5ef65cfc8178c6",
+        "url": "https://app.notion.com/381714fb14c681ff9a5ef65cfc8178c6",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c"
+      },
+      "mirror_note": "Generated from KJ-LIVE-01 snapshot by KJ-LIVE-03; Notion remains source of truth.",
+      "blocker": "M3",
+      "depends_on": [
+        "M3"
+      ]
     }
   ]
 }

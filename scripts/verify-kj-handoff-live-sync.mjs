@@ -44,24 +44,25 @@ assert.match(section, /PAI 行動庫 \| 舊層/);
 assert.match(section, /Data Source ID \| `f046f40f-ac75-41ed-afa8-67379159316c`/);
 assert.doesNotMatch(section, /Data Source ID \| `40060100-ba5d-4905-b37d-d5f821602da9`/);
 assert.match(section, /Notion 任務數：43/);
-assert.match(section, /MC mirror 任務數：18/);
-assert.match(section, /已知 drift：25/);
+assert.match(section, /MC mirror 任務數：43/);
+assert.match(section, /已知 drift：0/);
 
 assert.match(section, /\[B2\] 確認轉換點＝115學年末（情境A）/);
 assert.match(section, /\[B3\] 家長溝通方案＋通知信\/說明會/);
-assert.match(section, /B2.*家長溝通方案（國二三轉換）/s);
-assert.match(section, /B3.*MC mirror.*缺少/s);
+assert.match(section, /目前 snapshot \+ MC mirror 未偵測到 drift/);
 
 const tasksById = new Map(mcMirror.tasks.map((task) => [task.id, task]));
-assert.equal(tasksById.get("B2")?.title, "家長溝通方案（國二三轉換）");
-assert.equal(tasksById.has("B3"), false);
+assert.equal(tasksById.get("B2")?.title, "確認轉換點＝115學年末（情境A）");
+assert.equal(tasksById.get("B2")?.notion_title, "[B2] 確認轉換點＝115學年末（情境A）");
+assert.equal(tasksById.get("B3")?.title, "家長溝通方案＋通知信/說明會");
+assert.equal(tasksById.get("B3")?.notion_title, "[B3] 家長溝通方案＋通知信/說明會");
 assert.ok(
   snapshot.known_conflicts.some((conflict) => conflict.type === "title_mismatch" && conflict.task_id === "B2" && conflict.severity === "high"),
-  "B2 title drift must stay detectable",
+  "KJ-LIVE-01 snapshot should retain generation-time B2 drift evidence",
 );
 assert.ok(
   snapshot.known_conflicts.some((conflict) => conflict.type === "notion_task_missing_in_mc_mirror" && conflict.task_id === "B3"),
-  "B3 missing drift must stay detectable",
+  "KJ-LIVE-01 snapshot should retain generation-time B3 drift evidence",
 );
 
 const snapshotGeneratedAt = Date.parse(snapshot.generated_at);
@@ -73,7 +74,7 @@ assert.match(section, /同步方向：`Notion -> MC tasks\.json -> Heptabase \/ 
 assert.match(section, /`--check` 不改檔/);
 
 console.log(
-  `KJ handoff live sync OK: snapshot ${snapshot.summary.total_tasks} Notion tasks, ${snapshot.summary.known_conflict_count} drift items, --check verified.`,
+  `KJ handoff live sync OK: snapshot ${snapshot.summary.total_tasks} Notion tasks, current MC drift 0, --check verified.`,
 );
 
 function extractSection(text, start, end) {

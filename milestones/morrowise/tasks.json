@@ -943,7 +943,7 @@
     {
       "id": "KJ-LIVE-03",
       "title": "KJ Mirror reconcile",
-      "status": "todo",
+      "status": "completed",
       "track": "governance",
       "order_label": "KJ-LIVE-03",
       "priority": "high",
@@ -963,7 +963,19 @@
         "$COLLAB/CC本機協作_無Git/KJ/260612_KJ_雙語班/HANDOFF_260701.md",
         "$COLLAB/CC本機協作_無Git/KJ/260612_KJ_雙語班/AGENTS.md"
       ],
-      "note": "此 task 專門處理 mirror reconcile；不要把 mirror 修正和 Notion source-of-truth 建模混在同一包。"
+      "note": "此 task 專門處理 mirror reconcile；不要把 mirror 修正和 Notion source-of-truth 建模混在同一包。2026-07-03 completed by Codex: MC mirror reconciled locally from KJ-LIVE-01 snapshot to 43 Notion rows; B2/B3 mirror drift resolved; HANDOFF live block reports current MC drift 0; Heptabase/PAI were not written and remain approval-gated mirrors.",
+      "verification": [
+        "npm run sync:kj-mirror -- --check",
+        "npm run test:kj-mirror-reconcile",
+        "npm run test:kj-handoff-live-sync",
+        "npm run test:kj-notion-read-model",
+        "node scripts/validate-tasks.mjs --changed-only --project kj-bilingual"
+      ],
+      "completed_at": "2026-07-03",
+      "commits": [
+        "6477e4d"
+      ],
+      "summary": "Reconciled the KJ MC mirror from the KJ-LIVE-01 Notion snapshot to 43 rows, resolved B2/B3 mirror drift, and left Heptabase/PAI as approval-gated mirrors with verifier coverage."
     },
     {
       "id": "cc-push-skill-batch-push-coordinator",

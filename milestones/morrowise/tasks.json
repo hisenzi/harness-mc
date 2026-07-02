@@ -964,6 +964,39 @@
         "$COLLAB/CC本機協作_無Git/KJ/260612_KJ_雙語班/AGENTS.md"
       ],
       "note": "此 task 專門處理 mirror reconcile；不要把 mirror 修正和 Notion source-of-truth 建模混在同一包。"
+    },
+    {
+      "id": "cc-push-skill-batch-push-coordinator",
+      "title": "建立 cc-push skill：多 session commit 後的 batch push 與 remote truth gate",
+      "status": "todo",
+      "track": "governance",
+      "order_label": "MW-PUSH-01",
+      "priority": "high",
+      "dependencies": [
+        "runtime-closeout-residual-ledger",
+        "morrowise-wiring-gate-verifier"
+      ],
+      "done_condition": "建立 $COLLAB/notyet-harness/000_Agent/skills/cc-push/SKILL.md，定義 cc-log + worktree-commit 之後的統一 push coordinator：先做 remote truth / dirty scope / pending task-event / generated data gate，再提出 repo-scoped push plan，經 Vincent 明確確認後才 push；不得自動重寫 history、不得在 dirty live worktree 上做破壞性 reconcile。",
+      "acceptance": [
+        "skill frontmatter description 能被 cc-push、一起 push、batch push、多個 session 都 commit 完了、檢查哪些可以 push、最後統一 push 等語意觸發。",
+        "流程先讀 cc-log / worktree-commit closeout evidence、runtime-closeout-residual-ledger 與 worktree status read model（若存在），再掃描各 repo 的 git status --short --branch、origin/main..HEAD commit list、diff stat 與 pending task-events。",
+        "每個 repo 必須先 git fetch origin，報告 ahead / behind / diverged / dirty / untracked / pending-task-event 狀態，避免用過期 remote ref 做 push 決策。",
+        "產出 repo-scoped push plan：列出可 push commit、排除的 dirty 檔案、需要先跑的 verifier、可能影響的 MC task/project、post-push 檢查；Vincent 未明確確認前不得 push。",
+        "遇到 dirty 或 diverged repo 時，優先規劃 hash-preserving 的乾淨 temporary worktree / cherry-pick / merge reconcile；禁止自動 git reset、destructive checkout、force push、casual rebase，避免改寫已被 cc-log、tasks.json 或 task-events 引用的 commit hash。",
+        "harness-mc repo 必須處理 generated data 與 task state：push 前重跑 generate-data、changed project task verifier、pending task-event reducer awareness；push 後檢查 GitHub Actions / Pages 或至少 remote run 狀態，不把 local success 誤稱為 live success。",
+        "cc-push skill 不負責新增一般工作 commit；若 push 前需要補 task state、log 或 reconcile commit，必須轉回 cc-log / worktree-commit gate 後再回到 cc-push。",
+        "驗收需包含 skill markdown/frontmatter 檢查、trigger discoverability 檢查、hard-path 檢查、morrowise task JSON 驗證、changed-only task verifier 與 generate-data。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/skills/cc-log/SKILL.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/SKILL.md",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#runtime-closeout-residual-ledger",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-wiring-gate-verifier",
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#acp-worktree-status-inventory",
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#acp-task-event-outbox",
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#acp-apply-task-events"
+      ],
+      "note": "2026-07-02 已先查重：未找到 cc-push 或 batch push coordinator 的既有 task；相近的 runtime-closeout-residual-ledger、worktree-status inventory、task-event outbox/reducer 都只覆蓋觀測、任務事件或 read model，沒有覆蓋多 session 完成 commit 後的統一 push gate。此 task 屬 MorroWise governance，因為它定義 agent workflow / approval / remote truth / push boundary，而不是單一專案功能或 dashboard surface。"
     }
   ]
 }

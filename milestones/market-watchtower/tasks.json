@@ -1,0 +1,132 @@
+{
+  "project": "market-watchtower",
+  "tasks": [
+    {
+      "id": "mw-001",
+      "title": "固化專案邊界與 runtime dashboard 分工",
+      "status": "done",
+      "track": "foundation",
+      "done_condition": "README、architecture、dashboard、rules-v1、data-contract 已建立，且明確區分 Market Watchtower Dashboard 與 MC。",
+      "evidence": [
+        "$COLLAB/market-watchtower/README.md",
+        "$COLLAB/market-watchtower/docs/architecture.md",
+        "$COLLAB/market-watchtower/docs/dashboard.md",
+        "$COLLAB/market-watchtower/docs/rules-v1.md",
+        "$COLLAB/market-watchtower/docs/data-contract.md"
+      ],
+      "summary": "Market Watchtower 已定義為具自有 dashboard 的市場條件監控服務，MC 僅追蹤開發任務。"
+    },
+    {
+      "id": "mw-002",
+      "title": "建立 app skeleton 與本機開發環境",
+      "status": "todo",
+      "track": "foundation",
+      "done_condition": "選定技術棧並建立可啟動的 web app + worker skeleton。",
+      "acceptance": [
+        "有 package / app skeleton",
+        "本機可啟動 dashboard",
+        "worker 可手動執行 dry-run",
+        "local-dev-urls.json 已登記固定 port 與 start command"
+      ]
+    },
+    {
+      "id": "mw-003",
+      "title": "實作 TWSE price data adapter",
+      "status": "todo",
+      "track": "data",
+      "done_condition": "可抓取 0050、006208、2330 日資料並正規化成 data-contract 的 Price Bar。",
+      "acceptance": [
+        "支援 ROC date 轉 ISO date",
+        "拒絕 stale 或缺欄位資料",
+        "每筆資料保存 source_url 與 fetched_at",
+        "提供 fixture 或 dry-run output"
+      ]
+    },
+    {
+      "id": "mw-004",
+      "title": "建立指標計算與資料健康檢查",
+      "status": "todo",
+      "track": "data",
+      "done_condition": "可計算 20MA、60MA、200MA、60/120 日高點，並產生 DATA_DELAYED 狀態。",
+      "acceptance": [
+        "Indicator Snapshot 符合 data-contract",
+        "資料未更新時不產生進場提醒",
+        "計算結果可被測試覆蓋"
+      ]
+    },
+    {
+      "id": "mw-005",
+      "title": "實作 0050/006208 v1 規則引擎",
+      "status": "todo",
+      "track": "rules",
+      "done_condition": "rules-v1 中的 200MA、20/60MA 回測、突破後回測可輸出 CLEAR / WATCH / TRIGGERED / INVALIDATED。",
+      "acceptance": [
+        "每個 rule 有 deterministic function",
+        "輸出包含 asset、rule_id、status、threshold、source_date",
+        "測試涵蓋 WATCH、TRIGGERED、INVALIDATED、DATA_DELAYED"
+      ]
+    },
+    {
+      "id": "mw-006",
+      "title": "建立 alert state 去重與事件紀錄",
+      "status": "todo",
+      "track": "rules",
+      "done_condition": "同一 asset + rule 在狀態未改變時不重複通知，狀態改變時寫入 alert event。",
+      "acceptance": [
+        "alert_states 可保存最新狀態",
+        "alert_events 可追蹤歷史訊號",
+        "dedupe_key 規則明確且可測試"
+      ]
+    },
+    {
+      "id": "mw-007",
+      "title": "建立 Market Watchtower Dashboard v1",
+      "status": "todo",
+      "track": "dashboard",
+      "done_condition": "Dashboard 可顯示 Overview、Asset Detail、Signals、Data Health、Notification Log、Rules。",
+      "acceptance": [
+        "Dashboard 是 Market Watchtower 自有 runtime surface",
+        "資料新鮮度與 DATA_DELAYED 狀態醒目可見",
+        "訊號不呈現為買賣命令",
+        "0050/006208 首頁狀態可掃描"
+      ]
+    },
+    {
+      "id": "mw-008",
+      "title": "串接 Telegram 通知",
+      "status": "todo",
+      "track": "notify",
+      "done_condition": "TRIGGERED / WATCH / INVALIDATED 可依規則送 Telegram，且通知內容包含證據與下一步。",
+      "acceptance": [
+        "通知模板包含 close、threshold、distance_pct、source_date、status",
+        "不輸出自動買入或賣出指令",
+        "通知失敗會寫入 delivery_status"
+      ]
+    },
+    {
+      "id": "mw-009",
+      "title": "部署到 Zeabur 或 VPS",
+      "status": "todo",
+      "track": "deploy",
+      "done_condition": "雲端環境可每日收盤後執行 worker，dashboard 可從網路開啟。",
+      "acceptance": [
+        "環境變數不進 repo",
+        "排程時間以 Asia/Taipei 收盤後為準",
+        "部署文件包含資料庫、worker、dashboard、通知設定"
+      ]
+    },
+    {
+      "id": "mw-010",
+      "title": "端到端驗證 0050/006208 收盤提醒流程",
+      "status": "todo",
+      "track": "qa",
+      "done_condition": "用實際或 fixture 資料跑完抓取、指標、規則、去重、dashboard、通知完整流程。",
+      "acceptance": [
+        "fresh data 會產生正確 rule state",
+        "stale data 只產生 DATA_DELAYED",
+        "重複執行不重複通知",
+        "Dashboard 與通知顯示一致"
+      ]
+    }
+  ]
+}

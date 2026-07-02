@@ -1,0 +1,163 @@
+{
+  "name": "Market Watchtower｜市場條件監控與決策提醒系統",
+  "description": "可擴充的市場條件監控、資料健康檢查與決策提醒系統，第一個 use case 為 0050/006208 進場條件提醒。",
+  "type": "standalone",
+  "status": "active",
+  "priority": "high",
+  "created": "2026-07-02",
+  "estimated_completion": "after mw-010",
+  "workspace": "$COLLAB/market-watchtower",
+  "repo_status": "local_workspace_only",
+  "deploy_target": "zeabur_or_vps",
+  "runtime_surface": "Market Watchtower Dashboard",
+  "tracking_surface": "harness-mc",
+  "tracks": {
+    "foundation": "Foundation",
+    "data": "Data Pipeline",
+    "rules": "Rules Engine",
+    "dashboard": "Runtime Dashboard",
+    "notify": "Notification",
+    "deploy": "Deployment",
+    "qa": "Verification"
+  },
+  "goals": [
+    "建立可追溯資料來源的市場資料抓取與正規化流程，第一版支援 0050、006208、2330 與台股指數類資料。",
+    "建立可重複計算的條件規則引擎，輸出 CLEAR / WATCH / TRIGGERED / INVALIDATED / DATA_DELAYED 狀態。",
+    "建立 Market Watchtower 自有 runtime dashboard，用於查看資產狀態、資料健康、訊號與通知紀錄。",
+    "建立雲端排程與通知機制，讓電腦未開機時仍能在條件接近或觸發時收到提醒。",
+    "保留未來擴充到 ETF、個股、基金、匯率、債券與月配型基金資料驗證的架構。"
+  ],
+  "risks": [
+    {
+      "risk": "資料來源延遲或欄位格式變動導致錯誤提醒",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "每筆訊號必須帶 source_date / fetched_at；資料未更新時輸出 DATA_DELAYED，不發進場提醒。"
+    },
+    {
+      "risk": "提醒被誤解為自動買賣建議",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "所有通知與 dashboard 文案都標示 decision prompt，不輸出買入/賣出命令。"
+    },
+    {
+      "risk": "規則太多造成通知噪音",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "以 alert_states 去重，只在狀態改變時通知；第一版只啟用 200MA、20/60MA 回測與突破回測。"
+    },
+    {
+      "risk": "Dashboard 與 MC 邊界混淆",
+      "impact": "medium",
+      "probability": "low",
+      "mitigation": "MC 只追蹤 project/tasks；Market Watchtower Dashboard 承擔 runtime truth。"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "專案邊界與 runtime dashboard 分工已文件化",
+      "verify_cmd": "test -f market-watchtower/docs/dashboard.md && rg -n \"runtime dashboard|MC / harness-mc\" market-watchtower",
+      "expected": "dashboard spec exists and MC boundary is explicit"
+    },
+    {
+      "criterion": "資料契約定義足以支援 price bar、indicator snapshot 與 alert event",
+      "verify_cmd": "test -f market-watchtower/docs/data-contract.md && rg -n \"Price Bar|Indicator Snapshot|Alert Event\" market-watchtower/docs/data-contract.md",
+      "expected": "all three contracts are documented"
+    },
+    {
+      "criterion": "第一版 0050/006208 進場規則已文件化",
+      "verify_cmd": "test -f market-watchtower/docs/rules-v1.md && rg -n \"200MA|20MA|60MA|突破後回測\" market-watchtower/docs/rules-v1.md",
+      "expected": "rules v1 contains core entry-condition definitions"
+    },
+    {
+      "criterion": "雲端服務可在收盤後抓資料、計算規則並產生去重後提醒",
+      "verify_cmd": "post-implementation: run worker dry-run and inspect generated price data, rule states, and alert events",
+      "expected": "worker run creates fresh price data, rule states, and alert events"
+    },
+    {
+      "criterion": "Dashboard 可顯示資產狀態、資料健康、訊號與通知紀錄",
+      "verify_cmd": "post-implementation: open dashboard and verify Overview, Asset Detail, Signals, Data Health, Notification Log, and Rules views",
+      "expected": "runtime dashboard renders non-stale operational state"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "project naming",
+      "decision": "Use market-watchtower / Market Watchtower as the reusable project name.",
+      "reason": "The system is not limited to Taiwan or ETFs; it monitors market conditions across assets and data sources.",
+      "alternatives_rejected": [
+        "taiwan-etf-watchtower: too narrow for future funds, FX, bonds, and overseas ETFs",
+        "TW50 Signal: sounds like a trading-signal product rather than a monitoring system"
+      ],
+      "hc_used": [
+        "#rightProblem",
+        "#broadFraming"
+      ]
+    },
+    {
+      "topic": "runtime surface",
+      "decision": "Market Watchtower must own its own runtime dashboard.",
+      "reason": "Daily usage requires asset state, data freshness, signal history, and notification logs; MC is only project/task control plane.",
+      "alternatives_rejected": [
+        "Use MC as dashboard: mixes development tracking with runtime market state",
+        "Notification only: lacks auditability and data-health visibility"
+      ],
+      "hc_used": [
+        "#rightProblem",
+        "#systemDynamics"
+      ]
+    },
+    {
+      "topic": "first use case",
+      "decision": "Start with 0050/006208 entry-condition alerts while keeping the data model asset-agnostic.",
+      "reason": "A narrow first case validates price data, indicators, rules, de-duplication, notifications, and dashboard without locking the architecture to ETFs.",
+      "alternatives_rejected": [
+        "Start with all asset classes: too broad before data correctness is proven",
+        "Start with only monthly funds: data-source quality is harder and should come after the runtime loop works"
+      ],
+      "hc_used": [
+        "#infoNeeded",
+        "#hypothesisDriven"
+      ]
+    },
+    {
+      "topic": "deployment stance",
+      "decision": "Track as standalone project with local workspace first; GitHub repo and Zeabur/VPS deployment are later execution tasks.",
+      "reason": "The workspace already exists and contains project documents; forcing new-project standalone auto-clone would risk clobbering the existing folder.",
+      "alternatives_rejected": [
+        "Run standalone auto repo creation immediately: unsafe with pre-existing local folder",
+        "Keep as pure internal project: inaccurate because the product will have independent code and deployment"
+      ],
+      "hc_used": [
+        "#constraints",
+        "#risk"
+      ]
+    }
+  ],
+  "system_growth_gate": {
+    "trigger": "Daily cloud worker after market close, plus manual dashboard review when Vincent wants to inspect market conditions.",
+    "data_flow": "market data sources -> normalized price/valuation records -> indicators -> rule states -> alert events -> notification + dashboard",
+    "visible_surface": "Market Watchtower Dashboard for runtime; harness-mc for project/task tracking.",
+    "feedback_loop": "Alert outcomes and data-health failures are logged, reviewed, and used to refine rules, thresholds, and data-source adapters."
+  },
+  "hc_decision": {
+    "task_scope": "market-watchtower/project-open",
+    "hc_refs": [
+      "#rightProblem",
+      "#infoNeeded",
+      "#hypothesisDriven",
+      "#evidenceBased",
+      "#risk"
+    ],
+    "hc_reasoning": "The project was reframed from an ETF entry alert into a market-condition monitoring system with data correctness, runtime visibility, and notification de-duplication as first-class concerns.",
+    "hc_confidence": 0.82,
+    "evidence_refs": [
+      "$COLLAB/market-watchtower/README.md",
+      "$COLLAB/market-watchtower/docs/architecture.md",
+      "$COLLAB/market-watchtower/docs/dashboard.md",
+      "$COLLAB/market-watchtower/docs/rules-v1.md",
+      "$COLLAB/market-watchtower/docs/data-contract.md"
+    ],
+    "source_boundary": "HC is the thinking and validation layer; project files and harness-mc tasks are the execution source of truth."
+  }
+}

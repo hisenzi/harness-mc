@@ -6,6 +6,10 @@
       "title": "固化專案邊界與 runtime dashboard 分工",
       "status": "done",
       "track": "foundation",
+      "completed_at": "2026-07-02",
+      "commits": [
+        "75195eb"
+      ],
       "done_condition": "README、architecture、dashboard、rules-v1、data-contract 已建立，且明確區分 Market Watchtower Dashboard 與 MC。",
       "evidence": [
         "$COLLAB/market-watchtower/README.md",

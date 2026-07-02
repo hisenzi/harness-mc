@@ -236,14 +236,29 @@
     {
       "id": "p1-quick-record-parser",
       "title": "設計一行快記格式與解析規則",
-      "status": "todo",
+      "status": "completed",
       "track": "inbox",
       "done_condition": "旅行中一行記帳格式、範例、解析結果與需確認情境已定義",
       "acceptance": [
         "支援一般花費、共用花費、個人花費、代買與不確定付款方式",
         "無法判斷時不自動猜測，標記 needs_review",
         "至少用 10 筆旅行情境範例驗證格式可讀"
-      ]
+      ],
+      "completed_at": "2026-07-02",
+      "summary": "Quick-record parser contract v0 defined and verified with 12 travel examples covering shared, personal, proxy purchase, unknown payer, unknown payment method, date prefix, and currency variants.",
+      "note": "2026-07-02: Defined one-line travel quick-record format and parser v0; ambiguous payer/payment/type routes to needs_review and proxy purchases stay out of shared split.",
+      "external_refs": {
+        "quick_record_parser": {
+          "status": "contract_v0",
+          "doc": "$COLLAB/travel-finance-dashboard/docs/quick-record-parser.md",
+          "fixture": "$COLLAB/travel-finance-dashboard/fixtures/quick-record-parser-cases.json",
+          "parser": "$COLLAB/travel-finance-dashboard/scripts/quick_record_parser.py",
+          "verifier": "python3 scripts/verify-quick-record-parser.py",
+          "verified_at": "2026-07-02",
+          "cases": 12,
+          "needs_review_cases": 5
+        }
+      }
     },
     {
       "id": "p1-osaka-reference-ledger",

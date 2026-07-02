@@ -1627,9 +1627,10 @@
       "completed_at": "2026-06-28",
       "commits": [
         "b089a30",
-        "7c4981a"
+        "7c4981a",
+        "c2b6cbc"
       ],
-      "summary": "/projects 主分類已改用 PAI / Notion「領域」taxonomy；project.type 保留為次要 metadata，資料產生器輸出 domain/domainLabel/domainColor，並以 verifier 確認 taxonomy 對齊 heptabase-to-pai WHITEBOARDS 與所有 active projects 都有有效領域 mapping。2026-06-30 追加 CI hotfix：GitHub Pages 缺 sibling notyet-harness 時跳過 WHITEBOARDS cross-check，並補 english-for-future-work / travel-finance-dashboard domain mapping。"
+      "summary": "/projects 主分類已改用 PAI / Notion「領域」taxonomy；project.type 保留為次要 metadata，資料產生器輸出 domain/domainLabel/domainColor，並以 verifier 確認 taxonomy 對齊 heptabase-to-pai WHITEBOARDS 與所有 active projects 都有有效領域 mapping。2026-06-30 追加 CI hotfix：GitHub Pages 缺 sibling notyet-harness 時跳過 WHITEBOARDS cross-check，並補 english-for-future-work / travel-finance-dashboard domain mapping。2026-07-03 追加 market-watchtower domain mapping，修復 active project taxonomy gate。"
     },
     {
       "id": "config-launch-newproject",

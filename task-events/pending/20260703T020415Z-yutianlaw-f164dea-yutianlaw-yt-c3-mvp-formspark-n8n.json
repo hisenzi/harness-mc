@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-yutianlaw-yt-c3-mvp-formspark-n8n-f164dea-20260703T020415Z",
+  "type": "task.commit_attached",
+  "repo": "yutianlaw",
+  "commit": "f164dea",
+  "project": "yutianlaw",
+  "task_id": "yt-c3-mvp-formspark-n8n",
+  "status": "updated",
+  "summary": "新增 Formspark Free + n8n 雙信件 MVP 驗證文件、mock 表單與本地 autoresponder 防呆驗證；A01-A05 本地檢查與 Astro build 通過，live A00/A06-A08 待真實帳號與 webhook。",
+  "created_at": "2026-07-03T02:04:15.178Z",
+  "actor": "codex",
+  "session_id": "codex-yutianlaw-formspark-n8n-mvp-20260703"
+}

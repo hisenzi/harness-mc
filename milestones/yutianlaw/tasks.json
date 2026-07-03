@@ -322,10 +322,10 @@
     {
       "id": "yt-c3-mvp-formspark-n8n",
       "title": "Formspark Free + n8n 雙信件流程 MVP 驗證",
-      "status": "todo",
+      "status": "in_progress",
       "track": "phase-2",
       "done_condition": "用 Formspark Free 建立測試表單並完成端到端驗證：靜態頁表單可送出到 Formspark；Formspark dashboard 可看到 submission；站主通知 email 收到完整欄位摘要；Formspark webhook 成功打到 n8n；n8n 依 client_id 與填表人 email 寄出「已收到訊息，將有專人聯絡」確認信；異常情境（缺 email、未知 client_id、webhook token 錯誤）不會寄出錯誤確認信且有 log 可追。",
-      "note": "前置驗證卡，通過後再執行 yt-c3 正式表單。需求整理：表單定位為「預約諮詢 / 需求初步說明」，不是正式排程系統；Formspark 負責收件、保存 submission、站主通知與 direct reply；n8n 補 Formspark 未明確內建的填表人 autoresponder。MVP 使用 Formspark Free 預設 workspace（250 submissions / 10 forms）測可行性，不作正式客戶隔離承諾。欄位標準：姓名、電話、Email、需求類型、需求簡述、希望聯絡時段、個資告知同意；隱藏欄位只放 client_id、form_name、source_url，不允許前端覆寫 owner_email、from_email、smtp 或確認信模板。n8n 需用內部設定表對應 client_id -> 客戶名稱 / 回覆電話 / 確認信文案 / reply-to；webhook URL 需帶 token 或 shared secret，因 Formspark webhook 不提供簽名驗證。驗證成功標準：站主通知信與填表人確認信各收到一封，填表人確認信不回傳完整敏感內容，只含收件確認、預估回覆時間、急件聯絡方式與品牌資訊。",
+      "note": "前置驗證卡，通過後再執行 yt-c3 正式表單。需求整理：表單定位為「預約諮詢 / 需求初步說明」，不是正式排程系統；Formspark 負責收件、保存 submission、站主通知與 direct reply；n8n 補 Formspark 未明確內建的填表人 autoresponder。MVP 使用 Formspark Free 預設 workspace（250 submissions / 10 forms）測可行性，不作正式客戶隔離承諾。欄位標準：姓名、電話、Email、需求類型、需求簡述、希望聯絡時段、個資告知同意；隱藏欄位只放 client_id、form_name、source_url，不允許前端覆寫 owner_email、from_email、smtp 或確認信模板。n8n 需用內部設定表對應 client_id -> 客戶名稱 / 回覆電話 / 確認信文案 / reply-to；webhook URL 需帶 token 或 shared secret，因 Formspark webhook 不提供簽名驗證。驗證成功標準：站主通知信與填表人確認信各收到一封，填表人確認信不回傳完整敏感內容，只含收件確認、預估回覆時間、急件聯絡方式與品牌資訊。2026-07-02 執行進度：已在 yutianlaw repo 補本地驗證包 `$COLLAB/yutianlaw/docs/formspark-n8n-mvp.md`、`$COLLAB/yutianlaw/docs/mockups/formspark-n8n-mvp-form.html`、`$COLLAB/yutianlaw/scripts/verify-formspark-n8n-mvp.mjs`；本地 contract A01-A05 通過；2026-07-02 追加補齊 Formspark 申請帳號、應提供資料、n8n 申請帳號與 Formspark 串 n8n 步驟；live Formspark dashboard / 站主通知信 / n8n 實寄確認信 A00、A06-A08 尚需真實 Formspark form action URL、n8n webhook URL/token 與 n8n 內部寄信 credentials。",
       "refs": [
         "$COLLAB/hiblocks/docs/forms-reference.md",
         "$COLLAB/harness-mc/milestones/yutianlaw/tasks.json#yt-c3"

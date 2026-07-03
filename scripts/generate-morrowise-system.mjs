@@ -22,6 +22,7 @@ const PATHS = {
   residualLedger: "$COLLAB/harness-mc/public/data/closeout-residual-ledger.json",
   proactiveLoop: "$COLLAB/harness-mc/public/data/morrowise-proactive-loop.json",
   auditorSchema: "$COLLAB/harness-mc/system-workflow/schemas/morrowise-auditor.schema.json",
+  auditorReadModel: "$COLLAB/harness-mc/public/data/morrowise-auditor.json",
   systemSchema: "$COLLAB/harness-mc/system-workflow/schemas/morrowise-system.schema.json",
   sourceMapReconcile: "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-source-map-reconciliation.md",
   architectureReport: "$COLLAB/notyet-harness/000_Agent/docs/morrowise/reports/architecture-pulse-2026-06-27.md",
@@ -48,6 +49,7 @@ export function generateMorroWiseSystem(options = {}) {
   const capabilities = options.capabilities ?? readJsonOrNull(repoRoot, "public/data/morrowise-capabilities.json");
   const residualLedger = options.residualLedger ?? readJsonOrNull(repoRoot, "public/data/closeout-residual-ledger.json");
   const proactiveLoop = options.proactiveLoop ?? readJsonOrNull(repoRoot, "public/data/morrowise-proactive-loop.json");
+  const auditorReport = options.auditorReport === undefined ? readJsonOrNull(repoRoot, "public/data/morrowise-auditor.json") : options.auditorReport;
   const admission = options.admission ?? readJson(repoRoot, "system-workflow/registries/morrowise-live-system-admission.json");
   const approval = options.approval ?? readJson(repoRoot, "system-workflow/registries/morrowise-approval-policy.json");
   const triggers = options.triggers ?? readJson(repoRoot, "system-workflow/registries/morrowise-trigger-rules.json");
@@ -85,6 +87,7 @@ export function generateMorroWiseSystem(options = {}) {
       capabilities,
       projects,
       generatedAt,
+      auditorReport,
     }),
   };
 
@@ -351,7 +354,7 @@ function buildFeedback({ admission, wiringGate, commitPlanningGate, realityTaxGa
   };
 }
 
-function buildOpenLoops({ openTasks, nextTask, pendingEvents, staleSurfaces, residualCount, capabilities, projects, generatedAt }) {
+function buildOpenLoops({ openTasks, nextTask, pendingEvents, staleSurfaces, residualCount, capabilities, projects, generatedAt, auditorReport }) {
   const loops = [];
   loops.push(openLoop({
     loop_id: "unknown-local-runtime-boundary",
@@ -364,28 +367,45 @@ function buildOpenLoops({ openTasks, nextTask, pendingEvents, staleSurfaces, res
     evidence_refs: [sourceRef("file", PATHS.sourceMapReconcile)],
     review_after: generatedAt,
   }));
-  loops.push(openLoop({
-    loop_id: "generator-missing-auditor-json",
-    gate_id: "auditor-json-read-model-schema",
-    source: sourceRef("file", PATHS.auditorSchema),
-    condition: "generator_missing: morrowise-auditor.v0 schema exists, but generated public/data/morrowise-auditor.json is not implemented yet.",
-    risk_level: "medium",
-    suggested_next_action: "Implement auditor fixtures/generator before treating Architecture Pulse as a repeatable scanner.",
-    owner: "Codex",
-    evidence_refs: [sourceRef("file", PATHS.auditorSchema), sourceRef("file", PATHS.architectureReport)],
-    review_after: generatedAt,
-  }));
-  loops.push(openLoop({
-    loop_id: "manual-only-architecture-pulse",
-    gate_id: "architecture-pulse",
-    source: sourceRef("file", PATHS.architectureReport),
-    condition: "manual_only: the current Architecture Pulse drift report is useful evidence, but it is not yet generated from a repeatable scanner.",
-    risk_level: "medium",
-    suggested_next_action: "Do not patch ARCHITECTURE.md from manual evidence alone; route source edits through a later auditor/source-edit task.",
-    owner: "future_agent",
-    evidence_refs: [sourceRef("file", PATHS.architectureReport)],
-    review_after: generatedAt,
-  }));
+  // Auditor loops are conditional on reality: once public/data/morrowise-auditor.json
+  // exists, the schema-without-generator and manual-only conditions are resolved and
+  // must not be reported (frozen open loops are the same rot as frozen verifiers).
+  if (!auditorReport) {
+    loops.push(openLoop({
+      loop_id: "generator-missing-auditor-json",
+      gate_id: "auditor-json-read-model-schema",
+      source: sourceRef("file", PATHS.auditorSchema),
+      condition: "generator_missing: morrowise-auditor.v0 schema exists, but generated public/data/morrowise-auditor.json is not implemented yet.",
+      risk_level: "medium",
+      suggested_next_action: "Implement auditor fixtures/generator before treating Architecture Pulse as a repeatable scanner.",
+      owner: "Codex",
+      evidence_refs: [sourceRef("file", PATHS.auditorSchema), sourceRef("file", PATHS.architectureReport)],
+      review_after: generatedAt,
+    }));
+    loops.push(openLoop({
+      loop_id: "manual-only-architecture-pulse",
+      gate_id: "architecture-pulse",
+      source: sourceRef("file", PATHS.architectureReport),
+      condition: "manual_only: the current Architecture Pulse drift report is useful evidence, but it is not yet generated from a repeatable scanner.",
+      risk_level: "medium",
+      suggested_next_action: "Do not patch ARCHITECTURE.md from manual evidence alone; route source edits through a later auditor/source-edit task.",
+      owner: "future_agent",
+      evidence_refs: [sourceRef("file", PATHS.architectureReport)],
+      review_after: generatedAt,
+    }));
+  } else if ((auditorReport.summary?.finding_count || 0) > 0) {
+    loops.push(openLoop({
+      loop_id: "auditor-findings-open",
+      gate_id: "architecture-pulse",
+      source: sourceRef("file", PATHS.auditorReadModel),
+      condition: `auditor_findings: the auditor scanner reports ${auditorReport.summary.finding_count} open finding(s) on managed targets.`,
+      risk_level: "medium",
+      suggested_next_action: `Route fixes through ${auditorReport.summary.primary_next_action}; the auditor stays read-only.`,
+      owner: "future_agent",
+      evidence_refs: [sourceRef("file", PATHS.auditorReadModel)],
+      review_after: generatedAt,
+    }));
+  }
   loops.push(openLoop({
     loop_id: "second-source-risk-visual-mirrors",
     gate_id: "visual-layer-boundary",

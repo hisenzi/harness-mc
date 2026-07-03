@@ -40,8 +40,9 @@ const requiredOpenLoopFields = [
 
 const sourceRefFields = ["source_of_truth", "portable_agent_verification", "memory", "senses", "muscles", "immune", "heartbeat", "feedback", "open_loops"];
 
-const fixture = generateMorroWiseSystem({
+const fixtureOptions = {
   generatedAt: "2026-06-27T12:00:00.000Z",
+  auditorReport: null,
   morrowiseProject: {
     tasks: [
       { id: "v0-source-map-mc-reconcile", status: "completed" },
@@ -155,9 +156,20 @@ const fixture = generateMorroWiseSystem({
   wiringGate: { status: "formal_registry" },
   commitPlanningGate: { status: "formal_registry" },
   write: false,
-});
+};
+const fixture = generateMorroWiseSystem(fixtureOptions);
 
 validateSystemReadModel(fixture, { fixture: true });
+
+// Auditor loops are conditional on the auditor read model: present with findings →
+// resolved loops close and an auditor-findings loop opens instead.
+const fixtureResolved = generateMorroWiseSystem({
+  ...fixtureOptions,
+  auditorReport: { summary: { finding_count: 8, primary_next_action: "morrowise/architecture-pulse-source-edit" } },
+});
+assert.ok(!fixtureResolved.open_loops.some((loop) => loop.loop_id === "generator-missing-auditor-json"), "auditor read model present: generator-missing loop must close");
+assert.ok(!fixtureResolved.open_loops.some((loop) => loop.loop_id === "manual-only-architecture-pulse"), "auditor read model present: manual-only loop must close");
+assert.ok(fixtureResolved.open_loops.some((loop) => loop.loop_id === "auditor-findings-open"), "open auditor findings must surface as a loop");
 
 assert.ok(fs.existsSync(dataPath), "public/data/morrowise-system.json must exist; run node scripts/generate-morrowise-system.mjs");
 const data = readJson(dataPath);
@@ -220,11 +232,19 @@ function validateSystemReadModel(data, { fixture }) {
       "open_loops must expose pending events or an equivalent unresolved event condition",
     );
   }
-  for (const expectedCondition of ["unknown", "generator_missing", "manual_only", "second_source_risk", "stale"]) {
+  // generator_missing / manual_only are conditional on the auditor read model existing;
+  // requiring them unconditionally would freeze a resolvable state into the verifier.
+  const auditorPending = fixture ? true : !fs.existsSync(path.join(root, "public", "data", "morrowise-auditor.json"));
+  const expectedConditions = ["unknown", "second_source_risk", "stale", ...(auditorPending ? ["generator_missing", "manual_only"] : [])];
+  for (const expectedCondition of expectedConditions) {
     assert.ok(
       data.open_loops.some((loop) => loop.condition.includes(expectedCondition) || loop.loop_id.includes(expectedCondition.replace(/_/g, "-"))),
       `open_loops must expose ${expectedCondition}`,
     );
+  }
+  if (!fixture && !auditorPending) {
+    assert.ok(!data.open_loops.some((loop) => loop.loop_id === "generator-missing-auditor-json"), "resolved generator-missing loop must not be reported");
+    assert.ok(!data.open_loops.some((loop) => loop.loop_id === "manual-only-architecture-pulse"), "resolved manual-only loop must not be reported");
   }
 
   assertNoLocalAbsolutePaths(data);

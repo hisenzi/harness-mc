@@ -1234,6 +1234,63 @@
         "f179c7d"
       ],
       "summary": "2026-07-03 完成 ARCHITECTURE.md source edit：AP-01~08 逐項處置（header contract、source-of-truth 改指 $COLLAB、歷史附錄 A-H 分區、symlink 表 $COLLAB 化、OC 排程/Notion/OC-MC 降級歷史並附現行權威指引）；新增「目前系統現況」generated marker 區由 sync-architecture-current-state.py 從 morrowise-system.json 同步（--check 可測 drift）；auditor 重跑 findings 8→0，auditor-findings-open loop 自動關閉。殘留：MBA-2 update-symlinks-table.py 輸出格式待 HiSenzi 更新為 $COLLAB 形式。"
+    },
+    {
+      "id": "system-pulse-schedule-task",
+      "title": "System pulse 排程（每日全鏈心跳 + 失敗送達）",
+      "status": "todo",
+      "track": "runtime-delivery",
+      "done_condition": "schedule/tasks/system-pulse.yaml 定義每日一次執行：harness-mc prebuild 全鏈（generators + auditor）、全套 test:* verifiers、sync-morrowise-manual.py --check、sync-architecture-current-state.py --check、task-event reducer；任一步失敗經 notification adapter（notify.sh）推 Telegram，成功靜默；runs log 依 runtime contract 記錄，schedule-health read model 可見本 task 的 plist 與 last-run 狀態。",
+      "acceptance": [
+        "yaml 走 agnostic-scheduler 契約格式，install.sh 可產 plist 並 --load。",
+        "失敗通知走 notification adapter contract，缺 env 時 graceful skip 不阻斷。",
+        "reducer 遵守 single-writer 原則：只在本 task 排程內執行 apply，或先以報告模式列 pending 數由 Vincent 決定 apply 時機。",
+        "MANUAL 與 ARCHITECTURE 兩支 sync --check 納入，drift 視為失敗並送達。",
+        "MC surface（pulse 卡片）依 task ownership routing 屆時另開 harness-mc task，本 task 不做 UI。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/schedule/dispatch.sh",
+        "$COLLAB/harness-mc/package.json",
+        "$COLLAB/notyet-harness/000_Agent/scripts/sync-morrowise-manual.py",
+        "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-current-state.py",
+        "$COLLAB/harness-mc/public/data/schedule-health.json"
+      ],
+      "note": "2026-07-03 健檢定位的心跳缺口：mc-sentinel 與 commit-attention-sweep 不含 read model 重生成、verifier suite 與 sync check；prebuild 只在有人 build 時跑，degraded=true 與 19 筆 pending events 即此缺口的誠實顯示。查重：runtime-scheduler-v0（completed）只建 runtime 本體；reality-tax-daily-review-task 管研究損耗，不同關注點。"
+    },
+    {
+      "id": "dual-machine-trigger-install",
+      "status": "todo",
+      "title": "雙端 trigger 安裝（MBA-2 schedule install）",
+      "track": "runtime-delivery",
+      "done_condition": "MBA-2 於 git pull 後執行 schedule/install.sh --load，launchctl 確認 com.hisenzi.schedule.* 已載入；依 local runtime boundary 只記 safe metadata（plist 存在、last-run），由 runs log 或 schedule-health 證明 MBA-2 端排程有效。",
+      "acceptance": [
+        "MBA-1 已於 2026-07-03 完成安裝（2/2 plist），本 task 只補 MBA-2 端。",
+        "不得將 MBA-2 本機狀態寫成共享正本；只在 cc-log / runs log 留證據。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/schedule/install.sh",
+        "$COLLAB/harness-mc/public/data/schedule-health.json"
+      ],
+      "note": "owner=HiSenzi（CC 無法操作 MBA-2），2026-07-03 cc-log 交接。查重：AI Agent 共享腦系統 project 的 M4（MBA-2 跑 SOP）是整機切換 SOP，不覆蓋排程 trigger 安裝。"
+    },
+    {
+      "id": "multi-session-commit-race-governance",
+      "status": "todo",
+      "title": "多 session commit race 治理（shared index 寫入秩序）",
+      "track": "governance",
+      "done_condition": "定義並落地多 agent session 同 repo 併發寫入的 commit 秩序，消除 shared index race：候選方案（每 session 專用 git worktree、commit 前 index 快照比對、staging lock）先展開給 Vincent 選路，選定後更新 worktree-commit skill 防呆步驟，並以 verifier 或 fixture 證明「他人 staged 檔案不會被本 session commit 掃入」。",
+      "acceptance": [
+        "方案展開選項 → Vincent 選路，統一架構優先於權宜之計。",
+        "worktree-commit skill 對應更新，防呆寫進流程不靠 agent 記憶。",
+        "有可重跑驗證：模擬他人 staged 檔案時，本 session commit 不掃入。",
+        "2026-07-03 三次 race 作為 evidence：556db65（package.json 混入他方 commit）、b9c135a→2f1c842（他方 staged 兩度被本 session 掃入，含 reset 重寫空檔再吃進整包）。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/SKILL.md",
+        "$COLLAB/harness-mc/scripts/task-event-outbox.mjs",
+        "$COLLAB/harness-mc/public/data/commit-attention.json"
+      ],
+      "note": "2026-07-03 健檢執行期間實測發現：多 session 高頻併發下，git add 與 commit 同 shell 原子執行仍不足——index 是共享熱點，pathspec commit 與 HEAD+own-hunk staging 只是戰術緩解。歷史重寫在併發下會擴大混雜（2f1c842 實證），治理需在流程層解決。查重：task-event outbox 解決的是跨 repo task 狀態寫入，不覆蓋同 repo index 併發。"
     }
   ]
 }

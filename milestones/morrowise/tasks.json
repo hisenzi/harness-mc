@@ -1099,6 +1099,9 @@
       "status": "completed",
       "track": "governance",
       "completed_at": "2026-07-03",
+      "commits": [
+        "2f1c842"
+      ],
       "done_condition": "建立 generator 逐一執行 package.json 全部 test:* verifiers，產出 public/data/verifier-suite-health.json read model（每支 verifier 記錄 script、pass/fail、duration、failure_excerpt、last_run_at），含 source/generator/generated_at/stale_rule/next_action/write_boundary/verifier_ref；verifier 紅燈不再依賴有人手動跑全套才被發現。",
       "acceptance": [
         "read model 通過 MC-LIVE-SYS-01 欄位檢查（source、generator、generated_at、stale_rule、next_action、write_boundary、verifier_ref）。",

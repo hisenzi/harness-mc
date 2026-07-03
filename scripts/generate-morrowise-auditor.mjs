@@ -23,13 +23,13 @@ export const ARCHITECTURE_PULSE_PROFILE = {
   source_family: "architecture_docs",
   expected_identity: "canonical",
   verifier_ref: "npm run test:morrowise-auditor-generator",
-  updated_pattern: /最後更新：(\d{4}-\d{2}-\d{2})/,
+  updated_pattern: /(?:最後更新|Updated)[：:]\s*(\d{4}-\d{2}-\d{2})/,
   warn_after_days: 30,
   freshness_reference_inputs: [
     "$COLLAB/notyet-harness/000_Agent/docs/morrowise/source-map-v0.md",
     "$COLLAB/notyet-harness/000_Agent/docs/morrowise/architecture-pulse-mvp.md",
   ],
-  source_of_truth_pattern: /Source of truth：\s*`?([^`\n→]+)`?/,
+  source_of_truth_pattern: /Source of truth[：:]\s*`?([^`\n→]+)`?/,
   legacy_source_markers: ["workspace/"],
   path_policy_patterns: [/~\/(?:Downloads|Documents)\/[^\s`|)]*/g, /\/Users\/[A-Za-z][^\s`|)]*/g],
   fake_live_rules: [{ id: "schedule-tables", heading_pattern: /排程|Cron|cron/ }],
@@ -166,14 +166,17 @@ function auditTarget(profile, filePath, now, findings) {
     const updatedAt = new Date(updatedMatch[1]);
     const ageDays = Math.floor((now - updatedAt) / 86400000);
     const updatedLine = 1 + lines.findIndex((line) => line.includes(updatedMatch[0]));
-    if (ageDays > profile.warn_after_days) {
+    // The document's own declared contract wins over the profile default.
+    const declaredWarn = headerText.match(/Warn after[：:]\s*(\d+)d/);
+    const warnAfterDays = declaredWarn ? Number(declaredWarn[1]) : profile.warn_after_days;
+    if (ageDays > warnAfterDays) {
       checks.push({ id: "freshness", kind: "freshness", result: "warning" });
       emit({
         severity: "warning",
         category: "stale_warning",
         evidence_ref: `${profile.target_path}:${updatedLine}`,
         declared_state: `Last updated ${updatedMatch[1]}.`,
-        observed_state: `The document is ${ageDays} days old (warn threshold ${profile.warn_after_days}); newer managed inputs exist: ${profile.freshness_reference_inputs.join(", ")}.`,
+        observed_state: `The document is ${ageDays} days old (warn threshold ${warnAfterDays}); newer managed inputs exist: ${profile.freshness_reference_inputs.join(", ")}.`,
         why_it_matters: "A stale architecture entry underrepresents current control-plane routing, read models, and surface boundaries.",
         suggested_action: "Keep this file as a managed target and use generated read models for current state.",
       });

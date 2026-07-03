@@ -55,13 +55,9 @@ for (const fixture of FIXTURES) {
 }
 
 // 2. Negative fixture: a clean managed doc must produce zero findings.
+//    (now is pinned so the fixture's Updated date stays inside its own Warn after window.)
 const cleanReport = generateAuditorReport({
-  profiles: [
-    fixtureProfile("clean", "stale-source.md", {
-      warn_after_days: 100000,
-      source_of_truth_pattern: /Source of truth：\s*`?(\.\/stale-source\.md)`?/,
-    }),
-  ],
+  profiles: [fixtureProfile("clean", "clean-managed-doc.md")],
   write: false,
   now: "2026-07-03T00:00:00+08:00",
 });

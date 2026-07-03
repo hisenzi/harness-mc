@@ -34,8 +34,10 @@
       "evidence_refs": [
         "https://www.cthouse.com.tw/0285012225/",
         "$COLLAB/Leo/or/Leo 房仲 AI MVP 需求確認書.md",
-        "$COLLAB/Leo/or/會議記錄260626.md"
-      ]
+        "$COLLAB/Leo/or/會議記錄260626.md",
+        "$COLLAB/Leo/or/物件謄本"
+      ],
+      "note": "2026-07-03 Vincent 補充物件謄本資料夾：$COLLAB/Leo/or/物件謄本，內含 2 張 jpg 謄本圖檔；p1-1 尚未完成，仍需選定單一物件頁 URL 與補手冊/守則節錄。"
     },
     {
       "id": "p1-2",

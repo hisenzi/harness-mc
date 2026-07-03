@@ -180,7 +180,8 @@
       "$COLLAB/Leo/or/會議記錄260626.md"
     ],
     "external_seed_url": "https://www.cthouse.com.tw/0285012225/",
-    "next_required_input": "從外部頁面選定 1 個單一物件頁 URL，由 Leo 提供對應謄本，並補 1 份教育訓練手冊 / 業務交戰守則節錄作為下一步建議的知識底座。",
-    "privacy_boundary": "內部驗證可使用未去識別化資料；資料、人員資訊、謄本與聯絡資料不可外流。"
+    "next_required_input": "從外部頁面選定 1 個單一物件頁 URL，並補 1 份教育訓練手冊 / 業務交戰守則節錄作為下一步建議的知識底座；謄本資料夾已提供於 $COLLAB/Leo/or/物件謄本。",
+    "privacy_boundary": "內部驗證可使用未去識別化資料；資料、人員資訊、謄本與聯絡資料不可外流。",
+    "transcript_source": "$COLLAB/Leo/or/物件謄本"
   }
 }

@@ -49,9 +49,17 @@
     {
       "id": "mw-003",
       "title": "實作 TWSE price data adapter",
-      "status": "todo",
+      "status": "done",
       "track": "data",
+      "completed_at": "2026-07-03",
       "done_condition": "可抓取 0050、006208、2330 日資料並正規化成 data-contract 的 Price Bar。",
+      "evidence": [
+        "$COLLAB/market-watchtower/src/data/twse-price-adapter.mjs",
+        "$COLLAB/market-watchtower/scripts/twse-price-dry-run.mjs",
+        "$COLLAB/market-watchtower/test/twse-price-adapter.test.mjs",
+        "$COLLAB/market-watchtower/data/runtime/twse-price-bars.json"
+      ],
+      "summary": "TWSE STOCK_DAY adapter 已可轉換 ROC date、解析逗號數字、拒絕 stale / 缺欄位 / zero close，並以 fixture 與 live dry-run 產出可追溯 source_url / fetched_at 的 Price Bar。",
       "acceptance": [
         "支援 ROC date 轉 ISO date",
         "拒絕 stale 或缺欄位資料",

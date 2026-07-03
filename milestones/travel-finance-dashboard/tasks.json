@@ -303,14 +303,31 @@
     {
       "id": "p1-accounting-rules",
       "title": "建立旅行清帳會計規則",
-      "status": "todo",
+      "status": "completed",
       "track": "accounting",
       "done_condition": "外幣換算、付款方式對帳、共用均分、個人排除、代買分帳、最後轉帳規則已文件化",
       "acceptance": [
         "沿用 finance-dashboard 的『不替使用者假設』與『單一資料來源』原則",
         "代買不混入一般旅費均分",
         "付款方式作為對帳證據，不作為消費分類"
-      ]
+      ],
+      "completed_at": "2026-07-03",
+      "summary": "Completed travel accounting rules contract v0: explicit FX, payment-method reconciliation, shared split, personal exclusion, proxy review, and final net transfers; Osaka fixture verifies shared total 97964, per traveler 24491, proxy review total 8172, and three transfers to Vincent.",
+      "note": "2026-07-03: Rules preserve travel ledger as source of truth, keep payment_method_id as reconciliation evidence, aggregate equal split by participant group before division to match Osaka reference behavior, and exclude proxy purchases from shared settlement until review.",
+      "external_refs": {
+        "accounting_rules": {
+          "status": "contract_v0",
+          "doc": "$COLLAB/travel-finance-dashboard/docs/travel-accounting-rules.md",
+          "cases": "$COLLAB/travel-finance-dashboard/fixtures/accounting-rules-cases.json",
+          "verifier": "python3 scripts/verify-accounting-rules.py",
+          "verified_at": "2026-07-03",
+          "source_of_truth": "travel_ledger",
+          "osaka_shared_total_twd": 97964,
+          "osaka_per_traveler_twd": 24491,
+          "osaka_proxy_review_total_twd": 8172,
+          "osaka_final_transfers": 3
+        }
+      }
     },
     {
       "id": "p1-dashboard-surface-plan",

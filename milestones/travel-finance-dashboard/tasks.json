@@ -335,7 +335,7 @@
     {
       "id": "p1-dashboard-surface-plan",
       "title": "規劃 travel-finance-dashboard 清帳介面",
-      "status": "todo",
+      "status": "completed",
       "track": "dashboard",
       "done_condition": "回國清帳 dashboard 的主要視圖、資料來源、操作流程與驗收方式已定義",
       "acceptance": [
@@ -343,7 +343,31 @@
         "明確與既有 finance-dashboard 的資料邊界",
         "標記未來 promote standalone 的條件",
         "明確產出 Phase 2 standalone dashboard implementation task draft"
-      ]
+      ],
+      "completed_at": "2026-07-03",
+      "summary": "Completed dashboard surface plan contract v0: five core clearing views, travel-ledger read-model boundary, finance-dashboard separation, Osaka reference expectations, operation flow, standalone promotion gate, and Phase 2 implementation task draft.",
+      "note": "2026-07-03: Dashboard remains review/read-model surface only; Phase 2 standalone app stays blocked behind p1-verify and must read travel ledger/generated read model rather than writing travel records into daily finance-dashboard.",
+      "external_refs": {
+        "dashboard_surface_plan": {
+          "status": "contract_v0",
+          "doc": "$COLLAB/travel-finance-dashboard/docs/dashboard-surface-plan.md",
+          "fixture": "$COLLAB/travel-finance-dashboard/fixtures/dashboard-surface-plan.json",
+          "verifier": "python3 scripts/verify-dashboard-surface-plan.py",
+          "verified_at": "2026-07-03",
+          "source_of_truth": "travel_ledger_read_model",
+          "core_views": [
+            "overview",
+            "payment_method_reconciliation",
+            "proxy_review",
+            "review_queue",
+            "final_transfers"
+          ],
+          "phase2_task_draft": "p2-standalone-dashboard-build",
+          "osaka_shared_total_twd": 97964,
+          "osaka_per_traveler_twd": 24491,
+          "osaka_proxy_review_total_twd": 8172
+        }
+      }
     },
     {
       "id": "p1-export-sop",

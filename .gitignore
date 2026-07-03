@@ -5,6 +5,7 @@ public/data/*
 !public/data/
 !public/data/tools.json
 !public/data/notion-sync-state.json
+!public/data/verifier-suite-health.json
 next-env.d.ts
 .env
 

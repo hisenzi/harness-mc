@@ -1096,8 +1096,9 @@
     {
       "id": "verifier-suite-health-read-model",
       "title": "Verifier suite health read model（全套 verifier 紅燈可觀測）",
-      "status": "todo",
+      "status": "completed",
       "track": "governance",
+      "completed_at": "2026-07-03",
       "done_condition": "建立 generator 逐一執行 package.json 全部 test:* verifiers，產出 public/data/verifier-suite-health.json read model（每支 verifier 記錄 script、pass/fail、duration、failure_excerpt、last_run_at），含 source/generator/generated_at/stale_rule/next_action/write_boundary/verifier_ref；verifier 紅燈不再依賴有人手動跑全套才被發現。",
       "acceptance": [
         "read model 通過 MC-LIVE-SYS-01 欄位檢查（source、generator、generated_at、stale_rule、next_action、write_boundary、verifier_ref）。",
@@ -1110,6 +1111,15 @@
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-live-system-admission.json",
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#v0-live-loop-verify"
       ],
+      "evidence_refs": [
+        "$COLLAB/harness-mc/scripts/generate-verifier-suite-health.mjs",
+        "$COLLAB/harness-mc/scripts/verify-verifier-suite-health.mjs",
+        "$COLLAB/harness-mc/public/data/verifier-suite-health.json",
+        "npm run test:verifier-suite-health",
+        "npm run test:live-system-admission",
+        "node scripts/generate-verifier-suite-health.mjs"
+      ],
+      "summary": "Completed verifier suite health read model v0: added generator/verifier, tracked public/data/verifier-suite-health.json, prebuild trigger, live-system admission record, sanitized failure excerpts, recursive self-test exclusion, and task-level evidence. Latest suite run reports 42/43 package test:* verifiers passing and routes next_action to test:hc-framing-gate for the existing red light; dashboard UI remains a separate harness-mc surface task.",
       "note": "2026-07-03 起因：v0-live-loop-verify 發現 verify-commit-attention 與 verify-morrowise-wiring-gate 紅燈約 5 天無人察覺（不在 prebuild 鏈、無 surface、無 trigger）。查重：無既有 verifier suite health task。"
     },
     {
@@ -1196,7 +1206,7 @@
     },
     {
       "id": "architecture-pulse-source-edit",
-      "status": "todo",
+      "status": "completed",
       "title": "ARCHITECTURE.md source edit（8 findings 修復 + 現況段 marker 化）",
       "track": "auditor-mvp",
       "dependencies": [
@@ -1214,7 +1224,13 @@
         "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
         "$COLLAB/notyet-harness/000_Agent/scripts/sync-morrowise-manual.py"
       ],
-      "note": "2026-07-03 正式化：即 Pulse 報告 priority 4 的 future task（architecture-pulse-source-edit）。順序受 open loop 約束：auditor generator 先、source edit 後。完成後 ARCHITECTURE.md 現況段與 MC 卡片共享同一 canonical 根（morrowise-system.json 樹）。"
+      "note": "2026-07-03 正式化：即 Pulse 報告 priority 4 的 future task（architecture-pulse-source-edit）。順序受 open loop 約束：auditor generator 先、source edit 後。完成後 ARCHITECTURE.md 現況段與 MC 卡片共享同一 canonical 根（morrowise-system.json 樹）。",
+      "completed_at": "2026-07-03",
+      "commits": [
+        "3e2fe28",
+        "f179c7d"
+      ],
+      "summary": "2026-07-03 完成 ARCHITECTURE.md source edit：AP-01~08 逐項處置（header contract、source-of-truth 改指 $COLLAB、歷史附錄 A-H 分區、symlink 表 $COLLAB 化、OC 排程/Notion/OC-MC 降級歷史並附現行權威指引）；新增「目前系統現況」generated marker 區由 sync-architecture-current-state.py 從 morrowise-system.json 同步（--check 可測 drift）；auditor 重跑 findings 8→0，auditor-findings-open loop 自動關閉。殘留：MBA-2 update-symlinks-table.py 輸出格式待 HiSenzi 更新為 $COLLAB 形式。"
     }
   ]
 }

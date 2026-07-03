@@ -1,7 +1,7 @@
 {
   "registry_id": "morrowise-live-system-admission.v0",
   "task_id": "live-system-admission-gate",
-  "updated_at": "2026-06-24",
+  "updated_at": "2026-07-03",
   "status": "formal_registry",
   "purpose": "Classify whether a new MorroWise component may be treated as part of the live system before it is referenced by dashboards, schedulers, runners, or workflows.",
   "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
@@ -196,6 +196,78 @@
         "$COLLAB/harness-mc/scripts/generate-commit-cleanup-plan.mjs",
         "$COLLAB/harness-mc/scripts/verify-morrowise-commit-planning-gate.mjs",
         "$COLLAB/harness-mc/scripts/verify-morrowise-commit-cleanup-plan.mjs"
+      ]
+    },
+    {
+      "component_id": "verifier-suite-health",
+      "type": "read_model",
+      "owner_task": "verifier-suite-health-read-model",
+      "loop_role": "Run every package.json test:* verifier and expose stale or failing verifier state as a generated read model with next_action.",
+      "trigger": [
+        "manual command: cd \"$COLLAB/harness-mc\" && node scripts/generate-verifier-suite-health.mjs",
+        "package prebuild script: node scripts/generate-verifier-suite-health.mjs"
+      ],
+      "source_of_truth": [
+        "$COLLAB/harness-mc/package.json#scripts",
+        "$COLLAB/harness-mc/scripts/verify-*.mjs",
+        "$COLLAB/harness-mc/scripts/generate-*.mjs"
+      ],
+      "process": [
+        "$COLLAB/harness-mc/scripts/generate-verifier-suite-health.mjs",
+        "execute local package.json test:* commands except test:verifier-suite-health to avoid recursion"
+      ],
+      "output": [
+        "$COLLAB/harness-mc/public/data/verifier-suite-health.json"
+      ],
+      "surface": [
+        "$COLLAB/harness-mc/public/data/verifier-suite-health.json",
+        "future harness-mc surface task for dashboard display"
+      ],
+      "next_action": [
+        "If any verifier fails, route next_action to the first failing npm test script.",
+        "If all verifiers pass, report no generated action.",
+        "If the suite output is older than 24 hours during active work, regenerate before trusting verifier health."
+      ],
+      "feedback_loop": [
+        "Fixing a failed verifier changes the next suite run from fail to pass.",
+        "Adding or editing a package.json test:* script changes the next generated suite coverage.",
+        "A future dashboard surface can consume the same read model without executing verifiers itself."
+      ],
+      "write_boundary": {
+        "allowed": [
+          "read package.json test script names and commands",
+          "execute local verifier commands",
+          "capture sanitized pass/fail metadata",
+          "write generated verifier-suite-health read model"
+        ],
+        "forbidden": [
+          "read secrets",
+          "print tokens or credential values",
+          "execute external writes",
+          "mutate tasks.json",
+          "git add",
+          "git commit",
+          "git push"
+        ],
+        "commit_gate": "$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/SKILL.md"
+      },
+      "degraded_states": [
+        "verifier_failed",
+        "suite_stale",
+        "script_timeout",
+        "sanitized_failure_excerpt_truncated",
+        "dashboard_surface_pending"
+      ],
+      "verifier": [
+        "npm run test:verifier-suite-health",
+        "npm run test:live-system-admission"
+      ],
+      "admission_state": "accepted",
+      "evidence_refs": [
+        "$COLLAB/harness-mc/scripts/generate-verifier-suite-health.mjs",
+        "$COLLAB/harness-mc/scripts/verify-verifier-suite-health.mjs",
+        "$COLLAB/harness-mc/public/data/verifier-suite-health.json",
+        "$COLLAB/harness-mc/package.json"
       ]
     }
   ]

@@ -1,6 +1,6 @@
 {
-  "name": "Leo 房仲 AI 案件陪跑系統",
-  "description": "以單一真實房仲案件驗證 AI 追問、行動卡、案件紀錄與跟催提醒的探索原型",
+  "name": "Leo 房仲 AI 案件跟進建議原型",
+  "description": "以單一真實房仲案件驗證 AI 追問、案件跟進建議、案件紀錄與跟催提醒的探索原型",
   "type": "internal",
   "status": "active",
   "priority": "high",
@@ -12,9 +12,10 @@
     "validation": "房仲回饋與產品化判斷"
   },
   "goals": [
-    "用 1 個中信房屋商仲部單一物件頁與對應謄本跑完資訊輸入、AI 追問、行動卡 UX、房仲回饋、再產出的最小循環。",
+    "用 1 個中信房屋商仲部單一物件頁與對應謄本跑完資訊輸入、AI 追問、案件跟進建議、房仲回饋、再產出的最小循環。",
+    "用教育訓練手冊 / 業務交戰守則作為底層知識，驗證是否能產出新手或經驗不足房仲看得懂的下一步建議。",
     "驗證 AI 在資料不足或房仲語音/模糊輸入時，能否判斷資訊足夠度、追問最多 3 個必要問題，並避免高信心亂判斷。",
-    "驗證行動卡是否能讓房仲 10 秒內看懂案件狀態、AI 判斷、缺資料、下一步與可複製話術。",
+    "驗證案件跟進建議是否能讓房仲 10 秒內看懂案件狀態、AI 判斷、缺資料、下一步與可複製話術。",
     "確認個人業務案件陪跑與店務管理/分潤生態的邊界，第一輪不做教育訓練平台、不做店務管理、不做 AI 分潤裁決。"
   ],
   "risks": [
@@ -50,13 +51,13 @@
       "expected": "文件列出單一物件頁 URL、謄本來源與案件目的。"
     },
     {
-      "criterion": "第一版探索原型包含案件紀錄、資訊足夠度判斷、最多 3 題追問、行動卡 UX 與跟催提醒。",
+      "criterion": "第一版探索原型包含案件紀錄、資訊足夠度判斷、最多 3 題追問、案件跟進建議原型 v1 與跟催提醒。",
       "verify_cmd": "人工檢查原型輸出文件",
       "expected": "五個構件皆存在，且能用同一案件脈絡串起。"
     },
     {
-      "criterion": "行動卡明確標示 AI 判斷信心、缺少資料、下一步動作與可複製話術。",
-      "verify_cmd": "人工檢查行動卡",
+      "criterion": "案件跟進建議明確標示 AI 判斷信心、缺少資料、下一步動作與可複製話術。",
+      "verify_cmd": "人工檢查案件跟進建議原型",
       "expected": "房仲能在 10 秒內看懂結論與下一步。"
     },
     {
@@ -132,7 +133,7 @@
     },
     {
       "topic": "260626 會議記錄來源補充",
-      "decision": "將 260626 會議記錄納入 source_contract.source_materials，作為守則驅動、模組化行動卡與低摩擦輸入策略的新增證據。",
+      "decision": "將 260626 會議記錄納入 source_contract.source_materials，作為守則驅動、案件跟進建議與低摩擦輸入策略的新增證據。",
       "reason": "會議記錄改變第一輪策略重心：從深度訪談與手動回饋，轉向教育訓練手冊 / 業務交戰守則作為知識底座。",
       "alternatives_rejected": [
         "只把 260626 內容留在聊天或需求書末段：可讀但 MC 追溯不完整。"
@@ -142,27 +143,44 @@
         "#rightProblem",
         "#constraints"
       ]
+    },
+    {
+      "topic": "2026-07-03 Phase 1 定調",
+      "decision": "第一階段定調為房仲新手 / 經驗不足者的案件下一步判斷助手，輸出命名統一使用「案件跟進建議原型 v1」。",
+      "reason": "「低摩擦現場閉環」是方法論，不足以作為產品方向；若不先鎖定新手或經驗不足者的單一案件下一步判斷，容易漂移到完整房仲 AI、CRM、估價、教育平台或模組平台。",
+      "alternatives_rejected": [
+        "完整房仲 AI：範圍過大，第一輪證據不足。",
+        "模組平台：可作為後續收納方式，但不是第一階段第一原理。",
+        "行動卡命名：外部語感過 AI 產品化，改用房仲現場較自然的案件跟進建議。"
+      ],
+      "hc_used": [
+        "#rightProblem",
+        "#audience",
+        "#constraints",
+        "#systemDynamics",
+        "#evidenceBased"
+      ]
     }
   ],
   "system_growth": {
-    "trigger": "Leo 提供單一物件頁與對應謄本，或房仲提供一段案件狀態語音/文字輸入。",
-    "data_flow": "物件頁/謄本/口語狀態 -> 資訊足夠度檢查 -> 必要追問 -> 行動卡 UX -> 房仲回饋 -> 第二版行動卡與案件紀錄更新。",
+    "trigger": "Leo 提供單一物件頁與對應謄本、教育訓練手冊 / 業務交戰守則節錄，或房仲提供一段案件狀態語音/文字輸入。",
+    "data_flow": "物件頁/謄本/手冊守則/口語狀態 -> 資訊足夠度檢查 -> 必要追問 -> 案件跟進建議原型 v1 -> 房仲回饋 -> 第二版建議與案件紀錄更新。",
     "surface": "MC 專案任務、需求確認書、後續單一案件探索原型文件；Heptabase/Canvas 待 Vincent 指定白板。",
     "feedback_loop": "洪兆君或 Leo 對第一版行動卡回饋準確度與可用性，回寫成第二版行動卡調整項目。"
   },
   "source_contract": {
     "collab_root": "$COLLAB",
-    "source_root": "$COLLAB/CC本機協作_無Git/Leo/or",
-    "primary_requirement_doc": "$COLLAB/CC本機協作_無Git/Leo/or/Leo 房仲 AI MVP 需求確認書.md",
+    "source_root": "$COLLAB/Leo/or",
+    "primary_requirement_doc": "$COLLAB/Leo/or/Leo 房仲 AI MVP 需求確認書.md",
     "source_materials": [
-      "$COLLAB/CC本機協作_無Git/Leo/or/會議記錄260625.md",
-      "$COLLAB/CC本機協作_無Git/Leo/or/房屋買賣過程中重要的資料及功能.md",
-      "$COLLAB/CC本機協作_無Git/Leo/or/年長房仲最在意的工具細節有哪些？.md",
-      "$COLLAB/CC本機協作_無Git/Leo/or/開發AI自動產出不動產價格調查書的具體流程？.md",
-      "$COLLAB/CC本機協作_無Git/Leo/or/會議記錄260626.md"
+      "$COLLAB/Leo/or/會議記錄260625.md",
+      "$COLLAB/Leo/or/房屋買賣過程中重要的資料及功能.md",
+      "$COLLAB/Leo/or/年長房仲最在意的工具細節有哪些？.md",
+      "$COLLAB/Leo/or/開發AI自動產出不動產價格調查書的具體流程？.md",
+      "$COLLAB/Leo/or/會議記錄260626.md"
     ],
     "external_seed_url": "https://www.cthouse.com.tw/0285012225/",
-    "next_required_input": "從外部頁面選定 1 個單一物件頁 URL，並由 Leo 提供對應謄本。",
+    "next_required_input": "從外部頁面選定 1 個單一物件頁 URL，由 Leo 提供對應謄本，並補 1 份教育訓練手冊 / 業務交戰守則節錄作為下一步建議的知識底座。",
     "privacy_boundary": "內部驗證可使用未去識別化資料；資料、人員資訊、謄本與聯絡資料不可外流。"
   }
 }

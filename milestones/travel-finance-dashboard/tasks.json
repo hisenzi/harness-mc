@@ -266,14 +266,36 @@
     {
       "id": "p1-osaka-reference-ledger",
       "title": "將去年大阪 Excel 整理成驗證用 sample ledger",
-      "status": "todo",
+      "status": "completed",
       "track": "ledger",
       "done_condition": "大阪參考檔的核心交易、付款方式與代買資料已整理成 sample ledger 或 mapping 文件",
       "acceptance": [
         "保留原始 Excel 作 reference，不覆蓋",
         "能追溯出國前合計、旅途中合計、總計、平均一人等核心數字",
         "無法機械解析的資料以人工 mapping 註明"
-      ]
+      ],
+      "completed_at": "2026-07-03",
+      "summary": "完成大阪 2025 Excel reference sample ledger 與 mapping；可重現出國前 74133、旅途中 23831、總計 97964、平均一人 24491，並將代買 8172 保留為 review queue。",
+      "note": "2026-07-03: 保留原始 Excel 作 reference；新增 mapping / ledger fixture 與 verifier，手動註明 mixed-sheet subtotal、付款方式淨額與代買彙總的解析邊界。",
+      "external_refs": {
+        "osaka_reference_ledger": {
+          "status": "contract_v0",
+          "workbook": "$COLLAB/travel-finance-dashboard/出國旅遊記帳.xlsx",
+          "doc": "$COLLAB/travel-finance-dashboard/docs/osaka-reference-ledger.md",
+          "mapping": "$COLLAB/travel-finance-dashboard/fixtures/osaka-reference-mapping.json",
+          "ledger": "$COLLAB/travel-finance-dashboard/fixtures/osaka-reference-ledger.json",
+          "verifier": "python3 scripts/verify-osaka-reference-ledger.py",
+          "verified_at": "2026-07-03",
+          "pretrip_total_twd": 74133,
+          "travel_during_total_twd": 23831,
+          "travel_gross_total_twd": 32003,
+          "proxy_total_twd": 8172,
+          "grand_total_twd": 97964,
+          "average_per_person_twd": 24491,
+          "transactions": 15,
+          "review_queue": 4
+        }
+      }
     },
     {
       "id": "p1-accounting-rules",

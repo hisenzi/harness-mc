@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-yutianlaw-yt-c3-mvp-formspark-n8n-6c81802-20260703T104556Z",
+  "type": "task.commit_attached",
+  "repo": "yutianlaw",
+  "commit": "6c81802",
+  "project": "yutianlaw",
+  "task_id": "yt-c3-mvp-formspark-n8n",
+  "status": "updated",
+  "summary": "新增 Formspark+n8n live run secret-safe 回填表，讓 Vincent 完成帳號登入、驗證與寄信 credential 後，可提供非秘密資料續跑 A00/A06-A08。",
+  "created_at": "2026-07-03T10:45:56.919Z",
+  "actor": "codex",
+  "session_id": "codex-yutianlaw-formspark-n8n-live-run-20260703"
+}

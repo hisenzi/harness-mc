@@ -277,6 +277,9 @@
       "completed_at": "2026-07-03",
       "summary": "完成大阪 2025 Excel reference sample ledger 與 mapping；可重現出國前 74133、旅途中 23831、總計 97964、平均一人 24491，並將代買 8172 保留為 review queue。",
       "note": "2026-07-03: 保留原始 Excel 作 reference；新增 mapping / ledger fixture 與 verifier，手動註明 mixed-sheet subtotal、付款方式淨額與代買彙總的解析邊界。",
+      "commits": [
+        "e2c5719"
+      ],
       "external_refs": {
         "osaka_reference_ledger": {
           "status": "contract_v0",

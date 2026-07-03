@@ -95,11 +95,26 @@ function verifyWiringGate(manifest, context) {
     assert.ok(surface, `${fixture.id}: live dashboard surface missing`);
     assert.ok(surface.source_files.includes(fixture.source_registry), `${fixture.id}: dashboard surface missing source registry`);
     assert.ok(surface.source_files.includes(fixture.generated_read_model), `${fixture.id}: dashboard surface missing read model`);
-    assert.equal(surface.verifier_ref, "npm run test:capability-registry", `${fixture.id}: dashboard verifier_ref mismatch`);
-    assert.equal(surface.next_action?.target, fixture.next_action_task, `${fixture.id}: dashboard next_action must route to next_action_task`);
+    const expectedSurfaceVerifier = fixture.live_dashboard_verifier_ref || "npm run test:capability-registry";
+    assert.equal(surface.verifier_ref, expectedSurfaceVerifier, `${fixture.id}: dashboard verifier_ref mismatch`);
+    // next_action is live conditional routing (auth / task / generator / none), so assert the
+    // structural contract instead of freezing one branch's task id (which rots when tasks complete).
+    const nextAction = surface.next_action;
+    assert.ok(nextAction, `${fixture.id}: dashboard surface next_action required`);
+    assert.ok(["auth", "task", "generator", "none"].includes(nextAction.type), `${fixture.id}: next_action.type must be a known type, got ${nextAction.type}`);
+    if (nextAction.type === "task") {
+      assert.ok(taskIds.has(nextAction.target), `${fixture.id}: task-type next_action target must exist in morrowise tasks, got ${nextAction.target}`);
+    }
+    if (nextAction.type === "none") {
+      assert.equal(nextAction.target, null, `${fixture.id}: none-type next_action must have null target`);
+    }
 
-    assert.ok(homepage.includes(`id="${fixture.homepage_anchor}"`), `${fixture.id}: homepage anchor missing`);
-    assert.ok(homepage.includes(`${fixture.live_dashboard_surface_id}: "#${fixture.homepage_anchor}"`), `${fixture.id}: sidebar anchor mapping missing`);
+    if (fixture.fixture_scope === "read_model_surface_only") {
+      assert.equal(fixture.homepage_anchor, null, `${fixture.id}: read-model-only fixture must not claim homepage anchor`);
+    } else {
+      assert.ok(homepage.includes(`id="${fixture.homepage_anchor}"`), `${fixture.id}: homepage anchor missing`);
+      assert.ok(homepage.includes(`${fixture.live_dashboard_surface_id}: "#${fixture.homepage_anchor}"`), `${fixture.id}: sidebar anchor mapping missing`);
+    }
 
     for (const verifierRef of fixture.verifier_refs) {
       assert.ok(verifierCommandExists(verifierRef, packageJson), `${fixture.id}: missing verifier script ${verifierRef}`);

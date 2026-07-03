@@ -1,0 +1,7 @@
+{
+  "project": "morrowise",
+  "tasks": [
+    { "id": "fixture-anchor-task", "title": "Fixture active anchor", "status": "in_progress", "track": "fixture" },
+    { "id": "fixture-completed-task", "title": "Fixture completed task", "status": "completed", "track": "fixture" }
+  ]
+}

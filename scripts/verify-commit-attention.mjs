@@ -1,5 +1,11 @@
 import assert from "node:assert/strict";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { generateCommitAttention } from "./generate-commit-attention.mjs";
+
+// Hermetic fixture root: task anchors come from scripts/fixtures, not live milestones,
+// so this verifier stays green regardless of real task lifecycle.
+const fixtureRoot = path.join(path.dirname(fileURLToPath(import.meta.url)), "fixtures", "commit-attention");
 
 const fixtureWorktrees = {
   repositories: [
@@ -45,7 +51,7 @@ const fixtureWorktrees = {
   ],
 };
 
-const data = generateCommitAttention({ worktrees: fixtureWorktrees, write: false });
+const data = generateCommitAttention({ worktrees: fixtureWorktrees, root: fixtureRoot, write: false });
 
 assert.equal(data.read_only, true);
 assert.equal(data.summary.repositories_need_attention, 2);
@@ -61,7 +67,12 @@ assert.ok(harness, "harness-mc fixture should be included");
 assert.ok(harness.candidate_projects.includes("morrowise"));
 assert.equal(harness.commit_attention.state, "task_anchor_available");
 assert.ok(
-  harness.task_links.some((link) => link.project === "morrowise" && link.active_tasks.some((task) => task.id === "runtime-scheduler-v0")),
+  harness.task_links.some((link) => link.project === "morrowise" && link.active_tasks.some((task) => task.id === "fixture-anchor-task")),
+  "fixture anchor task must appear as active task link",
+);
+assert.ok(
+  !harness.task_links.some((link) => link.active_tasks.some((task) => task.id === "fixture-completed-task")),
+  "completed fixture task must be filtered out of active tasks",
 );
 
 const unknown = data.repositories.find((repo) => repo.repo === "unknown-repo");

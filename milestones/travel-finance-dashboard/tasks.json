@@ -375,14 +375,43 @@
     {
       "id": "p1-export-sop",
       "title": "定義輸出與旅行 SOP",
-      "status": "todo",
+      "status": "completed",
       "track": "handoff",
       "done_condition": "旅行中記錄 SOP、回國清帳 SOP、Excel/報告輸出格式已建立",
       "acceptance": [
         "旅行中 SOP 可在手機上快速閱讀",
         "回國 SOP 可照步驟完成匯入、確認、對帳與輸出",
         "Excel 被定位為輸出物，不是旅行中輸入工具"
-      ]
+      ],
+      "completed_at": "2026-07-03",
+      "summary": "Completed travel export SOP contract v0: 10-second mobile capture, return-home import/normalize/verify/review/reconcile/export flow, Excel/report/transfer-list output formats, and final gate that keeps Excel as output rather than input.",
+      "note": "2026-07-03: SOP preserves Notion as mobile evidence capture, travel ledger as source of truth, dashboard as review surface, and Excel/report/transfer list as output artifacts; Osaka transfer list remains draft while review blockers exist.",
+      "external_refs": {
+        "export_sop": {
+          "status": "contract_v0",
+          "doc": "$COLLAB/travel-finance-dashboard/docs/travel-export-sop.md",
+          "checklist": "$COLLAB/travel-finance-dashboard/fixtures/export-sop-checklist.json",
+          "verifier": "python3 scripts/verify-export-sop.py",
+          "verified_at": "2026-07-03",
+          "source_of_truth": "travel_ledger",
+          "mobile_target_seconds": 10,
+          "return_home_steps": [
+            "import",
+            "normalize",
+            "verify",
+            "review",
+            "reconcile",
+            "export"
+          ],
+          "output_formats": [
+            "excel",
+            "report",
+            "transfer_list"
+          ],
+          "excel_role": "output_artifact_not_input_surface",
+          "osaka_transfer_status": "draft"
+        }
+      }
     },
     {
       "id": "p1-verify",

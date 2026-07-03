@@ -1151,7 +1151,7 @@
     },
     {
       "id": "morrowise-auditor-fixtures",
-      "status": "todo",
+      "status": "completed",
       "title": "Auditor generator v0（Architecture Pulse 可重跑 scanner）",
       "track": "auditor-mvp",
       "dependencies": [
@@ -1187,7 +1187,12 @@
           "$COLLAB/harness-mc/milestones/morrowise/tasks.json#v0-live-loop-verify"
         ],
         "source_boundary": "HC is a thinking check, not source of truth. Canonical contract is the auditor v0 schema plus fixtures; ARCHITECTURE.md stays the audit target and may not be edited by this task."
-      }
+      },
+      "completed_at": "2026-07-03",
+      "commits": [
+        "f5b57ba"
+      ],
+      "summary": "2026-07-03 完成 auditor generator v0：通用引擎 + architecture-pulse target profile，輸出 morrowise-auditor.json（v0 schema、read-only boundary）；5 個 fixture 嚴格斷言、真實 target 只驗結構不凍結 live 狀態；真實 ARCHITECTURE.md 掃描與 2026-06-27 手動報告 8 findings category 完全一致；system read model 的 generator-missing/manual-only open loop 改條件式，由 auditor-findings-open 取代；接進 prebuild。ARCHITECTURE.md 自動同步只差 architecture-pulse-source-edit。"
     },
     {
       "id": "architecture-pulse-source-edit",

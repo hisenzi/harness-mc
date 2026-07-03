@@ -881,7 +881,7 @@
     {
       "id": "notion-sync-read-model-v0",
       "title": "Notion sync state read model（多專案 Notion DB ↔ MC mirror）",
-      "status": "todo",
+      "status": "completed",
       "track": "governance",
       "order_label": "MW-NOTION-01",
       "dependencies": [

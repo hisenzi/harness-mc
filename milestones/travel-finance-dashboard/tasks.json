@@ -345,6 +345,9 @@
         "明確產出 Phase 2 standalone dashboard implementation task draft"
       ],
       "completed_at": "2026-07-03",
+      "commits": [
+        "2180b1f"
+      ],
       "summary": "Completed dashboard surface plan contract v0: five core clearing views, travel-ledger read-model boundary, finance-dashboard separation, Osaka reference expectations, operation flow, standalone promotion gate, and Phase 2 implementation task draft.",
       "note": "2026-07-03: Dashboard remains review/read-model surface only; Phase 2 standalone app stays blocked behind p1-verify and must read travel ledger/generated read model rather than writing travel records into daily finance-dashboard.",
       "external_refs": {

@@ -23,9 +23,19 @@
     {
       "id": "mw-002",
       "title": "建立 app skeleton 與本機開發環境",
-      "status": "todo",
+      "status": "done",
       "track": "foundation",
+      "completed_at": "2026-07-03",
       "done_condition": "選定技術棧並建立可啟動的 web app + worker skeleton。",
+      "evidence": [
+        "$COLLAB/market-watchtower/package.json",
+        "$COLLAB/market-watchtower/src/server.mjs",
+        "$COLLAB/market-watchtower/src/worker/dry-run.mjs",
+        "$COLLAB/market-watchtower/public/index.html",
+        "$COLLAB/market-watchtower/local-dev-urls.json",
+        "$COLLAB/market-watchtower/scripts/verify-skeleton.mjs"
+      ],
+      "summary": "建立無外部依賴的 Node static dashboard + worker dry-run skeleton，固定本機 port 4177，並以 fixture snapshot 驅動 Overview、Asset Detail、Signals、Data Health、Notification Log、Rules。",
       "acceptance": [
         "有 package / app skeleton",
         "本機可啟動 dashboard",

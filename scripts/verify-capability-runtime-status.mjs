@@ -41,6 +41,10 @@ const data = generateCapabilityRuntimeStatus({
       configured: true,
       source_ref: "$COLLAB/.codex/config.toml",
     },
+    notionApiKey: {
+      configured: true,
+      source_ref: "$COLLAB/notyet-harness/000_Agent/config/secrets/notion.env",
+    },
   },
 });
 
@@ -60,7 +64,8 @@ const requiredIds = [
   "runtime.codex-heptabase-mcp",
   "runtime.heptabase-local-cli",
   "runtime.playwright-cli",
-  "runtime.notion-mcp",
+  "runtime.notion-api-key",
+  "runtime.notion-mcp-connector",
   "contract.notification-adapter",
   "legacy.heptabase-pai-mcp-oauth",
 ];
@@ -81,8 +86,11 @@ for (const item of data.items) {
 
 assert.equal(statuses.get("runtime.cc-heptabase-mcp").runtime_status, "connected");
 assert.equal(statuses.get("runtime.cc-heptabase-mcp").auth_status, "authenticated");
-assert.equal(statuses.get("runtime.notion-mcp").runtime_status, "needs_auth");
-assert.equal(statuses.get("runtime.notion-mcp").auth_status, "needs_auth");
+assert.equal(statuses.get("runtime.notion-api-key").runtime_status, "configured");
+assert.equal(statuses.get("runtime.notion-api-key").auth_status, "unknown");
+assert.equal(statuses.get("runtime.notion-mcp-connector").runtime_status, "needs_auth");
+assert.equal(statuses.get("runtime.notion-mcp-connector").auth_status, "needs_auth");
+assert.equal(statuses.has("runtime.notion-mcp"), false, "legacy single Notion MCP status must be split");
 assert.equal(statuses.get("runtime.heptabase-local-cli").runtime_status, "connected");
 assert.equal(statuses.get("runtime.playwright-cli").runtime_status, "missing");
 assert.equal(statuses.get("contract.notification-adapter").contract_status, "contract_ready");

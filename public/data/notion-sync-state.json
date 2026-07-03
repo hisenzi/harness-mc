@@ -1,0 +1,384 @@
+{
+  "schema_version": "notion-sync-state.v0",
+  "generated_at": "2026-07-03T07:47:29.205Z",
+  "read_only": true,
+  "source": "$COLLAB/harness-mc/system-workflow/registries/morrowise-notion-sync-state.json",
+  "generator": "$COLLAB/harness-mc/scripts/generate-notion-sync-state.mjs",
+  "verifier_ref": "npm run test:notion-sync-state",
+  "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#notion-sync-read-model-v0",
+  "source_registry_status": "read_model_contract",
+  "source_layers": {
+    "notion_snapshot": {
+      "source_ref": "$COLLAB/harness-mc/system-workflow/snapshots/kj-notion-tasks-snapshot.json",
+      "role": "Non-secret Notion database schema, row-count, title, and task metadata captured by a prior read-only probe."
+    },
+    "mc_mirror": {
+      "source_ref": "$COLLAB/harness-mc/milestones/*/tasks.json",
+      "role": "MC task mirror used only for count and drift comparison."
+    },
+    "runtime_route_probe": {
+      "source_ref": "notion.env existence and claude mcp list health output",
+      "role": "Separates API-key script route from MCP connector route without reading credential values."
+    }
+  },
+  "write_boundary": {
+    "allowed": [
+      "read non-secret Notion snapshot metadata",
+      "read MC mirror tasks",
+      "read local sync-state ids",
+      "probe credential file existence",
+      "probe MCP health output",
+      "write generated notion sync-state read model"
+    ],
+    "forbidden": [
+      "write Notion",
+      "read or print NOTION_TOKEN",
+      "read OAuth token content",
+      "read browser cookies or profiles",
+      "rewrite tasks.json mirrors",
+      "trigger Heptabase / PAI / Telegram / LINE delivery"
+    ]
+  },
+  "runtime_routes": {
+    "notion_api_key": {
+      "id": "runtime.notion-api-key",
+      "label": "Notion API key script route",
+      "source_layer": "runtime_route_probe",
+      "runtime_status": "configured",
+      "auth_status": "configured_unverified",
+      "evidence_refs": [
+        "$COLLAB/notyet-harness/000_Agent/config/secrets/notion.env",
+        "$COLLAB/notyet-harness/000_Agent/config/heptabase-clients.json"
+      ],
+      "next_action": {
+        "target": "notion-sync-read-model-v0",
+        "label": "Use read-only metadata probes; do not print token values."
+      }
+    },
+    "notion_mcp_connector": {
+      "id": "runtime.notion-mcp-connector",
+      "label": "Notion MCP connector route",
+      "source_layer": "runtime_route_probe",
+      "runtime_status": "connected",
+      "auth_status": "authenticated",
+      "evidence_refs": [
+        "claude mcp list"
+      ],
+      "next_action": {
+        "target": "none",
+        "label": "No MCP connector auth action required from the current probe."
+      }
+    }
+  },
+  "summary": {
+    "total": 3,
+    "connected": 1,
+    "drift": 0,
+    "disconnected": 0,
+    "unknown": 2
+  },
+  "databases": [
+    {
+      "drift": [],
+      "evidence_refs": [
+        "$COLLAB/harness-mc/system-workflow/snapshots/kj-notion-tasks-snapshot.json",
+        "$COLLAB/harness-mc/milestones/kj-bilingual/tasks.json",
+        "$COLLAB/harness-mc/system-workflow/reports/kj-mirror-reconcile-report.md"
+      ],
+      "sample_titles": [
+        "[B2] 確認轉換點＝115學年末（情境A）",
+        "[B3] 家長溝通方案＋通知信/說明會",
+        "[風險·中] 菲師資格/官方語言認定",
+        "[C2] 索取其他套裝教材評估（Allen待確認）",
+        "[E1] 招生方案（年級範圍/規模/月費）"
+      ],
+      "id": "kj-bilingual-action-db",
+      "label": "KJ 雙語班行動庫",
+      "notion_db": {
+        "database_id": "eb0eddd212e44deaaffbb5d6da6a1be6",
+        "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c",
+        "data_source_url": "collection://f046f40f-ac75-41ed-afa8-67379159316c",
+        "project_page_id": "381714fb14c680c1b93ec57136e95eec",
+        "source_snapshot": "$COLLAB/harness-mc/system-workflow/snapshots/kj-notion-tasks-snapshot.json"
+      },
+      "source_of_truth": "Notion",
+      "mirror_path": "$COLLAB/harness-mc/milestones/kj-bilingual/tasks.json",
+      "notion_count": 43,
+      "mirror_count": 43,
+      "last_sync": "2026-07-02T16:29:50.653Z",
+      "sync_direction": "Notion -> MC tasks.json -> Heptabase / PAI mirrors",
+      "status": "connected",
+      "schema_property_count": 10,
+      "next_action": {
+        "type": "surface",
+        "target": "mc-notion-sync-surface",
+        "label": "Expose current KJ sync state on the MC read-only surface."
+      }
+    },
+    {
+      "drift": [],
+      "evidence_refs": [
+        "$COLLAB/harness-mc/scripts/sentinel-notion.mjs"
+      ],
+      "sample_titles": [],
+      "id": "pai-action-db",
+      "label": "PAI 行動庫",
+      "notion_db": {
+        "database_id": "cb313a88c82541d4a421261fbac49270",
+        "data_source_id": null,
+        "source_script": "$COLLAB/harness-mc/scripts/sentinel-notion.mjs"
+      },
+      "source_of_truth": "Notion",
+      "mirror_path": "$COLLAB/harness-mc/public/data/changes.json",
+      "notion_count": null,
+      "mirror_count": null,
+      "last_sync": null,
+      "sync_direction": "MC changes.json -> Notion PAI 行動庫重要提醒 view",
+      "status": "unknown",
+      "schema_property_count": null,
+      "next_action": {
+        "type": "probe",
+        "target": "notion-sync-read-model-v0",
+        "label": "Add a non-secret PAI database snapshot/probe before claiming count-level sync."
+      }
+    },
+    {
+      "drift": [],
+      "evidence_refs": [
+        "$COLLAB/harness-mc/scripts/sync-notion-courses.mjs",
+        "$COLLAB/harness-mc/milestones/self-learning/tasks.json"
+      ],
+      "sample_titles": [
+        "倪海廈-風水、易經",
+        "蔡恩全-CEO的16個私房管理工具",
+        "Udemy-創業學習資源",
+        "《極簡工作術》",
+        "蔡恩全-溝通表達"
+      ],
+      "id": "self-learning-courses-db",
+      "label": "Self-learning Courses DB",
+      "notion_db": {
+        "database_id": "53692cdffc61475eb9340f4e291ee59b",
+        "data_source_id": null,
+        "source_script": "$COLLAB/harness-mc/scripts/sync-notion-courses.mjs"
+      },
+      "source_of_truth": "Notion",
+      "mirror_path": "$COLLAB/harness-mc/milestones/self-learning/tasks.json",
+      "notion_count": null,
+      "mirror_count": 29,
+      "last_sync": null,
+      "sync_direction": "Notion -> MC self-learning tasks.json",
+      "status": "unknown",
+      "schema_property_count": null,
+      "next_action": {
+        "type": "probe",
+        "target": "notion-sync-read-model-v0",
+        "label": "Add a non-secret Courses DB snapshot before comparing live Notion counts."
+      }
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "kj-generation-drift-2026-07-01",
+      "label": "KJ generation-time drift fixture",
+      "source_ref": "$COLLAB/harness-mc/system-workflow/snapshots/kj-notion-tasks-snapshot.json#known_conflicts",
+      "notion_count": 43,
+      "mirror_count": 18,
+      "drift": [
+        {
+          "type": "title_mismatch",
+          "severity": "medium",
+          "task_id": "A1",
+          "notion_title": "[A1] 拿《遠見問題清單》問三題（合約/教材/外師）",
+          "mc_title": "遠見三題（合約/教材/外師）",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "title_mismatch",
+          "severity": "medium",
+          "task_id": "A2",
+          "notion_title": "[A2] 釐清雙語班法律 entity（學校1b vs 補習班1a）",
+          "mc_title": "釐清雙語班法律 entity（1b vs 1a）",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "title_mismatch",
+          "severity": "medium",
+          "task_id": "B1",
+          "notion_title": "[B1] 盤點國二三現況（人數/年級/程度/節數）",
+          "mc_title": "盤點國二三在校生",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "title_mismatch",
+          "severity": "high",
+          "task_id": "B2",
+          "notion_title": "[B2] 確認轉換點＝115學年末（情境A）",
+          "mc_title": "家長溝通方案（國二三轉換）",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "title_mismatch",
+          "severity": "medium",
+          "task_id": "C1",
+          "notion_title": "[C1] 看 Smart Choice 教材",
+          "mc_title": "Smart Choice 教材評估",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "title_mismatch",
+          "severity": "medium",
+          "task_id": "C2",
+          "notion_title": "[C2] 索取其他套裝教材評估（Allen待確認）",
+          "mc_title": "主教材 + 雜誌 + 測驗定案",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "title_mismatch",
+          "severity": "medium",
+          "task_id": "C3",
+          "notion_title": "[C3] 主教材＋雜誌＋測驗 定案",
+          "mc_title": "月費定價精算",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "title_mismatch",
+          "severity": "medium",
+          "task_id": "C4",
+          "notion_title": "[C4] 月費定價（精算，待外師薪資）",
+          "mc_title": "差異化敘事（AI-proof 核心）",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "title_mismatch",
+          "severity": "medium",
+          "task_id": "E1",
+          "notion_title": "[E1] 招生方案（年級範圍/規模/月費）",
+          "mc_title": "行銷物料設計",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "title_mismatch",
+          "severity": "medium",
+          "task_id": "F1",
+          "notion_title": "[F1] 月費 vs 代收代辦界線（法務/主管機關查證）",
+          "mc_title": "月費 vs 代收代辦界線查證",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "notion_task_missing_in_mc_mirror",
+          "severity": "medium",
+          "task_id": "A4",
+          "notion_title": "[A4] 遠見交接清單（學生檔/成績/家長名單/系統）",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "notion_task_missing_in_mc_mirror",
+          "severity": "medium",
+          "task_id": "D2",
+          "notion_title": "[D2] 釐清外師簽證/聘僱許可流程與時程",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "notion_task_missing_in_mc_mirror",
+          "severity": "medium",
+          "task_id": "C7",
+          "notion_title": "[C7] 排課/收費/測驗系統",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "notion_task_missing_in_mc_mirror",
+          "severity": "medium",
+          "task_id": "E4",
+          "notion_title": "[E4] 口碑證明（成果展/試聽/在校生案例）",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "notion_task_missing_in_mc_mirror",
+          "severity": "medium",
+          "task_id": "F2",
+          "notion_title": "[F2] 菲師「官方語言認定」送件前書面確認",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "notion_task_missing_in_mc_mirror",
+          "severity": "medium",
+          "task_id": "D3",
+          "notion_title": "[D3] 外師招募啟動（FB＋篩學士/教師證）",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "notion_task_missing_in_mc_mirror",
+          "severity": "medium",
+          "task_id": "A3",
+          "notion_title": "[A3] 判定「接管 vs 重建」",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "notion_task_missing_in_mc_mirror",
+          "severity": "high",
+          "task_id": "B3",
+          "notion_title": "[B3] 家長溝通方案＋通知信/說明會",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "notion_task_missing_in_mc_mirror",
+          "severity": "medium",
+          "task_id": "D4",
+          "notion_title": "[D4] 外師鐵律合約（含 Only 雙語班範疇）",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "notion_task_missing_in_mc_mirror",
+          "severity": "medium",
+          "task_id": "D5",
+          "notion_title": "[D5] 簽證/聘僱辦理（留緩衝）",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "notion_task_missing_in_mc_mirror",
+          "severity": "medium",
+          "task_id": "C5",
+          "notion_title": "[C5] 課程/分組/節數模型定案",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "notion_task_missing_in_mc_mirror",
+          "severity": "medium",
+          "task_id": "F3",
+          "notion_title": "[F3] 守紅線（不觀光簽上課/不錯用補習班許可）",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "notion_task_missing_in_mc_mirror",
+          "severity": "medium",
+          "task_id": "E3",
+          "notion_title": "[E3] 招生啟動",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "notion_task_missing_in_mc_mirror",
+          "severity": "medium",
+          "task_id": "E2",
+          "notion_title": "[E2] 行銷物料設計",
+          "source_of_truth": "notion"
+        },
+        {
+          "type": "notion_task_missing_in_mc_mirror",
+          "severity": "medium",
+          "task_id": "C6",
+          "notion_title": "[C6] 差異化敘事（AI-proof 核心，見 SIFT）",
+          "source_of_truth": "notion"
+        }
+      ],
+      "purpose": "Proves the read model can represent a real historical drift case instead of only an empty current-state list."
+    }
+  ],
+  "next_actions": [
+    {
+      "type": "surface",
+      "target": "mc-notion-sync-surface",
+      "label": "Implement the harness-mc read-only surface from notion-sync-state.json."
+    }
+  ]
+}

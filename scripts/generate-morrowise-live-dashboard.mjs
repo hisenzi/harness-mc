@@ -25,6 +25,7 @@ export function generateMorrowiseLiveDashboard(options = {}) {
     worktreeStatusSurface(sources),
     closeoutResidualLedgerSurface(sources),
     capabilityRegistrySurface(sources),
+    notionSyncStateSurface(sources),
     scheduleRuntimeHealthSurface(sources),
     approvalQueueSurface(sources),
   ];
@@ -46,6 +47,7 @@ export function generateMorrowiseLiveDashboard(options = {}) {
         "$COLLAB/harness-mc/public/data/morrowise-proactive-loop.json",
         "$COLLAB/harness-mc/public/data/morrowise-capabilities.json",
         "$COLLAB/harness-mc/public/data/capability-runtime-status.json",
+        "$COLLAB/harness-mc/public/data/notion-sync-state.json",
         "$COLLAB/harness-mc/public/data/schedule-health.json",
       ],
       policy_registry: "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
@@ -89,8 +91,10 @@ function readSources(root) {
     proactiveLoop: readJsonOrNull(path.join(root, DATA_DIR, "morrowise-proactive-loop.json")),
     capabilities: readJsonOrNull(path.join(root, DATA_DIR, "morrowise-capabilities.json")),
     capabilityRuntimeStatus: readJsonOrNull(path.join(root, DATA_DIR, "capability-runtime-status.json")),
+    notionSyncState: readJsonOrNull(path.join(root, DATA_DIR, "notion-sync-state.json")),
     scheduleHealth: readJsonOrNull(path.join(root, DATA_DIR, "schedule-health.json")),
     approvalPolicy: readJsonOrNull(path.join(root, "system-workflow", "registries", "morrowise-approval-policy.json")),
+    notionSyncRegistry: readJsonOrNull(path.join(root, "system-workflow", "registries", "morrowise-notion-sync-state.json")),
     fileTimes: {
       projects: fileGeneratedAt(root, path.join(DATA_DIR, "projects.json")),
       taskEvents: fileGeneratedAt(root, path.join(DATA_DIR, "task-events.json")),
@@ -101,8 +105,10 @@ function readSources(root) {
       proactiveLoop: fileGeneratedAt(root, path.join(DATA_DIR, "morrowise-proactive-loop.json")),
       capabilities: fileGeneratedAt(root, path.join(DATA_DIR, "morrowise-capabilities.json")),
       capabilityRuntimeStatus: fileGeneratedAt(root, path.join(DATA_DIR, "capability-runtime-status.json")),
+      notionSyncState: fileGeneratedAt(root, path.join(DATA_DIR, "notion-sync-state.json")),
       scheduleHealth: fileGeneratedAt(root, path.join(DATA_DIR, "schedule-health.json")),
       approvalPolicy: fileGeneratedAt(root, path.join("system-workflow", "registries", "morrowise-approval-policy.json")),
+      notionSyncRegistry: fileGeneratedAt(root, path.join("system-workflow", "registries", "morrowise-notion-sync-state.json")),
     },
   };
 }
@@ -437,6 +443,58 @@ function capabilityRegistrySurface(sources) {
   });
 }
 
+function notionSyncStateSurface(sources) {
+  const state = sources.notionSyncState || {};
+  const summary = state.summary || {};
+  const drift = summary.drift || 0;
+  const disconnected = summary.disconnected || 0;
+  const unknown = summary.unknown || 0;
+
+  return surface({
+    id: "notion_sync_state",
+    label: "Notion sync state",
+    source_of_truth: "morrowise_notion_sync_registry_and_generated_read_model",
+    source_files: [
+      "$COLLAB/harness-mc/system-workflow/registries/morrowise-notion-sync-state.json",
+      "$COLLAB/harness-mc/public/data/notion-sync-state.json",
+      "$COLLAB/harness-mc/public/data/capability-runtime-status.json",
+    ],
+    generator: ["scripts/generate-notion-sync-state.mjs", "scripts/generate-capability-runtime-status.mjs", "npm run prebuild"],
+    generated_at: latest([state.generated_at, sources.fileTimes.notionSyncState, sources.fileTimes.notionSyncRegistry]),
+    stale_after_minutes: 60,
+    stale_rule: "stale when Notion database snapshots, MC mirrors, runtime routes, or sync-state registry change without regenerating notion-sync-state.json",
+    missing_sources: missingSources(sources, ["notionSyncRegistry", "notionSyncState", "capabilityRuntimeStatus"]),
+    freshness_action: action("generator", "npm run sync:notion-state", "Regenerate notion-sync-state.json before trusting Notion to MC mirror drift status."),
+    next_action: drift > 0
+      ? action("task", "notion-sync-read-model-v0", "Review drift items before surfacing Notion sync state.")
+      : disconnected > 0 || unknown > 0
+        ? action("task", "notion-sync-read-model-v0", "Add non-secret snapshots or probes for unknown/disconnected Notion databases.")
+        : action("task", "mc-notion-sync-surface", "Render notion-sync-state.json on the harness-mc read-only surface."),
+    write_boundary: readOnlyBoundary(
+      ["display Notion sync counts", "display drift summaries", "route next_action to owner task"],
+      ["write Notion", "rewrite tasks.json mirrors", "sync Heptabase / PAI", "read token contents", "trigger notifications"],
+    ),
+    verifier_ref: "npm run test:notion-sync-state",
+    classification: "semi_live",
+    attention_level: drift > 0 || disconnected > 0 ? "needs_review" : unknown > 0 ? "watch" : "normal",
+    evidence_refs: [
+      "$COLLAB/harness-mc/system-workflow/registries/morrowise-notion-sync-state.json",
+      "$COLLAB/harness-mc/public/data/notion-sync-state.json",
+      "$COLLAB/harness-mc/public/data/capability-runtime-status.json",
+    ],
+    drilldown_route: "notion_sync_state.drilldown",
+    metrics: {
+      databases_total: summary.total || 0,
+      connected: summary.connected || 0,
+      drift,
+      disconnected,
+      unknown,
+      runtime_api_key: state.runtime_routes?.notion_api_key?.runtime_status || null,
+      runtime_mcp_connector: state.runtime_routes?.notion_mcp_connector?.runtime_status || null,
+    },
+  });
+}
+
 function scheduleRuntimeHealthSurface(sources) {
   const health = sources.scheduleHealth || {};
   const summary = health.summary || {};
@@ -550,6 +608,7 @@ function buildSummary(surfaces, sources) {
       proactive_scenarios: sources.proactiveLoop?.summary?.scenarios || 0,
       capabilities: sources.capabilities?.summary?.total || 0,
       capability_runtime_items: sources.capabilityRuntimeStatus?.summary?.total || 0,
+      notion_sync_databases: sources.notionSyncState?.summary?.total || 0,
       schedule_tasks: sources.scheduleHealth?.summary?.tasks_total || 0,
       loop_chain: Array.isArray(sources.proactiveLoop?.scenarios) ? sources.proactiveLoop.scenarios.length : 0,
     },
@@ -642,6 +701,7 @@ function buildRoutes() {
     route("task_event_pipeline.drilldown", "Task Event Pipeline details", ["task_event_pipeline"], "/task-events", ["pending", "applied", "rejected", "sync_events", "reducer_report"]),
     route("worktree_status.drilldown", "Worktree Status details", ["worktree_status"], "/worktrees", ["dirty_files", "local_commits", "remote_divergence", "commit_gate"]),
     route("api_cli_mcp_capabilities.drilldown", "API / CLI / MCP capability details", ["api_cli_mcp_capabilities"], "/capabilities", ["status", "latest_history", "boundary", "owner_task", "next_action"]),
+    route("notion_sync_state.drilldown", "Notion sync state details", ["notion_sync_state"], "/notion-sync", ["source_of_truth", "mirror_path", "counts", "drift", "runtime_routes", "next_action"]),
     route("schedule_runtime_health.drilldown", "Schedule Runtime Health details", ["schedule_runtime_health"], "/schedule", ["tasks", "runners", "last_runs", "launchd_plists", "write_boundary"]),
     route("approval_queue.drilldown", "Approval Queue details", ["approval_queue"], "/approvals", ["requested_action", "destination", "owner", "age", "payload_preview", "closure_condition"]),
   ];

@@ -28,6 +28,7 @@ export function generateCapabilityRuntimeStatus(options = {}) {
   const heptabaseCli = probes.heptabaseWhiteboardList || runCommand("heptabase", ["whiteboard", "list", "--limit", "1"], { timeoutMs: 10_000 });
   const playwright = probes.playwrightVersion || runCommand("playwright", ["--version"], { timeoutMs: 3_000 });
   const codexConfig = probes.codexConfig || readCodexHeptabaseConfig(collabRoot);
+  const notionApiKey = probes.notionApiKey || readNotionApiKeyConfig(collabRoot);
 
   const items = [
     registryHeptabaseCliItem(registryItems),
@@ -35,7 +36,8 @@ export function generateCapabilityRuntimeStatus(options = {}) {
     codexHeptabaseMcpItem(codexConfig),
     heptabaseLocalCliItem(heptabaseCli),
     playwrightCliItem(playwright, registryItems),
-    notionMcpItem(claudeMcp),
+    notionApiKeyItem(notionApiKey),
+    notionMcpConnectorItem(claudeMcp),
     notificationAdapterItem(notificationContract, registryItems),
     legacyHeptabasePaiMcpItem(registryItems),
   ].map(normalizeItem);
@@ -213,14 +215,36 @@ function playwrightCliItem(probe, registryItems) {
   };
 }
 
-function notionMcpItem(probe) {
+function notionApiKeyItem(config) {
+  return {
+    id: "runtime.notion-api-key",
+    label: "Notion API key script route",
+    source_layer: "runtime_probe",
+    registry_status: "not_applicable",
+    runtime_status: config.configured ? "configured" : "missing",
+    contract_status: "not_applicable",
+    auth_status: "unknown",
+    evidence_refs: [
+      config.source_ref || "$COLLAB/notyet-harness/000_Agent/config/secrets/notion.env",
+      "$COLLAB/notyet-harness/000_Agent/config/heptabase-clients.json",
+    ],
+    next_action: {
+      target: config.configured ? "notion-sync-read-model-v0" : "notion-api-key-auth",
+      label: config.configured
+        ? "API-key route shape exists; use read-only metadata probes and never print token values."
+        : "Verify notion.env existence before API-key scripts can run.",
+    },
+  };
+}
+
+function notionMcpConnectorItem(probe) {
   const match = parseMcpLine(combinedOutput(probe), "notion-edu");
   const connected = match?.status === "connected";
   const needsAuth = match?.status === "needs_auth";
   const degraded = match?.status === "degraded";
   return {
-    id: "runtime.notion-mcp",
-    label: "Notion MCP",
+    id: "runtime.notion-mcp-connector",
+    label: "Notion MCP connector",
     source_layer: "runtime_probe",
     registry_status: "not_applicable",
     runtime_status: connected ? "connected" : needsAuth ? "needs_auth" : degraded ? "degraded" : "unknown",
@@ -229,7 +253,7 @@ function notionMcpItem(probe) {
     evidence_refs: ["claude mcp list"],
     next_action: {
       target: connected ? "none" : "notion-mcp-auth",
-      label: connected ? "No auth action required from current probe." : "Authenticate Notion MCP explicitly before using Notion runtime writes.",
+      label: connected ? "No auth action required from current probe." : "Authenticate Notion MCP connector before using MCP live metadata.",
     },
   };
 }
@@ -340,6 +364,16 @@ function readCodexHeptabaseConfig(collabRoot) {
       error: error.message,
     };
   }
+}
+
+function readNotionApiKeyConfig(collabRoot) {
+  const envPath = path.join(collabRoot, "notyet-harness", "000_Agent", "config", "secrets", "notion.env");
+  const clientsPath = path.join(collabRoot, "notyet-harness", "000_Agent", "config", "heptabase-clients.json");
+  return {
+    ok: fs.existsSync(envPath) && fs.existsSync(clientsPath),
+    configured: fs.existsSync(envPath) && fs.existsSync(clientsPath),
+    source_ref: "$COLLAB/notyet-harness/000_Agent/config/secrets/notion.env",
+  };
 }
 
 function runCommand(command, args, { timeoutMs }) {

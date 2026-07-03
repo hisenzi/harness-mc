@@ -4,6 +4,7 @@ out/
 public/data/*
 !public/data/
 !public/data/tools.json
+!public/data/notion-sync-state.json
 next-env.d.ts
 .env
 

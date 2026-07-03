@@ -1,0 +1,56 @@
+{
+  "registry_id": "morrowise-notion-sync-state.v0",
+  "task_id": "notion-sync-read-model-v0",
+  "updated_at": "2026-07-03",
+  "status": "read_model_contract",
+  "purpose": "Track read-only Notion database to MC mirror sync state without reading token contents or writing external systems.",
+  "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-notion-sync-state.json",
+  "generated_read_model": "$COLLAB/harness-mc/public/data/notion-sync-state.json",
+  "read_model_generator": "$COLLAB/harness-mc/scripts/generate-notion-sync-state.mjs",
+  "verifier_ref": "npm run test:notion-sync-state",
+  "discovery": {
+    "known_database_sources": [
+      "$COLLAB/harness-mc/system-workflow/snapshots/kj-notion-tasks-snapshot.json",
+      "$COLLAB/harness-mc/scripts/sentinel-notion.mjs",
+      "$COLLAB/harness-mc/scripts/sync-notion-courses.mjs"
+    ],
+    "known_mirrors": [
+      "$COLLAB/harness-mc/milestones/kj-bilingual/tasks.json",
+      "$COLLAB/harness-mc/public/data/changes.json",
+      "$COLLAB/harness-mc/milestones/self-learning/tasks.json"
+    ],
+    "runtime_routes": [
+      "runtime.notion-api-key",
+      "runtime.notion-mcp-connector"
+    ]
+  },
+  "write_boundary": {
+    "allowed": [
+      "read non-secret Notion snapshot metadata",
+      "read MC mirror tasks",
+      "read local sync-state ids",
+      "probe credential file existence",
+      "probe MCP health output",
+      "write generated read model"
+    ],
+    "forbidden": [
+      "read or print NOTION_TOKEN",
+      "read OAuth token content",
+      "write Notion",
+      "rewrite tasks.json mirrors",
+      "trigger Heptabase / PAI / notification delivery"
+    ]
+  },
+  "history": [
+    {
+      "at": "2026-07-03",
+      "event_type": "registry_created",
+      "task_id": "notion-sync-read-model-v0",
+      "summary": "Created registry contract for notion-sync-state read model and separated Notion API-key route from MCP connector route."
+    }
+  ],
+  "next_action": {
+    "task_id": "mc-notion-sync-surface",
+    "description": "Render the generated read model on the harness-mc read-only surface after MW-NOTION-01 is complete."
+  }
+}

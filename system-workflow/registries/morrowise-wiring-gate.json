@@ -56,6 +56,28 @@
       ],
       "next_action_task": "api-cli-mcp-capability-registry-v0",
       "fixture_scope": "first_fixture_only"
+    },
+    {
+      "id": "notion-sync-state-read-model-fixture",
+      "label": "Notion sync state read model",
+      "owner_task": "notion-sync-read-model-v0",
+      "source_registry": "$COLLAB/harness-mc/system-workflow/registries/morrowise-notion-sync-state.json",
+      "generated_read_model": "$COLLAB/harness-mc/public/data/notion-sync-state.json",
+      "read_model_generator": "$COLLAB/harness-mc/scripts/generate-notion-sync-state.mjs",
+      "live_dashboard_surface_id": "notion_sync_state",
+      "homepage_anchor": null,
+      "live_dashboard_verifier_ref": "npm run test:notion-sync-state",
+      "verifier_refs": [
+        "npm run test:notion-sync-state",
+        "npm run test:morrowise-live-dashboard",
+        "npm run test:morrowise-wiring"
+      ],
+      "routing_refs": [
+        "$COLLAB/harness-mc/AGENTS.md",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-wiring-gate-verifier"
+      ],
+      "next_action_task": "notion-sync-read-model-v0",
+      "fixture_scope": "read_model_surface_only"
     }
   ]
 }

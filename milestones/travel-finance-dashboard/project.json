@@ -5,7 +5,7 @@
   "status": "active",
   "priority": "high",
   "created": "2026-06-29",
-  "estimated_completion": "TBD",
+  "estimated_completion": "Phase 1 verified on 2026-07-03; next milestone is p2-standalone-dashboard-build.",
   "tracks": {
     "inbox": "Notion 口袋入口",
     "ledger": "Travel ledger 資料模型",

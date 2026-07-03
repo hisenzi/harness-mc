@@ -419,7 +419,7 @@
     {
       "id": "p1-verify",
       "title": "Phase 1 驗收整合",
-      "status": "todo",
+      "status": "completed",
       "track": "handoff",
       "done_condition": "Phase 1 文件、schema、sample ledger、規則與 dashboard surface plan 互相一致，且無 placeholder",
       "acceptance": [
@@ -427,16 +427,36 @@
         "所有 Phase 1 task 具備可驗收 done_condition",
         "用大阪參考資料跑過一次紙上清帳流程"
       ],
-      "note": "前置任務完成後執行"
+      "note": "2026-07-03: Phase 1 verification uses travel ledger as source of truth; Notion remains evidence capture, dashboard remains review surface, and Excel/report/transfer list remain output artifacts.",
+      "completed_at": "2026-07-03",
+      "summary": "Completed Phase 1 integrated verification: project/task readiness, source-boundary consistency, Osaka paper clearing, dashboard/export gates, and Phase 2 standalone dashboard unblock all pass.",
+      "external_refs": {
+        "phase1_verification": {
+          "status": "contract_v0",
+          "doc": "$COLLAB/travel-finance-dashboard/docs/phase-1-verification.md",
+          "fixture": "$COLLAB/travel-finance-dashboard/fixtures/phase-1-verification.json",
+          "verifier": "python3 scripts/verify-phase-1.py",
+          "verified_at": "2026-07-03",
+          "project_fields_checked": [
+            "goals",
+            "risks",
+            "success_criteria",
+            "decisions"
+          ],
+          "phase1_upstream_tasks_completed": 8,
+          "osaka_shared_total_twd": 97964,
+          "osaka_per_traveler_twd": 24491,
+          "osaka_proxy_review_total_twd": 8172,
+          "osaka_transfer_status": "draft",
+          "phase2_task_unblocked": "p2-standalone-dashboard-build"
+        }
+      }
     },
     {
       "id": "p2-standalone-dashboard-build",
       "title": "實作 standalone travel-finance-dashboard 儀表板",
-      "status": "blocked",
+      "status": "todo",
       "track": "dashboard",
-      "blocked_by": [
-        "p1-verify"
-      ],
       "done_condition": "p1-verify 通過後，建立或 promote travel-finance-dashboard standalone repo / app，並實作可用的回國清帳 dashboard",
       "acceptance": [
         "具備總覽、付款方式對帳、代買分帳、需確認清單、最後轉帳清單五個核心視圖",
@@ -444,7 +464,15 @@
         "清楚標示 Notion Travel Inbox、travel ledger、dashboard、Excel/報告輸出的資料流與 ownership",
         "能用大阪 reference ledger 驗證畫面數字與最後轉帳清單"
       ],
-      "note": "Phase 2 placeholder：此 task 是 p1-dashboard-surface-plan 的 standalone 實作落點；需等 p1-verify 確認 schema、sample ledger、會計規則與 surface plan 一致後才解除 blocked。"
+      "note": "Phase 2 ready: p1-verify completed on 2026-07-03. Standalone dashboard must read travel ledger / generated read model, expose the five review views, and keep finance-dashboard as reference only.",
+      "external_refs": {
+        "phase1_verification": {
+          "status": "passed",
+          "doc": "$COLLAB/travel-finance-dashboard/docs/phase-1-verification.md",
+          "verifier": "python3 scripts/verify-phase-1.py",
+          "verified_at": "2026-07-03"
+        }
+      }
     },
     {
       "id": "project-init-source-commit",

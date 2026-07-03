@@ -52,6 +52,9 @@
       "status": "done",
       "track": "data",
       "completed_at": "2026-07-03",
+      "commits": [
+        "3da9642"
+      ],
       "done_condition": "可抓取 0050、006208、2330 日資料並正規化成 data-contract 的 Price Bar。",
       "evidence": [
         "$COLLAB/market-watchtower/src/data/twse-price-adapter.mjs",

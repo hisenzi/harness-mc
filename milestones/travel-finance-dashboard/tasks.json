@@ -384,6 +384,9 @@
         "Excel 被定位為輸出物，不是旅行中輸入工具"
       ],
       "completed_at": "2026-07-03",
+      "commits": [
+        "91a9dbd"
+      ],
       "summary": "Completed travel export SOP contract v0: 10-second mobile capture, return-home import/normalize/verify/review/reconcile/export flow, Excel/report/transfer-list output formats, and final gate that keeps Excel as output rather than input.",
       "note": "2026-07-03: SOP preserves Notion as mobile evidence capture, travel ledger as source of truth, dashboard as review surface, and Excel/report/transfer list as output artifacts; Osaka transfer list remains draft while review blockers exist.",
       "external_refs": {

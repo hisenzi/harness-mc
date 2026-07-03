@@ -929,7 +929,21 @@
           "$COLLAB/notyet-harness/000_Agent/config/heptabase-notion-sync-state.json"
         ],
         "source_boundary": "HC is a thinking check, not source of truth. Canonical state for this task is the MorroWise task spec plus generated notion-sync-state read model; Notion, MC tasks, Heptabase, and PAI keep their own source/mirror boundaries."
-      }
+      },
+      "completed_at": "2026-07-03",
+      "commits": [
+        "556db65"
+      ],
+      "summary": "Completed Notion sync-state read model v0: added generator/verifier, registry contract, package scripts, generated read model with KJ connected 43/43 and historical KJ drift fixture, split capability runtime status into runtime.notion-api-key and runtime.notion-mcp-connector, and wired the read model into MorroWise live dashboard plus wiring gate as read_model_surface_only. PAI and Courses DB remain unknown until non-secret snapshots/probes exist; no Notion, Heptabase, PAI, notification, or tasks mirror writes were performed.",
+      "verification": [
+        "npm run test:notion-sync-state",
+        "npm run test:capability-runtime-status",
+        "npm run test:morrowise-live-dashboard",
+        "npm run test:morrowise-wiring",
+        "npm run test:capability-registry",
+        "npm run test:tools-data",
+        "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+      ]
     },
     {
       "id": "KJ-LIVE-01",

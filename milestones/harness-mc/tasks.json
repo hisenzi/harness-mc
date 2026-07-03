@@ -2028,6 +2028,50 @@
         ],
         "source_boundary": "HC is a thinking check, not source of truth. Canonical current data remains in morrowise-live-dashboard.json and MC task state; this task only changes the homepage surface."
       }
+    },
+    {
+      "id": "mc-notion-sync-surface",
+      "title": "MC Notion sync 狀態卡片 + drilldown",
+      "status": "todo",
+      "track": "morrowise-system",
+      "order_label": "MC-NOTION-SURFACE-01",
+      "priority": "medium",
+      "blocked_by": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#notion-sync-read-model-v0",
+      "done_condition": "MC 首頁或 drilldown page 顯示 read-only Notion sync 卡片，直接讀取 notion-sync-state.json read model，呈現各 Notion database 的 source_of_truth、mirror、count 落差、drift 項目與 next_action，不在 UI 內自行派生狀態。",
+      "acceptance": [
+        "卡片資料來源是 $COLLAB/harness-mc/public/data/notion-sync-state.json，不重新從 Notion API 或 tasks.json 現算 drift。",
+        "每個 database 至少顯示名稱、source_of_truth、mirror path、notion_count/mirror_count、drift 摘要、last_sync、status（connected/drift_detected/disconnected/unknown）。",
+        "卡片明確區分 registry 台帳、runtime probe 與 drift 偵測三種語意，不得把『capability registry 有記錄』說成『目前已同步』。",
+        "卡片不提供任何寫入操作（不可觸發 sync、不可修改 Notion、不可修改 tasks.json）。",
+        "若 read model 缺失或 stale，卡片需明確顯示 unknown/stale，不得留白或預設樂觀值。",
+        "接上 morrowise-wiring-gate-verifier 檢查：read model -> MC surface -> homepage/drilldown anchor -> verifier -> AGENTS routing 全鏈可追溯。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#notion-sync-read-model-v0",
+        "$COLLAB/harness-mc/app/page.tsx",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-read-model-contract.md",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-drilldown-pages.md",
+        "$COLLAB/harness-mc/AGENTS.md"
+      ],
+      "note": "2026-07-01 依 task-ownership-routing-rule 從 morrowise/notion-sync-read-model-v0 拆出顯示層：系統本體 read model 歸 MorroWise，MC dashboard 卡片/drilldown 歸 harness-mc surface task。需等 notion-sync-read-model-v0 產出可重跑 read model 後才能實作，避免顯示尚未存在的資料。",
+      "hc_decision": {
+        "task_scope": "harness-mc/mc-notion-sync-surface",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#constraints",
+          "#risk"
+        ],
+        "hc_reasoning": "#rightProblem 將顯示層任務限定為『把 MorroWise notion-sync-state read model 正確呈現在 MC』，不是重新偵測 Notion 或修同步；#systemDynamics 要求 homepage/drilldown 只讀 generated read model，避免 UI 自行派生第二套 drift logic；#constraints 保持 read-only，不提供 sync、Notion write、tasks.json mutation 或外部通知操作；#risk 防止把 capability registry、auth 狀態或 stale snapshot 誤呈現為目前已同步。",
+        "hc_confidence": 0.86,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#notion-sync-read-model-v0",
+          "$COLLAB/harness-mc/app/page.tsx",
+          "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-read-model-contract.md",
+          "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-drilldown-pages.md"
+        ],
+        "source_boundary": "HC is a thinking check, not source of truth. Canonical sync facts come from MorroWise notion-sync-state read model; this harness-mc task owns only the MC read-only surface and verifier wiring."
+      }
     }
   ]
 }

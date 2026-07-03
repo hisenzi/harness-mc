@@ -874,6 +874,59 @@
       ]
     },
     {
+      "id": "notion-sync-read-model-v0",
+      "title": "Notion sync state read model（多專案 Notion DB ↔ MC mirror）",
+      "status": "todo",
+      "track": "governance",
+      "order_label": "MW-NOTION-01",
+      "dependencies": [
+        "capability-runtime-status-read-model",
+        "notification-adapter-contract"
+      ],
+      "done_condition": "建立 $COLLAB/harness-mc/public/data/notion-sync-state.json 的 generator/verifier，掃描已知 Notion database（KJ 行動庫、PAI 行動庫、Courses DB 等）與其對應 MC tasks.json mirror，標出 source_of_truth、mirror、count 差異、drift 項目與 next_action；同時修正 capability-runtime-status 中 runtime.notion-mcp 停留在單一 needs_auth 的失真狀態，改為區分 notion-api-key 與 notion-mcp-connector 兩條獨立路線。",
+      "acceptance": [
+        "read model 至少包含 generated_at、databases[]（id、notion_db、data_source_id、source_of_truth、mirror_path、notion_count、mirror_count、drift[]、last_sync、sync_direction、status）與 summary（total/connected/drift/disconnected）。",
+        "generator 只讀 non-secret metadata：Notion database schema/查詢結果的筆數與標題，不得讀取或印出 NOTION_TOKEN 或任何 OAuth token 內容。",
+        "runtime.notion-mcp 拆成 notion-api-key（$COLLAB/notyet-harness/000_Agent/config/secrets/notion.env 存在性 + heptabase-clients.json 對照）與 notion-mcp-connector（claude mcp list 的 non-secret health output）兩個獨立 capability probe，不再共用單一 needs_auth 狀態。",
+        "verifier 能檢查 read model schema、generated_at freshness、drift 計算正確性，以及是否誤將 registry snapshot 當成即時 sync 結果。",
+        "至少覆蓋一個已知 drift fixture（例如 2026-07-01 KJ 雙語班任務追蹤 DB 與 harness-mc/milestones/kj-bilingual/tasks.json 的筆數落差），證明 generator 能偵測真實案例而非只是空清單。",
+        "output 只產生 read model 與 next_action 候選，不得自動寫回 Notion、不得自動改寫 tasks.json、不得觸發 Heptabase/Telegram 通知。",
+        "package script 提供可重跑入口（例如 npm run sync:notion-state 或併入既有 generate-data 鏈），並接上 morrowise-wiring-gate-verifier 的 source/registry -> read model -> surface -> verifier -> routing 檢查。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/public/data/capability-runtime-status.json#runtime.notion-mcp",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-adapter-contract.json",
+        "$COLLAB/notyet-harness/000_Agent/config/secrets/notion.env",
+        "$COLLAB/notyet-harness/000_Agent/config/heptabase-clients.json",
+        "$COLLAB/notyet-harness/000_Agent/config/heptabase-notion-sync-state.json",
+        "$COLLAB/harness-mc/scripts/sentinel-notion.mjs",
+        "$COLLAB/harness-mc/scripts/sync-notion-courses.mjs",
+        "$COLLAB/harness-mc/milestones/kj-bilingual/tasks.json",
+        "$COLLAB/CC本機協作_無Git/KJ/260612_KJ_雙語班/HANDOFF_260701.md",
+        "$COLLAB/CC本機協作_無Git/KJ/260612_KJ_雙語班/AGENTS.md"
+      ],
+      "note": "2026-07-01 由 KJ 雙語班 Notion 資料庫（CC 寫入的舊版任務庫 vs Vincent 切換到的新版 KJ 行動庫）與 harness-mc/milestones/kj-bilingual/tasks.json 出現筆數與 schema 落差觸發：capability-runtime-status 目前只把 Notion 標成單一 needs_auth，但實際上 API key 路線（scripts 使用，token 存於 notyet-harness/000_Agent/config/secrets/notion.env）與 claude.ai MCP connector 路線（CC/Codex session 使用）是兩條獨立、可能分別 connected 的路徑，混成一個狀態會誤導 future agent。此 task 只處理 read model 與 probe，不處理雙向同步或自動寫回；依 task-ownership-routing-rule 歸 MorroWise 系統本體。",
+      "hc_decision": {
+        "task_scope": "morrowise/notion-sync-read-model-v0",
+        "hc_refs": [
+          "#rightProblem",
+          "#evidenceBased",
+          "#systemDynamics",
+          "#constraints",
+          "#risk"
+        ],
+        "hc_reasoning": "#rightProblem 將問題從『Notion MCP 是否可用』改成『多條 Notion access route 與 MC mirror 是否有可驗證 read model』；#evidenceBased 要求用 database schema、筆數、標題與 fixture drift 產生證據，而不是憑 registry 記錄推定同步成功；#systemDynamics 把 notion-api-key、notion-mcp-connector、MC mirror 與 Heptabase/PAI mirror 分成不同層，避免單一 needs_auth 狀態誤導 future agent；#constraints 限定 generator 只讀 non-secret metadata 且不得寫回 Notion 或 tasks.json；#risk 針對舊庫/新庫錯位、token 外洩與把 snapshot 誤當 live sync 的風險設 verifier。",
+        "hc_confidence": 0.84,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/public/data/capability-runtime-status.json#runtime.notion-mcp",
+          "$COLLAB/harness-mc/milestones/kj-bilingual/tasks.json",
+          "$COLLAB/CC本機協作_無Git/KJ/260612_KJ_雙語班/HANDOFF_260701.md",
+          "$COLLAB/notyet-harness/000_Agent/config/heptabase-notion-sync-state.json"
+        ],
+        "source_boundary": "HC is a thinking check, not source of truth. Canonical state for this task is the MorroWise task spec plus generated notion-sync-state read model; Notion, MC tasks, Heptabase, and PAI keep their own source/mirror boundaries."
+      }
+    },
+    {
       "id": "KJ-LIVE-01",
       "title": "KJ Notion 任務 read model",
       "status": "completed",

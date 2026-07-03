@@ -310,7 +310,7 @@
     {
       "id": "v0-live-loop-verify",
       "title": "驗證 MorroWise v0 source -> report -> MC surface 閉環",
-      "status": "deferred",
+      "status": "completed",
       "track": "mc-surface",
       "dependencies": [
         "mc-morrowise-v0-card"
@@ -329,7 +329,7 @@
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-live-system-admission.json"
       ],
       "blocked_by": "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-living-system-read-model-card",
-      "note": "2026-06-27 暫緩：原 dependencies 指向 morrowise/mc-morrowise-v0-card，但該 task 已依 ownership routing delegated 給 harness-mc surface task。需先完成 harness-mc/morrowise-living-system-read-model-card，再重新啟用此閉環驗證，避免驗證尚未實作的 UI surface。",
+      "note": "2026-06-27 暫緩：原 dependencies 指向 morrowise/mc-morrowise-v0-card，但該 task 已依 ownership routing delegated 給 harness-mc surface task。需先完成 harness-mc/morrowise-living-system-read-model-card，再重新啟用此閉環驗證，避免驗證尚未實作的 UI surface。2026-07-03 復活：blocker 已於 06-27 完成，健檢定位確立為 loop verify + 三個新 target profile（memory-health/sync-state/integration-health）。本日閉環驗證結果：prebuild 全綠、verifier 21/23（commit-attention 與 wiring gate 因寫死已完成 task id 而 stale）、MANUAL drift 由 --check 抓到並修復重驗綠、trigger 層 0/2 plist 未安裝。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise",
@@ -338,7 +338,12 @@
           "synced_at": "2026-06-22",
           "sync_mode": "created"
         }
-      }
+      },
+      "completed_at": "2026-07-03",
+      "commits": [
+        "90c6e54"
+      ],
+      "summary": "2026-07-03 閉環驗證完成：generator/verifier/read model/surface/feedback 五層以實跑證據確認活性（prebuild 全綠、23 支 verifier 修復後全綠、MANUAL drift 由 --check 抓到並修復重驗綠、state.json 以 canonical 重生成抵抗非正本寫入）；trigger 層由 schedule/install.sh --load 補齊（launchd 2/2）。發現 verifier 寫死活 task id 會自腐且紅燈無 surface，已修復兩支並開 verifier-suite-health-read-model 等 5 個 follow-up task。"
     },
     {
       "id": "runtime-delivery-lineage-map",
@@ -905,7 +910,7 @@
         "$COLLAB/CC本機協作_無Git/KJ/260612_KJ_雙語班/HANDOFF_260701.md",
         "$COLLAB/CC本機協作_無Git/KJ/260612_KJ_雙語班/AGENTS.md"
       ],
-      "note": "2026-07-01 由 KJ 雙語班 Notion 資料庫（CC 寫入的舊版任務庫 vs Vincent 切換到的新版 KJ 行動庫）與 harness-mc/milestones/kj-bilingual/tasks.json 出現筆數與 schema 落差觸發：capability-runtime-status 目前只把 Notion 標成單一 needs_auth，但實際上 API key 路線（scripts 使用，token 存於 notyet-harness/000_Agent/config/secrets/notion.env）與 claude.ai MCP connector 路線（CC/Codex session 使用）是兩條獨立、可能分別 connected 的路徑，混成一個狀態會誤導 future agent。此 task 只處理 read model 與 probe，不處理雙向同步或自動寫回；依 task-ownership-routing-rule 歸 MorroWise 系統本體。",
+      "note": "2026-07-01 由 KJ 雙語班 Notion 資料庫（CC 寫入的舊版任務庫 vs Vincent 切換到的新版 KJ 行動庫）與 harness-mc/milestones/kj-bilingual/tasks.json 出現筆數與 schema 落差觸發：capability-runtime-status 目前只把 Notion 標成單一 needs_auth，但實際上 API key 路線（scripts 使用，token 存於 notyet-harness/000_Agent/config/secrets/notion.env）與 claude.ai MCP connector 路線（CC/Codex session 使用）是兩條獨立、可能分別 connected 的路徑，混成一個狀態會誤導 future agent。此 task 只處理 read model 與 probe，不處理雙向同步或自動寫回；依 task-ownership-routing-rule 歸 MorroWise 系統本體。 2026-07-03 健檢裁決：integration-health target profile 不另開 task，外部整合授權活性（如 Notion integration 分享失效造成 sentinel-notion graceful skip 不可見）併入本 task 範圍。",
       "hc_decision": {
         "task_scope": "morrowise/notion-sync-read-model-v0",
         "hc_refs": [
@@ -1073,6 +1078,124 @@
         "node scripts/generate-data.mjs"
       ],
       "note": "2026-07-02 已先查重：未找到 cc-push 或 batch push coordinator 的既有 task；相近的 runtime-closeout-residual-ledger、worktree-status inventory、task-event outbox/reducer 都只覆蓋觀測、任務事件或 read model，沒有覆蓋多 session 完成 commit 後的統一 push gate。此 task 屬 MorroWise governance，因為它定義 agent workflow / approval / remote truth / push boundary，而不是單一專案功能或 dashboard surface。"
+    },
+    {
+      "id": "verifier-suite-health-read-model",
+      "title": "Verifier suite health read model（全套 verifier 紅燈可觀測）",
+      "status": "todo",
+      "track": "governance",
+      "done_condition": "建立 generator 逐一執行 package.json 全部 test:* verifiers，產出 public/data/verifier-suite-health.json read model（每支 verifier 記錄 script、pass/fail、duration、failure_excerpt、last_run_at），含 source/generator/generated_at/stale_rule/next_action/write_boundary/verifier_ref；verifier 紅燈不再依賴有人手動跑全套才被發現。",
+      "acceptance": [
+        "read model 通過 MC-LIVE-SYS-01 欄位檢查（source、generator、generated_at、stale_rule、next_action、write_boundary、verifier_ref）。",
+        "有 fixture 驗證 fail 案例會被標紅並產生 next_action。",
+        "接進 schedule task 或 prebuild，明確定義觸發者，不留 manual-only。",
+        "MC surface 依 task ownership routing 另開 harness-mc task，本 task 不做 UI。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/package.json",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-live-system-admission.json",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#v0-live-loop-verify"
+      ],
+      "note": "2026-07-03 起因：v0-live-loop-verify 發現 verify-commit-attention 與 verify-morrowise-wiring-gate 紅燈約 5 天無人察覺（不在 prebuild 鏈、無 surface、無 trigger）。查重：無既有 verifier suite health task。"
+    },
+    {
+      "id": "memory-health-read-model",
+      "title": "Memory health read model（memory_layer + second_brain target profile）",
+      "status": "todo",
+      "track": "auditor-mvp",
+      "done_condition": "依 source-map-v0 Knowledge Health Model 為 memory_layer 與 second_brain source family 建立 scanner 與 read model：last_used_at、reference_count_30d、completeness_state、workflow_links、known_gaps；scanner 未能判定的欄位標 manual/unknown，不得假 live。",
+      "acceptance": [
+        "作為 auditor 通用引擎下的 target profile，不另立第二套 scanner 規格。",
+        "本機 runtime 部分（~/.claude/ memory）只記 safe metadata，遵守 source-map local_runtime_boundary。",
+        "read model 欄位齊 MC-LIVE-SYS-01。",
+        "fixture 至少含 stale memory 與 missing workflow_link 案例。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/source-map-v0.md",
+        "$COLLAB/harness-mc/milestones/morrowise/project.json",
+        "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md"
+      ],
+      "note": "2026-07-03 起因：project.json risks 明列「第二大腦健康度只檢查 note 是否存在」且 scanner 未實作。查重：無既有 memory health task。"
+    },
+    {
+      "id": "config-sync-state-probe",
+      "status": "todo",
+      "title": "Config sync state probe（雙端共享設定同步狀態）",
+      "track": "auditor-mvp",
+      "done_condition": "建立 read model 檢查雙端共享設定同步狀態：cc-claude-md.md ↔ ~/.claude/CLAUDE.md 的 md5 與 mtime 方向、共享 skills 雙端路徑合規；mismatch 時產出 next_action（cp 方向 + 對端 pull 提示），不自動覆蓋本機或 source。",
+      "acceptance": [
+        "只記 safe metadata（md5、mtime、同步方向），不讀 secrets，遵守 local_runtime_boundary。",
+        "2026-07-03 CLAUDE.md mismatch（source 06-29 新於本機 06-12，Obsidian vault 名稱改路徑）作為第一筆 fixture。",
+        "read model 欄位齊 MC-LIVE-SYS-01。",
+        "偵測到 mismatch 時標 blocked_on_vincent 類 next_action，維持「不悄悄 cp」規則。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/docs/cc-claude-md.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/source-map-v0.md"
+      ],
+      "note": "2026-07-03 查重：entry_rules family 在 source-map 有宣告但無對應 task；sentinel 與 schedule-health 均不覆蓋設定同步。今日啟動自檢以人工 md5 抓到 mismatch，證明缺口真實。"
+    },
+    {
+      "id": "morrowise-auditor-fixtures",
+      "status": "todo",
+      "title": "Auditor generator v0（Architecture Pulse 可重跑 scanner）",
+      "track": "auditor-mvp",
+      "dependencies": [
+        "auditor-json-read-model-schema"
+      ],
+      "done_condition": "實作 generator 對 architecture_docs family 自動執行 Architecture Pulse 檢查（header contract、source-of-truth 指向、freshness、path policy、generated/manual boundary、missing verifier、section identity），產出符合 morrowise-auditor.json v0 schema 的 read model；read_only=true，禁 edit_source/close_task/commit/push。",
+      "acceptance": [
+        "fixtures 覆蓋 missing_header、stale_source、hardcoded_local_path、generated_manual_conflict、fake_live_schedule_surface。",
+        "輸出通過 test:morrowise-auditor schema verifier。",
+        "自動重跑可重現 2026-06-27 手動報告的 8 個 findings（允許措辭差異，finding category 需一致）。",
+        "接進 prebuild 或 schedule，明確定義觸發者。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/reports/architecture-pulse-2026-06-27.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/auditor-mvp.md",
+        "$COLLAB/harness-mc/scripts/verify-morrowise-auditor-schema.mjs"
+      ],
+      "note": "2026-07-03 正式化：即 Architecture Pulse 報告 Next Actions priority 2 保留的 future task（morrowise-auditor-fixtures）。查重：schema task 已完成，generator 本體無既有 task。",
+      "order_label": "MW-AUDITOR-02",
+      "hc_decision": {
+        "task_scope": "morrowise/morrowise-auditor-fixtures",
+        "hc_refs": [
+          "#rightProblem",
+          "#evidenceBased",
+          "#systemDynamics",
+          "#risk"
+        ],
+        "hc_reasoning": "#rightProblem 將問題從『ARCHITECTURE.md 何時更新』改成『架構文件與現實的 drift 是否可自動、可重跑地被量測』；#evidenceBased 要求 findings 由 scanner 對 canonical 檔案實測產生，不憑 2026-06-27 手動報告的印象延伸；#systemDynamics 指出缺 generator 時 Pulse 只會跑一次就腐爛，與 verifier 寫死 task id 同型（2026-07-03 v0-live-loop-verify 實證）；#risk 限定 read_only，禁止 scanner 直接改 source，避免自動化把錯誤判定寫進正本。",
+        "hc_confidence": 0.85,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/000_Agent/docs/morrowise/reports/architecture-pulse-2026-06-27.md",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-auditor-schema.mjs",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#v0-live-loop-verify"
+        ],
+        "source_boundary": "HC is a thinking check, not source of truth. Canonical contract is the auditor v0 schema plus fixtures; ARCHITECTURE.md stays the audit target and may not be edited by this task."
+      }
+    },
+    {
+      "id": "architecture-pulse-source-edit",
+      "status": "todo",
+      "title": "ARCHITECTURE.md source edit（8 findings 修復 + 現況段 marker 化）",
+      "track": "auditor-mvp",
+      "dependencies": [
+        "morrowise-auditor-fixtures"
+      ],
+      "done_condition": "依 auditor read model 證據修 ARCHITECTURE.md：header contract 補齊、source_of_truth 由舊 workspace 改指 git 現址、歷史/現役內容分離、現況段改為 marker 生成區（source=morrowise-system.json，複用 sync-morrowise-manual.py 模式）；手寫區只留宣告性內容，current state 不再手寫。",
+      "acceptance": [
+        "AP-20260627-01 ~ 08 逐項對應處置（fix 或標記 accepted + 理由）。",
+        "marker 區 --check 可偵測 drift，與 MANUAL.md 同一套驗證模式。",
+        "open loop manual-only-architecture-pulse 解除：修改走本 source-edit task，不憑手動證據直接改。",
+        "改完 Architecture Pulse 重跑，stale/header findings 歸零。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/reports/architecture-pulse-2026-06-27.md",
+        "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+        "$COLLAB/notyet-harness/000_Agent/scripts/sync-morrowise-manual.py"
+      ],
+      "note": "2026-07-03 正式化：即 Pulse 報告 priority 4 的 future task（architecture-pulse-source-edit）。順序受 open loop 約束：auditor generator 先、source edit 後。完成後 ARCHITECTURE.md 現況段與 MC 卡片共享同一 canonical 根（morrowise-system.json 樹）。"
     }
   ]
 }

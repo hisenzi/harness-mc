@@ -26,6 +26,9 @@
       "status": "done",
       "track": "foundation",
       "completed_at": "2026-07-03",
+      "commits": [
+        "3bba38d"
+      ],
       "done_condition": "選定技術棧並建立可啟動的 web app + worker skeleton。",
       "evidence": [
         "$COLLAB/market-watchtower/package.json",

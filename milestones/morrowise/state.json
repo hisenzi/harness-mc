@@ -238,6 +238,14 @@
     },
     "playwright-cli-capability-probe": {
       "status": "todo"
+    },
+    "config-sync-state-probe": {
+      "status": "completed",
+      "completed_at": "2026-07-05",
+      "commits": [
+        "a672b1a"
+      ],
+      "summary": "完成雙端共享設定同步 read model：新增 config-sync-state generator/verifier，檢查 cc-claude-md.md 與本機 ~/.claude/CLAUDE.md mirror 的 safe metadata（md5、mtime、sync direction）、共享 skills index path policy；mismatch 只產生 blocked_on_vincent next_action 與 peer pull hint，不自動覆蓋本機或 source；已接入 prebuild。"
     }
   }
 }

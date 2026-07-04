@@ -1146,7 +1146,7 @@
     },
     {
       "id": "config-sync-state-probe",
-      "status": "todo",
+      "status": "completed",
       "title": "Config sync state probe（雙端共享設定同步狀態）",
       "track": "auditor-mvp",
       "done_condition": "建立 read model 檢查雙端共享設定同步狀態：cc-claude-md.md ↔ ~/.claude/CLAUDE.md 的 md5 與 mtime 方向、共享 skills 雙端路徑合規；mismatch 時產出 next_action（cp 方向 + 對端 pull 提示），不自動覆蓋本機或 source。",
@@ -1160,7 +1160,12 @@
         "$COLLAB/notyet-harness/000_Agent/docs/cc-claude-md.md",
         "$COLLAB/notyet-harness/000_Agent/docs/morrowise/source-map-v0.md"
       ],
-      "note": "2026-07-03 查重：entry_rules family 在 source-map 有宣告但無對應 task；sentinel 與 schedule-health 均不覆蓋設定同步。今日啟動自檢以人工 md5 抓到 mismatch，證明缺口真實。"
+      "note": "2026-07-03 查重：entry_rules family 在 source-map 有宣告但無對應 task；sentinel 與 schedule-health 均不覆蓋設定同步。今日啟動自檢以人工 md5 抓到 mismatch，證明缺口真實。",
+      "completed_at": "2026-07-05",
+      "commits": [
+        "a672b1a"
+      ],
+      "summary": "完成雙端共享設定同步 read model：新增 config-sync-state generator/verifier，檢查 cc-claude-md.md 與本機 ~/.claude/CLAUDE.md mirror 的 safe metadata（md5、mtime、sync direction）、共享 skills index path policy；mismatch 只產生 blocked_on_vincent next_action 與 peer pull hint，不自動覆蓋本機或 source；已接入 prebuild。"
     },
     {
       "id": "morrowise-auditor-fixtures",

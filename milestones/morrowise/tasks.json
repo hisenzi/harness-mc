@@ -1383,7 +1383,7 @@
     },
     {
       "id": "harness-governance-entry-routing-rollout",
-      "status": "todo",
+      "status": "completed",
       "title": "Harness governance 入口路由 rollout",
       "track": "governance",
       "order_label": "MW-GOV-HARNESS-ROUTE-01",
@@ -1406,7 +1406,13 @@
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#fable-harness-judgment-transfer",
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#skills-index-duplicate-cleanup"
       ],
-      "note": "2026-07-05 Vincent 裁決：B plan 的 P1-P4 需要 follow-up task anchor；本 task 是入口路由 rollout 的唯一 anchor。C1 duplicate cleanup 已拆至 `skills-index-duplicate-cleanup`，保持本 task 純入口 routing。"
+      "completed_at": "2026-07-05",
+      "commits": [
+        "35d31e4",
+        "e4eaeba"
+      ],
+      "summary": "完成 Harness governance 入口路由 rollout：B plan P1-P4 已接入 cc-claude-md、TOOLS、MorroWise MANUAL 與本機 AGENTS；C1 保持拆至 skills-index-duplicate-cleanup，未在本 task 執行。",
+      "note": "2026-07-05 Vincent 裁決：B plan 的 P1-P4 需要 follow-up task anchor；本 task 是入口路由 rollout 的唯一 anchor。C1 duplicate cleanup 已拆至 `skills-index-duplicate-cleanup`，保持本 task 純入口 routing。2026-07-05 完成：P1-P4 已按 change-approval-plan 執行並回寫驗證證據；notyet-harness rollout commit e4eaeba 已套用 task-event；C1 唯讀檢查發現 `SKILLS-INDEX (1).md` 與正本不同且較大，不能直接 trash，需由 cleanup task 做 reconcile。"
     },
     {
       "id": "skills-index-duplicate-cleanup",

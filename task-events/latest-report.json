@@ -2,11 +2,11 @@
   "generated_at": "2026-07-04T16:47:25.000Z",
   "applied": [
     {
-      "file": "20260704T163924Z-notyet-harness-38712f6-morrowise-fable-harness-judgment-transfer.json",
-      "event_id": "task.commit_attached-morrowise-fable-harness-judgment-transfer-38712f6-20260704T163924Z",
+      "file": "20260704T170755Z-notyet-harness-e4eaeba-morrowise-harness-governance-entry-routing-rollout.json",
+      "event_id": "task.completed-morrowise-harness-governance-entry-routing-rollout-e4eaeba-20260704T170755Z",
       "project": "morrowise",
-      "task_id": "fable-harness-judgment-transfer",
-      "type": "task.commit_attached"
+      "task_id": "harness-governance-entry-routing-rollout",
+      "type": "task.completed"
     }
   ],
   "rejected": [],

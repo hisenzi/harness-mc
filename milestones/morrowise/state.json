@@ -200,6 +200,15 @@
       ],
       "summary": "完成 Fable 5 harness governance 健檢與判斷力外化：A-G 制度文件、source-of-truth delta map、入口 patch plan、對抗審查/read-back/amendment、兩輪 Codex 驗證交接與 optional cost-efficiency research design 均已落檔；B plan patches P1-P4+C1 保持待 Vincent 另行批准。"
     },
+    "harness-governance-entry-routing-rollout": {
+      "status": "completed",
+      "completed_at": "2026-07-05",
+      "commits": [
+        "35d31e4",
+        "e4eaeba"
+      ],
+      "summary": "完成 Harness governance 入口路由 rollout：B plan P1-P4 已接入 cc-claude-md、TOOLS、MorroWise MANUAL 與本機 AGENTS；C1 保持拆至 skills-index-duplicate-cleanup，未在本 task 執行。"
+    },
     "playwright-cli-capability-probe": {
       "status": "todo"
     }

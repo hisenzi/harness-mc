@@ -1,0 +1,13 @@
+{
+  "event_id": "task.completed-morrowise-harness-governance-entry-routing-rollout-e4eaeba-20260704T170755Z",
+  "type": "task.completed",
+  "repo": "notyet-harness",
+  "commit": "e4eaeba",
+  "project": "morrowise",
+  "task_id": "harness-governance-entry-routing-rollout",
+  "status": "completed",
+  "summary": "完成 Harness governance 入口路由 rollout：B plan P1-P4 已接入 cc-claude-md、TOOLS、MorroWise MANUAL 與本機 AGENTS；C1 保持拆至 skills-index-duplicate-cleanup。",
+  "created_at": "2026-07-04T17:07:55.447Z",
+  "actor": "codex",
+  "session_id": "codex-20260705-harness-rollout"
+}

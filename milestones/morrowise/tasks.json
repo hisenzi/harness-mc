@@ -1270,7 +1270,7 @@
     },
     {
       "id": "dual-machine-trigger-install",
-      "status": "todo",
+      "status": "blocked",
       "title": "雙端 trigger 安裝（MBA-2 schedule install）",
       "track": "runtime-delivery",
       "done_condition": "MBA-2 於 git pull 後執行 schedule/install.sh --load，launchctl 確認 com.hisenzi.schedule.* 已載入；依 local runtime boundary 只記 safe metadata（plist 存在、last-run），由 runs log 或 schedule-health 證明 MBA-2 端排程有效。",
@@ -1282,7 +1282,8 @@
         "$COLLAB/notyet-harness/schedule/install.sh",
         "$COLLAB/harness-mc/public/data/schedule-health.json"
       ],
-      "note": "owner=HiSenzi（CC 無法操作 MBA-2），2026-07-03 cc-log 交接。查重：AI Agent 共享腦系統 project 的 M4（MBA-2 跑 SOP）是整機切換 SOP，不覆蓋排程 trigger 安裝。"
+      "note": "owner=HiSenzi（CC 無法操作 MBA-2），2026-07-03 cc-log 交接。查重：AI Agent 共享腦系統 project 的 M4（MBA-2 跑 SOP）是整機切換 SOP，不覆蓋排程 trigger 安裝。 2026-07-05 實測：本機 hostname=VincentMBA-blue.local；launchctl list com.hisenzi.schedule.commit-attention-sweep / mc-sentinel / system-pulse 均有輸出且 LastExitStatus=0；schedule-health 產生 3 tasks、3/3 plists installed、1 last-run failure（system-pulse degraded 屬另一條 runtime health）。MBA-2 待 Vincent 切機後執行：`cd $COLLAB && git pull --rebase`、`$COLLAB/notyet-harness/schedule/install.sh --load`、`launchctl list com.hisenzi.schedule.system-pulse`、`cd $COLLAB/harness-mc && node scripts/generate-schedule-health.mjs`；完成證據只寫 cc-log / runs log，不把 MBA-2 本機狀態寫成共享正本。",
+      "summary": "本機 VincentMBA-blue.local 已確認 3/3 schedule launchd labels 載入（commit-attention-sweep、mc-sentinel、system-pulse）；MBA-2 端需 Vincent/HiSenzi 切機後 git pull 並執行 schedule/install.sh --load，CC 在本機無法讀取或宣告 MBA-2 launchd/runtime 狀態，故不得標 completed。"
     },
     {
       "id": "multi-session-commit-race-governance",

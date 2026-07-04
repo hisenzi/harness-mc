@@ -246,6 +246,10 @@
         "a672b1a"
       ],
       "summary": "完成雙端共享設定同步 read model：新增 config-sync-state generator/verifier，檢查 cc-claude-md.md 與本機 ~/.claude/CLAUDE.md mirror 的 safe metadata（md5、mtime、sync direction）、共享 skills index path policy；mismatch 只產生 blocked_on_vincent next_action 與 peer pull hint，不自動覆蓋本機或 source；已接入 prebuild。"
+    },
+    "dual-machine-trigger-install": {
+      "status": "blocked",
+      "summary": "本機 VincentMBA-blue.local 已確認 3/3 schedule launchd labels 載入（commit-attention-sweep、mc-sentinel、system-pulse）；MBA-2 端需 Vincent/HiSenzi 切機後 git pull 並執行 schedule/install.sh --load，CC 在本機無法讀取或宣告 MBA-2 launchd/runtime 狀態，故不得標 completed。"
     }
   }
 }

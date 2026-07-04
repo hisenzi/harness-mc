@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-fable-harness-judgment-transfer-38712f6-20260704T163924Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "38712f6",
+  "project": "morrowise",
+  "task_id": "fable-harness-judgment-transfer",
+  "status": "updated",
+  "summary": "Fable 5 harness governance 交付落 git：A-G + delta map + README + 驗證鏈報告 + 兩輪 Codex handoff + optional research design，14 docs 2266 行；task 續為 in_progress，等 Vincent acceptance 後轉 completed。",
+  "created_at": "2026-07-04T16:39:24.697Z",
+  "actor": "claude-code",
+  "session_id": "48b830c5-32d0-4932-be4a-062e80466469"
+}

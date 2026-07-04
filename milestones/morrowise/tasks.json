@@ -1294,7 +1294,7 @@
     },
     {
       "id": "fable-harness-judgment-transfer",
-      "status": "in_progress",
+      "status": "completed",
       "title": "Fable 5 Harness 健檢與判斷力外化",
       "track": "governance",
       "order_label": "MW-GOV-FABLE-01",
@@ -1351,8 +1351,14 @@
         "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/future-session-handoff.md",
         "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/review-readback-report.md"
       ],
-      "blocked_until": "Vincent accepts the Phase 2 harness folder ($COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/, 13 docs + 2 external verification handoffs) and approves the commit scope; drafting, adversarial review, and two Codex verification rounds are already done.",
-      "note": "2026-07-04 整合決策：不另開 agent-control-plane-harness project。Fable 5 是一次性高階 auditor，產物是 MorroWise governance upgrade。第一階段只做唯讀診斷與改造藍圖；任何既有入口文件修改必須有 patch plan、備份與 Vincent 明確批准。此 task 應引用既有 live-system admission、task ownership routing、manual live sync、wiring gate、verifier suite health 與 multi-session commit race governance，不得重寫平行制度。2026-07-05 進度：Phase 0-2 全交付於 $COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/（A-G + delta map + README + amendment + optional research design，13 docs）；經 Vincent 人工驗收 4 findings、fresh-context 對抗審查 18 findings、Codex 兩輪外部驗證（phase2-verification-handoff.md 6 findings、phase2-acceptance-readiness-handoff.md 4 findings）全部修復；B plan 的入口 patches P1-P4+C1 維持 pending approval；等 Vincent acceptance 裁決與 commit 後轉 completed。",
+      "completed_at": "2026-07-05",
+      "commits": [
+        "bfeae22",
+        "38712f6",
+        "228b51d"
+      ],
+      "summary": "完成 Fable 5 harness governance 健檢與判斷力外化：A-G 制度文件、source-of-truth delta map、入口 patch plan、對抗審查/read-back/amendment、兩輪 Codex 驗證交接與 optional cost-efficiency research design 均已落檔；B plan patches P1-P4+C1 保持待 Vincent 另行批准。",
+      "note": "2026-07-04 整合決策：不另開 agent-control-plane-harness project。Fable 5 是一次性高階 auditor，產物是 MorroWise governance upgrade。第一階段只做唯讀診斷與改造藍圖；任何既有入口文件修改必須有 patch plan、備份與 Vincent 明確批准。此 task 應引用既有 live-system admission、task ownership routing、manual live sync、wiring gate、verifier suite health 與 multi-session commit race governance，不得重寫平行制度。2026-07-05 完成：Phase 0-2 全交付於 $COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/（A-G + delta map + README + amendment + optional research design，13 docs）；經 Vincent 人工驗收 4 findings、fresh-context 對抗審查 18 findings、Codex 兩輪外部驗證（phase2-verification-handoff.md 6 findings、phase2-acceptance-readiness-handoff.md 4 findings）全部修復；notyet-harness delivery commit 38712f6 的 pending task-event 已套用；B plan 的入口 patches P1-P4+C1 維持 pending approval，不在本 completed 動作中執行。",
       "hc_decision": {
         "task_scope": "morrowise/fable-harness-judgment-transfer",
         "hc_refs": [
@@ -1374,6 +1380,58 @@
         ],
         "source_boundary": "HC is a thinking check only. Canonical project/task state remains in $COLLAB/harness-mc/milestones/morrowise/tasks.json and project.json. Fable 5 outputs must become MorroWise governance docs, patch plans, verifiers, or future task anchors; they must not become a parallel source of truth."
       }
+    },
+    {
+      "id": "harness-governance-entry-routing-rollout",
+      "status": "todo",
+      "title": "Harness governance 入口路由 rollout",
+      "track": "governance",
+      "order_label": "MW-GOV-HARNESS-ROUTE-01",
+      "dependencies": [
+        "fable-harness-judgment-transfer"
+      ],
+      "done_condition": "依 `$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/change-approval-plan.md` 逐條處理 P1-P4 入口路由 patch：每條 patch 必須先由 Vincent 明確批准，執行前備份，執行後跑該條 verifier，並回寫 patch 狀態與證據。此 task 僅負責入口路由 rollout，不處理 C1 duplicate cleanup、不搬運 harness 文件內容、不重寫 CORE/AGENTS/CLAUDE/MANUAL 成第二份正本。",
+      "acceptance": [
+        "P1-P4 每條都先標明 Vincent 裁決：approved / rejected / still pending；pending 或 rejected 的 patch 不得執行。",
+        "已批准 patch 只新增薄入口指針，不複製 model-dispatch、judgment matrix、delegation template 或其他長內容到入口文件。",
+        "每條已執行 patch 均有備份或 git rollback 路徑、驗證輸出、執行紀錄與 commit hash 或非 git 檔案紀錄。",
+        "P3 修改 MorroWise MANUAL 手寫區後，必須跑 `sync-morrowise-manual.py --check` 或記錄不可執行原因。",
+        "P4 修改 `$COLLAB/AGENTS.md` 前必須建立 `.bak`，修改後驗證 `Harness governance` 唯一命中並記入 cc-log 或等效交接紀錄。",
+        "`change-approval-plan.md` 狀態欄已回寫每條裁決與執行結果；C1 保持不在本 task 執行，另由 `skills-index-duplicate-cleanup` 管理。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/change-approval-plan.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/README.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/harness-leak-diagnosis.md",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#fable-harness-judgment-transfer",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#skills-index-duplicate-cleanup"
+      ],
+      "note": "2026-07-05 Vincent 裁決：B plan 的 P1-P4 需要 follow-up task anchor；本 task 是入口路由 rollout 的唯一 anchor。C1 duplicate cleanup 已拆至 `skills-index-duplicate-cleanup`，保持本 task 純入口 routing。"
+    },
+    {
+      "id": "skills-index-duplicate-cleanup",
+      "status": "todo",
+      "title": "SKILLS-INDEX duplicate cleanup",
+      "track": "governance",
+      "order_label": "MW-GOV-SKILLS-01",
+      "dependencies": [
+        "fable-harness-judgment-transfer"
+      ],
+      "done_condition": "獨立處理 Fable B plan 原 C1 清理提案：確認 `$COLLAB/notyet-harness/000_Agent/skills/SKILLS-INDEX (1).md` 是否仍為過期複本且無任何入口引用；經 Vincent 批准後用安全刪除流程移除或歸檔，並留下可追溯驗證紀錄。此 task 不執行 P1-P4 入口 rollout、不修改入口文件、不混入 harness governance routing patch。",
+      "acceptance": [
+        "先唯讀確認 `$COLLAB/notyet-harness/000_Agent/skills/SKILLS-INDEX.md` 與 `SKILLS-INDEX (1).md` 的存在狀態、大小、mtime、內容差異與引用命中。",
+        "若 `(1)` 檔仍有未合併內容，停止清理並改寫為 merge/reconcile proposal；不得直接刪除。",
+        "若確認為 stale duplicate，執行前取得 Vincent 明確批准，並使用 trash 或等效可復原方式，不用永久刪除。",
+        "清理後重新掃描 `SKILLS-INDEX (1).md` 無入口引用，`SKILLS-INDEX.md` 仍存在且 skills index 相關啟動路由可讀。",
+        "更新本 task completion record；若有必要才回寫 harness 文件的 C1 狀態，不得順手執行 B plan P1-P4。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/change-approval-plan.md#C1",
+        "$COLLAB/notyet-harness/000_Agent/skills/SKILLS-INDEX.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/SKILLS-INDEX (1).md",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#fable-harness-judgment-transfer"
+      ],
+      "note": "2026-07-05 Vincent 裁決：C1 不併入 Harness governance 入口 rollout，另開本 task 保持入口 rollout 純淨。"
     }
   ]
 }

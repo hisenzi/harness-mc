@@ -190,6 +190,16 @@
     "reality-tax-daily-review-task": {
       "status": "todo"
     },
+    "fable-harness-judgment-transfer": {
+      "status": "completed",
+      "completed_at": "2026-07-05",
+      "commits": [
+        "bfeae22",
+        "38712f6",
+        "228b51d"
+      ],
+      "summary": "完成 Fable 5 harness governance 健檢與判斷力外化：A-G 制度文件、source-of-truth delta map、入口 patch plan、對抗審查/read-back/amendment、兩輪 Codex 驗證交接與 optional cost-efficiency research design 均已落檔；B plan patches P1-P4+C1 保持待 Vincent 另行批准。"
+    },
     "playwright-cli-capability-probe": {
       "status": "todo"
     }

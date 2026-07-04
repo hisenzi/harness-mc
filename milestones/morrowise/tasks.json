@@ -1243,7 +1243,7 @@
     {
       "id": "system-pulse-schedule-task",
       "title": "System pulse 排程（每日全鏈心跳 + 失敗送達）",
-      "status": "todo",
+      "status": "completed",
       "track": "runtime-delivery",
       "done_condition": "schedule/tasks/system-pulse.yaml 定義每日一次執行：harness-mc prebuild 全鏈（generators + auditor）、全套 test:* verifiers、sync-morrowise-manual.py --check、sync-architecture-current-state.py --check、task-event reducer；任一步失敗經 notification adapter（notify.sh）推 Telegram，成功靜默；runs log 依 runtime contract 記錄，schedule-health read model 可見本 task 的 plist 與 last-run 狀態。",
       "acceptance": [
@@ -1287,7 +1287,7 @@
     },
     {
       "id": "multi-session-commit-race-governance",
-      "status": "todo",
+      "status": "completed",
       "title": "多 session commit race 治理（shared index 寫入秩序）",
       "track": "governance",
       "done_condition": "定義並落地多 agent session 同 repo 併發寫入的 commit 秩序，消除 shared index race：候選方案（每 session 專用 git worktree、commit 前 index 快照比對、staging lock）先展開給 Vincent 選路，選定後更新 worktree-commit skill 防呆步驟，並以 verifier 或 fixture 證明「他人 staged 檔案不會被本 session commit 掃入」。",

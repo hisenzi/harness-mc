@@ -36,6 +36,7 @@
     "test:morrowise-read-model-card": "node scripts/verify-morrowise-read-model-card.mjs",
     "test:morrowise-live-loop": "node scripts/verify-morrowise-live-dashboard-loop.mjs",
     "test:worktree-status": "node scripts/generate-worktree-status.mjs",
+    "test:worktree-commit-race": "node scripts/verify-worktree-commit-race-governance.mjs",
     "test:commit-attention": "node scripts/verify-commit-attention.mjs",
     "test:commit-planning-gate": "node scripts/verify-morrowise-commit-planning-gate.mjs",
     "test:commit-cleanup-plan": "node scripts/verify-morrowise-commit-cleanup-plan.mjs",

@@ -1294,7 +1294,7 @@
     },
     {
       "id": "fable-harness-judgment-transfer",
-      "status": "todo",
+      "status": "in_progress",
       "title": "Fable 5 Harness 健檢與判斷力外化",
       "track": "governance",
       "order_label": "MW-GOV-FABLE-01",
@@ -1351,8 +1351,8 @@
         "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/future-session-handoff.md",
         "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/review-readback-report.md"
       ],
-      "blocked_until": "Vincent approves Fable 5 execution scope and confirms whether Phase 1 may create draft files under $COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/ after read-only diagnosis.",
-      "note": "2026-07-04 整合決策：不另開 agent-control-plane-harness project。Fable 5 是一次性高階 auditor，產物是 MorroWise governance upgrade。第一階段只做唯讀診斷與改造藍圖；任何既有入口文件修改必須有 patch plan、備份與 Vincent 明確批准。此 task 應引用既有 live-system admission、task ownership routing、manual live sync、wiring gate、verifier suite health 與 multi-session commit race governance，不得重寫平行制度。",
+      "blocked_until": "Vincent accepts the Phase 2 harness folder ($COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/, 13 docs + 2 external verification handoffs) and approves the commit scope; drafting, adversarial review, and two Codex verification rounds are already done.",
+      "note": "2026-07-04 整合決策：不另開 agent-control-plane-harness project。Fable 5 是一次性高階 auditor，產物是 MorroWise governance upgrade。第一階段只做唯讀診斷與改造藍圖；任何既有入口文件修改必須有 patch plan、備份與 Vincent 明確批准。此 task 應引用既有 live-system admission、task ownership routing、manual live sync、wiring gate、verifier suite health 與 multi-session commit race governance，不得重寫平行制度。2026-07-05 進度：Phase 0-2 全交付於 $COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/（A-G + delta map + README + amendment + optional research design，13 docs）；經 Vincent 人工驗收 4 findings、fresh-context 對抗審查 18 findings、Codex 兩輪外部驗證（phase2-verification-handoff.md 6 findings、phase2-acceptance-readiness-handoff.md 4 findings）全部修復；B plan 的入口 patches P1-P4+C1 維持 pending approval；等 Vincent acceptance 裁決與 commit 後轉 completed。",
       "hc_decision": {
         "task_scope": "morrowise/fable-harness-judgment-transfer",
         "hc_refs": [

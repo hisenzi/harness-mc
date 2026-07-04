@@ -1255,7 +1255,13 @@
         "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-current-state.py",
         "$COLLAB/harness-mc/public/data/schedule-health.json"
       ],
-      "note": "2026-07-03 健檢定位的心跳缺口：mc-sentinel 與 commit-attention-sweep 不含 read model 重生成、verifier suite 與 sync check；prebuild 只在有人 build 時跑，degraded=true 與 19 筆 pending events 即此缺口的誠實顯示。查重：runtime-scheduler-v0（completed）只建 runtime 本體；reality-tax-daily-review-task 管研究損耗，不同關注點。"
+      "completed_at": "2026-07-05",
+      "commits": [
+        "e4c7bbd",
+        "cb6b3ac"
+      ],
+      "summary": "完成 MorroWise system-pulse runtime 接線：新增每日 08:45 scheduler task、system-pulse runner、verifier 與 schedule-health failed-run routing；本機 launchd 已載入，實跑 dispatch 留下 degraded runs log 與 system-pulse read model。",
+      "note": "2026-07-03 健檢定位的心跳缺口：mc-sentinel 與 commit-attention-sweep 不含 read model 重生成、verifier suite 與 sync check；prebuild 只在有人 build 時跑，degraded=true 與 19 筆 pending events 即此缺口的誠實顯示。查重：runtime-scheduler-v0（completed）只建 runtime 本體；reality-tax-daily-review-task 管研究損耗，不同關注點。2026-07-05 完成：預設 report-only，不自動 apply task-events；實跑 `dispatch.sh system-pulse` 產生 degraded run（46/50 pass，notify.sh 因缺 .env graceful skip，pending task-events=24），schedule-health 可見 system-pulse plist installed 與 last_run failed。"
     },
     {
       "id": "dual-machine-trigger-install",

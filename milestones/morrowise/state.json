@@ -218,6 +218,15 @@
       ],
       "summary": "完成 SKILLS-INDEX duplicate reconcile：正本改為 marker-managed 43 skills/1 archive，update-skills-index 增加 --check/--dry-run，移除 SKILLS-INDEX (1).md 活躍複本並留下 reconcile report。"
     },
+    "system-pulse-schedule-task": {
+      "status": "completed",
+      "completed_at": "2026-07-05",
+      "commits": [
+        "e4c7bbd",
+        "cb6b3ac"
+      ],
+      "summary": "完成 MorroWise system-pulse runtime 接線：新增每日 08:45 scheduler task、system-pulse runner、verifier 與 schedule-health failed-run routing；本機 launchd 已載入，實跑 dispatch 留下 degraded runs log 與 system-pulse read model。"
+    },
     "playwright-cli-capability-probe": {
       "status": "todo"
     }

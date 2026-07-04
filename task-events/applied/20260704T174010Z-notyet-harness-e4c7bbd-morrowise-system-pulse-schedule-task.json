@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-system-pulse-schedule-task-e4c7bbd-20260704T174010Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "e4c7bbd",
+  "project": "morrowise",
+  "task_id": "system-pulse-schedule-task",
+  "status": "updated",
+  "summary": "新增 notyet-harness schedule/tasks/system-pulse.yaml，將 MorroWise system-pulse 接入 agnostic scheduler 每日 08:45 入口。",
+  "created_at": "2026-07-04T17:40:10.144Z",
+  "actor": "codex",
+  "session_id": "codex-20260705-system-pulse"
+}

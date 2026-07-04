@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-04T17:19:12.555Z",
+  "generated_at": "2026-07-04T17:40:10.144Z",
   "applied": [
     {
-      "file": "20260704T171912Z-notyet-harness-e668aac-morrowise-skills-index-duplicate-cleanup.json",
-      "event_id": "task.completed-morrowise-skills-index-duplicate-cleanup-e668aac-20260704T171912Z",
+      "file": "20260704T174010Z-notyet-harness-e4c7bbd-morrowise-system-pulse-schedule-task.json",
+      "event_id": "task.commit_attached-morrowise-system-pulse-schedule-task-e4c7bbd-20260704T174010Z",
       "project": "morrowise",
-      "task_id": "skills-index-duplicate-cleanup",
-      "type": "task.completed"
+      "task_id": "system-pulse-schedule-task",
+      "type": "task.commit_attached"
     }
   ],
   "rejected": [],

@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-07-04T16:47:25.000Z",
+  "generated_at": "2026-07-04T17:19:12.555Z",
   "applied": [
     {
-      "file": "20260704T170755Z-notyet-harness-e4eaeba-morrowise-harness-governance-entry-routing-rollout.json",
-      "event_id": "task.completed-morrowise-harness-governance-entry-routing-rollout-e4eaeba-20260704T170755Z",
+      "file": "20260704T171912Z-notyet-harness-e668aac-morrowise-skills-index-duplicate-cleanup.json",
+      "event_id": "task.completed-morrowise-skills-index-duplicate-cleanup-e668aac-20260704T171912Z",
       "project": "morrowise",
-      "task_id": "harness-governance-entry-routing-rollout",
+      "task_id": "skills-index-duplicate-cleanup",
       "type": "task.completed"
     }
   ],

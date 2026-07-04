@@ -209,6 +209,15 @@
       ],
       "summary": "完成 Harness governance 入口路由 rollout：B plan P1-P4 已接入 cc-claude-md、TOOLS、MorroWise MANUAL 與本機 AGENTS；C1 保持拆至 skills-index-duplicate-cleanup，未在本 task 執行。"
     },
+    "skills-index-duplicate-cleanup": {
+      "status": "completed",
+      "completed_at": "2026-07-05",
+      "commits": [
+        "35d31e4",
+        "e668aac"
+      ],
+      "summary": "完成 SKILLS-INDEX duplicate reconcile：正本改為 marker-managed 43 skills/1 archive，update-skills-index 增加 --check/--dry-run，移除 SKILLS-INDEX (1).md 活躍複本並留下 reconcile report。"
+    },
     "playwright-cli-capability-probe": {
       "status": "todo"
     }

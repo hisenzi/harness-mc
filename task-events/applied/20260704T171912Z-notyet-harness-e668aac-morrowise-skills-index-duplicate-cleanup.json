@@ -1,0 +1,13 @@
+{
+  "event_id": "task.completed-morrowise-skills-index-duplicate-cleanup-e668aac-20260704T171912Z",
+  "type": "task.completed",
+  "repo": "notyet-harness",
+  "commit": "e668aac",
+  "project": "morrowise",
+  "task_id": "skills-index-duplicate-cleanup",
+  "status": "completed",
+  "summary": "完成 SKILLS-INDEX duplicate reconcile：正本改為 marker-managed 43 skills/1 archive，update-skills-index 增加 --check/--dry-run，移除 SKILLS-INDEX (1).md 活躍複本並留下 reconcile report。",
+  "created_at": "2026-07-04T17:19:12.555Z",
+  "actor": "codex",
+  "session_id": "codex-20260705-skills-index-cleanup"
+}

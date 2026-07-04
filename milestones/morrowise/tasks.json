@@ -1416,7 +1416,7 @@
     },
     {
       "id": "skills-index-duplicate-cleanup",
-      "status": "todo",
+      "status": "completed",
       "title": "SKILLS-INDEX duplicate cleanup",
       "track": "governance",
       "order_label": "MW-GOV-SKILLS-01",
@@ -1437,7 +1437,13 @@
         "$COLLAB/notyet-harness/000_Agent/skills/SKILLS-INDEX (1).md",
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#fable-harness-judgment-transfer"
       ],
-      "note": "2026-07-05 Vincent 裁決：C1 不併入 Harness governance 入口 rollout，另開本 task 保持入口 rollout 純淨。"
+      "completed_at": "2026-07-05",
+      "commits": [
+        "35d31e4",
+        "e668aac"
+      ],
+      "summary": "完成 SKILLS-INDEX duplicate reconcile：正本改為 marker-managed 43 skills/1 archive，update-skills-index 增加 --check/--dry-run，移除 SKILLS-INDEX (1).md 活躍複本並留下 reconcile report。",
+      "note": "2026-07-05 Vincent 裁決：C1 不併入 Harness governance 入口 rollout，另開本 task 保持入口 rollout 純淨。2026-07-05 完成：先確認 `(1)` 與正本不同且含 marker/decision tree/heuristic 等可保留內容；未整份合併，而是把 marker-managed 結構、觸發路徑決策樹、分類 heuristic 收斂進 canonical `SKILLS-INDEX.md`，修正 generator 不再宣稱未驗證的 22:05 schedule，新增 `--check`/`--dry-run`，再用 macOS Trash 移除 active duplicate。"
     }
   ]
 }

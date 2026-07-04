@@ -1291,6 +1291,89 @@
         "$COLLAB/harness-mc/public/data/commit-attention.json"
       ],
       "note": "2026-07-03 健檢執行期間實測發現：多 session 高頻併發下，git add 與 commit 同 shell 原子執行仍不足——index 是共享熱點，pathspec commit 與 HEAD+own-hunk staging 只是戰術緩解。歷史重寫在併發下會擴大混雜（2f1c842 實證），治理需在流程層解決。查重：task-event outbox 解決的是跨 repo task 狀態寫入，不覆蓋同 repo index 併發。"
+    },
+    {
+      "id": "fable-harness-judgment-transfer",
+      "status": "todo",
+      "title": "Fable 5 Harness 健檢與判斷力外化",
+      "track": "governance",
+      "order_label": "MW-GOV-FABLE-01",
+      "dependencies": [
+        "live-system-admission-gate",
+        "task-ownership-routing-rule",
+        "morrowise-system-json-generator-v0",
+        "morrowise-manual-live-sync",
+        "morrowise-wiring-gate-verifier",
+        "verifier-suite-health-read-model",
+        "multi-session-commit-race-governance"
+      ],
+      "done_condition": "使用一次性 Fable 5 session 對 $COLLAB 的 Claude Code / Codex / Agent Control Plane 工作流做唯讀高階健檢，先產出 source-of-truth map、Harness 漏水診斷與 change approval plan；經 Vincent 批准後，將弱模型調度合約、判斷力外化矩陣、派工 prompt 模板、知識迭代協議與未來 session 交接信落成 MorroWise governance 文件或既有入口的路由 patch plan，且不得建立平行 project、不得直接重寫 current state source、不得把 mirror 當 source of truth。",
+      "acceptance": [
+        "Phase 0 唯讀診斷通過：Fable 5 明確列出已讀 startup chain、MorroWise project/task 邊界、source / adapter / mirror / generated artifact；不得讀 secrets、tokens、.env、private keys、runtime auth content、node_modules、build output 或大型 session logs。",
+        "A. Harness 漏水診斷書完成：指出最浪費 token、最容易失焦、最常造成 tools / MCP / skills 調用錯誤的前三個痛點；每個痛點含現象、根因、已存在制度、缺的阻斷器、物理級修復方案、驗證方式與不修後果。",
+        "B. 入口文件處理遵守薄入口原則：只產生 AGENTS.md / CLAUDE.md / CORE.md / MANUAL.md 的路由 patch plan；若要改既有入口，必須先備份並經 Vincent 明確批准；current state 不得手寫成第二份總表。",
+        "C. 模型調度與升降級守則完成：包含指揮官不下場、subagent 派工三件套、Haiku -> Sonnet -> Opus 升級條件、固定模式降級批次套用、同一件事最多兩輪、實作者不得自我驗證、fresh-context read-back fallback。",
+        "D. 判斷力外化矩陣完成：至少覆蓋方向錯誤立刻停下、真正完成可交付、熔斷提問三類；每條判準都有可觀察條件、完美正例、典型反例、pass/fail rubric。",
+        "E. 標準派工 prompt 模板完成：搜尋研究、功能實作、代碼重構、代碼審查各一份；每份含 context 引入、任務邊界、驗收條件、禁止事項、標準回報格式，並要求回報成果路徑與關鍵行號，不噴大段代碼。",
+        "F. 知識迭代與反思協議完成：定義哪些 harness 文件可由 agent 自行追加踩坑紀錄、哪些必須 Vincent 批准；踩坑紀錄格式含 trigger、symptom、root_cause、fix、verifier、scope_boundary；累積到指定條件時觸發精簡與抽象化。",
+        "G. 未來 session 交接信完成：列出 Fable 5 認為最關鍵但 Vincent 未明問的三件事、弱模型長期運作最可能的退化方式、預防機制、下一個 session 的第一步。",
+        "活系統判準被寫成可檢查 schema：trigger -> source -> process -> output -> surface -> next_action -> feedback_loop -> verifier -> degraded_state；缺 feedback_loop 或 verifier 的產物只能標 note / read model / static surface / mirror，不得稱為活系統。",
+        "對抗審查完成：fresh-context subagent 可用時由審查 subagent 掃描所有產物；不可用時用獨立 read-back checklist 模擬。審查至少檢查規則衝突、路徑錯誤、硬編 /Users 路徑、模糊詞、mirror/source 混淆、缺 owner / update_policy、要求不存在工具能力。",
+        "唯讀驗證完成：重新 read-back 所有落地檔案，確認沒有截斷；列出每個檔案的首尾摘要、owner、source_boundary、update_policy，以及 A-G 對應關係。",
+        "整合邊界清楚：本 task 屬 MorroWise governance；若需要 MC dashboard/card/route 顯示，另開 harness-mc surface task；若需要排程心跳，接到 system-pulse-schedule-task，不在本 task 內實作 UI 或 scheduler runtime。"
+      ],
+      "source_refs": [
+        "$COLLAB/AGENTS.md",
+        "$COLLAB/notyet-harness/000_Agent/CORE.md",
+        "$COLLAB/notyet-harness/000_Agent/SOUL.md",
+        "$COLLAB/notyet-harness/000_Agent/USER.md",
+        "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/SKILLS-INDEX.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/MANUAL.md",
+        "$COLLAB/harness-mc/AGENTS.md",
+        "$COLLAB/harness-mc/milestones/morrowise/project.json",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#live-system-admission-gate",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-ownership-routing-rule",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-system-json-generator-v0",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-manual-live-sync",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-wiring-gate-verifier",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#verifier-suite-health-read-model",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-session-commit-race-governance"
+      ],
+      "expected_outputs": [
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/source-of-truth-map.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/harness-leak-diagnosis.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/change-approval-plan.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/model-dispatch-contract.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/judgment-externalization-matrix.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/subagent-delegation-templates.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/knowledge-iteration-protocol.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/future-session-handoff.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/review-readback-report.md"
+      ],
+      "blocked_until": "Vincent approves Fable 5 execution scope and confirms whether Phase 1 may create draft files under $COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/ after read-only diagnosis.",
+      "note": "2026-07-04 整合決策：不另開 agent-control-plane-harness project。Fable 5 是一次性高階 auditor，產物是 MorroWise governance upgrade。第一階段只做唯讀診斷與改造藍圖；任何既有入口文件修改必須有 patch plan、備份與 Vincent 明確批准。此 task 應引用既有 live-system admission、task ownership routing、manual live sync、wiring gate、verifier suite health 與 multi-session commit race governance，不得重寫平行制度。",
+      "hc_decision": {
+        "task_scope": "morrowise/fable-harness-judgment-transfer",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#sourceBoundary",
+          "#risk",
+          "#confirmationBias"
+        ],
+        "hc_reasoning": "這不是新 project，也不是一般文件整理，而是 MorroWise governance 的一次高階審計與制度外化。#rightProblem 將問題從「要不要開 Agent Control Plane 新案」改成「如何把 Fable 5 的一次性判斷力接到既有 MorroWise 活系統」。#systemDynamics 指出另開 project 或手寫 current state 會製造雙正本與 drift；#sourceBoundary 要求 source / adapter / mirror / generated artifact 先被辨識；#risk 防止 Fable 5 把寶貴 context 花在全域掃描、secret 風險或完美主義文件量產；#confirmationBias 要求沿用現有 live-system gate、routing、manual sync 與 verifier，而不是重做一套漂亮但分裂的制度。",
+        "hc_confidence": 0.9,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/project.json",
+          "$COLLAB/harness-mc/AGENTS.md",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#live-system-admission-gate",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-ownership-routing-rule",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-manual-live-sync",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-session-commit-race-governance"
+        ],
+        "source_boundary": "HC is a thinking check only. Canonical project/task state remains in $COLLAB/harness-mc/milestones/morrowise/tasks.json and project.json. Fable 5 outputs must become MorroWise governance docs, patch plans, verifiers, or future task anchors; they must not become a parallel source of truth."
+      }
     }
   ]
 }

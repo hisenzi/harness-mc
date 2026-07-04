@@ -37,7 +37,7 @@ export function generateScheduleHealth(options = {}) {
     runtime,
     summary,
     tasks,
-    next_action: nextAction(summary, runtime),
+    next_action: nextAction(summary, runtime, tasks),
   };
 
   if (options.write !== false) {
@@ -169,7 +169,7 @@ function summarize(tasks, runtime) {
   };
 }
 
-function nextAction(summary, runtime) {
+function nextAction(summary, runtime, tasks = []) {
   if (!runtime.dispatch_present || !runtime.install_present) {
     return {
       type: "task",
@@ -195,10 +195,11 @@ function nextAction(summary, runtime) {
   }
 
   if (summary.last_run_failures > 0) {
+    const failedTask = tasks.find((task) => task.last_run && task.last_run.status !== "success");
     return {
       type: "task",
-      target: "runtime-scheduler-v0",
-      label: "Inspect failed scheduler run logs before marking runtime healthy.",
+      target: failedTask?.id || "runtime-scheduler-v0",
+      label: `Inspect failed scheduler run logs for ${failedTask?.id || "the failed task"} before marking runtime healthy.`,
     };
   }
 

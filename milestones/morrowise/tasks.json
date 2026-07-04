@@ -1296,7 +1296,13 @@
         "$COLLAB/harness-mc/scripts/task-event-outbox.mjs",
         "$COLLAB/harness-mc/public/data/commit-attention.json"
       ],
-      "note": "2026-07-03 健檢執行期間實測發現：多 session 高頻併發下，git add 與 commit 同 shell 原子執行仍不足——index 是共享熱點，pathspec commit 與 HEAD+own-hunk staging 只是戰術緩解。歷史重寫在併發下會擴大混雜（2f1c842 實證），治理需在流程層解決。查重：task-event outbox 解決的是跨 repo task 狀態寫入，不覆蓋同 repo index 併發。"
+      "completed_at": "2026-07-05",
+      "commits": [
+        "a412066",
+        "f447351"
+      ],
+      "summary": "完成多 session commit race 治理：worktree-commit skill v1.8 新增 commit scope manifest、repo-local staging lock、pathspec commit 與 extra staged files 紅線；harness-mc fixture verifier 證明他方 staged 檔案不會被本 session commit 掃入。",
+      "note": "2026-07-03 健檢執行期間實測發現：多 session 高頻併發下，git add 與 commit 同 shell 原子執行仍不足——index 是共享熱點，pathspec commit 與 HEAD+own-hunk staging 只是戰術緩解。歷史重寫在併發下會擴大混雜（2f1c842 實證），治理需在流程層解決。查重：task-event outbox 解決的是跨 repo task 狀態寫入，不覆蓋同 repo index 併發。2026-07-05 完成：採 staging lock + scope manifest + `git commit --only -m ... -- <scope paths>`；若 extra staged file 非本次 scope，保留在 index 不納入 commit；若同檔不同 hunk，熔斷改用獨立 worktree 或請 Vincent 裁決。"
     },
     {
       "id": "fable-harness-judgment-transfer",

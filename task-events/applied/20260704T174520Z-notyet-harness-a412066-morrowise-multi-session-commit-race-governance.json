@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-multi-session-commit-race-governance-a412066-20260704T174520Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "a412066",
+  "project": "morrowise",
+  "task_id": "multi-session-commit-race-governance",
+  "status": "updated",
+  "summary": "更新 worktree-commit skill v1.8：新增 commit scope manifest、repo-local staging lock、pathspec commit 與 extra staged files 紅線，防止他方 staged 檔被本 session 掃入。",
+  "created_at": "2026-07-04T17:45:20.532Z",
+  "actor": "codex",
+  "session_id": "codex-20260705-commit-race"
+}

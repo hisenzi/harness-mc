@@ -227,6 +227,15 @@
       ],
       "summary": "完成 MorroWise system-pulse runtime 接線：新增每日 08:45 scheduler task、system-pulse runner、verifier 與 schedule-health failed-run routing；本機 launchd 已載入，實跑 dispatch 留下 degraded runs log 與 system-pulse read model。"
     },
+    "multi-session-commit-race-governance": {
+      "status": "completed",
+      "completed_at": "2026-07-05",
+      "commits": [
+        "a412066",
+        "f447351"
+      ],
+      "summary": "完成多 session commit race 治理：worktree-commit skill v1.8 新增 commit scope manifest、repo-local staging lock、pathspec commit 與 extra staged files 紅線；harness-mc fixture verifier 證明他方 staged 檔案不會被本 session commit 掃入。"
+    },
     "playwright-cli-capability-probe": {
       "status": "todo"
     }

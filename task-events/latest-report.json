@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-07-04T17:40:10.144Z",
+  "generated_at": "2026-07-04T17:45:20.532Z",
   "applied": [
     {
-      "file": "20260704T174010Z-notyet-harness-e4c7bbd-morrowise-system-pulse-schedule-task.json",
-      "event_id": "task.commit_attached-morrowise-system-pulse-schedule-task-e4c7bbd-20260704T174010Z",
+      "file": "20260704T174520Z-notyet-harness-a412066-morrowise-multi-session-commit-race-governance.json",
+      "event_id": "task.commit_attached-morrowise-multi-session-commit-race-governance-a412066-20260704T174520Z",
       "project": "morrowise",
-      "task_id": "system-pulse-schedule-task",
+      "task_id": "multi-session-commit-race-governance",
       "type": "task.commit_attached"
     }
   ],

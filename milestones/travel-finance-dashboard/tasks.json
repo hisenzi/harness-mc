@@ -450,7 +450,10 @@
           "osaka_transfer_status": "draft",
           "phase2_task_unblocked": "p2-standalone-dashboard-build"
         }
-      }
+      },
+      "commits": [
+        "d3aa176"
+      ]
     },
     {
       "id": "p2-standalone-dashboard-build",

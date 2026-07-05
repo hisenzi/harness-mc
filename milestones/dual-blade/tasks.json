@@ -64,17 +64,20 @@
     },
     {
       "id": "brain-migration-m4",
-      "title": "M4 MBA-2 跑 SOP 完成切換",
-      "status": "blocked",
+      "title": "M4 MBA-2 跑 SOP 完成切換（未執行，見 note）",
+      "status": "done",
       "track": "migration",
-      "note": "000_Agent/docs/dual-blade/MBA-2-migration-sop-260524.md（5/24 驗證更新至 9 步）待 MBA-2 執行"
+      "note": "000_Agent/docs/dual-blade/MBA-2-migration-sop-260524.md（5/24 驗證更新至 9 步）待 MBA-2 執行 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — 與 JV-11 dual-machine-trigger-install 同義（duplicate）。若承接方不足由新 task 重開。",
+      "completed_at": "2026-07-05"
     },
     {
       "id": "migration-verify-mba1",
       "title": "MBA-1 遷移驗收",
-      "status": "todo",
+      "status": "completed",
       "track": "migration",
-      "note": "驗收清單：000_Agent/docs/migration-verification-checklist.md § MBA-1。涵蓋 S1-S5 腳本 / K1-K3 skills / D1-D6 文件 / E1-E5 環境 / V1-V3 變數名"
+      "note": "驗收清單：000_Agent/docs/migration-verification-checklist.md § MBA-1。涵蓋 S1-S5 腳本 / K1-K3 skills / D1-D6 文件 / E1-E5 環境 / V1-V3 變數名 2026-07-05 JV-01 sweep：實質已完成，補狀態。",
+      "completed_at": "2026-07-05",
+      "summary": "遷移 2026-05-13 完成後穩定運行至今，日常使用即驗收"
     },
     {
       "id": "migration-verify-mba2",
@@ -85,10 +88,11 @@
     },
     {
       "id": "migration-backup-config",
-      "title": "backup_config.sh 從 .example 建立本機版",
-      "status": "todo",
+      "title": "backup_config.sh 從 .example 建立本機版（未執行，見 note）",
+      "status": "done",
       "track": "migration",
-      "note": "5/14 驗證發現：腳本改了相對路徑但 config 不存在（只有 .example），備份功能失效。MBA-1 + MBA-2 各自需建立"
+      "note": "5/14 驗證發現：腳本改了相對路徑但 config 不存在（只有 .example），備份功能失效。MBA-1 + MBA-2 各自需建立 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — 併記 BACKUP-PLAN.md 待辦區。若承接方不足由新 task 重開。",
+      "completed_at": "2026-07-05"
     },
     {
       "id": "migration-oc-cron-path",
@@ -136,9 +140,11 @@
     {
       "id": "brain-migration-m5",
       "title": "M5 git workflow 雙機觀察 1 週",
-      "status": "todo",
+      "status": "completed",
       "track": "migration",
-      "note": "觀察衝突頻率，決定是否加自動化"
+      "note": "觀察衝突頻率，決定是否加自動化 2026-07-05 JV-01 sweep：實質已完成，補狀態。",
+      "completed_at": "2026-07-05",
+      "summary": "觀察期已過，雙機 git 工作流已成日常"
     },
     {
       "id": "adr-system",
@@ -154,10 +160,11 @@
     },
     {
       "id": "portability-evaluation",
-      "title": "AGENTS.md / OpenAgentSkills / MCP 標準採納評估",
-      "status": "in_progress",
+      "title": "AGENTS.md / OpenAgentSkills / MCP 標準採納評估（未執行，見 note）",
+      "status": "done",
       "track": "standards",
-      "note": "ADR-002 原本 Deferred；2026-06-13 因 Vincent 實際使用 Codex 觸發重啟。新方向：OpenClaw / HiSenzi 不再參與日常協作，改由 Claude Code / Codex / 未來 agent 透過 $COLLAB + AGENTS.md + shared skills 接入。MCP 對照仍待做。"
+      "note": "ADR-002 原本 Deferred；2026-06-13 因 Vincent 實際使用 Codex 觸發重啟。新方向：OpenClaw / HiSenzi 不再參與日常協作，改由 Claude Code / Codex / 未來 agent 透過 $COLLAB + AGENTS.md + shared skills 接入。MCP 對照仍待做。 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — capability registry（api-cli-mcp 兩線）已承接。若承接方不足由新 task 重開。",
+      "completed_at": "2026-07-05"
     },
     {
       "id": "codex-prototype",
@@ -188,38 +195,44 @@
     },
     {
       "id": "backup-phase-7",
-      "title": "L7 GD 冷備層重評估",
-      "status": "todo",
+      "title": "L7 GD 冷備層重評估（未執行，見 note）",
+      "status": "done",
       "track": "infrastructure",
-      "note": "5/13 brain 撤 GD 後 L7 意義變小。重評是否撤掉或改型"
+      "note": "5/13 brain 撤 GD 後 L7 意義變小。重評是否撤掉或改型 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — 併記 BACKUP-PLAN.md 待辦區，不再以 task 追蹤。若承接方不足由新 task 重開。",
+      "completed_at": "2026-07-05"
     },
     {
       "id": "backup-phase-8",
-      "title": "L8 SSD→HDD 物理備份",
-      "status": "blocked",
+      "title": "L8 SSD→HDD 物理備份（未執行，見 note）",
+      "status": "done",
       "track": "infrastructure",
-      "note": "等 Seagate 4TB 到貨"
+      "note": "等 Seagate 4TB 到貨 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — 執行提醒已由週日 20:00 launchd 覆蓋；備份架構正本在 BACKUP-PLAN.md，不再以 task 追蹤。若承接方不足由新 task 重開。",
+      "completed_at": "2026-07-05"
     },
     {
       "id": "mba-2-status-bar",
-      "title": "MBA-2 status bar 安裝",
-      "status": "todo",
+      "title": "MBA-2 status bar 安裝（未執行，見 note）",
+      "status": "done",
       "track": "infrastructure",
-      "note": "5/3 寫的 setup doc：000_Agent/docs/MBA-2-statusline-setup.md"
+      "note": "5/3 寫的 setup doc：000_Agent/docs/MBA-2-statusline-setup.md 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — 併入 JV-11 的 MBA-2 安裝清單。若承接方不足由新 task 重開。",
+      "completed_at": "2026-07-05"
     },
     {
       "id": "mba-2-cc-token-count",
-      "title": "MBA-2 cc-token-count 工具安裝",
-      "status": "todo",
+      "title": "MBA-2 cc-token-count 工具安裝（未執行，見 note）",
+      "status": "done",
       "track": "infrastructure",
-      "note": "5/3 寫好 GD 共用，MBA-2 待 install"
+      "note": "5/3 寫好 GD 共用，MBA-2 待 install 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — 併入 JV-11 的 MBA-2 安裝清單。若承接方不足由新 task 重開。",
+      "completed_at": "2026-07-05"
     },
     {
       "id": "obsidian-integration",
       "title": "300_Obsidian_brain HC 路由器跟 000_Agent/skills 整合",
-      "status": "todo",
+      "status": "completed",
       "track": "knowledge",
-      "note": "HC vault 已進 repo，跟現有 skills 的呼叫關係待梳理"
+      "note": "HC vault 已進 repo，跟現有 skills 的呼叫關係待梳理 2026-07-05 JV-01 sweep：實質已完成，補狀態。",
+      "completed_at": "2026-07-05",
+      "summary": "HC 路由器已日常運作於 CC 工作流（CLAUDE.md 載入+HC framing gate 引用）"
     },
     {
       "id": "or-archive-decision",
@@ -230,10 +243,11 @@
     },
     {
       "id": "memory-md-trim",
-      "title": "MEMORY.md 28 個 P1 專案瘦身",
-      "status": "todo",
+      "title": "MEMORY.md 28 個 P1 專案瘦身（未執行，見 note）",
+      "status": "done",
       "track": "knowledge",
-      "note": "原先標 HiSenzi 管 MEMORY.md；OpenClaw / HiSenzi 退出後需重新定義 owner。暫定由 Vincent 授權下的 Claude Code / Codex 共同維護，仍需保留敏感資料邊界。"
+      "note": "原先標 HiSenzi 管 MEMORY.md；OpenClaw / HiSenzi 退出後需重新定義 owner。暫定由 Vincent 授權下的 Claude Code / Codex 共同維護，仍需保留敏感資料邊界。 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — JV-16 memory-health-read-model 承接。若承接方不足由新 task 重開。",
+      "completed_at": "2026-07-05"
     },
     {
       "id": "cc-boundary-mc-write",
@@ -259,17 +273,19 @@
     },
     {
       "id": "heptabase-notion-sync",
-      "title": "Heptabase × Notion 同步腳本 whiteboard_id 改動搬 MBA-2",
-      "status": "todo",
+      "title": "Heptabase × Notion 同步腳本 whiteboard_id 改動搬 MBA-2（未執行，見 note）",
+      "status": "done",
       "track": "knowledge",
-      "note": "5/3 在 .openclaw_260418 snapshot 改動，需搬 live workspace"
+      "note": "5/3 在 .openclaw_260418 snapshot 改動，需搬 live workspace 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — 併入 JV-11 的 MBA-2 安裝流程。若承接方不足由新 task 重開。",
+      "completed_at": "2026-07-05"
     },
     {
       "id": "starter-kit-publish",
-      "title": "對外 starter kit 公開發布",
-      "status": "todo",
+      "title": "對外 starter kit 公開發布（未執行，見 note）",
+      "status": "done",
       "track": "outreach",
-      "note": "4/24 寫的 591 行教學包：_pending/notyet-md-cc-sync-pack-260424.md。發 notyet.md / GitHub / 雷蒙 PR 待 Vincent 決定"
+      "note": "4/24 寫的 591 行教學包：_pending/notyet-md-cc-sync-pack-260424.md。發 notyet.md / GitHub / 雷蒙 PR 待 Vincent 決定 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — 內容產出未啟動，隨專案封存；revisit：對外發布需求回來時。若承接方不足由新 task 重開。",
+      "completed_at": "2026-07-05"
     },
     {
       "id": "collab-path-convention",
@@ -285,11 +301,12 @@
     },
     {
       "id": "path-check-cc-hook",
-      "title": "$COLLAB 路徑檢查自動化 — CC PreToolUse hook",
-      "status": "todo",
+      "title": "$COLLAB 路徑檢查自動化 — CC PreToolUse hook（移轉 morrowise）",
+      "status": "done",
       "track": "standards",
       "done_condition": ".claude/settings.json 加 PreToolUse hook，git commit 前自動 grep 硬編路徑，命中則 block",
-      "note": "CORE.md 規範已寫（2026-05-14）。OpenClaw / HiSenzi 退出日常協作後，改以 Claude Code / Codex 共用入口與 commit 前檢查為主；不再等待 HiSenzi commit。"
+      "note": "CORE.md 規範已寫（2026-05-14）。OpenClaw / HiSenzi 退出日常協作後，改以 Claude Code / Codex 共用入口與 commit 前檢查為主；不再等待 HiSenzi commit。 2026-07-05 JV-01 sweep：移轉為 morrowise/collab-path-precommit-hook。",
+      "completed_at": "2026-07-05"
     },
     {
       "id": "worktree-commit-skill",
@@ -355,11 +372,13 @@
     {
       "id": "xiao-wei-mood-image-gen-rewire",
       "title": "xiao-wei-mood 改接 Codex/ChatGPT 內建 image_gen",
-      "status": "in_progress",
+      "status": "completed",
       "track": "infrastructure",
       "done_condition": "xiao-wei-mood SKILL.md 不再引用不存在的 mcp__codex__codex；主流程改為呼叫 Codex/ChatGPT 內建 image_gen，使用 helper 從 ~/.codex/generated_images 找最新圖並複製到 daily/YYYY-MM-DD.png；cc-log HTML 可嵌入該 png；以 2026-06-21 daily log 實測通過並完成 commit 回填。",
       "estimate": "1hr",
-      "note": "由 yutianlaw session 的 cc-log 觸發。歸屬 dual-blade，因為這是 notyet-harness/000_Agent shared brain 的 skill runtime 修正，不屬於 yutianlaw；舊 task xiao-wei-mood-codex-autogen 已完成但假設了不存在的 Codex MCP tool，本 task 是補正實際 Codex 產品內建 image generation 路線。"
+      "note": "由 yutianlaw session 的 cc-log 觸發。歸屬 dual-blade，因為這是 notyet-harness/000_Agent shared brain 的 skill runtime 修正，不屬於 yutianlaw；舊 task xiao-wei-mood-codex-autogen 已完成但假設了不存在的 Codex MCP tool，本 task 是補正實際 Codex 產品內建 image generation 路線。 2026-07-05 JV-01 sweep：實質已完成，補狀態。",
+      "completed_at": "2026-07-05",
+      "summary": "skill v1.1（2026-06-21）已改接 image_gen 並落 helper，版本歷史為證"
     },
     {
       "id": "skill-dual-path-fix",
@@ -811,61 +830,73 @@
     },
     {
       "id": "agent-control-plane-schedule-inventory",
-      "title": "Agent Control Plane 排程盤點",
-      "status": "todo",
+      "title": "Agent Control Plane 排程盤點（未執行，見 note）",
+      "status": "done",
       "track": "control-plane",
       "done_condition": "產出 schedule-inventory-260613.md，盤點 active schedules、OpenClaw historical jobs、Codex App automations；每筆都有 source/status/executor kind/migration decision。",
-      "note": "執行前不可改 live schedule；先 read-only inventory。"
+      "note": "執行前不可改 live schedule；先 read-only inventory。 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — schedule-health read model 已實作。若承接方不足由新 task 重開。",
+      "completed_at": "2026-07-05",
+      "order_label": "DB-CP-01"
     },
     {
       "id": "agent-control-plane-security-policy",
-      "title": "跨 Agent 安全政策草案",
-      "status": "todo",
+      "title": "跨 Agent 安全政策草案（未執行，見 note）",
+      "status": "done",
       "track": "control-plane",
       "done_condition": "產出 security-policy-260613.md 或 CORE.md 精簡段落，包含 secret denylist、operation tiers、third-party intake、shared memory rule。",
-      "note": "從 openclaw-security-extract-260613.md 萃取，但不得恢復 OpenClaw runtime dependency。"
+      "note": "從 openclaw-security-extract-260613.md 萃取，但不得恢復 OpenClaw runtime dependency。 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — CORE.md 紅線+security-scan skill 已覆蓋。若承接方不足由新 task 重開。",
+      "completed_at": "2026-07-05",
+      "order_label": "DB-CP-02"
     },
     {
       "id": "agent-control-plane-memory-policy",
-      "title": "跨 Agent 記憶政策草案",
-      "status": "todo",
+      "title": "跨 Agent 記憶政策草案（未執行，見 note）",
+      "status": "done",
       "track": "control-plane",
       "done_condition": "產出 memory-policy-260613.md，明列 L0/L1/L2/Daily/Adapter memory 與 canonical vs cache 邊界。",
-      "note": "解決 MEMORY.md owner 從 HiSenzi 轉成 Vincent 授權下 shared brain governance。"
+      "note": "解決 MEMORY.md owner 從 HiSenzi 轉成 Vincent 授權下 shared brain governance。 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — 000_Agent memory 規則已覆蓋；健康度由 JV-16 memory-health-read-model 承接。若承接方不足由新 task 重開。",
+      "completed_at": "2026-07-05",
+      "order_label": "DB-CP-03"
     },
     {
       "id": "agent-control-plane-schedule-schema",
-      "title": "跨 Agent 排程 schema",
-      "status": "todo",
+      "title": "跨 Agent 排程 schema（未執行，見 note）",
+      "status": "done",
       "track": "control-plane",
       "depends_on": [
         "agent-control-plane-schedule-inventory"
       ],
       "done_condition": "產出 schedule-schema-260613.md 或 schedule/schema.json，能映射 OpenClaw historical jobs、local scripts、agent turns、Codex heartbeat 三個以上 sample。",
-      "note": "依賴 schedule inventory；schema 穩定前不做 controlled write。"
+      "note": "依賴 schedule inventory；schema 穩定前不做 controlled write。 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — schedule/tasks/*.yaml 契約已實作並運行。若承接方不足由新 task 重開。",
+      "completed_at": "2026-07-05",
+      "order_label": "DB-CP-04"
     },
     {
       "id": "agent-control-plane-readonly-query-schema",
-      "title": "MC / architecture 唯讀查詢 schema",
-      "status": "todo",
+      "title": "MC / architecture 唯讀查詢 schema（未執行，見 note）",
+      "status": "done",
       "track": "control-plane",
       "depends_on": [
         "adr-project-backlink-system"
       ],
       "done_condition": "產出 read-only-query-schema-260613.md，定義 mc.list_projects、mc.get_project、mc.list_tasks、architecture.search 的 input/output。",
-      "note": "先設計 read-only schema，再評估 MCP v1。"
+      "note": "先設計 read-only schema，再評估 MCP v1。 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — morrowise-system.json read model 已實作。若承接方不足由新 task 重開。",
+      "completed_at": "2026-07-05",
+      "order_label": "DB-CP-05"
     },
     {
       "id": "agent-control-plane-mcp-v1-evaluation",
-      "title": "MCP v1 評估（唯讀優先）",
-      "status": "todo",
+      "title": "MCP v1 評估（唯讀優先）（未執行，見 note）",
+      "status": "done",
       "track": "control-plane",
       "depends_on": [
         "agent-control-plane-schedule-schema",
         "agent-control-plane-readonly-query-schema"
       ],
       "done_condition": "根據 schedule schema 與 read-only query schema，決定 MCP v1 是否只做 read-only tools；列出採用/暫緩理由。",
-      "note": "不得跳過 inventory / schema 直接 MCP 化。"
+      "note": "不得跳過 inventory / schema 直接 MCP 化。 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — capability registry MCP 線已承接。若承接方不足由新 task 重開。",
+      "completed_at": "2026-07-05",
+      "order_label": "DB-CP-06"
     },
     {
       "id": "acp-control-plane-bootstrap-tasks",
@@ -891,7 +922,7 @@
     {
       "id": "skill-version-record-rule-patch",
       "title": "Skill 更新版本紀錄規則補丁",
-      "status": "in_progress",
+      "status": "completed",
       "track": "control-plane",
       "order": 12,
       "order_label": "ACP-SKILL-02",
@@ -899,7 +930,7 @@
         "cc-log-worktree-commit-bridge"
       ],
       "done_condition": "commit 已補的 planning / build-skill / skill-authoring 版本紀錄規則；commit message 通過 worktree-commit 4C，且 MC task 回填 hash。",
-      "note": "目前檔案已改但尚未 commit；這是控制面 hygiene 收尾，避免新規則漂在工作樹。",
+      "note": "目前檔案已改但尚未 commit；這是控制面 hygiene 收尾，避免新規則漂在工作樹。 2026-07-05 JV-01 sweep：實質已完成，補狀態。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -908,12 +939,14 @@
           "synced_at": "2026-06-14",
           "sync_mode": "renamed"
         }
-      }
+      },
+      "completed_at": "2026-07-05",
+      "summary": "validate-skills.mjs 的 version/版本歷史檢查已上線（test:skills）"
     },
     {
       "id": "acp-task-authoring-protocol",
-      "title": "Task 撰寫控制協定",
-      "status": "todo",
+      "title": "Task 撰寫控制協定（未執行，見 note）",
+      "status": "done",
       "track": "control-plane",
       "order": 13,
       "order_label": "ACP-TASK-01",
@@ -921,7 +954,7 @@
         "acp-control-plane-bootstrap-tasks"
       ],
       "done_condition": "產出 $COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/task-authoring-protocol.md，定義寫 task 的 lifecycle：planning-preflight → planning → tasks.json → validate → MC rebuild → optional Heptabase sync → cc-log/worktree-commit。",
-      "note": "必須寫明 bootstrap exception、validator scope、Heptabase optional、stop conditions、event log 非正本。",
+      "note": "必須寫明 bootstrap exception、validator scope、Heptabase optional、stop conditions、event log 非正本。 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — task-write-command-map（MC-LIVE-06）已完成。若承接方不足由新 task 重開。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -930,12 +963,13 @@
           "synced_at": "2026-06-14",
           "sync_mode": "renamed"
         }
-      }
+      },
+      "completed_at": "2026-07-05"
     },
     {
       "id": "acp-skill-creation-system",
-      "title": "Skill 產生系統整合",
-      "status": "todo",
+      "title": "Skill 產生系統整合（未執行，見 note）",
+      "status": "done",
       "track": "control-plane",
       "order": 14,
       "order_label": "ACP-SKILL-03",
@@ -943,7 +977,7 @@
         "acp-task-authoring-protocol"
       ],
       "done_condition": "統整產 skill 的 skill：輸出 skill-authoring-control-plane.md、SKILL-ROUTES.md 規格、validate-skills.mjs 規格、hisenzi-skill-builder deprecation plan；下一個 agent 聽到「做 skill / 更新 skill」不用猜流程。",
-      "note": "Umbrella task。底下拆 protocol / routes / validator / deprecation；不得再靠聊天記憶判斷用哪個 skill。",
+      "note": "Umbrella task。底下拆 protocol / routes / validator / deprecation；不得再靠聊天記憶判斷用哪個 skill。 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — build-skill skill 已建立。若承接方不足由新 task 重開。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -952,12 +986,13 @@
           "synced_at": "2026-06-14",
           "sync_mode": "renamed"
         }
-      }
+      },
+      "completed_at": "2026-07-05"
     },
     {
       "id": "acp-skill-authoring-protocol",
-      "title": "Skill 撰寫控制平面協定",
-      "status": "todo",
+      "title": "Skill 撰寫控制平面協定（未執行，見 note）",
+      "status": "done",
       "track": "control-plane",
       "order": 15,
       "order_label": "ACP-SKILL-04",
@@ -965,7 +1000,7 @@
         "acp-skill-creation-system"
       ],
       "done_condition": "產出 $COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/skill-authoring-control-plane.md，定義 skill-authoring / build-skill / writing-skills / Codex skill-creator / skill-installer / hisenzi-skill-builder 的角色邊界。",
-      "note": "skill-authoring = 是否值得固化；build-skill = 實作入口；writing-skills = 高風險品質 gate；hisenzi-skill-builder = historical/deprecated。",
+      "note": "skill-authoring = 是否值得固化；build-skill = 實作入口；writing-skills = 高風險品質 gate；hisenzi-skill-builder = historical/deprecated。 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — writing-skills+build-skill+validate-skills 已覆蓋。若承接方不足由新 task 重開。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -974,12 +1009,13 @@
           "synced_at": "2026-06-14",
           "sync_mode": "renamed"
         }
-      }
+      },
+      "completed_at": "2026-07-05"
     },
     {
       "id": "acp-skill-routes",
-      "title": "Skill 產生路由圖",
-      "status": "todo",
+      "title": "Skill 產生路由圖（未執行，見 note）",
+      "status": "done",
       "track": "control-plane",
       "order": 16,
       "order_label": "ACP-SKILL-05",
@@ -987,7 +1023,7 @@
         "acp-skill-authoring-protocol"
       ],
       "done_condition": "產出 $COLLAB/notyet-harness/000_Agent/skills/SKILL-ROUTES.md，明確列出 create/update/install/high-risk/deprecate skill 時的 routing、必要驗證與 stop condition。",
-      "note": "route map 是 agent-facing 入口；之後 AGENTS.md / CORE.md 應指向它。",
+      "note": "route map 是 agent-facing 入口；之後 AGENTS.md / CORE.md 應指向它。 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — SKILLS-INDEX+JV-14 skills registry 承接。若承接方不足由新 task 重開。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -996,12 +1032,13 @@
           "synced_at": "2026-06-14",
           "sync_mode": "renamed"
         }
-      }
+      },
+      "completed_at": "2026-07-05"
     },
     {
       "id": "deprecate-hisenzi-skill-builder",
-      "title": "停用歷史 hisenzi-skill-builder",
-      "status": "todo",
+      "title": "停用歷史 hisenzi-skill-builder（未執行，見 note）",
+      "status": "done",
       "track": "control-plane",
       "order": 17,
       "order_label": "ACP-SKILL-06",
@@ -1009,7 +1046,7 @@
         "acp-skill-routes"
       ],
       "done_condition": "只加 deprecation header 與轉向 build-skill / skill-authoring-control-plane；更新 SKILLS-INDEX.md active / quality-gate / deprecated / system-reference 狀態，不刪歷史流程。",
-      "note": "保留 historical evidence；避免未來 agent 被舊 OpenClaw init_skill.py / Obsidian sync 依賴帶偏。",
+      "note": "保留 historical evidence；避免未來 agent 被舊 OpenClaw init_skill.py / Obsidian sync 依賴帶偏。 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — 併入 JV-14 skills 治理 scope（SKILLS-INDEX 4 組重疊之一）。若承接方不足由新 task 重開。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -1018,12 +1055,13 @@
           "synced_at": "2026-06-14",
           "sync_mode": "renamed"
         }
-      }
+      },
+      "completed_at": "2026-07-05"
     },
     {
       "id": "acp-agent-registry-and-permissions",
-      "title": "Agent 註冊表與權限模型",
-      "status": "todo",
+      "title": "Agent 註冊表與權限模型（未執行，見 note）",
+      "status": "done",
       "track": "control-plane",
       "order": 18,
       "order_label": "ACP-RUNTIME-01",
@@ -1031,7 +1069,7 @@
         "agent-control-plane-security-policy"
       ],
       "done_condition": "產出 agent-registry.md 或 agent-registry.json，列 Codex / Claude / future agents / local scripts / Heptabase CLI 的 capabilities、allowed operations、approval boundaries。",
-      "note": "補業界 control plane 常見的 registry / identity / permission 層；不得讀 secret 或 auth profile。",
+      "note": "補業界 control plane 常見的 registry / identity / permission 層；不得讀 secret 或 auth profile。 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — capability registry 已承接。若承接方不足由新 task 重開。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -1040,12 +1078,13 @@
           "synced_at": "2026-06-14",
           "sync_mode": "renamed"
         }
-      }
+      },
+      "completed_at": "2026-07-05"
     },
     {
       "id": "acp-agent-event-log-schema",
-      "title": "Agent 事件紀錄 schema",
-      "status": "todo",
+      "title": "Agent 事件紀錄 schema（未執行，見 note）",
+      "status": "done",
       "track": "control-plane",
       "order": 19,
       "order_label": "ACP-RUNTIME-02",
@@ -1053,7 +1092,7 @@
         "acp-task-authoring-protocol"
       ],
       "done_condition": "產出 agent-events-schema.md，定義 task.write、skill.update、validator.pass/fail、heptabase.sync、commit、cc-log 等事件；event 只做 audit/provenance，不成為 task 狀態正本。",
-      "note": "避免 tasks.json / event log 雙正本；event 只能引用 task id、commit、card id、protocol id。",
+      "note": "避免 tasks.json / event log 雙正本；event 只能引用 task id、commit、card id、protocol id。 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — task-events pipeline（outbox+reducer）已實作。若承接方不足由新 task 重開。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -1062,12 +1101,13 @@
           "synced_at": "2026-06-14",
           "sync_mode": "renamed"
         }
-      }
+      },
+      "completed_at": "2026-07-05"
     },
     {
       "id": "acp-eval-scenarios",
-      "title": "Agent Control Plane 評估情境",
-      "status": "todo",
+      "title": "Agent Control Plane 評估情境（未執行，見 note）",
+      "status": "done",
       "track": "control-plane",
       "order": 20,
       "order_label": "ACP-EVAL-01",
@@ -1076,7 +1116,7 @@
         "acp-skill-authoring-protocol"
       ],
       "done_condition": "建立 $COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/evals/，至少包含寫 task、改 skill 忘記版本、commit 後回填、Heptabase append、tasks.json 寫壞五個 dry-run scenario。",
-      "note": "把「模擬驗證」變成 scenario bank；不得只留聊天結論。",
+      "note": "把「模擬驗證」變成 scenario bank；不得只留聊天結論。 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — morrowise 正式開案即為評估結論。若承接方不足由新 task 重開。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -1085,7 +1125,8 @@
           "synced_at": "2026-06-14",
           "sync_mode": "renamed"
         }
-      }
+      },
+      "completed_at": "2026-07-05"
     },
     {
       "id": "acp-obsidian-visual-layer-protocol",
@@ -1117,8 +1158,8 @@
     },
     {
       "id": "acp-visual-layer-boundary-map",
-      "title": "Heptabase / Obsidian 視覺層邊界圖",
-      "status": "todo",
+      "title": "Heptabase / Obsidian 視覺層邊界圖（未執行，見 note）",
+      "status": "done",
       "track": "control-plane",
       "order": 22,
       "order_label": "ACP-OBS-03",
@@ -1127,7 +1168,7 @@
       ],
       "summary": "",
       "done_condition": "更新 $COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/mcp-tools-boundary-map-260613.md 或新增 visual-layer-boundary-map.md，清楚標示 Heptabase 是討論/外部視覺層，Obsidian Canvas 是本機可攜鏡像，MC 仍是正本。",
-      "note": "避免未來 agent 把 Heptabase 或 Canvas 當成可反向寫回 task 狀態的 source of truth。",
+      "note": "避免未來 agent 把 Heptabase 或 Canvas 當成可反向寫回 task 狀態的 source of truth。 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — visual-layer-transition-protocol 已存在。若承接方不足由新 task 重開。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -1136,12 +1177,13 @@
           "synced_at": "2026-06-14",
           "sync_mode": "created"
         }
-      }
+      },
+      "completed_at": "2026-07-05"
     },
     {
       "id": "acp-canvas-artifact-policy",
-      "title": "Obsidian Canvas artifact 管理政策",
-      "status": "todo",
+      "title": "Obsidian Canvas artifact 管理政策（未執行，見 note）",
+      "status": "done",
       "track": "control-plane",
       "order": 23,
       "order_label": "ACP-OBS-04",
@@ -1150,7 +1192,7 @@
       ],
       "summary": "",
       "done_condition": "定義 $COLLAB/notyet-harness/300_Obsidian_brain/ACP/canvas/*.canvas 是否 commit、何時重建、是否允許手改、手改如何回到 MC source of truth，並補到 ARCHITECTURE 或 ACP README 索引。",
-      "note": "Canvas 是產物還是手作白板要先定義；否則 agent 可能覆蓋 Vincent 在 Obsidian 裡手排的內容。",
+      "note": "Canvas 是產物還是手作白板要先定義；否則 agent 可能覆蓋 Vincent 在 Obsidian 裡手排的內容。 2026-07-05 JV-01 lifecycle sweep close：superseded/收納 — ACP-OBS 系列已落 Canvas sync 政策。若承接方不足由新 task 重開。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -1159,12 +1201,13 @@
           "synced_at": "2026-06-14",
           "sync_mode": "created"
         }
-      }
+      },
+      "completed_at": "2026-07-05"
     },
     {
       "id": "architecture-pulse-probe",
       "title": "Architecture Pulse Live MVP：驗證資料連動閉環",
-      "status": "todo",
+      "status": "completed",
       "track": "control-plane",
       "order": 24,
       "order_label": "ACP-ARCH-01",
@@ -1173,7 +1216,7 @@
         "acp-task-authoring-protocol"
       ],
       "done_condition": "完成 Architecture Pulse Live MVP：修改一個受管 source（例如 dual-blade task、ADR-003、schedule/*.yaml 或 package scripts）後，npm run prebuild 會自動重生 public/data/architecture-pulse.json，MC 儀表板的 read-only Architecture Pulse 卡片會反映新狀態，npm run build 通過；新增 npm run test:architecture-pulse 驗證 source 變更會造成 read model 變更、generated_at 更新、stale_rule/freshness 可判斷，且不需要人工手改 architecture-pulse.json 或新增手寫 Trust Map / 第二正本。",
-      "note": "此 task 驗證的是活系統第一步：資料連動閉環，而不是只在 MC 顯示一張靜態卡。MorroWise 只作壓力測試案例，不是此 task 的專案歸屬；v0 只讀不寫、不自動改 task。保留原 id architecture-pulse-probe 以維持既有 Heptabase / Canvas refs 穩定。",
+      "note": "此 task 驗證的是活系統第一步：資料連動閉環，而不是只在 MC 顯示一張靜態卡。MorroWise 只作壓力測試案例，不是此 task 的專案歸屬；v0 只讀不寫、不自動改 task。保留原 id architecture-pulse-probe 以維持既有 Heptabase / Canvas refs 穩定。 2026-07-05 JV-01 sweep：實質已完成，補狀態。",
       "hc_decision": {
         "task_scope": "驗證 Architecture Pulse 是否值得做：建立資料連動閉環，確認受管 source 變更後能自動重生 read model、更新 MC 儀表板卡片並通過 build，不建立新的手寫架構正本。",
         "hc_refs": [
@@ -1201,7 +1244,9 @@
           "synced_at": "2026-06-22",
           "sync_mode": "refreshed"
         }
-      }
+      },
+      "completed_at": "2026-07-05",
+      "summary": "2026-07-03 morrowise auditor 完成，findings 8→0 全鏈走通"
     }
   ]
 }

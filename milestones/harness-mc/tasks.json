@@ -439,8 +439,8 @@
     },
     {
       "id": "acp-control-plane-read-model-v0",
-      "title": "Agent Control Plane 讀取模型 v0",
-      "status": "todo",
+      "title": "Agent Control Plane 讀取模型 v0（未執行，已被分散實現）",
+      "status": "done",
       "track": "control-plane",
       "order": 12,
       "order_label": "MC-LIVE-12",
@@ -451,7 +451,7 @@
         "dual-blade/acp-agent-event-log-schema"
       ],
       "done_condition": "新增 scripts/generate-control-plane-data.mjs，輸出 public/data/control-plane.json v0；只讀 tasks.json、agent-control-plane docs、validator output，包含 next_actions、missing_gates、validator_summary、latest_agent_events、policy_status。",
-      "note": "v0 不讀 Heptabase、不讀外部 API、不依賴完整 MCP schema；連續 2-3 次能回答 next action / missing gate 後再做 UI。",
+      "note": "v0 不讀 Heptabase、不讀外部 API、不依賴完整 MCP schema；連續 2-3 次能回答 next action / missing gate 後再做 UI。 2026-07-05 JV-01 sweep close：五項產出全被既有 read models 覆蓋（next_actions→morrowise-system、missing_gates→open_loops、validator_summary→verifier-suite-health、agent_events→task-events、policy_status→approval_queue）。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise / system-ops",
@@ -461,7 +461,8 @@
           "sync_mode": "appended"
         }
       },
-      "batch": "control-console"
+      "batch": "control-console",
+      "completed_at": "2026-07-05"
     },
     {
       "id": "morrowise-anatomy-read-model",
@@ -1084,8 +1085,8 @@
     },
     {
       "id": "acp-dashboard-spec",
-      "title": "Agent Control Plane 儀表板規格",
-      "status": "deferred",
+      "title": "Agent Control Plane 儀表板規格（未執行，已被吸收）",
+      "status": "done",
       "track": "control-plane",
       "order": 1,
       "order_label": "ACP-MC-01",
@@ -1094,7 +1095,7 @@
         "dual-blade/agent-control-plane-execution-plan"
       ],
       "done_condition": "產出 system-workflow/docs/specs/agent-control-plane-dashboard.md，明確定義 MC 首頁作為 Control Plane console 的資訊架構、資料源、read-only 邊界與驗收標準。",
-      "note": "先寫 spec，不先動 UI。回答「下一個 agent 打開 MC 第一眼要知道什麼」。 整理 2026-06-20：舊 ACP dashboard spec 已被 ACP-MC-20 operating loop 與 MC-LIVE MorroWise control-console 主線吸收；保留為歷史設計素材，不作為下一步。",
+      "note": "先寫 spec，不先動 UI。回答「下一個 agent 打開 MC 第一眼要知道什麼」。 整理 2026-06-20：舊 ACP dashboard spec 已被 ACP-MC-20 operating loop 與 MC-LIVE MorroWise control-console 主線吸收；保留為歷史設計素材，不作為下一步。 2026-07-05 JV-01 sweep close：已被 ACP-MC-20 operating loop 與 MC-LIVE control-console 主線吸收。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -1109,12 +1110,13 @@
         "acp-control-plane-operating-loop"
       ],
       "defer_reason": "原本要先產 ACP dashboard spec；HC 驗證後改由 MorroWise source/index/task map/growth gate 先定義活系統，再產 dashboard surface。此 spec 作為歷史參照，不作第一批執行入口。",
-      "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。"
+      "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。",
+      "completed_at": "2026-07-05"
     },
     {
       "id": "acp-system-workflow-migration-note",
-      "title": "system-workflow 歷史原型遷移筆記",
-      "status": "deferred",
+      "title": "system-workflow 歷史原型遷移筆記（未執行，已被吸收）",
+      "status": "done",
       "track": "control-plane",
       "order": 2,
       "order_label": "ACP-MC-02",
@@ -1123,7 +1125,7 @@
         "acp-dashboard-spec"
       ],
       "done_condition": "產出 system-workflow/docs/specs/system-workflow-migration-to-acp.md，列出 workflow-dashboard 可沿用、需改寫、淘汰項，並明確移除 OpenClaw path / 獨立 repo 假設。",
-      "note": "把 2026-04-18 workflow dashboard prototype 收編為 MC/ACP observability 設計素材，不照搬。 整理 2026-06-20：system-workflow 歷史原型遷移改由 morrowise-system-index 承接，避免平行維護第二份遷移筆記。",
+      "note": "把 2026-04-18 workflow dashboard prototype 收編為 MC/ACP observability 設計素材，不照搬。 整理 2026-06-20：system-workflow 歷史原型遷移改由 morrowise-system-index 承接，避免平行維護第二份遷移筆記。 2026-07-05 JV-01 sweep close：改由 morrowise-system-index 承接。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -1137,12 +1139,13 @@
         "morrowise-system-index"
       ],
       "defer_reason": "system-workflow 歷史原型遷移應被納入 MorroWise Index 與 task map，不再作為獨立前置 task。",
-      "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。"
+      "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。",
+      "completed_at": "2026-07-05"
     },
     {
       "id": "acp-control-plane-data-generator",
-      "title": "產生 control-plane.json 的資料生成器",
-      "status": "deferred",
+      "title": "產生 control-plane.json 的資料生成器（未執行，已被吸收）",
+      "status": "done",
       "track": "control-plane",
       "order": 3,
       "order_label": "ACP-MC-03",
@@ -1152,7 +1155,7 @@
         "dual-blade/agent-control-plane-readonly-query-schema"
       ],
       "done_condition": "新增 scripts/generate-control-plane-data.mjs 並串進 prebuild，輸出 public/data/control-plane.json，至少包含 next_actions、decision_health、runtime_inventory_status、policy_status、mcp_candidates、agent_onboarding_health。",
-      "note": "資料層先行；React 頁面只讀 JSON，不直接掃 markdown。 整理 2026-06-20：control-plane.json 生成器併入 MC-LIVE-12 acp-control-plane-read-model-v0，避免資料層任務重複。",
+      "note": "資料層先行；React 頁面只讀 JSON，不直接掃 markdown。 整理 2026-06-20：control-plane.json 生成器併入 MC-LIVE-12 acp-control-plane-read-model-v0，避免資料層任務重複。 2026-07-05 JV-01 sweep close：併入 MC-LIVE-12 後，MC-LIVE-12 亦由既有 read models 分散實現。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -1166,12 +1169,13 @@
         "acp-control-plane-read-model-v0"
       ],
       "defer_reason": "與 acp-control-plane-read-model-v0 都產 generate-control-plane-data.mjs / control-plane.json；後者範圍更精準，先併入 read model v0，不另開平行資料生成器。",
-      "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。"
+      "history_note": "HC 驗證：不是刪掉歷史 task，而是保留脈絡並標示為 superseded/deferred/blocked，避免 future agents 重開同一條路。",
+      "completed_at": "2026-07-05"
     },
     {
       "id": "acp-home-control-plane-card",
-      "title": "首頁 Agent Control Plane 區塊",
-      "status": "deferred",
+      "title": "首頁 Agent Control Plane 區塊（未執行，已被吸收）",
+      "status": "done",
       "track": "control-plane",
       "order": 4,
       "order_label": "ACP-MC-04",
@@ -1181,7 +1185,7 @@
         "morrowise-dashboard-surface"
       ],
       "done_condition": "首頁新增 ControlPlaneCard，顯示下一步 execution task、必讀 ADR、ADR backlink health、runtime/policy 狀態，且能連到 /projects 的 dual-blade 與 harness-mc。",
-      "note": "這是 MC 成為 control plane console 的第一個可見切面。 整理 2026-06-20：首頁 control-plane card 併入 MorroWise dashboard surface 與 ACP read model；ACP-MC-19 已先提供 System Attention 首屏。",
+      "note": "這是 MC 成為 control plane console 的第一個可見切面。 整理 2026-06-20：首頁 control-plane card 併入 MorroWise dashboard surface 與 ACP read model；ACP-MC-19 已先提供 System Attention 首屏。 2026-07-05 JV-01 sweep close：首頁 10 區塊（System Attention 等）已實質覆蓋。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -1196,7 +1200,8 @@
       "superseded_by": [
         "morrowise-dashboard-surface",
         "acp-control-plane-read-model-v0"
-      ]
+      ],
+      "completed_at": "2026-07-05"
     },
     {
       "id": "acp-projects-sidebar-search",
@@ -2071,6 +2076,78 @@
           "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-drilldown-pages.md"
         ],
         "source_boundary": "HC is a thinking check, not source of truth. Canonical sync facts come from MorroWise notion-sync-state read model; this harness-mc task owns only the MC read-only surface and verifier wiring."
+      }
+    },
+    {
+      "id": "pulse-proposal-attention-surface",
+      "status": "todo",
+      "title": "JV-13 System Attention 納入 pulse 狀態與待裁決 proposals",
+      "track": "morrowise-system",
+      "order_label": "JV-13",
+      "done_condition": "MC 首屏 System Attention 區塊顯示：system-pulse 最新狀態（healthy/degraded＋失敗項）、待裁決 proposal 佇列（數量＋最舊天數）；資料源為 system-pulse.json 與 proposal 佇列 read model；surface 註冊進 morrowise-live-dashboard.json surfaces 陣列並通過 wiring gate。",
+      "dependencies": [
+        "system-pulse-feedback-loop"
+      ],
+      "note": "依賴的 system-pulse-feedback-loop 在 morrowise milestone（JV-08）。",
+      "hc_decision": {
+        "task_scope": "harness-mc/jarvis-surface-batch",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#risk"
+        ],
+        "hc_reasoning": "surface task 承接 JV roadmap 的可見層：#rightProblem 確認顯示的是狀態與 next_action 而非裝飾卡片；#systemDynamics 要求走 wiring gate 全鏈（registry→read model→surface→verifier）避免 fake_live；#risk 標注依賴的 read model 未落地前不得宣稱 fresh。",
+        "hc_confidence": 0.85,
+        "source_boundary": "HC is a thinking check only; canonical source of truth for task state remains in $COLLAB/harness-mc/milestones/*/tasks.json; this block records framing evidence, not state.",
+        "evidence_refs": [
+          "$COLLAB/harness-mc/public/data/system-pulse.json",
+          "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-read-model-contract.md"
+        ]
+      },
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "3af2a6f9-c188-40e3-a2f3-173f74b753c5",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "harness-governance-surface",
+      "status": "todo",
+      "title": "JV-15 Harness governance 狀態卡",
+      "track": "morrowise-system",
+      "order_label": "JV-15",
+      "done_condition": "MC 首頁 #discipline 區新增 governance 卡：harness 文件 accepted/draft/stale/broken 計數、B plan patch 進度、失敗檔案、next_action；資料源為 auditor harness profile 輸出；surface 註冊進 morrowise-live-dashboard.json 並通過 wiring gate 與 live-system admission。",
+      "dependencies": [
+        "auditor-harness-governance-profile"
+      ],
+      "note": "依賴的 auditor-harness-governance-profile 在 morrowise milestone（JV-14）。",
+      "hc_decision": {
+        "task_scope": "harness-mc/jarvis-surface-batch",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#risk"
+        ],
+        "hc_reasoning": "surface task 承接 JV roadmap 的可見層：#rightProblem 確認顯示的是狀態與 next_action 而非裝飾卡片；#systemDynamics 要求走 wiring gate 全鏈（registry→read model→surface→verifier）避免 fake_live；#risk 標注依賴的 read model 未落地前不得宣稱 fresh。",
+        "hc_confidence": 0.85,
+        "source_boundary": "HC is a thinking check only; canonical source of truth for task state remains in $COLLAB/harness-mc/milestones/*/tasks.json; this block records framing evidence, not state.",
+        "evidence_refs": [
+          "$COLLAB/harness-mc/scripts/generate-morrowise-auditor.mjs",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-wiring-gate.json"
+        ]
+      },
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "8f44d81e-833a-41b7-849f-85de32b434a5",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
       }
     }
   ]

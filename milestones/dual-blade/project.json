@@ -3,12 +3,19 @@
   "name": "AI Agent 共享腦系統（原雙刀流）",
   "description": "Claude Code / Codex / 未來 agent 共用 notyet-harness brain 的可攜協作系統。OpenClaw / HiSenzi 不再作為日常參與者，僅保留為歷史資料來源與架構萃取來源。brain 內容、同步機制、備份、跨 agent 標準的整體治理。",
   "type": "system",
-  "status": "in_progress",
+  "status": "archived",
   "priority": "high",
   "owner": "Vincent",
   "created": "2026-04-22",
   "estimated_completion": "TBD",
-  "tags": ["dual-blade", "brain", "infrastructure", "multi-agent", "git", "ai-agent"],
+  "tags": [
+    "dual-blade",
+    "brain",
+    "infrastructure",
+    "multi-agent",
+    "git",
+    "ai-agent"
+  ],
   "goals": [
     "共享 brain 即時可用、資料屬於 Vincent",
     "任何 AI agent（Claude Code / Codex / 未來工具）可快速 onboard 使用 brain",
@@ -64,5 +71,6 @@
     "control-plane": "Agent Control Plane / shared brain / runtime governance 的架構轉型",
     "knowledge": "Obsidian 知識庫、skills、MEMORY 維護",
     "outreach": "對外 starter kit、公開發布"
-  }
+  },
+  "archived_reason": "2026-07-05 JV-01 milestone lifecycle sweep：雙刀流→Agent Control Plane 遷移的 MBA-1 側已完成（000_Agent 共享層運行、ADR-003 落定）；MBA-2 側驗收點由 morrowise/JV-11 dual-machine-trigger-install 承接。33 個 open task 已逐筆處置（26 close 附 superseded-by、6 補 completed、1 移轉 morrowise）。本專案轉為 historical migration line。revisit 條件：無——後續雙機/agent 基建工作一律歸 morrowise（MorroWise 是唯一的賈維斯系統，ADR-004）。"
 }

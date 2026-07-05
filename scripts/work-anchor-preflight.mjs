@@ -21,6 +21,13 @@ function parseArgs(argv) {
     proposedTrack: null,
     proposedDoneCondition: null,
     proposedAcceptance: [],
+    event: null,
+    scope: [],
+    contextRefs: [],
+    template: null,
+    reportFormat: null,
+    modelTier: null,
+    verifyPlan: null,
     json: false,
   };
 
@@ -35,9 +42,20 @@ function parseArgs(argv) {
     else if (arg === "--proposed-track") args.proposedTrack = argv[++i];
     else if (arg === "--proposed-done-condition") args.proposedDoneCondition = argv[++i];
     else if (arg === "--proposed-acceptance") args.proposedAcceptance.push(argv[++i]);
+    else if (arg === "--event") args.event = argv[++i];
+    else if (arg === "--scope") args.scope.push(argv[++i]);
+    else if (arg === "--context-ref") args.contextRefs.push(argv[++i]);
+    else if (arg === "--template") args.template = argv[++i];
+    else if (arg === "--report-format") args.reportFormat = argv[++i];
+    else if (arg === "--model-tier") args.modelTier = argv[++i];
+    else if (arg === "--verify-plan") args.verifyPlan = argv[++i];
     else if (arg === "--json") args.json = true;
     else if (arg === "--help" || arg === "-h") args.help = true;
     else throw new Error(`Unknown argument: ${arg}`);
+  }
+
+  if (args.event && !["dispatch", "implementation"].includes(args.event)) {
+    throw new Error(`--event must be dispatch or implementation, got: ${args.event}`);
   }
 
   return args;
@@ -56,6 +74,13 @@ function usage() {
     "  --proposed-track <track>               Required when no active task exists",
     "  --proposed-done-condition <text>       Required when no active task exists",
     "  --proposed-acceptance <text>           Repeat for proposed acceptance rows",
+    "  --event <dispatch|implementation>      JV-17 事件點 gate：派工前/實作前 checklist（不帶則行為不變）",
+    "  --scope <path>                         事件點必填（可重複）：本次可寫範圍（C 契約 §2 邊界 / D3）",
+    "  --context-ref <text>                   派工 Context 包補充參照（可重複）",
+    "  --template <name>                      派工模板 id（subagent-delegation-templates）",
+    "  --report-format <text>                 回報格式（無模板時必填其一）",
+    "  --model-tier <tier>                    派工模型分級（C 契約 §3）",
+    "  --verify-plan <text>                   驗證路徑（C 契約 §7：實作者不得自我驗證）",
     "  --json                                Output machine-readable JSON",
   ].join("\n");
 }
@@ -148,6 +173,7 @@ export function runPreflight(args) {
     ? activeTasks.find((task) => task.id === args.taskId) || null
     : activeTasks[0] || null;
   const hcGate = targetTask ? evaluateHcGate(targetTask, project) : null;
+  const eventGate = args.event ? evaluateEventGate(args, targetTask, hcGate) : null;
 
   const result = {
     project,
@@ -158,7 +184,11 @@ export function runPreflight(args) {
     active_tasks: activeTasks,
     active_task: targetTask,
     hc_gate: hcGate,
-    decision: targetTask && (!hcGate || hcGate.decision === "allow") ? "allow" : "blocked",
+    event_gate: eventGate,
+    decision:
+      targetTask && (!hcGate || hcGate.decision === "allow") && (!eventGate || eventGate.decision === "allow")
+        ? "allow"
+        : "blocked",
     next_required_step: targetTask
       ? hcGate?.decision === "blocked"
         ? "先輸出 HC decision block；確認 HC 是 thinking check 且 evidence/source-of-truth 清楚後，才可進入 work-anchor / implementation flow。"
@@ -175,9 +205,101 @@ export function runPreflight(args) {
     result.blocked_reason = `Target task ${args.taskId} is not active or does not exist.`;
   } else if (hcGate?.decision === "blocked") {
     result.blocked_reason = hcGate.reason;
+  } else if (eventGate?.decision === "blocked") {
+    result.blocked_reason = eventGate.reason;
+    result.next_required_step = eventGate.next_required_step;
   }
 
   return result;
+}
+
+// JV-17 事件點 gate（morrowise/dispatch-gate-extension）。
+// 只在 --event 時觸發，不加每 session 啟動負擔。判準不新造，逐條引用：
+// - C 契約 §2 派工三件套（Context 包／邊界／回報格式）、§3 分級、§7 實作者不得自我驗證
+// - D 矩陣 S/E 類訊號（附上讓派工訊息可帶走，資訊性不擋門）
+const HARNESS_REFS = {
+  c_contract: "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/model-dispatch-contract.md",
+  d_matrix: "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/judgment-externalization-matrix.md",
+  templates: "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/subagent-delegation-templates.md",
+};
+
+function evaluateEventGate(rawArgs, targetTask, hcGate) {
+  const args = { scope: [], contextRefs: [], ...rawArgs };
+  const checklist = [];
+  const add = (id, ok, requirement, evidence, ref) => checklist.push({ id, ok, requirement, evidence, ref });
+
+  add(
+    "anchor_active",
+    Boolean(targetTask),
+    "有 active work anchor（task id + done_condition）",
+    targetTask ? `${targetTask.id}（${targetTask.status}）` : "無 active task",
+    `${HARNESS_REFS.d_matrix}#S3`,
+  );
+  add(
+    "hc_gate",
+    !hcGate || hcGate.decision === "allow",
+    "HC framing gate 通過或不適用",
+    hcGate ? hcGate.reason : "n/a",
+    "$COLLAB/harness-mc/scripts/work-anchor-preflight.mjs#evaluateHcGate",
+  );
+  add(
+    "write_boundary",
+    args.scope.length > 0,
+    "宣告本次可寫範圍（≥1 個 --scope）",
+    args.scope.length > 0 ? args.scope.join(", ") : "未宣告",
+    `${HARNESS_REFS.c_contract}#2-派工三件套（邊界）；${HARNESS_REFS.d_matrix}#D3`,
+  );
+
+  if (args.event === "dispatch") {
+    add(
+      "context_pack",
+      Boolean(targetTask?.done_condition) || args.contextRefs.length > 0,
+      "Context 包：task anchor 帶 done_condition，或補 --context-ref",
+      targetTask?.done_condition ? "anchor done_condition 存在" : args.contextRefs.join(", ") || "缺",
+      `${HARNESS_REFS.c_contract}#2-派工三件套（Context 包）`,
+    );
+    add(
+      "report_format",
+      Boolean(args.template || args.reportFormat),
+      "回報格式：--template（E 模板）或 --report-format 擇一",
+      args.template ? `template: ${args.template}` : args.reportFormat || "缺",
+      `${HARNESS_REFS.c_contract}#2-派工三件套（回報格式）；${HARNESS_REFS.templates}`,
+    );
+    add(
+      "model_tier",
+      Boolean(args.modelTier),
+      "宣告派工模型分級（--model-tier）",
+      args.modelTier || "缺",
+      `${HARNESS_REFS.c_contract}#3-分級表`,
+    );
+    add(
+      "verify_plan",
+      Boolean(args.verifyPlan),
+      "宣告驗證路徑（--verify-plan）：實作者不得自我驗證",
+      args.verifyPlan || "缺",
+      `${HARNESS_REFS.c_contract}#7-實作者不得自我驗證`,
+    );
+  }
+
+  const failing = checklist.filter((item) => !item.ok);
+  return {
+    event: args.event,
+    decision: failing.length === 0 ? "allow" : "blocked",
+    reason:
+      failing.length === 0
+        ? `${args.event} 事件點 checklist 全過`
+        : `${args.event} 事件點缺件：${failing.map((item) => item.id).join(", ")}（不給三件套就派工 = 違規）`,
+    next_required_step:
+      failing.length === 0
+        ? null
+        : `補齊缺件後重跑 preflight --event ${args.event}；缺件對應規則見 checklist ref 欄。`,
+    checklist,
+    watch_signals: {
+      note: "執行中逐條對照，觸發即停（資訊性附帶，不擋本 gate）",
+      stop_signals: `${HARNESS_REFS.d_matrix}#第一類（S1-S5，含 S4 兩輪計數同 C §6）`,
+      escalate_signals: `${HARNESS_REFS.d_matrix}#第三類（E1-E5 熔斷提問四件套）`,
+    },
+  };
 }
 
 export function formatMarkdown(result) {
@@ -192,6 +314,14 @@ export function formatMarkdown(result) {
     `result: ${result.decision}`,
     `next required step: ${result.next_required_step}`,
   ];
+
+  if (result.event_gate) {
+    lines.push("", `### 事件點 gate（${result.event_gate.event}）: ${result.event_gate.decision}`);
+    for (const item of result.event_gate.checklist) {
+      lines.push(`- [${item.ok ? "x" : " "}] ${item.id}: ${item.requirement}｜${item.evidence}`);
+    }
+    lines.push(`- watch signals: ${result.event_gate.watch_signals.stop_signals}`);
+  }
 
   if (result.decision === "blocked") {
     if (result.blocked_reason) {

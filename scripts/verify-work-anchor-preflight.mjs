@@ -127,5 +127,73 @@ const withHcResult = runPreflight({
 assert.equal(withHcResult.decision, "allow");
 assert.equal(withHcResult.hc_gate.decision, "allow");
 assert.equal(withHcResult.hc_gate.task_scope, "harness-mc/acp-work-anchor-preflight-flow");
+assert.equal(withHcResult.event_gate, null, "without --event the gate must not activate (no startup burden)");
+
+// JV-17 事件點 gate：dispatch 缺三件套 → blocked，缺件逐項點名
+const dispatchMissing = runPreflight({
+  project: "harness-mc",
+  tasks: withHcFixturePath,
+  taskId: "acp-work-anchor-preflight-flow",
+  intent: "派工 fixture",
+  event: "dispatch",
+  proposedAcceptance: [],
+});
+assert.equal(dispatchMissing.decision, "blocked");
+assert.equal(dispatchMissing.event_gate.decision, "blocked");
+const failingIds = dispatchMissing.event_gate.checklist.filter((item) => !item.ok).map((item) => item.id);
+assert.deepEqual(failingIds, ["write_boundary", "report_format", "model_tier", "verify_plan"]);
+assert.match(dispatchMissing.blocked_reason, /不給三件套就派工 = 違規/);
+assert.match(
+  dispatchMissing.event_gate.checklist.find((item) => item.id === "report_format").ref,
+  /model-dispatch-contract\.md#2/,
+);
+assert.match(dispatchMissing.event_gate.watch_signals.stop_signals, /judgment-externalization-matrix\.md#第一類/);
+const dispatchMarkdown = formatMarkdown(dispatchMissing);
+assert.match(dispatchMarkdown, /事件點 gate（dispatch）: blocked/);
+assert.match(dispatchMarkdown, /\[ \] write_boundary/);
+
+// JV-17：dispatch 三件套＋分級＋驗證計畫齊 → allow
+const dispatchReady = runPreflight({
+  project: "harness-mc",
+  tasks: withHcFixturePath,
+  taskId: "acp-work-anchor-preflight-flow",
+  intent: "派工 fixture",
+  event: "dispatch",
+  scope: ["scripts/foo.mjs", "milestones/harness-mc/tasks.json"],
+  template: "模板4-審查",
+  modelTier: "sonnet",
+  verifyPlan: "npm run test:tasks + fresh-context read-back",
+  proposedAcceptance: [],
+});
+assert.equal(dispatchReady.decision, "allow");
+assert.equal(dispatchReady.event_gate.decision, "allow");
+assert.ok(dispatchReady.event_gate.checklist.every((item) => item.ok));
+
+// JV-17：implementation 只要求 anchor + HC + 可寫邊界
+const implReady = runPreflight({
+  project: "harness-mc",
+  tasks: withHcFixturePath,
+  taskId: "acp-work-anchor-preflight-flow",
+  intent: "實作 fixture",
+  event: "implementation",
+  scope: ["scripts/foo.mjs"],
+  proposedAcceptance: [],
+});
+assert.equal(implReady.decision, "allow");
+assert.equal(implReady.event_gate.checklist.length, 3, "implementation event must not demand dispatch-only items");
+
+const implMissingScope = runPreflight({
+  project: "harness-mc",
+  tasks: withHcFixturePath,
+  taskId: "acp-work-anchor-preflight-flow",
+  intent: "實作 fixture",
+  event: "implementation",
+  proposedAcceptance: [],
+});
+assert.equal(implMissingScope.decision, "blocked");
+assert.deepEqual(
+  implMissingScope.event_gate.checklist.filter((item) => !item.ok).map((item) => item.id),
+  ["write_boundary"],
+);
 
 console.log("Work-anchor preflight verification OK");

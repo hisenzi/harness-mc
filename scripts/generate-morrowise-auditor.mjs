@@ -41,13 +41,107 @@ export const ARCHITECTURE_PULSE_PROFILE = {
   historical_split_marker: /歷史附錄|Historical appendix/,
 };
 
+// Second target profile: harness governance docs (JV-14, morrowise/auditor-harness-governance-profile).
+// Directory-level profile over docs/morrowise/harness/: header contract by file class
+// (amendment §2: protocol/boundary/template/patch-plan strict, handoff/evidence/research lenient),
+// change-approval-plan patch-status parse, dangling $COLLAB / tombstoned-doc references,
+// and stale task anchors. File class is derived from filename patterns (new files default
+// to strict) — no per-file hardcoding, so the profile does not rot as docs are added.
+export const HARNESS_GOVERNANCE_PROFILE = {
+  kind: "harness_governance",
+  target_id_prefix: "harness_governance",
+  source_family: "harness_governance",
+  dir: "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness",
+  verifier_ref: "npm run test:morrowise-auditor-generator",
+  // amendment §2 五類 → 兩級：命中 pattern 者為 evidence/handoff/research（寬鬆），其餘一律嚴格
+  lenient_file_patterns: [/handoff/i, /report/i, /readback/i, /diagnosis/i, /archive-map/i, /reconcile/i, /research-design/i],
+  lenient_required_fields: ["Status"],
+  patch_plan_files: [/^change-approval-plan\.md$/],
+  patch_status_tokens: ["done", "approved", "pending approval", "pending", "rejected", "split", "blocked", "superseded"],
+  // tombstone 判定只看 header 的 Status 行，避免內文提及 supersede 造成誤判
+  tombstone_status_pattern: /superseded|archived|已封存|歷史紀錄/i,
+  tasks_root: "$COLLAB/harness-mc/milestones",
+};
+
+// Third target profile: memory health (JV-16, morrowise/memory-health-read-model).
+// Knowledge Health Model per source-map-v0: scans memory_layer + second_brain areas
+// with safe metadata only (file counts, filename dates, cross-references) and emits
+// public/data/memory-health.json. Fields the scanner cannot decide stay unknown/manual
+// — never fake live. Local runtime (~/.claude) is metadata-only per local_runtime_boundary.
+export const MEMORY_HEALTH_PROFILE = {
+  kind: "memory_health",
+  target_id_prefix: "memory_health",
+  verifier_ref: "npm run test:morrowise-auditor-generator",
+  daily_dir: "$COLLAB/notyet-harness/000_Agent/memory/daily",
+  skills_dir: "$COLLAB/notyet-harness/000_Agent/skills",
+  stale_daily_after_days: 3,
+  reference_window_days: 30,
+  out_rel: ["public", "data", "memory-health.json"],
+  areas: [
+    {
+      id: "memory_layer.l1",
+      source_family: "memory_layer",
+      knowledge_area: "L1 活躍工作區",
+      path: "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md",
+      reference_patterns: ["MEMORY.md", "memory/MEMORY"],
+      maintenance_owner: "HiSenzi（CC 唯讀）+ memory-janitor cron",
+      known_gaps: ["completeness_state 無法由 scanner 判定（manual）"],
+    },
+    {
+      id: "memory_layer.daily",
+      source_family: "memory_layer",
+      knowledge_area: "Daily memory（cc-log 交接）",
+      path: "$COLLAB/notyet-harness/000_Agent/memory/daily",
+      reference_patterns: ["memory/daily", "cc-log"],
+      maintenance_owner: "CC [CC] block + HiSenzi other blocks",
+      known_gaps: [],
+    },
+    {
+      id: "second_brain.obsidian_brain",
+      source_family: "second_brain",
+      knowledge_area: "Obsidian 第二大腦",
+      path: "$COLLAB/notyet-harness/300_Obsidian_brain",
+      reference_patterns: ["300_Obsidian_brain", "Obsidian"],
+      maintenance_owner: "Vincent + Obsidian CLI skills",
+      known_gaps: ["knowledge_health_metrics_missing（source-map SM-V0-07）：使用頻率/完善度需人工判定"],
+    },
+    {
+      id: "second_brain.hc",
+      source_family: "second_brain",
+      knowledge_area: "HC 思考框架知識庫",
+      path: "$COLLAB/notyet-harness/300_Obsidian_brain/HC",
+      reference_patterns: ["300_Obsidian_brain/HC", "#rightProblem", "hc_refs", "HC framing"],
+      maintenance_owner: "Vincent + hc-framing-gate verifier",
+      known_gaps: [],
+    },
+    {
+      id: "memory_layer.local_runtime",
+      source_family: "memory_layer",
+      knowledge_area: "CC 本機 memory（local runtime boundary）",
+      path: "~/.claude/projects",
+      local_runtime_boundary: true,
+      reference_patterns: [],
+      maintenance_owner: "memory-janitor 22:00 cron（只報告不歸檔）",
+      known_gaps: ["依 local_runtime_boundary 只記存在性與檔數，不讀內容"],
+    },
+  ],
+};
+
 export function generateAuditorReport(options = {}) {
-  const profiles = options.profiles || [ARCHITECTURE_PULSE_PROFILE];
+  const profiles = options.profiles || [ARCHITECTURE_PULSE_PROFILE, HARNESS_GOVERNANCE_PROFILE, MEMORY_HEALTH_PROFILE];
   const now = options.now ? new Date(options.now) : new Date();
   const targets = [];
   const findings = [];
 
   for (const profile of profiles) {
+    if (profile.kind === "harness_governance") {
+      targets.push(...auditHarnessGovernance(profile, now, findings));
+      continue;
+    }
+    if (profile.kind === "memory_health") {
+      targets.push(...auditMemoryHealth(profile, now, findings, options));
+      continue;
+    }
     const filePath = resolveCollabPath(profile.target_path);
     const target = auditTarget(profile, filePath, now, findings);
     targets.push(target);
@@ -308,6 +402,437 @@ function auditTarget(profile, filePath, now, findings) {
       reason: section.reason,
     })),
   );
+}
+
+function auditHarnessGovernance(profile, now, findings) {
+  const dirPath = resolveCollabPath(profile.dir);
+  const findingIdBase = `HG-${now.toISOString().slice(0, 10).replaceAll("-", "")}`;
+  let findingSeq = 0;
+  const emit = (targetId, input) =>
+    findings.push({
+      id: `${findingIdBase}-${String(++findingSeq).padStart(2, "0")}`,
+      target_id: targetId,
+      source_family: profile.source_family,
+      ...input,
+    });
+
+  if (!fs.existsSync(dirPath)) {
+    const targetId = `${profile.target_id_prefix}.dir`;
+    emit(targetId, {
+      severity: "error",
+      category: "source_missing",
+      evidence_ref: profile.dir,
+      declared_state: "The harness governance profile points at a managed docs directory.",
+      observed_state: "The directory cannot be resolved on disk.",
+      why_it_matters: "Every governance claim downstream of this profile becomes unverifiable.",
+      suggested_action: "Fix the profile dir or restore the harness docs directory.",
+    });
+    return [
+      {
+        target_id: targetId,
+        target_path: profile.dir,
+        source_family: profile.source_family,
+        expected_identity: "protocol",
+        classification: "unknown",
+        checks: [{ id: "target-existence", kind: "source_existence", result: "missing" }],
+        sections: [],
+        verifier_ref: profile.verifier_ref,
+        write_boundary: readOnlyBoundary(),
+      },
+    ];
+  }
+
+  const fileNames = fs
+    .readdirSync(dirPath)
+    .filter((name) => name.endsWith(".md"))
+    .sort();
+
+  // Pre-scan: tombstone map（header Status 行判定），供殘引用檢查
+  const tombstoned = new Set();
+  const docs = new Map();
+  for (const name of fileNames) {
+    const content = fs.readFileSync(path.join(dirPath, name), "utf8");
+    const lines = content.split("\n");
+    const headerEnd = lines.findIndex((line) => /^##\s+/.test(line));
+    const headerLines = lines.slice(0, headerEnd === -1 ? lines.length : headerEnd);
+    const statusLine = headerLines.find((line) => /^>?\s*(?:\*\*)?Status(?:\*\*)?[：:]/.test(line)) || "";
+    if (profile.tombstone_status_pattern.test(statusLine)) tombstoned.add(name);
+    docs.set(name, { content, lines, headerText: headerLines.join("\n") });
+  }
+
+  const tasksCache = new Map();
+  const tasksRoot = resolveCollabPath(profile.tasks_root);
+  const targets = [];
+
+  for (const name of fileNames) {
+    const { content, lines, headerText } = docs.get(name);
+    const targetId = `${profile.target_id_prefix}.${slugify(name.replace(/\.md$/, ""))}`;
+    const targetPath = `${profile.dir}/${name}`;
+    const lenient = profile.lenient_file_patterns.some((pattern) => pattern.test(name));
+    const isTombstoned = tombstoned.has(name);
+    const checks = [];
+
+    // 1. header contract by class（amendment §2 分級；缺 header → degraded/unknown；墓碑檔只需 lenient 欄位）
+    const requiredFields = lenient || isTombstoned ? profile.lenient_required_fields : HEADER_CONTRACT_FIELDS;
+    const missingFields = requiredFields.filter((field) => !headerText.includes(field));
+    if (missingFields.length > 0) {
+      checks.push({ id: "header-contract", kind: "header", result: "fail" });
+      emit(targetId, {
+        severity: "error",
+        category: "missing_header",
+        evidence_ref: `${targetPath}:1`,
+        declared_state: `Harness ${lenient ? "evidence/handoff" : "protocol-class"} doc carries a ${lenient ? "minimal Status" : "full folder-contract"} header.`,
+        observed_state: `Missing header field(s): ${missingFields.join(", ")}.`,
+        why_it_matters: "Without the class-appropriate header contract, future agents cannot tell rule-bearing protocol from historical evidence.",
+        suggested_action: "Add the missing header fields via a task-backed source edit; the auditor stays read-only.",
+      });
+    } else {
+      checks.push({ id: "header-contract", kind: "header", result: "pass" });
+    }
+
+    // 2. patch plan 狀態欄 parse（僅 patch-plan 檔；格式由 fixture 鎖定）
+    if (profile.patch_plan_files.some((pattern) => pattern.test(name))) {
+      const patchSections = parseSections(lines).filter((section) => /^P\d+｜/.test(section.title));
+      const broken = [];
+      for (const section of patchSections) {
+        const statusMatch = section.text.match(/^-\s*\*\*狀態\*\*[：:]\s*(.+)$/m);
+        const token = statusMatch ? statusMatch[1].trim() : null;
+        const recognized = token && profile.patch_status_tokens.some((allowed) => token.toLowerCase().startsWith(allowed));
+        if (!recognized) broken.push({ title: section.title, start: section.start, token });
+      }
+      if (patchSections.length === 0 || broken.length > 0) {
+        checks.push({ id: "patch-plan-status", kind: "live_surface", result: "fail" });
+        emit(targetId, {
+          severity: "error",
+          category: "fake_live_risk",
+          evidence_ref: `${targetPath}:${broken[0]?.start || 1}`,
+          declared_state: "Every patch section (## Pn｜) carries a parseable `- **狀態**：<token>` line updated by the executing session.",
+          observed_state:
+            patchSections.length === 0
+              ? "No patch sections were found to parse."
+              : broken.map((entry) => `"${entry.title}" → ${entry.token ? `unrecognized token "${entry.token}"` : "no 狀態 line"}`).join("; "),
+          why_it_matters: "An unparseable patch status column can present executed patches as pending (or the reverse) to future sessions.",
+          suggested_action: "Restore the locked `- **狀態**：<token>` format via the owning patch-plan session.",
+        });
+      } else {
+        checks.push({ id: "patch-plan-status", kind: "live_surface", result: "pass" });
+      }
+    }
+
+    // 3+4. 殘引用（僅嚴格類檔）：dangling $COLLAB 路徑、tombstoned harness 檔被引用、stale task anchor
+    if (!lenient && !isTombstoned) {
+      const refs = collectCollabRefs(content);
+      const dangling = refs.filter((ref) => {
+        const resolved = resolveCollabPath(ref.path);
+        if (fs.existsSync(resolved)) return false;
+        // 含空格檔名會被 regex 截斷成前綴；目錄內存在同前綴檔案時視為不可驗證而非 dangling
+        const dir = path.dirname(resolved);
+        const base = path.basename(resolved);
+        return !(fs.existsSync(dir) && fs.readdirSync(dir).some((entry) => entry.startsWith(base)));
+      });
+      if (dangling.length > 0) {
+        checks.push({ id: "collab-refs", kind: "source_existence", result: "fail" });
+        emit(targetId, {
+          severity: "error",
+          category: "source_missing",
+          evidence_ref: `${targetPath}:${dangling[0].line}`,
+          declared_state: "Protocol-class docs reference resolvable $COLLAB paths.",
+          observed_state: `${dangling.length} dangling reference(s), first: ${dangling
+            .slice(0, 5)
+            .map((ref) => ref.path)
+            .join(", ")}.`,
+          why_it_matters: "Dangling references after supersede/archive rounds send future agents to sources that no longer exist.",
+          suggested_action: "Repoint or remove the residual references via the supersede-lifecycle residual-cleanup step.",
+        });
+      } else {
+        checks.push({ id: "collab-refs", kind: "source_existence", result: "pass" });
+      }
+
+      const tombstonedRefs = [...tombstoned].filter((other) => other !== name && content.includes(other));
+      if (tombstonedRefs.length > 0) {
+        checks.push({ id: "tombstoned-refs", kind: "reference", result: "warning" });
+        emit(targetId, {
+          severity: "warning",
+          category: "historical_used_as_active",
+          evidence_ref: `${targetPath}:1`,
+          declared_state: "Protocol-class docs reference living documents.",
+          observed_state: `References tombstoned/superseded doc(s): ${tombstonedRefs.join(", ")}.`,
+          why_it_matters: "A protocol pointing at a superseded doc re-opens the second-source-of-truth drift the supersede protocol closed.",
+          suggested_action: "Repoint the reference to the superseding doc or mark the mention as historical context.",
+        });
+      } else {
+        checks.push({ id: "tombstoned-refs", kind: "reference", result: "pass" });
+      }
+
+      const anchorPattern = /milestones\/([a-z0-9-]+)\/tasks\.json#([A-Za-z0-9_-]+)/g;
+      const staleAnchors = [];
+      let anchorCount = 0;
+      for (const match of content.matchAll(anchorPattern)) {
+        anchorCount += 1;
+        const [, project, taskId] = match;
+        if (!tasksCache.has(project)) {
+          const tasksPath = path.join(tasksRoot, project, "tasks.json");
+          tasksCache.set(
+            project,
+            fs.existsSync(tasksPath) ? new Set(JSON.parse(fs.readFileSync(tasksPath, "utf8")).tasks.map((task) => task.id)) : null,
+          );
+        }
+        const ids = tasksCache.get(project);
+        if (!ids || !ids.has(taskId)) staleAnchors.push(`${project}#${taskId}`);
+      }
+      if (staleAnchors.length > 0) {
+        checks.push({ id: "task-anchors", kind: "reference", result: "fail" });
+        emit(targetId, {
+          severity: "error",
+          category: "source_missing",
+          evidence_ref: `${targetPath}:1`,
+          declared_state: "Task anchors in governance docs point at existing canonical tasks.",
+          observed_state: `Stale task anchor(s): ${staleAnchors.slice(0, 5).join(", ")}.`,
+          why_it_matters: "Stale task ids in governance docs are the same self-rot failure mode as verifiers hard-coding live task ids.",
+          suggested_action: "Repoint the anchor at the current task id via a task-backed source edit.",
+        });
+      } else {
+        checks.push({ id: "task-anchors", kind: "reference", result: anchorCount > 0 ? "pass" : "unknown" });
+      }
+    }
+
+    targets.push({
+      target_id: targetId,
+      target_path: targetPath,
+      source_family: profile.source_family,
+      expected_identity: isTombstoned ? "historical" : lenient ? "evidence" : "protocol",
+      classification: isTombstoned ? "historical" : missingFields.length > 0 ? "unknown" : "active",
+      checks,
+      sections: [],
+      verifier_ref: profile.verifier_ref,
+      write_boundary: readOnlyBoundary(),
+    });
+  }
+
+  return targets;
+}
+
+function auditMemoryHealth(profile, now, findings, options = {}) {
+  const findingIdBase = `MH-${now.toISOString().slice(0, 10).replaceAll("-", "")}`;
+  let findingSeq = 0;
+  const emit = (targetId, input) =>
+    findings.push({
+      id: `${findingIdBase}-${String(++findingSeq).padStart(2, "0")}`,
+      target_id: targetId,
+      source_family: input.source_family,
+      ...input,
+    });
+
+  // 近 30 天 daily log 內容當引用證據源（安全 metadata：只數命中，不外流內文）
+  const dailyDir = resolveCollabPath(profile.daily_dir);
+  const windowStart = new Date(now.getTime() - profile.reference_window_days * 86400000);
+  const recentDailyTexts = [];
+  let latestDailyDate = null;
+  if (fs.existsSync(dailyDir)) {
+    for (const name of fs.readdirSync(dailyDir).sort()) {
+      const dateMatch = name.match(/^(\d{4}-\d{2}-\d{2})\.md$/);
+      if (!dateMatch) continue;
+      const fileDate = new Date(`${dateMatch[1]}T00:00:00Z`);
+      if (fileDate > now) continue; // 未來日期檔不當現在證據
+      if (!latestDailyDate || fileDate > latestDailyDate) latestDailyDate = fileDate;
+      if (fileDate >= windowStart) {
+        recentDailyTexts.push({ date: dateMatch[1], text: fs.readFileSync(path.join(dailyDir, name), "utf8") });
+      }
+    }
+  }
+
+  // workflow link 掃描：skills 目錄哪些 SKILL.md 引用了該 area
+  const skillsDir = resolveCollabPath(profile.skills_dir);
+  const skillDocs = [];
+  if (fs.existsSync(skillsDir)) {
+    for (const entry of fs.readdirSync(skillsDir, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
+      const skillPath = path.join(skillsDir, entry.name, "SKILL.md");
+      if (fs.existsSync(skillPath)) skillDocs.push({ skill: entry.name, text: fs.readFileSync(skillPath, "utf8") });
+    }
+  }
+
+  const areasOut = [];
+  const targets = [];
+
+  for (const area of profile.areas) {
+    const targetId = `${profile.target_id_prefix}.${slugify(area.id)}`;
+    const areaPath = area.path.startsWith("~/") ? path.join(process.env.HOME || "", area.path.slice(2)) : resolveCollabPath(area.path);
+    const exists = fs.existsSync(areaPath);
+    const checks = [{ id: "area-existence", kind: "source_existence", result: exists ? "pass" : "missing" }];
+    const isDir = exists && fs.statSync(areaPath).isDirectory();
+    const fileCount = exists ? (isDir ? countFilesShallow(areaPath) : 1) : 0;
+
+    if (!exists && !area.local_runtime_boundary) {
+      emit(targetId, {
+        severity: "error",
+        category: "source_missing",
+        source_family: area.source_family,
+        evidence_ref: area.path.startsWith("~/") ? `manual:${area.path}` : area.path,
+        declared_state: `Knowledge area "${area.knowledge_area}" has a resolvable source path.`,
+        observed_state: "The area path cannot be resolved on disk.",
+        why_it_matters: "A missing knowledge area makes every health metric about it unverifiable.",
+        suggested_action: "Fix the area path in the profile or restore the source.",
+      });
+    }
+
+    // 引用次數（inferred）：近 30 天 daily 內容命中 reference_patterns 的天數與次數
+    let referenceCount = 0;
+    let lastUsedAt = null;
+    if (!area.local_runtime_boundary && exists) {
+      for (const daily of recentDailyTexts) {
+        const hits = area.reference_patterns.reduce((acc, pattern) => acc + (daily.text.includes(pattern) ? 1 : 0), 0);
+        if (hits > 0) {
+          referenceCount += hits;
+          if (!lastUsedAt || daily.date > lastUsedAt) lastUsedAt = daily.date;
+        }
+      }
+    }
+
+    const workflowLinks = area.local_runtime_boundary
+      ? []
+      : skillDocs
+          .filter((doc) => area.reference_patterns.some((pattern) => doc.text.includes(pattern)))
+          .map((doc) => `skill:${doc.skill}`);
+
+    // daily area 專屬 stale 檢查：最新檔名日期距 now 超過門檻 → stale_warning
+    if (area.id === "memory_layer.daily" && exists && latestDailyDate) {
+      const ageDays = Math.floor((now - latestDailyDate) / 86400000);
+      if (ageDays > profile.stale_daily_after_days) {
+        checks.push({ id: "daily-freshness", kind: "freshness", result: "warning" });
+        emit(targetId, {
+          severity: "warning",
+          category: "stale_warning",
+          source_family: area.source_family,
+          evidence_ref: `${area.path}/${latestDailyDate.toISOString().slice(0, 10)}.md`,
+          declared_state: "Daily memory receives a cc-log / HiSenzi block on active work days.",
+          observed_state: `Latest daily file is ${ageDays} days old (threshold ${profile.stale_daily_after_days}).`,
+          why_it_matters: "A silent daily log means session handoffs are accumulating only in chat context and will be lost.",
+          suggested_action: "Run cc-log at session end or verify the daily write cron.",
+        });
+      } else {
+        checks.push({ id: "daily-freshness", kind: "freshness", result: "pass" });
+      }
+    }
+
+    // missing workflow link：知識區沒有任何 skill/workflow 接線（local runtime 除外）
+    if (!area.local_runtime_boundary && exists && workflowLinks.length === 0) {
+      checks.push({ id: "workflow-links", kind: "reference", result: "warning" });
+    } else if (!area.local_runtime_boundary && exists) {
+      checks.push({ id: "workflow-links", kind: "reference", result: "pass" });
+    }
+
+    const knownGaps = [...area.known_gaps];
+    if (!area.local_runtime_boundary && exists && workflowLinks.length === 0) {
+      knownGaps.push("missing workflow_link：無任何 skill 引用此知識區，取用只能靠人記");
+    }
+
+    // 不得假 live：completeness 無法判定 → unknown；缺核心指標時 freshness 只能 unknown/manual
+    const completenessState = "unknown";
+    const freshnessState = area.local_runtime_boundary ? "manual" : lastUsedAt ? "fresh" : "unknown";
+
+    areasOut.push({
+      id: area.id,
+      knowledge_area: area.knowledge_area,
+      source_family: area.source_family,
+      source_files: [area.path],
+      exists,
+      file_count: fileCount,
+      last_used_at: lastUsedAt,
+      reference_count_30d: area.local_runtime_boundary ? "unknown" : referenceCount,
+      completeness_state: completenessState,
+      workflow_links: workflowLinks,
+      known_gaps: knownGaps,
+      maintenance_owner: area.maintenance_owner,
+      confidence: {
+        last_used_at: lastUsedAt ? "inferred" : "manual",
+        reference_count_30d: area.local_runtime_boundary ? "manual" : "inferred",
+        completeness_state: "manual",
+        workflow_links: "inferred",
+      },
+      freshness_state: freshnessState,
+      local_runtime_boundary: Boolean(area.local_runtime_boundary),
+    });
+
+    // local runtime area 只進 read model（metadata-only），不進 auditor targets（無合法 $COLLAB path）
+    if (!area.local_runtime_boundary) {
+      targets.push({
+        target_id: targetId,
+        target_path: area.path,
+        source_family: area.source_family,
+        expected_identity: "canonical",
+        classification: exists ? "semi_live" : "unknown",
+        checks,
+        sections: [],
+        verifier_ref: profile.verifier_ref,
+        write_boundary: readOnlyBoundary(),
+      });
+    }
+  }
+
+  // Knowledge health read model（欄位齊 MC-LIVE-SYS-01 envelope）
+  const readModel = {
+    schema_version: "memory-health.v0",
+    generated_at: now.toISOString(),
+    read_only: true,
+    source_of_truth: "$COLLAB/notyet-harness/000_Agent/memory/ + $COLLAB/notyet-harness/300_Obsidian_brain/",
+    source_files: [profile.daily_dir, profile.skills_dir, ...profile.areas.map((area) => area.path)],
+    generator: "$COLLAB/harness-mc/scripts/generate-morrowise-auditor.mjs (MEMORY_HEALTH_PROFILE)",
+    output: "$COLLAB/harness-mc/public/data/memory-health.json",
+    stale_rule: `Regenerate with the auditor run; daily area warns when the newest daily file is older than ${profile.stale_daily_after_days} days.`,
+    freshness_state: areasOut.some((area) => area.freshness_state === "unknown") ? "unknown" : "fresh",
+    classification: "semi_live",
+    areas: areasOut,
+    next_action: {
+      type: "task",
+      target: "memory-health-read-model",
+      label: "Fields the scanner cannot decide stay unknown/manual; upgrading them requires the owning workflow, not this generator.",
+    },
+    write_boundary: {
+      allowed: ["read safe metadata", "count filename-dated files", "count cross-references", "write generated memory-health read model"],
+      forbidden: ["read ~/.claude memory contents", "read secrets or runtime auth files", "edit memory sources", "modify task state"],
+    },
+    verifier_ref: profile.verifier_ref,
+  };
+
+  if (options.write !== false) {
+    const outFile = path.join(root, ...profile.out_rel);
+    fs.mkdirSync(path.dirname(outFile), { recursive: true });
+    fs.writeFileSync(outFile, `${JSON.stringify(readModel, null, 2)}\n`);
+    console.log(`Generated ${outFile} — ${areasOut.length} knowledge areas`);
+  }
+  if (options.memoryHealthSink) options.memoryHealthSink.push(readModel);
+
+  return targets;
+}
+
+function countFilesShallow(dirPath) {
+  let count = 0;
+  const stack = [dirPath];
+  while (stack.length > 0 && count < 5000) {
+    const current = stack.pop();
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      if (entry.name.startsWith(".")) continue;
+      if (entry.isDirectory()) stack.push(path.join(current, entry.name));
+      else count += 1;
+    }
+  }
+  return count;
+}
+
+// $COLLAB 參照收集：跳過含 placeholder/glob 的參照，去掉行內尾標點與 #anchor
+function collectCollabRefs(content) {
+  const refs = [];
+  const pattern = /\$COLLAB\/[^\s`"'()\[\]{}|]+/g;
+  content.split("\n").forEach((line, index) => {
+    for (const match of line.matchAll(pattern)) {
+      const ref = match[0].replace(/[),.。；;、」》]+$/, "").split("#")[0];
+      if (/[<>*…]/.test(ref)) continue; // placeholder / glob，不是可驗證路徑
+      if (ref.slice(1).includes("$")) continue; // $COLLAB 之外還有 $ → shell/template 變數
+      refs.push({ path: ref, line: index + 1 });
+    }
+  });
+  return refs;
 }
 
 function classifySection(section, profile) {

@@ -1,0 +1,6 @@
+{
+  "project": "fixtureproj",
+  "tasks": [
+    { "id": "real-task", "title": "fixture anchor target", "status": "todo" }
+  ]
+}

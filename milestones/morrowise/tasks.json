@@ -696,7 +696,7 @@
         "$COLLAB/harness-mc/scripts/verify-morrowise-capability-registry.mjs",
         "$COLLAB/harness-mc/AGENTS.md"
       ],
-      "note": "2026-06-27 從 api-cli-mcp-capability-registry-v0 拆出。當前 probe：command -v playwright 無全域命令；harness-mc package.json / package-lock.json 無 Playwright dependency；npx --no-install playwright --version 未在 probe window 內回應並被中止。此 task 只處理 Playwright 能力歸屬，不阻塞 registry v0 成為正式 registry。"
+      "note": "2026-06-27 從 api-cli-mcp-capability-registry-v0 拆出。當前 probe：command -v playwright 無全域命令；harness-mc package.json / package-lock.json 無 Playwright dependency；npx --no-install playwright --version 未在 probe window 內回應並被中止。此 task 只處理 Playwright 能力歸屬，不阻塞 registry v0 成為正式 registry。 2026-07-05：併入 JV-24 capability-registry-v1-coverage 執行，勿單獨重開。"
     },
     {
       "id": "capability-runtime-status-read-model",
@@ -1128,7 +1128,7 @@
     {
       "id": "memory-health-read-model",
       "title": "JV-16 Memory health read model（memory_layer + second_brain target profile）",
-      "status": "todo",
+      "status": "completed",
       "track": "auditor-mvp",
       "done_condition": "依 source-map-v0 Knowledge Health Model 為 memory_layer 與 second_brain source family 建立 scanner 與 read model：last_used_at、reference_count_30d、completeness_state、workflow_links、known_gaps；scanner 未能判定的欄位標 manual/unknown，不得假 live。",
       "acceptance": [
@@ -1152,7 +1152,12 @@
           "synced_at": "2026-07-05",
           "sync_mode": "created"
         }
-      }
+      },
+      "completed_at": "2026-07-05",
+      "commits": [
+        "617435a"
+      ],
+      "summary": "MEMORY_HEALTH_PROFILE 落地：5 知識區（L1/daily/Obsidian/HC/本機 runtime）產 memory-health.json，欄位齊 MC-LIVE-SYS-01；last_used_at/reference_count_30d 從 30 天 daily 引用推導標 inferred，completeness 一律 unknown 不假 live；daily 停更 >3 天（檔名日期）→ stale_warning；~/.claude 遵守 local_runtime_boundary 只記 metadata。fixture 含 stale memory＋missing workflow_link。"
     },
     {
       "id": "config-sync-state-probe",
@@ -1738,7 +1743,7 @@
     },
     {
       "id": "auditor-harness-governance-profile",
-      "status": "todo",
+      "status": "completed",
       "title": "JV-14 Auditor 第二 target profile：harness governance",
       "track": "governance",
       "order_label": "JV-14",
@@ -1755,7 +1760,12 @@
           "sync_mode": "created"
         }
       },
-      "note": "2026-07-05 JV-01 sweep 承接 dual-blade 1 項：停用歷史 hisenzi-skill-builder（SKILLS-INDEX 4 組重疊之一），納入本 task 的 skills 治理 scope。"
+      "note": "2026-07-05 JV-01 sweep 承接 dual-blade 1 項：停用歷史 hisenzi-skill-builder（SKILLS-INDEX 4 組重疊之一），納入本 task 的 skills 治理 scope。",
+      "completed_at": "2026-07-05",
+      "commits": [
+        "617435a"
+      ],
+      "summary": "Auditor 新增 HARNESS_GOVERNANCE_PROFILE：目錄級掃 harness/ 17 檔，header contract 依 amendment §2 分級（protocol 嚴格/evidence 寬鬆/墓碑寬鬆）、patch plan 狀態欄 parse 鎖格式、superseded 殘引用（E-c 併入）、stale task anchor 檢查；分級用 filename pattern 推導不寫死清單。3 組 fixture 嚴格斷言＋真實掃描 0 findings。SKILLS-INDEX hisenzi-skill-builder 停用項：SKILLS-INDEX 本身不在 harness/ scope，該項由 skills 治理後續輪次處理，未納入本 commit。"
     },
     {
       "id": "dispatch-gate-extension",
@@ -1798,6 +1808,127 @@
         "$COLLAB/notyet-harness/schedule/install.sh",
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#dual-machine-trigger-install"
       ]
+    },
+    {
+      "id": "rollout-order-approval",
+      "status": "completed",
+      "title": "JV-18 整合透明化計畫與執行順序核准",
+      "track": "governance",
+      "order_label": "JV-18",
+      "done_condition": "Vincent 核准 capability registry v0→v1 計畫（11 項、編號＝執行順序）。點頭即 completed，不留掛帳。",
+      "note": "Owner: Vincent。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md（v3，含 HC 對抗審四處修正）。",
+      "completed_at": "2026-07-05",
+      "summary": "Vincent 於 2026-07-05 session 核准 v3 計畫；裁決項 JV-20~23 待掃描證據後裁。"
+    },
+    {
+      "id": "capability-observed-scan",
+      "status": "todo",
+      "title": "JV-19 Capability observed 掃描器（本機接線盤點＋drift 比對）",
+      "track": "auditor-mvp",
+      "order_label": "JV-19",
+      "dependencies": [
+        "rollout-order-approval"
+      ],
+      "done_condition": "擴充 generate-capability-runtime-status.mjs：observed 枚舉（~/.claude.json 全 scope、command -v CLI、launchd plist、settings hooks、secrets 檔存在性+mtime，只驗 existence 不讀內容），輸出 observed items＋與 registry 雙向 drift；heptabase 帳號層雙接線做成 fixture 能報 observed-not-declared；test:capability-drift verifier 綠；加 cc-runner 變體（session 內枚舉實掛 MCP server，可偵測帳號層）；掃描報告附到 JV-20/21/22 裁決項。",
+      "note": "紅線：scanner 永不讀憑證內容。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。踩坑依據：subagent 漏掃 project scope、config/secrets 查錯路徑（掃描器必須 $COLLAB resolve＋全 scope 枚舉）。"
+    },
+    {
+      "id": "mcp-registration-consolidation",
+      "status": "todo",
+      "title": "JV-20 MCP 重複註冊收斂裁決（heptabase×3、codex×2）",
+      "track": "governance",
+      "order_label": "JV-20",
+      "dependencies": [
+        "capability-observed-scan"
+      ],
+      "done_condition": "Vincent 依 JV-19 掃描報告裁決收斂方案；建議收斂到 global、project scope 只留專案特有（playwright 留 $COLLAB scope）；裁決結果寫回本 note＋registry history。",
+      "note": "Owner: Vincent（agent 不可代辦）。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。"
+    },
+    {
+      "id": "firecrawl-disposition",
+      "status": "todo",
+      "title": "JV-21 firecrawl 處置裁決（home scope，來源不明）",
+      "track": "governance",
+      "order_label": "JV-21",
+      "dependencies": [
+        "capability-observed-scan"
+      ],
+      "done_condition": "Vincent 裁決：不認得就拆、認得就進 registry 登記；結果寫回本 note＋registry history。",
+      "note": "Owner: Vincent（agent 不可代辦）。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。"
+    },
+    {
+      "id": "account-connector-policy",
+      "status": "todo",
+      "title": "JV-22 帳號層 connector 政策裁決",
+      "track": "governance",
+      "order_label": "JV-22",
+      "dependencies": [
+        "capability-observed-scan"
+      ],
+      "done_condition": "Vincent 裁決帳號層（claude.ai Connectors）管理制：建議登記制＋session probe 稽核（JV-19 cc-runner 佐證）；禁用制為備選；結果寫進 registry secret_policy 層。",
+      "note": "Owner: Vincent。前提修正：帳號層本機檔案掃不到但 session 內可觀測（2026-07-05 Heptabase 雙接線實證）。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。"
+    },
+    {
+      "id": "entry-doc-patch-approval",
+      "status": "todo",
+      "title": "JV-23 入口文件 patch 批准（TOOLS.md 指標行＋sentinel 摘要行）",
+      "track": "governance",
+      "order_label": "JV-23",
+      "done_condition": "實體 patch 條目開在 change-approval-plan（單一記帳處），本 task 為指標；Vincent 批准即 completed。",
+      "note": "Owner: Vincent。指標 task，不雙重記帳：條目位置 $COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/change-approval-plan.md。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。"
+    },
+    {
+      "id": "capability-registry-v1-coverage",
+      "status": "todo",
+      "title": "JV-24 Capability registry v1 涵蓋率補齊（4 筆→全量）",
+      "track": "governance",
+      "order_label": "JV-24",
+      "dependencies": [
+        "capability-observed-scan",
+        "mcp-registration-consolidation",
+        "firecrawl-disposition",
+        "account-connector-policy"
+      ],
+      "done_condition": "依 JV-19 掃描清單收錄（MCP 各 scope、CLI、API 腳本、launchd/schedule、hooks），每筆按 registry schema 填 auth_boundary/secret_policy/verifier；涵蓋全部整合面或明確標 out-of-scope；schema verifier 全綠；source-map-v0 tool_connectors 指標改指 registry。",
+      "note": "既有 todo playwright-cli-capability-probe 併入本 task 執行，不重開。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。"
+    },
+    {
+      "id": "capability-startup-brief",
+      "status": "todo",
+      "title": "JV-25 Sentinel 啟動簡報加 capability 摘要行",
+      "track": "runtime-delivery",
+      "order_label": "JV-25",
+      "dependencies": [
+        "capability-observed-scan",
+        "entry-doc-patch-approval"
+      ],
+      "done_condition": "sentinel-diff.mjs --brief 尾端加一行：capabilities: N ready · M degraded/unknown · K drift；新 session 啟動簡報看得到；agent 端零新步驟。",
+      "note": "與 JV-07（sentinel 送達驗證）同鏈。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。"
+    },
+    {
+      "id": "tools-md-capability-pointer",
+      "status": "todo",
+      "title": "JV-27 TOOLS.md 加 capability 狀態指標行（自動段 deferred）",
+      "track": "governance",
+      "order_label": "JV-27",
+      "dependencies": [
+        "entry-doc-patch-approval"
+      ],
+      "done_condition": "TOOLS.md 加一行指標（現役整合狀態 → capability read model／sentinel 啟動摘要）；marker 自動段 deferred，JV-25/26 上線後仍有需求再評（翻案用 marker-based-auto-doc 三件組）；deferred 決定記入本 note。",
+      "note": "HC 審 F5：三 surface 邊際效益裁掉最低者。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。"
+    },
+    {
+      "id": "capability-dual-machine-observed",
+      "status": "todo",
+      "title": "JV-28 雙機 observed 快照（machine-scoped＋資料齡）",
+      "track": "runtime-delivery",
+      "order_label": "JV-28",
+      "dependencies": [
+        "capability-observed-scan",
+        "dual-machine-trigger-install"
+      ],
+      "done_condition": "observed 輸出 machine-scoped（observed/<machine-id>.json）；快照級非即時（禁自動 commit 不開例外，對端資料標資料齡）；read model 呈現雙機 observed＋各自資料齡或標 missing-machine；OC 端由 HiSenzi 產 observed file（CC 不碰 ~/.openclaw）。",
+      "note": "HC 審 F1：registries forbidden 清單禁自動 commit，故為快照級。MBA-2 段與 JV-11 同批。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。"
     }
   ]
 }

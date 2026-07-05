@@ -1623,7 +1623,7 @@
     },
     {
       "id": "watchtower-alert-delivery",
-      "status": "todo",
+      "status": "completed",
       "title": "JV-06 Watchtower 條件提醒接送達鏈（首發業務內容）",
       "track": "runtime-delivery",
       "order_label": "JV-06",
@@ -1639,7 +1639,10 @@
           "synced_at": "2026-07-05",
           "sync_mode": "created"
         }
-      }
+      },
+      "completed_at": "2026-07-06",
+      "summary": "送達 adapter 落地：market-watchtower/scripts/notify-dispatch.mjs，--alert 吃 mw-005/006 的 alert event contract（資料不新鮮拒送進場提醒，沿用 mw-004 契約）、--market-status 組真實業務內容；首發已送達（真實收盤 0050/006208/2330 ＋均線待回補與 DATA_DELAYED 誠實標注，notify-delivery.jsonl caller=market-watchtower）。S1 前提修正：task 寫「指標引擎已 done」實為 mw-004 指標計算，進場條件規則引擎 mw-005 仍 todo（歸 market-watchtower 專案）；真均線需 200 天歷史回補。workspace 非 git repo，evidence 為檔案路徑＋run 輸出（比照 mw-001~04）。",
+      "note": "evidence: /market-watchtower/scripts/notify-dispatch.mjs、/market-watchtower/test/notify-dispatch.test.mjs（npm test 17/17）、/notyet-harness/schedule/runs/notify-delivery.jsonl caller=market-watchtower。"
     },
     {
       "id": "sentinel-delivery-verify",

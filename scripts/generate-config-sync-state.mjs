@@ -17,11 +17,15 @@ export function generateConfigSyncState(options = {}) {
   const duplicateSkillsIndexPath = options.duplicateSkillsIndexPath || path.join(collabRoot, "notyet-harness", "000_Agent", "skills", "SKILLS-INDEX (1).md");
   const outPath = options.outPath || defaultOutPath;
 
+  const heartbeatDir = options.heartbeatDir || path.join(collabRoot, "notyet-harness", "schedule", "heartbeat");
+  const localHost = options.localHost || os.hostname();
+
   const source = fileProbe(sourcePath, "$COLLAB/notyet-harness/000_Agent/docs/cc-claude-md.md");
   const local = fileProbe(localPath, "~/.claude/CLAUDE.md");
   const claudeMd = compareClaudeMd(source, local);
   const skills = skillsProbe(skillsIndexPath, duplicateSkillsIndexPath);
-  const checks = [claudeMd, skills];
+  const peerHeartbeat = peerHeartbeatProbe(heartbeatDir, localHost, new Date(generatedAt).getTime());
+  const checks = [claudeMd, skills, peerHeartbeat];
   const summary = summarize(checks);
 
   const data = {
@@ -152,6 +156,80 @@ function skillsProbe(skillsIndexPath, duplicateSkillsIndexPath) {
     next_action: status === "pass"
       ? { type: "none", target: null, label: "Shared skills index path policy is clean." }
       : { type: "blocked_on_vincent", target: "skills-index-path-policy", label: "Review skills index path policy before trusting shared skills routing." },
+  };
+}
+
+// JV-12 雙機同步斷線警報。
+// Heartbeat 契約：$COLLAB/notyet-harness/schedule/heartbeat/<host>.json
+//   { host, last_run_at, last_pull_at?, head?, written_by }
+// 各機每日排程寫自己的檔，隨 git push/pull 跨機同步（push 頻率即 heartbeat 傳輸頻率）。
+// 對端檔案超過 48h 未更新 → amber，進哨兵早報；尚無對端檔案（JV-11 未裝）→ unknown，
+// next_action 指向 dual-machine-trigger-install，不假 live。
+const PEER_STALE_HOURS = 48;
+
+function peerHeartbeatProbe(heartbeatDir, localHost, nowMs) {
+  const base = {
+    id: "peer_sync_heartbeat",
+    heartbeat_dir: "$COLLAB/notyet-harness/schedule/heartbeat",
+    local_host: localHost,
+    stale_after_hours: PEER_STALE_HOURS,
+  };
+
+  const peers = [];
+  if (fs.existsSync(heartbeatDir)) {
+    for (const name of fs.readdirSync(heartbeatDir).filter((entry) => entry.endsWith(".json")).sort()) {
+      try {
+        const record = JSON.parse(fs.readFileSync(path.join(heartbeatDir, name), "utf8"));
+        if ((record.host || name.replace(/\.json$/, "")) === localHost) continue;
+        const lastSeen = record.last_pull_at || record.last_run_at || null;
+        const ageHours = lastSeen ? Math.floor((nowMs - new Date(lastSeen).getTime()) / 3600000) : null;
+        peers.push({
+          host: record.host || name.replace(/\.json$/, ""),
+          last_seen_at: lastSeen,
+          age_hours: ageHours,
+          stale: ageHours === null || ageHours > PEER_STALE_HOURS,
+        });
+      } catch {
+        peers.push({ host: name.replace(/\.json$/, ""), last_seen_at: null, age_hours: null, stale: true, parse_error: true });
+      }
+    }
+  }
+
+  if (peers.length === 0) {
+    return {
+      ...base,
+      status: "unknown",
+      peers,
+      blocked_on_vincent: false,
+      next_action: {
+        type: "task",
+        target: "dual-machine-trigger-install",
+        label: "尚無對端 heartbeat 資料（JV-11 未完成）；MBA-2 裝好排程並首次 push 後本檢查才有訊號。",
+      },
+    };
+  }
+
+  const stalePeers = peers.filter((peer) => peer.stale);
+  if (stalePeers.length > 0) {
+    return {
+      ...base,
+      status: "amber",
+      peers,
+      blocked_on_vincent: false,
+      next_action: {
+        type: "sentinel_morning_report",
+        target: stalePeers.map((peer) => peer.host).join(","),
+        label: `對端 ${stalePeers.map((peer) => `${peer.host}（${peer.age_hours === null ? "無時間戳" : `${peer.age_hours}h`}）`).join("、")} 超過 ${PEER_STALE_HOURS}h 未同步——確認該機排程與 git pull 是否活著。`,
+      },
+    };
+  }
+
+  return {
+    ...base,
+    status: "pass",
+    peers,
+    blocked_on_vincent: false,
+    next_action: { type: "none", target: null, label: "對端 heartbeat 在 48h 窗內。" },
   };
 }
 

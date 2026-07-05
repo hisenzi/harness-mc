@@ -139,6 +139,17 @@ try {
   if (s.new_tasks) parts.push(`+${s.new_tasks} new tasks`);
   if (s.stale_projects) parts.push(`${s.stale_projects} stale`);
   result.brief = parts.length ? `今日：${parts.join(" · ")}` : "今日：無變化";
+
+  // JV-12：雙機同步斷線警報進早報（資料源 config-sync-state 的 peer_sync_heartbeat 規則）
+  result.system_warnings = [];
+  try {
+    const configSync = JSON.parse(fs.readFileSync(path.join(root, "public", "data", "config-sync-state.json"), "utf-8"));
+    const peer = (configSync.checks || []).find((check) => check.id === "peer_sync_heartbeat");
+    if (peer?.status === "amber") result.system_warnings.push(`雙機同步：${peer.next_action.label}`);
+  } catch {
+    // config-sync-state 未生成時不阻斷哨兵
+  }
+  if (result.system_warnings.length) result.brief += `｜⚠ ${result.system_warnings.join("；")}`;
 } catch (e) {
   result.error = String(e?.message || e);
   result.brief = "哨兵運行錯誤（changes.json 為空殼）";

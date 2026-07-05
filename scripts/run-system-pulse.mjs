@@ -1,5 +1,6 @@
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { generateTaskEventPipelineData } from "./generate-task-event-data.mjs";
@@ -123,6 +124,7 @@ if (status === "degraded") {
 
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, `${JSON.stringify(report, null, 2)}\n`);
+writeLocalHeartbeat(finishedAt);
 console.log(`System pulse ${status}: ${report.summary.passed}/${report.summary.total} steps passed`);
 console.log(
   `Proposals: +${report.proposals.created} created, ${report.proposals.pending_decision} pending (oldest ${report.proposals.oldest_pending_days}d)`,
@@ -223,6 +225,28 @@ function nextAction(status, items, taskEventState) {
     target: firstFailure?.id || "unknown",
     label: "Inspect system-pulse step failure excerpt and fix the owning source, verifier, or generated read model.",
   };
+}
+
+// JV-12 heartbeat 契約：每日 pulse 寫本機 heartbeat，隨 git push 跨機可見；
+// 對端由 config-sync-state 的 peer_sync_heartbeat 規則監測（>48h → amber 進哨兵早報）
+function writeLocalHeartbeat(nowIso) {
+  try {
+    const heartbeatDir = path.join(notyetRoot, "schedule", "heartbeat");
+    fs.mkdirSync(heartbeatDir, { recursive: true });
+    const host = os.hostname();
+    const head = (repo) => spawnSync("git", ["-C", repo, "rev-parse", "--short", "HEAD"], { encoding: "utf8" }).stdout.trim() || null;
+    const record = {
+      schema_version: "sync-heartbeat.v0",
+      host,
+      last_run_at: nowIso,
+      last_pull_at: null,
+      heads: { "notyet-harness": head(notyetRoot), "harness-mc": head(root) },
+      written_by: "run-system-pulse",
+    };
+    fs.writeFileSync(path.join(heartbeatDir, `${host}.json`), `${JSON.stringify(record, null, 2)}\n`);
+  } catch (error) {
+    console.error(`heartbeat write skipped: ${error.message}`);
+  }
 }
 
 function notifyFailure(report, proposalResult) {

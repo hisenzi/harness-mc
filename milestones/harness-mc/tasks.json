@@ -2080,7 +2080,7 @@
     },
     {
       "id": "pulse-proposal-attention-surface",
-      "status": "todo",
+      "status": "completed",
       "title": "JV-13 System Attention 納入 pulse 狀態與待裁決 proposals",
       "track": "morrowise-system",
       "order_label": "JV-13",
@@ -2112,11 +2112,16 @@
           "synced_at": "2026-07-05",
           "sync_mode": "created"
         }
-      }
+      },
+      "completed_at": "2026-07-06",
+      "commits": [
+        "152a8a5"
+      ],
+      "summary": "System Attention 首屏納入 system-pulse 心跳（healthy/degraded＋失敗數）與待裁決 proposal 佇列（數量＋最舊天數＋red 計數）；surface 註冊 morrowise-live-dashboard.json，degraded/red 升 blocked 級；資料源 system-pulse.json＋pulse-proposals.json（JV-08 read model）。驗證：live-dashboard/loop verifier 綠、next build 過、3001 實測。"
     },
     {
       "id": "harness-governance-surface",
-      "status": "todo",
+      "status": "completed",
       "title": "JV-15 Harness governance 狀態卡",
       "track": "morrowise-system",
       "order_label": "JV-15",
@@ -2148,6 +2153,38 @@
           "synced_at": "2026-07-05",
           "sync_mode": "created"
         }
+      },
+      "completed_at": "2026-07-06",
+      "commits": [
+        "152a8a5"
+      ],
+      "summary": "#discipline 新增 Harness governance 狀態卡：auditor HG profile 產 harness-governance.json（17 檔 header 分級計數、B plan patch 進度、failing files、next_action），新 registry 宣告 source family，wiring gate fixture 全鏈通過（registry→read model→surface→homepage→verifier）；accepted 標記只顯示不裁決。"
+    },
+    {
+      "id": "capability-card-v1",
+      "status": "todo",
+      "title": "JV-26 首頁 API/CLI/MCP 能力卡 v1（observed＋drift＋雙機＋freshness）",
+      "track": "morrowise-system",
+      "order_label": "JV-26",
+      "dependencies": [
+        "capability-observed-scan"
+      ],
+      "done_condition": "#api-cli-mcp-capabilities 卡升級：observed＋drift＋per-machine（含資料齡）＋freshness（generated_at 超 30h 標 stale，pulse 每日跑、30h＝漏跑一次即現形）；通過 wiring gate 與 live-system admission；卡片能回答「這台機器現在串了什麼、哪個壞了、哪個沒登記」三問。",
+      "note": "依賴的 capability-observed-scan 在 morrowise milestone（JV-19）；drift 欄等 capability-registry-v1-coverage（JV-24）完成後補。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。",
+      "hc_decision": {
+        "task_scope": "harness-mc/capability-transparency",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#utility"
+        ],
+        "hc_reasoning": "surface task 承接整合透明化鏈的可見層：#rightProblem 界定卡片必須回答「這台機器串了什麼／哪個壞了／哪個沒登記」三問，而非再做一張裝飾卡；#systemDynamics 要求走 wiring gate 全鏈並標 freshness（30h＝pulse 漏跑一次即現形），HC 對抗審 F1 已證明雙機資料為快照級、不得宣稱即時；#utility 同資料三 surface 只保留邊際效益高的兩個（本卡＋sentinel 摘要行），TOOLS.md 自動段 deferred。",
+        "hc_confidence": 0.85,
+        "source_boundary": "HC is a thinking check only; canonical source of truth for task state remains in $COLLAB/harness-mc/milestones/*/tasks.json; this block records framing evidence, not state.",
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md",
+          "$COLLAB/harness-mc/public/data/capability-runtime-status.json"
+        ]
       }
     }
   ]

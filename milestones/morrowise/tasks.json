@@ -1787,7 +1787,7 @@
     },
     {
       "id": "dispatch-gate-extension",
-      "status": "todo",
+      "status": "completed",
       "title": "JV-17 派工事件點 gating（work-anchor-preflight 擴充）",
       "track": "governance",
       "order_label": "JV-17",
@@ -1803,7 +1803,12 @@
           "synced_at": "2026-07-05",
           "sync_mode": "created"
         }
-      }
+      },
+      "completed_at": "2026-07-06",
+      "commits": [
+        "f608d86"
+      ],
+      "summary": "work-anchor-preflight 新增 --event dispatch|implementation 事件點 gate：dispatch 逐條檢查 C 契約三件套＋模型分級＋驗證路徑，implementation 檢查可寫邊界；checklist 每列帶規則 ref，watch_signals 附 D 矩陣 S/E 訊號。不帶 --event 行為不變（零啟動負擔）。入口路由（AGENTS.md 加一行「派工前跑 preflight --event dispatch」）屬入口文件修改，待 Vincent 批准後隨下一輪 B patch 落地。"
     },
     {
       "id": "collab-path-precommit-hook",

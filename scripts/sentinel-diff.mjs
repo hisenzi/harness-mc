@@ -54,6 +54,13 @@ function projectName(dir) {
   return meta?.name || dir;
 }
 
+function projectArchived(dir) {
+  const p = path.join(milestonesDir, dir, "project.json");
+  if (!fs.existsSync(p)) return false;
+  const meta = readJSON(fs.readFileSync(p, "utf-8"));
+  return meta?.status === "archived";
+}
+
 const result = {
   version: 1,
   generated_at: new Date().toISOString(),
@@ -72,7 +79,9 @@ try {
   result.baseline.rev = baseRev.slice(0, 7);
   result.baseline.time = git(`show -s --format=%cI ${baseRev}`);
 
-  const dirs = fs.readdirSync(milestonesDir).filter((d) => fs.existsSync(path.join(milestonesDir, d, "tasks.json")));
+  const dirs = fs.readdirSync(milestonesDir)
+    .filter((d) => fs.existsSync(path.join(milestonesDir, d, "tasks.json")))
+    .filter((d) => !projectArchived(d)); // archived projects: 不掃、不報 stale/blocked（JV-01 lifecycle sweep）
 
   for (const dir of dirs) {
     const name = projectName(dir);

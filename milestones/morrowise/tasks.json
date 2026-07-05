@@ -1663,7 +1663,7 @@
     },
     {
       "id": "system-pulse-feedback-loop",
-      "status": "todo",
+      "status": "completed",
       "title": "JV-08 Pulse 失敗自動變 proposal（含推送）",
       "track": "runtime-delivery",
       "order_label": "JV-08",
@@ -1679,7 +1679,13 @@
           "synced_at": "2026-07-05",
           "sync_mode": "created"
         }
-      }
+      },
+      "completed_at": "2026-07-06",
+      "commits": [
+        "4459453",
+        "d372584"
+      ],
+      "summary": "Pulse feedback loop 落地：degraded step → proposal 檔入 task-proposals/pending/ ＋ pulse-proposals.json read model（JV-13 資料源）；分流引用 D 矩陣 S4/E 類與 approval-policy allowed tier （auto_fixable 當場修/amber 日報/red 即推）；防自噬 TTL 7d 降週報、佇列 >10 red overload、每日 red ≤3 超過合併、step 恢復自動 resolved。真實兩輪端到端：5 failures→5 proposals→macOS 通知送達→修復後 3 筆 step_recovered、2 筆 sync drift 待下輪自動結案。順帶修復 PAI mapping 缺漏（9d8ccf5）與 hc-framing-gate 版本 pin 自腐（d03428e）。"
     },
     {
       "id": "reducer-apply-verify",

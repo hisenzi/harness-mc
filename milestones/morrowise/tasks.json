@@ -1292,7 +1292,7 @@
         "$COLLAB/notyet-harness/schedule/install.sh",
         "$COLLAB/harness-mc/public/data/schedule-health.json"
       ],
-      "note": "owner=HiSenzi（CC 無法操作 MBA-2），2026-07-03 cc-log 交接。查重：AI Agent 共享腦系統 project 的 M4（MBA-2 跑 SOP）是整機切換 SOP，不覆蓋排程 trigger 安裝。 2026-07-05 實測：本機 hostname=VincentMBA-blue.local；launchctl list com.hisenzi.schedule.commit-attention-sweep / mc-sentinel / system-pulse 均有輸出且 LastExitStatus=0；schedule-health 產生 3 tasks、3/3 plists installed、1 last-run failure（system-pulse degraded 屬另一條 runtime health）。MBA-2 待 Vincent 切機後執行：`cd $COLLAB && git pull --rebase`、`$COLLAB/notyet-harness/schedule/install.sh --load`、`launchctl list com.hisenzi.schedule.system-pulse`、`cd $COLLAB/harness-mc && node scripts/generate-schedule-health.mjs`；完成證據只寫 cc-log / runs log，不把 MBA-2 本機狀態寫成共享正本。 2026-07-05 JV-01 sweep 承接 dual-blade 4 項：M4 SOP 切換（同義）、Heptabase×Notion whiteboard_id 搬遷、MBA-2 status bar 安裝、cc-token-count 工具安裝——JV-11 執行時一併完成。",
+      "note": "owner=HiSenzi（CC 無法操作 MBA-2），2026-07-03 cc-log 交接。查重：AI Agent 共享腦系統 project 的 M4（MBA-2 跑 SOP）是整機切換 SOP，不覆蓋排程 trigger 安裝。 2026-07-05 實測：本機 hostname=VincentMBA-blue.local；launchctl list com.hisenzi.schedule.commit-attention-sweep / mc-sentinel / system-pulse 均有輸出且 LastExitStatus=0；schedule-health 產生 3 tasks、3/3 plists installed、1 last-run failure（system-pulse degraded 屬另一條 runtime health）。MBA-2 待 Vincent 切機後執行：`cd $COLLAB && git pull --rebase`、`$COLLAB/notyet-harness/schedule/install.sh --load`、`launchctl list com.hisenzi.schedule.system-pulse`、`cd $COLLAB/harness-mc && node scripts/generate-schedule-health.mjs`；完成證據只寫 cc-log / runs log，不把 MBA-2 本機狀態寫成共享正本。 2026-07-05 JV-01 sweep 承接 dual-blade 4 項：M4 SOP 切換（同義）、Heptabase×Notion whiteboard_id 搬遷、MBA-2 status bar 安裝、cc-token-count 工具安裝——JV-11 執行時一併完成。 2026-07-05 22:36 更正：MBA-1 plist 3/3 已載入，但 launchd 實際執行自 07-03 22:10 起全數失敗（TCC：/bin/bash 無 Downloads 存取權，schedule/runs/*.launchd.err.log 連日 Operation not permitted，kickstart system-pulse 即時重現 LastExitStatus=32256）。早前「3/3 已驗」僅驗 plist 載入與當時 kickstart，不代表排程執行成功。MBA-2 安裝指引必須加 TCC 授權步驟，見 launchd-tcc-downloads-access。",
       "summary": "本機 VincentMBA-blue.local 已確認 3/3 schedule launchd labels 載入（commit-attention-sweep、mc-sentinel、system-pulse）；MBA-2 端需 Vincent/HiSenzi 切機後 git pull 並執行 schedule/install.sh --load，CC 在本機無法讀取或宣告 MBA-2 launchd/runtime 狀態，故不得標 completed。",
       "order_label": "JV-11",
       "external_refs": {
@@ -1579,7 +1579,7 @@
     },
     {
       "id": "notification-first-delivery",
-      "status": "todo",
+      "status": "in_progress",
       "title": "JV-04 第一則主動通知（notify.sh macOS fallback）",
       "track": "runtime-delivery",
       "order_label": "JV-04",
@@ -1592,7 +1592,11 @@
           "synced_at": "2026-07-05",
           "sync_mode": "created"
         }
-      }
+      },
+      "note": "2026-07-05 實作落地：notify.sh v2（Telegram 主線 + osascript fallback + runs/notify-delivery.jsonl 送達帳，statuses: telegram_sent/macos_fallback/both_failed/skipped；exit 0=已送達、2=未送達不中斷、3=Telegram 失敗且 fallback 失敗）。contract registry 新增 macos_notification_fallback adapter，verifier 三個 fixture（graceful skip/fallback 成功/both_failed）全綠。手動情境實測 PASS（osascript_ok、通知已彈、jsonl 有記錄）。launchd 情境實測 BLOCKED：發現 MBA-1 排程觸發層自 2026-07-03 22:10 起全數被 macOS TCC 擋（/bin/bash 無 Downloads 存取權，dispatch.sh Operation not permitted，kickstart 重現 exit 126），詳見 launchd-tcc-downloads-access task。TCC 修復後需 kickstart 重驗＋Vincent 目擊通知才可 completed。notyet-harness commit 見 task-events outbox；harness-mc commits 見 commits 欄。",
+      "commits": [
+        "b962da7"
+      ]
     },
     {
       "id": "telegram-credentials",
@@ -1775,6 +1779,19 @@
       "done_condition": "CC 的 .claude/settings.json PreToolUse hook 在 git commit 前自動執行 CORE.md 路徑檢查（grep 硬編 /Users 路徑於 staged 共享文件），違規時阻斷並提示改 $COLLAB 形式；hook 邏輯與 CORE.md 檢查式一致；驗證含正負 fixture。",
       "note": "2026-07-05 由 dual-blade 移轉（JV-01 lifecycle sweep）。CORE.md 路徑檢查段明文規劃『自動化：先做 CC』。賈維斯線外的 gate 自動化，排序在 JV 主線後。",
       "dependencies": []
+    },
+    {
+      "id": "launchd-tcc-downloads-access",
+      "status": "blocked",
+      "title": "launchd TCC 授權修復（Downloads 資料夾存取，雙機）",
+      "track": "runtime-delivery",
+      "done_condition": "MBA-1（後續 MBA-2 同）launchd 排程 job 能實際執行 $COLLAB 內的 dispatch.sh：launchctl kickstart 後 runs/ 出現新 run log 且 LastExitStatus=0；schedule/runs/*.launchd.err.log 不再出現 Operation not permitted。",
+      "note": "2026-07-05 發現：~/Downloads 是 TCC 保護資料夾，launchd 背景程序（/bin/bash）無存取權，三個 com.hisenzi.schedule.* job 自 07-03 22:10 起每次觸發都失敗（exit 126），整個排程觸發層實際死亡但 schedule-health 只看 plist 存在所以未暴露。Owner: Vincent（需 GUI 操作）。選項 A（快，2 分鐘）：系統設定→隱私權與安全性→完整磁碟取用權→加入 /bin/bash——代價是所有 launchd bash job 都拿到全磁碟權限。選項 B（正解，工程量大）：把 Claude_協作 搬出 ~/Downloads（如 ~/Claude_協作，home 根目錄非 TCC 保護區）——共享文件已全用 $COLLAB 相對路徑，但 launchd plist、harness-mc LaunchAgent、CLAUDE.md Step 0 find 範圍、本機 symlink 需逐一更新，建議另開 task 規劃。建議先 A 後 B。blocked_until: Vincent 裁決並執行。",
+      "source_refs": [
+        "$COLLAB/notyet-harness/schedule/runs/system-pulse.launchd.err.log",
+        "$COLLAB/notyet-harness/schedule/install.sh",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#dual-machine-trigger-install"
+      ]
     }
   ]
 }

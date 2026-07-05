@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { generateTaskEventPipelineData } from "./generate-task-event-data.mjs";
+import { processPulseProposals } from "./pulse-proposal-queue.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -106,13 +107,26 @@ const report = {
   notification: null,
 };
 
+// JV-08: 失敗 → proposal 佇列；每輪都跑（healthy 時做 TTL sweep + read model 重生成）
+const proposalResult = processPulseProposals({ report, now: finishedAt });
+report.proposals = {
+  created: proposalResult.created.length,
+  escalated: proposalResult.escalated.length,
+  pending_decision: proposalResult.readModel.counts.pending_decision,
+  oldest_pending_days: proposalResult.readModel.oldest_pending_days,
+  read_model: "$COLLAB/harness-mc/public/data/pulse-proposals.json",
+};
+
 if (status === "degraded") {
-  report.notification = notifyFailure(report);
+  report.notification = notifyFailure(report, proposalResult);
 }
 
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, `${JSON.stringify(report, null, 2)}\n`);
 console.log(`System pulse ${status}: ${report.summary.passed}/${report.summary.total} steps passed`);
+console.log(
+  `Proposals: +${report.proposals.created} created, ${report.proposals.pending_decision} pending (oldest ${report.proposals.oldest_pending_days}d)`,
+);
 if (report.notification) {
   console.log(`Notification: ${report.notification.status}`);
 }
@@ -211,13 +225,20 @@ function nextAction(status, items, taskEventState) {
   };
 }
 
-function notifyFailure(report) {
-  const message = [
+function notifyFailure(report, proposalResult) {
+  const lines = [
     "[MorroWise system-pulse] degraded",
     `failed=${report.summary.failed}/${report.summary.total}`,
     `next=${report.next_action.target || "none"}`,
-    "read $COLLAB/harness-mc/public/data/system-pulse.json",
-  ].join("\n");
+  ];
+  if (report.proposals) {
+    lines.push(`proposals: +${report.proposals.created} new, ${report.proposals.pending_decision} pending decision`);
+  }
+  if (proposalResult?.pushMessage) {
+    lines.push(proposalResult.pushMessage);
+  }
+  lines.push("read $COLLAB/harness-mc/public/data/system-pulse.json");
+  const message = lines.join("\n");
 
   if (!fs.existsSync(notifyPath)) {
     return { status: "skipped", reason: "notify.sh missing" };

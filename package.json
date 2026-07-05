@@ -57,7 +57,8 @@
     "start": "next start -p 3001",
     "test:kj-notion-read-model": "node scripts/verify-kj-notion-read-model.mjs",
     "test:kj-handoff-live-sync": "node scripts/verify-kj-handoff-live-sync.mjs",
-    "test:kj-mirror-reconcile": "node scripts/verify-kj-mirror-reconcile.mjs"
+    "test:kj-mirror-reconcile": "node scripts/verify-kj-mirror-reconcile.mjs",
+    "test:pulse-proposals": "node scripts/verify-pulse-proposal-queue.mjs"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.0.0",

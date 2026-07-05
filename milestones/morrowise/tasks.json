@@ -1554,7 +1554,7 @@
     },
     {
       "id": "legacy-doc-archive",
-      "status": "todo",
+      "status": "completed",
       "title": "JV-03 文件級封存首跑（dual-blade 五檔＋harness v1 accept＋殘引用修復）",
       "track": "governance",
       "order_label": "JV-03",
@@ -1570,7 +1570,12 @@
           "synced_at": "2026-07-05",
           "sync_mode": "created"
         }
-      }
+      },
+      "completed_at": "2026-07-05",
+      "commits": [
+        "cd027ad"
+      ],
+      "summary": "完成 JV-03 文件級封存首跑：dual-blade 五檔以 tombstone in place 標 historical/superseded，新增 dual-blade archive index 與 JV-03 archive map；harness v1 acceptance 維持 draft 待 Vincent 明確裁決；8 張 ACP Heptabase card 已 append，MC 儀表版 Canvas sync 已跑。"
     },
     {
       "id": "notification-first-delivery",

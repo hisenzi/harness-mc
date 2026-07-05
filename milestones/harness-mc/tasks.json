@@ -407,7 +407,7 @@
           "whiteboard": "MC 儀表版",
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "3a002909-5ee3-4bd8-9df9-71d3c4c6c0f0",
-          "synced_at": "2026-06-20",
+          "synced_at": "2026-07-05",
           "sync_mode": "appended"
         }
       },
@@ -1101,8 +1101,8 @@
           "whiteboard": "MC 儀表版",
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "abd5b0e9-dee6-402a-8227-7ee7e3a12c20",
-          "synced_at": "2026-06-14",
-          "sync_mode": "renamed"
+          "synced_at": "2026-07-05",
+          "sync_mode": "appended"
         }
       },
       "superseded_by": [
@@ -1131,8 +1131,8 @@
           "whiteboard": "MC 儀表版",
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "11cb9561-da59-4d09-8054-0adbcaa1396a",
-          "synced_at": "2026-06-14",
-          "sync_mode": "renamed"
+          "synced_at": "2026-07-05",
+          "sync_mode": "appended"
         }
       },
       "superseded_by": [
@@ -1161,8 +1161,8 @@
           "whiteboard": "MC 儀表版",
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "14c4195c-8d78-4c0a-be46-715b11828480",
-          "synced_at": "2026-06-14",
-          "sync_mode": "renamed"
+          "synced_at": "2026-07-05",
+          "sync_mode": "appended"
         }
       },
       "superseded_by": [
@@ -1191,8 +1191,8 @@
           "whiteboard": "MC 儀表版",
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "6faab7ad-f053-478b-ae53-e36665a98c0e",
-          "synced_at": "2026-06-14",
-          "sync_mode": "renamed"
+          "synced_at": "2026-07-05",
+          "sync_mode": "appended"
         }
       },
       "defer_reason": "原本是先做首頁卡片；HC 驗證後改成先有 read model 與 MorroWise dashboard surface，再決定是否需要獨立 ControlPlaneCard。",
@@ -1221,8 +1221,8 @@
           "whiteboard": "MC 儀表版",
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "279e27d3-1720-41ca-a2ed-df9f45083f7d",
-          "synced_at": "2026-06-14",
-          "sync_mode": "renamed"
+          "synced_at": "2026-07-05",
+          "sync_mode": "appended"
         }
       },
       "defer_reason": "這是 projects UX 密度優化，不是 MC 活系統鏈第一批核心；等 Source→Map→Read Model→Surface 完成後再排。",
@@ -1247,8 +1247,8 @@
           "whiteboard": "MC 儀表版",
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "7f35efa7-fad4-4d3b-8f0b-bdb154cd89a8",
-          "synced_at": "2026-06-14",
-          "sync_mode": "renamed"
+          "synced_at": "2026-07-05",
+          "sync_mode": "appended"
         }
       },
       "defer_reason": "project detail 要顯示的 decision_refs / next executable task / blocked 摘要需先由 MorroWise task map 與 control-plane read model 產生，暫不先做 UI。",
@@ -1274,8 +1274,8 @@
           "whiteboard": "MC 儀表版",
           "whiteboard_id": "1f2e612f-7370-41c3-8545-31b19fbfcea5",
           "card_id": "f3f232ce-ea1e-48d5-b5bb-b343fe1c8f7f",
-          "synced_at": "2026-06-14",
-          "sync_mode": "renamed"
+          "synced_at": "2026-07-05",
+          "sync_mode": "appended"
         }
       },
       "defer_reason": "依賴 dual-blade 的 schedule/security/memory policy inventory；現階段先顯示 missing gate，不先做 runtime/policy surface。",

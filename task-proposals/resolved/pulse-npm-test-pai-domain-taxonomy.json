@@ -1,0 +1,23 @@
+{
+  "schema_version": "pulse-proposal.v0",
+  "proposal_id": "pulse-npm-test-pai-domain-taxonomy",
+  "created_at": "2026-07-05T15:04:46.497Z",
+  "last_seen_at": "2026-07-05T15:04:46.497Z",
+  "occurrences": 1,
+  "severity": "amber",
+  "triage_refs": [
+    "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/judgment-externalization-matrix.md#S4"
+  ],
+  "step_id": "npm:test:pai-domain-taxonomy",
+  "failure_excerpt": "  diff: 'simple' | } | Node.js v24.11.1",
+  "evidence_ref": "$COLLAB/harness-mc/public/data/system-pulse.json",
+  "suggested_action": "依 pulse next_action 修 prebuild；修復後重跑 system-pulse 驗證。",
+  "status": "resolved",
+  "ttl_days": 7,
+  "source_boundary": "proposal 檔是 queue/evidence，非 task 正本；Vincent 裁決後才進 tasks.json（approval-policy: direction agreement is not operation approval）",
+  "resolved": {
+    "at": "2026-07-05T15:09:08.020Z",
+    "reason": "step_recovered",
+    "evidence_ref": "$COLLAB/harness-mc/public/data/system-pulse.json"
+  }
+}

@@ -1485,7 +1485,7 @@
     },
     {
       "id": "milestone-lifecycle-sweep-v1",
-      "status": "in_progress",
+      "status": "completed",
       "title": "JV-01 Milestone 生命週期清理 v1（36 projects 盤點→裁決→封存）",
       "track": "governance",
       "order_label": "JV-01",
@@ -1517,9 +1517,15 @@
           "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
           "card_id": "49d9e377-9dae-43bb-a18b-36e9132f713b",
           "synced_at": "2026-07-05",
-          "sync_mode": "created"
+          "sync_mode": "appended"
         }
-      }
+      },
+      "completed_at": "2026-07-05",
+      "commits": [
+        "833cd1c",
+        "84971ee"
+      ],
+      "summary": "賈維斯家族 5 projects 生命週期清理完成：dual-blade 33 筆逐筆處置（26 close/6 completed/1 移轉）且殼 archived、harness-mc 5 死案 close、sentinel 新增 archived 過濾並實測生效；其餘 29 個業務專案經 Vincent 裁決本輪不動，全量盤點留存 system-workflow/reports/milestone-lifecycle-sweep-2026-07-05.md 供後續批次。"
     },
     {
       "id": "supersede-lifecycle-protocol",

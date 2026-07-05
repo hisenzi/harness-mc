@@ -13,6 +13,14 @@
     "runtime-delivery": "Agent-agnostic scheduler、notification adapter 與 Reality Tax Gate",
     "governance": "MorroWise 元件入場規則、live-system gate 與跨功能治理"
   },
+  "decision_refs": [
+    {
+      "adr": "ADR-004",
+      "title": "MorroWise 是唯一的賈維斯系統",
+      "path": "$COLLAB/notyet-harness/000_Agent/decisions/ADR-004-jarvis-system-ownership.md",
+      "note": "查 MorroWise / Jarvis / live-system ownership 前先讀；定義活系統、主動服務、通知、feedback loop 不另開平行 project。"
+    }
+  ],
   "goals": [
     "把 000_Agent/docs/morrowise/ 的 v0 評估文件轉成正式、task-backed 的 MorroWise 專案邊界。",
     "建立第一個可驗證閉環：ARCHITECTURE.md source -> auditor/report -> read model -> MC read-only surface -> next action。",
@@ -171,6 +179,19 @@
         "#systemDynamics",
         "#constraints",
         "#risk"
+      ]
+    },
+    {
+      "topic": "MorroWise 是唯一的賈維斯系統",
+      "decision": "所有活系統、主動服務、自動提醒/通知/feedback loop 類能力一律歸 morrowise project；不另開平行的賈維斯/助理/活系統專案。",
+      "reason": "系統更迭多代（OpenClaw→雙刀流→ACP→MorroWise）每次平行開案都留下殘骸與雙正本；賈維斯能力（sense→decide→act→report）需要單一 owner 才能閉環。JV 系列 roadmap（JV-01~17）即此決策下的第一批執行序。",
+      "alternatives_rejected": [
+        "另開 jarvis/assistant 新專案 - 重演 agent-control-plane 差點另開的雙正本風險，且送達/判斷/感知能力會與 MorroWise 既有 read model 與 runtime 分裂。"
+      ],
+      "hc_used": [
+        "#rightProblem",
+        "#systemDynamics",
+        "#confirmationBias"
       ]
     }
   ],

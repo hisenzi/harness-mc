@@ -1127,7 +1127,7 @@
     },
     {
       "id": "memory-health-read-model",
-      "title": "Memory health read model（memory_layer + second_brain target profile）",
+      "title": "JV-16 Memory health read model（memory_layer + second_brain target profile）",
       "status": "todo",
       "track": "auditor-mvp",
       "done_condition": "依 source-map-v0 Knowledge Health Model 為 memory_layer 與 second_brain source family 建立 scanner 與 read model：last_used_at、reference_count_30d、completeness_state、workflow_links、known_gaps；scanner 未能判定的欄位標 manual/unknown，不得假 live。",
@@ -1142,7 +1142,17 @@
         "$COLLAB/harness-mc/milestones/morrowise/project.json",
         "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md"
       ],
-      "note": "2026-07-03 起因：project.json risks 明列「第二大腦健康度只檢查 note 是否存在」且 scanner 未實作。查重：無既有 memory health task。"
+      "note": "2026-07-03 起因：project.json risks 明列「第二大腦健康度只檢查 note 是否存在」且 scanner 未實作。查重：無既有 memory health task。",
+      "order_label": "JV-16",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "2ade2bbd-1ddf-4fb5-972e-0226b8df0eba",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
     },
     {
       "id": "config-sync-state-probe",
@@ -1271,7 +1281,7 @@
     {
       "id": "dual-machine-trigger-install",
       "status": "blocked",
-      "title": "雙端 trigger 安裝（MBA-2 schedule install）",
+      "title": "JV-11 雙端 trigger 安裝（MBA-2 schedule install）",
       "track": "runtime-delivery",
       "done_condition": "MBA-2 於 git pull 後執行 schedule/install.sh --load，launchctl 確認 com.hisenzi.schedule.* 已載入；依 local runtime boundary 只記 safe metadata（plist 存在、last-run），由 runs log 或 schedule-health 證明 MBA-2 端排程有效。",
       "acceptance": [
@@ -1282,8 +1292,18 @@
         "$COLLAB/notyet-harness/schedule/install.sh",
         "$COLLAB/harness-mc/public/data/schedule-health.json"
       ],
-      "note": "owner=HiSenzi（CC 無法操作 MBA-2），2026-07-03 cc-log 交接。查重：AI Agent 共享腦系統 project 的 M4（MBA-2 跑 SOP）是整機切換 SOP，不覆蓋排程 trigger 安裝。 2026-07-05 實測：本機 hostname=VincentMBA-blue.local；launchctl list com.hisenzi.schedule.commit-attention-sweep / mc-sentinel / system-pulse 均有輸出且 LastExitStatus=0；schedule-health 產生 3 tasks、3/3 plists installed、1 last-run failure（system-pulse degraded 屬另一條 runtime health）。MBA-2 待 Vincent 切機後執行：`cd $COLLAB && git pull --rebase`、`$COLLAB/notyet-harness/schedule/install.sh --load`、`launchctl list com.hisenzi.schedule.system-pulse`、`cd $COLLAB/harness-mc && node scripts/generate-schedule-health.mjs`；完成證據只寫 cc-log / runs log，不把 MBA-2 本機狀態寫成共享正本。",
-      "summary": "本機 VincentMBA-blue.local 已確認 3/3 schedule launchd labels 載入（commit-attention-sweep、mc-sentinel、system-pulse）；MBA-2 端需 Vincent/HiSenzi 切機後 git pull 並執行 schedule/install.sh --load，CC 在本機無法讀取或宣告 MBA-2 launchd/runtime 狀態，故不得標 completed。"
+      "note": "owner=HiSenzi（CC 無法操作 MBA-2），2026-07-03 cc-log 交接。查重：AI Agent 共享腦系統 project 的 M4（MBA-2 跑 SOP）是整機切換 SOP，不覆蓋排程 trigger 安裝。 2026-07-05 實測：本機 hostname=VincentMBA-blue.local；launchctl list com.hisenzi.schedule.commit-attention-sweep / mc-sentinel / system-pulse 均有輸出且 LastExitStatus=0；schedule-health 產生 3 tasks、3/3 plists installed、1 last-run failure（system-pulse degraded 屬另一條 runtime health）。MBA-2 待 Vincent 切機後執行：`cd $COLLAB && git pull --rebase`、`$COLLAB/notyet-harness/schedule/install.sh --load`、`launchctl list com.hisenzi.schedule.system-pulse`、`cd $COLLAB/harness-mc && node scripts/generate-schedule-health.mjs`；完成證據只寫 cc-log / runs log，不把 MBA-2 本機狀態寫成共享正本。 2026-07-05 JV-01 sweep 承接 dual-blade 4 項：M4 SOP 切換（同義）、Heptabase×Notion whiteboard_id 搬遷、MBA-2 status bar 安裝、cc-token-count 工具安裝——JV-11 執行時一併完成。",
+      "summary": "本機 VincentMBA-blue.local 已確認 3/3 schedule launchd labels 載入（commit-attention-sweep、mc-sentinel、system-pulse）；MBA-2 端需 Vincent/HiSenzi 切機後 git pull 並執行 schedule/install.sh --load，CC 在本機無法讀取或宣告 MBA-2 launchd/runtime 狀態，故不得標 completed。",
+      "order_label": "JV-11",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "5c03ba88-05f6-4453-8e3b-49703418d8aa",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
     },
     {
       "id": "multi-session-commit-race-governance",
@@ -1462,6 +1482,288 @@
       ],
       "summary": "完成 SKILLS-INDEX duplicate reconcile：正本改為 marker-managed 43 skills/1 archive，update-skills-index 增加 --check/--dry-run，移除 SKILLS-INDEX (1).md 活躍複本並留下 reconcile report。",
       "note": "2026-07-05 Vincent 裁決：C1 不併入 Harness governance 入口 rollout，另開本 task 保持入口 rollout 純淨。2026-07-05 完成：先確認 `(1)` 與正本不同且含 marker/decision tree/heuristic 等可保留內容；未整份合併，而是把 marker-managed 結構、觸發路徑決策樹、分類 heuristic 收斂進 canonical `SKILLS-INDEX.md`，修正 generator 不再宣稱未驗證的 22:05 schedule，新增 `--check`/`--dry-run`，再用 macOS Trash 移除 active duplicate。"
+    },
+    {
+      "id": "milestone-lifecycle-sweep-v1",
+      "status": "in_progress",
+      "title": "JV-01 Milestone 生命週期清理 v1（36 projects 盤點→裁決→封存）",
+      "track": "governance",
+      "order_label": "JV-01",
+      "done_condition": "①唯讀盤點 36 projects（用 merged view 含 state overlay，不裸讀 tasks.json；含吸收關係考掘與特殊案例：kj-bilingual 為 Notion mirror、thinking-gym 為 state overlay）②產出四類裁決表（keep-active ~7／archive／merge／close-tasks，含 ACP-MC-05/06 等既有 deferred 處置）供 Vincent 圈選，agent 不自動封存任何 project ③執行封存並驗證下游全部尊重 archived：generate-data 分區、sentinel 跳過 archived、MC /projects 分群。量測判準：sentinel blocked 47→<15。",
+      "note": "裁決表設計為預設建議+圈選，Vincent 10 分鐘內完成。第一批寫入僅此 task 之後續批次原則已由本批 JV 序號取代（依賴鏈防無序）。JV 系列＝賈維斯活系統 roadmap，執行順序即編號序（2026-07-05 HC 批次規劃定案）。凍結區（明列防偷跑）：雙向 Telegram bot（OC 死亡路線）、superpowers 26 實驗（等 V1/V2 驗收）。驗收判準：V0 哨兵 blocked 47→<15；V1 系統主動告知一件業務事（系統體檢不算）；V2 紅燈自動變 proposal 等裁決；V3 例行事 7 天零操作；V4 升級時舊版同 commit 封存、殘引用 0。 2026-07-05 Vincent 點名確認裁決範圍含 harness-mc project 自身的 23 個 open tasks：ACP-SYNC-01~05（Heptabase PAI 解耦系列）、MC-LIVE-12、ACP-MC-01~07（deferred 批）、ACP-MC-REPORT-01 殘留——逐一進裁決表，不得以「等」字略過。 2026-07-05 Vincent scope 裁決：本輪裁決收窄至賈維斯系統家族 7 projects（morrowise/harness-mc/dual-blade/agnostic-scheduler/skill-dashboard + 補遺 hc-validation/web-reminder-pwa）；其餘 29 個業務/個人 projects 本輪不裁決、維持現狀（全量盤點報告保留為 evidence 供日後分批裁決）。 2026-07-05 ③執行完成：dual-blade 33 筆處置＋殼 archived、harness-mc 5 筆 close、sentinel archived 過濾上線並實測、validator 全過；裁決結果已回寫 report。待 worktree-commit 後轉 completed。",
+      "hc_decision": {
+        "task_scope": "morrowise/jarvis-roadmap-batch",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#confirmationBias",
+          "#constraints",
+          "#risk",
+          "#utility",
+          "#responsibility"
+        ],
+        "hc_reasoning": "#rightProblem 把問題從「補齊治理」改成「先清舊聚焦、讓一條有價值迴路活起來」；#systemDynamics 抓到自噬迴路（往待清理的 task 池倒新 task→以 JV 序號+依賴鏈寫入而非無序傾倒）與通知疲勞/佇列積壓迴路（TTL+上限+每日合併）；#confirmationBias 推翻「上一代死於沒送達」（實死於複雜度→本代送達鏈極簡）；#risk 抓 .env 入 repo 與 launchd TCC 兩個物理雷；#utility 首發推送用業務內容（Watchtower）非系統體檢；#responsibility Vincent 的物理動作開 blocked task 掛名。",
+        "hc_confidence": 0.85,
+        "source_boundary": "HC is a thinking check only; canonical source of truth for task state remains in $COLLAB/harness-mc/milestones/*/tasks.json; this block records framing evidence, not state.",
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/",
+          "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/harness-leak-diagnosis.md",
+          "$COLLAB/harness-mc/milestones/agnostic-scheduler/project.json"
+        ]
+      },
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "49d9e377-9dae-43bb-a18b-36e9132f713b",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "supersede-lifecycle-protocol",
+      "status": "completed",
+      "title": "JV-02 Supersede 生命週期協議（一頁）+ ADR-004",
+      "track": "governance",
+      "order_label": "JV-02",
+      "done_condition": "docs/morrowise/harness/ 落一頁 protocol：五步升級流程（新版落檔→舊版兩軌封存 tombstone/_archive→rg 殘引用修或豁免→架構級記 ADR→commit 帶 supersede: 標記）＋三查詢入口（ADR=為什麼、git log --grep=supersede=何時、_archive/README 索引=在哪，不開第四入口）。同 commit 落 ADR-004：記載賈維斯路線決策與「MorroWise 是唯一的賈維斯系統，活系統/主動服務能力一律歸 morrowise 不另開平行專案」。",
+      "dependencies": [
+        "milestone-lifecycle-sweep-v1"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "43a91517-eed9-47f4-ab57-77680fbfdd75",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      },
+      "completed_at": "2026-07-05",
+      "commits": [
+        "78929ca"
+      ],
+      "summary": "完成 JV-02 supersede lifecycle protocol 與 ADR-004：新增三查詢入口（ADR / git log --grep=supersede / _archive README）、五步升級流程、commit supersede marker 規則，並決議 MorroWise 是唯一 Jarvis/live-system owner。"
+    },
+    {
+      "id": "legacy-doc-archive",
+      "status": "todo",
+      "title": "JV-03 文件級封存首跑（dual-blade 五檔＋harness v1 accept＋殘引用修復）",
+      "track": "governance",
+      "order_label": "JV-03",
+      "done_condition": "按 JV-02 protocol 執行文件級封存：docs/dual-blade/ 五檔標 historical/搬 _archive（依引用狀態走兩軌）；harness/ v1 acceptance 由 Vincent 裁決後標記；全庫 rg 殘引用修復；被關閉 ACP tasks 的 8 張 Heptabase card append（CLI 不可用則回報待補不阻斷）。",
+      "dependencies": [
+        "supersede-lifecycle-protocol"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "4388e8f4-e4ea-48c5-955b-bb3374bd2a8d",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "notification-first-delivery",
+      "status": "todo",
+      "title": "JV-04 第一則主動通知（notify.sh macOS fallback）",
+      "track": "runtime-delivery",
+      "order_label": "JV-04",
+      "done_condition": "schedule/lib/notify.sh 加 osascript fallback（缺 Telegram 憑證時彈 macOS 通知，不再靜默 skip）；送達結果記 runs/ log（telegram_sent/macos_fallback/both_failed）。前置驗證：schedule/.env 已被 .gitignore 擋住（憑證不得入 repo）。驗證含 launchd 情境實測（TCC 權限可能擋 osascript，手動過不算過）。完成判準：Vincent 螢幕出現一則非他觸發的通知。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "6093b946-82f5-45d4-9488-56db48231a0b",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "telegram-credentials",
+      "status": "blocked",
+      "title": "JV-05 Telegram 憑證填入 .env（跨裝置送達）",
+      "track": "runtime-delivery",
+      "order_label": "JV-05",
+      "done_condition": "Vincent 於 schedule/.env 填 TELEGRAM_BOT_TOKEN 與 TELEGRAM_CHAT_ID（BotFather 新開或沿用舊 bot）；填後 notify.sh 實測手機收到一則。secrets 紅線：agent 不讀不寫憑證內容。",
+      "note": "blocked_until: Vincent 完成憑證填入。 Owner: Vincent（agent 不可代辦）。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "f8e1efb1-900d-43f7-bb3e-c724035fae5c",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "watchtower-alert-delivery",
+      "status": "todo",
+      "title": "JV-06 Watchtower 條件提醒接送達鏈（首發業務內容）",
+      "track": "runtime-delivery",
+      "order_label": "JV-06",
+      "done_condition": "Market Watchtower 的進場條件觸發（mw 專案指標引擎已 done）接上 notify.sh 推送；首發內容為業務事（HC #rightProblem：推 Vincent 在乎的事，非系統體檢）。邊界：條件引擎歸 market-watchtower 專案，本 task 只做送達 adapter 接線。",
+      "dependencies": [
+        "notification-first-delivery"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "95299a73-d640-49cb-bd9d-b85556b321b8",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "sentinel-delivery-verify",
+      "status": "todo",
+      "title": "JV-07 哨兵送達實測與管道統一",
+      "track": "runtime-delivery",
+      "order_label": "JV-07",
+      "done_condition": "實測 sentinel-diff --push 的 Telegram 是否真送出（2026-07-04 實跑僅見 Notion skip、無 Telegram 確認訊息）；送達管道統一收斂到 notify.sh；runs log 記送達狀態。",
+      "dependencies": [
+        "notification-first-delivery"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "27bb54fd-b611-464c-9adb-a5016ed680e4",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "system-pulse-feedback-loop",
+      "status": "todo",
+      "title": "JV-08 Pulse 失敗自動變 proposal（含推送）",
+      "track": "runtime-delivery",
+      "order_label": "JV-08",
+      "done_condition": "pulse 失敗→自動產 task proposal 檔（含失敗證據＋建議動作）入佇列＋notify 推送；分流規則引用 D 矩陣與 approval-policy registry（auto-fixable 當場修入早報／amber 進日報／red 即推），不新造判準。防自噬設計：proposal TTL 7 天未裁決降級進週報、佇列上限 10 觸發佇列自身 red、每日 red 推送 ≤3 則超過自動合併。source boundary：proposal 檔是 queue/evidence 非 task 正本，裁決後才進 tasks.json。",
+      "dependencies": [
+        "notification-first-delivery"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "791e9407-48b9-4afc-80e7-0992fa6d3214",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "reducer-apply-verify",
+      "status": "todo",
+      "title": "JV-09 Reducer 消化 pending events 實測",
+      "track": "runtime-delivery",
+      "order_label": "JV-09",
+      "done_condition": "實測 system-pulse 排程是否真消化 task-events/pending/（2026-07-05 積 25 筆）；不會就補接；消化後 pending 穩態 <5。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "50ccc98b-1bbc-4d2d-8131-64c6188cefc3",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "cc-push-batch",
+      "status": "todo",
+      "title": "JV-10 本地 commits 批次推 remote（雙機可見前提）",
+      "track": "governance",
+      "order_label": "JV-10",
+      "done_condition": "走 cc-push skill：盤點兩 repo 未推 commits（15+ 筆）→ Vincent 確認 → push → 確認 harness-mc GitHub Pages 部署。不推則 MBA-2 對全部近期交付不可見。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "9f5c7b06-3ce6-4c88-b3a7-26d11dbcd180",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "cross-machine-sync-alert",
+      "status": "todo",
+      "title": "JV-12 雙機同步斷線警報",
+      "track": "runtime-delivery",
+      "order_label": "JV-12",
+      "done_condition": "config-sync-state read model 加規則：對端超過 48h 未 pull → amber 通知進哨兵早報。依賴 JV-11（MBA-2 端 launchd 生效後才有對端心跳資料）。",
+      "dependencies": [
+        "dual-machine-trigger-install"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "8430e888-77ca-4e5f-b50d-e097eaae069e",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "auditor-harness-governance-profile",
+      "status": "todo",
+      "title": "JV-14 Auditor 第二 target profile：harness governance",
+      "track": "governance",
+      "order_label": "JV-14",
+      "done_condition": "generate-morrowise-auditor.mjs 的 profiles 陣列新增 HARNESS_GOVERNANCE_PROFILE（不新開 scanner——沿用 generic engine + target profile 架構決策）：header contract 檢查（protocol 檔嚴格／外部 handoff 與 evidence 檔寬鬆分級，分級依 amendment §2 分類）、B plan patch 狀態欄 parse（fixture 鎖格式）、superseded/historical 殘引用檢查（E-c 併入此處）、stale task id 檢查。負向 fixture：缺 header 檔→degraded。",
+      "dependencies": [
+        "legacy-doc-archive"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "70945da1-ee09-41ff-9166-cb26be2050b3",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      },
+      "note": "2026-07-05 JV-01 sweep 承接 dual-blade 1 項：停用歷史 hisenzi-skill-builder（SKILLS-INDEX 4 組重疊之一），納入本 task 的 skills 治理 scope。"
+    },
+    {
+      "id": "dispatch-gate-extension",
+      "status": "todo",
+      "title": "JV-17 派工事件點 gating（work-anchor-preflight 擴充）",
+      "track": "governance",
+      "order_label": "JV-17",
+      "done_condition": "work-anchor-preflight 擴充：派工/實作前的事件點 checklist gate（引用 harness/ D 矩陣與 C 契約），不加每 session 啟動負擔。賈維斯線外（管 agent 行為，非服務 Vincent），置末。",
+      "dependencies": [
+        "auditor-harness-governance-profile"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "77e57cdc-8dce-4faa-82b0-d81819a761fc",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    {
+      "id": "collab-path-precommit-hook",
+      "status": "todo",
+      "title": "$COLLAB 路徑檢查自動化（CC PreToolUse hook）",
+      "track": "governance",
+      "done_condition": "CC 的 .claude/settings.json PreToolUse hook 在 git commit 前自動執行 CORE.md 路徑檢查（grep 硬編 /Users 路徑於 staged 共享文件），違規時阻斷並提示改 $COLLAB 形式；hook 邏輯與 CORE.md 檢查式一致；驗證含正負 fixture。",
+      "note": "2026-07-05 由 dual-blade 移轉（JV-01 lifecycle sweep）。CORE.md 路徑檢查段明文規劃『自動化：先做 CC』。賈維斯線外的 gate 自動化，排序在 JV 主線後。",
+      "dependencies": []
     }
   ]
 }

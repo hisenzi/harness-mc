@@ -13,7 +13,7 @@ When adding or changing tasks, decide ownership before editing `tasks.json`.
 
 | Work type | Task source | Rule |
 |---|---|---|
-| MorroWise system task | `$COLLAB/harness-mc/milestones/morrowise/tasks.json` | Use for system loops, source-of-truth contracts, generated read models, verifiers, policies, routing rules, schedulers, agent workflow boundaries, runtime/delivery adapters, and governance gates. |
+| MorroWise system task | `$COLLAB/harness-mc/milestones/morrowise/tasks.json` | Use for system loops, source-of-truth contracts, generated read models, verifiers, policies, routing rules, schedulers, agent workflow boundaries, runtime/delivery adapters, and governance gates. **MorroWise is the only Jarvis system: any living-system / proactive-service / notification / feedback-loop capability belongs here — do not open a parallel project (ADR-004).** |
 | harness-mc surface task | `$COLLAB/harness-mc/milestones/harness-mc/tasks.json` | Use for dashboard pages, cards, routes, homepage sections, drilldown views, visual summaries, and user-facing MC operations that only display or operate on existing MorroWise state. |
 
 Examples:

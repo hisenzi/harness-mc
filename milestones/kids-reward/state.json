@@ -1,0 +1,72 @@
+{
+  "tasks": {
+    "p1-1": {
+      "status": "done"
+    },
+    "p1-2": {
+      "status": "completed",
+      "completed_at": "2026-06-29",
+      "commits": [
+        "58b2cee",
+        "4c89162",
+        "9f39387",
+        "945a70b"
+      ],
+      "summary": "Supabase 專案 ref wgxnvfaqykbgbqmfdzoe 已確認存在且 DNS/Management API 可達；live REST probe 可用 anon key 讀到 families/settings（200 []），schema/RLS 離線 contract 與 Supabase-only gate 通過。"
+    },
+    "p1-3": {
+      "status": "completed",
+      "completed_at": "2026-06-29",
+      "commits": [
+        "01aede0",
+        "9f39387"
+      ],
+      "summary": "家長註冊/登入、家庭代碼、小孩 Edge Function 建帳、child login、重設密碼、停用後 RLS 隔離與 child 無設定/小孩管理權限皆已用 live Supabase disposable account flow 驗證通過。"
+    },
+    "p1-4": {
+      "status": "todo"
+    },
+    "p2-1": {
+      "status": "todo"
+    },
+    "p2-2": {
+      "status": "todo"
+    },
+    "p2-3": {
+      "status": "todo"
+    },
+    "p2-4": {
+      "status": "todo"
+    },
+    "p3-1": {
+      "status": "todo"
+    },
+    "p3-2": {
+      "status": "todo"
+    },
+    "p3-3": {
+      "status": "todo"
+    },
+    "p3-4": {
+      "status": "todo"
+    },
+    "d-1": {
+      "status": "todo"
+    },
+    "d-keepalive": {
+      "status": "todo"
+    },
+    "d-verify": {
+      "status": "todo"
+    },
+    "trial-1": {
+      "status": "todo"
+    },
+    "trial-2": {
+      "status": "todo"
+    },
+    "trial-3": {
+      "status": "todo"
+    }
+  }
+}

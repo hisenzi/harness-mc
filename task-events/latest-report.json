@@ -1,14 +1,195 @@
 {
-  "generated_at": "2026-07-04T17:45:20.532Z",
+  "generated_at": "2026-07-05T14:43:09.791Z",
   "applied": [
     {
-      "file": "20260704T174520Z-notyet-harness-a412066-morrowise-multi-session-commit-race-governance.json",
-      "event_id": "task.commit_attached-morrowise-multi-session-commit-race-governance-a412066-20260704T174520Z",
+      "file": "20260628T032152Z-RRREALLL_V2.0-be5316d-rrrealll-v2-transition-w1-verify.json",
+      "event_id": "task.commit_attached-rrrealll-v2-transition-w1-verify-be5316d-20260628T032152Z",
+      "project": "rrrealll-v2-transition",
+      "task_id": "w1-verify",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260628T063221Z-notyet-harness-41712b8-skill-dashboard-meta-1.json",
+      "event_id": "task.commit_attached-skill-dashboard-meta-1-41712b8-20260628T063221Z",
+      "project": "skill-dashboard",
+      "task_id": "meta-1",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260629T031003Z-kids-reward-9f39387-kids-reward-p1-2.json",
+      "event_id": "task.completed-kids-reward-p1-2-9f39387-20260629T031003Z",
+      "project": "kids-reward",
+      "task_id": "p1-2",
+      "type": "task.completed"
+    },
+    {
+      "file": "20260629T031003Z-kids-reward-9f39387-kids-reward-p1-3.json",
+      "event_id": "task.completed-kids-reward-p1-3-9f39387-20260629T031003Z",
+      "project": "kids-reward",
+      "task_id": "p1-3",
+      "type": "task.completed"
+    },
+    {
+      "file": "20260629T151401Z-notyet-harness-dff4ef0-dual-blade-migration-docs-gd-path.json",
+      "event_id": "task.commit_attached-dual-blade-migration-docs-gd-path-dff4ef0-20260629T151401Z",
+      "project": "dual-blade",
+      "task_id": "migration-docs-gd-path",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260629T151651Z-notyet-harness-5d95cb9-dual-blade-brain-migration-m1.json",
+      "event_id": "task.commit_attached-dual-blade-brain-migration-m1-5d95cb9-20260629T151651Z",
+      "project": "dual-blade",
+      "task_id": "brain-migration-m1",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260629T151845Z-notyet-harness-580c5ca-dual-blade-brain-migration-m1.json",
+      "event_id": "task.commit_attached-dual-blade-brain-migration-m1-580c5ca-20260629T151845Z",
+      "project": "dual-blade",
+      "task_id": "brain-migration-m1",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260629T160240Z-notyet-harness-6f6942a-self-learning-course-triage.json",
+      "event_id": "task.commit_attached-self-learning-course-triage-6f6942a-20260629T160240Z",
+      "project": "self-learning",
+      "task_id": "course-triage",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260629T160323Z-notyet-harness-e5cf9c7-morrowise-runtime-closeout-residual-ledger.json",
+      "event_id": "task.commit_attached-morrowise-runtime-closeout-residual-ledger-e5cf9c7-20260629T160323Z",
       "project": "morrowise",
-      "task_id": "multi-session-commit-race-governance",
+      "task_id": "runtime-closeout-residual-ledger",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260630T233752Z-yutianlaw-fa69339-yutianlaw-yt-c5.json",
+      "event_id": "task.commit_attached-yutianlaw-yt-c5-fa69339-20260630T233752Z",
+      "project": "yutianlaw",
+      "task_id": "yt-c5",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260701T090901Z-yutianlaw-035b0a5-yutianlaw-yt-c4.json",
+      "event_id": "task.commit_attached-yutianlaw-yt-c4-035b0a5-20260701T090901Z",
+      "project": "yutianlaw",
+      "task_id": "yt-c4",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260701T090901Z-yutianlaw-4ed817a-yutianlaw-yt-c5.json",
+      "event_id": "task.commit_attached-yutianlaw-yt-c5-4ed817a-20260701T090901Z",
+      "project": "yutianlaw",
+      "task_id": "yt-c5",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260701T121144Z-notyet-harness-741d1e3-morrowise-KJ-LIVE-01.json",
+      "event_id": "task.commit_attached-morrowise-KJ-LIVE-01-741d1e3-20260701T121144Z",
+      "project": "morrowise",
+      "task_id": "KJ-LIVE-01",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260702T163711Z-notyet-harness-07ad67a-morrowise-KJ-LIVE-03.json",
+      "event_id": "task.commit_attached-morrowise-KJ-LIVE-03-07ad67a-20260702T163711Z",
+      "project": "morrowise",
+      "task_id": "KJ-LIVE-03",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260703T020415Z-yutianlaw-f164dea-yutianlaw-yt-c3-mvp-formspark-n8n.json",
+      "event_id": "task.commit_attached-yutianlaw-yt-c3-mvp-formspark-n8n-f164dea-20260703T020415Z",
+      "project": "yutianlaw",
+      "task_id": "yt-c3-mvp-formspark-n8n",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260703T043339Z-notyet-harness-50526a2-travel-finance-dashboard-p1-osaka-reference-ledger.json",
+      "event_id": "task.commit_attached-travel-finance-dashboard-p1-osaka-reference-ledger-50526a2-20260703T043339Z",
+      "project": "travel-finance-dashboard",
+      "task_id": "p1-osaka-reference-ledger",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260703T043408Z-notyet-harness-8aa7c60-morrowise-v0-live-loop-verify.json",
+      "event_id": "task.commit_attached-morrowise-v0-live-loop-verify-8aa7c60-20260703T043408Z",
+      "project": "morrowise",
+      "task_id": "v0-live-loop-verify",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260703T073606Z-notyet-harness-b3b2293-travel-finance-dashboard-p2-standalone-dashboard-build.json",
+      "event_id": "task.commit_attached-travel-finance-dashboard-p2-standalone-dashboard-build-b3b2293-20260703T073606Z",
+      "project": "travel-finance-dashboard",
+      "task_id": "p2-standalone-dashboard-build",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260703T080505Z-notyet-harness-1dbb5d4-morrowise-morrowise-auditor-fixtures.json",
+      "event_id": "task.commit_attached-morrowise-morrowise-auditor-fixtures-1dbb5d4-20260703T080505Z",
+      "project": "morrowise",
+      "task_id": "morrowise-auditor-fixtures",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260703T085144Z-notyet-harness-3e2fe28-morrowise-architecture-pulse-source-edit.json",
+      "event_id": "task.commit_attached-morrowise-architecture-pulse-source-edit-3e2fe28-20260703T085144Z",
+      "project": "morrowise",
+      "task_id": "architecture-pulse-source-edit",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260703T085144Z-notyet-harness-97eb4dd-morrowise-architecture-pulse-source-edit.json",
+      "event_id": "task.commit_attached-morrowise-architecture-pulse-source-edit-97eb4dd-20260703T085144Z",
+      "project": "morrowise",
+      "task_id": "architecture-pulse-source-edit",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260703T104510Z-notyet-harness-b292836-morrowise-notion-sync-read-model-v0.json",
+      "event_id": "task.commit_attached-morrowise-notion-sync-read-model-v0-b292836-20260703T104510Z",
+      "project": "morrowise",
+      "task_id": "notion-sync-read-model-v0",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260703T104556Z-yutianlaw-6c81802-yutianlaw-yt-c3-mvp-formspark-n8n.json",
+      "event_id": "task.commit_attached-yutianlaw-yt-c3-mvp-formspark-n8n-6c81802-20260703T104556Z",
+      "project": "yutianlaw",
+      "task_id": "yt-c3-mvp-formspark-n8n",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260705T054035Z-notyet-harness-f784528-morrowise-supersede-lifecycle-protocol.json",
+      "event_id": "task.commit_attached-morrowise-supersede-lifecycle-protocol-f784528-20260705T054035Z",
+      "project": "morrowise",
+      "task_id": "supersede-lifecycle-protocol",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260705T110520Z-notyet-harness-cd027ad-morrowise-legacy-doc-archive.json",
+      "event_id": "task.commit_attached-morrowise-legacy-doc-archive-cd027ad-20260705T110520Z",
+      "project": "morrowise",
+      "task_id": "legacy-doc-archive",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260705T144103Z-notyet-harness-4ac9a5e-morrowise-notification-first-delivery.json",
+      "event_id": "task.commit_attached-morrowise-notification-first-delivery-4ac9a5e-20260705T144103Z",
+      "project": "morrowise",
+      "task_id": "notification-first-delivery",
       "type": "task.commit_attached"
     }
   ],
-  "rejected": [],
+  "rejected": [
+    {
+      "file": "20260701T064705Z-notyet-harness-6c10bfe-kj-bilingual-SYS1.json",
+      "event_id": "task.commit_attached-kj-bilingual-SYS1-6c10bfe-20260701T064705Z",
+      "reason": "unknown_task"
+    }
+  ],
   "duplicates": []
 }

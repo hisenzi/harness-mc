@@ -1,0 +1,16 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-travel-finance-dashboard-p2-standalone-dashboard-build-task.commit_attached-travel-finance-dashboard-p2-standalone-dashboard-build-b3b2293-20260703T073606Z-20260703T073606Z",
+  "type": "sync_requested",
+  "target": "obsidian_canvas",
+  "status": "pending",
+  "source_event_id": "task.commit_attached-travel-finance-dashboard-p2-standalone-dashboard-build-b3b2293-20260703T073606Z",
+  "project": "travel-finance-dashboard",
+  "task_id": "p2-standalone-dashboard-build",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-07-03T07:36:06.813Z",
+  "actor": "codex",
+  "session_id": "travel-finance-dashboard-20260703-dashboard-anchor"
+}

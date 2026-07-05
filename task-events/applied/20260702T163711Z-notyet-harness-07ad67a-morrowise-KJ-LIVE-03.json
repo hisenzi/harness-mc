@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-KJ-LIVE-03-07ad67a-20260702T163711Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "07ad67a",
+  "project": "morrowise",
+  "task_id": "KJ-LIVE-03",
+  "status": "updated",
+  "summary": "Logged the KJ-LIVE-03 mirror reconcile session in the 2026-07-03 daily memory markdown/html, preserving verification and commit handoff context.",
+  "created_at": "2026-07-02T16:37:11.328Z",
+  "actor": "codex",
+  "session_id": "codex-2026-07-03-kj-live-03"
+}

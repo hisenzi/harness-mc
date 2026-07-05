@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-morrowise-auditor-fixtures-1dbb5d4-20260703T080505Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "1dbb5d4",
+  "project": "morrowise",
+  "task_id": "morrowise-auditor-fixtures",
+  "status": "updated",
+  "summary": "MANUAL.md 生成區隨 auditor loop closure 重同步（generator-missing/manual-only 關閉、auditor-findings-open 開啟），sync --check 綠。",
+  "created_at": "2026-07-03T08:05:05.939Z",
+  "actor": "cc",
+  "session_id": "cb4549cc-9fbb-4736-a626-78eaba7e5c7c"
+}

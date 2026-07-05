@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-legacy-doc-archive-cd027ad-20260705T110520Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "cd027ad",
+  "project": "morrowise",
+  "task_id": "legacy-doc-archive",
+  "status": "updated",
+  "summary": "JV-03：dual-blade 五檔改為 historical/superseded tombstone，新增 archive index 與 legacy archive map。",
+  "created_at": "2026-07-05T11:05:20.401Z",
+  "actor": "codex",
+  "session_id": "codex-jv03-legacy-doc-archive-20260705"
+}

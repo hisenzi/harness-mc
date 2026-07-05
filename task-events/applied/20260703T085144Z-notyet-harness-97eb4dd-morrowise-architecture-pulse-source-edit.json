@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-architecture-pulse-source-edit-97eb4dd-20260703T085144Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "97eb4dd",
+  "project": "morrowise",
+  "task_id": "architecture-pulse-source-edit",
+  "status": "updated",
+  "summary": "結案後 MANUAL.md 與 ARCHITECTURE.md 現況區重同步，兩支 sync --check 綠。",
+  "created_at": "2026-07-03T08:51:44.544Z",
+  "actor": "cc",
+  "session_id": "cb4549cc-9fbb-4736-a626-78eaba7e5c7c"
+}

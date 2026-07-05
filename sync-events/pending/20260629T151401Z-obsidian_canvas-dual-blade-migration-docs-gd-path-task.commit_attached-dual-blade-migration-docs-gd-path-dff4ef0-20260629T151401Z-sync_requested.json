@@ -1,0 +1,16 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-dual-blade-migration-docs-gd-path-task.commit_attached-dual-blade-migration-docs-gd-path-dff4ef0-20260629T151401Z-20260629T151401Z",
+  "type": "sync_requested",
+  "target": "obsidian_canvas",
+  "status": "pending",
+  "source_event_id": "task.commit_attached-dual-blade-migration-docs-gd-path-dff4ef0-20260629T151401Z",
+  "project": "dual-blade",
+  "task_id": "migration-docs-gd-path",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-06-29T15:14:01.197Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-29-obsidian-vault-migration"
+}

@@ -1,0 +1,16 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-yutianlaw-yt-c3-mvp-formspark-n8n-task.commit_attached-yutianlaw-yt-c3-mvp-formspark-n8n-f164dea-20260703T020415Z-20260703T020415Z",
+  "type": "sync_requested",
+  "target": "obsidian_canvas",
+  "status": "pending",
+  "source_event_id": "task.commit_attached-yutianlaw-yt-c3-mvp-formspark-n8n-f164dea-20260703T020415Z",
+  "project": "yutianlaw",
+  "task_id": "yt-c3-mvp-formspark-n8n",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-07-03T02:04:15.178Z",
+  "actor": "codex",
+  "session_id": "codex-yutianlaw-formspark-n8n-mvp-20260703"
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-KJ-LIVE-01-741d1e3-20260701T121144Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "741d1e3",
+  "project": "morrowise",
+  "task_id": "KJ-LIVE-01",
+  "status": "updated",
+  "summary": "Corrected KJ daily memory routing from the wrong kj-bilingual/SYS entries to MorroWise KJ-LIVE-01/02/03; task remains open.",
+  "created_at": "2026-07-01T12:11:44.157Z",
+  "actor": "codex",
+  "session_id": "codex-kj-live-routing-20260701"
+}

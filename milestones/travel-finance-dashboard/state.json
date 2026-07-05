@@ -1,0 +1,332 @@
+{
+  "tasks": {
+    "p1-inbox-schema": {
+      "status": "completed",
+      "completed_at": "2026-06-29",
+      "commits": [
+        "16d734f",
+        "7c9f72d"
+      ],
+      "summary": "完成 Travel Inbox schema contract 並落地 Notion 繁中 child database：保留「旅遊記帳」page 作人類入口，建立並切換到「旅遊快記」database（390714fb-14c6-816b-8b1b-ea142448b088）作 API 來源；欄位與狀態流已繁中化，舊英文選項 database 因只有全空白列已歸檔。",
+      "external_refs": {
+        "notion_travel_inbox": {
+          "page_id": "38e714fb14c680a58ae3ddd99437fc7c",
+          "page_uuid": "38e714fb-14c6-80a5-8ae3-ddd99437fc7c",
+          "url": "https://app.notion.com/p/38e714fb14c680a58ae3ddd99437fc7c?source=copy_link",
+          "role": "Travel Inbox 口袋入口來源頁面",
+          "api_verified": true,
+          "verified_at": "2026-07-01",
+          "api_object": "page",
+          "title": "旅遊記帳",
+          "token_source": "$COLLAB/finance-dashboard/.env",
+          "database_status": "not_database",
+          "children_status": "has_child_database",
+          "child_database": {
+            "database_id": "390714fb14c6816b8b1bea142448b088",
+            "database_uuid": "390714fb-14c6-816b-8b1b-ea142448b088",
+            "title": "旅遊快記",
+            "localized_at": "2026-07-02",
+            "locale": "zh-TW",
+            "verifier": "python3 scripts/probe-notion-travel-inbox.py",
+            "schema_language": "Traditional Chinese"
+          },
+          "archived_child_database": {
+            "database_id": "390714fb14c681a2b7b4cdec895a9f81",
+            "database_uuid": "390714fb-14c6-81a2-b7b4-cdec895a9f81",
+            "title": "Travel Inbox（舊英文選項）",
+            "archived_at": "2026-07-02",
+            "archived_reason": "Notion API did not rename existing select option labels; old database only contained one all-empty row."
+          }
+        },
+        "schema_contract": {
+          "path": "$COLLAB/travel-finance-dashboard/docs/notion-travel-inbox-schema.md",
+          "status": "contract_v0",
+          "placement_decision": "create_child_database_under_existing_page",
+          "notion_write_status": "child_database_created_and_localized_zh_tw"
+        }
+      }
+    },
+    "p1-notion-api-cli-mcp-wiring": {
+      "status": "completed",
+      "completed_at": "2026-07-01",
+      "commits": [
+        "7c9f72d"
+      ],
+      "summary": "完成 Notion Travel Inbox API / CLI / MCP 接線契約與 MC metadata：確認「旅遊記帳」仍是 page/not_database，active child database 為繁中「旅遊快記」；記錄 read-only probe、API/CLI mainline、MCP/connector fallback、reference database、archived old database 與 importer next action。",
+      "external_refs": {
+        "notion_travel_inbox": {
+          "page_id": "38e714fb14c680a58ae3ddd99437fc7c",
+          "page_uuid": "38e714fb-14c6-80a5-8ae3-ddd99437fc7c",
+          "role": "Travel Inbox 口袋入口來源頁面",
+          "api_object": "page",
+          "api_verified": true,
+          "database_status": "not_database",
+          "url": "https://app.notion.com/p/38e714fb14c680a58ae3ddd99437fc7c?source=copy_link",
+          "verified_at": "2026-07-01",
+          "title": "旅遊記帳",
+          "token_source": "$COLLAB/finance-dashboard/.env",
+          "children_status": "has_child_database",
+          "child_database": {
+            "database_id": "390714fb14c6816b8b1bea142448b088",
+            "database_uuid": "390714fb-14c6-816b-8b1b-ea142448b088",
+            "title": "旅遊快記",
+            "localized_at": "2026-07-02",
+            "locale": "zh-TW",
+            "verifier": "python3 scripts/probe-notion-travel-inbox.py",
+            "schema_language": "Traditional Chinese"
+          },
+          "archived_child_database": {
+            "database_id": "390714fb14c681a2b7b4cdec895a9f81",
+            "database_uuid": "390714fb-14c6-81a2-b7b4-cdec895a9f81",
+            "title": "Travel Inbox（舊英文選項）",
+            "archived_at": "2026-07-02",
+            "archived_reason": "Notion API did not rename existing select option labels; old database only contained one all-empty row."
+          }
+        },
+        "mc_capability_surface": {
+          "surface_id": "api_cli_mcp_capabilities",
+          "live_dashboard_generator": "$COLLAB/harness-mc/scripts/generate-morrowise-live-dashboard.mjs",
+          "registry": "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+          "runtime_read_model": "$COLLAB/harness-mc/public/data/capability-runtime-status.json",
+          "generator": "$COLLAB/harness-mc/scripts/generate-capability-runtime-status.mjs",
+          "verifier": "npm run test:capability-runtime-status"
+        },
+        "wiring_contract": {
+          "path": "$COLLAB/travel-finance-dashboard/docs/notion-api-cli-mcp-wiring.md",
+          "status": "contract_v0",
+          "verifier": "python3 scripts/probe-notion-travel-inbox.py",
+          "write_policy": "read_only_until_vincent_approval"
+        },
+        "latest_probe": {
+          "verified_at": "2026-07-02",
+          "page_status": 200,
+          "page_object": "page",
+          "page_title": "旅遊記帳",
+          "database_status": "not_database",
+          "children_status": 200,
+          "child_database_found": true,
+          "next_action": "wire_child_database_importer_requires_vincent_approval",
+          "token_output_policy": "sanitized_token_source_only_no_token_value",
+          "child_database_id": "390714fb-14c6-816b-8b1b-ea142448b088",
+          "child_database_title": "旅遊快記"
+        },
+        "notion_reference_database": {
+          "database_id": "a5cec5a47b0a416199f195e3b693aac2",
+          "database_uuid": "a5cec5a4-7b0a-4161-99f1-95e3b693aac2",
+          "title": "消費記錄 v2",
+          "role": "reference database for naming/accounting shape only",
+          "property_schema": {
+            "備註": "title",
+            "日期": "date",
+            "金額": "number",
+            "付款方式": "select",
+            "歸屬": "select",
+            "子類別": "select"
+          }
+        }
+      }
+    },
+    "p1-ledger-schema": {
+      "status": "completed",
+      "completed_at": "2026-07-02",
+      "commits": [
+        "3299751"
+      ],
+      "summary": "Travel ledger schema contract v0 established as the calculation source of truth, separating payer, payment method, split/belong, proxy purchase, review, and settlement output.",
+      "external_refs": {
+        "ledger_schema": {
+          "status": "contract_v0",
+          "doc": "$COLLAB/travel-finance-dashboard/docs/travel-ledger-schema.md",
+          "json_schema": "$COLLAB/travel-finance-dashboard/schemas/travel-ledger.schema.json",
+          "fixture": "$COLLAB/travel-finance-dashboard/fixtures/minimal-travel-ledger.json",
+          "verifier": "python3 scripts/verify-travel-ledger.py",
+          "verified_at": "2026-07-02"
+        }
+      }
+    },
+    "p1-quick-record-parser": {
+      "status": "completed",
+      "completed_at": "2026-07-02",
+      "commits": [
+        "da2f2d0"
+      ],
+      "summary": "Quick-record parser contract v0 defined and verified with 12 travel examples covering shared, personal, proxy purchase, unknown payer, unknown payment method, date prefix, and currency variants.",
+      "external_refs": {
+        "quick_record_parser": {
+          "status": "contract_v0",
+          "doc": "$COLLAB/travel-finance-dashboard/docs/quick-record-parser.md",
+          "fixture": "$COLLAB/travel-finance-dashboard/fixtures/quick-record-parser-cases.json",
+          "parser": "$COLLAB/travel-finance-dashboard/scripts/quick_record_parser.py",
+          "verifier": "python3 scripts/verify-quick-record-parser.py",
+          "verified_at": "2026-07-02",
+          "cases": 12,
+          "needs_review_cases": 5
+        }
+      }
+    },
+    "p1-osaka-reference-ledger": {
+      "status": "completed",
+      "completed_at": "2026-07-03",
+      "commits": [
+        "e2c5719",
+        "50526a2"
+      ],
+      "summary": "完成大阪 2025 Excel reference sample ledger 與 mapping；可重現出國前 74133、旅途中 23831、總計 97964、平均一人 24491，並將代買 8172 保留為 review queue。",
+      "external_refs": {
+        "osaka_reference_ledger": {
+          "status": "contract_v0",
+          "workbook": "$COLLAB/travel-finance-dashboard/出國旅遊記帳.xlsx",
+          "doc": "$COLLAB/travel-finance-dashboard/docs/osaka-reference-ledger.md",
+          "mapping": "$COLLAB/travel-finance-dashboard/fixtures/osaka-reference-mapping.json",
+          "ledger": "$COLLAB/travel-finance-dashboard/fixtures/osaka-reference-ledger.json",
+          "verifier": "python3 scripts/verify-osaka-reference-ledger.py",
+          "verified_at": "2026-07-03",
+          "pretrip_total_twd": 74133,
+          "travel_during_total_twd": 23831,
+          "travel_gross_total_twd": 32003,
+          "proxy_total_twd": 8172,
+          "grand_total_twd": 97964,
+          "average_per_person_twd": 24491,
+          "transactions": 15,
+          "review_queue": 4
+        }
+      }
+    },
+    "p1-accounting-rules": {
+      "status": "completed",
+      "completed_at": "2026-07-03",
+      "commits": [
+        "a790094"
+      ],
+      "summary": "Completed travel accounting rules contract v0: explicit FX, payment-method reconciliation, shared split, personal exclusion, proxy review, and final net transfers; Osaka fixture verifies shared total 97964, per traveler 24491, proxy review total 8172, and three transfers to Vincent.",
+      "external_refs": {
+        "accounting_rules": {
+          "status": "contract_v0",
+          "doc": "$COLLAB/travel-finance-dashboard/docs/travel-accounting-rules.md",
+          "cases": "$COLLAB/travel-finance-dashboard/fixtures/accounting-rules-cases.json",
+          "verifier": "python3 scripts/verify-accounting-rules.py",
+          "verified_at": "2026-07-03",
+          "source_of_truth": "travel_ledger",
+          "osaka_shared_total_twd": 97964,
+          "osaka_per_traveler_twd": 24491,
+          "osaka_proxy_review_total_twd": 8172,
+          "osaka_final_transfers": 3
+        }
+      }
+    },
+    "p1-dashboard-surface-plan": {
+      "status": "completed",
+      "completed_at": "2026-07-03",
+      "commits": [
+        "2180b1f"
+      ],
+      "summary": "Completed dashboard surface plan contract v0: five core clearing views, travel-ledger read-model boundary, finance-dashboard separation, Osaka reference expectations, operation flow, standalone promotion gate, and Phase 2 implementation task draft.",
+      "external_refs": {
+        "dashboard_surface_plan": {
+          "status": "contract_v0",
+          "doc": "$COLLAB/travel-finance-dashboard/docs/dashboard-surface-plan.md",
+          "fixture": "$COLLAB/travel-finance-dashboard/fixtures/dashboard-surface-plan.json",
+          "verifier": "python3 scripts/verify-dashboard-surface-plan.py",
+          "verified_at": "2026-07-03",
+          "source_of_truth": "travel_ledger_read_model",
+          "core_views": [
+            "overview",
+            "payment_method_reconciliation",
+            "proxy_review",
+            "review_queue",
+            "final_transfers"
+          ],
+          "phase2_task_draft": "p2-standalone-dashboard-build",
+          "osaka_shared_total_twd": 97964,
+          "osaka_per_traveler_twd": 24491,
+          "osaka_proxy_review_total_twd": 8172
+        }
+      }
+    },
+    "p1-export-sop": {
+      "status": "completed",
+      "completed_at": "2026-07-03",
+      "commits": [
+        "91a9dbd"
+      ],
+      "summary": "Completed travel export SOP contract v0: 10-second mobile capture, return-home import/normalize/verify/review/reconcile/export flow, Excel/report/transfer-list output formats, and final gate that keeps Excel as output rather than input.",
+      "external_refs": {
+        "export_sop": {
+          "status": "contract_v0",
+          "doc": "$COLLAB/travel-finance-dashboard/docs/travel-export-sop.md",
+          "checklist": "$COLLAB/travel-finance-dashboard/fixtures/export-sop-checklist.json",
+          "verifier": "python3 scripts/verify-export-sop.py",
+          "verified_at": "2026-07-03",
+          "source_of_truth": "travel_ledger",
+          "mobile_target_seconds": 10,
+          "return_home_steps": [
+            "import",
+            "normalize",
+            "verify",
+            "review",
+            "reconcile",
+            "export"
+          ],
+          "output_formats": [
+            "excel",
+            "report",
+            "transfer_list"
+          ],
+          "excel_role": "output_artifact_not_input_surface",
+          "osaka_transfer_status": "draft"
+        }
+      }
+    },
+    "p1-verify": {
+      "status": "completed",
+      "completed_at": "2026-07-03",
+      "commits": [
+        "d3aa176"
+      ],
+      "summary": "Completed Phase 1 integrated verification: project/task readiness, source-boundary consistency, Osaka paper clearing, dashboard/export gates, and Phase 2 standalone dashboard unblock all pass.",
+      "external_refs": {
+        "phase1_verification": {
+          "status": "contract_v0",
+          "doc": "$COLLAB/travel-finance-dashboard/docs/phase-1-verification.md",
+          "fixture": "$COLLAB/travel-finance-dashboard/fixtures/phase-1-verification.json",
+          "verifier": "python3 scripts/verify-phase-1.py",
+          "verified_at": "2026-07-03",
+          "project_fields_checked": [
+            "goals",
+            "risks",
+            "success_criteria",
+            "decisions"
+          ],
+          "phase1_upstream_tasks_completed": 8,
+          "osaka_shared_total_twd": 97964,
+          "osaka_per_traveler_twd": 24491,
+          "osaka_proxy_review_total_twd": 8172,
+          "osaka_transfer_status": "draft",
+          "phase2_task_unblocked": "p2-standalone-dashboard-build"
+        }
+      }
+    },
+    "p2-standalone-dashboard-build": {
+      "status": "todo",
+      "commits": [
+        "b3b2293"
+      ],
+      "external_refs": {
+        "phase1_verification": {
+          "status": "passed",
+          "doc": "$COLLAB/travel-finance-dashboard/docs/phase-1-verification.md",
+          "verifier": "python3 scripts/verify-phase-1.py",
+          "verified_at": "2026-07-03"
+        }
+      }
+    },
+    "project-init-source-commit": {
+      "status": "completed",
+      "completed_at": "2026-06-29",
+      "commits": [
+        "5f04e1e"
+      ],
+      "summary": "建立旅遊財務儀表板 MC 開案資料：Notion 口袋入口、travel ledger、回國會計腦、dashboard/handoff tracks 與 9 張 Phase 1 tasks；Phase 1 tasks 保持 todo，不把規劃誤標完成。"
+    }
+  }
+}

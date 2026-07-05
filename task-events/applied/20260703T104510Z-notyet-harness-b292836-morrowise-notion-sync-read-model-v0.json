@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-notion-sync-read-model-v0-b292836-20260703T104510Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "b292836",
+  "project": "morrowise",
+  "task_id": "notion-sync-read-model-v0",
+  "status": "updated",
+  "summary": "Attached daily cc-log evidence for the MW-NOTION-01 status-correction verification closeout; canonical task completion remains in harness-mc commit cf8d57d.",
+  "created_at": "2026-07-03T10:45:10.766Z",
+  "actor": "codex",
+  "session_id": "codex-20260703-mw-notion-closeout"
+}

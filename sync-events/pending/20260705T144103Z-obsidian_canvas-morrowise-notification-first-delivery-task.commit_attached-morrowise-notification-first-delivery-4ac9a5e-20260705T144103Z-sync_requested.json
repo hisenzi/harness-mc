@@ -1,0 +1,16 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-morrowise-notification-first-delivery-task.commit_attached-morrowise-notification-first-delivery-4ac9a5e-20260705T144103Z-20260705T144103Z",
+  "type": "sync_requested",
+  "target": "obsidian_canvas",
+  "status": "pending",
+  "source_event_id": "task.commit_attached-morrowise-notification-first-delivery-4ac9a5e-20260705T144103Z",
+  "project": "morrowise",
+  "task_id": "notification-first-delivery",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MorroWise"
+  },
+  "created_at": "2026-07-05T14:41:03.511Z",
+  "actor": "cc",
+  "session_id": "58abfcea-jv-run"
+}

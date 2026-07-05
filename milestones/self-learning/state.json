@@ -1,0 +1,66 @@
+{
+  "tasks": {
+    "notion-course-db": {
+      "status": "done",
+      "completed_at": "2026-05-20",
+      "commits": [],
+      "summary": "12 欄位 schema + 9 門課程匯入 + board/table linked views"
+    },
+    "notion-log-db": {
+      "status": "done",
+      "completed_at": "2026-05-20",
+      "commits": [],
+      "summary": "10 欄位 schema + 雙向 relation 課程總表 + calendar/table linked views"
+    },
+    "mc-milestone": {
+      "status": "done",
+      "completed_at": "2026-05-20",
+      "commits": [],
+      "summary": "project.json + tasks.json + catBarColor #ec4899 粉色"
+    },
+    "course-triage": {
+      "status": "todo",
+      "completed_at": null,
+      "commits": [
+        "6f6942a"
+      ],
+      "summary": ""
+    },
+    "weekly-schedule": {
+      "status": "todo",
+      "completed_at": null,
+      "commits": [],
+      "summary": ""
+    },
+    "spaced-rep-flow": {
+      "status": "todo",
+      "completed_at": null,
+      "commits": [],
+      "summary": ""
+    },
+    "heptabase-template": {
+      "status": "todo",
+      "completed_at": null,
+      "commits": [],
+      "summary": ""
+    },
+    "2week-pilot": {
+      "status": "todo",
+      "completed_at": null,
+      "commits": [],
+      "summary": ""
+    },
+    "weekly-review-ritual": {
+      "status": "todo",
+      "completed_at": null,
+      "commits": [],
+      "summary": ""
+    },
+    "notion-366714fb14c6": {
+      "status": "deferred",
+      "completed_at": null,
+      "commits": [],
+      "summary": ""
+    }
+  }
+}

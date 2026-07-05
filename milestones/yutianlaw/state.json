@@ -189,6 +189,9 @@
     },
     "yt-c4": {
       "status": "todo",
+      "commits": [
+        "035b0a5"
+      ],
       "external_refs": {
         "heptabase": {
           "whiteboard": "雨田律師事務所網站",
@@ -201,6 +204,10 @@
     },
     "yt-c5": {
       "status": "blocked",
+      "commits": [
+        "fa69339",
+        "4ed817a"
+      ],
       "external_refs": {
         "heptabase": {
           "whiteboard": "雨田律師事務所網站",
@@ -302,6 +309,13 @@
     },
     "yt-c13": {
       "status": "in_progress"
+    },
+    "yt-c3-mvp-formspark-n8n": {
+      "status": "blocked",
+      "commits": [
+        "f164dea",
+        "6c81802"
+      ]
     }
   }
 }

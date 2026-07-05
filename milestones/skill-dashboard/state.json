@@ -1,0 +1,50 @@
+{
+  "tasks": {
+    "ci-1": {
+      "status": "completed",
+      "completed_at": "2026-06-28",
+      "commits": [
+        "2fe5390"
+      ],
+      "summary": "定案採用 committed tools.json 快照＋缺正本時保留快照段落；排除 PAT checkout 與純 scan fallback，避免私有 repo 密鑰進 CI 並防止 production /tools 被覆寫成空。"
+    },
+    "ci-2": {
+      "status": "completed",
+      "completed_at": "2026-06-28",
+      "commits": [
+        "edfd8b0"
+      ],
+      "summary": "完成技能儀表板 CI 資料缺口修復：GitHub Pages build 在缺 notyet-harness 與本機 hook settings 時會保留 committed tools.json 快照；線上 /data/tools.json 已驗證為 41 skills / 78 scripts / 2 hooks，且 sourceStatus 顯示 skills/hooks 來自 snapshot。"
+    },
+    "meta-1": {
+      "status": "completed",
+      "completed_at": "2026-06-28",
+      "commits": [
+        "41712b8",
+        "7ca529b"
+      ],
+      "summary": "完成 skill frontmatter version 半自動補齊流程：新增 dry-run/apply backfill 腳本與 verifier，安全套用 9 個已有版本歷史的 skill，並把 13 個 legacy metadata debt 明確串到 meta-2。"
+    },
+    "meta-2": {
+      "status": "todo"
+    },
+    "view-trigger": {
+      "status": "todo"
+    },
+    "view-health": {
+      "status": "todo"
+    },
+    "usage-mechanism": {
+      "status": "todo"
+    },
+    "view-usage": {
+      "status": "todo"
+    },
+    "found-sync": {
+      "status": "todo"
+    },
+    "verify": {
+      "status": "todo"
+    }
+  }
+}

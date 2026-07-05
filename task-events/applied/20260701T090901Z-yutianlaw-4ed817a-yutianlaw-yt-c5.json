@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-yutianlaw-yt-c5-4ed817a-20260701T090901Z",
+  "type": "task.commit_attached",
+  "repo": "yutianlaw",
+  "commit": "4ed817a",
+  "project": "yutianlaw",
+  "task_id": "yt-c5",
+  "status": "updated",
+  "summary": "統一律師團隊正反面學歷校系說法為法律學系，維持學歷由高到低排序，並補齊莊智翔律師簡介資料；build 通過。",
+  "created_at": "2026-07-01T09:09:01.849Z",
+  "actor": "codex",
+  "session_id": "codex-yutianlaw-team-education-20260701"
+}

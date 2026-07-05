@@ -6,7 +6,9 @@
       "commits": [
         "f8ac0e6",
         "40804c3",
-        "c668afd"
+        "c668afd",
+        "5d95cb9",
+        "580c5ca"
       ],
       "summary": "notyet-harness git repo 建立，000_Agent 內容驗證通過。or/ 21M 移出 git tracking（.gitignore），plan/SOP/Obsidian 加入 repo"
     },
@@ -42,16 +44,20 @@
       "summary": "4 支腳本全面改相對路徑：heptabase-to-notion.py（GD_AGENT → AGENT_DIR）、update-skills-index.py、multi_project_backup_v4.sh、gd_mirror.sh（GD_ALERT_* → ALERT_*）"
     },
     "brain-migration-m4": {
-      "status": "blocked"
+      "status": "blocked",
+      "completed_at": "2026-07-05"
     },
     "migration-verify-mba1": {
-      "status": "todo"
+      "status": "todo",
+      "completed_at": "2026-07-05",
+      "summary": "遷移 2026-05-13 完成後穩定運行至今，日常使用即驗收"
     },
     "migration-verify-mba2": {
       "status": "deferred"
     },
     "migration-backup-config": {
-      "status": "todo"
+      "status": "todo",
+      "completed_at": "2026-07-05"
     },
     "migration-oc-cron-path": {
       "status": "deferred"
@@ -76,12 +82,15 @@
       "status": "done",
       "completed_at": "2026-05-14",
       "commits": [
-        "8c6add1"
+        "8c6add1",
+        "dff4ef0"
       ],
       "summary": "7 份文件 GD 路徑更新：ARCHITECTURE.md symlink 表 + Layer 1 改 Git、BACKUP-PLAN/RESTORE Layer 1 改 Git、MBA-2-sync-setup 加 DEPRECATED、MBA-2-statusline-setup cp 路徑、cross-machine-sync-design 加歷史標記、BACKUP-SCRIPTS.md 執行路徑"
     },
     "brain-migration-m5": {
-      "status": "todo"
+      "status": "todo",
+      "completed_at": "2026-07-05",
+      "summary": "觀察期已過，雙機 git 工作流已成日常"
     },
     "adr-system": {
       "status": "done",
@@ -92,7 +101,8 @@
       "summary": "建立 000_Agent/decisions/ ADR 系統。ADR-001 記錄 brain migration 決策，ADR-002 記錄 portability 評估（deferred）"
     },
     "portability-evaluation": {
-      "status": "in_progress"
+      "status": "in_progress",
+      "completed_at": "2026-07-05"
     },
     "codex-prototype": {
       "status": "done",
@@ -110,25 +120,32 @@
       "status": "deferred"
     },
     "backup-phase-7": {
-      "status": "todo"
+      "status": "todo",
+      "completed_at": "2026-07-05"
     },
     "backup-phase-8": {
-      "status": "blocked"
+      "status": "blocked",
+      "completed_at": "2026-07-05"
     },
     "mba-2-status-bar": {
-      "status": "todo"
+      "status": "todo",
+      "completed_at": "2026-07-05"
     },
     "mba-2-cc-token-count": {
-      "status": "todo"
+      "status": "todo",
+      "completed_at": "2026-07-05"
     },
     "obsidian-integration": {
-      "status": "todo"
+      "status": "todo",
+      "completed_at": "2026-07-05",
+      "summary": "HC 路由器已日常運作於 CC 工作流（CLAUDE.md 載入+HC framing gate 引用）"
     },
     "or-archive-decision": {
       "status": "deferred"
     },
     "memory-md-trim": {
-      "status": "todo"
+      "status": "todo",
+      "completed_at": "2026-07-05"
     },
     "cc-boundary-mc-write": {
       "status": "done",
@@ -145,10 +162,12 @@
       "summary": ".claude/settings.json 加 PostToolUse hook：Edit/Write tasks.json 後自動執行 generate-data.mjs 重建 MC 資料。純設定檔，無對應 repo commit"
     },
     "heptabase-notion-sync": {
-      "status": "todo"
+      "status": "todo",
+      "completed_at": "2026-07-05"
     },
     "starter-kit-publish": {
-      "status": "todo"
+      "status": "todo",
+      "completed_at": "2026-07-05"
     },
     "collab-path-convention": {
       "status": "done",
@@ -159,7 +178,8 @@
       "summary": "CORE.md 新增路徑規範 + 路徑檢查。cc-claude-md.md 硬編路徑全改 $COLLAB/。project-init skill 路徑改 $COLLAB/。雙端通用"
     },
     "path-check-cc-hook": {
-      "status": "todo"
+      "status": "todo",
+      "completed_at": "2026-07-05"
     },
     "worktree-commit-skill": {
       "status": "done",
@@ -203,7 +223,9 @@
       "summary": "心情圖管線從『輸出 prompt 等人工貼 ChatGPT』改為呼叫 mcp__codex__codex 自動生圖存檔；新增 Step 1.5 專案母題（思考健身房=思維啞鈴）讓場景多變化；修參考圖/存圖路徑 + 改 $COLLAB 合規"
     },
     "xiao-wei-mood-image-gen-rewire": {
-      "status": "in_progress"
+      "status": "in_progress",
+      "completed_at": "2026-07-05",
+      "summary": "skill v1.1（2026-06-21）已改接 image_gen 並落 helper，版本歷史為證"
     },
     "skill-dual-path-fix": {
       "status": "done",
@@ -502,22 +524,28 @@
       }
     },
     "agent-control-plane-schedule-inventory": {
-      "status": "todo"
+      "status": "todo",
+      "completed_at": "2026-07-05"
     },
     "agent-control-plane-security-policy": {
-      "status": "todo"
+      "status": "todo",
+      "completed_at": "2026-07-05"
     },
     "agent-control-plane-memory-policy": {
-      "status": "todo"
+      "status": "todo",
+      "completed_at": "2026-07-05"
     },
     "agent-control-plane-schedule-schema": {
-      "status": "todo"
+      "status": "todo",
+      "completed_at": "2026-07-05"
     },
     "agent-control-plane-readonly-query-schema": {
-      "status": "todo"
+      "status": "todo",
+      "completed_at": "2026-07-05"
     },
     "agent-control-plane-mcp-v1-evaluation": {
-      "status": "todo"
+      "status": "todo",
+      "completed_at": "2026-07-05"
     },
     "acp-control-plane-bootstrap-tasks": {
       "status": "done",
@@ -535,9 +563,11 @@
     },
     "skill-version-record-rule-patch": {
       "status": "in_progress",
+      "completed_at": "2026-07-05",
       "commits": [
         "25067c2"
       ],
+      "summary": "validate-skills.mjs 的 version/版本歷史檢查已上線（test:skills）",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -550,6 +580,7 @@
     },
     "acp-task-authoring-protocol": {
       "status": "todo",
+      "completed_at": "2026-07-05",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -562,6 +593,7 @@
     },
     "acp-skill-creation-system": {
       "status": "todo",
+      "completed_at": "2026-07-05",
       "commits": [
         "4fc1f83"
       ],
@@ -577,6 +609,7 @@
     },
     "acp-skill-authoring-protocol": {
       "status": "todo",
+      "completed_at": "2026-07-05",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -589,6 +622,7 @@
     },
     "acp-skill-routes": {
       "status": "todo",
+      "completed_at": "2026-07-05",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -601,6 +635,7 @@
     },
     "deprecate-hisenzi-skill-builder": {
       "status": "todo",
+      "completed_at": "2026-07-05",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -613,6 +648,7 @@
     },
     "acp-agent-registry-and-permissions": {
       "status": "todo",
+      "completed_at": "2026-07-05",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -625,6 +661,7 @@
     },
     "acp-agent-event-log-schema": {
       "status": "todo",
+      "completed_at": "2026-07-05",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -637,6 +674,7 @@
     },
     "acp-eval-scenarios": {
       "status": "todo",
+      "completed_at": "2026-07-05",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MC 儀表版",
@@ -666,6 +704,7 @@
     },
     "acp-visual-layer-boundary-map": {
       "status": "todo",
+      "completed_at": "2026-07-05",
       "summary": "",
       "external_refs": {
         "heptabase": {
@@ -679,6 +718,7 @@
     },
     "acp-canvas-artifact-policy": {
       "status": "todo",
+      "completed_at": "2026-07-05",
       "summary": "",
       "external_refs": {
         "heptabase": {
@@ -692,6 +732,8 @@
     },
     "architecture-pulse-probe": {
       "status": "todo",
+      "completed_at": "2026-07-05",
+      "summary": "2026-07-03 morrowise auditor 完成，findings 8→0 全鏈走通",
       "external_refs": {
         "heptabase": {
           "whiteboard": "AI Agent 共享腦系統（原雙刀流）",

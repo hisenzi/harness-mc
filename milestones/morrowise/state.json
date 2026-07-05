@@ -100,6 +100,12 @@
     },
     "v0-live-loop-verify": {
       "status": "deferred",
+      "completed_at": "2026-07-03",
+      "commits": [
+        "90c6e54",
+        "8aa7c60"
+      ],
+      "summary": "2026-07-03 閉環驗證完成：generator/verifier/read model/surface/feedback 五層以實跑證據確認活性（prebuild 全綠、23 支 verifier 修復後全綠、MANUAL drift 由 --check 抓到並修復重驗綠、state.json 以 canonical 重生成抵抗非正本寫入）；trigger 層由 schedule/install.sh --load 補齊（launchd 2/2）。發現 verifier 寫死活 task id 會自腐且紅燈無 surface，已修復兩支並開 verifier-suite-health-read-model 等 5 個 follow-up task。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise",
@@ -133,7 +139,8 @@
       "status": "completed",
       "completed_at": "2026-06-27",
       "commits": [
-        "79f6143"
+        "79f6143",
+        "e5cf9c7"
       ],
       "summary": "建立 Closeout Residual Ledger read model、generator、verifier、prebuild 串接與 MorroWise live dashboard surface，讓 cc-log + worktree-commit 後的 dirty repo、excluded changes、pending events、缺 commit evidence、cleanup leftovers 與下一個 closeout anchor 可被重跑查詢。"
     },
@@ -249,7 +256,289 @@
     },
     "dual-machine-trigger-install": {
       "status": "blocked",
-      "summary": "本機 VincentMBA-blue.local 已確認 3/3 schedule launchd labels 載入（commit-attention-sweep、mc-sentinel、system-pulse）；MBA-2 端需 Vincent/HiSenzi 切機後 git pull 並執行 schedule/install.sh --load，CC 在本機無法讀取或宣告 MBA-2 launchd/runtime 狀態，故不得標 completed。"
+      "summary": "本機 VincentMBA-blue.local 已確認 3/3 schedule launchd labels 載入（commit-attention-sweep、mc-sentinel、system-pulse）；MBA-2 端需 Vincent/HiSenzi 切機後 git pull 並執行 schedule/install.sh --load，CC 在本機無法讀取或宣告 MBA-2 launchd/runtime 狀態，故不得標 completed。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "5c03ba88-05f6-4453-8e3b-49703418d8aa",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "capability-runtime-status-read-model": {
+      "status": "completed",
+      "completed_at": "2026-06-28",
+      "commits": [
+        "273d921"
+      ],
+      "summary": "已新增 capability-runtime-status read model、verifier、prebuild 接線、MorroWise live dashboard source/metrics 更新，並讓首頁 API / CLI / MCP card 同時呈現 registry、runtime、auth、contract 狀態。最後一輪 probe：CC heptabase-mcp connected；Heptabase local CLI connected；Codex Heptabase MCP configured；Notion MCP needs_auth；Playwright CLI missing；notification adapter contract_ready；legacy Heptabase PAI MCP/OAuth 保持 legacy/not_applicable。"
+    },
+    "notion-sync-read-model-v0": {
+      "status": "completed",
+      "completed_at": "2026-07-03",
+      "commits": [
+        "556db65",
+        "b292836"
+      ],
+      "summary": "Completed Notion sync-state read model v0: added generator/verifier, registry contract, package scripts, generated read model with KJ connected 43/43 and historical KJ drift fixture, split capability runtime status into runtime.notion-api-key and runtime.notion-mcp-connector, and wired the read model into MorroWise live dashboard plus wiring gate as read_model_surface_only. PAI and Courses DB remain unknown until non-secret snapshots/probes exist; no Notion, Heptabase, PAI, notification, or tasks mirror writes were performed."
+    },
+    "KJ-LIVE-01": {
+      "status": "completed",
+      "completed_at": "2026-07-01",
+      "commits": [
+        "6e9b8d5",
+        "741d1e3"
+      ],
+      "summary": "Completed KJ Notion source-of-truth read model snapshot from the live KJ 行動庫 data source: 43 Notion rows, schema/options, status/workstream summaries, B2/B3 authoritative titles, and MC mirror conflict detection are captured in system-workflow/snapshots/kj-notion-tasks-snapshot.json with a verifier."
+    },
+    "KJ-LIVE-02": {
+      "status": "completed",
+      "completed_at": "2026-07-02",
+      "commits": [
+        "f5f2890"
+      ],
+      "summary": "Completed KJ handoff live sync: HANDOFF_260701.md live block is generated from the KJ-LIVE-01 Notion snapshot, update-handoff.py supports --check without writing, and the verifier detects source IDs, snapshot freshness, MC mirror count, and B2/B3 drift alignment."
+    },
+    "KJ-LIVE-03": {
+      "status": "completed",
+      "completed_at": "2026-07-03",
+      "commits": [
+        "6477e4d",
+        "07ad67a"
+      ],
+      "summary": "Reconciled the KJ MC mirror from the KJ-LIVE-01 Notion snapshot to 43 rows, resolved B2/B3 mirror drift, and left Heptabase/PAI as approval-gated mirrors with verifier coverage."
+    },
+    "cc-push-skill-batch-push-coordinator": {
+      "status": "completed",
+      "completed_at": "2026-07-02",
+      "commits": [
+        "2cafffa"
+      ],
+      "summary": "建立 cc-push shared skill，定義多 session / 多 repo commit 後的 fetch-first remote truth audit、repo-scoped push plan、Vincent approval gate、hash-preserving reconcile、harness-mc generated data/task-event awareness 與 post-push Actions/Pages verification。"
+    },
+    "verifier-suite-health-read-model": {
+      "status": "completed",
+      "completed_at": "2026-07-03",
+      "commits": [
+        "2f1c842"
+      ],
+      "summary": "Completed verifier suite health read model v0: added generator/verifier, tracked public/data/verifier-suite-health.json, prebuild trigger, live-system admission record, sanitized failure excerpts, recursive self-test exclusion, and task-level evidence. Latest suite run reports 42/43 package test:* verifiers passing and routes next_action to test:hc-framing-gate for the existing red light; dashboard UI remains a separate harness-mc surface task."
+    },
+    "memory-health-read-model": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "2ade2bbd-1ddf-4fb5-972e-0226b8df0eba",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "morrowise-auditor-fixtures": {
+      "status": "completed",
+      "completed_at": "2026-07-03",
+      "commits": [
+        "f5b57ba",
+        "1dbb5d4"
+      ],
+      "summary": "2026-07-03 完成 auditor generator v0：通用引擎 + architecture-pulse target profile，輸出 morrowise-auditor.json（v0 schema、read-only boundary）；5 個 fixture 嚴格斷言、真實 target 只驗結構不凍結 live 狀態；真實 ARCHITECTURE.md 掃描與 2026-06-27 手動報告 8 findings category 完全一致；system read model 的 generator-missing/manual-only open loop 改條件式，由 auditor-findings-open 取代；接進 prebuild。ARCHITECTURE.md 自動同步只差 architecture-pulse-source-edit。"
+    },
+    "architecture-pulse-source-edit": {
+      "status": "completed",
+      "completed_at": "2026-07-03",
+      "commits": [
+        "3e2fe28",
+        "f179c7d",
+        "97eb4dd"
+      ],
+      "summary": "2026-07-03 完成 ARCHITECTURE.md source edit：AP-01~08 逐項處置（header contract、source-of-truth 改指 $COLLAB、歷史附錄 A-H 分區、symlink 表 $COLLAB 化、OC 排程/Notion/OC-MC 降級歷史並附現行權威指引）；新增「目前系統現況」generated marker 區由 sync-architecture-current-state.py 從 morrowise-system.json 同步（--check 可測 drift）；auditor 重跑 findings 8→0，auditor-findings-open loop 自動關閉。殘留：MBA-2 update-symlinks-table.py 輸出格式待 HiSenzi 更新為 $COLLAB 形式。"
+    },
+    "milestone-lifecycle-sweep-v1": {
+      "status": "completed",
+      "completed_at": "2026-07-05",
+      "commits": [
+        "833cd1c",
+        "84971ee"
+      ],
+      "summary": "賈維斯家族 5 projects 生命週期清理完成：dual-blade 33 筆逐筆處置（26 close/6 completed/1 移轉）且殼 archived、harness-mc 5 死案 close、sentinel 新增 archived 過濾並實測生效；其餘 29 個業務專案經 Vincent 裁決本輪不動，全量盤點留存 system-workflow/reports/milestone-lifecycle-sweep-2026-07-05.md 供後續批次。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "49d9e377-9dae-43bb-a18b-36e9132f713b",
+          "synced_at": "2026-07-05",
+          "sync_mode": "appended"
+        }
+      }
+    },
+    "supersede-lifecycle-protocol": {
+      "status": "completed",
+      "completed_at": "2026-07-05",
+      "commits": [
+        "78929ca",
+        "f784528"
+      ],
+      "summary": "完成 JV-02 supersede lifecycle protocol 與 ADR-004：新增三查詢入口（ADR / git log --grep=supersede / _archive README）、五步升級流程、commit supersede marker 規則，並決議 MorroWise 是唯一 Jarvis/live-system owner。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "43a91517-eed9-47f4-ab57-77680fbfdd75",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "legacy-doc-archive": {
+      "status": "completed",
+      "completed_at": "2026-07-05",
+      "commits": [
+        "cd027ad"
+      ],
+      "summary": "完成 JV-03 文件級封存首跑：dual-blade 五檔以 tombstone in place 標 historical/superseded，新增 dual-blade archive index 與 JV-03 archive map；harness v1 acceptance 維持 draft 待 Vincent 明確裁決；8 張 ACP Heptabase card 已 append，MC 儀表版 Canvas sync 已跑。",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "4388e8f4-e4ea-48c5-955b-bb3374bd2a8d",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "notification-first-delivery": {
+      "status": "in_progress",
+      "commits": [
+        "b962da7",
+        "4ac9a5e"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "6093b946-82f5-45d4-9488-56db48231a0b",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "telegram-credentials": {
+      "status": "blocked",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "f8e1efb1-900d-43f7-bb3e-c724035fae5c",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "watchtower-alert-delivery": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "95299a73-d640-49cb-bd9d-b85556b321b8",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "sentinel-delivery-verify": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "27bb54fd-b611-464c-9adb-a5016ed680e4",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "system-pulse-feedback-loop": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "791e9407-48b9-4afc-80e7-0992fa6d3214",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "reducer-apply-verify": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "50ccc98b-1bbc-4d2d-8131-64c6188cefc3",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "cc-push-batch": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "9f5c7b06-3ce6-4c88-b3a7-26d11dbcd180",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "cross-machine-sync-alert": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "8430e888-77ca-4e5f-b50d-e097eaae069e",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "auditor-harness-governance-profile": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "70945da1-ee09-41ff-9166-cb26be2050b3",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "dispatch-gate-extension": {
+      "status": "todo",
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+          "card_id": "77e57cdc-8dce-4faa-82b0-d81819a761fc",
+          "synced_at": "2026-07-05",
+          "sync_mode": "created"
+        }
+      }
+    },
+    "collab-path-precommit-hook": {
+      "status": "todo"
+    },
+    "launchd-tcc-downloads-access": {
+      "status": "blocked"
     }
   }
 }

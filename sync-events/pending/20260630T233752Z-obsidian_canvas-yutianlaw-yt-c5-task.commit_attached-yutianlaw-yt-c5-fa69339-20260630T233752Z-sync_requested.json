@@ -1,0 +1,16 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-yutianlaw-yt-c5-task.commit_attached-yutianlaw-yt-c5-fa69339-20260630T233752Z-20260630T233752Z",
+  "type": "sync_requested",
+  "target": "obsidian_canvas",
+  "status": "pending",
+  "source_event_id": "task.commit_attached-yutianlaw-yt-c5-fa69339-20260630T233752Z",
+  "project": "yutianlaw",
+  "task_id": "yt-c5",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "雨田律師事務所網站"
+  },
+  "created_at": "2026-06-30T23:37:52.438Z",
+  "actor": "codex",
+  "session_id": "codex-yutianlaw-lawyer-team-20260701"
+}

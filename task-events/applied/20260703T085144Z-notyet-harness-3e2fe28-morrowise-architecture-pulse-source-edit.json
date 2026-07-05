@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-architecture-pulse-source-edit-3e2fe28-20260703T085144Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "3e2fe28",
+  "project": "morrowise",
+  "task_id": "architecture-pulse-source-edit",
+  "status": "updated",
+  "summary": "ARCHITECTURE.md 依 8 findings 重構：header contract、$COLLAB source of truth、歷史附錄 A-H、generated 現況區 + sync 腳本；auditor 重跑 8→0。",
+  "created_at": "2026-07-03T08:51:44.542Z",
+  "actor": "cc",
+  "session_id": "cb4549cc-9fbb-4736-a626-78eaba7e5c7c"
+}

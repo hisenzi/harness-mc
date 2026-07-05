@@ -174,9 +174,16 @@ if (PUSH && !result.error) {
   if (!hasNews) console.log("sentinel: 無事可推");
   else if (already) console.log(`sentinel: ${today} 已推過，防重略過`);
   else {
-    // Telegram（token 未就緒時 notify.sh exit 2，靜默略過）
-    const tg = spawnSync("bash", [path.join(root, "..", "notyet-harness", "schedule", "lib", "notify.sh"), `🛰 MC 哨兵\n${result.brief}\n${result.stale.map((s) => `⚠ ${s.projectName}: ${s.reasons[0]}`).slice(0, 5).join("\n")}`], { encoding: "utf-8" });
-    if (tg.status === 0) console.log("sentinel: Telegram 已推");
+    // 送達統一走 notify.sh（Telegram 主線 + macOS fallback）；實際管道以其回報為準，
+    // 送達細節由 notify.sh 記 schedule/runs/notify-delivery.jsonl（JV-07）
+    const tg = spawnSync(
+      "bash",
+      [path.join(root, "..", "notyet-harness", "schedule", "lib", "notify.sh"), `🛰 MC 哨兵\n${result.brief}\n${result.stale.map((s) => `⚠ ${s.projectName}: ${s.reasons[0]}`).slice(0, 5).join("\n")}`],
+      { encoding: "utf-8", env: { ...process.env, SCHEDULE_TASK_ID: process.env.SCHEDULE_TASK_ID || "mc-sentinel" } },
+    );
+    const tgStatus = ((tg.stdout || "").match(/status=(\w+)/) || [])[1] || (tg.status === 0 ? "delivered" : "skip");
+    if (tg.status === 0) console.log(`sentinel: 已送達（${tgStatus}）`);
+    else console.log(`sentinel: 未送達（${tgStatus}，exit ${tg.status}）`);
     // Notion（sentinel-notion.mjs 存在才推）
     const notionScript = path.join(__dirname, "sentinel-notion.mjs");
     let notionOK = false;
@@ -188,7 +195,7 @@ if (PUSH && !result.error) {
     }
     if (tg.status === 0 || notionOK) {
       fs.mkdirSync(scheduleRunsDir, { recursive: true });
-      fs.appendFileSync(markPath, `${today} pushed (tg=${tg.status === 0 ? "ok" : "skip"}, notion=${notionOK ? "ok" : "skip"})\n`);
+      fs.appendFileSync(markPath, `${today} pushed (delivery=${tgStatus}, notion=${notionOK ? "ok" : "skip"})\n`);
     }
   }
 }

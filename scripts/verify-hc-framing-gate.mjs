@@ -45,9 +45,22 @@ for (const [name, content] of [
   assert.match(content, /source of truth/i, `${name} must preserve source-of-truth boundary`);
 }
 
-assert.match(planning, /version: 1\.8/, "planning skill version must include HC gate");
-assert.match(execution, /version: 1\.4/, "execution skill version must include HC gate");
-assert.match(projectInit, /version: 3\.9/, "project-init skill version must include HC gate");
+// 版本用數值下限比較（HC gate 引入版），不用 exact pin——skill 例行升版不應弄壞本 verifier
+// （2026-07-05：project-init 3.9→3.10 讓 exact pin 假紅，與寫死 task id 同型自腐）
+assertVersionAtLeast(planning, "planning", "1.8");
+assertVersionAtLeast(execution, "execution", "1.4");
+assertVersionAtLeast(projectInit, "project-init", "3.9");
+
+function assertVersionAtLeast(content, name, minimum) {
+  const match = content.match(/version:\s*"?(\d+)\.(\d+)/);
+  assert(match, `${name} skill must declare a version`);
+  const [major, minor] = [Number(match[1]), Number(match[2])];
+  const [minMajor, minMinor] = minimum.split(".").map(Number);
+  assert(
+    major > minMajor || (major === minMajor && minor >= minMinor),
+    `${name} skill version ${major}.${minor} predates the HC gate (needs >= ${minimum})`,
+  );
+}
 
 if (gateTask.status !== "completed") {
   const preflight = run([

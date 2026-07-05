@@ -1646,7 +1646,7 @@
     },
     {
       "id": "sentinel-delivery-verify",
-      "status": "todo",
+      "status": "completed",
       "title": "JV-07 哨兵送達實測與管道統一",
       "track": "runtime-delivery",
       "order_label": "JV-07",
@@ -1662,7 +1662,12 @@
           "synced_at": "2026-07-05",
           "sync_mode": "created"
         }
-      }
+      },
+      "completed_at": "2026-07-06",
+      "commits": [
+        "37066d1"
+      ],
+      "summary": "實測確認 Telegram 從未送出（無憑證，舊版 exit 2 靜默 skip 且不寫 dedup mark）；送達管道統一為 notify.sh（sentinel console 與 sentinel-pushed.log 改記 notify.sh 實際回報管道），送達帳雙層：notify-delivery.jsonl（caller=mc-sentinel）＋ mark 檔。本次 --push 實測 macos_fallback 送達。Telegram 尾段（手機實收）繫於 JV-05 憑證，屬該 task 完成判準。"
     },
     {
       "id": "system-pulse-feedback-loop",

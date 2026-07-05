@@ -27,6 +27,7 @@ export function generateMorrowiseLiveDashboard(options = {}) {
     capabilityRegistrySurface(sources),
     notionSyncStateSurface(sources),
     scheduleRuntimeHealthSurface(sources),
+    harnessGovernanceSurface(sources),
     approvalQueueSurface(sources),
   ];
 
@@ -93,6 +94,9 @@ function readSources(root) {
     capabilityRuntimeStatus: readJsonOrNull(path.join(root, DATA_DIR, "capability-runtime-status.json")),
     notionSyncState: readJsonOrNull(path.join(root, DATA_DIR, "notion-sync-state.json")),
     scheduleHealth: readJsonOrNull(path.join(root, DATA_DIR, "schedule-health.json")),
+    systemPulse: readJsonOrNull(path.join(root, DATA_DIR, "system-pulse.json")),
+    pulseProposals: readJsonOrNull(path.join(root, DATA_DIR, "pulse-proposals.json")),
+    harnessGovernance: readJsonOrNull(path.join(root, DATA_DIR, "harness-governance.json")),
     approvalPolicy: readJsonOrNull(path.join(root, "system-workflow", "registries", "morrowise-approval-policy.json")),
     notionSyncRegistry: readJsonOrNull(path.join(root, "system-workflow", "registries", "morrowise-notion-sync-state.json")),
     fileTimes: {
@@ -107,6 +111,9 @@ function readSources(root) {
       capabilityRuntimeStatus: fileGeneratedAt(root, path.join(DATA_DIR, "capability-runtime-status.json")),
       notionSyncState: fileGeneratedAt(root, path.join(DATA_DIR, "notion-sync-state.json")),
       scheduleHealth: fileGeneratedAt(root, path.join(DATA_DIR, "schedule-health.json")),
+      systemPulse: fileGeneratedAt(root, path.join(DATA_DIR, "system-pulse.json")),
+      pulseProposals: fileGeneratedAt(root, path.join(DATA_DIR, "pulse-proposals.json")),
+      harnessGovernance: fileGeneratedAt(root, path.join(DATA_DIR, "harness-governance.json")),
       approvalPolicy: fileGeneratedAt(root, path.join("system-workflow", "registries", "morrowise-approval-policy.json")),
       notionSyncRegistry: fileGeneratedAt(root, path.join("system-workflow", "registries", "morrowise-notion-sync-state.json")),
     },
@@ -116,31 +123,113 @@ function readSources(root) {
 function systemAttentionSurface(sources) {
   const changes = sources.changes || {};
   const taskEvents = sources.taskEvents || {};
+  const systemPulse = sources.systemPulse || null;
+  const pulseProposals = sources.pulseProposals || null;
   const staleCount = Array.isArray(changes.stale) ? changes.stale.length : 0;
   const eventCount = Array.isArray(changes.events) ? changes.events.length : 0;
   const pendingEvents = taskEvents.task_events?.pending || 0;
+  // JV-13: system-pulse 狀態與待裁決 proposal 佇列納入首屏 attention
+  const pulseStatus = systemPulse?.status || "unknown";
+  const pulseFailed = systemPulse?.summary?.failed ?? null;
+  const pendingProposals = pulseProposals?.counts?.pending_decision ?? 0;
+  const redProposals = pulseProposals?.counts?.red ?? 0;
+  const oldestProposalDays = pulseProposals?.oldest_pending_days ?? 0;
 
   return surface({
     id: "system_attention",
     label: "System Attention",
     source_of_truth: "generated_attention_state",
-    source_files: ["$COLLAB/harness-mc/public/data/changes.json", "$COLLAB/harness-mc/public/data/task-events.json"],
-    generator: ["scripts/sentinel-diff.mjs", "scripts/generate-task-event-data.mjs", "npm run prebuild"],
+    source_files: [
+      "$COLLAB/harness-mc/public/data/changes.json",
+      "$COLLAB/harness-mc/public/data/task-events.json",
+      "$COLLAB/harness-mc/public/data/system-pulse.json",
+      "$COLLAB/harness-mc/public/data/pulse-proposals.json",
+    ],
+    generator: ["scripts/sentinel-diff.mjs", "scripts/generate-task-event-data.mjs", "scripts/run-system-pulse.mjs", "npm run prebuild"],
     generated_at: latest([changes.generated_at, taskEvents.generated_at, sources.fileTimes.changes, sources.fileTimes.taskEvents]),
     stale_after_minutes: 15,
-    stale_rule: "stale when generated attention data is older than 15 minutes during an active session, or after task-event/worktree regeneration changes upstream state",
+    stale_rule: "stale when generated attention data is older than 15 minutes during an active session, or after task-event/worktree regeneration changes upstream state; pulse/proposal data refreshes on each system-pulse run",
     missing_sources: missingSources(sources, ["changes", "taskEvents"]),
     freshness_action: action("generator", "npm run prebuild", "Regenerate changes.json and task-events.json before trusting System Attention."),
-    next_action: pendingEvents > 0 || staleCount > 0
-      ? action("route_or_task", "surface.system_attention.drilldown", "Review stale, blocked, or pending queue items.")
-      : action("none", null, "No attention action required from the current generated data."),
-    write_boundary: readOnlyBoundary(["display generated attention state", "link to evidence"], ["close tasks", "reduce event queues", "write mirrors"]),
+    next_action: pendingProposals > 0
+      ? action("task", "system-pulse-feedback-loop", `${pendingProposals} proposal(s) 待 Vincent 裁決（最舊 ${oldestProposalDays}d）；裁決後才寫 tasks.json。`)
+      : pendingEvents > 0 || staleCount > 0
+        ? action("route_or_task", "surface.system_attention.drilldown", "Review stale, blocked, or pending queue items.")
+        : action("none", null, "No attention action required from the current generated data."),
+    write_boundary: readOnlyBoundary(["display generated attention state", "link to evidence"], ["close tasks", "reduce event queues", "decide proposals", "write mirrors"]),
     verifier_ref: "npm run test:morrowise-live-dashboard",
     classification: "semi_live",
-    attention_level: staleCount > 0 || pendingEvents > 0 || eventCount > 0 ? "needs_review" : "normal",
-    evidence_refs: ["$COLLAB/harness-mc/public/data/changes.json", "$COLLAB/harness-mc/public/data/task-events.json"],
+    attention_level:
+      pulseStatus === "degraded" || redProposals > 0
+        ? "blocked"
+        : staleCount > 0 || pendingEvents > 0 || eventCount > 0 || pendingProposals > 0
+          ? "needs_review"
+          : "normal",
+    evidence_refs: [
+      "$COLLAB/harness-mc/public/data/changes.json",
+      "$COLLAB/harness-mc/public/data/task-events.json",
+      "$COLLAB/harness-mc/public/data/system-pulse.json",
+      "$COLLAB/harness-mc/public/data/pulse-proposals.json",
+    ],
     drilldown_route: "surface.system_attention.drilldown",
-    metrics: { stale: staleCount, events: eventCount, pending_task_events: pendingEvents },
+    metrics: {
+      stale: staleCount,
+      events: eventCount,
+      pending_task_events: pendingEvents,
+      pulse_status: pulseStatus,
+      pulse_failed_steps: pulseFailed,
+      pending_proposals: pendingProposals,
+      red_proposals: redProposals,
+      oldest_proposal_days: oldestProposalDays,
+    },
+  });
+}
+
+// JV-15：harness governance 狀態卡（#discipline）——資料源為 auditor harness profile 輸出
+function harnessGovernanceSurface(sources) {
+  const governance = sources.harnessGovernance || null;
+  const counts = governance?.counts || null;
+  const patchPlan = governance?.patch_plan || null;
+  const broken = counts?.broken ?? null;
+
+  return surface({
+    id: "harness_governance",
+    label: "Harness governance",
+    source_of_truth: "auditor_harness_governance_profile_output",
+    source_files: [
+      "$COLLAB/harness-mc/system-workflow/registries/morrowise-harness-governance.json",
+      "$COLLAB/harness-mc/public/data/harness-governance.json",
+    ],
+    generator: ["scripts/generate-morrowise-auditor.mjs", "npm run prebuild"],
+    generated_at: governance?.generated_at || sources.fileTimes.harnessGovernance,
+    stale_after_minutes: 24 * 60,
+    stale_rule: "stale when harness docs change without an auditor rerun (prebuild / system-pulse both rerun it daily)",
+    missing_sources: governance ? [] : ["harnessGovernance"],
+    freshness_action: action("generator", "node scripts/generate-morrowise-auditor.mjs", "Rerun the auditor to refresh harness governance state."),
+    next_action:
+      broken !== null && broken > 0
+        ? action("task", "auditor-harness-governance-profile", `${broken} 個 harness 檔有 governance findings，走 task-backed source edit 修復。`)
+        : action("none", null, governance ? "Harness governance findings 為 0；accepted 標記仍由 Vincent 裁決。" : "Read model 未生成，先跑 auditor。"),
+    write_boundary: readOnlyBoundary(
+      ["display governance counts, patch progress, failing files"],
+      ["mark docs accepted", "edit harness docs", "close tasks"],
+    ),
+    verifier_ref: "npm run test:morrowise-live-dashboard",
+    classification: governance ? "semi_live" : "static_display",
+    attention_level: broken !== null && broken > 0 ? "needs_review" : "normal",
+    evidence_refs: [
+      "$COLLAB/harness-mc/public/data/harness-governance.json",
+      "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness",
+    ],
+    drilldown_route: "surface.harness_governance.discipline",
+    metrics: {
+      docs_total: counts?.total ?? null,
+      by_header_status: counts?.by_header_status ?? null,
+      broken,
+      stale: counts?.stale ?? null,
+      patch_total: patchPlan?.total ?? null,
+      patch_by_status: patchPlan?.by_status ?? null,
+    },
   });
 }
 

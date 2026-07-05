@@ -41,6 +41,7 @@ const expectedSurfaces = [
   "api_cli_mcp_capabilities",
   "notion_sync_state",
   "schedule_runtime_health",
+  "harness_governance",
   "approval_queue",
 ];
 

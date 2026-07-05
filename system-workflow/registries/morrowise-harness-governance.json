@@ -1,0 +1,36 @@
+{
+  "registry_id": "morrowise-harness-governance.v0",
+  "task_id": "auditor-harness-governance-profile",
+  "updated_at": "2026-07-06",
+  "status": "formal_registry",
+  "purpose": "Declare the harness governance docs family as a scanned source: docs dir, file-class rules, and the auditor profile that owns scanning. The auditor is the only scanner; this registry never duplicates scan logic.",
+  "source_of_truth": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/",
+  "docs_dir": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness",
+  "scanner": {
+    "profile": "HARNESS_GOVERNANCE_PROFILE",
+    "generator": "$COLLAB/harness-mc/scripts/generate-morrowise-auditor.mjs",
+    "read_model": "$COLLAB/harness-mc/public/data/harness-governance.json",
+    "checks": [
+      "header contract by file class (amendment §2: protocol strict / evidence lenient / tombstone lenient)",
+      "change-approval-plan patch status column parse",
+      "superseded residual references (dangling $COLLAB paths, tombstoned-doc references)",
+      "stale task anchors (milestones/*/tasks.json#id existence)"
+    ]
+  },
+  "classification_refs": [
+    "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/review-readback-report-2026-07-04-amendment.md",
+    "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/change-approval-plan.md"
+  ],
+  "discovery": {
+    "entrypoints": [
+      "$COLLAB/harness-mc/AGENTS.md",
+      "$COLLAB/harness-mc/public/data/morrowise-live-dashboard.json#surfaces.harness_governance"
+    ],
+    "how_to_find": "rg 'harness-governance' $COLLAB/harness-mc — registry, generator profile, read model, dashboard surface, and homepage #discipline card share the token."
+  },
+  "write_boundary": {
+    "allowed": ["declare scanned source family", "point to auditor profile and read model"],
+    "forbidden": ["duplicate scanner logic", "carry document status by hand", "close tasks", "commit", "push"]
+  },
+  "verifier_ref": "npm run test:morrowise-auditor-generator"
+}

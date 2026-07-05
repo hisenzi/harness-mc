@@ -135,7 +135,7 @@ export function generateAuditorReport(options = {}) {
 
   for (const profile of profiles) {
     if (profile.kind === "harness_governance") {
-      targets.push(...auditHarnessGovernance(profile, now, findings));
+      targets.push(...auditHarnessGovernance(profile, now, findings, options));
       continue;
     }
     if (profile.kind === "memory_health") {
@@ -404,7 +404,7 @@ function auditTarget(profile, filePath, now, findings) {
   );
 }
 
-function auditHarnessGovernance(profile, now, findings) {
+function auditHarnessGovernance(profile, now, findings, options = {}) {
   const dirPath = resolveCollabPath(profile.dir);
   const findingIdBase = `HG-${now.toISOString().slice(0, 10).replaceAll("-", "")}`;
   let findingSeq = 0;
@@ -457,15 +457,18 @@ function auditHarnessGovernance(profile, now, findings) {
     const headerLines = lines.slice(0, headerEnd === -1 ? lines.length : headerEnd);
     const statusLine = headerLines.find((line) => /^>?\s*(?:\*\*)?Status(?:\*\*)?[：:]/.test(line)) || "";
     if (profile.tombstone_status_pattern.test(statusLine)) tombstoned.add(name);
-    docs.set(name, { content, lines, headerText: headerLines.join("\n") });
+    docs.set(name, { content, lines, headerText: headerLines.join("\n"), statusLine });
   }
 
   const tasksCache = new Map();
   const tasksRoot = resolveCollabPath(profile.tasks_root);
   const targets = [];
+  const fileEntries = [];
+  let patchPlanSummary = null;
 
   for (const name of fileNames) {
-    const { content, lines, headerText } = docs.get(name);
+    const { content, lines, headerText, statusLine } = docs.get(name);
+    const findingsBefore = findings.length;
     const targetId = `${profile.target_id_prefix}.${slugify(name.replace(/\.md$/, ""))}`;
     const targetPath = `${profile.dir}/${name}`;
     const lenient = profile.lenient_file_patterns.some((pattern) => pattern.test(name));
@@ -494,12 +497,16 @@ function auditHarnessGovernance(profile, now, findings) {
     if (profile.patch_plan_files.some((pattern) => pattern.test(name))) {
       const patchSections = parseSections(lines).filter((section) => /^P\d+｜/.test(section.title));
       const broken = [];
+      const byStatus = {};
       for (const section of patchSections) {
         const statusMatch = section.text.match(/^-\s*\*\*狀態\*\*[：:]\s*(.+)$/m);
         const token = statusMatch ? statusMatch[1].trim() : null;
-        const recognized = token && profile.patch_status_tokens.some((allowed) => token.toLowerCase().startsWith(allowed));
+        const matched = token ? profile.patch_status_tokens.find((allowed) => token.toLowerCase().startsWith(allowed)) : null;
+        if (matched) byStatus[matched] = (byStatus[matched] || 0) + 1;
+        const recognized = Boolean(matched);
         if (!recognized) broken.push({ title: section.title, start: section.start, token });
       }
+      patchPlanSummary = { file: name, total: patchSections.length, by_status: byStatus, unparsed: broken.length };
       if (patchSections.length === 0 || broken.length > 0) {
         checks.push({ id: "patch-plan-status", kind: "live_surface", result: "fail" });
         emit(targetId, {
@@ -607,9 +614,77 @@ function auditHarnessGovernance(profile, now, findings) {
       verifier_ref: profile.verifier_ref,
       write_boundary: readOnlyBoundary(),
     });
+
+    const fileFindings = findings.slice(findingsBefore);
+    fileEntries.push({
+      name,
+      class: isTombstoned ? "historical" : lenient ? "evidence" : "protocol",
+      header_status: classifyHeaderStatus(statusLine, isTombstoned),
+      header_status_excerpt: statusLine.replace(/^>?\s*(?:\*\*)?Status(?:\*\*)?[：:]\s*/, "").slice(0, 120) || null,
+      finding_count: fileFindings.length,
+      finding_categories: [...new Set(fileFindings.map((finding) => finding.category))],
+    });
   }
 
+  // JV-15：harness governance read model（#discipline 狀態卡資料源；auditor 即 scanner，不開第二套）
+  const brokenFiles = fileEntries.filter((entry) => entry.finding_categories.some((category) => category !== "stale_warning"));
+  const staleFiles = fileEntries.filter((entry) => entry.finding_categories.includes("stale_warning"));
+  const statusCounts = {};
+  for (const entry of fileEntries) statusCounts[entry.header_status] = (statusCounts[entry.header_status] || 0) + 1;
+  const governanceModel = {
+    schema_version: "harness-governance.v0",
+    generated_at: now.toISOString(),
+    read_only: true,
+    source: "$COLLAB/harness-mc/system-workflow/registries/morrowise-harness-governance.json",
+    generator: "$COLLAB/harness-mc/scripts/generate-morrowise-auditor.mjs",
+    output: "$COLLAB/harness-mc/public/data/harness-governance.json",
+    docs_dir: profile.dir,
+    stale_rule: "Regenerate with the auditor run (prebuild / system-pulse); stale when harness docs change without a rerun.",
+    counts: {
+      total: fileEntries.length,
+      by_header_status: statusCounts,
+      broken: brokenFiles.length,
+      stale: staleFiles.length,
+    },
+    patch_plan: patchPlanSummary,
+    failing_files: brokenFiles.map((entry) => ({ name: entry.name, categories: entry.finding_categories })),
+    files: fileEntries,
+    next_actions: [
+      {
+        id: "HG-NA-01",
+        priority: 1,
+        action:
+          brokenFiles.length > 0
+            ? `修復 ${brokenFiles.length} 個 governance findings 檔案（走 task-backed source edit）`
+            : "無 governance findings；accepted 標記仍由 Vincent 裁決（本卡只顯示不裁決）。",
+        owner_task: "auditor-harness-governance-profile",
+        status: brokenFiles.length > 0 ? "ready" : "draft",
+      },
+    ],
+    write_boundary: readOnlyBoundary(),
+    verifier_ref: "npm run test:morrowise-auditor-generator",
+  };
+
+  if (options.write !== false) {
+    const outFile = path.join(root, "public", "data", "harness-governance.json");
+    fs.mkdirSync(path.dirname(outFile), { recursive: true });
+    fs.writeFileSync(outFile, `${JSON.stringify(governanceModel, null, 2)}\n`);
+    console.log(`Generated ${outFile} — ${fileEntries.length} harness docs, ${brokenFiles.length} broken`);
+  }
+  if (options.harnessGovernanceSink) options.harnessGovernanceSink.push(governanceModel);
+
   return targets;
+}
+
+// header Status 行 → 狀態分級（accepted 只能由 Vincent 標——這裡只讀不判）
+function classifyHeaderStatus(statusLine, isTombstoned) {
+  if (isTombstoned) return "historical";
+  const text = statusLine.toLowerCase();
+  if (!text) return "unknown";
+  if (text.includes("accepted")) return "accepted";
+  if (text.includes("final")) return "final";
+  if (text.includes("draft")) return "draft";
+  return "other";
 }
 
 function auditMemoryHealth(profile, now, findings, options = {}) {

@@ -124,6 +124,24 @@ assert.ok(
   "tombstoned doc itself must not emit findings",
 );
 
+// JV-15：harness governance read model（sink 檢查——patch 統計與 header 分級鎖格式）
+const hgSink = [];
+generateAuditorReport({
+  profiles: [harnessFixtureProfile("patch-plan-model", "hg-patch-plan")],
+  write: false,
+  now: "2026-07-03T00:00:00+08:00",
+  harnessGovernanceSink: hgSink,
+});
+const hgModel = hgSink[0];
+assert.equal(hgModel.schema_version, "harness-governance.v0");
+assert.equal(hgModel.patch_plan.total, 2, "patch plan fixture must count P sections");
+assert.equal(hgModel.patch_plan.by_status.done, 1);
+assert.equal(hgModel.patch_plan.unparsed, 1);
+assert.equal(hgModel.counts.broken, 1, "unparsed patch section must count as broken");
+for (const key of ["source", "generator", "generated_at", "next_actions", "write_boundary", "verifier_ref"]) {
+  assert.ok(Object.hasOwn(hgModel, key), `harness governance model missing ${key}`);
+}
+
 // clean harness dir → zero findings（含 strict protocol + lenient evidence 各一）
 const hgCleanReport = generateAuditorReport({
   profiles: [harnessFixtureProfile("clean", "hg-clean")],

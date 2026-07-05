@@ -1,7 +1,7 @@
 {
   "registry_id": "morrowise-wiring-gate.v0",
   "task_id": "morrowise-wiring-gate-verifier",
-  "updated_at": "2026-06-27",
+  "updated_at": "2026-07-06",
   "status": "formal_gate",
   "purpose": "Verify whether a MorroWise component is fully wired from source to read model, dashboard surface, homepage visibility, verifier, routing, and next action.",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-wiring-gate.json",
@@ -78,6 +78,28 @@
       ],
       "next_action_task": "notion-sync-read-model-v0",
       "fixture_scope": "read_model_surface_only"
+    },
+    {
+      "id": "harness-governance-surface",
+      "label": "Harness governance 狀態卡（JV-15）",
+      "owner_task": "auditor-harness-governance-profile",
+      "source_registry": "$COLLAB/harness-mc/system-workflow/registries/morrowise-harness-governance.json",
+      "generated_read_model": "$COLLAB/harness-mc/public/data/harness-governance.json",
+      "read_model_generator": "$COLLAB/harness-mc/scripts/generate-morrowise-auditor.mjs",
+      "live_dashboard_surface_id": "harness_governance",
+      "homepage_anchor": "discipline",
+      "live_dashboard_verifier_ref": "npm run test:morrowise-live-dashboard",
+      "verifier_refs": [
+        "npm run test:morrowise-auditor-generator",
+        "npm run test:morrowise-live-dashboard",
+        "npm run test:morrowise-wiring"
+      ],
+      "routing_refs": [
+        "$COLLAB/harness-mc/AGENTS.md",
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#harness-governance-surface"
+      ],
+      "next_action_task": "auditor-harness-governance-profile",
+      "fixture_scope": "surface_fixture_only"
     }
   ]
 }

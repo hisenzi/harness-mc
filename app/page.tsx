@@ -375,6 +375,7 @@ const surfaceAnchors: Record<string, string> = {
   worktree_status: "#worktree-status",
   visual_sync_coverage: "#visual-sync",
   api_cli_mcp_capabilities: "#api-cli-mcp-capabilities",
+  harness_governance: "#discipline",
   approval_queue: "#approval-queue",
 };
 
@@ -806,9 +807,84 @@ function isDoneStatus(status: string) {
   return status === "completed" || status === "done" || status === "fixed";
 }
 
+type HarnessGovernanceData = {
+  generated_at?: string;
+  counts?: { total?: number; by_header_status?: Record<string, number>; broken?: number; stale?: number };
+  patch_plan?: { file?: string; total?: number; by_status?: Record<string, number>; unparsed?: number } | null;
+  failing_files?: { name: string; categories: string[] }[];
+  next_actions?: { action: string }[];
+};
+
+function HarnessGovernanceCard() {
+  const [governance, setGovernance] = useState<HarnessGovernanceData | null>(null);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/harness-governance.json`)
+      .then((r) => r.json())
+      .then(setGovernance)
+      .catch(() => {});
+  }, []);
+
+  const counts = governance?.counts;
+  const byStatus = counts?.by_header_status || {};
+  const broken = counts?.broken ?? 0;
+  const patch = governance?.patch_plan;
+  const patchDone = patch?.by_status?.done ?? 0;
+  const failing = governance?.failing_files || [];
+
+  return (
+    <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
+      <div className="flex items-center gap-3 mb-2">
+        <span className="text-title">🛡️</span>
+        <div>
+          <div className="font-semibold text-heading">Harness governance</div>
+          <div className="text-[11px] text-[var(--text-muted)]">docs/morrowise/harness — auditor 掃描結果</div>
+        </div>
+        <span className={`ml-auto rounded-full border px-2 py-0.5 text-[10px] font-mono ${broken > 0 ? "border-red-400/30 text-red-400" : "border-green-400/30 text-green-400"}`}>
+          {governance ? (broken > 0 ? `${broken} broken` : "findings 0") : "讀取中"}
+        </span>
+      </div>
+      <div className="text-body text-[var(--text-muted)] mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[12px]">
+        <span>docs <span className="font-mono text-[var(--text)]">{counts?.total ?? "—"}</span></span>
+        {Object.entries(byStatus).map(([status, count]) => (
+          <span key={status}>{status} <span className="font-mono text-[var(--text)]">{count}</span></span>
+        ))}
+        <span>stale <span className="font-mono text-[var(--text)]">{counts?.stale ?? "—"}</span></span>
+        {patch ? (
+          <span>B plan patches <span className="font-mono text-[var(--text)]">{patchDone}/{patch.total ?? 0} done</span>{(patch.unparsed ?? 0) > 0 ? <span className="text-red-400">（{patch.unparsed} 格式壞）</span> : null}</span>
+        ) : null}
+      </div>
+      {failing.length > 0 ? (
+        <div className="mt-3 space-y-1 text-[11px] text-[var(--text-muted)]">
+          {failing.slice(0, 3).map((file) => (
+            <div key={file.name} className="truncate">✗ {file.name} — {file.categories.join(", ")}</div>
+          ))}
+        </div>
+      ) : null}
+      <div className="mt-3 pt-3 border-t border-[var(--border)] text-[11px] text-[var(--text-muted)]">
+        {governance?.next_actions?.[0]?.action || "accepted 標記由 Vincent 裁決；本卡只顯示不裁決。"}
+      </div>
+    </div>
+  );
+}
+
+type SystemPulseAttention = {
+  generated_at?: string;
+  status?: string;
+  summary?: { failed?: number; total?: number };
+};
+
+type PulseProposalsAttention = {
+  generated_at?: string;
+  counts?: { pending_decision?: number; red?: number; amber?: number; auto_fixable?: number };
+  oldest_pending_days?: number;
+};
+
 function SystemAttentionCard() {
   const [sentinel, setSentinel] = useState<SentinelData | null>(null);
   const [pipeline, setPipeline] = useState<TaskEventPipelineData | null>(null);
+  const [pulse, setPulse] = useState<SystemPulseAttention | null>(null);
+  const [proposals, setProposals] = useState<PulseProposalsAttention | null>(null);
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/changes.json`)
@@ -819,6 +895,16 @@ function SystemAttentionCard() {
     fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/task-events.json`)
       .then((r) => r.json())
       .then(setPipeline)
+      .catch(() => {});
+
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/system-pulse.json`)
+      .then((r) => r.json())
+      .then(setPulse)
+      .catch(() => {});
+
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/pulse-proposals.json`)
+      .then((r) => r.json())
+      .then(setProposals)
       .catch(() => {});
   }, []);
 
@@ -832,6 +918,13 @@ function SystemAttentionCard() {
   const staleCount = sentinel?.stale.length || 0;
   const blockedCount = sentinel?.blocked_now.length || 0;
   const topItems = buildAttentionItems(sentinel).slice(0, 3);
+  // JV-13: pulse 狀態與待裁決 proposals（讀不到檔時顯示 unknown，不假 live）
+  const pulseStatus = pulse?.status || "unknown";
+  const pulseFailed = pulse?.summary?.failed ?? null;
+  const pulseTotal = pulse?.summary?.total ?? null;
+  const pendingProposals = proposals?.counts?.pending_decision ?? null;
+  const redProposals = proposals?.counts?.red ?? 0;
+  const oldestProposalDays = proposals?.oldest_pending_days ?? 0;
 
   return (
     <div>
@@ -854,6 +947,28 @@ function SystemAttentionCard() {
               value={freshnessOk ? "OK" : "CHECK"}
               hint={freshnessMinutes === null ? "讀取中" : `${freshnessMinutes} 分鐘前更新`}
               tone={freshnessOk ? "green" : "yellow"}
+            />
+            <AttentionMetric
+              name="pulse"
+              value={pulseStatus === "healthy" ? "OK" : pulseStatus === "degraded" ? "DEGRADED" : "—"}
+              hint={
+                pulseFailed !== null && pulseTotal !== null
+                  ? `每日全鏈心跳 ${pulseTotal - pulseFailed}/${pulseTotal} 過`
+                  : "system-pulse 未讀到"
+              }
+              tone={pulseStatus === "healthy" ? "green" : pulseStatus === "degraded" ? "red" : "yellow"}
+            />
+            <AttentionMetric
+              name="proposals"
+              value={pendingProposals === null ? "—" : String(pendingProposals)}
+              hint={
+                pendingProposals === null
+                  ? "proposal 佇列未讀到"
+                  : pendingProposals > 0
+                    ? `待裁決（最舊 ${oldestProposalDays}d${redProposals > 0 ? `，red ${redProposals}` : ""}）`
+                    : "佇列空"
+              }
+              tone={redProposals > 0 ? "red" : pendingProposals ? "yellow" : "green"}
             />
           </div>
 
@@ -892,6 +1007,7 @@ function SystemAttentionCard() {
               <FreshnessRow source="sentinel" path="public/data/changes.json" generatedAt={sentinel?.generated_at} />
               <FreshnessRow source="queue" path="public/data/task-events.json" generatedAt={pipeline?.generated_at} />
               <FreshnessRow source="projects" path="public/data/projects.json" generatedAt={sentinel?.generated_at} />
+              <FreshnessRow source="pulse" path="public/data/system-pulse.json" generatedAt={pulse?.generated_at} />
             </div>
             <div className="mt-4 pt-3 border-t border-[var(--border)] text-[11px] leading-relaxed text-[var(--text-muted)]">
               Auto refresh contract：本地 source 有新增或變更時自動重建 read model；外部 source 只顯示 last checked，不宣稱 live。
@@ -1654,6 +1770,9 @@ export default function HomePage() {
 
         {/* 評估 */}
         <EvaluationCard projects={projects} />
+
+        {/* Harness governance（JV-15）：auditor harness profile 輸出 */}
+        <HarnessGovernanceCard />
           </div>
         </div>
 

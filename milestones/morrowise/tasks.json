@@ -1737,7 +1737,7 @@
     },
     {
       "id": "cross-machine-sync-alert",
-      "status": "todo",
+      "status": "blocked",
       "title": "JV-12 雙機同步斷線警報",
       "track": "runtime-delivery",
       "order_label": "JV-12",
@@ -1753,7 +1753,11 @@
           "synced_at": "2026-07-05",
           "sync_mode": "created"
         }
-      }
+      },
+      "commits": [
+        "7c329b7"
+      ],
+      "note": "2026-07-06 建到 fixture-ready：peer_sync_heartbeat 規則＋sync-heartbeat.v0 契約＋pulse 本機心跳 writer＋哨兵早報接線已落地（7c329b7），fixture 三案例綠。blocked_until: JV-11 MBA-2 安裝後首次 push 產生對端心跳，屆時本 task 只剩讀真實資料復驗即可 completed。"
     },
     {
       "id": "auditor-harness-governance-profile",

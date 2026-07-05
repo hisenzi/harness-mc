@@ -8,18 +8,66 @@
   },
   "write_boundary": "MC reads this taxonomy for display/filter consistency. Do not write Notion or PAI from the /projects surface.",
   "domains": [
-    { "id": "Roger", "label": "Roger", "color": "#8b5cf6" },
-    { "id": "臨時", "label": "臨時", "color": "#64748b" },
-    { "id": "Life-Focus", "label": "Life-Focus", "color": "#14b8a6" },
-    { "id": "notyet", "label": "notyet", "color": "#a855f7" },
-    { "id": "KJ", "label": "KJ", "color": "#2563eb" },
-    { "id": "FJSH", "label": "FJSH", "color": "#0ea5e9" },
-    { "id": "公司", "label": "公司", "color": "#16a34a" },
-    { "id": "Cleanup", "label": "Cleanup", "color": "#71717a" },
-    { "id": "Harness", "label": "Harness", "color": "#22c55e" },
-    { "id": "Thinking-Gym", "label": "Thinking-Gym", "color": "#f59e0b" },
-    { "id": "Maxmodel", "label": "Maxmodel", "color": "#f97316" },
-    { "id": "Kate", "label": "Kate", "color": "#ec4899" }
+    {
+      "id": "Roger",
+      "label": "Roger",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "臨時",
+      "label": "臨時",
+      "color": "#64748b"
+    },
+    {
+      "id": "Life-Focus",
+      "label": "Life-Focus",
+      "color": "#14b8a6"
+    },
+    {
+      "id": "notyet",
+      "label": "notyet",
+      "color": "#a855f7"
+    },
+    {
+      "id": "KJ",
+      "label": "KJ",
+      "color": "#2563eb"
+    },
+    {
+      "id": "FJSH",
+      "label": "FJSH",
+      "color": "#0ea5e9"
+    },
+    {
+      "id": "公司",
+      "label": "公司",
+      "color": "#16a34a"
+    },
+    {
+      "id": "Cleanup",
+      "label": "Cleanup",
+      "color": "#71717a"
+    },
+    {
+      "id": "Harness",
+      "label": "Harness",
+      "color": "#22c55e"
+    },
+    {
+      "id": "Thinking-Gym",
+      "label": "Thinking-Gym",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "Maxmodel",
+      "label": "Maxmodel",
+      "color": "#f97316"
+    },
+    {
+      "id": "Kate",
+      "label": "Kate",
+      "color": "#ec4899"
+    }
   ],
   "project_domains": {
     "adobe-creative-pipeline": "notyet",
@@ -57,7 +105,8 @@
     "web-reminder-pwa": "notyet",
     "writing-system": "notyet",
     "xw-worldview": "notyet",
-    "yutianlaw": "臨時"
+    "yutianlaw": "臨時",
+    "td-morrowise-surface": "Harness"
   },
   "history": [
     {

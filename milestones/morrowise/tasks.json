@@ -1678,7 +1678,7 @@
     },
     {
       "id": "reducer-apply-verify",
-      "status": "todo",
+      "status": "completed",
       "title": "JV-09 Reducer 消化 pending events 實測",
       "track": "runtime-delivery",
       "order_label": "JV-09",
@@ -1691,7 +1691,13 @@
           "synced_at": "2026-07-05",
           "sync_mode": "created"
         }
-      }
+      },
+      "completed_at": "2026-07-05",
+      "commits": [
+        "c3774c7"
+      ],
+      "summary": "Reducer 消化管線實測完成：apply-task-events 全量跑 27 筆 pending（26 applied/1 rejected unknown_task/0 dup），pending 歸零；state overlay 7 專案更新、sync-events 佇列 +52 待 consumer。system-pulse apply 接線本已存在（SYSTEM_PULSE_APPLY_TASK_EVENTS=1），預設 report-only 為 Vincent gate；daily auto-apply 是否開啟列收尾裁決。穩態 <5 的持續性依賴該裁決＋launchd TCC 修復。",
+      "note": " 2026-07-05 rejected fixture：kj-bilingual/SYS1 event 指向不存在 task id，留 rejected/ 待 KJ 專案修正。"
     },
     {
       "id": "cc-push-batch",

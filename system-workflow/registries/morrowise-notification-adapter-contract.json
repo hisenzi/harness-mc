@@ -1,7 +1,7 @@
 {
   "contract_id": "morrowise-notification-adapter-contract.v0",
   "task_id": "notification-adapter-contract",
-  "updated_at": "2026-06-28",
+  "updated_at": "2026-07-05",
   "status": "contract_ready",
   "read_only": true,
   "purpose": "Define MorroWise delivery adapters without letting delivery mutate task state, close workflow gates, or store secrets.",
@@ -92,7 +92,19 @@
       ],
       "graceful_skip": {
         "missing_env_exit_code": 2,
-        "meaning": "Upstream scheduler should record degraded/skipped delivery and continue its local run."
+        "meaning": "Exit 2 applies when nothing was delivered and the upstream may continue (fallback disabled or unavailable). With the macOS fallback enabled (default), missing Telegram env falls through to macos_notification_fallback instead of a silent skip.",
+        "fallback_disable_env": "NOTIFY_MACOS_FALLBACK=0"
+      },
+      "delivery_log": {
+        "path": "$COLLAB/notyet-harness/schedule/runs/notify-delivery.jsonl",
+        "schema_version": "notify-delivery.v0",
+        "statuses": [
+          "telegram_sent",
+          "macos_fallback",
+          "both_failed",
+          "skipped"
+        ],
+        "rule": "Every notify.sh invocation appends one JSONL line with status, detail, caller, and message length; message bodies and secrets are never logged."
       },
       "allowed_payloads": [
         "plain text notification summary"
@@ -102,6 +114,26 @@
         "send secrets",
         "mutate MC task state"
       ]
+    },
+    {
+      "id": "macos_notification_fallback",
+      "provider": "macOS osascript display notification",
+      "status": "implemented_local_only",
+      "entrypoint": "$COLLAB/notyet-harness/schedule/lib/notify.sh",
+      "env": [],
+      "runtime_switches": [
+        "NOTIFY_MACOS_FALLBACK (default 1; 0 disables fallback for contract tests)",
+        "NOTIFY_OSASCRIPT_BIN (test stub override)"
+      ],
+      "rule": "Fires only when Telegram is not ready or its send fails; local-machine delivery only, does not reach Vincent across devices. TCC may block osascript in launchd context — a failed osascript is recorded as both_failed, never faked as delivered.",
+      "allowed_payloads": [
+        "plain text notification summary, normalized to a single line and truncated to 200 bytes"
+      ],
+      "forbidden": [
+        "send secrets",
+        "mutate MC task state"
+      ],
+      "degraded_without_env": false
     },
     {
       "id": "line_messaging_api_push",
@@ -150,7 +182,9 @@
   "verification": {
     "verifier": "npm run test:notification-adapter-contract",
     "checks": [
-      "notify.sh exists and missing env exits 2 in a temp fixture",
+      "notify.sh with fallback disabled (NOTIFY_MACOS_FALLBACK=0) and missing env exits 2 in a temp fixture",
+      "notify.sh with a stub osascript and missing env delivers macos_fallback (exit 0) and appends a notify-delivery.jsonl line",
+      "notify.sh with a failing stub osascript and missing env records both_failed and exits 2",
       ".env.example documents required adapter env names without values",
       "LINE adapter uses Messaging API push endpoint and forbids LINE Notify",
       "delivery adapters do not claim task-state authority",

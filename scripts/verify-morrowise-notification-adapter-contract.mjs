@@ -30,6 +30,7 @@ assert.ok(contract.write_boundary.forbidden.includes("close Reality Tax Gate"));
 const adapters = new Map(contract.adapters.map((adapter) => [adapter.id, adapter]));
 for (const id of [
   "telegram_notify_sh",
+  "macos_notification_fallback",
   "line_messaging_api_push",
   "notion_optional_delivery",
   "codex_thread_manual_delivery",
@@ -65,9 +66,20 @@ if (hasExternalScheduleFixture) {
 const telegram = adapters.get("telegram_notify_sh");
 assert.equal(telegram.entrypoint, "$COLLAB/notyet-harness/schedule/lib/notify.sh");
 assert.equal(telegram.graceful_skip.missing_env_exit_code, 2);
+assert.equal(telegram.graceful_skip.fallback_disable_env, "NOTIFY_MACOS_FALLBACK=0");
 assert.ok(telegram.forbidden.includes("mutate MC task state"));
+assert.equal(telegram.delivery_log.path, "$COLLAB/notyet-harness/schedule/runs/notify-delivery.jsonl");
+assert.deepEqual(telegram.delivery_log.statuses, ["telegram_sent", "macos_fallback", "both_failed", "skipped"]);
+
+const macosFallback = adapters.get("macos_notification_fallback");
+assert.equal(macosFallback.entrypoint, "$COLLAB/notyet-harness/schedule/lib/notify.sh");
+assert.equal(macosFallback.status, "implemented_local_only");
+assert.ok(macosFallback.forbidden.includes("send secrets"));
+
 if (hasExternalScheduleFixture) {
   assertNotifyGracefulSkip();
+  assertNotifyMacosFallback();
+  assertNotifyBothFailed();
 }
 
 const line = adapters.get("line_messaging_api_push");
@@ -104,22 +116,78 @@ if (hasExternalScheduleFixture) {
   console.log("MorroWise notification adapter contract verification OK — external schedule fixture skipped");
 }
 
+function makeNotifyFixture(tmpRoot) {
+  const scheduleRoot = path.join(tmpRoot, "schedule");
+  const libDir = path.join(scheduleRoot, "lib");
+  fs.mkdirSync(libDir, { recursive: true });
+  const fixtureNotify = path.join(libDir, "notify.sh");
+  fs.copyFileSync(notifyPath, fixtureNotify);
+  fs.chmodSync(fixtureNotify, 0o755);
+  return { fixtureNotify, deliveryLog: path.join(scheduleRoot, "runs", "notify-delivery.jsonl") };
+}
+
+function makeStubOsascript(tmpRoot, exitCode) {
+  const stub = path.join(tmpRoot, `stub-osascript-${exitCode}`);
+  fs.writeFileSync(stub, `#!/usr/bin/env bash\nexit ${exitCode}\n`);
+  fs.chmodSync(stub, 0o755);
+  return stub;
+}
+
 function assertNotifyGracefulSkip() {
   const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "morrowise-notify."));
   try {
-    const scheduleRoot = path.join(tmpRoot, "schedule");
-    const libDir = path.join(scheduleRoot, "lib");
-    fs.mkdirSync(libDir, { recursive: true });
-    const fixtureNotify = path.join(libDir, "notify.sh");
-    fs.copyFileSync(notifyPath, fixtureNotify);
-    fs.chmodSync(fixtureNotify, 0o755);
+    const { fixtureNotify, deliveryLog } = makeNotifyFixture(tmpRoot);
 
     const result = spawnSync("bash", [fixtureNotify, "contract test"], {
       encoding: "utf8",
+      env: { ...process.env, NOTIFY_MACOS_FALLBACK: "0" },
     });
 
-    assert.equal(result.status, 2, "notify.sh should gracefully skip when .env is missing");
+    assert.equal(result.status, 2, "notify.sh should gracefully skip when .env is missing and fallback is disabled");
     assert.match(result.stderr, /略過推播|skip/i, "notify.sh should explain skipped delivery");
+    const logged = fs.readFileSync(deliveryLog, "utf8").trim().split(/\r?\n/).map((line) => JSON.parse(line));
+    assert.equal(logged.at(-1).status, "skipped");
+  } finally {
+    fs.rmSync(tmpRoot, { recursive: true, force: true });
+  }
+}
+
+function assertNotifyMacosFallback() {
+  const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "morrowise-notify."));
+  try {
+    const { fixtureNotify, deliveryLog } = makeNotifyFixture(tmpRoot);
+    const stub = makeStubOsascript(tmpRoot, 0);
+
+    const result = spawnSync("bash", [fixtureNotify, "contract test"], {
+      encoding: "utf8",
+      env: { ...process.env, NOTIFY_OSASCRIPT_BIN: stub },
+    });
+
+    assert.equal(result.status, 0, "notify.sh should deliver via macOS fallback when .env is missing");
+    assert.match(result.stdout, /status=macos_fallback/, "notify.sh should report macos_fallback status");
+    const logged = fs.readFileSync(deliveryLog, "utf8").trim().split(/\r?\n/).map((line) => JSON.parse(line));
+    assert.equal(logged.at(-1).status, "macos_fallback");
+    assert.equal(logged.at(-1).schema_version, "notify-delivery.v0");
+  } finally {
+    fs.rmSync(tmpRoot, { recursive: true, force: true });
+  }
+}
+
+function assertNotifyBothFailed() {
+  const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "morrowise-notify."));
+  try {
+    const { fixtureNotify, deliveryLog } = makeNotifyFixture(tmpRoot);
+    const stub = makeStubOsascript(tmpRoot, 1);
+
+    const result = spawnSync("bash", [fixtureNotify, "contract test"], {
+      encoding: "utf8",
+      env: { ...process.env, NOTIFY_OSASCRIPT_BIN: stub },
+    });
+
+    assert.equal(result.status, 2, "notify.sh should exit 2 when nothing could be delivered");
+    assert.match(result.stderr, /status=both_failed/, "notify.sh should report both_failed status");
+    const logged = fs.readFileSync(deliveryLog, "utf8").trim().split(/\r?\n/).map((line) => JSON.parse(line));
+    assert.equal(logged.at(-1).status, "both_failed");
   } finally {
     fs.rmSync(tmpRoot, { recursive: true, force: true });
   }

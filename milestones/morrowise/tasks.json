@@ -1843,7 +1843,11 @@
       "done_condition": "Vincent 核准 capability registry v0→v1 計畫（11 項、編號＝執行順序）。點頭即 completed，不留掛帳。",
       "note": "Owner: Vincent。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md（v3，含 HC 對抗審四處修正）。",
       "completed_at": "2026-07-05",
-      "summary": "Vincent 於 2026-07-05 session 核准 v3 計畫；裁決項 JV-20~23 待掃描證據後裁。"
+      "summary": "Vincent 2026-07-05 核准 v3 計畫；11 筆 JV task 經並行 session commit 收編入 git（morrowise 10 筆=5937b35、JV-26=008f593），計畫檔=notyet-harness 20de8b8。",
+      "commits": [
+        "5937b35",
+        "008f593"
+      ]
     },
     {
       "id": "capability-observed-scan",

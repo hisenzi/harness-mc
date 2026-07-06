@@ -44,15 +44,29 @@ for (const dir of fs.readdirSync(milestonesDir).sort()) {
   activeProjectIds.push(dir);
 }
 
+// provisional_project_domains：他方 session in-flight（本機存在、尚未 commit）的專案 mapping。
+// 正向檢查兩邊都認；反向存在檢查只管 project_domains——CI checkout 看不到未 commit 的
+// milestone 目錄，寫死在 project_domains 會讓 CI 假紅（2026-07-06 td-morrowise-surface 實證）。
+const provisionalDomains = taxonomy.provisional_project_domains || {};
 const validDomains = new Set(domainIds);
 for (const projectId of activeProjectIds) {
-  assert.ok(taxonomy.project_domains[projectId], `${projectId}: missing PAI domain mapping`);
-  assert.ok(validDomains.has(taxonomy.project_domains[projectId]), `${projectId}: unknown PAI domain ${taxonomy.project_domains[projectId]}`);
+  const mapped = taxonomy.project_domains[projectId] || provisionalDomains[projectId];
+  assert.ok(mapped, `${projectId}: missing PAI domain mapping`);
+  assert.ok(validDomains.has(mapped), `${projectId}: unknown PAI domain ${mapped}`);
 }
 
 for (const projectId of Object.keys(taxonomy.project_domains)) {
   const projectPath = path.join(milestonesDir, projectId, "project.json");
   assert.ok(fs.existsSync(projectPath), `${projectId}: domain mapping points to missing project`);
+}
+
+for (const [projectId, domain] of Object.entries(provisionalDomains)) {
+  assert.ok(validDomains.has(domain), `${projectId}: unknown provisional PAI domain ${domain}`);
+  assert.ok(!taxonomy.project_domains[projectId], `${projectId}: must not be in both project_domains and provisional`);
+  if (fs.existsSync(path.join(milestonesDir, projectId, "project.json"))) {
+    // 專案已在本機出現：提醒（不阻斷）——待該 milestone commit 後把 mapping 升級進 project_domains
+    console.warn(`provisional mapping ${projectId} → ${domain}: promote to project_domains once the milestone is committed`);
+  }
 }
 
 console.log(`PAI domain taxonomy verification passed — ${domainIds.length} domains, ${activeProjectIds.length} active projects`);

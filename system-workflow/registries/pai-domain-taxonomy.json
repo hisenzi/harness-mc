@@ -105,8 +105,7 @@
     "web-reminder-pwa": "notyet",
     "writing-system": "notyet",
     "xw-worldview": "notyet",
-    "yutianlaw": "臨時",
-    "td-morrowise-surface": "Harness"
+    "yutianlaw": "臨時"
   },
   "history": [
     {
@@ -115,5 +114,8 @@
       "reason": "Align MC /projects classification chips with Notion PAI `領域` instead of MC internal project.type.",
       "task": "harness-mc/projects-pai-domain-filter-alignment"
     }
-  ]
+  ],
+  "provisional_project_domains": {
+    "td-morrowise-surface": "Harness"
+  }
 }

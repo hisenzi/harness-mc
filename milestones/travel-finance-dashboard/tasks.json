@@ -458,7 +458,7 @@
     {
       "id": "p2-standalone-dashboard-build",
       "title": "實作 standalone travel-finance-dashboard 儀表板",
-      "status": "todo",
+      "status": "completed",
       "track": "dashboard",
       "done_condition": "p1-verify 通過後，建立或 promote travel-finance-dashboard standalone repo / app，並實作可用的回國清帳 dashboard",
       "acceptance": [
@@ -467,15 +467,44 @@
         "清楚標示 Notion Travel Inbox、travel ledger、dashboard、Excel/報告輸出的資料流與 ownership",
         "能用大阪 reference ledger 驗證畫面數字與最後轉帳清單"
       ],
-      "note": "Phase 2 ready: p1-verify completed on 2026-07-03. Standalone dashboard must read travel ledger / generated read model, expose the five review views, and keep finance-dashboard as reference only.",
+      "note": "2026-07-06: Dashboard reads generated travel ledger read model only; Notion remains evidence capture, finance-dashboard remains reference only, and Excel/report/transfer list remain output artifacts.",
       "external_refs": {
         "phase1_verification": {
           "status": "passed",
           "doc": "$COLLAB/travel-finance-dashboard/docs/phase-1-verification.md",
           "verifier": "python3 scripts/verify-phase-1.py",
           "verified_at": "2026-07-03"
+        },
+        "standalone_dashboard": {
+          "status": "implemented",
+          "app_entry": "$COLLAB/travel-finance-dashboard/index.html",
+          "styles": "$COLLAB/travel-finance-dashboard/src/styles.css",
+          "app_logic": "$COLLAB/travel-finance-dashboard/src/app.js",
+          "read_model_json": "$COLLAB/travel-finance-dashboard/data/osaka-dashboard-read-model.json",
+          "read_model_js": "$COLLAB/travel-finance-dashboard/data/osaka-dashboard-read-model.js",
+          "generator": "python3 scripts/generate-dashboard-read-model.py",
+          "verifier": "python3 scripts/verify-dashboard-app.py",
+          "verified_at": "2026-07-06",
+          "core_views": [
+            "overview",
+            "payment_method_reconciliation",
+            "proxy_review",
+            "review_queue",
+            "final_transfers"
+          ],
+          "osaka_shared_total_twd": 97964,
+          "osaka_per_traveler_twd": 24491,
+          "osaka_proxy_review_total_twd": 8172,
+          "osaka_blocking_review_count": 3,
+          "osaka_final_transfer_count": 3,
+          "data_boundary": "read_only_dashboard_from_travel_ledger_read_model_no_daily_finance_dashboard_writes"
         }
-      }
+      },
+      "completed_at": "2026-07-06",
+      "summary": "Completed standalone travel-finance-dashboard app: static read-only clearing dashboard with five core views, generated Osaka dashboard read model, explicit source ownership flow, and verifier covering Osaka reference totals plus draft transfer list.",
+      "commits": [
+        "534b0ba"
+      ]
     },
     {
       "id": "project-init-source-commit",

@@ -1851,7 +1851,7 @@
     },
     {
       "id": "capability-observed-scan",
-      "status": "todo",
+      "status": "completed",
       "title": "JV-19 Capability observed 掃描器（本機接線盤點＋drift 比對）",
       "track": "auditor-mvp",
       "order_label": "JV-19",
@@ -1859,7 +1859,12 @@
         "rollout-order-approval"
       ],
       "done_condition": "擴充 generate-capability-runtime-status.mjs：observed 枚舉（~/.claude.json 全 scope、command -v CLI、launchd plist、settings hooks、secrets 檔存在性+mtime，只驗 existence 不讀內容），輸出 observed items＋與 registry 雙向 drift；heptabase 帳號層雙接線做成 fixture 能報 observed-not-declared；test:capability-drift verifier 綠；加 cc-runner 變體（session 內枚舉實掛 MCP server，可偵測帳號層）；掃描報告附到 JV-20/21/22 裁決項。",
-      "note": "紅線：scanner 永不讀憑證內容。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。踩坑依據：subagent 漏掃 project scope、config/secrets 查錯路徑（掃描器必須 $COLLAB resolve＋全 scope 枚舉）。"
+      "note": "紅線：scanner 永不讀憑證內容。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。踩坑依據：subagent 漏掃 project scope、config/secrets 查錯路徑（掃描器必須 $COLLAB resolve＋全 scope 枚舉）。",
+      "completed_at": "2026-07-06",
+      "commits": [
+        "6e94a85"
+      ],
+      "summary": "本機接線盲掃器：枚舉全 scope MCP/CLI/launchd/hook/secret 存在性（只驗存在不讀憑證），與 capability registry 雙向 drift（observed-not-declared／declared-not-observed）；cc-runner 變體（CAPABILITY_SESSION_MCP env）抓帳號層 connector。產物 public/data/capability-observed.json（gitignored, build 生成），CI 空掃標 indeterminate 防 fake-live。test:capability-drift 綠，既有 capability verifier 未破。"
     },
     {
       "id": "mcp-registration-consolidation",
@@ -1871,7 +1876,7 @@
         "capability-observed-scan"
       ],
       "done_condition": "Vincent 依 JV-19 掃描報告裁決收斂方案；建議收斂到 global、project scope 只留專案特有（playwright 留 $COLLAB scope）；裁決結果寫回本 note＋registry history。",
-      "note": "Owner: Vincent（agent 不可代辦）。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。"
+      "note": "Owner: Vincent（agent 不可代辦）。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。\n\n[JV-19 掃描證據 2026-07-06 VincentMBA-blue，重生：node scripts/generate-capability-observed.mjs → decision_evidence]： codex 註冊 2 處（global＋$COLLAB）、heptabase-mcp 3 處（global＋$COLLAB＋$COLLAB/maxmodel）。"
     },
     {
       "id": "firecrawl-disposition",
@@ -1883,7 +1888,7 @@
         "capability-observed-scan"
       ],
       "done_condition": "Vincent 裁決：不認得就拆、認得就進 registry 登記；結果寫回本 note＋registry history。",
-      "note": "Owner: Vincent（agent 不可代辦）。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。"
+      "note": "Owner: Vincent（agent 不可代辦）。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。\n\n[JV-19 掃描證據 2026-07-06 VincentMBA-blue，重生：node scripts/generate-capability-observed.mjs → decision_evidence]： firecrawl 註冊於 $HOME scope（1 處），registry 無對應 → observed-not-declared。"
     },
     {
       "id": "account-connector-policy",
@@ -1895,7 +1900,7 @@
         "capability-observed-scan"
       ],
       "done_condition": "Vincent 裁決帳號層（claude.ai Connectors）管理制：建議登記制＋session probe 稽核（JV-19 cc-runner 佐證）；禁用制為備選；結果寫進 registry secret_policy 層。",
-      "note": "Owner: Vincent。前提修正：帳號層本機檔案掃不到但 session 內可觀測（2026-07-05 Heptabase 雙接線實證）。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。"
+      "note": "Owner: Vincent。前提修正：帳號層本機檔案掃不到但 session 內可觀測（2026-07-05 Heptabase 雙接線實證）。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。\n\n[JV-19 掃描證據 2026-07-06 VincentMBA-blue，重生：node scripts/generate-capability-observed.mjs → decision_evidence]： cc-runner 變體實測本 session 掛載 notion-edu/codex/heptabase-mcp，帳號層 drift=0（今日拆除後無殘留隱藏接線）；此變體可作政策的定期稽核工具。"
     },
     {
       "id": "entry-doc-patch-approval",

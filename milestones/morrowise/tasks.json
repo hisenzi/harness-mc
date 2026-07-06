@@ -1720,7 +1720,7 @@
     },
     {
       "id": "cc-push-batch",
-      "status": "todo",
+      "status": "completed",
       "title": "JV-10 本地 commits 批次推 remote（雙機可見前提）",
       "track": "governance",
       "order_label": "JV-10",
@@ -1733,7 +1733,9 @@
           "synced_at": "2026-07-05",
           "sync_mode": "created"
         }
-      }
+      },
+      "completed_at": "2026-07-06",
+      "summary": "cc-push skill 首次完整執行：fetch-first 審計兩 repo（均純 ahead 無分歧）、harness-mc gate 八項 verifier 全綠、push plan 經 Vincent 確認後推送——harness-mc d0b7b0d..c12caca（25 筆，含 JV 批次 21）、notyet-harness f784528..e2e80d9（7 筆）。Dirty exclusions 留局（他方 in-flight＋generated data）。MBA-2 pull 後即可執行 JV-11 安裝。GitHub Pages 部署由 push 觸發（run 28776824111）。"
     },
     {
       "id": "cross-machine-sync-alert",

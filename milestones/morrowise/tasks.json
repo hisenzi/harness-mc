@@ -2141,6 +2141,7 @@
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#cross-machine-sync-alert",
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-dual-machine-observed",
         "$COLLAB/notyet-harness/000_Agent/docs/morrowise/runbooks/mba2-catch-up-restore.md",
+        "$COLLAB/harness-mc/system-workflow/reports/mba1-closeout-handoff-20260708.md",
         "$COLLAB/notyet-harness/000_Agent/session-handoff-20260424.md",
         "$COLLAB/notyet-harness/000_Agent/memory/daily/2026-07-05.md"
       ],
@@ -2163,7 +2164,7 @@
         ],
         "source_boundary": "HC is a thinking check only, not source of truth. Canonical sync state is repo status, committed task state, machine-scoped observed snapshots, verifier output, and explicit Vincent approval."
       },
-      "note": "2026-07-07 Vincent 裁決：MBA-2 約兩個月未同步，不當成 clean install；先快速精準同步 AI Agent 協作相關 repo 與安全 runtime。此 task 承接並修正 JV-11 舊 schedule install 假設，不執行 unsafe launchd/full-disk 路線。2026-07-07 驗證補強：補 MBA-2 catch-up runbook 路徑與 MBA-1 preflight gate，避免 MBA-2 追到未收尾的正本。"
+      "note": "2026-07-07 Vincent 裁決：MBA-2 約兩個月未同步，不當成 clean install；先快速精準同步 AI Agent 協作相關 repo 與安全 runtime。此 task 承接並修正 JV-11 舊 schedule install 假設，不執行 unsafe launchd/full-disk 路線。2026-07-07 驗證補強：補 MBA-2 catch-up runbook 路徑與 MBA-1 preflight gate，避免 MBA-2 追到未收尾的正本。2026-07-08 MBA-1 preflight handoff：新增 $COLLAB/harness-mc/system-workflow/reports/mba1-closeout-handoff-20260708.md，明確列出 harness-mc / notyet-harness dirty 與 ahead 狀態、排除範圍、residual ledger 指標與下一步 reducer gate；此 handoff 不代表 MBA-1 clean，也不解鎖直接 install。"
     }
   ]
 }

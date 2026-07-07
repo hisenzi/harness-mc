@@ -2039,7 +2039,9 @@
         "reason": "JV-29 建立自動產生的架構子系統索引，並透過架構收編紀錄將 Notifier 測試樣本與索引同步子系統收編進 ARCHITECTURE.md。"
       },
       "completed_at": "2026-07-07",
-      "commits": [],
+      "commits": [
+        "c8d8b5e"
+      ],
       "summary": "完成架構收編紀錄、驗證器、ARCHITECTURE.md 子系統同步區塊、system-pulse 漂移檢查，以及 MorroWise 任務收尾的架構收編判斷關卡。",
       "verification": [
         "npm run test:architecture-subsystems",

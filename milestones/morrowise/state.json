@@ -411,10 +411,11 @@
       }
     },
     "notification-first-delivery": {
-      "status": "in_progress",
+      "status": "done",
+      "completed_at": "2026-07-07",
       "commits": [
         "b962da7",
-        "4ac9a5e"
+        "9a6cd24"
       ],
       "external_refs": {
         "heptabase": {

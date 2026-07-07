@@ -1,0 +1,118 @@
+{
+  "contract_id": "morrowise-notification-outbox-contract.v0",
+  "task_id": "notification-first-delivery",
+  "updated_at": "2026-07-06",
+  "status": "contract_ready",
+  "purpose": "Allow MorroWise to request local proactive notifications without granting a background process permission to execute or mutate $COLLAB files.",
+  "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-outbox-contract.json",
+  "outbox": {
+    "path": "$COLLAB/notyet-harness/schedule/outbox/notifications.jsonl",
+    "schema_version": "notification.v0",
+    "write_mode": "append_only_jsonl",
+    "rule": "Agent-owned code may append notification data only. It must not send notifications, execute shell commands, or mutate delivered state."
+  },
+  "implementation_choice": {
+    "id": "small-local-app-file-picker",
+    "label": "Small local app with file picker grant",
+    "authorization": "Vincent selects exactly one outbox file via file picker",
+    "reason": "This keeps $COLLAB in Downloads, avoids /bin/bash or launchd broad access, and prevents Agent-owned scripts from becoming executable delivery code."
+  },
+  "notifier_state": {
+    "storage": "$HOME/Library/Application Support/MorroWiseNotifier/delivered.sqlite",
+    "rule": "Delivered marks belong to the trusted Notifier, not to $COLLAB. The Notifier must not write back to the shared source tree."
+  },
+  "entry_schema": {
+    "allowed_fields": [
+      "schema_version",
+      "id",
+      "level",
+      "title",
+      "body",
+      "created_at",
+      "ttl_seconds",
+      "dedupe_key",
+      "source",
+      "task_anchor"
+    ],
+    "forbidden_fields": [
+      "command",
+      "script",
+      "script_path",
+      "shell",
+      "args",
+      "action",
+      "action_url",
+      "callback",
+      "delete_path",
+      "write_path"
+    ],
+    "levels": [
+      "info",
+      "watch",
+      "amber",
+      "red"
+    ],
+    "max_title_chars": 80,
+    "max_body_chars": 240,
+    "default_ttl_seconds": 3600,
+    "ttl_seconds_range": [
+      60,
+      86400
+    ]
+  },
+  "rate_limit": {
+    "max_per_minute_default": 3,
+    "overflow_rule": "Deliver max_per_minute - 1 direct notifications, then emit one merged digest for the remaining eligible notifications.",
+    "dedupe_rule": "Trusted Notifier skips entries whose id or dedupe_key is already present in its delivered store."
+  },
+  "writer_boundary": {
+    "allowed": [
+      "validate notification payload",
+      "append one JSONL line to the outbox",
+      "create the outbox directory if missing"
+    ],
+    "forbidden": [
+      "send notification",
+      "execute shell",
+      "run node as a delivery action",
+      "run git",
+      "read secrets",
+      "write delivered state",
+      "delete or rewrite the outbox"
+    ]
+  },
+  "notifier_boundary": {
+    "allowed": [
+      "read the single outbox file granted by Vincent",
+      "validate schema",
+      "display macOS notification",
+      "write delivered mark to Notifier app storage",
+      "apply ttl, dedupe, rate limit, and merge rules"
+    ],
+    "forbidden": [
+      "execute $COLLAB scripts",
+      "execute shell",
+      "run node",
+      "run git",
+      "write back to $COLLAB",
+      "delete or mutate source files",
+      "accept arbitrary command fields",
+      "open action URLs from notification payloads"
+    ]
+  },
+  "verification": {
+    "verifier": "npm run test:notification-outbox",
+    "checks": [
+      "unknown fields are rejected",
+      "forbidden command-like fields are rejected",
+      "levels and text lengths are bounded",
+      "writer appends JSONL instead of rewriting",
+      "expired notifications are skipped",
+      "delivered ids are skipped",
+      "overflow notifications are merged after rate limit",
+      "trusted Notifier spec forbids shell, node, git, $COLLAB writes, and deletion",
+      "writer does not import child_process or call delivery tools",
+      "CLI can queue to a caller-provided outbox path without sending"
+    ]
+  }
+}

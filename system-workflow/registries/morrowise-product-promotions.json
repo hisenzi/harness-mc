@@ -1,0 +1,45 @@
+{
+  "registry_id": "morrowise-product-promotions.v0",
+  "task_id": "morrowise-product-promotion-gate",
+  "status": "draft_registry",
+  "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-product-promotions.json",
+  "verifier_ref": "npm run test:morrowise-product-promotions",
+  "purpose": "Track MorroWise internal capabilities that are being evaluated for extraction into the morrowise-product product line.",
+  "decision_vocabulary": [
+    "product_candidate",
+    "not_product",
+    "deferred"
+  ],
+  "customer_instance_policy": {
+    "default_local_data_root": "$HOME/Library/Application Support/MorroWiseProduct/instances/<instance-id>/",
+    "forbidden_locations": [
+      "$COLLAB",
+      "$COLLAB/harness-mc",
+      "$COLLAB/notyet-harness"
+    ],
+    "git_policy": "Customer instance data and generated dashboards are runtime data. They must not be committed to Vincent's internal repos.",
+    "diagnostics_policy": "Diagnostics packages must be explicit, scrubbed, and must not include secrets, tokens, runtime auth files, browser cookies, or customer private data unless Vincent/customer explicitly approves the exact package."
+  },
+  "required_record_fields": [
+    "id",
+    "source_capability",
+    "source_task_anchor",
+    "maturity_evidence",
+    "customer_problem",
+    "target_customer",
+    "payable_problem",
+    "repeatable_delivery",
+    "support_cost",
+    "pricing_sku_hypothesis",
+    "product_decision",
+    "product_line_target",
+    "customer_instance_boundary",
+    "installer_permission_model",
+    "data_ownership",
+    "verifiers",
+    "release_support_needs",
+    "promotion_risks",
+    "last_reviewed_at"
+  ],
+  "records": []
+}

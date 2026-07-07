@@ -1297,7 +1297,7 @@
         "$COLLAB/notyet-harness/schedule/install.sh",
         "$COLLAB/harness-mc/public/data/schedule-health.json"
       ],
-      "note": "owner=HiSenzi（CC 無法操作 MBA-2），2026-07-03 cc-log 交接。查重：AI Agent 共享腦系統 project 的 M4（MBA-2 跑 SOP）是整機切換 SOP，不覆蓋排程 trigger 安裝。 2026-07-05 實測：本機 hostname=VincentMBA-blue.local；launchctl list com.hisenzi.schedule.commit-attention-sweep / mc-sentinel / system-pulse 均有輸出且 LastExitStatus=0；schedule-health 產生 3 tasks、3/3 plists installed、1 last-run failure（system-pulse degraded 屬另一條 runtime health）。MBA-2 待 Vincent 切機後執行：`cd $COLLAB && git pull --rebase`、`$COLLAB/notyet-harness/schedule/install.sh --load`、`launchctl list com.hisenzi.schedule.system-pulse`、`cd $COLLAB/harness-mc && node scripts/generate-schedule-health.mjs`；完成證據只寫 cc-log / runs log，不把 MBA-2 本機狀態寫成共享正本。 2026-07-05 JV-01 sweep 承接 dual-blade 4 項：M4 SOP 切換（同義）、Heptabase×Notion whiteboard_id 搬遷、MBA-2 status bar 安裝、cc-token-count 工具安裝——JV-11 執行時一併完成。 2026-07-05 22:36 更正：MBA-1 plist 3/3 已載入，但 launchd 實際執行自 07-03 22:10 起全數失敗（TCC：/bin/bash 無 Downloads 存取權，schedule/runs/*.launchd.err.log 連日 Operation not permitted，kickstart system-pulse 即時重現 LastExitStatus=32256）。早前「3/3 已驗」僅驗 plist 載入與當時 kickstart，不代表排程執行成功。MBA-2 安裝指引必須加 TCC 授權步驟，見 launchd-tcc-downloads-access。",
+      "note": "owner=HiSenzi（CC 無法操作 MBA-2），2026-07-03 cc-log 交接。查重：AI Agent 共享腦系統 project 的 M4（MBA-2 跑 SOP）是整機切換 SOP，不覆蓋排程 trigger 安裝。 2026-07-05 實測：本機 hostname=VincentMBA-blue.local；launchctl list com.hisenzi.schedule.commit-attention-sweep / mc-sentinel / system-pulse 均有輸出且 LastExitStatus=0；schedule-health 產生 3 tasks、3/3 plists installed、1 last-run failure（system-pulse degraded 屬另一條 runtime health）。MBA-2 待 Vincent 切機後執行：`cd $COLLAB && git pull --rebase`、`$COLLAB/notyet-harness/schedule/install.sh --load`、`launchctl list com.hisenzi.schedule.system-pulse`、`cd $COLLAB/harness-mc && node scripts/generate-schedule-health.mjs`；完成證據只寫 cc-log / runs log，不把 MBA-2 本機狀態寫成共享正本。 2026-07-05 JV-01 sweep 承接 dual-blade 4 項：M4 SOP 切換（同義）、Heptabase×Notion whiteboard_id 搬遷、MBA-2 status bar 安裝、cc-token-count 工具安裝——JV-11 執行時一併完成。 2026-07-05 22:36 更正：MBA-1 plist 3/3 已載入，但 launchd 實際執行自 07-03 22:10 起全數失敗（TCC：/bin/bash 無 Downloads 存取權，schedule/runs/*.launchd.err.log 連日 Operation not permitted，kickstart system-pulse 即時重現 LastExitStatus=32256）。早前「3/3 已驗」僅驗 plist 載入與當時 kickstart，不代表排程執行成功。MBA-2 安裝指引必須加 TCC 授權步驟，見 launchd-tcc-downloads-access。2026-07-07 安全裁決後補充：不得把 MBA-2 同步簡化成 schedule/install.sh --load 或 /bin/bash TCC 授權；MBA-2 兩個月未同步應改走 JV-31 catch-up restore：先 read-only audit、保存本機差異、同步核心 repo、跑 verifier，再做安全 runtime rebind。JV-11 保留歷史假設，不作為下一步執行入口。",
       "summary": "本機 VincentMBA-blue.local 已確認 3/3 schedule launchd labels 載入（commit-attention-sweep、mc-sentinel、system-pulse）；MBA-2 端需 Vincent/HiSenzi 切機後 git pull 並執行 schedule/install.sh --load，CC 在本機無法讀取或宣告 MBA-2 launchd/runtime 狀態，故不得標 completed。",
       "order_label": "JV-11",
       "external_refs": {
@@ -1584,11 +1584,11 @@
     },
     {
       "id": "notification-first-delivery",
-      "status": "in_progress",
-      "title": "JV-04 第一則主動通知（notify.sh macOS fallback）",
+      "status": "done",
+      "title": "JV-04 第一則主動通知（資料信箱 + 可信 Notifier）",
       "track": "runtime-delivery",
       "order_label": "JV-04",
-      "done_condition": "schedule/lib/notify.sh 加 osascript fallback（缺 Telegram 憑證時彈 macOS 通知，不再靜默 skip）；送達結果記 runs/ log（telegram_sent/macos_fallback/both_failed）。前置驗證：schedule/.env 已被 .gitignore 擋住（憑證不得入 repo）。驗證含 launchd 情境實測（TCC 權限可能擋 osascript，手動過不算過）。完成判準：Vincent 螢幕出現一則非他觸發的通知。",
+      "done_condition": "在安全前提下完成第一則主動通知：Agent / MorroWise 只產生通知資料，不讓背景程序執行 $COLLAB 內可被 Agent 修改的 script。建立 notifications outbox JSONL contract（固定 schema、id/title/body/level/created_at/ttl、文字長度限制、level allowlist、過期不送、rate limit / 合併規則）；可信 Notifier（Shortcut / app / 受限 runner）只讀單一 outbox 檔、驗 schema、顯示 macOS 通知，delivered mark 寫到 Notifier 自己的 app storage，不回寫 $COLLAB，不跑 shell/node/git，不接受任意 command，不刪檔。完成判準：Vincent 螢幕出現一則非手動觸發通知，且驗證證明 Notifier 無法藉通知流程執行 $COLLAB script 或取得刪改正本能力。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise",
@@ -1598,10 +1598,11 @@
           "sync_mode": "created"
         }
       },
-      "note": "2026-07-05 實作落地：notify.sh v2（Telegram 主線 + osascript fallback + runs/notify-delivery.jsonl 送達帳，statuses: telegram_sent/macos_fallback/both_failed/skipped；exit 0=已送達、2=未送達不中斷、3=Telegram 失敗且 fallback 失敗）。contract registry 新增 macos_notification_fallback adapter，verifier 三個 fixture（graceful skip/fallback 成功/both_failed）全綠。手動情境實測 PASS（osascript_ok、通知已彈、jsonl 有記錄）。launchd 情境實測 BLOCKED：發現 MBA-1 排程觸發層自 2026-07-03 22:10 起全數被 macOS TCC 擋（/bin/bash 無 Downloads 存取權，dispatch.sh Operation not permitted，kickstart 重現 exit 126），詳見 launchd-tcc-downloads-access task。TCC 修復後需 kickstart 重驗＋Vincent 目擊通知才可 completed。notyet-harness commit 見 task-events outbox；harness-mc commits 見 commits 欄。",
+      "note": "2026-07-05 實作落地：notify.sh v2（Telegram 主線 + osascript fallback + runs/notify-delivery.jsonl 送達帳，statuses: telegram_sent/macos_fallback/both_failed/skipped；exit 0=已送達、2=未送達不中斷、3=Telegram 失敗且 fallback 失敗）。contract registry 新增 macos_notification_fallback adapter，verifier 三個 fixture（graceful skip/fallback 成功/both_failed）全綠。手動情境實測 PASS（osascript_ok、通知已彈、jsonl 有記錄）。launchd 情境實測 BLOCKED：發現 MBA-1 排程觸發層自 2026-07-03 22:10 起全數被 macOS TCC 擋（/bin/bash 無 Downloads 存取權，dispatch.sh Operation not permitted，kickstart 重現 exit 126）。2026-07-06 HC 重新定義：安全優先，不授權 /bin/bash 完整磁碟、不整包搬出 Downloads、不讓 launchd 執行 $COLLAB script。改採資料信箱 + 可信 Notifier：Agent 只寫通知資料；Notifier 只讀單一 outbox 並顯示通知，delivered mark 寫 Notifier 自有 storage，不回寫 $COLLAB。2026-07-06 implementation slice：已完成 notifications outbox contract（morrowise-notification-outbox-contract.json）、Agent 端 append-only writer（scripts/notification-outbox.mjs）、trusted Notifier 邊界 spec（system-workflow/docs/morrowise/trusted-notifier.md）、安全 verifier 與 npm script（test:notification-outbox）。2026-07-07 implementation slice：正式選定 small local app with file picker grant；新增可編譯 Swift Notifier source（tools/morrowise-notifier/MorroWiseNotifier.swift），source verifier（test:morrowise-notifier-source）確認使用 NSOpenPanel/security-scoped bookmark/UserNotifications/delivered.sqlite，且不含 Process/NSTask/popen/system/NSWorkspace/launchctl//bin/bash/notify.sh/osascript。已 queue 安全 outbox 測試通知 jv04-manual-outbox-test。驗證：test:notification-outbox、test:morrowise-notifier-source、test:notification-adapter-contract、validate-tasks --changed-only --project morrowise 全綠。剩餘 checklist：6. Vincent 人工授權 Notifier 讀單一 outbox 檔案；7. 安裝/執行 Notifier poll-once 並實測非手動觸發通知，Vincent 目擊後才可 completed。notyet-harness commit 見 task-events outbox；harness-mc commits 見 commits 欄。 2026-07-07實機實測更新：已建置 /private/tmp/MorroWiseNotifier.app bundle，已透過 file picker 授權單一 outbox 檔（notifications.jsonl），bundle diagnose 顯示 bookmark_configured=true。poll-once 已可讀取 outbox 並進入 UserNotifications 流程；裸 binary 失敗原因已修正（需 .app bundle identity、created_at 支援毫秒 ISO timestamp）。目前阻塞只剩 macOS 通知權限回傳 Notification permission denied；JV-04 不得標 completed，待 Vincent 在系統設定啟用 MorroWiseNotifier 通知後重跑 poll-once。 2026-07-07實機實測成功更新：正式安裝版 ~/Applications/MorroWiseNotifier.app 已建立、ad-hoc codesign、LaunchServices 註冊；需用正式安裝版重新 file picker 授權單一 outbox，不能沿用 /private/tmp 測試版 bookmark。修正 Swift Notifier：啟動 AppKit runtime、foreground notification delegate、--notification-status 診斷、SQLite withCString 綁定，避免 delivered.sqlite 寫入空 key。實測：notification_status authorized；poll-once 回傳 notification delivered: jv04-poll-test-20260707-codex-02；delivered.sqlite 寫入 quote(key)=jv04-poll-test-20260707-codex-02、delivered_at=2026-07-07T01:51:40.533Z。JV-04 仍需 Vincent 目擊通知 banner 後才可 completed。 2026-07-07完成驗收：Vincent 回覆已看到 MorroWise 通知 banner；JV-04 done_condition 達成（非手動觸發通知已出現在螢幕，且 Notifier 安全 verifier 通過）。",
       "commits": [
         "b962da7"
-      ]
+      ],
+      "completed_at": "2026-07-07"
     },
     {
       "id": "telegram-credentials",
@@ -1823,11 +1824,13 @@
     },
     {
       "id": "launchd-tcc-downloads-access",
-      "status": "blocked",
-      "title": "launchd TCC 授權修復（Downloads 資料夾存取，雙機）",
+      "status": "done",
+      "title": "launchd TCC 授權修復（未執行，改採資料信箱 Notifier 架構）",
       "track": "runtime-delivery",
-      "done_condition": "MBA-1（後續 MBA-2 同）launchd 排程 job 能實際執行 $COLLAB 內的 dispatch.sh：launchctl kickstart 後 runs/ 出現新 run log 且 LastExitStatus=0；schedule/runs/*.launchd.err.log 不再出現 Operation not permitted。",
-      "note": "2026-07-05 發現：~/Downloads 是 TCC 保護資料夾，launchd 背景程序（/bin/bash）無存取權，三個 com.hisenzi.schedule.* job 自 07-03 22:10 起每次觸發都失敗（exit 126），整個排程觸發層實際死亡但 schedule-health 只看 plist 存在所以未暴露。Owner: Vincent（需 GUI 操作）。選項 A（快，2 分鐘）：系統設定→隱私權與安全性→完整磁碟取用權→加入 /bin/bash——代價是所有 launchd bash job 都拿到全磁碟權限。選項 B（正解，工程量大）：把 Claude_協作 搬出 ~/Downloads（如 ~/Claude_協作，home 根目錄非 TCC 保護區）——共享文件已全用 $COLLAB 相對路徑，但 launchd plist、harness-mc LaunchAgent、CLAUDE.md Step 0 find 範圍、本機 symlink 需逐一更新，建議另開 task 規劃。建議先 A 後 B。blocked_until: Vincent 裁決並執行。",
+      "completed_at": "2026-07-06",
+      "done_condition": "此路線不執行：不得以授權 /bin/bash 完整磁碟、授權 launchd 讀整個 Downloads、或整包搬出 $COLLAB 的方式解 JV-04。主動通知改由 notification-first-delivery 的資料信箱 + 可信 Notifier 架構承接。",
+      "summary": "HC 重判後關閉 launchd TCC 授權路線：完整磁碟與整包搬家都會放大 Agent 刪改檔風險；安全版主動通知改為 Agent 只寫 notifications outbox，可信 Notifier 只讀資料並顯示通知，不執行 $COLLAB script。",
+      "note": "2026-07-05 發現：~/Downloads 是 TCC 保護資料夾，launchd 背景程序（/bin/bash）無存取權，三個 com.hisenzi.schedule.* job 自 07-03 22:10 起每次觸發都失敗（exit 126），整個排程觸發層實際死亡但 schedule-health 只看 plist 存在所以未暴露。2026-07-06 Vincent 裁決：不開完整磁碟權限，且不把 $COLLAB 整包搬到 home root，因為這會失去 TCC 對 Agent 亂刪檔的防線。此 task 未執行並關閉；後續由 JV-04 安全版定義承接。",
       "source_refs": [
         "$COLLAB/notyet-harness/schedule/runs/system-pulse.launchd.err.log",
         "$COLLAB/notyet-harness/schedule/install.sh",
@@ -1963,6 +1966,175 @@
       ],
       "done_condition": "observed 輸出 machine-scoped（observed/<machine-id>.json）；快照級非即時（禁自動 commit 不開例外，對端資料標資料齡）；read model 呈現雙機 observed＋各自資料齡或標 missing-machine；OC 端由 HiSenzi 產 observed file（CC 不碰 ~/.openclaw）。",
       "note": "HC 審 F1：registries forbidden 清單禁自動 commit，故為快照級。MBA-2 段與 JV-11 同批。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。"
+    },
+    {
+      "id": "architecture-subsystem-index-live-sync",
+      "status": "todo",
+      "title": "JV-29 ARCHITECTURE.md 子系統索引 live sync（Notifier 首個 fixture）",
+      "track": "governance",
+      "order_label": "JV-29",
+      "dependencies": [
+        "notification-first-delivery",
+        "morrowise-system-json-generator-v0",
+        "architecture-pulse-source-edit",
+        "morrowise-wiring-gate-verifier"
+      ],
+      "done_condition": "把 $COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md 升級為薄架構入口：保留手寫原則與 current-state generated block，新增 architecture-subsystems generated marker block，只列子系統索引、source of truth、detail doc、verifier 與一句摘要，不複製實作細節。建立 Architecture Admission Record 正本（$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json），由 sync-architecture-subsystems 腳本與 --check/self-test 從該 registry 生成索引；sync script 不得自行掃檔推論架構。新增 architecture subsystem schema verifier 與 task closeout gate verifier，讓 Admission Record 欄位、安全邊界、verifier command、promoted/not_required/deferred 決策都能被機械檢查。Notifier/outbox/trusted app 作為首個 fixture。未來 Notifier 架構微調時，先更新 registry/docs/source，再由 sync script 更新 ARCHITECTURE.md；若忘記同步，system-pulse 必須以 --check 抓到 drift，且 system-pulse verifier 必須防止該 step 被移除。",
+      "acceptance": [
+        "ARCHITECTURE.md 新增 architecture-subsystems marker block，區塊明確標示 auto-generated 且勿手改；手寫區只保留不可變原則與閱讀路徑。",
+        "新增 morrowise-architecture-subsystems.json 作為 Architecture Admission Record 正本；每筆 subsystem 至少包含 id、name、status、role、summary、source_of_truth、detail_doc、task_anchor、verifiers、allowed_actions、forbidden_actions、safety_boundary、degraded_state、architecture_decision、last_promoted_at、last_verified_at，且支援 supersedes/superseded_by。",
+        "新增 scripts/verify-architecture-subsystems.mjs 或等效 verifier，檢查 Admission Record 必填欄位、enum、$COLLAB 路徑可解析、verifier command 可找到、promoted entry 具備安全欄位，且不得引用 secrets、runtime auth、browser cookies 或外部 mirror 作為 source of truth。",
+        "Notifier fixture 的索引列至少包含 capability、role、source of truth、detail doc、outbox、trusted app、delivered state、allowed actions、forbidden actions、degraded state、verifier、last_verified_at、task anchor；細節仍回指 trusted-notifier.md 與 notification-outbox contract，不在 ARCHITECTURE.md 複製長篇實作。",
+        "新增 sync script 支援 normal sync、--check 與 self-test；generated block header 必須包含 source registry、generator、generated_at、entry count 與 registry fingerprint 或等價摘要；改動 Notifier Admission Record fixture 會讓 --check fail，重跑 sync 後 --check pass。",
+        "scripts/run-system-pulse.mjs 納入 sync:architecture-subsystems --check，scripts/verify-system-pulse.mjs 必須檢查該 step 存在，且 system pulse degraded proposal 能指向對應修復指令。",
+        "promote-to-architecture 流程要求每次收編判斷都回寫 architecture_decision=promoted/not_required/deferred；不進 ARCHITECTURE.md 的決策也必須在 task note 或 registry 中可追溯。",
+        "支援 deprecated/superseded 流程：子系統 rename、替換、淘汰時，不直接刪除歷史脈絡，需在 registry 標 status 與 superseded_by / reason。",
+        "定義並機械化 task completion gate：MorroWise governance/runtime-delivery/auditor-mvp 或變更 registry/read model/verifier/scheduler/notifier/source-of-truth 的 task 在 closeout 前必須跑 promote-to-architecture 判斷；validate-tasks 或獨立 verifier 需能擋下缺少 architecture_decision 或 not_required/deferred 理由的 closeout。",
+        "定義 cross-repo sequencing：先更新 harness-mc 正本與 verifier，再同步 notyet-harness ARCHITECTURE.md；跨 repo commit/回報需能追溯同一 task anchor。",
+        "驗證包含 task validation、architecture subsystem schema verifier、architecture subsystem sync check、sync self-test、system-pulse verifier、morrowise notifier/outbox verifiers；不得讀 secrets、runtime auth、browser cookies 或外部 mirror 作為 source of truth。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+        "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-current-state.py",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-outbox-contract.json",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
+        "$COLLAB/harness-mc/system-workflow/docs/morrowise/trusted-notifier.md",
+        "$COLLAB/harness-mc/tools/morrowise-notifier/README.md",
+        "$COLLAB/harness-mc/scripts/verify-architecture-subsystems.mjs",
+        "$COLLAB/harness-mc/scripts/run-system-pulse.mjs",
+        "$COLLAB/harness-mc/scripts/verify-system-pulse.mjs",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#notification-first-delivery",
+        "$COLLAB/notyet-harness/000_Agent/skills/promote-to-architecture/SKILL.md"
+      ],
+      "hc_decision": {
+        "task_scope": "morrowise/architecture-subsystem-index-live-sync",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#sourceBoundary",
+          "#risk",
+          "#constraints"
+        ],
+        "hc_reasoning": "真正問題不是把 JV-04 Notifier 細節手寫進 ARCHITECTURE.md，而是防止 ARCHITECTURE.md 長成不可維護的第二正本。#rightProblem 將需求改成薄入口索引與自動同步；#systemDynamics 指出手寫細節會在下次 Notifier 微調後 drift，也指出缺 Admission Record 時 sync script 會變成推論型第二正本；#sourceBoundary 要求 ARCHITECTURE.md 只摘錄 registry/docs/verifier 的索引，正本仍是 architecture-subsystems registry、contract、trusted-notifier spec、source 與 tasks.json；#risk 防止活文件變胖、generator 讀取敏感 runtime、或不進架構的判斷消失；模擬驗證後補強 schema verifier、source fingerprint、mechanical closeout gate 與 system-pulse verifier，避免流程只停留在文件提醒；#constraints 要求沿用 marker-based auto doc、promote-to-architecture skill 與 system-pulse --check，不新增平行架構總表。",
+        "hc_confidence": 0.83,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+          "$COLLAB/notyet-harness/000_Agent/skills/promote-to-architecture/SKILL.md",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-outbox-contract.json",
+          "$COLLAB/harness-mc/system-workflow/docs/morrowise/trusted-notifier.md",
+          "$COLLAB/harness-mc/scripts/run-system-pulse.mjs",
+          "$COLLAB/harness-mc/scripts/verify-architecture-subsystems.mjs",
+          "$COLLAB/harness-mc/scripts/verify-system-pulse.mjs",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#notification-first-delivery"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical Notifier architecture remains in registries, docs, source, verifier output, and MC task state; ARCHITECTURE.md is an auto-synced index surface."
+      },
+      "note": "2026-07-07 Vincent 裁決：Notifier 架構必須進 ARCHITECTURE.md，但不能手寫成長篇細節；ARCHITECTURE.md 應升級為索引架構，Agent 先讀薄入口，需要細節再跳到正本文件。此 task 不重新執行 JV-04，不改 Notifier runtime；只做架構索引 live sync 與 drift gate。2026-07-07：新增 shared skill promote-to-architecture 作為本 task 的上游使用流程；skill 定義何時將完成系統能力收編進 ARCHITECTURE.md、如何分層到手寫原則 / generated subsystem index / detail docs / registries / task state。JV-29 則負責該流程依賴的自動同步底座。2026-07-07 HC 補強：補入 Architecture Admission Record 正本、promoted/not_required/deferred 決策回寫、deprecated/superseded 流程、task completed gate 與 cross-repo sequencing，避免 sync script 自行推論架構或 ARCHITECTURE.md 索引腐爛。2026-07-07 模擬驗證補強：新增 schema verifier、機械 closeout gate、Notifier 安全欄位、system-pulse step 測試與 generated block fingerprint 要求。"
+    },
+    {
+      "id": "morrowise-product-promotion-gate",
+      "status": "todo",
+      "title": "JV-30 MorroWise 內部能力提取進 morrowise-product 的 promotion gate",
+      "track": "governance",
+      "order_label": "JV-30",
+      "dependencies": [
+        "notification-first-delivery"
+      ],
+      "done_condition": "定義 MorroWise 內部能力何時值得提取進 morrowise-product 產品線：內部能力仍先在 morrowise 驗證，達到成熟度、安全邊界、customer problem、商業驗證、customer instance boundary、installer permission model、release/support 條件後，才建立 product task 或 product project；Product Promotion Record 正本先落在 $COLLAB/harness-mc/system-workflow/registries/morrowise-product-promotions.json，並由 verifier 檢查。不得把 morrowise-product 當成 MorroWise 的平行第二正本，也不得把客戶 instance 或 generated dashboard 寫回 Vincent 的 $COLLAB/harness-mc。",
+      "acceptance": [
+        "建立或更新 promotion gate 規則，明確區分 morrowise 內部控制平面、morrowise-product 產品線、customer instance 三層 source of truth。",
+        "新增 Product Promotion Record 正本 $COLLAB/harness-mc/system-workflow/registries/morrowise-product-promotions.json；在正式 morrowise-product registry 出現前，此檔是 promotion decision 的 canonical registry。",
+        "新增 Product Promotion Record 欄位定義：id、source_capability、source_task_anchor、maturity_evidence、customer_problem、target_customer、payable_problem、repeatable_delivery、support_cost、pricing_sku_hypothesis、product_decision、product_line_target、customer_instance_boundary、installer_permission_model、data_ownership、verifiers、release_support_needs、promotion_risks、last_reviewed_at。",
+        "決策 vocabulary 固定為 product_candidate / not_product / deferred；不進產品線的決策也要在 task note 可追溯。",
+        "新增 scripts/verify-morrowise-product-promotions.mjs 或等效 verifier，檢查 promotion registry 必填欄位、decision vocabulary、source task anchor、customer instance boundary、installer permission model、data ownership、verifiers 與 forbidden source/auth pattern。",
+        "定義 customer instance 最小 schema：instance id、local data root、generated dashboard path、secrets/auth storage、backup/export/delete、update/rollback/uninstall、diagnostics package boundary；customer instance data 預設放在產品 runtime storage，不得放在 $COLLAB，也不得 commit 進 Vincent internal repos。",
+        "定義 installer permission model：可讀/可寫/不可做，沿用 JV-04 安全原則，不允許任意執行 $COLLAB shell script、刪改 Vincent 正本或把客戶資料回寫內部 MorroWise。",
+        "補上商業驗證欄位：target customer、payable problem、repeatable delivery、support cost、pricing / SKU hypothesis；技術可包不等於值得賣。",
+        "新增 shared skill promote-to-morrowise-product，作為本 gate 的上游使用流程；skill 說明與 promote-to-architecture 的差異。",
+        "JV-29 architecture-subsystem-index-live-sync 是相關架構索引 task，不是 JV-30 的 blocking dependency；產品化提取 gate 可先定義，未來若某能力同時進架構索引再交叉引用。",
+        "若判定需要正式產品線，先開 morrowise-product project / milestone proposal，不直接把產品線 task 塞進 JV-04、JV-29 或既有內部 MorroWise runtime task。",
+        "驗證包含 test:morrowise-product-promotions、validate-tasks、skills index check、rg discoverability；不得讀 secrets、runtime auth、browser cookies 或客戶資料。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#notification-first-delivery",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#architecture-subsystem-index-live-sync",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-product-promotions.json",
+        "$COLLAB/harness-mc/scripts/verify-morrowise-product-promotions.mjs",
+        "$COLLAB/notyet-harness/000_Agent/skills/promote-to-morrowise-product/SKILL.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/promote-to-architecture/SKILL.md"
+      ],
+      "hc_decision": {
+        "task_scope": "morrowise/morrowise-product-promotion-gate",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#sourceBoundary",
+          "#risk",
+          "#constraints"
+        ],
+        "hc_reasoning": "真正問題不是把 MorroWiseNotifier 或任一內部能力直接包成產品，而是建立內部能力到產品線的提取閘門。#rightProblem 將 morrowise 內部控制平面與 morrowise-product 產品線分開；#systemDynamics 防止產品線變成 MorroWise 第二正本，也防止客戶 instance 污染 Vincent 的 $COLLAB；#sourceBoundary 要求產品化提取先建立 Product Promotion Record 與 customer instance 邊界，並以 morrowise-product-promotions registry 暫作正本；#risk 覆蓋 installer 權限、資料所有權、支援/升級/解除安裝、商業驗證不足與客戶資料回流風險；#constraints 要求沿用 JV-04 安全原則與 JV-29 架構索引思路，但 JV-29 不是 blocking dependency，不能把產品化問題塞回架構文件。",
+        "hc_confidence": 0.84,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#notification-first-delivery",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#architecture-subsystem-index-live-sync",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-product-promotions.json",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-product-promotions.mjs",
+          "$COLLAB/notyet-harness/000_Agent/skills/promote-to-morrowise-product/SKILL.md"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical state remains MorroWise tasks, future morrowise-product tasks, Product Promotion Record, verifier output, and explicit Vincent decisions."
+      },
+      "note": "2026-07-07 Vincent 裁決：MorroWise 產品化不是從一開始平行建立完整產品系統，而是在優化 MorroWise 過程中，評估某能力值得成為 morrowise-product 後再提取進產品線。此 task 定義提取閘門與 skill，不開發產品本體、不建立客戶 instance、不把 MorroWiseNotifier 擴成產品。2026-07-07 驗證補強：Product Promotion Record 正本先落在 morrowise-product-promotions registry，補 promotion verifier、customer instance 不進 git 規則、商業驗證欄位，並移除 JV-29 作為 blocking dependency。"
+    },
+    {
+      "id": "mba2-catch-up-restore",
+      "status": "todo",
+      "title": "JV-31 MBA-2 catch-up restore（repo sync + safe runtime rebind）",
+      "track": "runtime-delivery",
+      "order_label": "JV-31",
+      "dependencies": [
+        "cc-push-batch"
+      ],
+      "done_condition": "將兩個月未同步的 MBA-2 視為 catch-up restore，而非 clean install：先確認 MBA-1 已收尾（commit/push 或 residual ledger / handoff），再依 $COLLAB/notyet-harness/000_Agent/docs/morrowise/runbooks/mba2-catch-up-restore.md 做 read-only audit（核心 repo branch/dirty/ahead/behind/stash/local commits、safe runtime metadata），保存 MBA-2 本機差異，再同步 $COLLAB/harness-mc 與 $COLLAB/notyet-harness，跑最小 verifier，最後只做安全 runtime rebind（Notifier file picker、capability observed 快照、必要 MCP/CLI probe）；不得盲跑 schedule/install.sh --load、不得要求 /bin/bash 完整磁碟權限、不得覆蓋 MBA-2 local work。",
+      "acceptance": [
+        "產出 MBA-2 catch-up runbook：$COLLAB/notyet-harness/000_Agent/docs/morrowise/runbooks/mba2-catch-up-restore.md，區分 MBA-1 preflight、read-only audit、preserve local diffs、core repo sync、verifier、safe runtime rebind 六階段。",
+        "MBA-1 preflight gate：MBA-2 catch-up 前，MBA-1 相關 MorroWise / skill / architecture / registry 變更必須已 commit/push，或有 closeout residual ledger / explicit handoff；否則先收尾 MBA-1。",
+        "read-only audit 至少檢查 harness-mc / notyet-harness 的 branch、remote、dirty、ahead/behind、stash、local commits；只讀 safe metadata，不讀 secrets/token/runtime auth contents。",
+        "若 MBA-2 有 dirty local work、local commits 或 diverged state，流程必須先保存或回報，不得直接 pull/rebase 覆蓋。",
+        "核心同步只針對 $COLLAB/harness-mc 與 $COLLAB/notyet-harness；其他 repo 需另列清單與 task anchor，不做全域盲同步。",
+        "驗證包含 MorroWise task validation、skills index check、architecture current-state check，以及當前可跑的 system/capability verifier；不能跑的項目要記錄原因。",
+        "safe runtime rebind 明確排除 unsafe launchd /bin/bash TCC 路線；若需要 Notifier，走 file picker 授權單一 outbox；若需要雙機 observed，銜接 JV-28。",
+        "JV-11 舊 schedule install 假設被標為歷史前提，不再作為下一步執行入口；JV-12 的雙機同步警報需等 MBA-2 catch-up 後再用真實心跳復驗。",
+        "完成證據只寫 cc-log / runs log / machine-scoped observed snapshot；不得把 MBA-2 本機 runtime state 寫成共享正本。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#dual-machine-trigger-install",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#cross-machine-sync-alert",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-dual-machine-observed",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/runbooks/mba2-catch-up-restore.md",
+        "$COLLAB/notyet-harness/000_Agent/session-handoff-20260424.md",
+        "$COLLAB/notyet-harness/000_Agent/memory/daily/2026-07-05.md"
+      ],
+      "hc_decision": {
+        "task_scope": "morrowise/mba2-catch-up-restore",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#sourceBoundary",
+          "#risk",
+          "#constraints"
+        ],
+        "hc_reasoning": "真正問題不是替 MBA-2 重跑新電腦安裝，而是安全追上兩個月未同步的 repo 與本機 runtime。#rightProblem 將 clean install 改為 catch-up restore；#systemDynamics 指出直接 pull 或直接跑 schedule/install.sh 可能覆蓋 MBA-2 本機差異或重開 unsafe launchd 路線，也指出 MBA-1 若未先收尾，MBA-2 會追到不穩定正本；#sourceBoundary 要求核心 repo 正本與本機 runtime metadata 分離；#risk 防止 secrets 讀取、local work 覆蓋、full disk 授權與 machine state 寫成共享正本；#constraints 只同步核心 AI Agent 協作 repo，其他 repo 另列 task。",
+        "hc_confidence": 0.86,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#dual-machine-trigger-install",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#launchd-tcc-downloads-access",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-dual-machine-observed",
+          "$COLLAB/notyet-harness/000_Agent/docs/morrowise/runbooks/mba2-catch-up-restore.md"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical sync state is repo status, committed task state, machine-scoped observed snapshots, verifier output, and explicit Vincent approval."
+      },
+      "note": "2026-07-07 Vincent 裁決：MBA-2 約兩個月未同步，不當成 clean install；先快速精準同步 AI Agent 協作相關 repo 與安全 runtime。此 task 承接並修正 JV-11 舊 schedule install 假設，不執行 unsafe launchd/full-disk 路線。2026-07-07 驗證補強：補 MBA-2 catch-up runbook 路徑與 MBA-1 preflight gate，避免 MBA-2 追到未收尾的正本。"
     }
   ]
 }

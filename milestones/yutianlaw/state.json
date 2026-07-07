@@ -311,11 +311,16 @@
       "status": "in_progress"
     },
     "yt-c3-mvp-formspark-n8n": {
-      "status": "in_progress",
+      "status": "completed",
       "commits": [
         "f164dea",
-        "6c81802"
-      ]
+        "6c81802",
+        "ed48c27",
+        "dfc6a2c",
+        "f090499"
+      ],
+      "completed_at": "2026-07-08",
+      "summary": "Formspark Free + Zeabur n8n 雙信件 MVP 已完成：站主通知與填表人自動回覆皆通過，n8n query-token shared secret 已啟用並完成 no-token/wrong-token/payload validation/body-header carrier/security regression 測試，最終 Formspark 重新提交後收到最新自動回覆信。"
     }
   }
 }

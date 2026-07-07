@@ -428,7 +428,9 @@
       }
     },
     "telegram-credentials": {
-      "status": "blocked",
+      "status": "completed",
+      "completed_at": "2026-07-07",
+      "summary": "Telegram 跨裝置送達主線已接通：本機 schedule/.env 已配置 Telegram bot token 與 chat id，notify.sh 測試訊息回報 telegram_sent，且 Vincent 確認 @MorroWise_bot 實收；secret 值未寫入 git 或任務紀錄。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise",
@@ -440,7 +442,9 @@
       }
     },
     "watchtower-alert-delivery": {
-      "status": "todo",
+      "status": "completed",
+      "completed_at": "2026-07-06",
+      "summary": "JV-06 已在 canonical tasks 完成；2026-07-07 於 JV-05 Telegram 主線接通後重跑 market-watchtower notify-dispatch --market-status，notify.sh 回報 telegram_sent，notify-delivery.jsonl 記錄 caller=market-watchtower、status=telegram_sent、detail=http_200。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise",

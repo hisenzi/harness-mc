@@ -1607,12 +1607,20 @@
     },
     {
       "id": "telegram-credentials",
-      "status": "blocked",
+      "status": "completed",
       "title": "JV-05 Telegram 憑證填入 .env（跨裝置送達）",
       "track": "runtime-delivery",
       "order_label": "JV-05",
       "done_condition": "Vincent 於 schedule/.env 填 TELEGRAM_BOT_TOKEN 與 TELEGRAM_CHAT_ID（BotFather 新開或沿用舊 bot）；填後 notify.sh 實測手機收到一則。secrets 紅線：agent 不讀不寫憑證內容。",
-      "note": "blocked_until: Vincent 完成憑證填入。 Owner: Vincent（agent 不可代辦）。",
+      "note": "2026-07-07 完成：Vincent 手動填入本機 schedule/.env（gitignored；agent 未輸出 token / chat_id 實值），Codex 透過 Telegram getUpdates 只取 chat_id 並寫回本機 .env；notify.sh 實測回報 status=telegram_sent，Vincent 回覆已在 @MorroWise_bot 收到 JV-05 測試訊息。",
+      "completed_at": "2026-07-07",
+      "summary": "Telegram 跨裝置送達主線已接通：本機 schedule/.env 已配置 Telegram bot token 與 chat id，notify.sh 測試訊息回報 telegram_sent，且 Vincent 確認 @MorroWise_bot 實收；secret 值未寫入 git 或任務紀錄。",
+      "verification": [
+        "Telegram getMe confirmed configured token belongs to @MorroWise_bot without printing token.",
+        "Telegram getUpdates returned a chat id after Vincent sent hi to @MorroWise_bot; chat id was written only to gitignored schedule/.env.",
+        "$COLLAB/notyet-harness/schedule/lib/notify.sh \"MorroWise JV-05 Telegram 測試：如果你看到這則，跨裝置送達已接通。\" returned status=telegram_sent.",
+        "Vincent confirmed receipt in Telegram on 2026-07-07."
+      ],
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise",
@@ -1644,7 +1652,7 @@
       },
       "completed_at": "2026-07-06",
       "summary": "送達 adapter 落地：market-watchtower/scripts/notify-dispatch.mjs，--alert 吃 mw-005/006 的 alert event contract（資料不新鮮拒送進場提醒，沿用 mw-004 契約）、--market-status 組真實業務內容；首發已送達（真實收盤 0050/006208/2330 ＋均線待回補與 DATA_DELAYED 誠實標注，notify-delivery.jsonl caller=market-watchtower）。S1 前提修正：task 寫「指標引擎已 done」實為 mw-004 指標計算，進場條件規則引擎 mw-005 仍 todo（歸 market-watchtower 專案）；真均線需 200 天歷史回補。workspace 非 git repo，evidence 為檔案路徑＋run 輸出（比照 mw-001~04）。",
-      "note": "evidence: /market-watchtower/scripts/notify-dispatch.mjs、/market-watchtower/test/notify-dispatch.test.mjs（npm test 17/17）、/notyet-harness/schedule/runs/notify-delivery.jsonl caller=market-watchtower。"
+      "note": "evidence: /market-watchtower/scripts/notify-dispatch.mjs、/market-watchtower/test/notify-dispatch.test.mjs（npm test 17/17）、/notyet-harness/schedule/runs/notify-delivery.jsonl caller=market-watchtower。2026-07-07 Telegram 主線復驗：node scripts/notify-dispatch.mjs --market-status 回傳 notify.sh: status=telegram_sent，delivery log 記錄 caller=market-watchtower、status=telegram_sent、detail=http_200。"
     },
     {
       "id": "sentinel-delivery-verify",

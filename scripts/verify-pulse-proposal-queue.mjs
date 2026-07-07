@@ -47,10 +47,12 @@ const failStep = (id, stderr = "boom") => ({ id, status: "fail", command: id, st
 // 3. sync:* --check drift → auto_fixable（approval-policy allowed tier），不推播
 {
   const root = tmpRoot();
-  const step = { id: "sync:morrowise-manual", status: "fail", command: "python3 sync-morrowise-manual.py --check", stderr_excerpt: "drift", stdout_excerpt: "" };
+  const step = { id: "sync:architecture-subsystems", status: "fail", command: "python3 sync-architecture-subsystems.py --check", stderr_excerpt: "drift", stdout_excerpt: "" };
   const result = processPulseProposals({ root, report: degradedReport([step]), now: "2026-07-01T00:00:00Z" });
   assert.equal(result.created[0].severity, "auto_fixable");
   assert.ok(result.created[0].triage_refs.some((ref) => ref.includes("approval-policy")), "auto_fixable must cite allowed tier");
+  assert.match(result.created[0].suggested_action, /sync-architecture-subsystems\.py/);
+  assert.match(result.created[0].suggested_action, /npm run test:system-pulse/);
   assert.equal(result.pushMessage, null);
   fs.rmSync(root, { recursive: true, force: true });
 }

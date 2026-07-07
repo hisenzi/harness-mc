@@ -76,7 +76,28 @@ const baseTasks = {
 };
 
 writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), baseTasks);
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), {
+  tasks: [
+    {
+      id: "morrowise-seed-task",
+      title: "Seed MorroWise task",
+      status: "todo",
+      track: "governance",
+      order_label: "JV-VERIFY-00",
+      done_condition: "Seed task validates MorroWise project routing.",
+      hc_decision: {
+        task_scope: "morrowise/seed",
+        hc_refs: ["#rightProblem"],
+        hc_reasoning: "Fixture keeps MorroWise task validation active.",
+        hc_confidence: 0.7,
+        evidence_refs: ["milestones/morrowise/tasks.json"],
+        source_boundary: "HC is a thinking check, not source of truth; tasks.json remains canonical."
+      }
+    }
+  ]
+});
 git(["add", "milestones/harness-mc/tasks.json"]);
+git(["add", "milestones/morrowise/tasks.json"]);
 git(["commit", "-m", "seed tasks"]);
 
 const clean = run(["--changed-only"]);
@@ -135,11 +156,51 @@ const malformedFailed = run(["--changed-only", "--project", "harness-mc"], { exp
 if (!malformedFailed.output.includes("hc_decision.hc_refs entries must be HC refs like #risk")) {
   throw new Error("Expected malformed HC refs error.");
 }
-if (!malformedFailed.output.includes("hc_decision.source_boundary must mention thinking check and source of truth")) {
+if (!malformedFailed.output.includes("hc_decision.source_boundary must mention thinking check/source of truth or 思考檢查/正本")) {
   throw new Error("Expected source boundary error.");
 }
 if (!malformedFailed.output.includes("hc_decision.hc_confidence must be a number from 0 to 1")) {
   throw new Error("Expected HC confidence range error.");
+}
+
+const closedWithoutArchitectureDecision = {
+  tasks: [
+    {
+      id: "morrowise-closed-without-arch",
+      title: "Closed without architecture decision",
+      status: "completed",
+      track: "governance",
+      order_label: "JV-VERIFY-01",
+      done_condition: "Closed MorroWise governance tasks must record architecture promotion judgment.",
+      hc_decision: {
+        task_scope: "morrowise/closed-without-arch",
+        hc_refs: ["#rightProblem"],
+        hc_reasoning: "Fixture validates closeout gate coverage.",
+        hc_confidence: 0.7,
+        evidence_refs: ["milestones/morrowise/tasks.json"],
+        source_boundary: "HC is a thinking check, not source of truth; tasks.json remains canonical."
+      }
+    }
+  ]
+};
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), closedWithoutArchitectureDecision);
+
+const missingArchitectureDecision = run(["--changed-only", "--project", "morrowise"], { expectFailure: true });
+if (!missingArchitectureDecision.output.includes("architecture_decision is required before closing MorroWise governance/runtime-delivery/auditor-mvp tasks")) {
+  throw new Error("Expected missing architecture_decision closeout error.");
+}
+
+const closedWithArchitectureDecision = structuredClone(closedWithoutArchitectureDecision);
+closedWithArchitectureDecision.tasks[0].architecture_decision = {
+  decision: "not_required",
+  evaluated_at: "2026-07-07",
+  reason: "Fixture task does not add a reusable subsystem."
+};
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), closedWithArchitectureDecision);
+
+const architectureDecisionPass = run(["--changed-only", "--project", "morrowise"]);
+if (!architectureDecisionPass.output.includes("Task validation OK")) {
+  throw new Error("Expected architecture_decision fixture to pass.");
 }
 
 console.log("validate-tasks verification OK");

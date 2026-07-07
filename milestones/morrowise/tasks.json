@@ -1970,7 +1970,7 @@
     },
     {
       "id": "architecture-subsystem-index-live-sync",
-      "status": "todo",
+      "status": "completed",
       "title": "JV-29 ARCHITECTURE.md 子系統索引 live sync（Notifier 首個 fixture）",
       "track": "governance",
       "order_label": "JV-29",
@@ -2029,9 +2029,27 @@
           "$COLLAB/harness-mc/scripts/verify-system-pulse.mjs",
           "$COLLAB/harness-mc/milestones/morrowise/tasks.json#notification-first-delivery"
         ],
-        "source_boundary": "HC is a thinking check only, not source of truth. Canonical Notifier architecture remains in registries, docs, source, verifier output, and MC task state; ARCHITECTURE.md is an auto-synced index surface."
+        "source_boundary": "HC 只是思考檢查，不是正本。Notifier 架構正本仍在 registry、文件、原始碼、驗證輸出與 MC 任務狀態；ARCHITECTURE.md 是自動同步的索引介面。"
       },
-      "note": "2026-07-07 Vincent 裁決：Notifier 架構必須進 ARCHITECTURE.md，但不能手寫成長篇細節；ARCHITECTURE.md 應升級為索引架構，Agent 先讀薄入口，需要細節再跳到正本文件。此 task 不重新執行 JV-04，不改 Notifier runtime；只做架構索引 live sync 與 drift gate。2026-07-07：新增 shared skill promote-to-architecture 作為本 task 的上游使用流程；skill 定義何時將完成系統能力收編進 ARCHITECTURE.md、如何分層到手寫原則 / generated subsystem index / detail docs / registries / task state。JV-29 則負責該流程依賴的自動同步底座。2026-07-07 HC 補強：補入 Architecture Admission Record 正本、promoted/not_required/deferred 決策回寫、deprecated/superseded 流程、task completed gate 與 cross-repo sequencing，避免 sync script 自行推論架構或 ARCHITECTURE.md 索引腐爛。2026-07-07 模擬驗證補強：新增 schema verifier、機械 closeout gate、Notifier 安全欄位、system-pulse step 測試與 generated block fingerprint 要求。"
+      "architecture_decision": {
+        "decision": "promoted",
+        "evaluated_at": "2026-07-07",
+        "registry_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
+        "detail_doc": "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md#子系統索引自動產生",
+        "reason": "JV-29 建立自動產生的架構子系統索引，並透過架構收編紀錄將 Notifier 測試樣本與索引同步子系統收編進 ARCHITECTURE.md。"
+      },
+      "completed_at": "2026-07-07",
+      "commits": [],
+      "summary": "完成架構收編紀錄、驗證器、ARCHITECTURE.md 子系統同步區塊、system-pulse 漂移檢查，以及 MorroWise 任務收尾的架構收編判斷關卡。",
+      "verification": [
+        "npm run test:architecture-subsystems",
+        "npm run test:system-pulse",
+        "npm run test:pulse-proposals",
+        "node scripts/verify-validate-tasks.mjs",
+        "python3 $COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py --check",
+        "python3 $COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py --self-test"
+      ],
+      "note": "2026-07-07 Vincent 裁決：Notifier 架構必須進 ARCHITECTURE.md，但不能手寫成長篇細節；ARCHITECTURE.md 應升級為索引架構，Agent 先讀薄入口，需要細節再跳到正本文件。此 task 不重新執行 JV-04，不改 Notifier runtime；只做架構索引 live sync 與 drift gate。2026-07-07：新增 shared skill promote-to-architecture 作為本 task 的上游使用流程；skill 定義何時將完成系統能力收編進 ARCHITECTURE.md、如何分層到手寫原則 / generated subsystem index / detail docs / registries / task state。JV-29 則負責該流程依賴的自動同步底座。2026-07-07 HC 補強：補入 Architecture Admission Record 正本、promoted/not_required/deferred 決策回寫、deprecated/superseded 流程、task completed gate 與 cross-repo sequencing，避免 sync script 自行推論架構或 ARCHITECTURE.md 索引腐爛。2026-07-07 模擬驗證補強：新增 schema verifier、機械 closeout gate、Notifier 安全欄位、system-pulse step 測試與 generated block fingerprint 要求。2026-07-07 補強 1~4：system-pulse / pulse proposal 對 sync:architecture-subsystems 會給明確修復指令；architecture verifier 鎖住繁中 generated block，避免回退英文表頭；deprecated/superseded registry entry 需有 reason；verifier 比對 ARCHITECTURE block 的 registry fingerprint，作為 cross-repo sync 一致性 gate。"
     },
     {
       "id": "morrowise-product-promotion-gate",

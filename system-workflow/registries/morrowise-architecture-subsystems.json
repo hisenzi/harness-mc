@@ -1,0 +1,134 @@
+{
+  "registry_id": "morrowise-architecture-subsystems.v0",
+  "task_id": "architecture-subsystem-index-live-sync",
+  "status": "formal_registry",
+  "updated_at": "2026-07-07",
+  "generated_at": "2026-07-07",
+  "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
+  "verifier_ref": "npm run test:architecture-subsystems",
+  "sync_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\"",
+  "purpose": "記錄應進入 ARCHITECTURE.md generated 子系統索引的架構收編決策。",
+  "write_boundary": {
+    "allowed": [
+      "記錄架構收編決策",
+      "指向正本 registry、文件、source、verifier 與 task anchor",
+      "產生薄型 ARCHITECTURE.md 子系統索引"
+    ],
+    "forbidden": [
+      "把實作細節複製進 ARCHITECTURE.md",
+      "用任意掃檔推論架構",
+      "讀取 secrets、runtime auth files、browser cookies 或 token stores",
+      "把 dashboard 或 mirror state 當成正本"
+    ]
+  },
+  "decision_vocabulary": [
+    "promoted",
+    "not_required",
+    "deferred"
+  ],
+  "status_vocabulary": [
+    "active",
+    "deprecated",
+    "superseded",
+    "deferred"
+  ],
+  "required_record_fields": [
+    "id",
+    "name",
+    "status",
+    "role",
+    "summary",
+    "source_of_truth",
+    "detail_doc",
+    "task_anchor",
+    "verifiers",
+    "allowed_actions",
+    "forbidden_actions",
+    "safety_boundary",
+    "degraded_state",
+    "architecture_decision",
+    "last_promoted_at",
+    "last_verified_at"
+  ],
+  "records": [
+    {
+      "id": "morrowise-trusted-notifier",
+      "name": "MorroWise 可信通知器",
+      "status": "active",
+      "role": "MorroWise 主動通知的本機可信顯示邊界。",
+      "summary": "Agent 只能把受限通知資料追加寫入 outbox；由 Vincent 授權的本機 app 只讀單一被選取檔案、顯示 macOS 通知，並把送達狀態留在 $COLLAB 外。",
+      "capability": "通知送達",
+      "source_of_truth": [
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-outbox-contract.json",
+        "$COLLAB/harness-mc/tools/morrowise-notifier/MorroWiseNotifier.swift"
+      ],
+      "detail_doc": [
+        "$COLLAB/harness-mc/system-workflow/docs/morrowise/trusted-notifier.md",
+        "$COLLAB/harness-mc/tools/morrowise-notifier/README.md"
+      ],
+      "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#notification-first-delivery",
+      "outbox": "$COLLAB/notyet-harness/schedule/outbox/notifications.jsonl",
+      "trusted_app": "$COLLAB/harness-mc/tools/morrowise-notifier/MorroWiseNotifier.swift",
+      "delivered_state": "$HOME/Library/Application Support/MorroWiseNotifier/delivered.sqlite",
+      "verifiers": [
+        "npm run test:notification-outbox",
+        "npm run test:morrowise-notifier-source"
+      ],
+      "allowed_actions": [
+        "追加寫入已驗證的 notification JSONL",
+        "讀取 Vincent 授權的單一 outbox 檔",
+        "顯示 macOS 通知",
+        "把 delivered marks 寫入 Notifier app 自有儲存"
+      ],
+      "forbidden_actions": [
+        "執行 $COLLAB scripts",
+        "執行 shell",
+        "把 node 或 git 當成送達動作執行",
+        "回寫 $COLLAB",
+        "刪除或修改 source files",
+        "接受 command、callback、path 或 action URL 欄位"
+      ],
+      "safety_boundary": "writer 只能追加寫入資料；可信 app 只能讀取被選取的 outbox，並把 delivered marks 寫入自己的 app storage。此設計不包含廣域 Downloads、Terminal、launchd 或 /bin/bash 授權。",
+      "degraded_state": "通知已排入佇列但未送達、資料格式驗證失敗、單一 outbox 授權 bookmark 遺失，或驗證器發現不安全的執行/回寫能力。",
+      "architecture_decision": "promoted",
+      "last_promoted_at": "2026-07-07",
+      "last_verified_at": "2026-07-07",
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "architecture-subsystem-index",
+      "name": "架構子系統索引同步",
+      "status": "active",
+      "role": "由 Architecture Admission Records 支撐的 ARCHITECTURE.md 自動產生子系統索引。",
+      "summary": "registry 是正本；同步腳本更新 ARCHITECTURE.md marker block，--check 讓 system-pulse 能抓到漂移。",
+      "capability": "架構索引即時同步",
+      "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
+      "detail_doc": "$COLLAB/notyet-harness/000_Agent/skills/promote-to-architecture/SKILL.md",
+      "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#architecture-subsystem-index-live-sync",
+      "verifiers": [
+        "npm run test:architecture-subsystems",
+        "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+        "npm run test:system-pulse"
+      ],
+      "allowed_actions": [
+        "更新 Architecture Admission Records",
+        "產生 ARCHITECTURE.md 子系統 marker block",
+        "檢查 ARCHITECTURE.md 漂移"
+      ],
+      "forbidden_actions": [
+        "用掃檔推論子系統項目",
+        "讀取 secrets 或 runtime 授權檔",
+        "把 ARCHITECTURE.md 變成 task state 或 runtime config",
+        "把 dashboards、Canvas、Heptabase 或 chat 當成正本"
+      ],
+      "safety_boundary": "同步只讀 architecture subsystem registry，且只寫 ARCHITECTURE.md 自動產生 marker block。它不讀 credentials、runtime auth stores、browser cookies 或外部 mirror。",
+      "degraded_state": "registry schema 失敗、verifier command 遺失、ARCHITECTURE.md marker block 漂移，或 system-pulse 不再包含此同步檢查。",
+      "architecture_decision": "promoted",
+      "last_promoted_at": "2026-07-07",
+      "last_verified_at": "2026-07-07",
+      "supersedes": [],
+      "superseded_by": null
+    }
+  ]
+}

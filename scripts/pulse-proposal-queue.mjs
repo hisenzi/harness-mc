@@ -203,16 +203,32 @@ export function processPulseProposals(options = {}) {
 function triageStep(step) {
   const text = `${step.stderr_excerpt || ""} ${step.stdout_excerpt || ""}`;
   if (step.id.startsWith("sync:") && /--check|drift|sync/i.test(step.command || step.id)) {
+    const command = repairCommandForStep(step.id);
     return {
       severity: "auto_fixable",
       refs: [TRIAGE_REFS.allowed_tier],
-      suggestedAction: "本機重跑對應 sync 腳本（不帶 --check）修復 drift 後重驗；屬 approval-policy allowed tier。",
+      suggestedAction: command
+        ? `本機執行 ${command} 修復 drift，然後重跑 npm run test:system-pulse；屬 approval-policy allowed tier。`
+        : "本機重跑對應 sync 腳本（不帶 --check）修復 drift 後重驗；屬 approval-policy allowed tier。",
     };
   }
   if (step.id === "task-events:pending-gate" || /Vincent/i.test(text)) {
     return { severity: "red", refs: [TRIAGE_REFS.escalate] };
   }
   return { severity: "amber", refs: [TRIAGE_REFS.s4] };
+}
+
+function repairCommandForStep(stepId) {
+  if (stepId === "sync:architecture-subsystems") {
+    return 'python3 "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py"';
+  }
+  if (stepId === "sync:architecture-current-state") {
+    return 'python3 "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-current-state.py"';
+  }
+  if (stepId === "sync:morrowise-manual") {
+    return 'python3 "$COLLAB/notyet-harness/000_Agent/scripts/sync-morrowise-manual.py"';
+  }
+  return null;
 }
 
 function suggestedActionFor(report, step) {

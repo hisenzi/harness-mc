@@ -22,6 +22,9 @@ const VALID_STATUSES = new Set([
   "cancelled",
 ]);
 const ACTIVE_STATUSES = new Set(["todo", "in_progress", "doing", "blocked"]);
+const CLOSED_STATUSES = new Set(["done", "completed", "fixed"]);
+const ARCHITECTURE_DECISIONS = new Set(["promoted", "not_required", "deferred"]);
+const ARCHITECTURE_GATE_TRACKS = new Set(["governance", "runtime-delivery", "auditor-mvp"]);
 
 function parseArgs(argv) {
   const args = {
@@ -138,11 +141,12 @@ function taskFingerprintMap(tasks) {
   return map;
 }
 
-function isPortableAgentScope(task) {
+function isPortableAgentScope(task, project = "", includeProjectScope = false) {
   const id = String(task.id || "");
   const track = String(task.track || "");
   const label = String(task.order_label || "");
-  return track === "control-plane"
+  return (includeProjectScope && project === "morrowise")
+    || track === "control-plane"
     || track === "morrowise-system"
     || id.startsWith("acp-")
     || id.startsWith("morrowise-")
@@ -150,12 +154,13 @@ function isPortableAgentScope(task) {
     || label.startsWith("MC-LIVE-");
 }
 
-function isCurrentWriteScope({ task, changed, changedOnly }) {
-  return changedOnly && changed && isPortableAgentScope(task);
+function isCurrentWriteScope({ task, changed, changedOnly, project = "" }) {
+  return changedOnly && changed && isPortableAgentScope(task, project, true);
 }
 
-function validateTask(task) {
+function validateTask(task, { project = "", changed = false, changedOnly = false } = {}) {
   const problems = [];
+  const includeProjectScope = !changedOnly || changed;
 
   if (!task || typeof task !== "object" || Array.isArray(task)) {
     return ["task must be an object"];
@@ -183,18 +188,24 @@ function validateTask(task) {
   if ("order_label" in task && task.order_label !== null && task.order_label !== "" && typeof task.order_label !== "string") {
     problems.push("order_label must be a string when present");
   }
-  if (isPortableAgentScope(task) && !nonEmptyString(task.order_label)) {
+  if (isPortableAgentScope(task, project, includeProjectScope) && !nonEmptyString(task.order_label)) {
     problems.push("order_label is required for control-plane / MorroWise tasks");
   }
 
   if ("external_refs" in task && (typeof task.external_refs !== "object" || task.external_refs === null || Array.isArray(task.external_refs))) {
     problems.push("external_refs must be an object when present");
   }
-  if (requiresHcDecision(task) && !("hc_decision" in task)) {
+  if (requiresHcDecision(task, project, includeProjectScope) && !("hc_decision" in task)) {
     problems.push("hc_decision is required for active control-plane / MorroWise execution tasks");
   }
   if ("hc_decision" in task) {
     problems.push(...validateHcDecision(task.hc_decision));
+  }
+  if (requiresArchitectureDecision(task, project, includeProjectScope) && !("architecture_decision" in task)) {
+    problems.push("architecture_decision is required before closing MorroWise governance/runtime-delivery/auditor-mvp tasks");
+  }
+  if ("architecture_decision" in task) {
+    problems.push(...validateArchitectureDecision(task.architecture_decision));
   }
 
   return problems;
@@ -204,8 +215,8 @@ function nonEmptyString(value) {
   return typeof value === "string" && value.trim().length > 0;
 }
 
-function requiresHcDecision(task) {
-  return isPortableAgentScope(task) && ACTIVE_STATUSES.has(String(task.status || "todo").toLowerCase());
+function requiresHcDecision(task, project = "", includeProjectScope = false) {
+  return isPortableAgentScope(task, project, includeProjectScope) && ACTIVE_STATUSES.has(String(task.status || "todo").toLowerCase());
 }
 
 function validateHcDecision(decision) {
@@ -226,8 +237,8 @@ function validateHcDecision(decision) {
   }
   if (!nonEmptyString(decision.source_boundary)) {
     problems.push("hc_decision.source_boundary must explain that HC is a thinking check, not source of truth");
-  } else if (!/thinking check/i.test(decision.source_boundary) || !/source of truth/i.test(decision.source_boundary)) {
-    problems.push("hc_decision.source_boundary must mention thinking check and source of truth");
+  } else if (!mentionsThinkingCheck(decision.source_boundary) || !mentionsSourceOfTruth(decision.source_boundary)) {
+    problems.push("hc_decision.source_boundary must mention thinking check/source of truth or 思考檢查/正本");
   }
 
   const hasNotRequired = nonEmptyString(decision.not_required_reason);
@@ -247,6 +258,44 @@ function validateHcDecision(decision) {
   }
   if (typeof decision.hc_confidence !== "number" || decision.hc_confidence < 0 || decision.hc_confidence > 1) {
     problems.push("hc_decision.hc_confidence must be a number from 0 to 1 unless not_required_reason is set");
+  }
+
+  return problems;
+}
+
+function mentionsThinkingCheck(value) {
+  return /thinking check/i.test(value) || /思考檢查|思考輔助/.test(value);
+}
+
+function mentionsSourceOfTruth(value) {
+  return /source of truth/i.test(value) || /正本/.test(value);
+}
+
+function requiresArchitectureDecision(task, project, includeProjectScope = false) {
+  return includeProjectScope
+    && project === "morrowise"
+    && CLOSED_STATUSES.has(String(task.status || "").toLowerCase())
+    && ARCHITECTURE_GATE_TRACKS.has(String(task.track || ""));
+}
+
+function validateArchitectureDecision(decision) {
+  const problems = [];
+  if (!decision || typeof decision !== "object" || Array.isArray(decision)) {
+    return ["architecture_decision must be an object when present"];
+  }
+
+  if (!ARCHITECTURE_DECISIONS.has(decision.decision)) {
+    problems.push("architecture_decision.decision must be promoted, not_required, or deferred");
+  }
+  if (!nonEmptyString(decision.evaluated_at) || !/^\d{4}-\d{2}-\d{2}$/.test(decision.evaluated_at)) {
+    problems.push("architecture_decision.evaluated_at must be YYYY-MM-DD");
+  }
+  if (decision.decision === "promoted") {
+    if (!nonEmptyString(decision.registry_ref) && !nonEmptyString(decision.detail_doc)) {
+      problems.push("architecture_decision promoted tasks need registry_ref or detail_doc");
+    }
+  } else if (!nonEmptyString(decision.reason)) {
+    problems.push("architecture_decision not_required/deferred tasks need reason");
   }
 
   return problems;
@@ -287,9 +336,9 @@ export function validateTasks({ changedOnly = false, projects = new Set(), track
       const fingerprint = taskId ? JSON.stringify(task) : "";
       const changed = changedFiles.has(filePath)
         && (!taskId || previous.get(taskId) !== fingerprint);
-      const severity = isCurrentWriteScope({ task, changed, changedOnly }) ? "error" : "warn";
+      const severity = isCurrentWriteScope({ task, changed, changedOnly, project }) ? "error" : "warn";
 
-      for (const problem of validateTask(task)) {
+      for (const problem of validateTask(task, { project, changed, changedOnly })) {
         diagnostics.push({
           severity,
           project,

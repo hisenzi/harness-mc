@@ -35,6 +35,12 @@ const plan = [
     collabRoot,
   ),
   step(
+    "sync:architecture-subsystems",
+    "python3",
+    [path.join(notyetRoot, "000_Agent", "scripts", "sync-architecture-subsystems.py"), "--check"],
+    collabRoot,
+  ),
+  step(
     applyTaskEvents ? "task-events:apply" : "task-events:report",
     "node",
     [applyTaskEvents ? "scripts/apply-task-events.mjs" : "scripts/generate-task-event-data.mjs"],
@@ -220,11 +226,29 @@ function nextAction(status, items, taskEventState) {
     };
   }
 
+  const repairCommand = repairCommandForStep(firstFailure);
   return {
     type: "fix_failed_step",
     target: firstFailure?.id || "unknown",
-    label: "Inspect system-pulse step failure excerpt and fix the owning source, verifier, or generated read model.",
+    repair_command: repairCommand,
+    label: repairCommand
+      ? `修復 ${firstFailure.id}：執行 ${repairCommand}，再重跑 npm run test:system-pulse。`
+      : "Inspect system-pulse step failure excerpt and fix the owning source, verifier, or generated read model.",
   };
+}
+
+function repairCommandForStep(stepResult) {
+  if (!stepResult) return null;
+  if (stepResult.id === "sync:architecture-subsystems") {
+    return 'python3 "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py"';
+  }
+  if (stepResult.id === "sync:architecture-current-state") {
+    return 'python3 "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-current-state.py"';
+  }
+  if (stepResult.id === "sync:morrowise-manual") {
+    return 'python3 "$COLLAB/notyet-harness/000_Agent/scripts/sync-morrowise-manual.py"';
+  }
+  return null;
 }
 
 // JV-12 heartbeat 契約：每日 pulse 寫本機 heartbeat，隨 git push 跨機可見；

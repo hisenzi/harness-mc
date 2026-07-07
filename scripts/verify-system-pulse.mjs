@@ -19,6 +19,8 @@ try {
   assert.match(result.stdout, /^npm:test:tasks\tnpm run test:tasks/m);
   assert.match(result.stdout, /^sync:morrowise-manual\tpython3 /m);
   assert.match(result.stdout, /^sync:architecture-current-state\tpython3 /m);
+  assert.match(result.stdout, /^sync:architecture-subsystems\tpython3 /m);
+  assert.match(result.stdout, /sync-architecture-subsystems\.py --check/);
   assert.match(result.stdout, /^task-events:report\tnode scripts\/generate-task-event-data\.mjs/m);
   assert.match(result.stdout, /task_events_mode=report/);
   assert.doesNotMatch(result.stdout, /schedule\/\.env/);
@@ -27,6 +29,9 @@ try {
   const scriptText = fs.readFileSync("scripts/run-system-pulse.mjs", "utf8");
   assert.match(scriptText, /SYSTEM_PULSE_APPLY_TASK_EVENTS/);
   assert.match(scriptText, /system-pulse\.v0/);
+  assert.match(scriptText, /sync:architecture-subsystems/);
+  assert.match(scriptText, /repairCommandForStep/);
+  assert.match(scriptText, /sync-architecture-subsystems\.py/);
   assert.match(scriptText, /notify\.sh/);
   assert.match(scriptText, /skipped_missing_env/);
 

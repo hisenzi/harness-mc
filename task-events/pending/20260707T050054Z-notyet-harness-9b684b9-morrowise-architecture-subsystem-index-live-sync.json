@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-architecture-subsystem-index-live-sync-9b684b9-20260707T050054Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "9b684b9",
+  "project": "morrowise",
+  "task_id": "architecture-subsystem-index-live-sync",
+  "status": "updated",
+  "summary": "Attached notyet-harness ARCHITECTURE sync script, generated subsystem block, and JV-29 cc-log evidence commit.",
+  "created_at": "2026-07-07T05:00:54.528Z",
+  "actor": "codex",
+  "session_id": "codex-jv-29-20260707"
+}

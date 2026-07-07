@@ -2,8 +2,8 @@
   "registry_id": "morrowise-architecture-subsystems.v0",
   "task_id": "architecture-subsystem-index-live-sync",
   "status": "formal_registry",
-  "updated_at": "2026-07-07",
-  "generated_at": "2026-07-07",
+  "updated_at": "2026-07-08",
+  "generated_at": "2026-07-08",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
   "verifier_ref": "npm run test:architecture-subsystems",
   "sync_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\"",
@@ -92,6 +92,47 @@
       "degraded_state": "通知已排入佇列但未送達、資料格式驗證失敗、單一 outbox 授權 bookmark 遺失，或驗證器發現不安全的執行/回寫能力。",
       "architecture_decision": "promoted",
       "last_promoted_at": "2026-07-07",
+      "last_verified_at": "2026-07-07",
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "morrowise-notification-delivery-adapters",
+      "name": "MorroWise 通知送達 Adapter 合約",
+      "status": "active",
+      "role": "MorroWise runtime delivery 的跨裝置與 fallback adapter 邊界。",
+      "summary": "Telegram notify.sh 已在 MBA-1 本機完成主線驗證；LINE、Notion、Codex thread 保留為合約化可選 adapter。所有憑證與目的地值只留在 gitignored schedule/.env，registry 與 ARCHITECTURE.md 只記能力狀態、邊界與 evidence anchor。",
+      "capability": "通知送達",
+      "source_of_truth": [
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-adapter-contract.json",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json"
+      ],
+      "detail_doc": [
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-adapter-contract.json",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#telegram-credentials",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#watchtower-alert-delivery"
+      ],
+      "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#notification-adapter-contract",
+      "delivery_log": "$COLLAB/notyet-harness/schedule/runs/notify-delivery.jsonl",
+      "verifiers": [
+        "npm run test:notification-adapter-contract",
+        "npm run test:capability-registry"
+      ],
+      "allowed_actions": [
+        "格式化已核准的 plain text notification summary",
+        "透過已配置 adapter 送達外部通知",
+        "寫入不含訊息本文與憑證值的 delivery run log"
+      ],
+      "forbidden_actions": [
+        "讀取或輸出 schedule/.env 實值",
+        "把憑證、chat id 或其他 destination id 寫入 git 或 generated read model",
+        "由 delivery adapter 決定 task state、Reality Tax Gate 或 commit/push 狀態",
+        "在未經明確批准或核准排程時送外部通知"
+      ],
+      "safety_boundary": "adapter contract 只描述送達能力與降級規則；本機實際憑證只存在 gitignored schedule/.env。ARCHITECTURE.md 只能顯示 verified/degraded 狀態、正本路徑、verifier 與 task anchor，不得包含任何憑證或目的地實值。",
+      "degraded_state": "缺少本機 env、Telegram API 失敗、fallback 失敗、delivery log 未寫入、或 adapter 嘗試把送達結果升格成任務狀態時，系統必須標 degraded 或 blocked，不得假裝已跨裝置送達。",
+      "architecture_decision": "promoted",
+      "last_promoted_at": "2026-07-08",
       "last_verified_at": "2026-07-07",
       "supersedes": [],
       "superseded_by": null

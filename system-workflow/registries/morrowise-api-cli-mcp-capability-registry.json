@@ -280,6 +280,16 @@
           "evidence_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-adapter-contract.json",
           "actor_or_task": "notification-adapter-contract",
           "next_action": "Wire reality-tax-daily-review-task against this delivery contract without reading secrets or pretending unconfigured adapters are live."
+        },
+        {
+          "date": "2026-07-07",
+          "event_type": "live_mainline_verified",
+          "from_state": "ready",
+          "to_state": "ready",
+          "reason": "Telegram notify.sh mainline was verified on MBA-1 after JV-05 local runtime configuration; JV-06 Market Watchtower business notification also delivered through the same mainline with notify-delivery status telegram_sent.",
+          "evidence_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#telegram-credentials and #watchtower-alert-delivery",
+          "actor_or_task": "telegram-credentials",
+          "next_action": "Treat Telegram as a verified local mainline only on machines with schedule/.env configured; other machines remain degraded or fallback-only until reconfigured."
         }
       ]
     }

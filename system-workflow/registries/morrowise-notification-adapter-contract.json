@@ -1,7 +1,7 @@
 {
   "contract_id": "morrowise-notification-adapter-contract.v0",
   "task_id": "notification-adapter-contract",
-  "updated_at": "2026-07-05",
+  "updated_at": "2026-07-08",
   "status": "contract_ready",
   "read_only": true,
   "purpose": "Define MorroWise delivery adapters without letting delivery mutate task state, close workflow gates, or store secrets.",
@@ -84,7 +84,7 @@
     {
       "id": "telegram_notify_sh",
       "provider": "Telegram Bot API",
-      "status": "implemented_degraded_without_env",
+      "status": "verified_live_when_env_configured",
       "entrypoint": "$COLLAB/notyet-harness/schedule/lib/notify.sh",
       "env": [
         "TELEGRAM_BOT_TOKEN",
@@ -106,6 +106,12 @@
         ],
         "rule": "Every notify.sh invocation appends one JSONL line with status, detail, caller, and message length; message bodies and secrets are never logged."
       },
+      "last_live_verified_at": "2026-07-07",
+      "live_evidence": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#telegram-credentials",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#watchtower-alert-delivery"
+      ],
+      "live_state_note": "MBA-1 local runtime has Telegram env configured in gitignored schedule/.env; notify.sh returned telegram_sent for the JV-05 manual test and JV-06 Market Watchtower adapter re-verification. Secret and destination values remain outside git.",
       "allowed_payloads": [
         "plain text notification summary"
       ],

@@ -1930,6 +1930,9 @@
         "reason": "JV-20 is a capability registration scope policy decision recorded in the existing capability registry. It does not introduce a new source-of-truth family, runtime, scheduler, adapter, generated read model, surface, verifier, or architecture subsystem."
       },
       "completed_at": "2026-07-08",
+      "commits": [
+        "44af975"
+      ],
       "summary": "Vincent 2026-07-08 指示繼續完成 JV-20~23；JV-20 採 integration transparency 建議：codex 與 heptabase-mcp 重複註冊收斂到 global，project scope 只保留專案特有 MCP（例如 playwright）。裁決已寫入 capability registry entry mcp-registration-scope-policy；本 task 未直接改 MCP config、install、hooks 或 secrets。",
       "note": "Owner: Vincent（agent 不可代辦）。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。\n\n[JV-19 掃描證據 2026-07-06 VincentMBA-blue，重生：node scripts/generate-capability-observed.mjs → decision_evidence]： codex 註冊 2 處（global＋$COLLAB）、heptabase-mcp 3 處（global＋$COLLAB＋$COLLAB/maxmodel）。\n\n2026-07-08 JV-32 Sprint 1 decision batch：此 task 只補可裁決條件與輸出格式，不直接執行 external write / install / hooks / secrets。\n\n2026-07-08 裁決完成：採用收斂到 global 的政策，project scope 只保留專案特有 MCP（playwright 留 $COLLAB scope）。結果寫入 $COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json#mcp-registration-scope-policy；實際 MCP config 變更留給後續明確執行 task。"
     },
@@ -1985,6 +1988,9 @@
         "reason": "JV-21 only records the disposition of an observed-not-declared Firecrawl MCP registration inside the existing capability registry. It does not promote a new subsystem; actual config removal remains a separate approval-gated execution step."
       },
       "completed_at": "2026-07-08",
+      "commits": [
+        "44af975"
+      ],
       "summary": "Vincent 2026-07-08 指示繼續完成 JV-20~23；JV-21 依現有證據採 unknown_remove disposition：firecrawl 為 $HOME scope observed-not-declared 且來源不明。裁決已寫入 capability registry entry firecrawl-mcp-home-scope，狀態 blocked，後續需獨立 removal/audit step；本 task 未直接刪除 MCP config 或讀取 Firecrawl secrets。",
       "note": "Owner: Vincent（agent 不可代辦）。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。\n\n[JV-19 掃描證據 2026-07-06 VincentMBA-blue，重生：node scripts/generate-capability-observed.mjs → decision_evidence]： firecrawl 註冊於 $HOME scope（1 處），registry 無對應 → observed-not-declared。\n\n2026-07-08 JV-32 Sprint 1 decision batch：此 task 只補可裁決條件與輸出格式，不直接執行 external write / install / hooks / secrets。\n\n2026-07-08 裁決完成：採 unknown_remove disposition，因 plan 與 daily evidence 均記錄 firecrawl 來源不明。結果寫入 $COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json#firecrawl-mcp-home-scope；實際 removal 需另有 rollback/audit note 與明確執行步驟。"
     },
@@ -2041,6 +2047,9 @@
         "reason": "JV-22 is a policy decision for account-level connectors within the existing capability registry and safe session-probe boundary. It does not add a new MorroWise subsystem or architecture surface."
       },
       "completed_at": "2026-07-08",
+      "commits": [
+        "44af975"
+      ],
       "summary": "Vincent 2026-07-08 指示繼續完成 JV-20~23；JV-22 採登記制＋session probe 稽核，不採帳號層 connector 全禁用。政策已寫入 capability registry entry claude-ai-account-connectors-policy 的 secret_policy/history；session probe 只允許枚舉 connector 名稱與 drift，不讀 token、cookie、payload、workspace auth 或 runtime auth。",
       "note": "Owner: Vincent。前提修正：帳號層本機檔案掃不到但 session 內可觀測（2026-07-05 Heptabase 雙接線實證）。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。\n\n[JV-19 掃描證據 2026-07-06 VincentMBA-blue，重生：node scripts/generate-capability-observed.mjs → decision_evidence]： cc-runner 變體實測本 session 掛載 notion-edu/codex/heptabase-mcp，帳號層 drift=0（今日拆除後無殘留隱藏接線）；此變體可作政策的定期稽核工具。\n\n2026-07-08 JV-32 Sprint 1 decision batch：此 task 只補可裁決條件與輸出格式，不直接執行 external write / install / hooks / secrets。\n\n2026-07-08 裁決完成：採登記制＋session probe 稽核；禁用制保留為未來高風險 fallback。結果寫入 $COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json#claude-ai-account-connectors-policy；safe probe 只枚舉 connector 名稱與 drift。"
     },
@@ -2093,6 +2102,9 @@
         "reason": "JV-23 is an approval gate for capability entry-doc patch ledger items. It does not execute the patches, create a new source of truth, or introduce a new architecture subsystem."
       },
       "completed_at": "2026-07-08",
+      "commits": [
+        "44af975"
+      ],
       "summary": "Vincent 2026-07-08 指示繼續完成 JV-20~23；JV-23 批准 capability 入口 patch ledger。實體條目已新增到 change-approval-plan 的 P5/P6，狀態 approved；本 task 只作批准指標，不直接改 TOOLS.md、sentinel、entry docs、hooks 或 generated marker。",
       "note": "Owner: Vincent。指標 task，不雙重記帳：條目位置 $COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/change-approval-plan.md。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。\n\n2026-07-08 JV-32 Sprint 1 decision batch：此 task 只補可裁決條件與輸出格式，不直接執行 external write / install / hooks / secrets。\n\n2026-07-08 裁決完成：批准 capability 入口 patch ledger（P5 sentinel capability brief、P6 TOOLS.md capability pointer）。實體條目在 $COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/change-approval-plan.md；本 task 不執行 patch。"
     },

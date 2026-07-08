@@ -1,6 +1,6 @@
 {
   "schema_version": "notion-sync-state.v0",
-  "generated_at": "2026-07-03T07:47:29.205Z",
+  "generated_at": "2026-07-08T05:22:58.535Z",
   "read_only": true,
   "source": "$COLLAB/harness-mc/system-workflow/registries/morrowise-notion-sync-state.json",
   "generator": "$COLLAB/harness-mc/scripts/generate-notion-sync-state.mjs",
@@ -59,14 +59,14 @@
       "id": "runtime.notion-mcp-connector",
       "label": "Notion MCP connector route",
       "source_layer": "runtime_route_probe",
-      "runtime_status": "connected",
-      "auth_status": "authenticated",
+      "runtime_status": "unknown",
+      "auth_status": "unknown",
       "evidence_refs": [
         "claude mcp list"
       ],
       "next_action": {
-        "target": "none",
-        "label": "No MCP connector auth action required from the current probe."
+        "target": "notion-mcp-auth",
+        "label": "Authenticate the Notion MCP connector before relying on MCP live metadata."
       }
     }
   },

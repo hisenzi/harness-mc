@@ -1,6 +1,6 @@
 {
   "schema_version": "verifier-suite-health.v0",
-  "generated_at": "2026-07-03T08:26:33.233Z",
+  "generated_at": "2026-07-08T05:22:58.845Z",
   "read_only": true,
   "source": {
     "package_scripts": "$COLLAB/harness-mc/package.json#scripts",
@@ -36,14 +36,14 @@
     ]
   },
   "summary": {
-    "total": 43,
-    "passed": 42,
-    "failed": 1,
+    "total": 52,
+    "passed": 52,
+    "failed": 0,
     "skipped": 1,
     "skipped_scripts": [
       "test:verifier-suite-health"
     ],
-    "duration_ms": 4778
+    "duration_ms": 7302
   },
   "verifiers": [
     {
@@ -51,18 +51,36 @@
       "command": "node scripts/verify-apply-task-events.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 38,
+      "duration_ms": 34,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
+    },
+    {
+      "script": "test:architecture-subsystems",
+      "command": "node scripts/verify-architecture-subsystems.mjs",
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 32,
+      "failure_excerpt": null,
+      "last_run_at": "2026-07-08T05:22:58.845Z"
+    },
+    {
+      "script": "test:capability-drift",
+      "command": "node scripts/verify-capability-drift.mjs",
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 33,
+      "failure_excerpt": null,
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:capability-registry",
       "command": "node scripts/verify-morrowise-capability-registry.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 31,
+      "duration_ms": 26,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:capability-runtime-status",
@@ -71,61 +89,70 @@
       "exit_code": 0,
       "duration_ms": 27,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:closeout-residual-ledger",
       "command": "node scripts/verify-closeout-residual-ledger.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 24,
+      "duration_ms": 25,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:commit-attention",
       "command": "node scripts/verify-commit-attention.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 25,
+      "duration_ms": 29,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:commit-cleanup-plan",
       "command": "node scripts/verify-morrowise-commit-cleanup-plan.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 24,
+      "duration_ms": 25,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:commit-planning-gate",
       "command": "node scripts/verify-morrowise-commit-planning-gate.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 24,
+      "duration_ms": 25,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
+    },
+    {
+      "script": "test:config-sync-state",
+      "command": "node scripts/verify-config-sync-state.mjs",
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 28,
+      "failure_excerpt": null,
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:hc-framing-gate",
       "command": "node scripts/verify-hc-framing-gate.mjs",
-      "status": "fail",
-      "exit_code": 1,
-      "duration_ms": 26,
-      "failure_excerpt": "    '- Obsidian Canvas 是否已同步，若未同步需說明原因\\n' +\n    '- visual sync coverage：每個本次新增 / 更新 task 是否已有 MC task、Heptabase card、Obsidian Canvas mirror\\n' +\n    '\\n' +\n    '## 升級 internal → standalone\\n' +\n    '\\n' +\n    '```bash\\n' +\n    'python3 \"$COLLAB/harness-mc/scripts/new-project.py\" promote --id <id>\\n' +\n    '```\\n' +\n    '\\n' +\n    '## 注意\\n' +\n    '\\n' +\n    '- standalone 必須在 repos.json 有對應條目\\n' +\n    '- repos.json 的 name 應與 project id 一致\\n' +\n    '- 補完 project.json 後手動同步：`python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-projects-to-obsidian.py\"`\\n' +\n    '- 或等每晚 22'... 9 more characters,\n  expected: /version: 3\\.9/,\n  operator: 'match',\n  diff: 'simple'\n}\nNode.js v24.11.1",
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 457,
+      "failure_excerpt": null,
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:kj-handoff-live-sync",
       "command": "node scripts/verify-kj-handoff-live-sync.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 58,
+      "duration_ms": 82,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:kj-mirror-reconcile",
@@ -134,7 +161,7 @@
       "exit_code": 0,
       "duration_ms": 24,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:kj-notion-read-model",
@@ -143,205 +170,241 @@
       "exit_code": 0,
       "duration_ms": 21,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:live-system-admission",
       "command": "node scripts/verify-morrowise-live-system-admission.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 24,
+      "duration_ms": 22,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:morrowise-approval",
       "command": "node scripts/verify-morrowise-approval-policy.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 24,
+      "duration_ms": 21,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:morrowise-auditor",
       "command": "node scripts/verify-morrowise-auditor-schema.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 26,
+      "duration_ms": 22,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:morrowise-auditor-generator",
       "command": "node scripts/verify-generate-morrowise-auditor.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 31,
+      "duration_ms": 64,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:morrowise-console",
       "command": "node scripts/verify-morrowise-control-console.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 23,
+      "duration_ms": 21,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:morrowise-live-dashboard",
       "command": "node scripts/verify-morrowise-live-dashboard-data.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 36,
+      "duration_ms": 32,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:morrowise-live-loop",
       "command": "node scripts/verify-morrowise-live-dashboard-loop.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 2898,
+      "duration_ms": 2656,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:morrowise-loop",
       "command": "node scripts/verify-morrowise-proactive-loop.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 47,
+      "duration_ms": 41,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
+    },
+    {
+      "script": "test:morrowise-notifier-source",
+      "command": "node scripts/verify-morrowise-notifier-source.mjs",
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 1583,
+      "failure_excerpt": null,
+      "last_run_at": "2026-07-08T05:22:58.845Z"
+    },
+    {
+      "script": "test:morrowise-product-promotions",
+      "command": "node scripts/verify-morrowise-product-promotions.mjs",
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 31,
+      "failure_excerpt": null,
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:morrowise-read-model-card",
       "command": "node scripts/verify-morrowise-read-model-card.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 23,
+      "duration_ms": 22,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:morrowise-recommendations",
       "command": "node scripts/verify-morrowise-recommendations.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 23,
+      "duration_ms": 21,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:morrowise-runner",
       "command": "node scripts/verify-morrowise-action-runner.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 26,
+      "duration_ms": 23,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:morrowise-schema",
       "command": "node scripts/verify-morrowise-system-schema.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 22,
+      "duration_ms": 21,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:morrowise-system-json",
       "command": "node scripts/verify-morrowise-system-json.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 31,
+      "duration_ms": 28,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:morrowise-triggers",
       "command": "node scripts/verify-morrowise-trigger-rules.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 22,
+      "duration_ms": 21,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:morrowise-wiring",
       "command": "node scripts/verify-morrowise-wiring-gate.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 26,
+      "duration_ms": 24,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:notification-adapter-contract",
       "command": "node scripts/verify-morrowise-notification-adapter-contract.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 29,
+      "duration_ms": 331,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
+    },
+    {
+      "script": "test:notification-outbox",
+      "command": "node scripts/verify-notification-outbox-contract.mjs",
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 61,
+      "failure_excerpt": null,
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:notion-sync-state",
       "command": "node scripts/verify-notion-sync-state.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 27,
+      "duration_ms": 25,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:pai-domain-taxonomy",
       "command": "node scripts/verify-pai-domain-taxonomy.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 28,
+      "duration_ms": 24,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
+    },
+    {
+      "script": "test:pulse-proposals",
+      "command": "node scripts/verify-pulse-proposal-queue.mjs",
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 36,
+      "failure_excerpt": null,
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:reality-tax-gate",
       "command": "node scripts/verify-morrowise-reality-tax-gate.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 24,
+      "duration_ms": 25,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:required-publish-flow",
       "command": "node scripts/verify-required-publish-flow.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 81,
+      "duration_ms": 77,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:schedule-health",
       "command": "node scripts/verify-schedule-health.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 27,
+      "duration_ms": 30,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:skill-version-backfill",
       "command": "node scripts/verify-skill-version-backfill.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 24,
+      "duration_ms": 26,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:skills",
@@ -350,7 +413,7 @@
       "exit_code": 0,
       "duration_ms": 72,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:sync-event-queue",
@@ -359,7 +422,16 @@
       "exit_code": 0,
       "duration_ms": 24,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
+    },
+    {
+      "script": "test:system-pulse",
+      "command": "node scripts/verify-system-pulse.mjs",
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 51,
+      "failure_excerpt": null,
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:task-event-dashboard",
@@ -368,16 +440,16 @@
       "exit_code": 0,
       "duration_ms": 26,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:task-event-outbox",
       "command": "node scripts/verify-task-event-outbox.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 24,
+      "duration_ms": 25,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:task-state",
@@ -386,58 +458,67 @@
       "exit_code": 0,
       "duration_ms": 22,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:tasks",
       "command": "node scripts/verify-validate-tasks.mjs && node scripts/validate-tasks.mjs --changed-only --project harness-mc",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 331,
+      "duration_ms": 421,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:tools-data",
       "command": "node scripts/verify-generate-tools-data.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 67,
+      "duration_ms": 56,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:visual-sync-coverage",
       "command": "node scripts/verify-visual-sync-coverage.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 27,
+      "duration_ms": 24,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:work-anchor-preflight",
       "command": "node scripts/verify-work-anchor-preflight.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 24,
+      "duration_ms": 22,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
+    },
+    {
+      "script": "test:worktree-commit-race",
+      "command": "node scripts/verify-worktree-commit-race-governance.mjs",
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 126,
+      "failure_excerpt": null,
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     },
     {
       "script": "test:worktree-status",
       "command": "node scripts/generate-worktree-status.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 317,
+      "duration_ms": 277,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-03T08:26:33.233Z"
+      "last_run_at": "2026-07-08T05:22:58.845Z"
     }
   ],
   "next_action": {
-    "type": "fix_failed_verifier",
-    "target": "test:hc-framing-gate",
-    "label": "Run test:hc-framing-gate, inspect sanitized failure_excerpt, then fix the owning verifier or source contract."
+    "type": "none",
+    "target": null,
+    "label": "All tracked package.json test:* verifiers passed in the latest suite run."
   },
   "verifier_ref": "npm run test:verifier-suite-health"
 }

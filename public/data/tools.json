@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-29T16:32:41.284Z",
+  "generatedAt": "2026-07-08T05:22:58.908Z",
   "sourceStatus": {
     "skills": "scanned",
     "scripts": {
@@ -9,8 +9,8 @@
     "hooks": "scanned"
   },
   "summary": {
-    "totalSkills": 41,
-    "totalScripts": 83,
+    "totalSkills": 46,
+    "totalScripts": 110,
     "totalHooks": 2
   },
   "skills": [
@@ -95,6 +95,18 @@
       "changelog": []
     },
     {
+      "id": "cc-push",
+      "name": "cc-push",
+      "description": "Use when Vincent says \"cc-push\", \"一起 push\", \"batch push\", \"多個 session 都 commit 完了\", \"檢查哪些可以 push\", \"最後統一 push\", or wants a final push after cc-log/worktree-commit across one or more repos.",
+      "version": "1.0",
+      "category": "一般工具",
+      "groups": [
+        "MorroWise"
+      ],
+      "lastModified": "2026-07-02T15:50:07.563Z",
+      "changelog": []
+    },
+    {
       "id": "cross-agent-memory",
       "name": "cross-agent-memory",
       "description": "跨 Agent 記憶同步。當需要確保某個知識點被 HiSenzi 和 Claude Code 都記住時使用。觸發詞：「兩邊都要記住」、「CC 也要知道」、「跨 agent 記憶」、「同步記憶」。",
@@ -135,6 +147,16 @@
       "changelog": []
     },
     {
+      "id": "extract-joomla-articles",
+      "name": "extract-joomla-articles",
+      "description": "Use when extracting Joomla articles from Akeeba backup folders, Joomla SQL dumps, or URLs with com_content article ids into Markdown files, especially when Vincent says \"抽 Joomla 文章\", \"Akeeba 備份文章轉 md",
+      "version": "1.1",
+      "category": "內容寫作",
+      "groups": [],
+      "lastModified": "2026-07-06T08:02:48.379Z",
+      "changelog": []
+    },
+    {
       "id": "finishing-a-development-branch",
       "name": "finishing-a-development-branch",
       "description": "Use when implementation is complete, all tests pass, and you need to decide how to integrate the work - guides completion of development work by presenting structured options for merge, PR, or cleanup",
@@ -152,6 +174,16 @@
       "category": "除錯驗證",
       "groups": [],
       "lastModified": "2026-05-30T15:38:37.889Z",
+      "changelog": []
+    },
+    {
+      "id": "formspark-n8n-autoreply",
+      "name": "formspark-n8n-autoreply",
+      "description": "Formspark + n8n 官網表單自動回覆流程。當 Vincent 要做「網站預約表單」、「Formspark 接 n8n」、「填表人自動回覆」、「站主通知 + 填表人確認信」、「表單 webhook token / shared secret」或客戶靜態網站表單 MVP / production hardening 時使用。不要用於完整排程系統、CRM 導入或需要後端資料庫的表單產品。",
+      "version": "1.2",
+      "category": "一般工具",
+      "groups": [],
+      "lastModified": "2026-07-07T23:16:41.644Z",
       "changelog": []
     },
     {
@@ -293,6 +325,31 @@
         "視覺層同步"
       ],
       "lastModified": "2026-06-28T06:16:55.636Z",
+      "changelog": []
+    },
+    {
+      "id": "promote-to-architecture",
+      "name": "promote-to-architecture",
+      "description": "將已完成或已驗證的系統能力收編進 ARCHITECTURE.md 的薄索引流程。當 Vincent 說「寫進 ARCHITECTURE.md」、「變成架構」、「把這個系統收進架構」、「系統完成後補架構」、「架構化這個能力」時使用。用於 control-plane / runtime / notifier / scheduler / read model / verifier / source-of",
+      "version": "1.2",
+      "category": "一般工具",
+      "groups": [
+        "MorroWise"
+      ],
+      "lastModified": "2026-07-07T02:32:01.940Z",
+      "changelog": []
+    },
+    {
+      "id": "promote-to-morrowise-product",
+      "name": "promote-to-morrowise-product",
+      "description": "將已在 MorroWise 內部驗證的能力評估並提取進 morrowise-product 產品線。當 Vincent 說「提取進 morrowise-product」、「產品化這個能力」、「值得變產品」、「打包賣錢」、「安裝後產生 MC 儀表板」時使用；不要用來管理一般架構索引或 MBA-2 同步。",
+      "version": "1.1",
+      "category": "MorroWise",
+      "groups": [
+        "MorroWise",
+        "驗收規範"
+      ],
+      "lastModified": "2026-07-07T03:12:34.616Z",
       "changelog": []
     },
     {
@@ -452,14 +509,14 @@
       "id": "worktree-commit",
       "name": "worktree-commit",
       "description": "| Git commit 防呆流程。當要 commit 時使用此 skill。 掃描 → diff → 分組 → message → 10 天自驗 → 檢查 → 確認 → commit → task 狀態紀錄 → push + 部署。 commit repo 是 harness-mc 時直接回填 tasks.json + rebuild；跨 repo 時只寫 task event outbox，避",
-      "version": "1.7",
+      "version": "1.8",
       "category": "版本控制",
       "groups": [
         "MorroWise",
         "視覺層同步",
         "Commit gate"
       ],
-      "lastModified": "2026-06-28T06:16:55.637Z",
+      "lastModified": "2026-07-04T17:44:51.912Z",
       "changelog": []
     },
     {
@@ -513,6 +570,12 @@
       "lastModified": "2026-06-28T06:22:59.803Z"
     },
     {
+      "name": "capability-observed-lib.mjs",
+      "description": "Pure transforms for the MorroWise capability observed scan (JV-19).",
+      "location": "harness-mc",
+      "lastModified": "2026-07-06T10:19:14.136Z"
+    },
+    {
       "name": "cc-statusline.sh",
       "description": "~/.claude/statusline.sh",
       "location": "000_Agent",
@@ -543,10 +606,16 @@
       "lastModified": "2026-05-14T06:38:56.683Z"
     },
     {
+      "name": "generate-capability-observed.mjs",
+      "description": "Generate the MorroWise capability OBSERVED scan + drift read model (JV-19).",
+      "location": "harness-mc",
+      "lastModified": "2026-07-06T10:23:25.757Z"
+    },
+    {
       "name": "generate-capability-runtime-status.mjs",
       "description": "Generate the MorroWise API / CLI / MCP runtime status read model.",
       "location": "harness-mc",
-      "lastModified": "2026-06-28T03:11:52.684Z"
+      "lastModified": "2026-07-03T04:29:13.625Z"
     },
     {
       "name": "generate-closeout-residual-ledger.mjs",
@@ -567,10 +636,22 @@
       "lastModified": "2026-06-26T06:59:08.762Z"
     },
     {
+      "name": "generate-config-sync-state.mjs",
+      "description": "JV-12 雙機同步斷線警報。",
+      "location": "harness-mc",
+      "lastModified": "2026-07-05T22:44:31.314Z"
+    },
+    {
       "name": "generate-data.mjs",
       "description": "lastModified 取「最後 commit 該專案的時間」而非檔案 mtime——",
       "location": "harness-mc",
       "lastModified": "2026-06-28T07:51:09.359Z"
+    },
+    {
+      "name": "generate-morrowise-auditor.mjs",
+      "description": "MorroWise auditor generator v0 (morrowise/morrowise-auditor-fixtures, MW-AUDITOR-02).",
+      "location": "harness-mc",
+      "lastModified": "2026-07-05T23:00:50.464Z"
     },
     {
       "name": "generate-morrowise-capabilities.mjs",
@@ -580,9 +661,9 @@
     },
     {
       "name": "generate-morrowise-live-dashboard.mjs",
-      "description": "",
+      "description": "JV-13: system-pulse 狀態與待裁決 proposal 佇列納入首屏 attention",
       "location": "harness-mc",
-      "lastModified": "2026-06-28T03:04:04.931Z"
+      "lastModified": "2026-07-05T23:01:19.501Z"
     },
     {
       "name": "generate-morrowise-proactive-loop.mjs",
@@ -592,15 +673,21 @@
     },
     {
       "name": "generate-morrowise-system.mjs",
-      "description": "",
+      "description": "Auditor loops are conditional on reality: once public/data/morrowise-auditor.json",
       "location": "harness-mc",
-      "lastModified": "2026-06-27T23:53:41.327Z"
+      "lastModified": "2026-07-03T07:52:18.785Z"
+    },
+    {
+      "name": "generate-notion-sync-state.mjs",
+      "description": "Generate the MorroWise Notion sync-state read model without external writes.",
+      "location": "harness-mc",
+      "lastModified": "2026-07-03T04:27:49.623Z"
     },
     {
       "name": "generate-schedule-health.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-27T16:16:22.270Z"
+      "lastModified": "2026-07-04T17:36:40.359Z"
     },
     {
       "name": "generate-task-event-data.mjs",
@@ -613,6 +700,12 @@
       "description": "── Skills ──────────────────────────────────────────────────────────────",
       "location": "harness-mc",
       "lastModified": "2026-06-28T02:27:25.243Z"
+    },
+    {
+      "name": "generate-verifier-suite-health.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-07-03T08:20:09.920Z"
     },
     {
       "name": "generate-visual-sync-coverage.mjs",
@@ -669,16 +762,40 @@
       "lastModified": "2026-05-19T13:03:37.127Z"
     },
     {
+      "name": "notification-outbox.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-07-06T16:20:56.187Z"
+    },
+    {
       "name": "process_tasks.py",
       "description": "",
       "location": "000_Agent",
       "lastModified": "2026-04-22T14:08:03.714Z"
     },
     {
+      "name": "pulse-proposal-queue.mjs",
+      "description": "Pulse proposal queue (JV-08, morrowise/system-pulse-feedback-loop).",
+      "location": "harness-mc",
+      "lastModified": "2026-07-07T04:34:11.149Z"
+    },
+    {
+      "name": "reconcile-kj-mirror.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-07-02T16:29:43.676Z"
+    },
+    {
+      "name": "run-system-pulse.mjs",
+      "description": "JV-08: 失敗 → proposal 佇列；每輪都跑（healthy 時做 TTL sweep + read model 重生成）",
+      "location": "harness-mc",
+      "lastModified": "2026-07-07T04:33:55.485Z"
+    },
+    {
       "name": "sentinel-diff.mjs",
       "description": "sentinel-diff.mjs — MC 哨兵：milestones 變化偵測（sn-2）",
       "location": "harness-mc",
-      "lastModified": "2026-06-12T02:44:40.648Z"
+      "lastModified": "2026-07-05T22:45:05.941Z"
     },
     {
       "name": "sentinel-notion.mjs",
@@ -691,6 +808,18 @@
       "description": "",
       "location": "000_Agent",
       "lastModified": "2026-04-22T14:08:03.717Z"
+    },
+    {
+      "name": "sync-architecture-current-state.py",
+      "description": "",
+      "location": "000_Agent",
+      "lastModified": "2026-07-03T08:17:55.235Z"
+    },
+    {
+      "name": "sync-architecture-subsystems.py",
+      "description": "",
+      "location": "000_Agent",
+      "lastModified": "2026-07-07T04:10:01.811Z"
     },
     {
       "name": "sync-cc-claude.sh",
@@ -744,7 +873,7 @@
       "name": "update-skills-index.py",
       "description": "",
       "location": "000_Agent",
-      "lastModified": "2026-05-14T02:36:16.325Z"
+      "lastModified": "2026-07-04T17:17:20.201Z"
     },
     {
       "name": "validate-skills.mjs",
@@ -756,7 +885,7 @@
       "name": "validate-tasks.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-21T16:23:53.802Z"
+      "lastModified": "2026-07-07T04:09:38.492Z"
     },
     {
       "name": "verify-apply-task-events.mjs",
@@ -765,10 +894,22 @@
       "lastModified": "2026-06-15T07:09:39.774Z"
     },
     {
+      "name": "verify-architecture-subsystems.mjs",
+      "description": ",",
+      "location": "harness-mc",
+      "lastModified": "2026-07-07T04:35:56.269Z"
+    },
+    {
+      "name": "verify-capability-drift.mjs",
+      "description": "Verify the MorroWise capability observed scan + drift read model (JV-19).",
+      "location": "harness-mc",
+      "lastModified": "2026-07-06T14:09:41.118Z"
+    },
+    {
       "name": "verify-capability-runtime-status.mjs",
       "description": "Verify the MorroWise API / CLI / MCP runtime status read model.",
       "location": "harness-mc",
-      "lastModified": "2026-06-28T03:11:52.761Z"
+      "lastModified": "2026-07-03T04:28:38.939Z"
     },
     {
       "name": "verify-closeout-residual-ledger.mjs",
@@ -778,9 +919,21 @@
     },
     {
       "name": "verify-commit-attention.mjs",
-      "description": "",
+      "description": "Hermetic fixture root: task anchors come from scripts/fixtures, not live milestones,",
       "location": "harness-mc",
-      "lastModified": "2026-06-24T01:21:32.709Z"
+      "lastModified": "2026-07-03T04:25:53.645Z"
+    },
+    {
+      "name": "verify-config-sync-state.mjs",
+      "description": "預設 heartbeat：對端 12h 內 → pass，不干擾既有案例",
+      "location": "harness-mc",
+      "lastModified": "2026-07-05T22:46:06.612Z"
+    },
+    {
+      "name": "verify-generate-morrowise-auditor.mjs",
+      "description": "1. Fixture runs: strict category assertions — fixtures are synthetic, so exact",
+      "location": "harness-mc",
+      "lastModified": "2026-07-05T23:05:08.084Z"
     },
     {
       "name": "verify-generate-tools-data.mjs",
@@ -790,9 +943,27 @@
     },
     {
       "name": "verify-hc-framing-gate.mjs",
+      "description": "版本用數值下限比較（HC gate 引入版），不用 exact pin——skill 例行升版不應弄壞本 verifier",
+      "location": "harness-mc",
+      "lastModified": "2026-07-05T15:07:37.030Z"
+    },
+    {
+      "name": "verify-kj-handoff-live-sync.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-21T16:24:58.524Z"
+      "lastModified": "2026-07-02T16:00:51.633Z"
+    },
+    {
+      "name": "verify-kj-mirror-reconcile.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-07-02T16:29:43.766Z"
+    },
+    {
+      "name": "verify-kj-notion-read-model.mjs",
+      "description": "f046f40f-ac75-41ed-afa8-67379159316c\");",
+      "location": "harness-mc",
+      "lastModified": "2026-07-01T16:09:00.532Z"
     },
     {
       "name": "verify-morrowise-action-runner.mjs",
@@ -840,7 +1011,7 @@
       "name": "verify-morrowise-live-dashboard-data.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-28T03:03:50.676Z"
+      "lastModified": "2026-07-05T23:03:31.161Z"
     },
     {
       "name": "verify-morrowise-live-dashboard-loop.mjs",
@@ -858,13 +1029,25 @@
       "name": "verify-morrowise-notification-adapter-contract.mjs",
       "description": "api.line.me/v2/bot/message/push\");",
       "location": "harness-mc",
-      "lastModified": "2026-06-27T16:38:23.176Z"
+      "lastModified": "2026-07-05T14:33:44.188Z"
+    },
+    {
+      "name": "verify-morrowise-notifier-source.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-07-07T01:15:45.399Z"
     },
     {
       "name": "verify-morrowise-proactive-loop.mjs",
       "description": "",
       "location": "harness-mc",
       "lastModified": "2026-06-20T16:20:20.345Z"
+    },
+    {
+      "name": "verify-morrowise-product-promotions.mjs",
+      "description": "i,",
+      "location": "harness-mc",
+      "lastModified": "2026-07-07T03:12:08.095Z"
     },
     {
       "name": "verify-morrowise-read-model-card.mjs",
@@ -886,9 +1069,9 @@
     },
     {
       "name": "verify-morrowise-system-json.mjs",
-      "description": ".test(text), false, \"read model must not contain hardcoded /Users paths\");",
+      "description": "Auditor loops are conditional on the auditor read model: present with findings →",
       "location": "harness-mc",
-      "lastModified": "2026-06-27T13:41:21.104Z"
+      "lastModified": "2026-07-03T07:52:31.477Z"
     },
     {
       "name": "verify-morrowise-system-schema.mjs",
@@ -904,21 +1087,39 @@
     },
     {
       "name": "verify-morrowise-wiring-gate.mjs",
+      "description": "next_action is live conditional routing (auth / task / generator / none), so assert the",
+      "location": "harness-mc",
+      "lastModified": "2026-07-03T04:32:06.627Z"
+    },
+    {
+      "name": "verify-notification-outbox-contract.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-27T13:25:04.856Z"
+      "lastModified": "2026-07-06T16:21:11.568Z"
+    },
+    {
+      "name": "verify-notion-sync-state.mjs",
+      "description": "mcp.notion.com/mcp (HTTP) - ✓ Connected\",",
+      "location": "harness-mc",
+      "lastModified": "2026-07-03T04:28:10.620Z"
     },
     {
       "name": "verify-pai-domain-taxonomy.mjs",
-      "description": "",
+      "description": "provisional_project_domains：他方 session in-flight（本機存在、尚未 commit）的專案 mapping。",
       "location": "harness-mc",
-      "lastModified": "2026-06-29T16:16:45.775Z"
+      "lastModified": "2026-07-06T08:04:19.748Z"
     },
     {
       "name": "verify-projects-filter.mjs",
       "description": "",
       "location": "harness-mc",
       "lastModified": "2026-06-28T07:55:06.868Z"
+    },
+    {
+      "name": "verify-pulse-proposal-queue.mjs",
+      "description": "1. 新 failure → amber proposal 入佇列，read model 齊 envelope",
+      "location": "harness-mc",
+      "lastModified": "2026-07-07T04:36:32.236Z"
     },
     {
       "name": "verify-required-publish-flow.mjs",
@@ -930,7 +1131,7 @@
       "name": "verify-schedule-health.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-27T16:16:48.624Z"
+      "lastModified": "2026-07-04T17:37:08.377Z"
     },
     {
       "name": "verify-skill-version-backfill.mjs",
@@ -943,6 +1144,12 @@
       "description": "",
       "location": "harness-mc",
       "lastModified": "2026-06-27T13:01:23.872Z"
+    },
+    {
+      "name": "verify-system-pulse.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-07-07T04:34:19.687Z"
     },
     {
       "name": "verify-task-event-dashboard-data.mjs",
@@ -972,7 +1179,13 @@
       "name": "verify-validate-tasks.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-21T16:21:22.302Z"
+      "lastModified": "2026-07-07T04:09:54.426Z"
+    },
+    {
+      "name": "verify-verifier-suite-health.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-07-03T08:20:45.589Z"
     },
     {
       "name": "verify-visual-sync-coverage.mjs",
@@ -982,15 +1195,21 @@
     },
     {
       "name": "verify-work-anchor-preflight.mjs",
+      "description": "JV-17 事件點 gate：dispatch 缺三件套 → blocked，缺件逐項點名",
+      "location": "harness-mc",
+      "lastModified": "2026-07-05T22:49:45.500Z"
+    },
+    {
+      "name": "verify-worktree-commit-race-governance.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-27T15:47:46.805Z"
+      "lastModified": "2026-07-04T17:44:26.363Z"
     },
     {
       "name": "work-anchor-preflight.mjs",
-      "description": "",
+      "description": "JV-17 事件點 gate（morrowise/dispatch-gate-extension）。",
       "location": "harness-mc",
-      "lastModified": "2026-06-27T15:47:40.162Z"
+      "lastModified": "2026-07-05T22:49:31.427Z"
     }
   ],
   "hooks": [
@@ -1011,147 +1230,146 @@
   ],
   "recentChanges": [
     {
-      "date": "2026-06-29",
-      "message": "docs(obsidian): route active vault docs to shared brain path",
+      "date": "2026-07-08",
+      "message": "docs(skills): add Formspark n8n autoresponder workflow",
       "repo": "notyet-harness",
       "files": [
-        "000_Agent/skills/exam-pipeline/SKILL.md"
+        "000_Agent/skills/SKILLS-INDEX.md",
+        "000_Agent/skills/formspark-n8n-autoreply/SKILL.md"
       ]
     },
     {
-      "date": "2026-06-28",
-      "message": "chore(skills): backfill frontmatter versions for tracked skills",
+      "date": "2026-07-07",
+      "message": "docs(architecture): sync MorroWise subsystem index",
       "repo": "notyet-harness",
       "files": [
-        "000_Agent/skills/build-skill/SKILL.md",
-        "000_Agent/skills/heptabase-task-cards/SKILL.md",
-        "000_Agent/skills/hisenzi-skill-builder/SKILL.md",
-        "000_Agent/skills/jpmodel-case-page/SKILL.md",
-        "000_Agent/skills/project-init/SKILL.md"
+        "000_Agent/scripts/sync-architecture-subsystems.py"
       ]
     },
     {
-      "date": "2026-06-28",
-      "message": "docs(worktree): record github push auth troubleshooting",
+      "date": "2026-07-07",
+      "message": "feat(skills): add Joomla article extraction skill",
       "repo": "notyet-harness",
       "files": [
-        "000_Agent/skills/worktree-commit/SKILL.md"
+        "000_Agent/skills/SKILLS-INDEX.md",
+        "000_Agent/skills/extract-joomla-articles/SKILL.md",
+        "000_Agent/skills/extract-joomla-articles/scripts/extract_joomla_articles.py"
       ]
     },
     {
-      "date": "2026-06-28",
-      "message": "feat(projects): align project filters with PAI domains",
-      "repo": "harness-mc",
+      "date": "2026-07-07",
+      "message": "docs(agent): add MorroWise promotion skills and catch-up runbook",
+      "repo": "notyet-harness",
       "files": [
-        "scripts/generate-data.mjs",
-        "scripts/verify-pai-domain-taxonomy.mjs",
-        "scripts/verify-projects-filter.mjs"
+        "000_Agent/skills/SKILLS-INDEX.md",
+        "000_Agent/skills/promote-to-architecture/SKILL.md",
+        "000_Agent/skills/promote-to-morrowise-product/SKILL.md"
       ]
     },
     {
-      "date": "2026-06-28",
-      "message": "feat(skill-dashboard): add skill version backfill tooling",
+      "date": "2026-07-07",
+      "message": "feat(morrowise): add architecture subsystem admission gate",
       "repo": "harness-mc",
       "files": [
-        "scripts/backfill-skill-frontmatter-versions.mjs",
-        "scripts/verify-skill-version-backfill.mjs"
+        "scripts/pulse-proposal-queue.mjs",
+        "scripts/run-system-pulse.mjs",
+        "scripts/validate-tasks.mjs",
+        "scripts/verify-architecture-subsystems.mjs",
+        "scripts/verify-pulse-proposal-queue.mjs"
       ]
     },
     {
-      "date": "2026-06-28",
-      "message": "feat(morrowise): add capability runtime status read model",
+      "date": "2026-07-07",
+      "message": "feat(morrowise): add secure notifier and governance gates",
       "repo": "harness-mc",
       "files": [
-        "scripts/generate-capability-runtime-status.mjs",
+        "scripts/notification-outbox.mjs",
+        "scripts/verify-morrowise-notifier-source.mjs",
+        "scripts/verify-morrowise-product-promotions.mjs",
+        "scripts/verify-notification-outbox-contract.mjs"
+      ]
+    },
+    {
+      "date": "2026-07-06",
+      "message": "feat(morrowise): JV-19 capability observed scan + declared/observed drift",
+      "repo": "harness-mc",
+      "files": [
+        "scripts/capability-observed-lib.mjs",
+        "scripts/generate-capability-observed.mjs",
+        "scripts/verify-capability-drift.mjs"
+      ]
+    },
+    {
+      "date": "2026-07-06",
+      "message": "fix(registry): PAI taxonomy 加 provisional 區，修 CI/本機可見性不對稱",
+      "repo": "harness-mc",
+      "files": [
+        "scripts/verify-pai-domain-taxonomy.mjs"
+      ]
+    },
+    {
+      "date": "2026-07-06",
+      "message": "feat(harness-mc): System Attention 納入 pulse/proposals、新增 Harness governance 卡 (JV-13+JV-15)",
+      "repo": "harness-mc",
+      "files": [
+        "scripts/generate-morrowise-auditor.mjs",
         "scripts/generate-morrowise-live-dashboard.mjs",
-        "scripts/verify-capability-runtime-status.mjs",
+        "scripts/verify-generate-morrowise-auditor.mjs",
         "scripts/verify-morrowise-live-dashboard-data.mjs"
       ]
     },
     {
-      "date": "2026-06-28",
-      "message": "fix(skill-dashboard): sanitize tools snapshot and complete ci",
+      "date": "2026-07-06",
+      "message": "feat(morrowise): work-anchor-preflight 加派工/實作事件點 gate (JV-17)",
       "repo": "harness-mc",
       "files": [
-        "scripts/generate-tools-data.mjs",
-        "scripts/verify-generate-tools-data.mjs"
+        "scripts/verify-work-anchor-preflight.mjs",
+        "scripts/work-anchor-preflight.mjs"
       ]
     },
     {
-      "date": "2026-06-28",
-      "message": "fix(skill-dashboard): preserve tools data snapshot in ci",
+      "date": "2026-07-06",
+      "message": "feat(morrowise): 雙機同步斷線警報建到 fixture-ready (JV-12)",
       "repo": "harness-mc",
       "files": [
-        "scripts/generate-tools-data.mjs",
-        "scripts/verify-generate-tools-data.mjs"
+        "scripts/generate-config-sync-state.mjs",
+        "scripts/run-system-pulse.mjs",
+        "scripts/sentinel-diff.mjs",
+        "scripts/verify-config-sync-state.mjs"
       ]
     },
     {
-      "date": "2026-06-28",
-      "message": "feat(morrowise): define reality tax gate protocol",
+      "date": "2026-07-06",
+      "message": "fix(sentinel): push 送達狀態改以 notify.sh 回報為準 (JV-07)",
       "repo": "harness-mc",
       "files": [
-        "scripts/generate-morrowise-system.mjs",
-        "scripts/verify-morrowise-reality-tax-gate.mjs"
+        "scripts/sentinel-diff.mjs"
       ]
     },
     {
-      "date": "2026-06-28",
-      "message": "fix(morrowise): allow notification verifier without sibling schedule repo",
+      "date": "2026-07-06",
+      "message": "fix(verifier): hc-framing-gate 版本改數值下限比較，殺 exact pin 自腐",
       "repo": "harness-mc",
       "files": [
-        "scripts/verify-morrowise-notification-adapter-contract.mjs"
+        "scripts/verify-hc-framing-gate.mjs"
       ]
     },
     {
-      "date": "2026-06-28",
-      "message": "feat(morrowise): define notification adapter contract",
+      "date": "2026-07-06",
+      "message": "feat(morrowise): pulse 失敗自動變 proposal 佇列（含推送與防自噬）(JV-08)",
       "repo": "harness-mc",
       "files": [
-        "scripts/verify-morrowise-notification-adapter-contract.mjs"
+        "scripts/pulse-proposal-queue.mjs",
+        "scripts/run-system-pulse.mjs",
+        "scripts/verify-pulse-proposal-queue.mjs"
       ]
     },
     {
-      "date": "2026-06-28",
-      "message": "feat(morrowise): surface scheduler runtime health",
-      "repo": "harness-mc",
-      "files": [
-        "scripts/generate-morrowise-live-dashboard.mjs",
-        "scripts/generate-schedule-health.mjs",
-        "scripts/verify-morrowise-live-dashboard-data.mjs",
-        "scripts/verify-schedule-health.mjs"
-      ]
-    },
-    {
-      "date": "2026-06-28",
-      "message": "feat(visual-sync): add coverage read model",
-      "repo": "harness-mc",
-      "files": [
-        "scripts/generate-morrowise-live-dashboard.mjs",
-        "scripts/generate-visual-sync-coverage.mjs",
-        "scripts/verify-morrowise-live-dashboard-data.mjs",
-        "scripts/verify-visual-sync-coverage.mjs",
-        "scripts/verify-work-anchor-preflight.mjs"
-      ]
-    },
-    {
-      "date": "2026-06-27",
-      "message": "feat(morrowise): add live manual sync",
+      "date": "2026-07-05",
+      "message": "docs(worktree): add commit race gate",
       "repo": "notyet-harness",
       "files": [
-        "000_Agent/scripts/sync-morrowise-manual.py"
-      ]
-    },
-    {
-      "date": "2026-06-27",
-      "message": "feat(jpmodel): add case page skill",
-      "repo": "notyet-harness",
-      "files": [
-        "000_Agent/skills/jpmodel-case-page/SKILL.md",
-        "000_Agent/skills/jpmodel-case-page/references/copy-rules.md",
-        "000_Agent/skills/jpmodel-case-page/references/list-item.md",
-        "000_Agent/skills/jpmodel-case-page/references/spec.md",
-        "000_Agent/skills/jpmodel-case-page/scripts/add_to_list.py"
+        "000_Agent/skills/worktree-commit/SKILL.md"
       ]
     }
   ]

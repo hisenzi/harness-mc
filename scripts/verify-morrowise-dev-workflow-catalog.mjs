@@ -220,7 +220,12 @@ function verifyReadModel(value, sourceRegistry) {
 function verifyTaskState(value) {
   const task = value.find((item) => item.id === "morrowise-dev-workflow-catalog");
   assert.ok(task, "JV-32 task missing");
-  assert.equal(task.status, "in_progress", "JV-32 task must remain in_progress until worktree-commit fills completed_at/summary/commits");
+  assert.ok(["in_progress", "completed"].includes(task.status), "JV-32 task must be in_progress or completed");
+  if (task.status === "completed") {
+    assert.ok(task.completed_at, "completed JV-32 task requires completed_at");
+    assert.ok(task.summary, "completed JV-32 task requires summary");
+    assert.ok(Array.isArray(task.commits) && task.commits.length > 0, "completed JV-32 task requires commits");
+  }
   assert.ok(task.architecture_decision, "JV-32 task architecture_decision required");
 }
 

@@ -2168,7 +2168,7 @@
     },
     {
       "id": "morrowise-dev-workflow-catalog",
-      "status": "in_progress",
+      "status": "completed",
       "title": "JV-32 MorroWise 開發工作流 Catalog 與 Router Gate",
       "track": "governance",
       "order_label": "JV-32",
@@ -2233,7 +2233,12 @@
         "detail_doc": "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-catalog.md",
         "reason": "JV-32 已落 durable source-map/detail doc、machine-readable registry/schema、verifier、generator、generated read model、read_model_surface_only wiring fixture，且安全邊界禁止 installer/hooks/secrets/external tracker writes；Architecture Admission Record 已 promoted，ARCHITECTURE.md 只由 sync script 產生薄索引，不複製 catalog 細節。"
       },
-      "note": "2026-07-08 Vincent 裁決：不另開案，先在 MorroWise 裡寫 task。此 task 來自對 $COLLAB/.tmp/skills-main 的安全掃描與 workflow 評估；scan verdict 為可讀取參考，但外部 repo 不可直接安裝或執行。模擬驗證後補強 v2 條件：.tmp 只能作 intake evidence、需 durable source map/detail doc、需 negative fixtures、需 adapter_only 狀態、第一階段只做 registry/read model/verifier，dashboard/homepage surface 不列為首步必做。2026-07-08 implementation：已新增 source-map/detail doc、catalog registry/schema、generator、verifier、generated read model、read_model_surface_only wiring fixture、live dashboard read model surface，並將 Architecture Admission Record promoted；暫留 in_progress 等 worktree-commit 後補 commits/completed_at/summary。"
+      "completed_at": "2026-07-08",
+      "commits": [
+        "428a951"
+      ],
+      "summary": "Completed JV-32 MorroWise dev workflow catalog gate: durable source map/detail doc, registry/schema, generator, verifier with negative fixtures, read_model_surface_only wiring, live dashboard surface, and promoted Architecture Admission Record.",
+      "note": "2026-07-08 Vincent 裁決：不另開案，先在 MorroWise 裡寫 task。此 task 來自對 $COLLAB/.tmp/skills-main 的安全掃描與 workflow 評估；scan verdict 為可讀取參考，但外部 repo 不可直接安裝或執行。模擬驗證後補強 v2 條件：.tmp 只能作 intake evidence、需 durable source map/detail doc、需 negative fixtures、需 adapter_only 狀態、第一階段只做 registry/read model/verifier，dashboard/homepage surface 不列為首步必做。2026-07-08 implementation：已新增 source-map/detail doc、catalog registry/schema、generator、verifier、generated read model、read_model_surface_only wiring fixture、live dashboard read model surface，並將 Architecture Admission Record promoted；worktree-commit 已回填 commits/completed_at/summary。"
     }
   ]
 }

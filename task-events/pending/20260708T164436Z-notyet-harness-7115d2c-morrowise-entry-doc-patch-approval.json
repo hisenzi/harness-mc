@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-entry-doc-patch-approval-7115d2c-20260708T164436Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "7115d2c",
+  "project": "morrowise",
+  "task_id": "entry-doc-patch-approval",
+  "status": "updated",
+  "summary": "JV-23 evidence: change-approval-plan P5/P6 approved plus 2026-07-08 cc-log session block",
+  "created_at": "2026-07-08T16:44:36.871Z",
+  "actor": "codex",
+  "session_id": "codex-20260708-jv20-23"
+}

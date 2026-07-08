@@ -54,6 +54,7 @@ const REQUIRED_WORKFLOW_IDS = [
   "improve-codebase-architecture",
   "triage",
   "resolving-merge-conflicts",
+  "closeout-commit-routing",
 ];
 const FORBIDDEN_REF_PATTERNS = [
   /\/Users\/[A-Za-z0-9._-]+\//,
@@ -128,6 +129,15 @@ function verifyRegistry(value) {
   const toIssues = value.workflows.find((item) => item.id === "to-issues");
   assert.equal(toIssues.status, "adapter_only");
   assert.ok(String(toIssues.writes_to).includes("tasks.json"), "to-issues must keep MorroWise canonical task state");
+
+  const closeoutCommit = value.workflows.find((item) => item.id === "closeout-commit-routing");
+  assert.equal(closeoutCommit.status, "accepted");
+  assert.equal(closeoutCommit.phase, "closeout");
+  assert.equal(closeoutCommit.morrowise_stage, "workflow_closeout");
+  assert.match(`${closeoutCommit.process} ${closeoutCommit.close_rule}`, /verification-before-completion/);
+  assert.match(`${closeoutCommit.process} ${closeoutCommit.close_rule}`, /cc-log/);
+  assert.match(`${closeoutCommit.process} ${closeoutCommit.close_rule}`, /worktree-commit/);
+  assert.match(`${closeoutCommit.outputs} ${closeoutCommit.close_rule}`, /task completion evidence|completed_at|commits|summary/i);
 }
 
 function validateWorkflow(workflow) {

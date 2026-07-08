@@ -15,6 +15,7 @@ The catalog turns useful external software-development workflow patterns into Mo
 3. The generator creates `$COLLAB/harness-mc/public/data/morrowise-dev-workflows.json`.
 4. The router consumes the read model as a read-only surface.
 5. A workflow can close only through its `close_rule`; chat-only completion is not enough.
+6. Completed work routes through `closeout-commit-routing` before task completion is claimed.
 
 ## Router Rules
 
@@ -24,6 +25,7 @@ The catalog turns useful external software-development workflow patterns into Mo
 - `to-issues` and `triage` are `adapter_only` when they imply external issue tracker writes.
 - `prototype` remains prototype status until its answer is captured into a durable MorroWise artifact.
 - `resolving-merge-conflicts` is deferred until MorroWise has a merge-operation owner and verification boundary.
+- `closeout-commit-routing` is the closeout route: verified work goes through `verification-before-completion`, optional `cc-log`, then `worktree-commit`, then task completion evidence.
 
 ## Workflow Coverage
 
@@ -44,6 +46,7 @@ The catalog turns useful external software-development workflow patterns into Mo
 | `improve-codebase-architecture` | Accepted for governance and architecture health review. |
 | `triage` | `adapter_only`; external tracker state must remain outside MorroWise truth. |
 | `resolving-merge-conflicts` | Deferred until explicit merge owner and verifier boundary exist. |
+| `closeout-commit-routing` | Accepted as the implementation-to-commit closeout route. |
 
 ## Adapter Only Boundary
 
@@ -52,6 +55,20 @@ The catalog turns useful external software-development workflow patterns into Mo
 ## Closeout Rules
 
 Every workflow must name a `close_rule`. A close rule must point to durable evidence such as a PRD, issue brief, test run, generated read model, verifier output, review note, ADR, or task-state update. A workflow with no close rule is invalid.
+
+### Closeout Commit Routing
+
+When implementation, review, or documentation work is done, JV-32 routes the closeout phase through:
+
+```text
+implementation done
+-> verification-before-completion
+-> cc-log if the session creates durable judgment or handoff context
+-> worktree-commit
+-> task completion evidence: completed_at, summary, commits
+```
+
+`worktree-commit` remains the commit authority. JV-32 does not replace commit scope, 4C review, explicit Vincent approval, push approval, or repo-specific task-state rules. The value of this route is to make "done" mean verified, logged when needed, committed with evidence, and reflected back into canonical task state.
 
 ## Architecture Boundary
 

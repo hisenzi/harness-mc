@@ -29,6 +29,17 @@ This map records what was evaluated. It does not install skills and does not aut
 | `$COLLAB/.tmp/skills-main/docs/engineering/improve-codebase-architecture.md` | Codebase health survey | accepted as periodic governance pattern |
 | `$COLLAB/.tmp/skills-main/docs/engineering/triage.md` | External issue triage state machine | adapter_only because external tracker writes need approval |
 | `$COLLAB/.tmp/skills-main/docs/engineering/resolving-merge-conflicts.md` | Intent-based conflict resolution | deferred until a merge workflow owner exists |
+| `$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/SKILL.md` | Internal commit and task-state closeout authority | accepted as closeout-commit-routing; implementation done must still pass verification, cc-log when needed, worktree-commit, and task completion evidence |
+
+## Internal Closeout Source
+
+`closeout-commit-routing` is not imported from `$COLLAB/.tmp/skills-main`. It is a MorroWise internal route that connects JV-32 to existing closeout skills:
+
+- `$COLLAB/notyet-harness/000_Agent/skills/verification-before-completion/SKILL.md`
+- `$COLLAB/notyet-harness/000_Agent/skills/cc-log/SKILL.md`
+- `$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/SKILL.md`
+
+This keeps JV-32 as the workflow router while preserving `worktree-commit` as the commit authority.
 
 ## Exclusions
 

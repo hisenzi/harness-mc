@@ -344,6 +344,25 @@
       "status": "deferred",
       "owner_task": "morrowise-dev-workflow-catalog",
       "notes": "Deferred because destructive merge/rebase boundaries need a separate task."
+    },
+    {
+      "id": "closeout-commit-routing",
+      "phase": "closeout",
+      "source_doc": "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-catalog.md#closeout-commit-routing",
+      "source_skill": "$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/SKILL.md",
+      "trigger": "Implementation, review, or documentation work has passed verification and needs durable closeout.",
+      "inputs": "Completed diff, owner task, verification output, cc-log need, dirty worktree scope, and Vincent commit approval.",
+      "process": "Run verification-before-completion for fresh evidence, write cc-log when the session creates durable judgment or handoff context, then use worktree-commit with explicit path scope, 4C review, and Vincent approval.",
+      "outputs": "Git commit hash, task completion evidence, completed_at, summary, commits metadata, and any remaining dirty-scope risks.",
+      "writes_to": "git commit under active work anchor plus MorroWise tasks.json completion metadata when commit repo is harness-mc",
+      "external_effect": "local_git_commit_after_vincent_approval",
+      "approval_policy": "Git commit requires explicit Vincent approval; push remains a separate approval gate.",
+      "morrowise_stage": "workflow_closeout",
+      "close_rule": "Close when verification-before-completion evidence is cited, cc-log is written if needed, worktree-commit creates the commit, and task completion evidence includes completed_at, summary, and commits metadata or an approved task-event handoff.",
+      "verifier_ref": "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+      "status": "accepted",
+      "owner_task": "morrowise-dev-workflow-catalog",
+      "notes": "This route turns implementation done into auditable closeout; it does not bypass commit scope, approval, push, or task-state rules."
     }
   ],
   "exclusions": [

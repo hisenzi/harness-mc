@@ -2165,6 +2165,75 @@
         "source_boundary": "HC is a thinking check only, not source of truth. Canonical sync state is repo status, committed task state, machine-scoped observed snapshots, verifier output, and explicit Vincent approval."
       },
       "note": "2026-07-07 Vincent 裁決：MBA-2 約兩個月未同步，不當成 clean install；先快速精準同步 AI Agent 協作相關 repo 與安全 runtime。此 task 承接並修正 JV-11 舊 schedule install 假設，不執行 unsafe launchd/full-disk 路線。2026-07-07 驗證補強：補 MBA-2 catch-up runbook 路徑與 MBA-1 preflight gate，避免 MBA-2 追到未收尾的正本。2026-07-08 MBA-1 preflight handoff：新增 $COLLAB/harness-mc/system-workflow/reports/mba1-closeout-handoff-20260708.md，明確列出 harness-mc / notyet-harness dirty 與 ahead 狀態、排除範圍、residual ledger 指標與下一步 reducer gate；此 handoff 不代表 MBA-1 clean，也不解鎖直接 install。"
+    },
+    {
+      "id": "morrowise-dev-workflow-catalog",
+      "status": "todo",
+      "title": "JV-32 MorroWise 開發工作流 Catalog 與 Router Gate",
+      "track": "governance",
+      "order_label": "JV-32",
+      "dependencies": [
+        "live-system-admission-gate",
+        "morrowise-wiring-gate-verifier",
+        "architecture-subsystem-index-live-sync"
+      ],
+      "done_condition": "把 $COLLAB/.tmp/skills-main/docs 與 $COLLAB/.tmp/skills-main/skills 的軟體開發 workflow 候選，轉成 MorroWise 可治理的 workflow catalog：先落 durable source-map/detail doc、machine-readable registry/schema、verifier、generator 與 generated read model；安全邊界明確禁止直接安裝、執行 link-skills.sh、修改 hooks、寫外部 tracker 或讀 secrets。完成後以 read_model_surface_only 接線，並透過 Architecture Admission Record 判斷是否 promoted 進 ARCHITECTURE.md generated 子系統索引。",
+      "acceptance": [
+        "新增 durable source map：$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-source-map.md，記錄本次 intake 的來源、掃描日期、候選 workflow、排除原因、安全註記；$COLLAB/.tmp/skills-main 只能作為 intake evidence，不得當長期 source of truth。",
+        "新增 detail doc：$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-catalog.md，說明 MorroWise 開發工作流生命週期、router 規則、adapter_only 邊界與 closeout 規則；ARCHITECTURE.md 只索引，不複製細節。",
+        "新增 machine-readable registry：$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json；每筆 workflow 至少包含 id、phase、source_doc、source_skill、trigger、inputs、process、outputs、writes_to、external_effect、approval_policy、morrowise_stage、close_rule、verifier_ref、status、owner_task、notes。",
+        "新增 schema：$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json；狀態 vocabulary 固定為 accepted、prototype、blocked、deferred、adapter_only，避免把外部 skill pattern 誤標為 MorroWise 已可執行能力。",
+        "首批 workflow 至少評估 ask-matt、grill-me、grill-with-docs、domain-modeling、to-prd、to-issues、implement、tdd、code-review、diagnosing-bugs、research、prototype、improve-codebase-architecture、triage、resolving-merge-conflicts；未納入者需寫 exclusion reason。",
+        "grill-me 必須標為 pre-workflow stress test；grill-with-docs 才能作為正式 workflow start；to-issues 若保留 GitHub Issue 語意，必須標 adapter_only，MorroWise 正本仍是 tasks.json / registry / verifier。",
+        "新增 verifier：$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs，檢查 registry/schema/source-map/detail doc/read model/generator/owner_task/close_rule/write_boundary/verifier_ref 彼此可追溯。",
+        "verifier 必須包含負向 fixture：missing close_rule、writes_to=github_issues 且未標 adapter_only、external_effect=install 或 hooks_modify、source_ref 指向 secrets/token/cookie/runtime auth、workflow 沒有 owner_task、promoted architecture record 沒有 detail_doc 時都要 fail。",
+        "新增 generator：$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs，從 registry 產出 $COLLAB/harness-mc/public/data/morrowise-dev-workflows.json；read model 必須包含 source、generator、generated_at、write_boundary、verifier_ref、next_actions。",
+        "第一階段只要求 registry -> generated read model -> verifier；若接 MorroWise live dashboard，wiring fixture 必須先用 read_model_surface_only，不要求 homepage anchor，不把此 task 膨脹成 UI surface task。",
+        "更新 $COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json 時，只新增 Architecture Admission Record；ARCHITECTURE.md 必須由 sync-architecture-subsystems.py 生成，不得手寫 catalog 細節。",
+        "安全邊界明確禁止執行或建議執行 $COLLAB/.tmp/skills-main/scripts/link-skills.sh、任何 installer、hooks 修改、.env 寫入、GitHub secrets 設定、外部 issue tracker 寫入；若未來需要外部 adapter，必須另走 approval policy。",
+        "驗證包含 node scripts/verify-morrowise-dev-workflow-catalog.mjs、node scripts/generate-morrowise-dev-workflows.mjs、node scripts/validate-tasks.mjs --changed-only --project morrowise、npm run test:morrowise-wiring、npm run test:architecture-subsystems、python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check、npm run test:system-pulse。"
+      ],
+      "source_refs": [
+        "$COLLAB/.tmp/skills-main/docs",
+        "$COLLAB/.tmp/skills-main/skills",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#live-system-admission-gate",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-wiring-gate-verifier",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#architecture-subsystem-index-live-sync",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-wiring-gate.json",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
+        "$COLLAB/notyet-harness/000_Agent/skills/promote-to-architecture/SKILL.md"
+      ],
+      "hc_decision": {
+        "task_scope": "morrowise/morrowise-dev-workflow-catalog",
+        "hc_refs": [
+          "#vincentThinking",
+          "#rightProblem",
+          "#systemDynamics",
+          "#constraints",
+          "#evidenceBased",
+          "#sift"
+        ],
+        "hc_reasoning": "真正問題不是安裝 Matt Pocock skills，而是判斷哪些外部 workflow pattern 能成為 MorroWise 可治理、可驗證、可回收的開發工作流。#rightProblem 將需求從 tool install 改成 workflow governance；#systemDynamics 要求每個 workflow 都有 trigger、source、process、output、write_boundary、surface/next_action 與 close_rule，避免 chat-only 建議無法回到 task loop；#constraints 要求 GitHub Issues、外部 tracker、hooks、installer 都只能是 adapter 或 blocked，不得覆蓋 MorroWise tasks.json / registry / verifier 正本；#evidenceBased 要求 source-map、負向 fixture 與 generated read model 證明 workflow 可重跑；#sift 將 grill-me 與 grill-with-docs 拆成 pre-workflow 與正式 workflow start，避免把問答壓力測試誤當系統入口。",
+        "hc_confidence": 0.86,
+        "evidence_refs": [
+          "$COLLAB/.tmp/skills-main/docs",
+          "$COLLAB/.tmp/skills-main/skills",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#live-system-admission-gate",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-wiring-gate-verifier",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#architecture-subsystem-index-live-sync",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-wiring-gate.json",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical state must live in MorroWise tasks.json, durable source-map/detail docs, catalog registry, schema, verifier output, generated read model, wiring/admission registries, and explicit Vincent decisions."
+      },
+      "architecture_decision": {
+        "decision": "deferred",
+        "evaluated_at": "2026-07-08",
+        "registry_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
+        "detail_doc": "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-catalog.md",
+        "reason": "此 task 目標是建立 MorroWise 開發工作流治理子系統；在 source-map、registry、schema、verifier、generated read model 與 read_model_surface_only 接線完成前，Architecture Admission Record 先維持 deferred，完成後再評估 promoted。"
+      },
+      "note": "2026-07-08 Vincent 裁決：不另開案，先在 MorroWise 裡寫 task。此 task 來自對 $COLLAB/.tmp/skills-main 的安全掃描與 workflow 評估；scan verdict 為可讀取參考，但外部 repo 不可直接安裝或執行。模擬驗證後補強 v2 條件：.tmp 只能作 intake evidence、需 durable source map/detail doc、需 negative fixtures、需 adapter_only 狀態、第一階段只做 registry/read model/verifier，dashboard/homepage surface 不列為首步必做。"
     }
   ]
 }

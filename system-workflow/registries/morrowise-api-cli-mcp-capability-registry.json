@@ -1,7 +1,7 @@
 {
   "registry_id": "morrowise-api-cli-mcp-capability-registry.v0",
   "task_id": "api-cli-mcp-capability-registry-v0",
-  "updated_at": "2026-06-27",
+  "updated_at": "2026-07-08",
   "status": "formal_registry",
   "purpose": "Track API / CLI / MCP capabilities as verifiable MorroWise system components with update history, boundaries, owner tasks, and next actions.",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
@@ -290,6 +290,174 @@
           "evidence_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#telegram-credentials and #watchtower-alert-delivery",
           "actor_or_task": "telegram-credentials",
           "next_action": "Treat Telegram as a verified local mainline only on machines with schedule/.env configured; other machines remain degraded or fallback-only until reconfigured."
+        }
+      ]
+    },
+    {
+      "id": "mcp-registration-scope-policy",
+      "type": "mcp_policy",
+      "provider": "Claude Code MCP registration scopes",
+      "entrypoint": [
+        "global MCP scope",
+        "$COLLAB project MCP scope",
+        "$COLLAB/maxmodel project MCP scope"
+      ],
+      "owner_task": "mcp-registration-consolidation",
+      "scope": "control_plane",
+      "source_of_truth": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mcp-registration-consolidation",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+        "$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md"
+      ],
+      "auth_boundary": "Registration policy records scope ownership only. It must not inspect MCP credentials, command env values, local auth stores, or runtime token content.",
+      "read_write_boundary": {
+        "read": [
+          "JV-19 observed MCP scope evidence",
+          "declared capability metadata",
+          "task note decision records"
+        ],
+        "write": [
+          "registry history",
+          "task note completion evidence"
+        ],
+        "forbidden": [
+          "edit MCP config directly from this decision task",
+          "run installers or link scripts",
+          "read secrets, tokens, runtime auth, or MCP command env values"
+        ]
+      },
+      "secret_policy": "MCP registration policy may store provider names, scopes, owner tasks, and safe probe results only; never store credential values, command env secrets, tokens, or local auth file contents.",
+      "status": "ready",
+      "verifier": [
+        "npm run test:capability-registry",
+        "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+      ],
+      "next_action": {
+        "type": "task",
+        "task_id": "capability-registry-v1-coverage",
+        "description": "Apply the approved policy during registry v1 coverage: consolidate codex and heptabase-mcp toward global scope, while project scope keeps only project-specific registrations such as playwright."
+      },
+      "history": [
+        {
+          "date": "2026-07-08",
+          "event_type": "decision_confirmed",
+          "from_state": "observed_duplicates",
+          "to_state": "ready",
+          "reason": "Vincent instructed continuing JV-20~23 completion; JV-20 adopts the integration transparency recommendation to consolidate duplicated codex and heptabase-mcp registrations toward global scope, with project scope reserved for project-specific tools such as playwright.",
+          "evidence_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mcp-registration-consolidation",
+          "actor_or_task": "mcp-registration-consolidation",
+          "next_action": "Implement actual MCP config changes only in a separately approved execution task or during capability-registry-v1-coverage; do not perform external writes from the decision task."
+        }
+      ]
+    },
+    {
+      "id": "firecrawl-mcp-home-scope",
+      "type": "mcp",
+      "provider": "Firecrawl MCP",
+      "entrypoint": [
+        "$HOME scope MCP registration observed by JV-19"
+      ],
+      "owner_task": "firecrawl-disposition",
+      "scope": "local_runtime",
+      "source_of_truth": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#firecrawl-disposition",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+        "$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md"
+      ],
+      "auth_boundary": "Firecrawl disposition records safe metadata only. It must not read Firecrawl API keys, MCP env values, local auth files, or runtime credential content.",
+      "read_write_boundary": {
+        "read": [
+          "JV-19 observed-not-declared evidence",
+          "task note disposition decision"
+        ],
+        "write": [
+          "registry history",
+          "task note completion evidence",
+          "future removal plan"
+        ],
+        "forbidden": [
+          "remove MCP registration from this decision task",
+          "print or read Firecrawl API keys",
+          "run npx/install/remove commands without a separate approved execution step"
+        ]
+      },
+      "secret_policy": "Only store Firecrawl capability metadata and disposition state; never store API keys, env values, token content, or local auth file contents.",
+      "status": "blocked",
+      "verifier": [
+        "npm run test:capability-registry",
+        "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+      ],
+      "next_action": {
+        "type": "task",
+        "task_id": "capability-registry-v1-coverage",
+        "description": "Carry the unknown_remove disposition into registry v1 coverage as out-of-scope/removal-plan evidence, then remove the actual MCP registration only through a separately approved config-change task."
+      },
+      "history": [
+        {
+          "date": "2026-07-08",
+          "event_type": "disposition_decided",
+          "from_state": "observed_not_declared",
+          "to_state": "blocked",
+          "reason": "Searchable project evidence still identifies Firecrawl as home-scope and source-unknown; Vincent instructed continuing JV-20~23 completion, so JV-21 records unknown_remove as the disposition without directly deleting local MCP config.",
+          "evidence_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#firecrawl-disposition",
+          "actor_or_task": "firecrawl-disposition",
+          "next_action": "Prepare an explicit rollback/audit note and separate approved removal step before touching local MCP config."
+        }
+      ]
+    },
+    {
+      "id": "claude-ai-account-connectors-policy",
+      "type": "account_connector_policy",
+      "provider": "claude.ai account-level Connectors",
+      "entrypoint": [
+        "JV-19 cc-runner session MCP probe",
+        "session-visible connector inventory"
+      ],
+      "owner_task": "account-connector-policy",
+      "scope": "account_runtime",
+      "source_of_truth": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#account-connector-policy",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+        "$COLLAB/harness-mc/task-events/pending/20260706T082806Z-notyet-harness-20190c4-morrowise-account-connector-policy.json"
+      ],
+      "auth_boundary": "Account-level connectors are governed through declared metadata and safe session probe results only; do not read account tokens, cookies, connector payloads, workspace auth, or browser storage.",
+      "read_write_boundary": {
+        "read": [
+          "session-visible connector names",
+          "drift status",
+          "registry policy metadata"
+        ],
+        "write": [
+          "registry secret_policy/history",
+          "task note completion evidence"
+        ],
+        "forbidden": [
+          "read token, cookie, connector payload, account content, or workspace auth",
+          "disable account-level connectors from this task",
+          "treat account-level connector state as local file truth"
+        ]
+      },
+      "secret_policy": "Use registry-by-declaration plus session probe audit. Store provider/account_scope/auth_boundary/safe_probe/audit_frequency/allowed_session_use metadata only; never store account secrets, cookies, tokens, connector payloads, or local runtime auth content.",
+      "status": "ready",
+      "verifier": [
+        "npm run test:capability-registry",
+        "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+      ],
+      "next_action": {
+        "type": "task",
+        "task_id": "capability-registry-v1-coverage",
+        "description": "Expand account-level connector entries under registry v1 coverage using declaration plus safe session probe audit, rather than a blanket ban."
+      },
+      "history": [
+        {
+          "date": "2026-07-08",
+          "event_type": "policy_confirmed",
+          "from_state": "policy_todo",
+          "to_state": "ready",
+          "reason": "Vincent instructed continuing JV-20~23 completion; JV-22 adopts registration plus session-probe audit as the account connector policy, with prohibition on reading account secrets, cookies, payloads, or runtime auth.",
+          "evidence_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#account-connector-policy",
+          "actor_or_task": "account-connector-policy",
+          "next_action": "Use JV-19 cc-runner style safe probe as the periodic audit mechanism when capability-registry-v1-coverage expands connector entries."
         }
       ]
     }

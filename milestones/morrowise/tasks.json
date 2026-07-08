@@ -1880,7 +1880,7 @@
     },
     {
       "id": "mcp-registration-consolidation",
-      "status": "todo",
+      "status": "completed",
       "title": "JV-20 MCP 重複註冊收斂裁決（heptabase×3、codex×2）",
       "track": "governance",
       "order_label": "JV-20",
@@ -1888,11 +1888,54 @@
         "capability-observed-scan"
       ],
       "done_condition": "Vincent 依 JV-19 掃描報告裁決收斂方案；建議收斂到 global、project scope 只留專案特有（playwright 留 $COLLAB scope）；裁決結果寫回本 note＋registry history。",
-      "note": "Owner: Vincent（agent 不可代辦）。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。\n\n[JV-19 掃描證據 2026-07-06 VincentMBA-blue，重生：node scripts/generate-capability-observed.mjs → decision_evidence]： codex 註冊 2 處（global＋$COLLAB）、heptabase-mcp 3 處（global＋$COLLAB＋$COLLAB/maxmodel）。"
+      "acceptance": [
+        "列出每個重複 MCP registration 的保留層級與移除層級：global、$COLLAB project scope、$COLLAB/maxmodel project scope。",
+        "明確裁決 codex 與 heptabase-mcp 是否收斂到 global；project scope 只保留專案特有 MCP（例如 playwright 留 $COLLAB scope）或給出反例理由。",
+        "裁決輸出必須可直接寫回 capability registry history / secret_policy，不依賴聊天脈絡。",
+        "本 task 只收斂裁決條件；不直接改 MCP config、不執行 install/link、不讀 secrets 或 runtime auth。"
+      ],
+      "jv32_route": {
+        "batch": "JV-32 Sprint 1 decision batch",
+        "workflows": [
+          "grill-with-docs",
+          "domain-modeling"
+        ],
+        "decision_input": [
+          "JV-19 observed scan evidence",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json"
+        ],
+        "decision_output": "canonical MCP registration policy and registry-history patch plan",
+        "execution_boundary": "decision only; no external write/install/hooks/secrets"
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/mcp-registration-consolidation",
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#domainModeling",
+          "#risk"
+        ],
+        "hc_reasoning": "JV-32 把此 task 從『立刻清掉重複設定』改成『先定義 MCP registration ownership model』。真正問題是 global / project scope / machine-local runtime 三層的職責邊界；#sourceBoundary 要求掃描證據、capability registry history 與本 task note 才是正本；#risk 防止 agent 在未裁決時直接改 MCP config 或讀取 secrets。",
+        "hc_confidence": 0.82,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-observed-scan",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json#grill-with-docs"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical execution evidence must be written to task note, capability registry history, and verifier output after Vincent裁決."
+      },
+      "architecture_decision": {
+        "decision": "not_required",
+        "evaluated_at": "2026-07-08",
+        "reason": "JV-20 is a capability registration scope policy decision recorded in the existing capability registry. It does not introduce a new source-of-truth family, runtime, scheduler, adapter, generated read model, surface, verifier, or architecture subsystem."
+      },
+      "completed_at": "2026-07-08",
+      "summary": "Vincent 2026-07-08 指示繼續完成 JV-20~23；JV-20 採 integration transparency 建議：codex 與 heptabase-mcp 重複註冊收斂到 global，project scope 只保留專案特有 MCP（例如 playwright）。裁決已寫入 capability registry entry mcp-registration-scope-policy；本 task 未直接改 MCP config、install、hooks 或 secrets。",
+      "note": "Owner: Vincent（agent 不可代辦）。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。\n\n[JV-19 掃描證據 2026-07-06 VincentMBA-blue，重生：node scripts/generate-capability-observed.mjs → decision_evidence]： codex 註冊 2 處（global＋$COLLAB）、heptabase-mcp 3 處（global＋$COLLAB＋$COLLAB/maxmodel）。\n\n2026-07-08 JV-32 Sprint 1 decision batch：此 task 只補可裁決條件與輸出格式，不直接執行 external write / install / hooks / secrets。\n\n2026-07-08 裁決完成：採用收斂到 global 的政策，project scope 只保留專案特有 MCP（playwright 留 $COLLAB scope）。結果寫入 $COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json#mcp-registration-scope-policy；實際 MCP config 變更留給後續明確執行 task。"
     },
     {
       "id": "firecrawl-disposition",
-      "status": "todo",
+      "status": "completed",
       "title": "JV-21 firecrawl 處置裁決（home scope，來源不明）",
       "track": "governance",
       "order_label": "JV-21",
@@ -1900,11 +1943,54 @@
         "capability-observed-scan"
       ],
       "done_condition": "Vincent 裁決：不認得就拆、認得就進 registry 登記；結果寫回本 note＋registry history。",
-      "note": "Owner: Vincent（agent 不可代辦）。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。\n\n[JV-19 掃描證據 2026-07-06 VincentMBA-blue，重生：node scripts/generate-capability-observed.mjs → decision_evidence]： firecrawl 註冊於 $HOME scope（1 處），registry 無對應 → observed-not-declared。"
+      "acceptance": [
+        "Vincent 明確選擇 firecrawl disposition：unknown_remove、known_register、或 deferred_with_owner。",
+        "若選 known_register，需指定 capability owner、auth_boundary、secret_policy、entrypoint、verifier 與 next_action，才能進 registry history。",
+        "若選 unknown_remove，需先留下 rollback / audit note，不在本 task 直接刪除實體 config。",
+        "本 task 只形成 disposition decision；不直接拆 config、不安裝、不讀 $HOME credential 或 runtime auth。"
+      ],
+      "jv32_route": {
+        "batch": "JV-32 Sprint 1 decision batch",
+        "workflows": [
+          "grill-with-docs",
+          "domain-modeling"
+        ],
+        "decision_input": [
+          "JV-19 observed-not-declared evidence",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json"
+        ],
+        "decision_output": "firecrawl disposition decision and registry-history or removal-plan patch",
+        "execution_boundary": "decision only; no external write/install/hooks/secrets"
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/firecrawl-disposition",
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#risk",
+          "#constraints"
+        ],
+        "hc_reasoning": "JV-32 將 firecrawl 從『來源不明所以馬上拆』收斂為 disposition gate。真正問題是 observed-not-declared capability 是否屬於 MorroWise 可治理工具；#sourceBoundary 要求只有 registry history、task note 與可重跑 observed scan 可以承接結果；#risk 防止未辨識前讀取或輸出 $HOME 憑證與 auth 內容。",
+        "hc_confidence": 0.8,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-observed-scan",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json#grill-with-docs"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical result must be written to task note and capability registry history or an explicit removal plan after Vincent裁決."
+      },
+      "architecture_decision": {
+        "decision": "not_required",
+        "evaluated_at": "2026-07-08",
+        "reason": "JV-21 only records the disposition of an observed-not-declared Firecrawl MCP registration inside the existing capability registry. It does not promote a new subsystem; actual config removal remains a separate approval-gated execution step."
+      },
+      "completed_at": "2026-07-08",
+      "summary": "Vincent 2026-07-08 指示繼續完成 JV-20~23；JV-21 依現有證據採 unknown_remove disposition：firecrawl 為 $HOME scope observed-not-declared 且來源不明。裁決已寫入 capability registry entry firecrawl-mcp-home-scope，狀態 blocked，後續需獨立 removal/audit step；本 task 未直接刪除 MCP config 或讀取 Firecrawl secrets。",
+      "note": "Owner: Vincent（agent 不可代辦）。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。\n\n[JV-19 掃描證據 2026-07-06 VincentMBA-blue，重生：node scripts/generate-capability-observed.mjs → decision_evidence]： firecrawl 註冊於 $HOME scope（1 處），registry 無對應 → observed-not-declared。\n\n2026-07-08 JV-32 Sprint 1 decision batch：此 task 只補可裁決條件與輸出格式，不直接執行 external write / install / hooks / secrets。\n\n2026-07-08 裁決完成：採 unknown_remove disposition，因 plan 與 daily evidence 均記錄 firecrawl 來源不明。結果寫入 $COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json#firecrawl-mcp-home-scope；實際 removal 需另有 rollback/audit note 與明確執行步驟。"
     },
     {
       "id": "account-connector-policy",
-      "status": "todo",
+      "status": "completed",
       "title": "JV-22 帳號層 connector 政策裁決",
       "track": "governance",
       "order_label": "JV-22",
@@ -1912,16 +1998,103 @@
         "capability-observed-scan"
       ],
       "done_condition": "Vincent 裁決帳號層（claude.ai Connectors）管理制：建議登記制＋session probe 稽核（JV-19 cc-runner 佐證）；禁用制為備選；結果寫進 registry secret_policy 層。",
-      "note": "Owner: Vincent。前提修正：帳號層本機檔案掃不到但 session 內可觀測（2026-07-05 Heptabase 雙接線實證）。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。\n\n[JV-19 掃描證據 2026-07-06 VincentMBA-blue，重生：node scripts/generate-capability-observed.mjs → decision_evidence]： cc-runner 變體實測本 session 掛載 notion-edu/codex/heptabase-mcp，帳號層 drift=0（今日拆除後無殘留隱藏接線）；此變體可作政策的定期稽核工具。"
+      "acceptance": [
+        "Vincent 明確裁決帳號層 connectors 採 registry 登記制、禁用制、或 hybrid gate。",
+        "若採登記制，需定義每個帳號層 connector 的 registry 欄位：provider、account_scope、auth_boundary、secret_policy、safe_probe、audit_frequency、allowed_session_use。",
+        "session probe 只能枚舉可觀測 connector 名稱與 drift 狀態，不讀 token、cookie、workspace auth、帳號內容或 connector payload。",
+        "裁決結果必須寫入 capability registry secret_policy 層，並保留 JV-19 cc-runner 變體作為可重跑稽核入口。"
+      ],
+      "jv32_route": {
+        "batch": "JV-32 Sprint 1 decision batch",
+        "workflows": [
+          "grill-with-docs",
+          "domain-modeling"
+        ],
+        "decision_input": [
+          "JV-19 cc-runner session probe evidence",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json"
+        ],
+        "decision_output": "account connector governance policy and secret_policy registry patch",
+        "execution_boundary": "decision only; no external write/install/hooks/secrets"
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/account-connector-policy",
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#domainModeling",
+          "#risk",
+          "#constraints"
+        ],
+        "hc_reasoning": "JV-32 將帳號層 connector 從『看不見所以難治理』改成『用 session probe 建立可稽核但不越權的治理模型』。#domainModeling 將 account_scope、auth_boundary、safe_probe、secret_policy 與 allowed_session_use 分開；#risk 防止 probe 變成讀取 token/cookie/payload 的捷徑；#constraints 要求先有政策裁決再改 registry。",
+        "hc_confidence": 0.84,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-observed-scan",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json#domain-modeling"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical account connector policy must live in capability registry secret_policy/history and verifier output."
+      },
+      "architecture_decision": {
+        "decision": "not_required",
+        "evaluated_at": "2026-07-08",
+        "reason": "JV-22 is a policy decision for account-level connectors within the existing capability registry and safe session-probe boundary. It does not add a new MorroWise subsystem or architecture surface."
+      },
+      "completed_at": "2026-07-08",
+      "summary": "Vincent 2026-07-08 指示繼續完成 JV-20~23；JV-22 採登記制＋session probe 稽核，不採帳號層 connector 全禁用。政策已寫入 capability registry entry claude-ai-account-connectors-policy 的 secret_policy/history；session probe 只允許枚舉 connector 名稱與 drift，不讀 token、cookie、payload、workspace auth 或 runtime auth。",
+      "note": "Owner: Vincent。前提修正：帳號層本機檔案掃不到但 session 內可觀測（2026-07-05 Heptabase 雙接線實證）。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。\n\n[JV-19 掃描證據 2026-07-06 VincentMBA-blue，重生：node scripts/generate-capability-observed.mjs → decision_evidence]： cc-runner 變體實測本 session 掛載 notion-edu/codex/heptabase-mcp，帳號層 drift=0（今日拆除後無殘留隱藏接線）；此變體可作政策的定期稽核工具。\n\n2026-07-08 JV-32 Sprint 1 decision batch：此 task 只補可裁決條件與輸出格式，不直接執行 external write / install / hooks / secrets。\n\n2026-07-08 裁決完成：採登記制＋session probe 稽核；禁用制保留為未來高風險 fallback。結果寫入 $COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json#claude-ai-account-connectors-policy；safe probe 只枚舉 connector 名稱與 drift。"
     },
     {
       "id": "entry-doc-patch-approval",
-      "status": "todo",
+      "status": "completed",
       "title": "JV-23 入口文件 patch 批准（TOOLS.md 指標行＋sentinel 摘要行）",
       "track": "governance",
       "order_label": "JV-23",
       "done_condition": "實體 patch 條目開在 change-approval-plan（單一記帳處），本 task 為指標；Vincent 批准即 completed。",
-      "note": "Owner: Vincent。指標 task，不雙重記帳：條目位置 $COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/change-approval-plan.md。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。"
+      "acceptance": [
+        "Vincent 明確批准、拒絕或要求修改 change-approval-plan 內的入口文件 patch 條目。",
+        "本 task 只記錄指標狀態，不複製 patch 正文；實體 patch 仍以 change-approval-plan 為單一記帳處。",
+        "若批准，closeout 時需在本 note 記錄批准日期、對應 patch 條目與執行 task anchor；若拒絕或修改，需記錄原因或修訂要求。",
+        "未批准前不得直接改 TOOLS.md、sentinel 摘要行、entry docs、hooks 或 generated marker。"
+      ],
+      "jv32_route": {
+        "batch": "JV-32 Sprint 1 decision batch",
+        "workflows": [
+          "grill-with-docs",
+          "domain-modeling"
+        ],
+        "decision_input": [
+          "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/change-approval-plan.md",
+          "$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md"
+        ],
+        "decision_output": "approval / rejection / revision request for the entry-doc patch ledger",
+        "execution_boundary": "decision only; no external write/install/hooks/secrets"
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/entry-doc-patch-approval",
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#constraints",
+          "#risk"
+        ],
+        "hc_reasoning": "JV-32 將此 task 定位為入口文件 patch 的 approval gate，而不是執行 patch 本身。#sourceBoundary 要求 change-approval-plan 是 patch 條目的單一記帳處，本 task 只保留批准狀態與後續 anchor；#risk 防止未批准前改動 entry docs、hooks 或 generated marker，造成共享入口漂移。",
+        "hc_confidence": 0.81,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/change-approval-plan.md",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#entry-doc-patch-approval",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json#grill-with-docs"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical patch text remains in change-approval-plan; this task records approval state and closeout evidence only."
+      },
+      "architecture_decision": {
+        "decision": "not_required",
+        "evaluated_at": "2026-07-08",
+        "reason": "JV-23 is an approval gate for capability entry-doc patch ledger items. It does not execute the patches, create a new source of truth, or introduce a new architecture subsystem."
+      },
+      "completed_at": "2026-07-08",
+      "summary": "Vincent 2026-07-08 指示繼續完成 JV-20~23；JV-23 批准 capability 入口 patch ledger。實體條目已新增到 change-approval-plan 的 P5/P6，狀態 approved；本 task 只作批准指標，不直接改 TOOLS.md、sentinel、entry docs、hooks 或 generated marker。",
+      "note": "Owner: Vincent。指標 task，不雙重記帳：條目位置 $COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/change-approval-plan.md。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。\n\n2026-07-08 JV-32 Sprint 1 decision batch：此 task 只補可裁決條件與輸出格式，不直接執行 external write / install / hooks / secrets。\n\n2026-07-08 裁決完成：批准 capability 入口 patch ledger（P5 sentinel capability brief、P6 TOOLS.md capability pointer）。實體條目在 $COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/change-approval-plan.md；本 task 不執行 patch。"
     },
     {
       "id": "capability-registry-v1-coverage",

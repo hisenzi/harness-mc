@@ -73,9 +73,17 @@
     {
       "id": "mw-004",
       "title": "建立指標計算與資料健康檢查",
-      "status": "todo",
+      "status": "done",
       "track": "data",
+      "completed_at": "2026-07-03",
       "done_condition": "可計算 20MA、60MA、200MA、60/120 日高點，並產生 DATA_DELAYED 狀態。",
+      "evidence": [
+        "$COLLAB/market-watchtower/src/data/indicator-engine.mjs",
+        "$COLLAB/market-watchtower/test/indicator-engine.test.mjs",
+        "$COLLAB/market-watchtower/scripts/indicator-dry-run.mjs",
+        "$COLLAB/market-watchtower/data/runtime/indicator-snapshots.json"
+      ],
+      "summary": "建立 deterministic Indicator Snapshot engine，可計算 20/60/200MA 與 60/120 日最高收盤；資料健康檢查會把 stale / missing price bars 標成 DATA_DELAYED，且 shouldBlockEntrySignals 會阻擋進場提醒。",
       "acceptance": [
         "Indicator Snapshot 符合 data-contract",
         "資料未更新時不產生進場提醒",

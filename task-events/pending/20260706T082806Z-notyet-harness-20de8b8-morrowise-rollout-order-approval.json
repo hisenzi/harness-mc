@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-rollout-order-approval-20de8b8-20260706T082806Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "20de8b8",
+  "project": "morrowise",
+  "task_id": "rollout-order-approval",
+  "status": "updated",
+  "summary": "整合透明化計畫 v3 文件 commit（JV-18 核准的計畫本體）",
+  "created_at": "2026-07-06T08:28:06.857Z",
+  "actor": "cc-xiaowei",
+  "session_id": "cc-20260705-integration-transparency"
+}

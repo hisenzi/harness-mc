@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-account-connector-policy-20190c4-20260706T082806Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "20190c4",
+  "project": "morrowise",
+  "task_id": "account-connector-policy",
+  "status": "updated",
+  "summary": "TOOLS.md Heptabase 接線原則（帳號層拆除個案），JV-22 裁決佐證",
+  "created_at": "2026-07-06T08:28:06.858Z",
+  "actor": "cc-xiaowei",
+  "session_id": "cc-20260705-integration-transparency"
+}

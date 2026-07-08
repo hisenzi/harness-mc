@@ -1,0 +1,81 @@
+{
+  "project": "td-morrowise-surface",
+  "tasks": [
+    {
+      "id": "t1-td-env-smoke",
+      "title": "TD 環境安裝與資料源煙霧測試",
+      "status": "todo",
+      "track": "v0-prototype",
+      "done_condition": "TouchDesigner non-commercial 版安裝完成，patch 內 Web Client DAT 成功拉取並 parse http://localhost:3001/data/verifier-suite-health.json",
+      "acceptance": [
+        "TD 版本與授權層級記錄在 task note（grounding 2026-07-05：本機未安裝）。",
+        "Web Client DAT 60s 輪詢 + JSON DAT parse 出 summary.passed / summary.failed 數值。",
+        "3001 斷線時 DAT 錯誤狀態可被 patch 偵測（為 degraded 視覺鋪路）。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/public/data/verifier-suite-health.json"
+      ],
+      "note": "patch 工作檔存 $COLLAB/td-morrowise-surface/（local non-git workspace，.toe 為 binary 不進 harness-mc repo）。授權條款以 Derivative 官網為準。"
+    },
+    {
+      "id": "t2-mapping-spec",
+      "title": "read model → TD 對映規格（欄位級）",
+      "status": "todo",
+      "track": "v0-prototype",
+      "done_condition": "mapping-spec.md 完成：4 支 read model（verifier-suite-health / task-events / schedule-health / morrowise-live-dashboard）的欄位 → operator/視覺屬性對照表 + stale/斷線 degraded 視覺規則",
+      "acceptance": [
+        "每支 read model 列出：來源欄位、TD operator 鏈、視覺屬性（色彩/形態/動態）、更新頻率。",
+        "degraded 規則獨立成段：資料超過 stale_after → 枯萎態；3001 斷線 → 灰屏態 + last generated_at 顯示；兩態肉眼可辨。",
+        "規格不使用 TD 專屬概念作為必要依賴（可按此規格移植 cables.gl）。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/td-morrowise-surface/mapping-spec.md",
+        "$COLLAB/harness-mc/public/data/task-events.json",
+        "$COLLAB/harness-mc/public/data/schedule-health.json",
+        "$COLLAB/harness-mc/public/data/morrowise-live-dashboard.json"
+      ]
+    },
+    {
+      "id": "t3-patch-v0",
+      "title": "TD patch v0 實作（生態缸渲染 + degraded 視覺）",
+      "status": "todo",
+      "track": "v0-prototype",
+      "dependencies": ["t1-td-env-smoke", "t2-mapping-spec"],
+      "done_condition": "TD patch 同時渲染 ≥3 支 read model 且數值與 JSON 一致；stale 枯萎態與斷線灰屏態皆可人工觸發驗證",
+      "acceptance": [
+        "verifier-suite-health：43 支 verifier 以 instancing 呈現，紅燈個體肉眼可辨。",
+        "task-events：pending/applied 事件量映射為動態元素。",
+        "schedule-health：排程心跳映射為節律元素。",
+        "degraded 二態驗證：照 mapping-spec 規則實測（暫停 3001、餵舊 generated_at fixture）。",
+        "對 harness-mc 零寫入（read-only，符合 MorroWise write boundary）。"
+      ],
+      "note": "admission_state: prototype — 不註冊 MorroWise registry、不寫 heartbeat；不得在任何 read model 或文件中宣稱為 accepted 元件。"
+    },
+    {
+      "id": "t4-observation-review",
+      "title": "兩週觀察期與 v0 檢討",
+      "status": "todo",
+      "track": "v0-prototype",
+      "dependencies": ["t3-patch-v0"],
+      "done_condition": "觀察期（t3 完成日起算 14 天）結束，檢討結論寫入本 task summary：投 v1 / 停留 prototype / 收攤，附實際開啟頻率證據",
+      "acceptance": [
+        "記錄觀察期內實際開啟 TD patch 的天數與場景（自然使用，不設自動開啟排程）。",
+        "回答 v0 核心問題：ambient 感知有沒有取代主動看 dashboard 的時刻？",
+        "結論含下一步：go → t5 解鎖並在 morrowise 開 v1 task；no-go → 專案標 closed 並記錄原因。"
+      ]
+    },
+    {
+      "id": "t5-v1-decision-anchor",
+      "title": "v1 admission 升級決策 anchor",
+      "status": "blocked",
+      "track": "v1-admission",
+      "blocked_by": ["t4-observation-review"],
+      "done_condition": "若 t4 結論為 go：v1 實作 task（heartbeat source contract、admission registry entry、verify-td-surface）已開在 milestones/morrowise/tasks.json，本 task 記錄其 task id 後關閉；若 no-go：記錄不升級原因後關閉",
+      "acceptance": [
+        "本 task 不承載任何系統本體實作——依 CORE.md task ownership routing，heartbeat/registry/verifier 屬 system loop，歸 morrowise milestone。",
+        "升級後 TD surface 的 feedback_loop（heartbeat read model）使 admission_state 可申請 accepted。"
+      ],
+      "note": "路徑預告（依 live-system-admission-gate 規格）：TD Execute DAT 每 60s 寫 td-surface-heartbeat.json（last_render_at / fps / data_generated_at_seen / patch_version）→ generator 收進 read model → verifier 判 stale → MC 卡片。"
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "name": "TD 系統生態缸",
+  "description": "TouchDesigner 讀 MorroWise read models 的 ambient 視覺原型（v0 prototype，admission_state: prototype）",
+  "type": "internal",
+  "status": "active",
+  "priority": "medium",
+  "created": "2026-07-05",
+  "estimated_completion": "TBD",
+  "tracks": {
+    "v0-prototype": "TD 桌面原型：read model 渲染 + degraded 視覺 + 兩週觀察",
+    "v1-admission": "升級決策 anchor（實作 task 屆時開在 morrowise milestone，本 track 不做系統本體）"
+  },
+  "goals": [
+    "用 TouchDesigner 把 MorroWise read models（$COLLAB/harness-mc/public/data/*.json）渲染成 ambient 視覺：不是要人主動讀的 dashboard，是用眼角餘光感知系統健康的生態缸。",
+    "產出 read model → TD operator 欄位級對映規格（含 stale / 斷線 degraded 視覺規則），作為未來 v1 admission 或 cables.gl 移植的可攜 contract，不綁死 TD。",
+    "以兩週觀察期收集真實使用證據，回答唯一的 v0 問題：Vincent 會不會真的看它？據此決定 v1（heartbeat + admission gate）投資與否。",
+    "全程遵守 MorroWise write boundary：v0 對 harness-mc 零寫入，只讀 generated read models，不成為第二正本。"
+  ],
+  "risks": [
+    {
+      "risk": "TouchDesigner 未安裝（grounding 已確認），且 non-commercial 授權有輸出解析度限制，商用展示場景會撞牆。",
+      "impact": "medium",
+      "probability": "high",
+      "mitigation": "t1 先裝 non-commercial 版跑通煙霧測試；授權條款以 Derivative 官網為準；商用需求出現時評估 cables.gl（MIT）按對映規格移植。"
+    },
+    {
+      "risk": "假活（fake_live）：TD 視窗顯示過期資料但畫面看起來還活著，比沒有畫面更誤導。",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "對映規格強制 degraded 視覺：資料超過 stale_after → 枯萎；3001 斷線 → 灰屏 + last generated_at。v0 就內建，不等 v1。"
+    },
+    {
+      "risk": "v0 無 feedback loop，依 Live-System Admission Gate 只能是 prototype 級；若被當成正式 MorroWise 元件引用會違反治理。",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "admission_state: prototype 寫進專案描述與 task note；人工 feedback = t4 觀察檢討；升 accepted 的唯一路徑是 v1 heartbeat（歸 morrowise milestone）。"
+    },
+    {
+      "risk": "3001 依賴 LaunchAgent com.hisenzi.harness-mc 常駐，服務掛掉時 TD 端無資料。",
+      "impact": "low",
+      "probability": "medium",
+      "mitigation": "斷線視覺已在對映規格內；3001 維運規則沿用 MEMORY.md 既有條目（查 launchd + /tmp/harness-mc.log，不直接 kill node）。"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "TD patch 同時渲染 ≥3 支 read model（verifier-suite-health、task-events、schedule-health），畫面數值與 JSON 一致。",
+      "verify_cmd": "curl -s http://localhost:3001/data/verifier-suite-health.json | python3 -c 'import json,sys;d=json.load(sys.stdin);print(d[\"summary\"])' 對照 TD 畫面",
+      "expected": "verifier 綠/紅數、task-events pending 數、schedule 心跳狀態在畫面上可辨識且與 JSON 相符。"
+    },
+    {
+      "criterion": "degraded 視覺可驗證：資料過期與服務斷線是兩種可區分的畫面狀態。",
+      "verify_cmd": "manual: 暫停 3001（launchctl）觀察灰屏；用舊 generated_at fixture 觀察枯萎態",
+      "expected": "兩種 degraded 態肉眼可辨，且畫面顯示 last generated_at，不偽裝 live。"
+    },
+    {
+      "criterion": "read model → TD 對映規格是欄位級文件，不是概念描述。",
+      "verify_cmd": "ls $COLLAB/harness-mc/milestones/td-morrowise-surface/mapping-spec.md && grep -c '|' 該檔",
+      "expected": "每支 read model 有欄位 → operator/視覺屬性對照表 + stale/斷線規則段落。"
+    },
+    {
+      "criterion": "兩週觀察期結束，v0 檢討結論（投 v1 / 停留 prototype / 收攤）寫回 t4 summary，含實際開啟頻率證據。",
+      "verify_cmd": "python3 -c 讀 tasks.json t4 summary 欄位",
+      "expected": "結論不是「感覺不錯」，是含使用頻率與下一步的可追蹤決策。"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "整合定位：TD 是 MorroWise 的 delivery surface，不是第二正本",
+      "decision": "v0 只讀 public/data/*.json、零寫入，admission_state 停在 prototype；不註冊 registry、不寫 heartbeat。",
+      "reason": "Live-System Admission Gate 明定缺 feedback_loop 的元件只能是 prototype 或 static_display。v0 的目的是驗證視覺概念與真實使用習慣（Vincent 會不會看），不是先建系統；gate 的分級制度本來就是讓半成品誠實存在。",
+      "alternatives_rejected": [
+        "直接做 v1（heartbeat + admission registry）— 未驗證使用習慣前投資系統本體，違反先驗證再擴張。",
+        "只做 MC 網頁特效 — 無法驗證桌面 ambient 場景，且 MC dashboard 已存在，增量不明。"
+      ],
+      "hc_used": ["#rightProblem", "#constraints", "#sift"]
+    },
+    {
+      "topic": "引擎選擇：v0 用 TouchDesigner 桌面版",
+      "decision": "v0 用 TD non-commercial 直連本機 3001；可攜性交給欄位級對映規格文件，不綁引擎。",
+      "reason": "TD 上手快、表現力強、與 3001 同機零 bridge。對映規格是真正的資產：驗證成功後可按規格移植 cables.gl（MIT）進 MC 頁面或對外展示。",
+      "alternatives_rejected": [
+        "cables.gl 先做 — Web 可嵌 MC 但 v0 不需要分享，多付 patch 學習與 hosting 成本。",
+        "自建 Web 引擎 — 前輪已否決，多人年工程，與 v0 驗證目的無關。"
+      ],
+      "hc_used": ["#constraints", "#analogies"]
+    },
+    {
+      "topic": "開案邊界與 task routing",
+      "decision": "獨立 milestone td-morrowise-surface 承接 v0 全部 task；v1 系統本體 task（heartbeat source contract、admission registry entry、verifier）屆時開在 milestones/morrowise/，本專案只留升級決策 anchor（t5）。",
+      "reason": "CORE.md task ownership routing：system loop / source-of-truth / read model / verifier 歸 morrowise；本專案是 read model 消費端 visual surface。分開才不會讓 TD UI 細節污染 system project，也不會讓系統本體 task 藏在實驗專案裡。",
+      "alternatives_rejected": [
+        "塞進 morrowise milestone — UI/視覺細節塞滿 system project，降低 future agent 載入效率。",
+        "塞進 harness-mc milestone — 那是 MC dashboard surface 的家；TD 是獨立桌面 surface，混放會讓 surface 家族邊界模糊。"
+      ],
+      "hc_used": ["#rightProblem", "#systemDynamics"]
+    },
+    {
+      "topic": "System Growth Gate",
+      "decision": "trigger = MC 3001 LaunchAgent 常駐 + Vincent 於工作日開啟 TD patch；資料流 = generator 產 read models → TD 60s poll → CHOP/TOP 渲染 → 桌面 ambient 視窗；可視化 surface = TD 視窗本身（主）+ MC projects 卡片（進度追蹤）；feedback = v0 為人工回饋（t4 兩週檢討產出下一輪候選），自動 feedback loop 明確延後到 v1 heartbeat。",
+      "reason": "v0 是 prototype 級，치動 feedback 是 v1 的升級門檻而非 v0 的缺陷；把「人工記得開」的風險交給觀察期本身回答——如果兩週都想不起來開，答案就是收攤。",
+      "alternatives_rejected": [
+        "為 v0 先建自動開啟排程 — 會污染觀察期證據：要驗證的正是自然使用意願。"
+      ],
+      "hc_used": ["#sift", "#risk"]
+    }
+  ],
+  "hc_decision": {
+    "task_scope": "td-morrowise-surface/project-init",
+    "hc_refs": ["#rightProblem", "#analogies", "#sift", "#constraints"],
+    "hc_reasoning": "#rightProblem 把問題從「做個炫視覺」改成「MorroWise 的生命隱喻敘事與表格呈現脫節」；#analogies 確認 MorroWise loop 與 TD cook graph 是慢速/快速 dataflow 同構，read model JSON 即現成資料契約；#sift 產出非顯見定位「生態缸而非 dashboard」並命名；#constraints 辨識 admission gate 的 prototype 分級是合法停留點而非須跨越的門檻，且發現「結合 TD」的假約束（可攜性由規格文件承擔，不由引擎承擔）。",
+    "hc_confidence": 0.8,
+    "evidence_refs": [
+      "$COLLAB/harness-mc/milestones/morrowise/tasks.json#live-system-admission-gate",
+      "$COLLAB/harness-mc/public/data/morrowise-live-dashboard.json",
+      "$COLLAB/harness-mc/public/data/verifier-suite-health.json",
+      "$COLLAB/notyet-harness/300_Obsidian_brain/HC/_index/hc-registry.md"
+    ],
+    "source_boundary": "HC is a thinking check only, not source of truth. Canonical state lives in tasks.json, read models, and the MorroWise admission registry."
+  }
+}

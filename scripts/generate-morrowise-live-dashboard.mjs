@@ -26,6 +26,7 @@ export function generateMorrowiseLiveDashboard(options = {}) {
     closeoutResidualLedgerSurface(sources),
     capabilityRegistrySurface(sources),
     notionSyncStateSurface(sources),
+    morrowiseDevWorkflowSurface(sources),
     scheduleRuntimeHealthSurface(sources),
     harnessGovernanceSurface(sources),
     approvalQueueSurface(sources),
@@ -49,6 +50,7 @@ export function generateMorrowiseLiveDashboard(options = {}) {
         "$COLLAB/harness-mc/public/data/morrowise-capabilities.json",
         "$COLLAB/harness-mc/public/data/capability-runtime-status.json",
         "$COLLAB/harness-mc/public/data/notion-sync-state.json",
+        "$COLLAB/harness-mc/public/data/morrowise-dev-workflows.json",
         "$COLLAB/harness-mc/public/data/schedule-health.json",
       ],
       policy_registry: "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
@@ -93,6 +95,7 @@ function readSources(root) {
     capabilities: readJsonOrNull(path.join(root, DATA_DIR, "morrowise-capabilities.json")),
     capabilityRuntimeStatus: readJsonOrNull(path.join(root, DATA_DIR, "capability-runtime-status.json")),
     notionSyncState: readJsonOrNull(path.join(root, DATA_DIR, "notion-sync-state.json")),
+    devWorkflows: readJsonOrNull(path.join(root, DATA_DIR, "morrowise-dev-workflows.json")),
     scheduleHealth: readJsonOrNull(path.join(root, DATA_DIR, "schedule-health.json")),
     systemPulse: readJsonOrNull(path.join(root, DATA_DIR, "system-pulse.json")),
     pulseProposals: readJsonOrNull(path.join(root, DATA_DIR, "pulse-proposals.json")),
@@ -110,6 +113,7 @@ function readSources(root) {
       capabilities: fileGeneratedAt(root, path.join(DATA_DIR, "morrowise-capabilities.json")),
       capabilityRuntimeStatus: fileGeneratedAt(root, path.join(DATA_DIR, "capability-runtime-status.json")),
       notionSyncState: fileGeneratedAt(root, path.join(DATA_DIR, "notion-sync-state.json")),
+      devWorkflows: fileGeneratedAt(root, path.join(DATA_DIR, "morrowise-dev-workflows.json")),
       scheduleHealth: fileGeneratedAt(root, path.join(DATA_DIR, "schedule-health.json")),
       systemPulse: fileGeneratedAt(root, path.join(DATA_DIR, "system-pulse.json")),
       pulseProposals: fileGeneratedAt(root, path.join(DATA_DIR, "pulse-proposals.json")),
@@ -584,6 +588,57 @@ function notionSyncStateSurface(sources) {
   });
 }
 
+function morrowiseDevWorkflowSurface(sources) {
+  const model = sources.devWorkflows || {};
+  const summary = model.summary || {};
+  const deferred = summary.by_status?.deferred || 0;
+  const adapterOnly = summary.by_status?.adapter_only || 0;
+  const prototype = summary.by_status?.prototype || 0;
+
+  return surface({
+    id: "morrowise_dev_workflows",
+    label: "MorroWise dev workflow catalog",
+    source_of_truth: "morrowise_dev_workflow_registry_and_generated_read_model",
+    source_files: [
+      "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
+      "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json",
+      "$COLLAB/harness-mc/public/data/morrowise-dev-workflows.json",
+    ],
+    generator: ["scripts/generate-morrowise-dev-workflows.mjs"],
+    generated_at: latest([model.generated_at, sources.fileTimes.devWorkflows]),
+    stale_after_minutes: 60,
+    stale_rule: "stale when the dev workflow registry, schema, source map, or catalog detail doc changes without regenerating morrowise-dev-workflows.json",
+    missing_sources: missingSources(sources, ["devWorkflows"]),
+    freshness_action: action("generator", "node scripts/generate-morrowise-dev-workflows.mjs", "Regenerate dev workflow read model before trusting workflow routing status."),
+    next_action: deferred > 0
+      ? action("task", "morrowise-dev-workflow-catalog", "Resolve deferred workflow routes before promoting the architecture admission record.")
+      : adapterOnly > 0 || prototype > 0
+        ? action("task", "morrowise-dev-workflow-catalog", "Review adapter_only and prototype workflow routes before external integration.")
+        : action("none", null, "Dev workflow catalog has no generated action."),
+    write_boundary: readOnlyBoundary(
+      ["display workflow route status", "display adapter/prototype/deferred counts", "route next_action to owner task"],
+      ["install skills", "modify hooks", "read secrets", "write external issue trackers", "close tasks"],
+    ),
+    verifier_ref: "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+    classification: "semi_live",
+    attention_level: deferred > 0 ? "watch" : adapterOnly > 0 || prototype > 0 ? "normal" : "normal",
+    evidence_refs: [
+      "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
+      "$COLLAB/harness-mc/public/data/morrowise-dev-workflows.json",
+    ],
+    drilldown_route: "morrowise_dev_workflows.drilldown",
+    metrics: {
+      total: summary.total || 0,
+      accepted: summary.by_status?.accepted || 0,
+      adapter_only: adapterOnly,
+      prototype,
+      deferred,
+      next_action_count: summary.next_action_count || 0,
+      by_phase: summary.by_phase || {},
+    },
+  });
+}
+
 function scheduleRuntimeHealthSurface(sources) {
   const health = sources.scheduleHealth || {};
   const summary = health.summary || {};
@@ -791,6 +846,7 @@ function buildRoutes() {
     route("worktree_status.drilldown", "Worktree Status details", ["worktree_status"], "/worktrees", ["dirty_files", "local_commits", "remote_divergence", "commit_gate"]),
     route("api_cli_mcp_capabilities.drilldown", "API / CLI / MCP capability details", ["api_cli_mcp_capabilities"], "/capabilities", ["status", "latest_history", "boundary", "owner_task", "next_action"]),
     route("notion_sync_state.drilldown", "Notion sync state details", ["notion_sync_state"], "/notion-sync", ["source_of_truth", "mirror_path", "counts", "drift", "runtime_routes", "next_action"]),
+    route("morrowise_dev_workflows.drilldown", "MorroWise dev workflow details", ["morrowise_dev_workflows"], "/dev-workflows", ["workflow_status", "adapter_only", "prototype", "deferred", "close_rule"]),
     route("schedule_runtime_health.drilldown", "Schedule Runtime Health details", ["schedule_runtime_health"], "/schedule", ["tasks", "runners", "last_runs", "launchd_plists", "write_boundary"]),
     route("approval_queue.drilldown", "Approval Queue details", ["approval_queue"], "/approvals", ["requested_action", "destination", "owner", "age", "payload_preview", "closure_condition"]),
   ];

@@ -1,0 +1,46 @@
+{
+  "$id": "https://hisenzi.local/schemas/morrowise-dev-workflow.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "phase",
+    "source_doc",
+    "source_skill",
+    "trigger",
+    "inputs",
+    "process",
+    "outputs",
+    "writes_to",
+    "external_effect",
+    "approval_policy",
+    "morrowise_stage",
+    "close_rule",
+    "verifier_ref",
+    "status",
+    "owner_task",
+    "notes"
+  ],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "phase": { "type": "string" },
+    "source_doc": { "type": "string" },
+    "source_skill": { "type": "string" },
+    "trigger": { "type": "string" },
+    "inputs": { "type": "string" },
+    "process": { "type": "string" },
+    "outputs": { "type": "string" },
+    "writes_to": { "type": "string" },
+    "external_effect": { "type": "string" },
+    "approval_policy": { "type": "string" },
+    "morrowise_stage": { "type": "string" },
+    "close_rule": { "type": "string" },
+    "verifier_ref": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["accepted", "prototype", "blocked", "deferred", "adapter_only"]
+    },
+    "owner_task": { "type": "string" },
+    "notes": { "type": "string" }
+  }
+}

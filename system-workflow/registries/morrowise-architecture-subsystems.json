@@ -170,6 +170,43 @@
       "last_verified_at": "2026-07-07",
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "morrowise-dev-workflow-catalog",
+      "name": "MorroWise 開發工作流 Catalog",
+      "status": "active",
+      "role": "MorroWise 開發工作流治理與 router gate 的正式子系統。",
+      "summary": "把外部 software-development workflow pattern 轉成 MorroWise 可治理 catalog、registry、schema、verifier 與 read-only read model；ARCHITECTURE.md 只索引此子系統，不複製 catalog 細節。",
+      "capability": "開發工作流治理",
+      "source_of_truth": [
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
+        "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json"
+      ],
+      "detail_doc": "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-catalog.md",
+      "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-dev-workflow-catalog",
+      "verifiers": [
+        "node scripts/verify-morrowise-dev-workflow-catalog.mjs"
+      ],
+      "allowed_actions": [
+        "建立 workflow catalog registry",
+        "產生 read-only dev workflow read model",
+        "將外部 issue tracker 語意標成 adapter_only",
+        "把未完成能力維持 deferred 或 degraded 狀態"
+      ],
+      "forbidden_actions": [
+        "執行 link-skills.sh",
+        "執行 installer 或 hooks 修改",
+        "讀取 secrets、token、cookie 或 runtime auth",
+        "寫外部 issue tracker",
+        "把 ARCHITECTURE.md 當成 catalog 正本"
+      ],
+      "safety_boundary": "JV-32 只治理 workflow metadata 與 read-only generated read model；它不得安裝外部 skills、修改 hooks、讀取 credentials 或把 GitHub/GitLab/Notion 等外部 tracker 升格成 MorroWise 正本。",
+      "degraded_state": "catalog registry/schema/verifier/read model 缺失、adapter_only 誤標為 accepted、close_rule 缺失、或 ARCHITECTURE.md 被手寫 catalog 細節時，此子系統必須維持 deferred/degraded，不得 promoted。",
+      "architecture_decision": "promoted",
+      "last_promoted_at": "2026-07-08",
+      "last_verified_at": "2026-07-08",
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }

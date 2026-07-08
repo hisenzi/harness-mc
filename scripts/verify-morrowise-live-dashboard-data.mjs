@@ -40,6 +40,7 @@ const expectedSurfaces = [
   "closeout_residual_ledger",
   "api_cli_mcp_capabilities",
   "notion_sync_state",
+  "morrowise_dev_workflows",
   "schedule_runtime_health",
   "harness_governance",
   "approval_queue",
@@ -69,6 +70,8 @@ for (const requiredSource of [
   "$COLLAB/harness-mc/public/data/capability-runtime-status.json",
   "$COLLAB/harness-mc/system-workflow/registries/morrowise-notion-sync-state.json",
   "$COLLAB/harness-mc/public/data/notion-sync-state.json",
+  "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
+  "$COLLAB/harness-mc/public/data/morrowise-dev-workflows.json",
   "$COLLAB/harness-mc/public/data/schedule-health.json",
   "$COLLAB/notyet-harness/schedule/tasks/*.yaml",
   "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
@@ -82,6 +85,7 @@ assert.ok(data.verification.verifier_ref.includes("test:morrowise-live-dashboard
 assert.ok(Array.isArray(data.loop_chain), "loop_chain should be present");
 assert.ok(data.routes.some((route) => route.id === "api_cli_mcp_capabilities.drilldown"), "capability drilldown route required");
 assert.ok(data.routes.some((route) => route.id === "notion_sync_state.drilldown"), "Notion sync drilldown route required");
+assert.ok(data.routes.some((route) => route.id === "morrowise_dev_workflows.drilldown"), "MorroWise dev workflow drilldown route required");
 assert.ok(data.routes.some((route) => route.id === "schedule_runtime_health.drilldown"), "schedule runtime drilldown route required");
 assert.ok(data.summary.source_counts.capability_runtime_items >= 0, "capability runtime source count should be present");
 assert.ok(data.summary.source_counts.notion_sync_databases >= 0, "Notion sync source count should be present");

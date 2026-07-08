@@ -100,6 +100,28 @@
       ],
       "next_action_task": "auditor-harness-governance-profile",
       "fixture_scope": "surface_fixture_only"
+    },
+    {
+      "id": "morrowise-dev-workflows-read-model",
+      "label": "MorroWise 開發工作流 catalog read model",
+      "owner_task": "morrowise-dev-workflow-catalog",
+      "source_registry": "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
+      "generated_read_model": "$COLLAB/harness-mc/public/data/morrowise-dev-workflows.json",
+      "read_model_generator": "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
+      "live_dashboard_surface_id": "morrowise_dev_workflows",
+      "homepage_anchor": null,
+      "live_dashboard_verifier_ref": "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+      "verifier_refs": [
+        "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+        "npm run test:morrowise-live-dashboard",
+        "npm run test:morrowise-wiring"
+      ],
+      "routing_refs": [
+        "$COLLAB/harness-mc/AGENTS.md",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-wiring-gate-verifier"
+      ],
+      "next_action_task": "morrowise-dev-workflow-catalog",
+      "fixture_scope": "read_model_surface_only"
     }
   ]
 }

@@ -507,6 +507,74 @@
       ]
     },
     {
+      "id": "p2-notion-to-ledger-importer",
+      "title": "建立 Notion 旅遊快記到 travel ledger 的匯入器",
+      "status": "completed",
+      "track": "inbox",
+      "depends_on": [
+        "p2-standalone-dashboard-build"
+      ],
+      "done_condition": "能 read-only 讀取 Notion 旅遊快記 child database，依 trip_id 產生 travel ledger draft，並把未知/模糊資料送進 needs_review，不直接寫日常 finance-dashboard。",
+      "acceptance": [
+        "支援以 trip_id 分開不同旅遊，例如 trip_fukuoka_2026 與 trip_osaka_2025_reference 不混帳",
+        "可讀取 Notion child database 旅遊快記，並保留 Notion page id / raw_text 作 source evidence",
+        "能把 Notion 欄位映射到 ledger draft transaction：date、amount、currency、payment_method、payer、entry_type、proxy_for、status",
+        "未知付款人、付款方式、類型或代買資訊不得猜測，必須進 needs_review",
+        "匯入器只讀 Notion；不更新 Notion 狀態，不寫 daily finance-dashboard records",
+        "用福岡測試資料或 fixture 驗證 importer output，並能產生 dashboard read model 的後續輸入"
+      ],
+      "hc_decision": {
+        "task_scope": "travel-finance-dashboard/p2-notion-to-ledger-importer",
+        "hc_refs": [
+          "#sift",
+          "#systemBoundary",
+          "#verification"
+        ],
+        "hc_reasoning": "SIFT 重新確認 Notion 是旅行中證據入口，不是帳本；因此 importer 的主要責任是保留 raw evidence、trip_id 與 review 狀態，並把不確定性顯性化，而不是把手機快記直接結清。",
+        "hc_confidence": 0.88,
+        "evidence_refs": [
+          "$COLLAB/travel-finance-dashboard/docs/notion-travel-inbox-schema.md",
+          "$COLLAB/travel-finance-dashboard/docs/notion-api-cli-mcp-wiring.md",
+          "$COLLAB/travel-finance-dashboard/schemas/travel-ledger.schema.json",
+          "$COLLAB/travel-finance-dashboard/scripts/probe-notion-travel-inbox.py"
+        ],
+        "source_boundary": "HC is a thinking check, not source of truth; MC tasks.json, ledger schema, importer fixture, and verifier output remain canonical."
+      },
+      "external_refs": {
+        "notion_travel_inbox": {
+          "parent_page_id": "38e714fb-14c6-80a5-8ae3-ddd99437fc7c",
+          "child_database_id": "390714fb-14c6-816b-8b1b-ea142448b088",
+          "child_database_title": "旅遊快記",
+          "verifier": "python3 scripts/probe-notion-travel-inbox.py",
+          "write_policy": "read_only_until_explicit_approval"
+        },
+        "notion_to_ledger_importer": {
+          "status": "implemented",
+          "doc": "$COLLAB/travel-finance-dashboard/docs/notion-to-ledger-importer.md",
+          "script": "$COLLAB/travel-finance-dashboard/scripts/notion_to_ledger_importer.py",
+          "fixture": "$COLLAB/travel-finance-dashboard/fixtures/notion-travel-inbox-fukuoka-sample.json",
+          "verifier": "python3 scripts/verify-notion-to-ledger-importer.py",
+          "verified_at": "2026-07-06",
+          "trip_id_fixture": "trip_fukuoka_2026",
+          "fixture_transactions": 4,
+          "fixture_review_queue": 2,
+          "live_smoke": {
+            "command": "python3 scripts/notion_to_ledger_importer.py --live --trip-id trip_fukuoka_2026 --trip-title '福岡 2026' --start 2026-07-16 --end 2026-07-20 --raw-contains 福岡測試 --summary",
+            "ok": true,
+            "transactions": 0,
+            "review_queue": 0,
+            "read_only": true,
+            "notion_write": false,
+            "note": "Live DB query path verified; zero rows means no current Notion rows matched 福岡測試/date filter."
+          },
+          "data_boundary": "read_only_notion_to_trip_scoped_travel_ledger_no_daily_finance_dashboard_writes"
+        }
+      },
+      "note": "2026-07-06: Implemented read-only Notion Travel Inbox importer. Trips are separated by trip_id; 福岡 uses trip_fukuoka_2026. Live smoke can query 旅遊快記 and fixture verifies review routing.",
+      "completed_at": "2026-07-06",
+      "summary": "Completed Notion-to-ledger importer: reads 旅遊快記 read-only, maps Notion rows into trip-scoped travel ledger draft transactions, preserves source_ref/raw_text evidence, routes proxy/unknown rows to review_queue, documents Fukuoka smoke flow, and verifies fixture output through the ledger verifier."
+    },
+    {
       "id": "project-init-source-commit",
       "title": "開案：建立 MC milestone 與 Phase 1 tasks",
       "status": "completed",

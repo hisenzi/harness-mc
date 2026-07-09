@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-notification-first-delivery-71c2ca1-20260709T164716Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "71c2ca1",
+  "project": "morrowise",
+  "task_id": "notification-first-delivery",
+  "status": "updated",
+  "summary": "將 schedule/outbox/ 視為本機 notifier runtime queue 並納入 ignore，避免測試通知 JSONL 干擾 notyet-harness closeout。",
+  "created_at": "2026-07-09T16:47:16.468Z",
+  "actor": "codex",
+  "session_id": "codex-20260710-notyet-harness-dirty-closeout"
+}

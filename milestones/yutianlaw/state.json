@@ -176,7 +176,15 @@
       }
     },
     "yt-c3": {
-      "status": "todo",
+      "status": "completed",
+      "completed_at": "2026-07-09",
+      "commits": [
+        "6787b1d",
+        "e03ca77",
+        "814cb09",
+        "cb42a97"
+      ],
+      "summary": "正式站 #contact 已改為 Formspark+n8n 預約諮詢表單；站主通知與填表人自動回覆驗收齊備，前端欄位與禁止公開 secret/template 欄位 contract 通過。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "雨田律師事務所網站",
@@ -312,6 +320,7 @@
     },
     "yt-c3-mvp-formspark-n8n": {
       "status": "completed",
+      "completed_at": "2026-07-08",
       "commits": [
         "f164dea",
         "6c81802",
@@ -319,7 +328,6 @@
         "dfc6a2c",
         "f090499"
       ],
-      "completed_at": "2026-07-08",
       "summary": "Formspark Free + Zeabur n8n 雙信件 MVP 已完成：站主通知與填表人自動回覆皆通過，n8n query-token shared secret 已啟用並完成 no-token/wrong-token/payload validation/body-header carrier/security regression 測試，最終 Formspark 重新提交後收到最新自動回覆信。"
     }
   }

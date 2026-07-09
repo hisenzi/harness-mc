@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-architecture-subsystem-index-live-sync-4d35f67-20260709T164615Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "4d35f67",
+  "project": "morrowise",
+  "task_id": "architecture-subsystem-index-live-sync",
+  "status": "updated",
+  "summary": "補上 architecture registry planning triage 規則，讓 promote-to-architecture 與 planning flow 可區分 new_task、version_improvement、note_only、not_required 與 deferred。",
+  "created_at": "2026-07-09T16:46:15.949Z",
+  "actor": "codex",
+  "session_id": "codex-20260710-notyet-harness-dirty-closeout"
+}

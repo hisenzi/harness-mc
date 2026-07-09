@@ -305,10 +305,10 @@
     {
       "id": "yt-c3",
       "title": "線上聯絡/預約表單（Formspark + n8n）",
-      "status": "in_progress",
+      "status": "completed",
       "track": "phase-2",
       "done_condition": "聯絡區新增表單（姓名/聯絡電話/Email/案件類型下拉/需求簡述/希望聯絡時段），Formspark 送出後站主通知寄達 gmail，n8n 依 client_id 與填表人 email 寄出確認信；含 HTML 必填驗證、個資蒐集告知勾選、禁止前端覆寫 owner_email/from_email/smtp/template/reply_body/reply_to；preview 實際送出驗證並確認收信。",
-      "note": "原方案 Vincent 拍板 Web3Forms/Formspree（靜態站零後端，符 project.json 零維護/資安免疫決策）。2026-07-08 前置卡 yt-c3-mvp-formspark-n8n 已完成 Formspark Free + Zeabur n8n 雙信件與 query-token hardening 驗證，因此 yt-c3 正式表單改沿用已驗證 Formspark+n8n 管線。欄位需含姓名、電話、Email、案件類型、需求簡述、希望聯絡時段、個資告知同意；隱藏欄位只放 client_id/form_name/source_url/_append。個資告知勾選依賴 yt-c9 隱私頁後續補正式法務頁。FACTLOCK：2026-07-08 前全站無正式 form。客戶清單 #3（第一優先）。2026-07-08 Codex 執行：新增 yutianlaw/AGENTS.md、docs/site-prefill.md；首頁 #contact 從純電話 CTA 改為 Formspark 表單，action `https://submit-form.com/QTOrUDNPN`，欄位與 MVP contract 對齊；FAQ 預約答案改為表單/電話/email 三路。驗證：`node scripts/verify-formspark-n8n-mvp.mjs` PASS A01-A05b；`npm run build` PASS 8 pages；dist/index.html 含必要欄位與 responsive CSS；src 表單未出現禁止的 owner_email/from_email/smtp/template/reply_body/reply_to/webhook_token 欄位；curl live POST 至 Formspark endpoint exit 0。2026-07-08 Vincent 確認 `notyet.morrowise@gmail.com` / `somedesign@gmail.com` 已收到站主通知；待確認填表人自動回覆收件後再標 completed。",
+      "note": "原方案 Vincent 拍板 Web3Forms/Formspree（靜態站零後端，符 project.json 零維護/資安免疫決策）。2026-07-08 前置卡 yt-c3-mvp-formspark-n8n 已完成 Formspark Free + Zeabur n8n 雙信件與 query-token hardening 驗證，因此 yt-c3 正式表單改沿用已驗證 Formspark+n8n 管線。欄位需含姓名、電話、Email、案件類型、需求簡述、希望聯絡時段、個資告知同意；隱藏欄位只放 client_id/form_name/source_url/_append。個資告知勾選依賴 yt-c9 隱私頁後續補正式法務頁。FACTLOCK：2026-07-08 前全站無正式 form。客戶清單 #3（第一優先）。2026-07-08 Codex 執行：新增 yutianlaw/AGENTS.md、docs/site-prefill.md；首頁 #contact 從純電話 CTA 改為 Formspark 表單，action `https://submit-form.com/QTOrUDNPN`，欄位與 MVP contract 對齊；FAQ 預約答案改為表單/電話/email 三路。驗證：`node scripts/verify-formspark-n8n-mvp.mjs` PASS A01-A05b；`npm run build` PASS 8 pages；dist/index.html 含必要欄位與 responsive CSS；src 表單未出現禁止的 owner_email/from_email/smtp/template/reply_body/reply_to/webhook_token 欄位；curl live POST 至 Formspark endpoint exit 0。2026-07-08 Vincent 確認 `notyet.morrowise@gmail.com` / `somedesign@gmail.com` 已收到站主通知。2026-07-08 Vincent 指示完成 yt-c3；前置 MVP final live retest 已記錄 submitter inbox 收到最新自動回覆，站主通知與填表人確認信驗收齊備，正式表單任務完成。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "雨田律師事務所網站",
@@ -317,7 +317,13 @@
           "synced_at": "2026-06-18",
           "sync_mode": "created"
         }
-      }
+      },
+      "completed_at": "2026-07-08",
+      "commits": [
+        "6787b1d",
+        "e03ca77"
+      ],
+      "summary": "正式站 #contact 已改為 Formspark+n8n 預約諮詢表單；站主通知與填表人自動回覆驗收齊備，前端欄位與禁止公開 secret/template 欄位 contract 通過。"
     },
     {
       "id": "yt-c3-mvp-formspark-n8n",

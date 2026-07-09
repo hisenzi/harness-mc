@@ -1,0 +1,20 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-morrowise-notification-first-delivery-task.commit_attached-morrowise-notification-first-delivery-71c2ca1-20260709T164716Z-20260709T164716Z",
+  "type": "sync_requested",
+  "target": "heptabase_append",
+  "status": "pending",
+  "source_event_id": "task.commit_attached-morrowise-notification-first-delivery-71c2ca1-20260709T164716Z",
+  "project": "morrowise",
+  "task_id": "notification-first-delivery",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "6093b946-82f5-45d4-9488-56db48231a0b",
+    "whiteboard": "MorroWise",
+    "status": "done",
+    "summary": "將 schedule/outbox/ 視為本機 notifier runtime queue 並納入 ignore，避免測試通知 JSONL 干擾 notyet-harness closeout。",
+    "commit": "71c2ca1"
+  },
+  "created_at": "2026-07-09T16:47:16.468Z",
+  "actor": "codex",
+  "session_id": "codex-20260710-notyet-harness-dirty-closeout"
+}

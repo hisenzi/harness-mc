@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-dual-blade-notyet-harness-cleanup-260603-57afa89-20260709T164515Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "57afa89",
+  "project": "dual-blade",
+  "task_id": "notyet-harness-cleanup-260603",
+  "status": "updated",
+  "summary": "新增 MBA-3 出國環境定向搬運 SOP 與 pack/restore helper，讓 notyet-harness shared workspace、agent 設定與 runtime plist 可依固定流程移轉。",
+  "created_at": "2026-07-09T16:45:15.473Z",
+  "actor": "codex",
+  "session_id": "codex-20260710-notyet-harness-dirty-closeout"
+}

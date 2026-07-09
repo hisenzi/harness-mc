@@ -1,0 +1,16 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-dual-blade-obsidian-integration-task.commit_attached-dual-blade-obsidian-integration-36dc41c-20260709T164548Z-20260709T164548Z",
+  "type": "sync_requested",
+  "target": "obsidian_canvas",
+  "status": "pending",
+  "source_event_id": "task.commit_attached-dual-blade-obsidian-integration-36dc41c-20260709T164548Z",
+  "project": "dual-blade",
+  "task_id": "obsidian-integration",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-07-09T16:45:48.950Z",
+  "actor": "codex",
+  "session_id": "codex-20260710-notyet-harness-dirty-closeout"
+}

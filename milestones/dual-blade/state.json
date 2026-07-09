@@ -138,6 +138,9 @@
     "obsidian-integration": {
       "status": "todo",
       "completed_at": "2026-07-05",
+      "commits": [
+        "36dc41c"
+      ],
       "summary": "HC 路由器已日常運作於 CC 工作流（CLAUDE.md 載入+HC framing gate 引用）"
     },
     "or-archive-decision": {
@@ -261,7 +264,10 @@
         "84de42d",
         "c667cef",
         "05e9208",
-        "008babe"
+        "008babe",
+        "57afa89",
+        "9b1b5c3",
+        "9fdf3e4"
       ],
       "summary": "盤點未commit後清理：腳本/憑證路徑遷git repo(fd27ee7)、heptabase→PAI管線+task卡skill(708695f)、heptabase clients加life-focus+state(6803b10)、repos監控清單+sync-projects+ARCHITECTURE(23ce087)、小未人設v2+mood圖(faf7192)、daily memory 05-14~06-02歸檔(6ce4869)、AI大紀元生成影像指南(b174fec)"
     },

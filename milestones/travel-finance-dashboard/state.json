@@ -308,9 +308,12 @@
     },
     "p2-standalone-dashboard-build": {
       "status": "todo",
+      "completed_at": "2026-07-06",
       "commits": [
-        "b3b2293"
+        "b3b2293",
+        "534b0ba"
       ],
+      "summary": "Completed standalone travel-finance-dashboard app: static read-only clearing dashboard with five core views, generated Osaka dashboard read model, explicit source ownership flow, and verifier covering Osaka reference totals plus draft transfer list.",
       "external_refs": {
         "phase1_verification": {
           "status": "passed",
@@ -327,6 +330,41 @@
         "5f04e1e"
       ],
       "summary": "建立旅遊財務儀表板 MC 開案資料：Notion 口袋入口、travel ledger、回國會計腦、dashboard/handoff tracks 與 9 張 Phase 1 tasks；Phase 1 tasks 保持 todo，不把規劃誤標完成。"
+    },
+    "p2-notion-to-ledger-importer": {
+      "status": "completed",
+      "completed_at": "2026-07-06",
+      "summary": "Completed Notion-to-ledger importer: reads 旅遊快記 read-only, maps Notion rows into trip-scoped travel ledger draft transactions, preserves source_ref/raw_text evidence, routes proxy/unknown rows to review_queue, documents Fukuoka smoke flow, and verifies fixture output through the ledger verifier.",
+      "external_refs": {
+        "notion_travel_inbox": {
+          "parent_page_id": "38e714fb-14c6-80a5-8ae3-ddd99437fc7c",
+          "child_database_id": "390714fb-14c6-816b-8b1b-ea142448b088",
+          "child_database_title": "旅遊快記",
+          "verifier": "python3 scripts/probe-notion-travel-inbox.py",
+          "write_policy": "read_only_until_explicit_approval"
+        },
+        "notion_to_ledger_importer": {
+          "status": "implemented",
+          "doc": "$COLLAB/travel-finance-dashboard/docs/notion-to-ledger-importer.md",
+          "script": "$COLLAB/travel-finance-dashboard/scripts/notion_to_ledger_importer.py",
+          "fixture": "$COLLAB/travel-finance-dashboard/fixtures/notion-travel-inbox-fukuoka-sample.json",
+          "verifier": "python3 scripts/verify-notion-to-ledger-importer.py",
+          "verified_at": "2026-07-06",
+          "trip_id_fixture": "trip_fukuoka_2026",
+          "fixture_transactions": 4,
+          "fixture_review_queue": 2,
+          "live_smoke": {
+            "command": "python3 scripts/notion_to_ledger_importer.py --live --trip-id trip_fukuoka_2026 --trip-title '福岡 2026' --start 2026-07-16 --end 2026-07-20 --raw-contains 福岡測試 --summary",
+            "ok": true,
+            "transactions": 0,
+            "review_queue": 0,
+            "read_only": true,
+            "notion_write": false,
+            "note": "Live DB query path verified; zero rows means no current Notion rows matched 福岡測試/date filter."
+          },
+          "data_boundary": "read_only_notion_to_trip_scoped_travel_ledger_no_daily_finance_dashboard_writes"
+        }
+      }
     }
   }
 }

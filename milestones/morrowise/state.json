@@ -244,7 +244,12 @@
       "summary": "完成多 session commit race 治理：worktree-commit skill v1.8 新增 commit scope manifest、repo-local staging lock、pathspec commit 與 extra staged files 紅線；harness-mc fixture verifier 證明他方 staged 檔案不會被本 session commit 掃入。"
     },
     "playwright-cli-capability-probe": {
-      "status": "todo"
+      "status": "todo",
+      "completed_at": "2026-07-09",
+      "commits": [
+        "069b4a8"
+      ],
+      "summary": "Playwright CLI ownership resolved as legacy history: no PATH command, no harness-mc package/script ownership, no approved browser binary download; MorroWise no longer routes next actions to the Playwright probe task and should use Codex browser/chrome tools unless a future approved task adds project-local Playwright."
     },
     "config-sync-state-probe": {
       "status": "completed",
@@ -328,6 +333,11 @@
     },
     "memory-health-read-model": {
       "status": "todo",
+      "completed_at": "2026-07-05",
+      "commits": [
+        "617435a"
+      ],
+      "summary": "MEMORY_HEALTH_PROFILE 落地：5 知識區（L1/daily/Obsidian/HC/本機 runtime）產 memory-health.json，欄位齊 MC-LIVE-SYS-01；last_used_at/reference_count_30d 從 30 天 daily 引用推導標 inferred，completeness 一律 unknown 不假 live；daily 停更 >3 天（檔名日期）→ stale_warning；~/.claude 遵守 local_runtime_boundary 只記 metadata。fixture 含 stale memory＋missing workflow_link。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise",
@@ -415,7 +425,8 @@
       "completed_at": "2026-07-07",
       "commits": [
         "b962da7",
-        "9a6cd24"
+        "9a6cd24",
+        "71c2ca1"
       ],
       "external_refs": {
         "heptabase": {
@@ -457,6 +468,11 @@
     },
     "sentinel-delivery-verify": {
       "status": "todo",
+      "completed_at": "2026-07-06",
+      "commits": [
+        "37066d1"
+      ],
+      "summary": "實測確認 Telegram 從未送出（無憑證，舊版 exit 2 靜默 skip 且不寫 dedup mark）；送達管道統一為 notify.sh（sentinel console 與 sentinel-pushed.log 改記 notify.sh 實際回報管道），送達帳雙層：notify-delivery.jsonl（caller=mc-sentinel）＋ mark 檔。本次 --push 實測 macos_fallback 送達。Telegram 尾段（手機實收）繫於 JV-05 憑證，屬該 task 完成判準。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise",
@@ -469,6 +485,12 @@
     },
     "system-pulse-feedback-loop": {
       "status": "todo",
+      "completed_at": "2026-07-06",
+      "commits": [
+        "4459453",
+        "d372584"
+      ],
+      "summary": "Pulse feedback loop 落地：degraded step → proposal 檔入 task-proposals/pending/ ＋ pulse-proposals.json read model（JV-13 資料源）；分流引用 D 矩陣 S4/E 類與 approval-policy allowed tier （auto_fixable 當場修/amber 日報/red 即推）；防自噬 TTL 7d 降週報、佇列 >10 red overload、每日 red ≤3 超過合併、step 恢復自動 resolved。真實兩輪端到端：5 failures→5 proposals→macOS 通知送達→修復後 3 筆 step_recovered、2 筆 sync drift 待下輪自動結案。順帶修復 PAI mapping 缺漏（9d8ccf5）與 hc-framing-gate 版本 pin 自腐（d03428e）。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise",
@@ -481,6 +503,11 @@
     },
     "reducer-apply-verify": {
       "status": "todo",
+      "completed_at": "2026-07-05",
+      "commits": [
+        "c3774c7"
+      ],
+      "summary": "Reducer 消化管線實測完成：apply-task-events 全量跑 27 筆 pending（26 applied/1 rejected unknown_task/0 dup），pending 歸零；state overlay 7 專案更新、sync-events 佇列 +52 待 consumer。system-pulse apply 接線本已存在（SYSTEM_PULSE_APPLY_TASK_EVENTS=1），預設 report-only 為 Vincent gate；daily auto-apply 是否開啟列收尾裁決。穩態 <5 的持續性依賴該裁決＋launchd TCC 修復。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise",
@@ -493,6 +520,8 @@
     },
     "cc-push-batch": {
       "status": "todo",
+      "completed_at": "2026-07-06",
+      "summary": "cc-push skill 首次完整執行：fetch-first 審計兩 repo（均純 ahead 無分歧）、harness-mc gate 八項 verifier 全綠、push plan 經 Vincent 確認後推送——harness-mc d0b7b0d..c12caca（25 筆，含 JV 批次 21）、notyet-harness f784528..e2e80d9（7 筆）。Dirty exclusions 留局（他方 in-flight＋generated data）。MBA-2 pull 後即可執行 JV-11 安裝。GitHub Pages 部署由 push 觸發（run 28776824111）。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise",
@@ -505,6 +534,9 @@
     },
     "cross-machine-sync-alert": {
       "status": "todo",
+      "commits": [
+        "7c329b7"
+      ],
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise",
@@ -517,6 +549,11 @@
     },
     "auditor-harness-governance-profile": {
       "status": "todo",
+      "completed_at": "2026-07-05",
+      "commits": [
+        "617435a"
+      ],
+      "summary": "Auditor 新增 HARNESS_GOVERNANCE_PROFILE：目錄級掃 harness/ 17 檔，header contract 依 amendment §2 分級（protocol 嚴格/evidence 寬鬆/墓碑寬鬆）、patch plan 狀態欄 parse 鎖格式、superseded 殘引用（E-c 併入）、stale task anchor 檢查；分級用 filename pattern 推導不寫死清單。3 組 fixture 嚴格斷言＋真實掃描 0 findings。SKILLS-INDEX hisenzi-skill-builder 停用項：SKILLS-INDEX 本身不在 harness/ scope，該項由 skills 治理後續輪次處理，未納入本 commit。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise",
@@ -529,6 +566,11 @@
     },
     "dispatch-gate-extension": {
       "status": "todo",
+      "completed_at": "2026-07-06",
+      "commits": [
+        "f608d86"
+      ],
+      "summary": "work-anchor-preflight 新增 --event dispatch|implementation 事件點 gate：dispatch 逐條檢查 C 契約三件套＋模型分級＋驗證路徑，implementation 檢查可寫邊界；checklist 每列帶規則 ref，watch_signals 附 D 矩陣 S/E 訊號。不帶 --event 行為不變（零啟動負擔）。入口路由（AGENTS.md 加一行「派工前跑 preflight --event dispatch」）屬入口文件修改，待 Vincent 批准後隨下一輪 B patch 落地。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise",
@@ -543,7 +585,107 @@
       "status": "todo"
     },
     "launchd-tcc-downloads-access": {
-      "status": "blocked"
+      "status": "blocked",
+      "completed_at": "2026-07-06",
+      "summary": "HC 重判後關閉 launchd TCC 授權路線：完整磁碟與整包搬家都會放大 Agent 刪改檔風險；安全版主動通知改為 Agent 只寫 notifications outbox，可信 Notifier 只讀資料並顯示通知，不執行 $COLLAB script。"
+    },
+    "rollout-order-approval": {
+      "status": "completed",
+      "completed_at": "2026-07-05",
+      "commits": [
+        "5937b35",
+        "008f593",
+        "20de8b8"
+      ],
+      "summary": "Vincent 2026-07-05 核准 v3 計畫；11 筆 JV task 經並行 session commit 收編入 git（morrowise 10 筆=5937b35、JV-26=008f593），計畫檔=notyet-harness 20de8b8。"
+    },
+    "capability-observed-scan": {
+      "status": "completed",
+      "completed_at": "2026-07-06",
+      "commits": [
+        "6e94a85"
+      ],
+      "summary": "本機接線盲掃器：枚舉全 scope MCP/CLI/launchd/hook/secret 存在性（只驗存在不讀憑證），與 capability registry 雙向 drift（observed-not-declared／declared-not-observed）；cc-runner 變體（CAPABILITY_SESSION_MCP env）抓帳號層 connector。產物 public/data/capability-observed.json（gitignored, build 生成），CI 空掃標 indeterminate 防 fake-live。test:capability-drift 綠，既有 capability verifier 未破。"
+    },
+    "mcp-registration-consolidation": {
+      "status": "completed",
+      "completed_at": "2026-07-08",
+      "commits": [
+        "44af975"
+      ],
+      "summary": "Vincent 2026-07-08 指示繼續完成 JV-20~23；JV-20 採 integration transparency 建議：codex 與 heptabase-mcp 重複註冊收斂到 global，project scope 只保留專案特有 MCP（例如 playwright）。裁決已寫入 capability registry entry mcp-registration-scope-policy；本 task 未直接改 MCP config、install、hooks 或 secrets。"
+    },
+    "firecrawl-disposition": {
+      "status": "completed",
+      "completed_at": "2026-07-08",
+      "commits": [
+        "44af975"
+      ],
+      "summary": "Vincent 2026-07-08 指示繼續完成 JV-20~23；JV-21 依現有證據採 unknown_remove disposition：firecrawl 為 $HOME scope observed-not-declared 且來源不明。裁決已寫入 capability registry entry firecrawl-mcp-home-scope，狀態 blocked，後續需獨立 removal/audit step；本 task 未直接刪除 MCP config 或讀取 Firecrawl secrets。"
+    },
+    "account-connector-policy": {
+      "status": "completed",
+      "completed_at": "2026-07-08",
+      "commits": [
+        "44af975",
+        "20190c4"
+      ],
+      "summary": "Vincent 2026-07-08 指示繼續完成 JV-20~23；JV-22 採登記制＋session probe 稽核，不採帳號層 connector 全禁用。政策已寫入 capability registry entry claude-ai-account-connectors-policy 的 secret_policy/history；session probe 只允許枚舉 connector 名稱與 drift，不讀 token、cookie、payload、workspace auth 或 runtime auth。"
+    },
+    "entry-doc-patch-approval": {
+      "status": "completed",
+      "completed_at": "2026-07-08",
+      "commits": [
+        "44af975",
+        "7115d2c"
+      ],
+      "summary": "Vincent 2026-07-08 指示繼續完成 JV-20~23；JV-23 批准 capability 入口 patch ledger。實體條目已新增到 change-approval-plan 的 P5/P6，狀態 approved；本 task 只作批准指標，不直接改 TOOLS.md、sentinel、entry docs、hooks 或 generated marker。"
+    },
+    "capability-registry-v1-coverage": {
+      "status": "todo"
+    },
+    "capability-startup-brief": {
+      "status": "todo"
+    },
+    "tools-md-capability-pointer": {
+      "status": "todo"
+    },
+    "capability-dual-machine-observed": {
+      "status": "todo"
+    },
+    "architecture-subsystem-index-live-sync": {
+      "status": "completed",
+      "completed_at": "2026-07-07",
+      "commits": [
+        "c8d8b5e",
+        "9b684b9",
+        "4d35f67"
+      ],
+      "summary": "完成架構收編紀錄、驗證器、ARCHITECTURE.md 子系統同步區塊、system-pulse 漂移檢查，以及 MorroWise 任務收尾的架構收編判斷關卡。"
+    },
+    "morrowise-product-promotion-gate": {
+      "status": "todo"
+    },
+    "mba2-catch-up-restore": {
+      "status": "todo"
+    },
+    "morrowise-dev-workflow-catalog": {
+      "status": "completed",
+      "completed_at": "2026-07-08",
+      "commits": [
+        "428a951",
+        "f741108"
+      ],
+      "summary": "Completed JV-32 MorroWise dev workflow catalog gate: durable source map/detail doc, registry/schema, generator, verifier with negative fixtures, read_model_surface_only wiring, live dashboard surface, and promoted Architecture Admission Record."
+    },
+    "local-nongit-data-backup-spec": {
+      "status": "in_progress",
+      "commits": [
+        "7bb2979"
+      ]
+    },
+    "client-form-onboarding-template": {
+      "status": "todo"
     }
   }
 }

@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-dual-blade-notyet-harness-cleanup-260603-9fdf3e4-20260709T164929Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "9fdf3e4",
+  "project": "dual-blade",
+  "task_id": "notyet-harness-cleanup-260603",
+  "status": "updated",
+  "summary": "單獨收錄 Heptabase PAI sync state mapping refresh，記錄多個專案群組的新 board/page id 對應，不更動同步邏輯或憑證。",
+  "created_at": "2026-07-09T16:49:29.010Z",
+  "actor": "codex",
+  "session_id": "codex-20260710-notyet-harness-dirty-closeout"
+}

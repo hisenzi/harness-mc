@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-dual-blade-obsidian-integration-36dc41c-20260709T164548Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "36dc41c",
+  "project": "dual-blade",
+  "task_id": "obsidian-integration",
+  "status": "updated",
+  "summary": "新增 Vincent Thinking 自訂 HC，並更新 HC DEV map 與 registry，讓 Agent 協作判斷模式可被路由與引用。",
+  "created_at": "2026-07-09T16:45:48.950Z",
+  "actor": "codex",
+  "session_id": "codex-20260710-notyet-harness-dirty-closeout"
+}

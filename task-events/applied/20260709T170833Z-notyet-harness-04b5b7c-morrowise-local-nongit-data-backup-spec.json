@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-local-nongit-data-backup-spec-04b5b7c-20260709T170833Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "04b5b7c",
+  "project": "morrowise",
+  "task_id": "local-nongit-data-backup-spec",
+  "status": "updated",
+  "summary": "Recorded JV-32 decision to route local temp maintenance into JV-33.R5 with shared-temp and quarantine-first boundaries.",
+  "created_at": "2026-07-09T17:08:33.087Z",
+  "actor": "codex",
+  "session_id": "codex-20260710-jv33-temp-maintenance"
+}

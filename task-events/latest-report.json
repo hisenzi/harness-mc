@@ -1,95 +1,11 @@
 {
-  "generated_at": "2026-07-09T17:00:02.611Z",
+  "generated_at": "2026-07-09T17:09:26.518Z",
   "applied": [
     {
-      "file": "20260706T082806Z-notyet-harness-20190c4-morrowise-account-connector-policy.json",
-      "event_id": "task.commit_attached-morrowise-account-connector-policy-20190c4-20260706T082806Z",
+      "file": "20260709T170833Z-notyet-harness-04b5b7c-morrowise-local-nongit-data-backup-spec.json",
+      "event_id": "task.commit_attached-morrowise-local-nongit-data-backup-spec-04b5b7c-20260709T170833Z",
       "project": "morrowise",
-      "task_id": "account-connector-policy",
-      "type": "task.commit_attached"
-    },
-    {
-      "file": "20260706T082806Z-notyet-harness-20de8b8-morrowise-rollout-order-approval.json",
-      "event_id": "task.commit_attached-morrowise-rollout-order-approval-20de8b8-20260706T082806Z",
-      "project": "morrowise",
-      "task_id": "rollout-order-approval",
-      "type": "task.commit_attached"
-    },
-    {
-      "file": "20260706T144459Z-travel-finance-dashboard-534b0ba-travel-finance-dashboard-p2-standalone-dashboard-build.json",
-      "event_id": "task.commit_attached-travel-finance-dashboard-p2-standalone-dashboard-build-534b0ba-20260706T144459Z",
-      "project": "travel-finance-dashboard",
-      "task_id": "p2-standalone-dashboard-build",
-      "type": "task.commit_attached"
-    },
-    {
-      "file": "20260707T050054Z-notyet-harness-9b684b9-morrowise-architecture-subsystem-index-live-sync.json",
-      "event_id": "task.commit_attached-morrowise-architecture-subsystem-index-live-sync-9b684b9-20260707T050054Z",
-      "project": "morrowise",
-      "task_id": "architecture-subsystem-index-live-sync",
-      "type": "task.commit_attached"
-    },
-    {
-      "file": "20260708T164436Z-notyet-harness-7115d2c-morrowise-entry-doc-patch-approval.json",
-      "event_id": "task.commit_attached-morrowise-entry-doc-patch-approval-7115d2c-20260708T164436Z",
-      "project": "morrowise",
-      "task_id": "entry-doc-patch-approval",
-      "type": "task.commit_attached"
-    },
-    {
-      "file": "20260709T004153Z-yutianlaw-814cb09-yutianlaw-yt-c3.json",
-      "event_id": "task.commit_attached-yutianlaw-yt-c3-814cb09-20260709T004153Z",
-      "project": "yutianlaw",
-      "task_id": "yt-c3",
-      "type": "task.commit_attached"
-    },
-    {
-      "file": "20260709T034403Z-yutianlaw-cb42a97-yutianlaw-yt-c3.json",
-      "event_id": "task.completed-yutianlaw-yt-c3-cb42a97-20260709T034403Z",
-      "project": "yutianlaw",
-      "task_id": "yt-c3",
-      "type": "task.completed"
-    },
-    {
-      "file": "20260709T164515Z-notyet-harness-57afa89-dual-blade-notyet-harness-cleanup-260603.json",
-      "event_id": "task.commit_attached-dual-blade-notyet-harness-cleanup-260603-57afa89-20260709T164515Z",
-      "project": "dual-blade",
-      "task_id": "notyet-harness-cleanup-260603",
-      "type": "task.commit_attached"
-    },
-    {
-      "file": "20260709T164548Z-notyet-harness-36dc41c-dual-blade-obsidian-integration.json",
-      "event_id": "task.commit_attached-dual-blade-obsidian-integration-36dc41c-20260709T164548Z",
-      "project": "dual-blade",
-      "task_id": "obsidian-integration",
-      "type": "task.commit_attached"
-    },
-    {
-      "file": "20260709T164615Z-notyet-harness-4d35f67-morrowise-architecture-subsystem-index-live-sync.json",
-      "event_id": "task.commit_attached-morrowise-architecture-subsystem-index-live-sync-4d35f67-20260709T164615Z",
-      "project": "morrowise",
-      "task_id": "architecture-subsystem-index-live-sync",
-      "type": "task.commit_attached"
-    },
-    {
-      "file": "20260709T164649Z-notyet-harness-9b1b5c3-dual-blade-notyet-harness-cleanup-260603.json",
-      "event_id": "task.commit_attached-dual-blade-notyet-harness-cleanup-260603-9b1b5c3-20260709T164649Z",
-      "project": "dual-blade",
-      "task_id": "notyet-harness-cleanup-260603",
-      "type": "task.commit_attached"
-    },
-    {
-      "file": "20260709T164716Z-notyet-harness-71c2ca1-morrowise-notification-first-delivery.json",
-      "event_id": "task.commit_attached-morrowise-notification-first-delivery-71c2ca1-20260709T164716Z",
-      "project": "morrowise",
-      "task_id": "notification-first-delivery",
-      "type": "task.commit_attached"
-    },
-    {
-      "file": "20260709T164929Z-notyet-harness-9fdf3e4-dual-blade-notyet-harness-cleanup-260603.json",
-      "event_id": "task.commit_attached-dual-blade-notyet-harness-cleanup-260603-9fdf3e4-20260709T164929Z",
-      "project": "dual-blade",
-      "task_id": "notyet-harness-cleanup-260603",
+      "task_id": "local-nongit-data-backup-spec",
       "type": "task.commit_attached"
     }
   ],

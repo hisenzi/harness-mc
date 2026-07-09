@@ -88,6 +88,8 @@ Initial MIRROR candidates:
 
 Use for changing project/knowledge folders where dated retention and restore history matter.
 
+Snapshot retention rule: keep at most 28 snapshots per backup set. Snapshots beyond the 28 retained set must be moved into `90_QUARANTINE_待判斷可刪/` for human review; backup automation must not directly delete old snapshots.
+
 Initial SNAPSHOT candidates:
 
 - `02_筆記整理_Heptabase`
@@ -212,11 +214,13 @@ Cleanup candidates follow a quarantine-first sequence:
 6. Candidate cleanup paths are moved only into `90_QUARANTINE_待判斷可刪/` by a future explicitly approved implementation task.
 7. Human review happens after quarantine; automated backup logic still does not delete.
 
+Snapshot retention follows the same quarantine-first rule. The system may define `max_retained_snapshots=28`; when a backup set has more than 28 snapshots, older snapshots become retention candidates and must be moved to `90_QUARANTINE_待判斷可刪/`, not directly removed.
+
 Before human review, health state should be `quarantine_pending_review`, not `failed`.
 
 ## 8. Future Fixed Backup Design
 
-Fixed backup should eventually inherit the proven v4 pattern: mount check, same-day duplicate guard, log, manifest, notification, failure codes, and retention.
+Fixed backup should eventually inherit the proven v4 pattern: mount check, same-day duplicate guard, log, manifest, notification, failure codes, and retention. The v4 retention behavior must be adapted for this case: maximum 28 retained snapshots; surplus old snapshots are moved to quarantine for review instead of being deleted by the backup job.
 
 Desired future trigger model:
 
@@ -288,8 +292,8 @@ Future slices remain note-only until split gate passes.
 | Slice | Purpose | Input | Output | Split gate |
 | --- | --- | --- | --- | --- |
 | `JV-33.R1` | Read-only inventory | `$COLLAB/CC本機協作_無Git` | inventory manifest, tier proposal, quarantine/exclude candidate list, sensitive-name redaction report | Already executed as metadata-only inventory in this spec |
-| `JV-33.R2` | no-delete first backup + restore drill | confirmed target disk and R1 manifest | no-delete backup log, manifest, restore-drill evidence | Vincent approves implementation and target disk |
-| `JV-33.R3` | backup health read model + notification loop | backup manifest/log | `local-backup-health.json`, failure mapping, notification rules | R2 evidence exists; MorroWise reads metadata only |
+| `JV-33.R2` | no-delete first backup + restore drill | confirmed target disk and R1 manifest | no-delete backup log, manifest, restore-drill evidence, snapshot retention candidate report | Vincent approves implementation and target disk |
+| `JV-33.R3` | backup health read model + notification loop | backup manifest/log | `local-backup-health.json`, failure mapping, notification rules, `max_retained_snapshots=28` status | R2 evidence exists; MorroWise reads metadata only |
 | `JV-33.R4` | MC dashboard read-only surface | `local-backup-health.json` | MC status card with safe metadata | R3 read model exists and has verifier |
 
 When a slice becomes an implementation task, it must receive the next available `JV-xx` at that time and record:
@@ -309,7 +313,7 @@ Roadmap placeholders must never reserve bare future `JV-xx` ids.
 | A03 | First backup is no-delete dry-run -> no-delete actual -> manifest/log | Section 4 |
 | A04 | Hard-link snapshot requires disk qualification | Section 5 |
 | A05 | Restore drill is mandatory | Section 6 |
-| A06 | Cleanup candidates use quarantine review；不允許 --delete | Section 7 |
+| A06 | Cleanup candidates and snapshots beyond the 28 retained set use quarantine review；不允許 --delete | Section 7 |
 | A07 | Fixed backup ideal state is defined but not implemented | Section 8 |
 | A08 | MorroWise only reads health metadata | Section 9 |
 | A09 | MC dashboard is future read-only surface | Section 10 |

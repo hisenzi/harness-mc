@@ -886,8 +886,9 @@
     {
       "id": "reality-tax-daily-review-task",
       "title": "Reality Tax Daily Review 排程任務契約",
-      "status": "todo",
+      "status": "in_progress",
       "track": "runtime-delivery",
+      "order_label": "MW-RT-01",
       "dependencies": [
         "runtime-scheduler-v0",
         "notification-adapter-contract",
@@ -902,8 +903,30 @@
       ],
       "source_refs": [
         "$COLLAB/notyet-harness/schedule/tasks/",
-        "$COLLAB/harness-mc/milestones/morrowise/tasks.json"
-      ]
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/reality-tax-gate-protocol.md",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-reality-tax-gate.json",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-adapter-contract.json"
+      ],
+      "hc_decision": {
+        "task_scope": "morrowise/reality-tax-daily-review-task",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#constraints",
+          "#risk",
+          "#evidenceBased"
+        ],
+        "hc_reasoning": "真正問題不是再新增一個提醒，而是把 Reality Tax Gate 從即時 workflow gate 延伸成每日排程檢查，確保超過 30 分鐘的研究/討論若 24 小時內沒有實質 output，就能被標記為 reality_gap 或轉成具體 task/demo。#systemDynamics 要求 daily review 走 agent-agnostic schedule task 與 delivery adapter，不綁單一 Codex automation；#constraints 要求 token 與 destination id 只留在本機 schedule/.env，不進 tasks.json 或 generated read model；#risk 防止未配置 delivery 時假裝 live；#evidenceBased 要求 YAML spec、runs log、freshness/last_run read model 與 notification delivery evidence 可重跑。",
+        "hc_confidence": 0.84,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/000_Agent/docs/morrowise/reality-tax-gate-protocol.md",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-reality-tax-gate.json",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-adapter-contract.json",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-reality-tax-gate.mjs"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical state for this task is this MorroWise task, future schedule YAML, runs log, schedule-health/read-model output, notification adapter contract, and explicit Vincent approval before external delivery writes."
+      }
     },
     {
       "id": "notion-sync-read-model-v0",
@@ -2271,7 +2294,7 @@
         "python3 $COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py --check",
         "python3 $COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py --self-test"
       ],
-      "note": "2026-07-07 Vincent 裁決：Notifier 架構必須進 ARCHITECTURE.md，但不能手寫成長篇細節；ARCHITECTURE.md 應升級為索引架構，Agent 先讀薄入口，需要細節再跳到正本文件。此 task 不重新執行 JV-04，不改 Notifier runtime；只做架構索引 live sync 與 drift gate。2026-07-07：新增 shared skill promote-to-architecture 作為本 task 的上游使用流程；skill 定義何時將完成系統能力收編進 ARCHITECTURE.md、如何分層到手寫原則 / generated subsystem index / detail docs / registries / task state。JV-29 則負責該流程依賴的自動同步底座。2026-07-07 HC 補強：補入 Architecture Admission Record 正本、promoted/not_required/deferred 決策回寫、deprecated/superseded 流程、task completed gate 與 cross-repo sequencing，避免 sync script 自行推論架構或 ARCHITECTURE.md 索引腐爛。2026-07-07 模擬驗證補強：新增 schema verifier、機械 closeout gate、Notifier 安全欄位、system-pulse step 測試與 generated block fingerprint 要求。2026-07-07 補強 1~4：system-pulse / pulse proposal 對 sync:architecture-subsystems 會給明確修復指令；architecture verifier 鎖住繁中 generated block，避免回退英文表頭；deprecated/superseded registry entry 需有 reason；verifier 比對 ARCHITECTURE block 的 registry fingerprint，作為 cross-repo sync 一致性 gate。"
+      "note": "2026-07-07 Vincent 裁決：Notifier 架構必須進 ARCHITECTURE.md，但不能手寫成長篇細節；ARCHITECTURE.md 應升級為索引架構，Agent 先讀薄入口，需要細節再跳到正本文件。此 task 不重新執行 JV-04，不改 Notifier runtime；只做架構索引 live sync 與 drift gate。2026-07-07：新增 shared skill promote-to-architecture 作為本 task 的上游使用流程；skill 定義何時將完成系統能力收編進 ARCHITECTURE.md、如何分層到手寫原則 / generated subsystem index / detail docs / registries / task state。JV-29 則負責該流程依賴的自動同步底座。2026-07-07 HC 補強：補入 Architecture Admission Record 正本、promoted/not_required/deferred 決策回寫、deprecated/superseded 流程、task completed gate 與 cross-repo sequencing，避免 sync script 自行推論架構或 ARCHITECTURE.md 索引腐爛。2026-07-07 模擬驗證補強：新增 schema verifier、機械 closeout gate、Notifier 安全欄位、system-pulse step 測試與 generated block fingerprint 要求。2026-07-07 補強 1~4：system-pulse / pulse proposal 對 sync:architecture-subsystems 會給明確修復指令；architecture verifier 鎖住繁中 generated block，避免回退英文表頭；deprecated/superseded registry entry 需有 reason；verifier 比對 ARCHITECTURE block 的 registry fingerprint，作為 cross-repo sync 一致性 gate。2026-07-08 v1.1 operational hardening：Architecture registry triage 是規劃期 30 秒薄判斷，不是新流程；先分 new_task / version_improvement / note_only / not_required / deferred。若不新增 source-of-truth、registry/schema/verifier/generator、runtime/scheduler/adapter/surface、owner 或完成邊界，優先掛回既有 architecture task note 或 registry entry history，不開新 task。"
     },
     {
       "id": "morrowise-product-promotion-gate",
@@ -2474,6 +2497,8 @@
         "snapshot retention 規則為最多保留 28 份快照；超過 28 份的舊快照只能移入 90_QUARANTINE_待判斷可刪/ 等人判斷，不由備份流程直接刪除。",
         "restore drill 是完成條件的一部分：至少抽樣還原一個照片子集、一個素材子集、一個筆記/專案小檔案，並比對 checksum 或 size/mtime manifest。",
         "備份治理不允許 --delete；no-delete 備份與 restore drill 通過後，疑似可刪或可排除項目只能由未來明確批准的整理 task 移入 90_QUARANTINE_待判斷可刪/，人工判斷前 health state 應顯示 quarantine_pending_review 而不是失敗。",
+        "定期暫存清理需先建立 temp ownership map：OS/runtime temp、repo-local .tmp/build caches、$COLLAB/.tmp intake evidence、90_QUARANTINE_待判斷可刪/ review holding 分層；不得把 secrets、runtime auth、唯一副本或未分類備份內容集中到 shared temp。",
+        "暫存清理策略預設 dry-run + allowlist + age threshold + move-to-trash/quarantine；不可 rm -rf、不可掃全機、不可刪唯一副本。共享暫存只放可再生或已脫敏的 intake/verifier evidence，且每批需有 owner、task_ref、created_at、ttl_or_review_after。",
         "固定備份需定義 launchd 與插碟觸發的理想狀態，但 JV-33 不實作；後續腳本必須有掛載檢查、同日防重、log、manifest、通知、失敗碼與保留策略。",
         "MorroWise 只讀 backup health manifest/log metadata，不執行 rsync、launchd、shell 或檔案搬移；metadata 不得包含檔案內容、secret 值或完整隱私清單。",
         "MC dashboard 只作 read-only future surface：顯示 last_success_at、last_restore_drill_at、target_disk、strategy_summary、state、next_action；不得成為備份正本或執行入口。",
@@ -2510,7 +2535,7 @@
         "evaluated_at": "2026-07-09",
         "reason": "JV-33 只定義本機 non-git data backup governance spec 與 Roadmap-in-Anchor Task，不新增 runtime、registry、schema、verifier、generator、dashboard 或 backup subsystem 正本；待 JV-33.R3/JV-33.R4 拆成實體 read model 或 MC surface task 時再評估是否 promotion。"
       },
-      "note": "Roadmap-in-Anchor Task：目前只開 JV-33。Future slices 不提前開 task，且不預約裸 JV-xx 編號：JV-33.R1 read-only inventory，輸入為 $COLLAB/CC本機協作_無Git，輸出為 inventory manifest、tier proposal、exclude/quarantine list、sensitive-name redaction report；JV-33.R2 no-delete first backup + restore drill，輸入為已確認外接碟與 JV-33.R1 manifest，輸出為 no-delete backup log、manifest、restore-drill evidence；不允許 --delete。JV-33.R3 backup health read model + notification loop，輸入為 backup manifest/log，輸出為 local-backup-health.json、failure state mapping、notification rules，不執行 rsync；JV-33.R4 MC dashboard read-only surface，輸入為 local-backup-health.json，輸出為 MC dashboard 狀態卡，只顯示安全 metadata 與 next_action。Split gate：只有在每個 future slice 的 input/output、安全邊界、驗收方式、Vincent implementation approval 都明確，且無更合適既有 task anchor 時，才拆成新 task；拆成實體 task 時才拿當時下一個可用 JV-xx，並回填 origin_anchor=JV-33、origin_slice=JV-33.Rn、origin_task_id=local-nongit-data-backup-spec。固定備份融入 MorroWise 的方式是 health metadata 與 governance loop，不是讓 MorroWise 直接操作檔案。2026-07-09 R1 evidence：metadata-only inventory 已收進 $COLLAB/harness-mc/system-workflow/docs/specs/local-nongit-data-backup-governance.md；掃描只用 lstat/readdir，不讀檔案內容，不輸出疑似敏感檔名；現況 total=355.70GB、files=308522、dirs=29158、cache_like_hits=54468、sensitive_name_hits=560。2026-07-09 Vincent 裁決：不允許 --delete；疑似可刪或可排除項目一律先進 90_QUARANTINE_待判斷可刪/，由人判斷，不由備份流程刪除。2026-07-09 snapshot retention 裁決：最多保留 28 份快照；超過 28 份的舊快照只能移入 90_QUARANTINE_待判斷可刪/ 等人判斷，不由備份流程直接刪除。"
+      "note": "Roadmap-in-Anchor Task：目前只開 JV-33。Future slices 不提前開 task，且不預約裸 JV-xx 編號：JV-33.R1 read-only inventory，輸入為 $COLLAB/CC本機協作_無Git，輸出為 inventory manifest、tier proposal、exclude/quarantine list、sensitive-name redaction report；JV-33.R2 no-delete first backup + restore drill，輸入為已確認外接碟與 JV-33.R1 manifest，輸出為 no-delete backup log、manifest、restore-drill evidence；不允許 --delete。JV-33.R3 backup health read model + notification loop，輸入為 backup manifest/log，輸出為 local-backup-health.json、failure state mapping、notification rules，不執行 rsync；JV-33.R4 MC dashboard read-only surface，輸入為 local-backup-health.json，輸出為 MC dashboard 狀態卡，只顯示安全 metadata 與 next_action；JV-33.R5 local temp maintenance policy，輸入為 R1 inventory 的 cache/tmp/log/build artifact 分層與 repo-local .tmp usage，輸出為 temp ownership map、allowlist、TTL/review-after、dry-run report、trash/quarantine policy 與 future cleanup verifier，不直接刪檔。Split gate：只有在每個 future slice 的 input/output、安全邊界、驗收方式、Vincent implementation approval 都明確，且無更合適既有 task anchor 時，才拆成新 task；拆成實體 task 時才拿當時下一個可用 JV-xx，並回填 origin_anchor=JV-33、origin_slice=JV-33.Rn、origin_task_id=local-nongit-data-backup-spec。固定備份融入 MorroWise 的方式是 health metadata 與 governance loop，不是讓 MorroWise 直接操作檔案。2026-07-09 R1 evidence：metadata-only inventory 已收進 $COLLAB/harness-mc/system-workflow/docs/specs/local-nongit-data-backup-governance.md；掃描只用 lstat/readdir，不讀檔案內容，不輸出疑似敏感檔名；現況 total=355.70GB、files=308522、dirs=29158、cache_like_hits=54468、sensitive_name_hits=560。2026-07-09 Vincent 裁決：不允許 --delete；疑似可刪或可排除項目一律先進 90_QUARANTINE_待判斷可刪/，由人判斷，不由備份流程刪除。2026-07-09 snapshot retention 裁決：最多保留 28 份快照；超過 28 份的舊快照只能移入 90_QUARANTINE_待判斷可刪/ 等人判斷，不由備份流程直接刪除。2026-07-10 Vincent 補充：需要本機維護機制定期清理暫存檔；JV-32 判斷為 JV-33 的 R5 future slice，不另開新 task。結論：暫存檔不全部集中到共享資料夾；本機 runtime temp 留本機，repo-local disposable temp 留各 repo，$COLLAB/.tmp 只承接可再生/已脫敏的 intake 或 verifier evidence，疑似可刪但需人工判斷者進 90_QUARANTINE_待判斷可刪/。"
     },
     {
       "id": "client-form-onboarding-template",

@@ -2462,6 +2462,9 @@
       "dependencies": [
         "morrowise-dev-workflow-catalog"
       ],
+      "commits": [
+        "7bb2979"
+      ],
       "done_condition": "完成 $COLLAB/CC本機協作_無Git 的資料整理與固定備份規格，但不移動資料、不寫備份腳本、不啟動 launchd、不開 future tasks。規格必須定義分層、首次 no-delete 備份、restore drill、quarantine review gate、外接碟資格、MorroWise health metadata 邊界、MC dashboard future surface 與後續拆 task 條件；備份治理不允許 --delete，疑似可刪項目只能進 90_QUARANTINE_待判斷可刪/ 等人判斷。",
       "acceptance": [
         "以 read-only inventory 為第一步，只允許讀取資料夾名稱、大小、mtime、檔案數、cache/temp 類型與疑似敏感檔名；不得讀取或輸出 secrets、tokens、backup codes、private keys、runtime auth 內容。",

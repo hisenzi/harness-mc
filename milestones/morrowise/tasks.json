@@ -2452,32 +2452,33 @@
     },
     {
       "id": "local-nongit-data-backup-spec",
-      "status": "todo",
+      "status": "in_progress",
       "title": "JV-33 CC本機協作_無Git 資料治理與固定備份規格",
       "track": "governance",
       "order_label": "JV-33",
       "dependencies": [
         "morrowise-dev-workflow-catalog"
       ],
-      "done_condition": "完成 $COLLAB/CC本機協作_無Git 的資料整理與固定備份規格，但不移動資料、不寫備份腳本、不啟動 launchd、不開 future tasks。規格必須定義分層、首次 no-delete 備份、restore drill、delete enablement gate、外接碟資格、MorroWise health metadata 邊界、MC dashboard future surface 與後續拆 task 條件。",
+      "done_condition": "完成 $COLLAB/CC本機協作_無Git 的資料整理與固定備份規格，但不移動資料、不寫備份腳本、不啟動 launchd、不開 future tasks。規格必須定義分層、首次 no-delete 備份、restore drill、quarantine review gate、外接碟資格、MorroWise health metadata 邊界、MC dashboard future surface 與後續拆 task 條件；備份治理不允許 --delete，疑似可刪項目只能進 90_QUARANTINE_待判斷可刪/ 等人判斷。",
       "acceptance": [
         "以 read-only inventory 為第一步，只允許讀取資料夾名稱、大小、mtime、檔案數、cache/temp 類型與疑似敏感檔名；不得讀取或輸出 secrets、tokens、backup codes、private keys、runtime auth 內容。",
         "定義資料層級與策略：MIRROR、SNAPSHOT、QUARANTINE、NO_BACKUP；不可再生照片與素材先備份再搬移；cache/tmp/log/build artifacts 預設 quarantine 或 exclude，需列入 dry-run 報告。",
-        "首次備份必須是 no-delete rsync dry-run -> no-delete actual -> manifest/log 產出；禁止在第一輪使用 --delete 或覆蓋性同步。",
+        "首次備份必須是 no-delete rsync dry-run -> no-delete actual -> manifest/log 產出；不允許 --delete 或覆蓋性同步。",
         "hard-link snapshot 只能在目標碟格式支援 link-dest 時啟用；規格需包含 disk qualification：容量、格式、可寫入、hard-link probe、mount path 與保留空間。",
         "restore drill 是完成條件的一部分：至少抽樣還原一個照片子集、一個素材子集、一個筆記/專案小檔案，並比對 checksum 或 size/mtime manifest。",
-        "--delete 只能在 no-delete 備份通過、restore drill 通過、move table 確認、Vincent 明確批准後啟用；未批准前 health state 應顯示 delete_not_approved 而不是失敗。",
+        "備份治理不允許 --delete；no-delete 備份與 restore drill 通過後，疑似可刪或可排除項目只能由未來明確批准的整理 task 移入 90_QUARANTINE_待判斷可刪/，人工判斷前 health state 應顯示 quarantine_pending_review 而不是失敗。",
         "固定備份需定義 launchd 與插碟觸發的理想狀態，但 JV-33 不實作；後續腳本必須有掛載檢查、同日防重、log、manifest、通知、失敗碼與保留策略。",
         "MorroWise 只讀 backup health manifest/log metadata，不執行 rsync、launchd、shell 或檔案搬移；metadata 不得包含檔案內容、secret 值或完整隱私清單。",
         "MC dashboard 只作 read-only future surface：顯示 last_success_at、last_restore_drill_at、target_disk、strategy_summary、state、next_action；不得成為備份正本或執行入口。",
-        "規格需列出 failure states：no_target_disk、disk_not_supported、dry_run_failed、backup_failed、restore_unverified、stale_backup、delete_not_approved。",
+        "規格需列出 failure states：no_target_disk、disk_not_supported、dry_run_failed、backup_failed、restore_unverified、stale_backup、quarantine_pending_review。",
         "規格需使用 Roadmap-in-Anchor Task：JV-33.R1 read-only inventory、JV-33.R2 no-delete first backup + restore drill、JV-33.R3 backup health read model + notification loop、JV-33.R4 MC dashboard read-only surface 只寫在 note，不提前建立 tasks；未來拆成實體 task 時再拿當時下一個可用 JV-xx，並回填 origin_anchor/origin_slice。"
       ],
       "source_refs": [
         "$COLLAB/CC本機協作_無Git",
         "Heptabase whiteboard: 資料備份 & 自動化",
         "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md#local-backup-layer",
-        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-dev-workflow-catalog"
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-dev-workflow-catalog",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/local-nongit-data-backup-governance.md"
       ],
       "hc_decision": {
         "task_scope": "morrowise/local-nongit-data-backup-spec",
@@ -2488,7 +2489,7 @@
           "#confirmationBias",
           "#constraints"
         ],
-        "hc_reasoning": "真正問題不是把資料夾排漂亮，而是讓一個無 Git、341G、含不可再生照片的本機資料根目錄進入可備份、可驗證、可回復、可治理的生命週期。#systemDynamics 指出若先搬檔或先開滿 future tasks，會增加資料遺失與 task bloat；#risk 將照片與唯一副本列為最高風險；#confirmationBias 要求不能直接沿用既有 v4 腳本，必須先驗證外接碟容量、格式、hard-link 支援與 restore drill；#constraints 將本 task 限定為規格與 roadmap，不執行搬移、備份、launchd 或 --delete。",
+        "hc_reasoning": "真正問題不是把資料夾排漂亮，而是讓一個無 Git、341G、含不可再生照片的本機資料根目錄進入可備份、可驗證、可回復、可治理的生命週期。#systemDynamics 指出若先搬檔或先開滿 future tasks，會增加資料遺失與 task bloat；#risk 將照片與唯一副本列為最高風險；#confirmationBias 要求不能直接沿用既有 v4 腳本，必須先驗證外接碟容量、格式、hard-link 支援與 restore drill；#constraints 將本 task 限定為規格與 roadmap，不執行搬移、備份、launchd；不允許 --delete。Vincent 2026-07-09 補充裁決：備份治理不允許 --delete，疑似可刪項目只能進 90_QUARANTINE_待判斷可刪/ 等人判斷。",
         "hc_confidence": 0.87,
         "evidence_refs": [
           "$COLLAB/CC本機協作_無Git",
@@ -2502,7 +2503,7 @@
         "evaluated_at": "2026-07-09",
         "reason": "JV-33 只定義本機 non-git data backup governance spec 與 Roadmap-in-Anchor Task，不新增 runtime、registry、schema、verifier、generator、dashboard 或 backup subsystem 正本；待 JV-33.R3/JV-33.R4 拆成實體 read model 或 MC surface task 時再評估是否 promotion。"
       },
-      "note": "Roadmap-in-Anchor Task：目前只開 JV-33。Future slices 不提前開 task，且不預約裸 JV-xx 編號：JV-33.R1 read-only inventory，輸入為 $COLLAB/CC本機協作_無Git，輸出為 inventory manifest、tier proposal、exclude/quarantine list、sensitive-name redaction report；JV-33.R2 no-delete first backup + restore drill，輸入為已確認外接碟與 JV-33.R1 manifest，輸出為 no-delete backup log、manifest、restore-drill evidence，不啟用 --delete；JV-33.R3 backup health read model + notification loop，輸入為 backup manifest/log，輸出為 local-backup-health.json、failure state mapping、notification rules，不執行 rsync；JV-33.R4 MC dashboard read-only surface，輸入為 local-backup-health.json，輸出為 MC dashboard 狀態卡，只顯示安全 metadata 與 next_action。Split gate：只有在每個 future slice 的 input/output、安全邊界、驗收方式、Vincent implementation approval 都明確，且無更合適既有 task anchor 時，才拆成新 task；拆成實體 task 時才拿當時下一個可用 JV-xx，並回填 origin_anchor=JV-33、origin_slice=JV-33.Rn、origin_task_id=local-nongit-data-backup-spec。固定備份融入 MorroWise 的方式是 health metadata 與 governance loop，不是讓 MorroWise 直接操作檔案。"
+      "note": "Roadmap-in-Anchor Task：目前只開 JV-33。Future slices 不提前開 task，且不預約裸 JV-xx 編號：JV-33.R1 read-only inventory，輸入為 $COLLAB/CC本機協作_無Git，輸出為 inventory manifest、tier proposal、exclude/quarantine list、sensitive-name redaction report；JV-33.R2 no-delete first backup + restore drill，輸入為已確認外接碟與 JV-33.R1 manifest，輸出為 no-delete backup log、manifest、restore-drill evidence；不允許 --delete。JV-33.R3 backup health read model + notification loop，輸入為 backup manifest/log，輸出為 local-backup-health.json、failure state mapping、notification rules，不執行 rsync；JV-33.R4 MC dashboard read-only surface，輸入為 local-backup-health.json，輸出為 MC dashboard 狀態卡，只顯示安全 metadata 與 next_action。Split gate：只有在每個 future slice 的 input/output、安全邊界、驗收方式、Vincent implementation approval 都明確，且無更合適既有 task anchor 時，才拆成新 task；拆成實體 task 時才拿當時下一個可用 JV-xx，並回填 origin_anchor=JV-33、origin_slice=JV-33.Rn、origin_task_id=local-nongit-data-backup-spec。固定備份融入 MorroWise 的方式是 health metadata 與 governance loop，不是讓 MorroWise 直接操作檔案。2026-07-09 R1 evidence：metadata-only inventory 已收進 $COLLAB/harness-mc/system-workflow/docs/specs/local-nongit-data-backup-governance.md；掃描只用 lstat/readdir，不讀檔案內容，不輸出疑似敏感檔名；現況 total=355.70GB、files=308522、dirs=29158、cache_like_hits=54468、sensitive_name_hits=560。2026-07-09 Vincent 裁決：不允許 --delete；疑似可刪或可排除項目一律先進 90_QUARANTINE_待判斷可刪/，由人判斷，不由備份流程刪除。"
     }
   ]
 }

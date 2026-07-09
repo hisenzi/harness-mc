@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-08T05:22:58.908Z",
+  "generatedAt": "2026-07-09T17:08:21.294Z",
   "sourceStatus": {
     "skills": "scanned",
     "scripts": {
@@ -10,7 +10,7 @@
   },
   "summary": {
     "totalSkills": 46,
-    "totalScripts": 110,
+    "totalScripts": 113,
     "totalHooks": 2
   },
   "skills": [
@@ -331,12 +331,12 @@
       "id": "promote-to-architecture",
       "name": "promote-to-architecture",
       "description": "將已完成或已驗證的系統能力收編進 ARCHITECTURE.md 的薄索引流程。當 Vincent 說「寫進 ARCHITECTURE.md」、「變成架構」、「把這個系統收進架構」、「系統完成後補架構」、「架構化這個能力」時使用。用於 control-plane / runtime / notifier / scheduler / read model / verifier / source-of",
-      "version": "1.2",
+      "version": "1.3",
       "category": "一般工具",
       "groups": [
         "MorroWise"
       ],
-      "lastModified": "2026-07-07T02:32:01.940Z",
+      "lastModified": "2026-07-08T12:32:23.518Z",
       "changelog": []
     },
     {
@@ -615,7 +615,7 @@
       "name": "generate-capability-runtime-status.mjs",
       "description": "Generate the MorroWise API / CLI / MCP runtime status read model.",
       "location": "harness-mc",
-      "lastModified": "2026-07-03T04:29:13.625Z"
+      "lastModified": "2026-07-09T08:32:38.896Z"
     },
     {
       "name": "generate-closeout-residual-ledger.mjs",
@@ -657,13 +657,19 @@
       "name": "generate-morrowise-capabilities.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-24T02:44:45.873Z"
+      "lastModified": "2026-07-09T08:31:33.787Z"
+    },
+    {
+      "name": "generate-morrowise-dev-workflows.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-07-08T12:44:06.478Z"
     },
     {
       "name": "generate-morrowise-live-dashboard.mjs",
       "description": "JV-13: system-pulse 狀態與待裁決 proposal 佇列納入首屏 attention",
       "location": "harness-mc",
-      "lastModified": "2026-07-05T23:01:19.501Z"
+      "lastModified": "2026-07-08T12:45:31.286Z"
     },
     {
       "name": "generate-morrowise-proactive-loop.mjs",
@@ -742,6 +748,12 @@
       "description": "── 載入舊腳本的共用函式（read-only import；檔名含連字號用 importlib）──────────",
       "location": "000_Agent",
       "lastModified": "2026-05-31T11:18:11.557Z"
+    },
+    {
+      "name": "mba3-move.sh",
+      "description": "mba3-move.sh — MBA-3 出國環境搬運（pack: MBA-1→SSD ／ restore: SSD→MBA-3）",
+      "location": "000_Agent",
+      "lastModified": "2026-07-09T06:28:16.657Z"
     },
     {
       "name": "morrowise-action-runner.mjs",
@@ -909,7 +921,7 @@
       "name": "verify-capability-runtime-status.mjs",
       "description": "Verify the MorroWise API / CLI / MCP runtime status read model.",
       "location": "harness-mc",
-      "lastModified": "2026-07-03T04:28:38.939Z"
+      "lastModified": "2026-07-09T08:31:33.599Z"
     },
     {
       "name": "verify-closeout-residual-ledger.mjs",
@@ -987,7 +999,7 @@
       "name": "verify-morrowise-capability-registry.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-27T13:16:41.819Z"
+      "lastModified": "2026-07-09T08:31:33.180Z"
     },
     {
       "name": "verify-morrowise-commit-cleanup-plan.mjs",
@@ -1008,10 +1020,16 @@
       "lastModified": "2026-06-20T15:26:23.467Z"
     },
     {
+      "name": "verify-morrowise-dev-workflow-catalog.mjs",
+      "description": ",",
+      "location": "harness-mc",
+      "lastModified": "2026-07-08T13:55:15.559Z"
+    },
+    {
       "name": "verify-morrowise-live-dashboard-data.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-07-05T23:03:31.161Z"
+      "lastModified": "2026-07-08T12:45:31.364Z"
     },
     {
       "name": "verify-morrowise-live-dashboard-loop.mjs",
@@ -1230,12 +1248,67 @@
   ],
   "recentChanges": [
     {
+      "date": "2026-07-10",
+      "message": "docs(skills): add architecture triage rules",
+      "repo": "notyet-harness",
+      "files": [
+        "000_Agent/skills/promote-to-architecture/SKILL.md",
+        "000_Agent/skills/vincent-superpowers/02-planning/SKILL.md"
+      ]
+    },
+    {
+      "date": "2026-07-10",
+      "message": "docs(mba3): add targeted migration setup",
+      "repo": "notyet-harness",
+      "files": [
+        "000_Agent/scripts/mba3-move.sh"
+      ]
+    },
+    {
+      "date": "2026-07-09",
+      "message": "docs(morrowise): resolve Playwright capability as legacy",
+      "repo": "harness-mc",
+      "files": [
+        "scripts/generate-capability-runtime-status.mjs",
+        "scripts/generate-morrowise-capabilities.mjs",
+        "scripts/verify-capability-runtime-status.mjs",
+        "scripts/verify-morrowise-capability-registry.mjs"
+      ]
+    },
+    {
       "date": "2026-07-08",
       "message": "docs(skills): add Formspark n8n autoresponder workflow",
       "repo": "notyet-harness",
       "files": [
         "000_Agent/skills/SKILLS-INDEX.md",
         "000_Agent/skills/formspark-n8n-autoreply/SKILL.md"
+      ]
+    },
+    {
+      "date": "2026-07-08",
+      "message": "feat(morrowise): add JV-32 closeout routing",
+      "repo": "harness-mc",
+      "files": [
+        "scripts/verify-morrowise-dev-workflow-catalog.mjs"
+      ]
+    },
+    {
+      "date": "2026-07-08",
+      "message": "chore(morrowise): record JV-32 completion",
+      "repo": "harness-mc",
+      "files": [
+        "scripts/verify-morrowise-dev-workflow-catalog.mjs"
+      ]
+    },
+    {
+      "date": "2026-07-08",
+      "message": "feat(morrowise): add JV-32 workflow catalog gate",
+      "repo": "harness-mc",
+      "files": [
+        "scripts/generate-morrowise-dev-workflows.mjs",
+        "scripts/generate-morrowise-live-dashboard.mjs",
+        "scripts/verify-morrowise-dev-workflow-catalog.mjs",
+        "scripts/verify-morrowise-live-dashboard-data.mjs"
       ]
     },
     {
@@ -1316,60 +1389,6 @@
         "scripts/generate-morrowise-live-dashboard.mjs",
         "scripts/verify-generate-morrowise-auditor.mjs",
         "scripts/verify-morrowise-live-dashboard-data.mjs"
-      ]
-    },
-    {
-      "date": "2026-07-06",
-      "message": "feat(morrowise): work-anchor-preflight 加派工/實作事件點 gate (JV-17)",
-      "repo": "harness-mc",
-      "files": [
-        "scripts/verify-work-anchor-preflight.mjs",
-        "scripts/work-anchor-preflight.mjs"
-      ]
-    },
-    {
-      "date": "2026-07-06",
-      "message": "feat(morrowise): 雙機同步斷線警報建到 fixture-ready (JV-12)",
-      "repo": "harness-mc",
-      "files": [
-        "scripts/generate-config-sync-state.mjs",
-        "scripts/run-system-pulse.mjs",
-        "scripts/sentinel-diff.mjs",
-        "scripts/verify-config-sync-state.mjs"
-      ]
-    },
-    {
-      "date": "2026-07-06",
-      "message": "fix(sentinel): push 送達狀態改以 notify.sh 回報為準 (JV-07)",
-      "repo": "harness-mc",
-      "files": [
-        "scripts/sentinel-diff.mjs"
-      ]
-    },
-    {
-      "date": "2026-07-06",
-      "message": "fix(verifier): hc-framing-gate 版本改數值下限比較，殺 exact pin 自腐",
-      "repo": "harness-mc",
-      "files": [
-        "scripts/verify-hc-framing-gate.mjs"
-      ]
-    },
-    {
-      "date": "2026-07-06",
-      "message": "feat(morrowise): pulse 失敗自動變 proposal 佇列（含推送與防自噬）(JV-08)",
-      "repo": "harness-mc",
-      "files": [
-        "scripts/pulse-proposal-queue.mjs",
-        "scripts/run-system-pulse.mjs",
-        "scripts/verify-pulse-proposal-queue.mjs"
-      ]
-    },
-    {
-      "date": "2026-07-05",
-      "message": "docs(worktree): add commit race gate",
-      "repo": "notyet-harness",
-      "files": [
-        "000_Agent/skills/worktree-commit/SKILL.md"
       ]
     }
   ]

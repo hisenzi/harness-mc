@@ -1,6 +1,7 @@
 node_modules/
 .next/
 out/
+.tmp/
 public/data/*
 !public/data/
 !public/data/tools.json

@@ -92,7 +92,8 @@ assert.equal(statuses.get("runtime.notion-mcp-connector").runtime_status, "needs
 assert.equal(statuses.get("runtime.notion-mcp-connector").auth_status, "needs_auth");
 assert.equal(statuses.has("runtime.notion-mcp"), false, "legacy single Notion MCP status must be split");
 assert.equal(statuses.get("runtime.heptabase-local-cli").runtime_status, "connected");
-assert.equal(statuses.get("runtime.playwright-cli").runtime_status, "missing");
+assert.equal(statuses.get("runtime.playwright-cli").registry_status, "legacy");
+assert.equal(statuses.get("runtime.playwright-cli").runtime_status, "not_applicable");
 assert.equal(statuses.get("contract.notification-adapter").contract_status, "contract_ready");
 assert.equal(statuses.get("legacy.heptabase-pai-mcp-oauth").registry_status, "legacy");
 assert.equal(statuses.get("legacy.heptabase-pai-mcp-oauth").runtime_status, "not_applicable");
@@ -102,7 +103,7 @@ assert.ok(data.summary.by_runtime_status.connected >= 2, "connected runtime coun
 assert.ok(data.summary.by_runtime_status.needs_auth >= 1, "needs_auth should be counted separately");
 assert.ok(data.summary.by_registry_status.legacy >= 1, "legacy should be counted separately");
 assert.ok(data.summary.by_contract_status.contract_ready >= 1, "contract_ready should be counted separately");
-assert.ok(data.next_actions.some((action) => action.target === "playwright-cli-capability-probe"), "Playwright next action should route to its probe task");
+assert.ok(!data.next_actions.some((action) => action.target === "playwright-cli-capability-probe"), "Legacy Playwright must not route back to its completed probe task");
 assert.ok(data.next_actions.some((action) => action.target === "notion-mcp-auth"), "Notion auth next action required");
 
 const serialized = JSON.stringify(data);

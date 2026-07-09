@@ -193,13 +193,14 @@ function heptabaseLocalCliItem(probe) {
 
 function playwrightCliItem(probe, registryItems) {
   const registry = findRegistryItem(registryItems, "playwright-cli");
+  const legacy = registry?.status === "legacy";
   const missing = !probe.ok && (probe.exit_code === 127 || /not found|command not found|ENOENT/i.test(`${probe.stderr || ""} ${probe.error || ""}`));
   return {
     id: "runtime.playwright-cli",
     label: "Playwright CLI",
     source_layer: "runtime_probe",
     registry_status: registry?.status || "unknown",
-    runtime_status: probe.ok ? "connected" : missing ? "missing" : "unknown",
+    runtime_status: legacy ? "not_applicable" : probe.ok ? "connected" : missing ? "missing" : "unknown",
     contract_status: "not_applicable",
     auth_status: "not_required",
     evidence_refs: ["playwright --version", "$COLLAB/harness-mc/public/data/morrowise-capabilities.json#playwright-cli"],
@@ -207,8 +208,10 @@ function playwrightCliItem(probe, registryItems) {
       version: probe.ok ? String(probe.stdout || "").trim() : null,
     },
     next_action: {
-      target: "playwright-cli-capability-probe",
-      label: probe.ok
+      target: legacy ? "none" : "playwright-cli-capability-probe",
+      label: legacy
+        ? "Playwright CLI is legacy history; use Codex browser/chrome tools unless a future task adds project-local Playwright."
+        : probe.ok
         ? "Decide whether Playwright should become project-local or remain global runtime metadata."
         : "Resolve Playwright ownership: project-local dependency, documented global CLI, or Codex browser/chrome tools.",
     },
@@ -260,7 +263,12 @@ function notionMcpConnectorItem(probe) {
 
 function notificationAdapterItem(contract, registryItems) {
   const registry = findRegistryItem(registryItems, "morrowise-notification-delivery-adapters");
-  const contractReady = Boolean(contract?.registry_id || registry?.latest_history?.event_type === "contract_confirmed");
+  const contractReady = Boolean(
+    contract?.status === "contract_ready"
+      || contract?.contract_id
+      || contract?.registry_id
+      || registry?.latest_history?.event_type === "contract_confirmed",
+  );
   return {
     id: "contract.notification-adapter",
     label: "Notification adapter contract",

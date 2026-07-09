@@ -180,7 +180,7 @@
         ]
       },
       "secret_policy": "Do not read browser profiles, cookies, storage state, or auth files while verifying CLI availability.",
-      "status": "unknown",
+      "status": "legacy",
       "verifier": [
         "npm run test:capability-registry",
         "which playwright",
@@ -188,9 +188,9 @@
         "npx --no-install playwright --version"
       ],
       "next_action": {
-        "type": "probe",
-        "task_id": "playwright-cli-capability-probe",
-        "description": "Resolve whether Playwright should be project-local, global, or handled through the Codex browser/chrome tools before using it as a verified CLI capability."
+        "type": "none",
+        "task_id": "api-cli-mcp-capability-registry-v0",
+        "description": "No active Playwright CLI ownership task. Treat the unresolved local CLI report as legacy history and use Codex browser/chrome tools unless a future task explicitly approves adding a project-local Playwright dependency."
       },
       "history": [
         {
@@ -222,6 +222,16 @@
           "evidence_ref": "$COLLAB/harness-mc current session probe output",
           "actor_or_task": "playwright-cli-capability-probe",
           "next_action": "Use playwright-cli-capability-probe to decide whether to add a project-local dependency/script, document a global install path, or rely on Codex browser/chrome tools instead."
+        },
+        {
+          "date": "2026-07-09",
+          "event_type": "ownership_resolved",
+          "from_state": "unknown",
+          "to_state": "legacy",
+          "reason": "Safe probe again found no PATH command, package.json has no Playwright dependency or script, and `npx --no-install playwright --version` timed out without downloading. Vincent asked to complete the Playwright reminder, so MorroWise will not treat Playwright CLI as an active capability; browser verification should use Codex browser/chrome tools unless a future task explicitly adds project-local Playwright.",
+          "evidence_ref": "$COLLAB/harness-mc current session safe probe output",
+          "actor_or_task": "playwright-cli-capability-probe",
+          "next_action": "No active action; keep as legacy history unless a future approved task needs project-local Playwright."
         }
       ]
     },

@@ -134,14 +134,19 @@ assert.equal(heptabaseLegacy.next_action.task_id, "heptabase-pai-legacy-archive"
 
 const playwright = registry.capabilities.find((capability) => capability.id === "playwright-cli");
 assert.ok(playwright, "Playwright CLI fixture required");
-assert.equal(playwright.status, "unknown");
+assert.equal(playwright.status, "legacy");
 assert.equal(playwright.owner_task, "playwright-cli-capability-probe");
-assert.equal(playwright.next_action.task_id, "playwright-cli-capability-probe");
+assert.equal(playwright.next_action.type, "none");
+assert.equal(playwright.next_action.task_id, "api-cli-mcp-capability-registry-v0");
 assert.ok(playwright.history.some((event) => event.event_type === "install_reported"), "Playwright must record install report");
 assert.ok(playwright.history.some((event) => event.event_type === "local_probe"), "Playwright must record local probe result");
 assert.ok(
   playwright.history.some((event) => event.date === "2026-06-27" && /no PATH command/.test(event.reason)),
   "Playwright must record the latest unresolved local probe",
+);
+assert.ok(
+  playwright.history.some((event) => event.date === "2026-07-09" && event.to_state === "legacy" && /Codex browser\/chrome tools/.test(event.reason)),
+  "Playwright must record the legacy ownership resolution",
 );
 
 console.log("MorroWise API / CLI / MCP capability registry verification OK");

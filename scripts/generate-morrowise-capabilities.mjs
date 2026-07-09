@@ -35,7 +35,7 @@ const blockers = [];
 for (const capability of capabilities) {
   byStatus[capability.status] = (byStatus[capability.status] || 0) + 1;
   byType[capability.type] = (byType[capability.type] || 0) + 1;
-  if (["blocked", "unknown", "legacy"].includes(capability.status)) {
+  if (["blocked", "unknown"].includes(capability.status) || (capability.status === "legacy" && capability.next_action?.type !== "none")) {
     blockers.push({
       id: capability.id,
       status: capability.status,

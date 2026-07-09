@@ -2511,6 +2511,68 @@
         "reason": "JV-33 只定義本機 non-git data backup governance spec 與 Roadmap-in-Anchor Task，不新增 runtime、registry、schema、verifier、generator、dashboard 或 backup subsystem 正本；待 JV-33.R3/JV-33.R4 拆成實體 read model 或 MC surface task 時再評估是否 promotion。"
       },
       "note": "Roadmap-in-Anchor Task：目前只開 JV-33。Future slices 不提前開 task，且不預約裸 JV-xx 編號：JV-33.R1 read-only inventory，輸入為 $COLLAB/CC本機協作_無Git，輸出為 inventory manifest、tier proposal、exclude/quarantine list、sensitive-name redaction report；JV-33.R2 no-delete first backup + restore drill，輸入為已確認外接碟與 JV-33.R1 manifest，輸出為 no-delete backup log、manifest、restore-drill evidence；不允許 --delete。JV-33.R3 backup health read model + notification loop，輸入為 backup manifest/log，輸出為 local-backup-health.json、failure state mapping、notification rules，不執行 rsync；JV-33.R4 MC dashboard read-only surface，輸入為 local-backup-health.json，輸出為 MC dashboard 狀態卡，只顯示安全 metadata 與 next_action。Split gate：只有在每個 future slice 的 input/output、安全邊界、驗收方式、Vincent implementation approval 都明確，且無更合適既有 task anchor 時，才拆成新 task；拆成實體 task 時才拿當時下一個可用 JV-xx，並回填 origin_anchor=JV-33、origin_slice=JV-33.Rn、origin_task_id=local-nongit-data-backup-spec。固定備份融入 MorroWise 的方式是 health metadata 與 governance loop，不是讓 MorroWise 直接操作檔案。2026-07-09 R1 evidence：metadata-only inventory 已收進 $COLLAB/harness-mc/system-workflow/docs/specs/local-nongit-data-backup-governance.md；掃描只用 lstat/readdir，不讀檔案內容，不輸出疑似敏感檔名；現況 total=355.70GB、files=308522、dirs=29158、cache_like_hits=54468、sensitive_name_hits=560。2026-07-09 Vincent 裁決：不允許 --delete；疑似可刪或可排除項目一律先進 90_QUARANTINE_待判斷可刪/，由人判斷，不由備份流程刪除。2026-07-09 snapshot retention 裁決：最多保留 28 份快照；超過 28 份的舊快照只能移入 90_QUARANTINE_待判斷可刪/ 等人判斷，不由備份流程直接刪除。"
+    },
+    {
+      "id": "client-form-onboarding-template",
+      "status": "todo",
+      "title": "JV-34 客戶表單開通 SOP / template pack 與 skill 固化 anchor",
+      "track": "governance",
+      "order_label": "JV-34",
+      "dependencies": [
+        "morrowise-dev-workflow-catalog"
+      ],
+      "done_condition": "把雨田 Formspark + n8n 表單案萃取成可複用的客戶表單開通 SOP / template pack；第二個客戶專案實測後，再依 JV-32 Roadmap-in-Anchor Task 原則評估是否固化為 client-form-onboarding skill。此 task 只有一個編號，Phase 2 先寫在 note / acceptance，不提前拆 future task。",
+      "acceptance": [
+        "Phase 1：建立客戶表單開通 SOP，能從品牌資料、欄位需求、收件名單、SMTP 身分、Formspark action、n8n webhook、token、測試收件匣一路導到 live acceptance。",
+        "Phase 1：建立 FORM_PREFILL.template.md，欄位至少包含 client_id、form_name、source_url、品牌名稱、聯絡電話、公開信箱、站主通知收件者、填表者回覆信文案、thank-you 內容、隱私/個資告知狀態。",
+        "Phase 1：建立前端表單模板與 thank-you 模板，保留姓名、聯絡電話、Email、案件/需求類型、希望聯絡時段、需求簡述、個資同意等標準欄位，並說明哪些欄位可改、哪些欄位需走客戶確認。",
+        "Phase 1：建立 n8n Code node 模板與設定清單，明確使用 $env 讀取 webhook token；不得使用 process.env；不得把 token、SMTP password、Gmail App Password、OAuth token 或 Formspark private data 寫入 repo。",
+        "Phase 1：建立 submitter autoresponder 與 owner notification 兩種 HTML/text email template，分清楚填表者確認信不回傳完整敏感內容，站主通知才列出需求摘要。",
+        "Phase 1：建立安全 gate：前端不得覆寫 owner_email、from_email、smtp、template、reply_body、reply_to、webhook_token；n8n 只接受已批准的 client_id；token 使用 query carrier 時需記錄 rotate 流程。",
+        "Phase 1：建立驗證 checklist：本地 contract verifier、npm build、Formspark dashboard 收件、n8n production webhook、no-token/wrong-token/缺 email/未知 client_id/未同意個資/錯 email format negative tests、站主與填表者真實 inbox 截圖或文字證據。",
+        "Phase 1：建立交付 checklist：Formspark 是否關閉或保留預設通知、n8n 站主通知名單、SMTP From/Reply-To 身分、Gmail 顯示寄件者限制、Gmail 頭像/BIMI 不由 n8n 控制等已知限制需寫入 handoff。",
+        "Phase 1：用雨田案做 dry-run，確認 SOP/template 可以從 $COLLAB/yutianlaw 的現有文件與 commits 回推出完整流程，且不依賴聊天記憶。",
+        "Phase 2：至少套用到第二個客戶專案，記錄與雨田案不同的欄位、品牌、SMTP、通知名單、privacy wording、deployment、client approval 與 live-test 差異。",
+        "Phase 2：若第二案驗證流程穩定，建立 client-form-onboarding skill；skill 需包含觸發詞、輸入資料、流程、模板、驗證、常見錯誤、handoff、cc-log/worktree-commit 規則。",
+        "Phase 2：若固化成 skill，更新 $COLLAB/notyet-harness/000_Agent/skills/SKILLS-INDEX.md 或等效 skill registry，並回填 origin_anchor=JV-34、origin_task_id=client-form-onboarding-template。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/yutianlaw/tasks.json#yt-c3",
+        "$COLLAB/harness-mc/milestones/yutianlaw/tasks.json#yt-c3-mvp-formspark-n8n",
+        "$COLLAB/yutianlaw/docs/formspark-n8n-mvp.md",
+        "$COLLAB/yutianlaw/docs/formspark-n8n-live-run-2026-07-03.md",
+        "$COLLAB/yutianlaw/docs/email-templates/yutianlaw-autoreply.html",
+        "$COLLAB/yutianlaw/docs/email-templates/yutianlaw-owner-notification.html",
+        "$COLLAB/yutianlaw/scripts/verify-formspark-n8n-mvp.mjs",
+        "$COLLAB/notyet-harness/000_Agent/skills/formspark-n8n-autoreply/SKILL.md",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-dev-workflow-catalog"
+      ],
+      "hc_decision": {
+        "task_scope": "morrowise/client-form-onboarding-template",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#sourceBoundary",
+          "#constraints",
+          "#evidenceBased"
+        ],
+        "hc_reasoning": "真正問題不是把雨田 yt-c3 再做一次，而是把可重複的表單開通工作流從單一客戶案萃取成可驗證、可移交、可複用的 template pack，並避免只根據一個案例過早固化成 skill。#systemDynamics 要求 Phase 1 先輸出 SOP/template/checklist/verifier contract，Phase 2 等第二案實測後再決定是否 skill 化；#sourceBoundary 要求雨田 task、repo docs、email templates、verifier 與 live inbox evidence 才是可引用來源，聊天記憶不能當正本；#constraints 要求 secrets、SMTP credentials、webhook token 與 Formspark private data 不進 repo；#evidenceBased 要求每個客戶開通都要有本地 contract 與真實 inbox/dashboard 驗收。",
+        "hc_confidence": 0.84,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/yutianlaw/tasks.json#yt-c3",
+          "$COLLAB/harness-mc/milestones/yutianlaw/tasks.json#yt-c3-mvp-formspark-n8n",
+          "$COLLAB/yutianlaw/docs/formspark-n8n-mvp.md",
+          "$COLLAB/yutianlaw/scripts/verify-formspark-n8n-mvp.mjs",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-dev-workflow-catalog"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical state for this anchor is this MorroWise task, future SOP/template artifacts, verifier output, project-specific tasks, and explicit Vincent approval before skill creation."
+      },
+      "architecture_decision": {
+        "decision": "deferred",
+        "evaluated_at": "2026-07-10",
+        "reason": "JV-34 目前只建立客戶表單開通 SOP / template pack 的 Roadmap-in-Anchor Task，不新增 runtime、registry、schema、generator、dashboard 或 MorroWise subsystem；若 Phase 2 固化成 shared skill 或 template registry，再評估是否 promotion。"
+      },
+      "note": "Roadmap-in-Anchor Task：目前只開 JV-34。Phase 1 先從雨田案萃取 template pack / SOP，不急著建立 skill；Phase 2 等第二個客戶專案實測後，再依穩定度決定是否建立 client-form-onboarding skill。Future slices 不提前開 task：JV-34.R1 SOP/template pack，輸入為雨田 yt-c3、repo docs、email templates、verifier 與 live acceptance evidence，輸出為 FORM_PREFILL.template.md、前端/thank-you/n8n/email templates、安全 gate、live acceptance checklist；JV-34.R2 second-client pilot，輸入為第二個客戶專案資料與 R1 template pack，輸出為差異紀錄、踩坑、修正版 checklist；JV-34.R3 skill hardening，輸入為兩個客戶案的穩定流程，輸出為 client-form-onboarding skill、skill registry 更新與 verification examples。Split gate：只有在每個 future slice 的 input/output、安全邊界、驗收方式、Vincent implementation approval 都明確，且無更合適既有 task anchor 時，才拆成新 task；拆成實體 task 時才拿當時下一個可用 JV-xx，並回填 origin_anchor=JV-34、origin_slice=JV-34.Rn、origin_task_id=client-form-onboarding-template。此 task 承接雨田 Formspark + n8n 表單流程產品化；第二階段不是口頭記憶，而是本 task acceptance 的一部分。"
     }
   ]
 }

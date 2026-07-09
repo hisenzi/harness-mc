@@ -719,6 +719,9 @@
         "reason": "此 task 只收斂 Playwright CLI capability ownership：registry status/history/next_action、runtime read model routing 與 task 狀態；不新增 runtime、scheduler、adapter、dashboard surface、source-of-truth family、schema 或 verifier family。"
       },
       "completed_at": "2026-07-09",
+      "commits": [
+        "069b4a8"
+      ],
       "summary": "Playwright CLI ownership resolved as legacy history: no PATH command, no harness-mc package/script ownership, no approved browser binary download; MorroWise no longer routes next actions to the Playwright probe task and should use Codex browser/chrome tools unless a future approved task adds project-local Playwright.",
       "note": "2026-06-27 從 api-cli-mcp-capability-registry-v0 拆出。當前 probe：command -v playwright 無全域命令；harness-mc package.json / package-lock.json 無 Playwright dependency；npx --no-install playwright --version 未在 probe window 內回應並被中止。此 task 只處理 Playwright 能力歸屬，不阻塞 registry v0 成為正式 registry。 2026-07-05：併入 JV-24 capability-registry-v1-coverage 執行，勿單獨重開。2026-07-09 收斂：再次 safe probe，command -v playwright 無 PATH command，package.json 無 Playwright dependency/script，npx --no-install playwright --version 5 秒 timeout；未下載 browser binaries、未讀 browser profile/cookies/storage。Vincent 要求先完成 Playwright 以停止提醒，因此 registry 將 playwright-cli 標為 legacy，next_action 改為 none，runtime status 不再指回本 task。"
     },

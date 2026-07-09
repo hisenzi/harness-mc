@@ -27,6 +27,10 @@ The catalog turns useful external software-development workflow patterns into Mo
 - `resolving-merge-conflicts` is deferred until MorroWise has a merge-operation owner and verification boundary.
 - `closeout-commit-routing` is the closeout route: verified work goes through `verification-before-completion`, optional `cc-log`, then `worktree-commit`, then task completion evidence.
 
+### Roadmap Placeholder Rules
+
+Roadmap placeholder labels must not use bare future `JV-xx` numbers. Use anchor-relative labels such as `ANCHOR.R1`, `ANCHOR.R2`, and keep them inside the anchor task note/spec until they are split. When a slice becomes a real task, assign the next available `JV-xx` at that time and record `origin_anchor` plus `origin_slice` on the new task.
+
 ## Workflow Coverage
 
 | Workflow | Catalog stance |

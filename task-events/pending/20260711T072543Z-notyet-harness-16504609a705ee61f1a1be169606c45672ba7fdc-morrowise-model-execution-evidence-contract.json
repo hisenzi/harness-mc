@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-model-execution-evidence-contract-16504609a705ee61f1a1be169606c45672ba7fdc-20260711T072543Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "16504609a705ee61f1a1be169606c45672ba7fdc",
+  "project": "morrowise",
+  "task_id": "model-execution-evidence-contract",
+  "status": "updated",
+  "summary": "Attached the 2026-07-11 MorroWise governance cc-log commit; task remains planned.",
+  "created_at": "2026-07-11T07:25:43.065Z",
+  "actor": "codex",
+  "session_id": "codex-20260711-morrowise-doc-governance"
+}

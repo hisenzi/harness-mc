@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-multi-machine-repo-coordination-gate-a8b50cccfe87ff943d4b49196b355d6107ef517c-20260711T140403Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "a8b50cccfe87ff943d4b49196b355d6107ef517c",
+  "project": "morrowise",
+  "task_id": "multi-machine-repo-coordination-gate",
+  "status": "updated",
+  "summary": "Logged the JV-37 repo coordination design audit, decisions, FACTLOCK, verification, and commit handoff in the 2026-07-11 Markdown and HTML daily memory.",
+  "created_at": "2026-07-11T14:04:03.947Z",
+  "actor": "codex",
+  "session_id": "codex-desktop-2026-07-11-jv37"
+}

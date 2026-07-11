@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-dual-blade-heptabase-cli-integration-record-3d72634-20260711T155709Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "3d72634",
+  "project": "dual-blade",
+  "task_id": "heptabase-cli-integration-record",
+  "status": "updated",
+  "summary": "新增 MBA-2 Heptabase CLI 一般卡片寫卡交接，記錄連線、建卡、放入白板與驗證邊界。",
+  "created_at": "2026-07-11T15:57:09.226Z",
+  "actor": "codex",
+  "session_id": "019f0efe-3228-75c0-a7de-85df338f8df6"
+}

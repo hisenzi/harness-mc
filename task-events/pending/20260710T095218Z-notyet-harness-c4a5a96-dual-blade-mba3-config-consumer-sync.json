@@ -1,0 +1,13 @@
+{
+  "event_id": "task.completed-dual-blade-mba3-config-consumer-sync-c4a5a96-20260710T095218Z",
+  "type": "task.completed",
+  "repo": "notyet-harness",
+  "commit": "c4a5a96",
+  "project": "dual-blade",
+  "task_id": "mba3-config-consumer-sync",
+  "status": "completed",
+  "summary": "Registered MBA-3 as a shared CLAUDE.md consumer and verified the canonical source matches the local MBA-3 mirror by MD5.",
+  "created_at": "2026-07-10T09:52:18.938Z",
+  "actor": "codex",
+  "session_id": "mba3-migration-20260710"
+}

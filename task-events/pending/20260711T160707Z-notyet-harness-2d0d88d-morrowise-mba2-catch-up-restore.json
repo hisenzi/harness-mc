@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-mba2-catch-up-restore-2d0d88d-20260711T160707Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "2d0d88d",
+  "project": "morrowise",
+  "task_id": "mba2-catch-up-restore",
+  "status": "updated",
+  "summary": "建立並推送 MBA-2 notyet-harness recovery branch，保存搬遷日誌後將 main 對齊遠端最新提交。",
+  "created_at": "2026-07-11T16:07:07.714Z",
+  "actor": "codex",
+  "session_id": "019f0efe-3228-75c0-a7de-85df338f8df6"
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": "task.completed-dual-blade-mba3-safe-restore-3589b00-20260710T131734Z",
+  "type": "task.completed",
+  "repo": "notyet-harness",
+  "commit": "3589b00",
+  "project": "dual-blade",
+  "task_id": "mba3-safe-restore",
+  "status": "completed",
+  "summary": "Hardened MBA-3 migration by rejecting root-volume pack targets and defaulting restore to unloaded LaunchAgents under the approved interactive runtime safety boundary.",
+  "created_at": "2026-07-10T13:17:34.712Z",
+  "actor": "codex",
+  "session_id": "mba3-migration-20260710"
+}

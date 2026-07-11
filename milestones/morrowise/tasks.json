@@ -2598,6 +2598,187 @@
         "reason": "JV-34 目前只建立客戶表單開通 SOP / template pack 的 Roadmap-in-Anchor Task，不新增 runtime、registry、schema、generator、dashboard 或 MorroWise subsystem；若 Phase 2 固化成 shared skill 或 template registry，再評估是否 promotion。"
       },
       "note": "Roadmap-in-Anchor Task：目前只開 JV-34。Phase 1 先從雨田案萃取 template pack / SOP，不急著建立 skill；Phase 2 等第二個客戶專案實測後，再依穩定度決定是否建立 client-form-onboarding skill。Future slices 不提前開 task：JV-34.R1 SOP/template pack，輸入為雨田 yt-c3、repo docs、email templates、verifier 與 live acceptance evidence，輸出為 FORM_PREFILL.template.md、前端/thank-you/n8n/email templates、安全 gate、live acceptance checklist；JV-34.R2 second-client pilot，輸入為第二個客戶專案資料與 R1 template pack，輸出為差異紀錄、踩坑、修正版 checklist；JV-34.R3 skill hardening，輸入為兩個客戶案的穩定流程，輸出為 client-form-onboarding skill、skill registry 更新與 verification examples。Split gate：只有在每個 future slice 的 input/output、安全邊界、驗收方式、Vincent implementation approval 都明確，且無更合適既有 task anchor 時，才拆成新 task；拆成實體 task 時才拿當時下一個可用 JV-xx，並回填 origin_anchor=JV-34、origin_slice=JV-34.Rn、origin_task_id=client-form-onboarding-template。此 task 承接雨田 Formspark + n8n 表單流程產品化；第二階段不是口頭記憶，而是本 task acceptance 的一部分。"
+    },
+    {
+      "id": "model-execution-evidence-contract",
+      "status": "todo",
+      "title": "JV-35 模型執行證據合約與固定模型閘門",
+      "track": "governance",
+      "order_label": "JV-35",
+      "dependencies": [
+        "dispatch-gate-extension",
+        "morrowise-dev-workflow-catalog",
+        "runtime-scheduler-v0"
+      ],
+      "done_condition": "把『安全敏感、高風險或需要固定模型一致性的 workflow，必須記錄實際返回模型與結果』落成可重跑的 MorroWise contract：workflow catalog 能宣告 model policy，runner 能明確選定模型並留下 requested/actual model evidence，run result 只保留安全 metadata 與 artifact/verifier refs；requested/actual mismatch、fallback 或 actual model unknown 必須標 degraded/blocked，且 evidence-required workflow 不得在缺證據時通過 close_rule。不得把完整 prompt、完整模型輸出、secrets、tokens、cookies 或 runtime auth 寫入 shared registry/read model。",
+      "acceptance": [
+        "A01｜術語與觸發條件單一化：以『安全敏感／高風險／固定模型一致性』取代模糊的『安全領域』；model-dispatch contract 明確區分模型一致性稽核、domain verifier、Vincent 終審與權限／secret 邊界，不能把模型一致誤稱為結果安全。",
+        "A02｜模型使用層正本收斂：更新 $COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/model-dispatch-contract.md 與 source-of-truth-map.md；dispatch policy 仍由 model-dispatch contract 管，新增 hx_model_run_evidence 或等價條目指向 runtime run evidence，不再靠 daily、聊天或 subagent 自述推定實際模型。",
+        "A03｜JV-32 catalog schema 擴充：$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json 與 morrowise-dev-workflow.schema.json 為每筆 workflow 增加可驗證的 model_policy；至少能表達 mode=flexible|min_tier|pinned、risk_class、provider、requested_model、fallback_policy、evidence_required、human_review_required。",
+        "A04｜固定模型不可使用會漂移的 alias 作為完成證據：mode=pinned 時 requested_model 必須是當下 runner/provider 可驗證的完整 model id；若只能取得 alias 或 runtime 不提供 resolved identity，狀態必須是 unknown/degraded，不得假設 alias 等於實際版本。",
+        "A05｜建立 machine-readable run evidence contract：schedule-run.v1 或等價 schema 至少包含 schema_version、run_id、workflow_id/task_id、runner、provider、requested_model、actual_models[]、fallback_used、CLI/runtime version、started_at、finished_at、result.status、verifier_status、output_refs、error_class、policy_check。actual_models 使用陣列，支援同一 workflow 多次 model call 或 subagent。",
+        "A06｜Runner 明確執行 model policy：Claude Code 與 Codex runner 若支援 model pin，必須從受管 task/workflow spec 傳入 model selector；不得從未受管的聊天文字或本機隱性 default 猜測。CLI structured output 的 actual-model 欄位必須先用正負 fixture 證明，不能只因 command 帶 --model/-m 就宣稱 runtime 實際一致。",
+        "A07｜結果紀錄採最小安全 envelope：shared run evidence/read model 只能保存標準化 status、verifier outcome、error class、safe output refs/hash 與模型 metadata；不得保存完整 prompt、完整回答、訊息本文、secret 值、token、cookie、runtime auth 或使用者私有內容。local raw log 若保留，必須 gitignored、具 retention/redaction policy，且 generator 不讀取正文。",
+        "A08｜Fail-closed policy：mode=pinned 或 evidence_required=true 時，actual_models 為空、requested/actual mismatch、發生未核准 fallback、provider 不符、structured output 無法解析或 verifier 未跑，皆必須產生 policy_check=mismatch|unknown 與 degraded/blocked；不得讓 workflow close_rule、task completion 或 dashboard 顯示 ready。",
+        "A09｜Verifier 含負向 fixture：缺 requested_model、pinned 使用漂移 alias、actual_models 空陣列、requested/actual mismatch、fallback_used=true 但 policy=forbid、result 缺 verifier_status、output_refs 指向 secrets/token/cookie/runtime auth、shared evidence 含 raw prompt/output 時都必須 fail。",
+        "A10｜Generated read model 與 schedule health 只讀安全 header：能顯示 evidence-required workflow 的 last_run、model match state、result/verifier state、freshness、degraded reason 與 next_action；不得讀 local raw log body、執行 runner、修改 task state或把 dashboard 變成執行入口。",
+        "A11｜JV-32 closeout 接線：workflow catalog verifier 必須證明 evidence_required workflow 的 close_rule 引用 model run evidence；JV-32 維持 completed，不 reopen，只在本 task 實作完成後以 version_improvement/extended_by 方式補 lineage。ARCHITECTURE.md 不手改；若形成正式新 subsystem，再走 Architecture Admission Record 與 sync。",
+        "A12｜完成驗證至少包含：workflow catalog schema/verifier/generator、scheduler runtime verifier、schedule-health verifier、model mismatch/unknown negative fixtures、task validator、morrowise wiring/system-pulse；並用一個不含敏感內容的 no-op fixture 證明 requested model、actual model、result 與 policy_check 可被重跑。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#dispatch-gate-extension",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-dev-workflow-catalog",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#runtime-scheduler-v0",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
+        "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json",
+        "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs",
+        "$COLLAB/harness-mc/scripts/generate-schedule-health.mjs",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/model-dispatch-contract.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/source-of-truth-map.md",
+        "$COLLAB/notyet-harness/schedule/dispatch.sh",
+        "$COLLAB/notyet-harness/schedule/runners/cc.sh",
+        "$COLLAB/notyet-harness/schedule/runners/codex.sh"
+      ],
+      "hc_decision": {
+        "task_scope": "morrowise/model-execution-evidence-contract",
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#systemDynamics",
+          "#risk",
+          "#constraints",
+          "#evidenceBased"
+        ],
+        "hc_reasoning": "真正問題不是再寫一句『要記模型』，而是目前 dispatch policy、JV-32 workflow metadata 與 scheduler run evidence 分散，三者無法證明 requested model 等於 runtime actual model。#rightProblem 將問題從文件提醒改成可驗證 execution evidence contract；#sourceBoundary 將靜態政策、runtime evidence、task state 與 dashboard read model 分層，避免 daily/chat 成為正本；#systemDynamics 要求 mismatch/unknown 能回饋成 degraded/blocked 與 next_action；#risk 防止為了稽核反而把完整 prompt、回答或敏感資料寫進 shared logs；#constraints 要求先用單一 anchor 承接 policy、runner、verifier 三段，不 reopen JV-32、不手改 ARCHITECTURE.md；#evidenceBased 要求以 no-op fixture 與負向 fixture 證明 actual-model metadata 真能取得，而不是相信 CLI 參數或 agent 自述。",
+        "hc_confidence": 0.9,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-dev-workflow-catalog",
+          "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs",
+          "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/model-dispatch-contract.md",
+          "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/source-of-truth-map.md",
+          "$COLLAB/notyet-harness/schedule/dispatch.sh",
+          "$COLLAB/notyet-harness/schedule/runners/cc.sh"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical task state stays in MorroWise tasks.json; static workflow policy lives in the JV-32 registry/schema; runtime model/result evidence lives in the approved run-evidence contract; generated read models and dashboards remain read-only surfaces."
+      },
+      "architecture_decision": {
+        "decision": "deferred",
+        "evaluated_at": "2026-07-10",
+        "reason": "JV-35 目前只建立 Roadmap-in-Anchor task。實作預期會改 model policy、runner、run evidence schema/verifier 與 read model，可能形成新的 MorroWise governance/runtime capability；待正本、detail contract、negative fixtures、安全邊界、runtime evidence 與 wiring 完成後，再裁決 promoted、version_improvement 或併入既有 workflow catalog/runtime scheduler subsystem。"
+      },
+      "note": "Roadmap-in-Anchor Task：目前只開 JV-35，不提前拆 future tasks。JV-35.R1 policy/catalog contract：輸入為 harness model-dispatch contract、source-of-truth delta map、JV-32 registry/schema/verifier，輸出為術語、model_policy schema、evidence-required close rule 與 negative fixtures；JV-35.R2 runner/run evidence：輸入為 schedule task spec、dispatch.sh、cc/codex runners 與已核准 no-op fixture，輸出為 model pin routing、schedule-run.v1 或等價安全 evidence envelope、actual-model parser 與 fail-closed policy；JV-35.R3 observability/wiring：輸入為安全 run header，輸出為 schedule-health/model evidence read model、freshness/degraded/next_action、system-pulse 與 wiring verifier。Split gate：只有在某一 slice 的 input/output、安全邊界、驗收方式、Vincent implementation approval 都明確，且單一 task 已無法維持可審計邊界時，才拆成新 task；拆出時取得當時下一個可用 JV-xx，回填 origin_anchor=JV-35、origin_slice=JV-35.Rn、origin_task_id=model-execution-evidence-contract。JV-32 維持 completed；本 task 完成前不得把一句政策文字當成已具 runtime enforcement。"
+    },
+    {
+      "id": "document-source-registry-and-human-sync",
+      "status": "todo",
+      "title": "JV-36 文件架構分類、Source of Truth 索引、人讀文件同步與每日健檢",
+      "track": "governance",
+      "order_label": "JV-36",
+      "dependencies": [
+        "architecture-subsystem-index-live-sync",
+        "morrowise-system-json-generator-v0",
+        "architecture-pulse-source-edit",
+        "morrowise-dev-workflow-catalog",
+        "runtime-scheduler-v0",
+        "system-pulse-schedule-task"
+      ],
+      "done_condition": "建立 MorroWise 文件架構治理、同步與每日健檢底座：shared、long-lived、workflow-changing 文件必須依 system_id、Agent Control Plane 五層架構、文件角色、受眾與 write policy 分類；以 $COLLAB/harness-mc/system-workflow/registries/morrowise-document-sources.json 作為文件 Source of Truth 索引正本，搭配 schema、verifier、漏登記偵測、generator 與 generated read model。$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md 的 managed blocks，以及 $COLLAB/notyet-harness/000_Agent/docs/morrowise/human/ 的人讀入口與分層內容，必須由該 registry/read model 決定內容與 lineage，不得掃檔自行推論架構。任何 registered source 修改、移動、淘汰或摘要影響變更，都必須被 Git diff + registry impact gate 機械辨識；npm run sync:morrowise-docs -- --changed-only 只更新受影響 targets，之後真實 documentation sync check 全綠才允許 closeout。另新增 single-writer documentation-health-pulse，透過現有 agent-agnostic scheduler 在 owner role 主機每日 Asia/Taipei 21:00 執行真實文件健檢，先原子寫入安全、read-only、可追溯的最新報告，再依 healthy/degraded/blocked/unknown 回傳固定 exit code 與必要通知；排程只檢查與報告，不在背景直接改寫 ARCHITECTURE.md、human/、task state、commit 或 push。",
+      "acceptance": [
+        "A01｜適用範圍與 seed inventory 明確：scope_version=v1 的 managed roots 至少涵蓋 $COLLAB/AGENTS.md、$COLLAB/notyet-harness/000_Agent/、$COLLAB/notyet-harness/schedule/tasks/、$COLLAB/harness-mc/system-workflow/docs/、registries/、schemas/；exclusions 至少排除 memory/daily、archive/historical、reports、raw run logs、secrets、.env、.tmp、vendor/node_modules 與純 generated body。符合納管條件的 UTF-8 .md/.json/.yaml/.yml 必須由單一 document record 或 source_family record 覆蓋；完成時輸出 seed inventory 的 total、covered、excluded、unregistered 與 exclusion reason，不能用未量化的『主要文件已登記』關閉 task。",
+        "A02｜Folder Contract 正式化：將 $COLLAB/notyet-harness/000_Agent/docs/morrowise/folder-contract-v0.md 升級或 supersede 為 active v1，明訂 Agent 寫文件前的分類、位置、source of truth、受眾、write policy、stale rule、verifier 與 task/architecture lineage；v0 不得維持 evaluation draft 卻被當成生效規則。",
+        "A03｜系統架構分類固定化：architecture_layer vocabulary 固定為 entry、rules、capabilities、runtime、governance；每筆文件同時具備 system_id 與 architecture_layer，不能只依檔案所在資料夾猜測分類。",
+        "A04｜文件角色與受眾固定化：document_role 至少支援 canonical、protocol、schema、detail、runbook、evidence、generated、mirror、human_guide；audience 固定為 human、agent、both；write_policy 至少支援 manual、generated_only、managed_block、append_only、mirror_only。",
+        "A05｜建立文件 Source of Truth 索引：新增 $COLLAB/harness-mc/system-workflow/registries/morrowise-document-sources.json。每筆 record 至少包含 id、record_kind=document|source_family、system_id、title、architecture_layer、document_role、audience、status、source_refs[]（path + relation=canonical|derived_from|detail|evidence）、member_globs、generated_targets[]、owner、task_anchor、write_policy、verifiers、fingerprint_policy=full_content|structured_fields|metadata_only、fingerprint_fields、summary_impact、architecture_summary、human_summary、human_content_ref、summary_reviewed_source_fingerprint、summary_reviewed_at、summary_reviewed_by、last_verified_at、supersedes、superseded_by。active canonical/protocol/schema record 至少有一個 canonical relation；source_family 的 member_globs 不得與其他 active record 重疊。",
+        "A06｜建立 schema 與 registry verifier：新增 $COLLAB/harness-mc/system-workflow/schemas/morrowise-document-source.schema.json 與 $COLLAB/harness-mc/scripts/verify-morrowise-document-sources.mjs，檢查必填欄位、enum、唯一 id、record/source relation cardinality、$COLLAB 路徑可解析、task/verifier 可追溯、family glob 不重疊、generated target 唯一、summary review fingerprint、fingerprint policy、狀態與 supersede 關係；generated dependency graph 必須無循環，但允許同一 hybrid 文件的 manual section 為正本、managed marker section 為 output。",
+        "A07｜漏登記偵測與掃描規則：verifier 只掃 registry 宣告的 managed_roots、extensions 與 explicit exclusions；排序穩定、不追蹤 symlink、不跨 realpath 邊界、不讀 binary，單檔超過受管上限時標 oversized_pending_review。每個納管檔必須匹配恰好一個 document/source_family record；0 筆為 unregistered，超過 1 筆為 ambiguous_coverage。Scanner 只能回報 coverage，不得依檔名或內容自動決定 architecture_layer、document_role、source relation 或 Architecture Admission decision。",
+        "A08｜Document Registry 與 Architecture Admission 分離：morrowise-document-sources.json 只回答文件身份、正本、分類與衍生關係；morrowise-architecture-subsystems.json 繼續決定哪些能力正式 promoted 進 ARCHITECTURE.md。Document Registry 不得繞過 JV-29 的 promoted、not_required、deferred 決策。",
+        "A09｜建立 generated read model 與 deterministic CLI：新增 $COLLAB/harness-mc/scripts/generate-morrowise-documentation.mjs，支援 normal、--check、--self-test、--changed-only；從 registry 與允許讀取的 sources 產生 $COLLAB/harness-mc/public/data/morrowise-documentation.json，至少包含 schema_version、registry_ref、registry_fingerprint、source_fingerprints、payload_fingerprint、taxonomy_version、generated_at、systems、architecture_layers、human_navigation、drift_state、degraded_reasons、write_boundary、verifier_ref、next_action。Text fingerprint 將 CRLF 正規化為 LF；JSON 以 stable-key serialization；structured_fields/metadata_only 只雜湊 allowlisted 欄位，避免 generated_at 等非語意欄位每天製造文件 drift。",
+        "A10｜ARCHITECTURE.md 依索引同步：保留現有手寫架構原則與既有 managed blocks，新增或整合 document architecture generated block；只列系統、架構層、文件角色、摘要、source of truth、detail ref、status、verifier 與 task anchor，不複製長篇 canonical 文件，generated block 不得手改。",
+        "A11｜建立固定 human/ 人讀入口：v1 必須產生 $COLLAB/notyet-harness/000_Agent/docs/morrowise/human/README.md、01-entry.md、02-rules.md、03-capabilities.md、04-runtime.md、05-governance.md。README 回答系統有哪些層、每層做什麼、正本在哪裡、目前狀態與如何深入閱讀；各層頁面依 registry sort_order、human_summary 與 optional human_content_ref 組裝。v1 預設 generated_only；只有 generated_target 明確宣告 managed_block 才允許 marker 外 manual prose。human/ 不得成為 task state、runtime config 或 policy 正本。",
+        "A12｜MANUAL.md 遷移：$COLLAB/notyet-harness/000_Agent/docs/morrowise/MANUAL.md 必須登記為 compatibility entry、redirect、deprecated surface 或 human/ 的 managed entry，不得與 human/README.md 平行維護兩份 current-state 人讀正本。",
+        "A13｜Generated target contract：generated_targets[] 每筆至少包含 path、generation_mode=generated_only|managed_block、template_id、marker_id、sort_order、content_source、source_record_ids；ARCHITECTURE.md 與 hybrid human pages 只有 marker 內可更新，marker 外手寫內容完整保留；generated_only 頁面人工修改必須 fail。缺少/重複/巢狀 marker、target collision、template missing、source/output cycle 或錯誤 generation mode 都必須 fail。",
+        "A14｜語意摘要更新合約：summary_impact 固定為 none、architecture、human、both；若為 architecture、human 或 both，相關 summary、summary_reviewed_source_fingerprint、summary_reviewed_at、summary_reviewed_by 必須更新。新增 npm run review:morrowise-document-summary -- --source-id <id>，只在 reviewer 明確確認摘要後寫入 review metadata；source fingerprint 已改但 review fingerprint 未更新時，sync 與 closeout fail。不得使用未審核 AI 摘要靜默覆蓋 human 文件。",
+        "A15｜Source 變更可偵測：每筆 registered source 依 fingerprint_policy 產生 source_fingerprint，outputs 保存 registry_fingerprint、payload_fingerprint 與 aggregate source fingerprint。新增、修改、移動、刪除或 supersede source 時，documentation --check 指出 source id、change_type、受影響 targets、summary review requirement 與修復指令；路徑一律正規化為 $COLLAB reference，不把本機絕對路徑納入跨機 fingerprint。",
+        "A16｜Author-time impact gate 與真實總閘門：新增 $COLLAB/harness-mc/scripts/verify-morrowise-documentation-impact.mjs 與 npm run test:morrowise-documentation-impact，從 staged/working-tree git diff + registry 找出 changed registered sources 與 affected targets。新增 npm run sync:morrowise-docs -- --changed-only，只更新受影響 read model/ARCHITECTURE.md/human targets；worktree-commit/相關 task closeout 必須先跑 changed-only sync，再跑 npm run test:morrowise-documentation-sync。Impact gate 找到 source change 但 outputs fingerprint 未同步時必須 fail 並給固定 repair command，不能靠 agent 自行判斷『這次算不算相關』。",
+        "A17｜新增 single-writer 每日文件健檢排程：新增 $COLLAB/notyet-harness/schedule/tasks/documentation-health-pulse.yaml，id=documentation-health-pulse、schedule=\"0 21 * * *\"、timezone=Asia/Taipei、runner=shell、timeout=600、delivery=telegram-on-failure、host_policy=single_writer、owner_role=morrowise-primary；沿用 dispatch.sh、shell runner、runs log 與 install.sh，不建立第二套 cron/jobs.json runtime。",
+        "A18｜每日健檢 runner 與 exit contract：新增 $COLLAB/harness-mc/scripts/run-morrowise-documentation-health.mjs，執行真實 registry、classification coverage、source fingerprint、read model、ARCHITECTURE.md/human sync checks，不得只驗 dry-run 接線。Runner 無論 healthy 或失敗都必須先原子寫入符合 schema 的報告，再依 status 結束：healthy=0、degraded=1、blocked=2、unknown=3；missing source、unregistered/ambiguous coverage、summary review pending、output mismatch 或 verifier execution error 必須映射成明確 finding 與 exit。",
+        "A19｜每日健檢報告 schema 與 previous baseline：新增 $COLLAB/harness-mc/system-workflow/schemas/morrowise-documentation-health.schema.json 與 $COLLAB/harness-mc/scripts/verify-morrowise-documentation-health.mjs。每次 21:00 先讀目前 morrowise-documentation-health.json 作 previous baseline，再原子替換最新報告；報告至少包含 schema_version、run_id、host_role、scheduled_for、generated_at、status=healthy|degraded|blocked|unknown、summary_zh_tw、summary、classification_coverage、source_registry_health、previous、source_changes、output_sync、findings[]（severity/category/source_id/evidence/affected_targets/message_zh_tw）、registry_fingerprint、source_fingerprint_set、payload_fingerprint、delivery、stale_rule、write_boundary、verifier_ref、next_action。schedule/runs 保留 schedule-run header 與安全摘要。",
+        "A20｜四項健檢不可缺：報告必須分別回答（1）所有 managed 文件是否已依 system_id/architecture_layer 分類；（2）所有 active source of truth 是否已登記、存在且唯一；（3）ARCHITECTURE.md 與 human/ 是否由目前 registry/read model fingerprint 產生；（4）source 改變後 outputs 是否已同步，若未同步需列出 source id、targets、drift age 與修復命令。",
+        "A21｜排程只檢查與報告：documentation-health-pulse 不得執行 npm run sync:morrowise-docs，不得背景改寫 ARCHITECTURE.md、human/ 或 registry，不得修改 task state、建立 commit、push 或讀取 raw log body；真正同步由 source owner 在 task closeout 前明確執行。",
+        "A22｜報告 freshness、第一次執行與 missed schedule：第一次沒有 previous baseline 時 status=unknown，不得標 healthy；第二次起才能產生 added、changed、moved、removed、superseded delta。最新報告超過 26 小時未更新必須 stale；schedule-health 依 owner role 計算 last_expected_at/next_expected_at，21:00 後超過 90 分鐘仍無新 run header 時標 missed_schedule。『固定 21:00』指 owner host 在線且 launchd loaded 時的排程時間；主機關機/睡眠不得假裝準時執行。",
+        "A23｜System-pulse 與每日報告分工：08:45 system-pulse 保留全鏈健康檢查，21:00 documentation-health-pulse 只負責文件分類、source registry 與 output sync；system-pulse 可引用最新 documentation health status，但不得在 08:45 再產生第二份同類報告或讓兩者互相遞迴執行。",
+        "A24｜修正 schedule-health 假陽性與 host scope：目前 schedule-health 只以 plist 檔案存在判 installed；需擴充為 host_role、plist_present、launchd_loaded、last_run、last_run_age、runner_present、last_expected_at、next_expected_at、missed_schedule。Real runtime 只透過受限 launchctl safe-metadata probe 讀 label/load state；fixture 以注入的 loaded-label set 驗證。documentation-health-pulse 只有 plist 存在但 launchd 未載入、owner role 不符或 last run missed 時必須 degraded，不得顯示 installed/healthy，也不得推論另一台主機狀態。",
+        "A25｜21:00 host/timezone 安裝驗證：schedule/install.sh 增加 non-secret SCHEDULE_HOST_ROLE filter；只有 local role=morrowise-primary 才可產生/載入 single_writer task，其他主機輸出 skipped_non_owner 且不得安裝。--dry-run 必須產生 Hour=21、Minute=0、timeout=600、owner role fixture；--load 前驗證 host timezone=Asia/Taipei，不符則拒絕載入。實作完成後用 launchctl safe metadata、schedule-health read model 與一次手動 dispatch fixture 證明 owner host 已載入且能產生 run log。",
+        "A26｜通知 wiring 與邊界：delivery YAML 目前只是 metadata，因此 run-morrowise-documentation-health.mjs 必須在 degraded/blocked 時明確呼叫既有 notify.sh/outbox adapter，healthy/unknown 預設不推播。Report 的 delivery.status 至少支援 not_required、sent、failed、skipped_missing_env；通知失敗不得阻止 health report 落盤。訊息只含 status、counts、source ids、affected targets 與 repair command，不得包含 source 正文、secret 值、token、cookie、runtime auth 或私密絕對路徑。",
+        "A27｜跨 repo two-phase sync 與 lineage：不宣稱兩個 Git repo 可原子 commit。sync 先以同一 sync_lineage_id 在 temporary workspace 產生 harness-mc read model 與 notyet-harness targets，全部 schema/marker/fingerprint 驗證通過後才依序替換；寫入中途失敗必須從本次 temporary backup 還原已替換 targets。兩 repo outputs 共享 task_anchor、sync_lineage_id、registry_fingerprint、source fingerprint set；完成前重新跑跨 repo check，且 worktree-commit/task-event 回報兩邊 commit lineage。只完成一邊時 task 保持 todo/in_progress，不得 completed。",
+        "A28｜冪等與每日報告更新分離：documentation registry/read model payload、ARCHITECTURE.md 與 human/ 在 source 狀態相同時連跑兩次不得產生 diff；sync 不因 generated_at 單獨重寫受管文件。Daily health report 則每次 run 必須更新 run_id/generated_at/scheduled_for，但 classification/source/output payload_fingerprint 相同時標 change_state=unchanged，不得誤報 source change。Report path 與 schedule/runs 維持 gitignored，不由排程 commit/push。",
+        "A29｜移動、淘汰與歷史保留：source rename、move、replacement 或 deprecation 不得直接刪除 record；需透過 status、supersedes、superseded_by、reason 與 replacement target 保留 lineage，並同步更新 ARCHITECTURE.md/human links及健檢分類。",
+        "A30｜安全 hashing/read boundary：registry、scanner、generator、health runner 與 outputs 禁止讀取或引用 secrets、token、cookie、browser profile、runtime auth、.env values、完整 prompt/output、使用者私密正文或 raw logs。Scanner 只讀 registry allowlisted UTF-8 文件；不 follow symlink、realpath 不得離開 managed root、binary/oversized/permission-denied 一律回報 metadata-only finding，不嘗試讀正文。$COLLAB 外資料只能在核准 metadata_only contract 下記錄安全存在性；fingerprint 不含本機絕對路徑或敏感檔名。",
+        "A31｜負向 fixtures：至少涵蓋 unregistered、ambiguous family coverage、missing/oversized/binary source、symlink escape、duplicate id、canonical relation 缺失、invalid architecture layer、generated target collision、source/output cycle、缺少/重複 marker、manual prose 被覆蓋、source hash 改變但摘要未 review、structured fingerprint 含 generated_at、cross-repo sync_lineage/fingerprint mismatch、第二 repo 寫入失敗 rollback、deprecated 缺 replacement/reason、secret/runtime-auth path、documentation sync 非冪等、health report 未先落盤即 exit、wrong host role、wrong timezone、plist present but launchd not loaded、missed schedule、notification missing env；以上皆必須 fail/degraded/blocked/unknown 並符合 status/exit mapping。",
+        "A32｜端到端 fixture：修改一個不含敏感內容的 registered source 後，documentation sync check 與 21:00 health runner 必須辨識 affected source/targets 並 degraded；更新摘要審核或 structured metadata、執行 sync 後，ARCHITECTURE.md/human 同步、手寫區保持不變、health rerun 轉 healthy。",
+        "A33｜修復現有 baseline drift：完成前修復目前 morrowise-system.json 相對 ARCHITECTURE.md current-state 與 MANUAL.md 四個 generated sections 的 drift，並證明真實 documentation gate 可防止同類 committed inconsistency 再次 closeout。",
+        "A34｜完成驗證至少包含：node scripts/verify-morrowise-document-sources.mjs、node scripts/generate-morrowise-documentation.mjs --check、node scripts/generate-morrowise-documentation.mjs --self-test、npm run test:morrowise-documentation-impact、npm run sync:morrowise-docs -- --changed-only、npm run test:morrowise-documentation-sync、node scripts/verify-morrowise-documentation-health.mjs、node scripts/run-morrowise-documentation-health.mjs、npm run test:morrowise-documentation-health、npm run test:architecture-subsystems、python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-morrowise-documentation.py\" --check、python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-morrowise-documentation.py\" --self-test、SCHEDULE_HOST_ROLE=morrowise-primary $COLLAB/notyet-harness/schedule/verify-runtime.sh、npm run test:schedule-health、npm run test:system-pulse、node scripts/validate-tasks.mjs --changed-only --project morrowise。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/MANUAL.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/folder-contract-v0.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/architecture-pulse-mvp.md",
+        "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-current-state.py",
+        "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py",
+        "$COLLAB/notyet-harness/000_Agent/scripts/sync-morrowise-manual.py",
+        "$COLLAB/notyet-harness/schedule/tasks/system-pulse.yaml",
+        "$COLLAB/notyet-harness/schedule/dispatch.sh",
+        "$COLLAB/notyet-harness/schedule/install.sh",
+        "$COLLAB/notyet-harness/schedule/verify-runtime.sh",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
+        "$COLLAB/harness-mc/public/data/morrowise-system.json",
+        "$COLLAB/harness-mc/public/data/schedule-health.json",
+        "$COLLAB/harness-mc/public/data/system-pulse.json",
+        "$COLLAB/harness-mc/scripts/generate-schedule-health.mjs",
+        "$COLLAB/harness-mc/scripts/verify-schedule-health.mjs",
+        "$COLLAB/harness-mc/scripts/run-system-pulse.mjs",
+        "$COLLAB/harness-mc/scripts/verify-system-pulse.mjs",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#architecture-subsystem-index-live-sync",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-system-json-generator-v0",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#architecture-pulse-source-edit",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-dev-workflow-catalog",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#runtime-scheduler-v0",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#system-pulse-schedule-task"
+      ],
+      "hc_decision": {
+        "task_scope": "morrowise/document-source-registry-and-human-sync",
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#systemDynamics",
+          "#risk",
+          "#constraints",
+          "#evidenceBased"
+        ],
+        "hc_reasoning": "真正問題不是新增 human 資料夾、再寫一份 ARCHITECTURE.md 或另造一套健康檢查，而是 shared 文件缺少可機械驗證的身份、架構分類、正本索引、衍生關係與每日可觀測性。#rightProblem 將需求收斂成 Document Source Registry、deterministic sync 與 21:00 report-only health pulse；#sourceBoundary 將 canonical source、document registry、Architecture Admission、generated read model、ARCHITECTURE.md、人讀 surface、health report 與 task state 分層，避免 human/ 或報告成為第二正本；#systemDynamics 要求 source 變更能造成 closeout drift gate，並由晚間健檢暴露漏網狀態；#risk 防止漏登記、跨 repo 半套 commit、AI 靜默改寫摘要、排程背景改 shared docs、plist 存在卻未載入及 scanner 讀敏感 runtime；#constraints 沿用 JV-29 marker/--check/self-test 與現有 scheduler/system-pulse/schedule-health，不回到 OpenClaw jobs.json；#evidenceBased 要求 source-change、unregistered、semantic-review、launchd-loaded、cross-repo mismatch 與 idempotency fixtures。",
+        "hc_confidence": 0.94,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+          "$COLLAB/notyet-harness/000_Agent/docs/morrowise/MANUAL.md",
+          "$COLLAB/notyet-harness/000_Agent/docs/morrowise/folder-contract-v0.md",
+          "$COLLAB/notyet-harness/schedule/tasks/system-pulse.yaml",
+          "$COLLAB/notyet-harness/schedule/dispatch.sh",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
+          "$COLLAB/harness-mc/scripts/run-system-pulse.mjs",
+          "$COLLAB/harness-mc/scripts/generate-schedule-health.mjs",
+          "$COLLAB/harness-mc/public/data/schedule-health.json",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#architecture-subsystem-index-live-sync"
+        ],
+        "source_boundary": "HC 只負責思考檢查，不是正本。Task state 由 MorroWise tasks.json 管理；文件身份與衍生關係正本在 document source registry；架構收編決策仍在 Architecture Admission Record；ARCHITECTURE.md、human/、documentation read model 與 daily health report 都是可重建的 managed/read-only surfaces。"
+      },
+      "architecture_decision": {
+        "decision": "deferred",
+        "evaluated_at": "2026-07-11",
+        "reason": "JV-36 目前只建立 Roadmap-in-Anchor task。實作將新增正式 document registry、schema、verifier、generator、read model、human surface、跨 repo sync gate 與每日 21:00 health pulse，預期可能形成新的 MorroWise 文件治理子系統；待 source boundary、negative fixtures、同步證據、scheduler loaded evidence 與 closeout gate 完成後，再裁決 promoted 或併入既有 architecture-subsystem-index/system-pulse 子系統。"
+      },
+      "note": "Roadmap-in-Anchor Task：目前只開 JV-36，不提前拆滿 future tasks。JV-36.R1 folder/taxonomy contract：升級 folder contract v1，固定 exact managed roots/exclusions、architecture layers、document roles、audience、write policy 與量化 seed inventory。JV-36.R2 registry/schema/coverage：建立 document/source_family registry、source relation、generated target contract、fingerprint policy、summary review metadata、schema/verifier、unregistered/ambiguous detector、lifecycle 與 symlink/secret 安全 fixtures。JV-36.R3 read model/output sync：建立 deterministic documentation CLI/read model、ARCHITECTURE.md managed block、固定 human/README＋01~05 分層人讀頁，定義 MANUAL.md migration、generated/manual 邊界與 semantic review command。JV-36.R4 drift/closeout hardening：建立 git-diff + registry documentation-impact gate、changed-only author-time sync、two-phase cross-repo replacement/rollback、sync_lineage_id、工作樹 closeout gate 與端到端 source-change fixture；不宣稱跨 repo Git commit 原子性。JV-36.R5 daily documentation health：新增 single-writer documentation-health-pulse.yaml，由 owner_role=morrowise-primary 在 Asia/Taipei 每日 21:00、timeout 600 執行真實 check；先寫符合 schema 的 latest report/previous baseline 與 schedule run evidence，再依 healthy=0/degraded=1/blocked=2/unknown=3 結束，degraded/blocked 才透過既有 adapter 通知，不自動修檔；schedule-health 分離 host_role/plist_present/launchd_loaded/missed_schedule。Split gate：只有當某一 slice 的 input/output、安全邊界、驗收方式與 Vincent implementation approval 均已明確，且單一 task 無法維持可審計邊界時才拆新 task；拆出時取得下一個 JV-xx，並回填 origin_anchor=JV-36、origin_slice=JV-36.Rn、origin_task_id=document-source-registry-and-human-sync。同步的定義是 source 變更被 impact gate 機械辨識後，在 task closeout 前執行 deterministic changed-only regenerate 並通過真實 drift gate；21:00 排程是 detection/reporting safety net，不是未經授權持續改寫 shared files 的背景 daemon。"
     }
   ]
 }

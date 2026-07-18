@@ -23,6 +23,7 @@ The catalog turns useful external software-development workflow patterns into Mo
 - `grill-me` is a pre-workflow stress test because it is stateless.
 - `grill-with-docs` is the formal workflow start because it leaves durable artifacts.
 - `to-issues` and `triage` are `adapter_only` when they imply external issue tracker writes.
+- `task-lifecycle` 是新增、語意修改、暫緩、恢復、完成、取消與封存 canonical task 的內建 route；它不建立第二套 task system。
 - `prototype` remains prototype status until its answer is captured into a durable MorroWise artifact.
 - `resolving-merge-conflicts` is deferred until MorroWise has a merge-operation owner and verification boundary.
 - `closeout-commit-routing` is the closeout route: verified work goes through `verification-before-completion`, optional `cc-log`, then `worktree-commit`, then task completion evidence.
@@ -49,12 +50,17 @@ Roadmap placeholder labels must not use bare future `JV-xx` numbers. Use anchor-
 | `prototype` | Prototype status only until captured into durable verdict. |
 | `improve-codebase-architecture` | Accepted for governance and architecture health review. |
 | `triage` | `adapter_only`; external tracker state must remain outside MorroWise truth. |
+| `task-lifecycle` | Accepted canonical task mutation gate; task state stays in MC and every mutation needs append-only evidence. |
 | `resolving-merge-conflicts` | Deferred until explicit merge owner and verifier boundary exist. |
 | `closeout-commit-routing` | Accepted as the implementation-to-commit closeout route. |
 
 ## Adapter Only Boundary
 
 `adapter_only` means the external concept may be useful, but MorroWise does not let it own state. GitHub Issues, GitLab Issues, external trackers, hooks, installers, and runtime credentials must not become source of truth. MorroWise source of truth remains `tasks.json`, registries, docs, verifier output, generated read models, and explicit Vincent decisions.
+
+## Canonical Task Lifecycle
+
+`task-lifecycle` 將 canonical task mutation 接入 JV-32。新建或變更 task 必須有 `jv32_route.workflows` 的 `task-lifecycle` 與 append-only `task_lifecycle.history`。停用不得使用模糊 `disabled`，而是明確使用 `deferred`、`cancelled` 或 `archived`；完成仍必須走下方的 `closeout-commit-routing`。完整欄位、狀態語意與 cross-repo boundary 見 [MorroWise Canonical Task Lifecycle](morrowise-task-lifecycle.md)。
 
 ## Closeout Rules
 
@@ -77,6 +83,15 @@ implementation done
 ## Architecture Boundary
 
 `ARCHITECTURE.md` is an index, not the catalog. Architecture Admission Record lives in `$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json`. The generated architecture block may point to this detail doc and registry after promotion, but it must not copy the catalog details.
+
+### Architecture Version Improvement Review
+
+JV-32 is already a promoted subsystem. Any change to its governed contract (catalog, workflow schema, task-lifecycle schema/spec, task-write map, approval policy, or task validator) is therefore a **version improvement**, not a new subsystem by default. Before that change can be closed, the owner must review the existing Architecture Admission Record and record one of two outcomes:
+
+1. `updated`: update the existing record's `version_review` with the current contract fingerprint, evidence, review date, and index decision; then run the architecture sync and its `--check`.
+2. `no_index_change`: retain the thin index wording but still refresh the same `version_review` fingerprint and evidence; `ARCHITECTURE.md` must not be used to duplicate route-level details.
+
+`node scripts/verify-morrowise-dev-workflow-catalog.mjs` recomputes the governed-contract fingerprint. A stale Admission Record therefore fails verification until the review is recorded. The generated index is still updated only through the controlled architecture sync, not by hand-editing `ARCHITECTURE.md`.
 
 ## Forbidden Actions
 

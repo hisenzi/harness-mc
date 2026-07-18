@@ -41,6 +41,10 @@ This map records what was evaluated. It does not install skills and does not aut
 
 This keeps JV-32 as the workflow router while preserving `worktree-commit` as the commit authority.
 
+## MorroWise Native Lifecycle Source
+
+`task-lifecycle` 不是從 `$COLLAB/.tmp/skills-main` 匯入。它是 JV-32 的內建 canonical task mutation route，正本規格位於 `$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md`，並以 task lifecycle schema、task validator、task write command map 與 approval policy 共同驗證。它涵蓋 create、amend、suspend、resume、complete、cancel、archive；外部 tracker 仍只能是 adapter_only。若 mutation 是既有 promoted JV-32 的 version improvement，還必須更新既有 Architecture Admission Record 的 version review，並以受控 sync 檢查 ARCHITECTURE.md 薄索引。
+
 ## Exclusions
 
 | Exclusion ID | Source | Reason |

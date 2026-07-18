@@ -29,6 +29,13 @@
     "commit_boundary_rule": "A runner may produce a commit plan or draft patch only. Actual git commit must go through the worktree-commit confirmation gate. Push and deploy require explicit Vincent approval.",
     "worktree_commit_gate_rule": "worktree-commit is the only approved local commit gate. It requires dirty-tree scan, per-file diff review, logical commit grouping, 4C review, path policy check, explicit Vincent confirmation, commit execution, and task-state/event follow-up."
   },
+  "task_lifecycle_contract": {
+    "route": "JV-32/task-lifecycle",
+    "canonical_write_boundary": "Canonical task mutation requires explicit Vincent approval, an append-only lifecycle event, and changed-only validator evidence. External trackers remain adapter_only.",
+    "suspension_mapping": "Use deferred with reactivation_criteria for reversible pause; cancelled with replacement_task_id or no_replacement_reason for no-longer-needed work; archived for historical/superseded records. Do not use disabled; blocked remains active.",
+    "completion_mapping": "Closed status additionally requires JV-32 closeout-commit-routing and does not bypass worktree-commit, commit, push, or deployment approval.",
+    "architecture_version_review": "When a task changes the governed contract of an existing promoted subsystem, it must record an admission_review, refresh the Admission Record version_review, and pass the controlled ARCHITECTURE.md sync check."
+  },
   "policy_tiers": [
     {
       "policy": "allowed",
@@ -75,7 +82,7 @@
         {
           "action_class": "task_state_mutation",
           "examples": ["task reorder", "task create", "task update", "task close", "bulk task status change"],
-          "required_evidence": ["task id", "diff preview", "done condition or reason", "verification plan"],
+          "required_evidence": ["task id", "diff preview", "done condition or reason", "verification plan", "JV-32 task-lifecycle route", "append-only lifecycle history", "Architecture Admission Review when a promoted subsystem contract changes"],
           "reason": "tasks.json is canonical system state."
         },
         {

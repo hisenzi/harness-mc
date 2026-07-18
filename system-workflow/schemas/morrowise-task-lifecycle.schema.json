@@ -1,0 +1,53 @@
+{
+  "$id": "https://hisenzi.local/schemas/morrowise-task-lifecycle.schema.json",
+  "title": "MorroWise Canonical Task Lifecycle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["route", "history"],
+  "properties": {
+    "route": { "const": "JV-32/task-lifecycle" },
+    "history": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["operation", "from_status", "to_status", "reason", "evidence_refs", "recorded_at"],
+        "properties": {
+          "operation": {
+            "type": "string",
+            "enum": ["create", "amend", "suspend", "resume", "complete", "cancel", "archive"]
+          },
+          "from_status": { "type": ["string", "null"] },
+          "to_status": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "evidence_refs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "recorded_at": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+          "reactivation_criteria": { "type": "string", "minLength": 1 },
+          "replacement_task_id": { "type": "string", "minLength": 1 },
+          "no_replacement_reason": { "type": "string", "minLength": 1 },
+          "superseded_by": { "type": "string", "minLength": 1 }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "operation": { "const": "suspend" } } },
+            "then": { "required": ["reactivation_criteria"] }
+          },
+          {
+            "if": { "properties": { "operation": { "const": "cancel" } } },
+            "then": {
+              "anyOf": [
+                { "required": ["replacement_task_id"] },
+                { "required": ["no_replacement_reason"] }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

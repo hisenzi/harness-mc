@@ -24,7 +24,11 @@ const VALID_STATUSES = new Set([
 const ACTIVE_STATUSES = new Set(["todo", "in_progress", "doing", "blocked"]);
 const CLOSED_STATUSES = new Set(["done", "completed", "fixed"]);
 const ARCHITECTURE_DECISIONS = new Set(["promoted", "not_required", "deferred"]);
+const ARCHITECTURE_ADMISSION_REVIEW_SCOPES = new Set(["version_improvement"]);
+const ARCHITECTURE_ADMISSION_INDEX_ACTIONS = new Set(["updated", "no_index_change"]);
+const ARCHITECTURE_SYNC_CHECK_REF = "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check";
 const ARCHITECTURE_GATE_TRACKS = new Set(["governance", "runtime-delivery", "auditor-mvp"]);
+const TASK_LIFECYCLE_OPERATIONS = new Set(["create", "amend", "suspend", "resume", "complete", "cancel", "archive"]);
 
 function parseArgs(argv) {
   const args = {
@@ -126,17 +130,17 @@ function readHeadTasks(relFile) {
   if (!content) return new Map();
   try {
     const raw = JSON.parse(content.replace(/^﻿/, ""));
-    return taskFingerprintMap(extractTasks(raw).map((entry) => entry.task));
+    return taskSnapshotMap(extractTasks(raw).map((entry) => entry.task));
   } catch {
     return new Map();
   }
 }
 
-function taskFingerprintMap(tasks) {
+function taskSnapshotMap(tasks) {
   const map = new Map();
   for (const task of tasks) {
     if (!task || typeof task !== "object" || !task.id) continue;
-    map.set(String(task.id), JSON.stringify(task));
+    map.set(String(task.id), task);
   }
   return map;
 }
@@ -158,7 +162,7 @@ function isCurrentWriteScope({ task, changed, changedOnly, project = "" }) {
   return changedOnly && changed && isPortableAgentScope(task, project, true);
 }
 
-function validateTask(task, { project = "", changed = false, changedOnly = false } = {}) {
+function validateTask(task, { project = "", changed = false, changedOnly = false, previousTask = null } = {}) {
   const problems = [];
   const includeProjectScope = !changedOnly || changed;
 
@@ -201,6 +205,10 @@ function validateTask(task, { project = "", changed = false, changedOnly = false
   if ("hc_decision" in task) {
     problems.push(...validateHcDecision(task.hc_decision));
   }
+  if (requiresTaskLifecycleRoute({ task, changed, changedOnly })) {
+    problems.push(...validateTaskLifecycleRoute(task));
+    problems.push(...validateTaskLifecycleEvidence(task, { previousTask }));
+  }
   if (requiresArchitectureDecision(task, project, includeProjectScope) && !("architecture_decision" in task)) {
     problems.push("architecture_decision is required before closing MorroWise governance/runtime-delivery/auditor-mvp tasks");
   }
@@ -217,6 +225,124 @@ function nonEmptyString(value) {
 
 function requiresHcDecision(task, project = "", includeProjectScope = false) {
   return isPortableAgentScope(task, project, includeProjectScope) && ACTIVE_STATUSES.has(String(task.status || "todo").toLowerCase());
+}
+
+function requiresTaskLifecycleRoute({ task, changed, changedOnly }) {
+  return changedOnly && changed && nonEmptyString(task.id);
+}
+
+function validateTaskLifecycleRoute(task) {
+  if (!task.jv32_route || typeof task.jv32_route !== "object" || Array.isArray(task.jv32_route)) {
+    return ["jv32_route is required for changed or new canonical task mutations"];
+  }
+  if (!Array.isArray(task.jv32_route.workflows) || !task.jv32_route.workflows.includes("task-lifecycle")) {
+    return ["jv32_route.workflows must include task-lifecycle for changed or new canonical task mutations"];
+  }
+  return [];
+}
+
+function validateTaskLifecycleEvidence(task, { previousTask = null } = {}) {
+  const problems = [];
+  if (!task.task_lifecycle || typeof task.task_lifecycle !== "object" || Array.isArray(task.task_lifecycle)) {
+    return ["task_lifecycle is required for changed or new canonical task mutations"];
+  }
+  if (task.task_lifecycle.route !== "JV-32/task-lifecycle") {
+    problems.push("task_lifecycle.route must equal JV-32/task-lifecycle");
+  }
+  if (!Array.isArray(task.task_lifecycle.history) || task.task_lifecycle.history.length === 0) {
+    return [...problems, "task_lifecycle.history must be a non-empty append-only array for changed or new canonical task mutations"];
+  }
+
+  const history = task.task_lifecycle.history;
+  for (const [index, event] of history.entries()) {
+    const prefix = `task_lifecycle.history[${index}]`;
+    if (!event || typeof event !== "object" || Array.isArray(event)) {
+      problems.push(`${prefix} must be an object`);
+      continue;
+    }
+    if (!TASK_LIFECYCLE_OPERATIONS.has(event.operation)) {
+      problems.push(`${prefix}.operation must be create, amend, suspend, resume, complete, cancel, or archive`);
+    }
+    if (event.from_status !== null && !nonEmptyString(event.from_status)) {
+      problems.push(`${prefix}.from_status must be a status string or null`);
+    }
+    if (!nonEmptyString(event.to_status)) {
+      problems.push(`${prefix}.to_status must be a non-empty status string`);
+    }
+    if (!nonEmptyString(event.reason)) {
+      problems.push(`${prefix}.reason must be a non-empty string`);
+    }
+    if (!Array.isArray(event.evidence_refs) || event.evidence_refs.length === 0 || event.evidence_refs.some((ref) => !nonEmptyString(ref))) {
+      problems.push(`${prefix}.evidence_refs must be a non-empty string array`);
+    }
+    if (!nonEmptyString(event.recorded_at) || !/^\d{4}-\d{2}-\d{2}$/.test(event.recorded_at)) {
+      problems.push(`${prefix}.recorded_at must be YYYY-MM-DD`);
+    }
+    if (event.operation === "suspend" && !nonEmptyString(event.reactivation_criteria)) {
+      problems.push("deferred lifecycle event requires reactivation_criteria");
+    }
+    if (event.operation === "cancel" && !nonEmptyString(event.replacement_task_id) && !nonEmptyString(event.no_replacement_reason)) {
+      problems.push("cancelled lifecycle event requires replacement_task_id or no_replacement_reason");
+    }
+    if (event.operation === "archive" && Object.hasOwn(event, "superseded_by") && !nonEmptyString(event.superseded_by)) {
+      problems.push("archived lifecycle event superseded_by must be a non-empty task id when present");
+    }
+  }
+
+  const last = history.at(-1);
+  if (!last || typeof last !== "object" || Array.isArray(last)) return problems;
+
+  if (last.to_status !== task.status) {
+    problems.push("task_lifecycle.history last to_status must match task.status");
+  }
+
+  const previousHistory = previousTask?.task_lifecycle?.history;
+  if (Array.isArray(previousHistory)) {
+    if (history.length <= previousHistory.length) {
+      problems.push("task_lifecycle.history must append a new event for every canonical task mutation");
+    } else if (previousHistory.some((event, index) => JSON.stringify(event) !== JSON.stringify(history[index]))) {
+      problems.push("task_lifecycle.history is append-only; prior events must not be rewritten");
+    }
+  }
+
+  const previousStatus = previousTask?.status;
+  if (!previousTask) {
+    const first = history[0];
+    if (!first || first.operation !== "create" || first.from_status !== null) {
+      problems.push("new tasks require a first create lifecycle event with from_status null");
+    }
+  } else if (previousStatus !== task.status) {
+    const expectedOperation = expectedLifecycleOperation(previousStatus, task.status);
+    if (last.operation !== expectedOperation) {
+      problems.push(`task status transition ${previousStatus} -> ${task.status} requires lifecycle operation ${expectedOperation}`);
+    }
+  } else if (last.operation !== "amend") {
+    problems.push("task content mutations without a status change require lifecycle operation amend");
+  }
+
+  if (task.status === "deferred" && last.operation !== "suspend") {
+    problems.push("deferred task lifecycle mutations require operation suspend");
+  }
+  if (task.status === "cancelled" && last.operation !== "cancel") {
+    problems.push("cancelled task lifecycle mutations require operation cancel");
+  }
+  if (task.status === "archived" && last.operation !== "archive") {
+    problems.push("archived task lifecycle mutations require operation archive");
+  }
+  if (CLOSED_STATUSES.has(task.status) && previousStatus !== task.status && !task.jv32_route.workflows.includes("closeout-commit-routing")) {
+    problems.push("completed task lifecycle mutations require jv32_route.workflows to include closeout-commit-routing");
+  }
+
+  return problems;
+}
+
+function expectedLifecycleOperation(previousStatus, nextStatus) {
+  if (nextStatus === "deferred") return "suspend";
+  if (nextStatus === "cancelled") return "cancel";
+  if (nextStatus === "archived") return "archive";
+  if (CLOSED_STATUSES.has(nextStatus)) return "complete";
+  if (previousStatus === "deferred" || CLOSED_STATUSES.has(previousStatus)) return "resume";
+  return "amend";
 }
 
 function validateHcDecision(decision) {
@@ -297,7 +423,36 @@ function validateArchitectureDecision(decision) {
   } else if (!nonEmptyString(decision.reason)) {
     problems.push("architecture_decision not_required/deferred tasks need reason");
   }
+  if ("admission_review" in decision) {
+    problems.push(...validateArchitectureAdmissionReview(decision.admission_review));
+  }
 
+  return problems;
+}
+
+function validateArchitectureAdmissionReview(review) {
+  const problems = [];
+  if (!review || typeof review !== "object" || Array.isArray(review)) {
+    return ["architecture_decision.admission_review must be an object when present"];
+  }
+  if (!ARCHITECTURE_ADMISSION_REVIEW_SCOPES.has(review.scope)) {
+    problems.push("architecture_decision.admission_review.scope must be version_improvement");
+  }
+  if (!nonEmptyString(review.admission_record_ref) || !/^\$COLLAB\/harness-mc\/system-workflow\/registries\/morrowise-architecture-subsystems\.json#[A-Za-z0-9._-]+$/.test(review.admission_record_ref)) {
+    problems.push("architecture_decision.admission_review.admission_record_ref must be a MorroWise Architecture Admission Record ref");
+  }
+  if (!ARCHITECTURE_ADMISSION_INDEX_ACTIONS.has(review.index_action)) {
+    problems.push("architecture_decision.admission_review.index_action must be updated or no_index_change");
+  }
+  if (review.sync_check_ref !== ARCHITECTURE_SYNC_CHECK_REF) {
+    problems.push("architecture_decision.admission_review.sync_check_ref must reference the controlled architecture sync check");
+  }
+  if (!Array.isArray(review.evidence_refs) || review.evidence_refs.length === 0 || review.evidence_refs.some((ref) => !nonEmptyString(ref))) {
+    problems.push("architecture_decision.admission_review.evidence_refs must be a non-empty string array");
+  }
+  if (!nonEmptyString(review.reason)) {
+    problems.push("architecture_decision.admission_review.reason must be a non-empty string");
+  }
   return problems;
 }
 
@@ -334,11 +489,13 @@ export function validateTasks({ changedOnly = false, projects = new Set(), track
 
       const taskId = String(task.id || "");
       const fingerprint = taskId ? JSON.stringify(task) : "";
+      const previousTask = taskId ? previous.get(taskId) || null : null;
       const changed = changedFiles.has(filePath)
-        && (!taskId || previous.get(taskId) !== fingerprint);
-      const severity = isCurrentWriteScope({ task, changed, changedOnly, project }) ? "error" : "warn";
+        && (!taskId || JSON.stringify(previousTask) !== fingerprint);
+      const lifecycleMutation = requiresTaskLifecycleRoute({ task, changed, changedOnly });
+      const severity = isCurrentWriteScope({ task, changed, changedOnly, project }) || lifecycleMutation ? "error" : "warn";
 
-      for (const problem of validateTask(task, { project, changed, changedOnly })) {
+      for (const problem of validateTask(task, { project, changed, changedOnly, previousTask })) {
         diagnostics.push({
           severity,
           project,

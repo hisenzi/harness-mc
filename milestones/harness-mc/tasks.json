@@ -2162,15 +2162,44 @@
     },
     {
       "id": "capability-card-v1",
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [{
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "todo",
+          "reason": "將既有唯一 MC surface 改為承接 GitHub 五面向、三機 observed 與資料齡。",
+          "evidence_refs": ["$COLLAB/harness-mc/milestones/harness-mc/tasks.json#capability-card-v1"],
+          "recorded_at": "2026-07-18"
+        }]
+      },
       "status": "todo",
-      "title": "JV-26 首頁 API/CLI/MCP 能力卡 v1（observed＋drift＋雙機＋freshness）",
+      "title": "JV-26 MC 整合狀態卡 v1（GitHub＋三機 observed＋資料齡）",
       "track": "morrowise-system",
       "order_label": "JV-26",
       "dependencies": [
-        "capability-observed-scan"
+        "capability-observed-scan",
+        "capability-registry-v1-coverage",
+        "capability-runtime-status-read-model",
+        "capability-dual-machine-observed"
       ],
-      "done_condition": "#api-cli-mcp-capabilities 卡升級：observed＋drift＋per-machine（含資料齡）＋freshness（generated_at 超 30h 標 stale，pulse 每日跑、30h＝漏跑一次即現形）；通過 wiring gate 與 live-system admission；卡片能回答「這台機器現在串了什麼、哪個壞了、哪個沒登記」三問。",
-      "note": "依賴的 capability-observed-scan 在 morrowise milestone（JV-19）；drift 欄等 capability-registry-v1-coverage（JV-24）完成後補。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。",
+      "done_condition": "#api-cli-mcp-capabilities 卡升級為 MC 整合狀態入口：只消費 generated global integration health read model，並把 GitHub remote、Actions、Pages、PR、Issues 五面向的 status／checked_at／evidence_ref／next_action，與 MBA-1／MBA-2／MBA-3 的 observed／資料齡／missing-machine 分區呈現；generated_at 超 30h 標 stale，pulse 每日跑、30h＝漏跑一次即現形。卡片必須能回答「遠端 GitHub 各面向現在如何、三機各自最後觀測何時、哪些資料未知或過期」，不得直接 query GitHub、本機 client 或私有設定；通過 wiring gate 與 live-system admission。",
+      "acceptance": [
+        "A01｜卡片與 drilldown 只消費 generated read model；UI 不直接呼叫 GitHub、本機 client、帳號 session 或私有設定。",
+        "A02｜GitHub remote、Actions、Pages、PR、Issues 各有獨立區塊與 status、checked_at、evidence_ref、next_action；不以單一總綠燈遮蔽未知或失敗。",
+        "A03｜global GitHub record 與 MBA-1／MBA-2／MBA-3 observed 分區；machine 卡只顯示其 snapshot／資料齡／missing-machine，不複製或覆寫遠端真相。",
+        "A04｜stale、unknown、error、not_applicable、missing-machine 與 legacy 明確分開，資料過期時提供可操作的 next_action。",
+        "A05｜畫面與輸出不得含 Token、Cookie、帳號、私有 URL 參數、runtime auth 或私人設定。",
+        "A06｜新增 wiring、資料齡、GitHub 五面向與 secret-boundary verifier；負向 fixture 證明缺面向或過期資料不可被畫成健康。"
+      ],
+      "jv32_route": {
+        "batch": "JV-32 整合透明度修正批次",
+        "workflows": ["task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
+        "decision_input": ["全域 integration health read model", "JV-24 GitHub 五面向契約", "JV-28 三機 observed 契約"],
+        "decision_output": "MC 唯讀整合狀態卡與 drilldown",
+        "execution_boundary": "只變更 UI、generated data wiring 與 verifier；不得直接 query／寫入 GitHub、讀取憑證、commit、push 或部署。"
+      },
+      "note": "依賴的 capability-observed-scan 在 morrowise milestone（JV-19）；drift 欄等 capability-registry-v1-coverage（JV-24）完成後補。2026-07-18 更正：本卡為唯一 MC surface，承接 GitHub 五面向與三機資料齡；它只能讀 generated global health，不建立第二 status source。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。",
       "hc_decision": {
         "task_scope": "harness-mc/capability-transparency",
         "hc_refs": [
@@ -2178,7 +2207,7 @@
           "#systemDynamics",
           "#utility"
         ],
-        "hc_reasoning": "surface task 承接整合透明化鏈的可見層：#rightProblem 界定卡片必須回答「這台機器串了什麼／哪個壞了／哪個沒登記」三問，而非再做一張裝飾卡；#systemDynamics 要求走 wiring gate 全鏈並標 freshness（30h＝pulse 漏跑一次即現形），HC 對抗審 F1 已證明雙機資料為快照級、不得宣稱即時；#utility 同資料三 surface 只保留邊際效益高的兩個（本卡＋sentinel 摘要行），TOOLS.md 自動段 deferred。",
+        "hc_reasoning": "surface task 承接整合透明化鏈的可見層：#rightProblem 界定卡片必須回答「GitHub 五面向如何、三機最後觀測何時、哪裡未知或過期」，而非再做一張裝飾卡；#systemDynamics 要求 global GitHub record 與 machine snapshots 分層、走 wiring gate 全鏈並標 freshness（30h＝pulse 漏跑一次即現形）；#utility 同資料三 surface 只保留邊際效益高的兩個（本卡＋sentinel 摘要行），TOOLS.md 僅留 pointer。",
         "hc_confidence": 0.85,
         "source_boundary": "HC is a thinking check only; canonical source of truth for task state remains in $COLLAB/harness-mc/milestones/*/tasks.json; this block records framing evidence, not state.",
         "evidence_refs": [

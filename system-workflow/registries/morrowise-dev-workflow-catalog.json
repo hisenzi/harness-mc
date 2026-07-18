@@ -2,9 +2,10 @@
   "registry_id": "morrowise-dev-workflow-catalog.v0",
   "task_id": "morrowise-dev-workflow-catalog",
   "status": "governed_catalog",
-  "updated_at": "2026-07-08",
+  "updated_at": "2026-07-18",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
   "schema_ref": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json",
+  "task_lifecycle_schema_ref": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-task-lifecycle.schema.json",
   "source_map_ref": "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-source-map.md",
   "detail_doc": "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-catalog.md",
   "verifier_ref": "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
@@ -22,7 +23,8 @@
       "recommend a governed workflow route",
       "generate a read-only workflow catalog read model",
       "route next action to MorroWise owner task or verifier",
-      "record adapter_only status for external tracker semantics"
+      "record adapter_only status for external tracker semantics",
+      "validate approved canonical task lifecycle metadata"
     ],
     "forbidden": [
       "execute link-skills.sh",
@@ -325,6 +327,25 @@
       "status": "adapter_only",
       "owner_task": "morrowise-dev-workflow-catalog",
       "notes": "External tracker workflow is useful but cannot own MorroWise state."
+    },
+    {
+      "id": "task-lifecycle",
+      "phase": "governance",
+      "source_doc": "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+      "source_skill": "$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/SKILL.md",
+      "trigger": "A canonical MC task must be created, semantically amended, suspended, resumed, completed, cancelled, or archived.",
+      "inputs": "Active owner task or creation request, prior canonical task state, explicit Vincent task-state mutation approval, diff preview, reason, evidence, and verification plan.",
+      "process": "Classify the mutation as create, amend, suspend, resume, complete, cancel, or archive; append a sanitized lifecycle event; map suspension only to deferred, cancellation only to cancelled, and archival only to archived. If a mutation changes an existing promoted subsystem contract, record its Architecture Admission Review and refresh that record's version review before closeout. Completion additionally routes through closeout-commit-routing.",
+      "outputs": "Canonical task mutation with JV-32 route, append-only task_lifecycle.history event, reason, evidence references, next status, any reactivation or replacement boundary, and an Architecture Admission Review when a promoted subsystem contract changes.",
+      "writes_to": "milestones/<project>/tasks.json or approved append-only task-events/pending handoff; external trackers remain adapter_only",
+      "external_effect": "none",
+      "approval_policy": "Canonical task-state mutation requires explicit Vincent approval under morrowise-approval-policy; task-lifecycle does not authorize commit, push, deployment, or external tracker write.",
+      "morrowise_stage": "task_lifecycle_gate",
+      "close_rule": "Close when the lifecycle event has a reason and evidence, validator passes, generated task data is refreshed, any promoted-subsystem version improvement has a current Admission Record review plus architecture sync check, and completed status additionally has closeout-commit-routing evidence.",
+      "verifier_ref": "node scripts/verify-morrowise-dev-workflow-catalog.mjs && node scripts/verify-validate-tasks.mjs",
+      "status": "accepted",
+      "owner_task": "task-lifecycle-jv32-gate",
+      "notes": "MorroWise-native lifecycle gate. It never makes GitHub Issues, chat, dashboards, or visual mirrors authoritative task state."
     },
     {
       "id": "resolving-merge-conflicts",

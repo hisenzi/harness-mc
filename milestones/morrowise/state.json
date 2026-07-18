@@ -260,8 +260,8 @@
       "summary": "完成雙端共享設定同步 read model：新增 config-sync-state generator/verifier，檢查 cc-claude-md.md 與本機 ~/.claude/CLAUDE.md mirror 的 safe metadata（md5、mtime、sync direction）、共享 skills index path policy；mismatch 只產生 blocked_on_vincent next_action 與 peer pull hint，不自動覆蓋本機或 source；已接入 prebuild。"
     },
     "dual-machine-trigger-install": {
-      "status": "blocked",
-      "summary": "本機 VincentMBA-blue.local 已確認 3/3 schedule launchd labels 載入（commit-attention-sweep、mc-sentinel、system-pulse）；MBA-2 端需 Vincent/HiSenzi 切機後 git pull 並執行 schedule/install.sh --load，CC 在本機無法讀取或宣告 MBA-2 launchd/runtime 狀態，故不得標 completed。",
+      "status": "todo",
+      "summary": "改為三機對等的本機觀測排程啟用 task；須先完成 JV-31 baseline audit，再以相同安全契約處理 MBA-1、MBA-2、MBA-3。不得自動 commit、push 或把本機 runtime 寫成共享正本。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise",
@@ -273,12 +273,8 @@
       }
     },
     "capability-runtime-status-read-model": {
-      "status": "completed",
-      "completed_at": "2026-06-28",
-      "commits": [
-        "273d921"
-      ],
-      "summary": "已新增 capability-runtime-status read model、verifier、prebuild 接線、MorroWise live dashboard source/metrics 更新，並讓首頁 API / CLI / MCP card 同時呈現 registry、runtime、auth、contract 狀態。最後一輪 probe：CC heptabase-mcp connected；Heptabase local CLI connected；Codex Heptabase MCP configured；Notion MCP needs_auth；Playwright CLI missing；notification adapter contract_ready；legacy Heptabase PAI MCP/OAuth 保持 legacy/not_applicable。"
+      "status": "todo",
+      "note": "2026-07-18 依全域中立整合健康契約重新開啟；原 2026-06-28 / 273d921 成果僅保留為遷移 baseline，不能再以 client-specific probe 裁決全域狀態。"
     },
     "notion-sync-read-model-v0": {
       "status": "completed",

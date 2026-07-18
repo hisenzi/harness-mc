@@ -2,8 +2,8 @@
   "registry_id": "morrowise-architecture-subsystems.v0",
   "task_id": "architecture-subsystem-index-live-sync",
   "status": "formal_registry",
-  "updated_at": "2026-07-08",
-  "generated_at": "2026-07-08",
+  "updated_at": "2026-07-18",
+  "generated_at": "2026-07-18",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
   "verifier_ref": "npm run test:architecture-subsystems",
   "sync_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\"",
@@ -180,7 +180,8 @@
       "capability": "開發工作流治理",
       "source_of_truth": [
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
-        "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json"
+        "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json",
+        "$COLLAB/harness-mc/system-workflow/schemas/morrowise-task-lifecycle.schema.json"
       ],
       "detail_doc": "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-catalog.md",
       "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-dev-workflow-catalog",
@@ -204,7 +205,35 @@
       "degraded_state": "catalog registry/schema/verifier/read model 缺失、adapter_only 誤標為 accepted、close_rule 缺失、或 ARCHITECTURE.md 被手寫 catalog 細節時，此子系統必須維持 deferred/degraded，不得 promoted。",
       "architecture_decision": "promoted",
       "last_promoted_at": "2026-07-08",
-      "last_verified_at": "2026-07-08",
+      "last_verified_at": "2026-07-18",
+      "version_review": {
+        "scope": "version_improvement",
+        "reviewed_at": "2026-07-18",
+        "contract_refs": [
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
+          "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json",
+          "$COLLAB/harness-mc/system-workflow/schemas/morrowise-task-lifecycle.schema.json",
+          "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-catalog.md",
+          "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+          "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-source-map.md",
+          "$COLLAB/harness-mc/system-workflow/docs/task-write-command-map.md",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-wiring-gate.json",
+          "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
+          "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+          "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
+        ],
+        "contract_fingerprint": "41bdca81e1a4e130",
+        "index_action": "updated",
+        "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+        "evidence_refs": [
+          "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+          "node scripts/verify-validate-tasks.mjs",
+          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
+        ],
+        "reason": "JV-40 將 canonical task lifecycle 納入既有 JV-32，新增 schema、validator、approval 與 closeout routing 的閉環；更新既有 Admission Record 與薄索引，不建立平行子系統。"
+      },
       "supersedes": [],
       "superseded_by": null
     }

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,8 +10,12 @@ const collabRoot = path.resolve(root, "..");
 
 const registryPath = path.join(root, "system-workflow", "registries", "morrowise-dev-workflow-catalog.json");
 const schemaPath = path.join(root, "system-workflow", "schemas", "morrowise-dev-workflow.schema.json");
+const taskLifecycleSchemaPath = path.join(root, "system-workflow", "schemas", "morrowise-task-lifecycle.schema.json");
 const sourceMapPath = path.join(root, "system-workflow", "docs", "specs", "morrowise-dev-workflow-source-map.md");
 const detailDocPath = path.join(root, "system-workflow", "docs", "specs", "morrowise-dev-workflow-catalog.md");
+const taskLifecycleDocPath = path.join(root, "system-workflow", "docs", "specs", "morrowise-task-lifecycle.md");
+const taskWriteMapPath = path.join(root, "system-workflow", "docs", "task-write-command-map.md");
+const approvalPolicyPath = path.join(root, "system-workflow", "registries", "morrowise-approval-policy.json");
 const generatorPath = path.join(root, "scripts", "generate-morrowise-dev-workflows.mjs");
 const readModelPath = path.join(root, "public", "data", "morrowise-dev-workflows.json");
 const tasksPath = path.join(root, "milestones", "morrowise", "tasks.json");
@@ -53,6 +58,7 @@ const REQUIRED_WORKFLOW_IDS = [
   "prototype",
   "improve-codebase-architecture",
   "triage",
+  "task-lifecycle",
   "resolving-merge-conflicts",
   "closeout-commit-routing",
 ];
@@ -65,13 +71,29 @@ const FORBIDDEN_REF_PATTERNS = [
   /browser[-_\s]?cookies/i,
 ];
 const EXTERNAL_TRACKER_WRITE_PATTERN = /\b(?:github|gitlab)[_\s-]?(?:issues?|tracker)|external\s+(?:issue\s+)?tracker\b/i;
+const ARCHITECTURE_VERSION_REVIEW_REFS = [
+  "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
+  "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json",
+  "$COLLAB/harness-mc/system-workflow/schemas/morrowise-task-lifecycle.schema.json",
+  "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-catalog.md",
+  "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+  "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-source-map.md",
+  "$COLLAB/harness-mc/system-workflow/docs/task-write-command-map.md",
+  "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
+  "$COLLAB/harness-mc/system-workflow/registries/morrowise-wiring-gate.json",
+  "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
+  "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+  "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
+  "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs",
+];
 
-for (const file of [registryPath, schemaPath, sourceMapPath, detailDocPath, generatorPath, readModelPath]) {
+for (const file of [registryPath, schemaPath, taskLifecycleSchemaPath, sourceMapPath, detailDocPath, taskLifecycleDocPath, taskWriteMapPath, approvalPolicyPath, generatorPath, readModelPath]) {
   assert.ok(fs.existsSync(file), `required JV-32 artifact missing: ${path.relative(root, file)}`);
 }
 
 const registry = readJson(registryPath);
 const schema = readJson(schemaPath);
+const taskLifecycleSchema = readJson(taskLifecycleSchemaPath);
 const readModel = readJson(readModelPath);
 const tasks = readJson(tasksPath).tasks || [];
 const architectureRegistry = readJson(architectureRegistryPath);
@@ -79,11 +101,16 @@ const wiringGate = readJson(wiringGatePath);
 const packageJson = readJson(packageJsonPath);
 const sourceMap = fs.readFileSync(sourceMapPath, "utf8");
 const detailDoc = fs.readFileSync(detailDocPath, "utf8");
+const taskLifecycleDoc = fs.readFileSync(taskLifecycleDocPath, "utf8");
+const taskWriteMap = fs.readFileSync(taskWriteMapPath, "utf8");
+const approvalPolicy = readJson(approvalPolicyPath);
 const taskIds = new Set(tasks.map((task) => task.id));
 
 verifyRegistry(registry);
 verifySchema(schema);
-verifyDocs(sourceMap, detailDoc);
+verifyTaskLifecycleSchema(taskLifecycleSchema);
+verifyDocs(sourceMap, detailDoc, taskLifecycleDoc);
+verifyTaskLifecycleGovernance(taskWriteMap, approvalPolicy);
 verifyReadModel(readModel, registry);
 verifyTaskState(tasks);
 verifyArchitectureAdmission(architectureRegistry);
@@ -98,6 +125,7 @@ function verifyRegistry(value) {
   assert.equal(value.status, "governed_catalog");
   assert.equal(value.source_of_truth, "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json");
   assert.equal(value.schema_ref, "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json");
+  assert.equal(value.task_lifecycle_schema_ref, "$COLLAB/harness-mc/system-workflow/schemas/morrowise-task-lifecycle.schema.json");
   assert.equal(value.verifier_ref, "node scripts/verify-morrowise-dev-workflow-catalog.mjs");
   assert.equal(value.generator_ref, "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs");
   assert.equal(value.read_model_ref, "$COLLAB/harness-mc/public/data/morrowise-dev-workflows.json");
@@ -129,6 +157,14 @@ function verifyRegistry(value) {
   const toIssues = value.workflows.find((item) => item.id === "to-issues");
   assert.equal(toIssues.status, "adapter_only");
   assert.ok(String(toIssues.writes_to).includes("tasks.json"), "to-issues must keep MorroWise canonical task state");
+
+  const taskLifecycle = value.workflows.find((item) => item.id === "task-lifecycle");
+  assert.equal(taskLifecycle.status, "accepted");
+  assert.equal(taskLifecycle.morrowise_stage, "task_lifecycle_gate");
+  assert.match(taskLifecycle.writes_to, /tasks\.json|task-events/, "task-lifecycle must target canonical task state");
+  assert.equal(taskLifecycle.external_effect, "none");
+  assert.match(taskLifecycle.close_rule, /reason|evidence|closeout/i, "task-lifecycle must require durable mutation evidence");
+  assert.match(taskLifecycle.close_rule, /Admission Record|architecture sync/i, "task-lifecycle must gate promoted-subsystem version reviews");
 
   const closeoutCommit = value.workflows.find((item) => item.id === "closeout-commit-routing");
   assert.equal(closeoutCommit.status, "accepted");
@@ -173,7 +209,20 @@ function verifySchema(value) {
   }
 }
 
-function verifyDocs(map, detail) {
+function verifyTaskLifecycleSchema(value) {
+  assert.equal(value.$id, "https://hisenzi.local/schemas/morrowise-task-lifecycle.schema.json");
+  assert.deepEqual(value.required, ["route", "history"]);
+  assert.equal(value.properties.route.const, "JV-32/task-lifecycle");
+  assert.deepEqual(
+    value.properties.history.items.properties.operation.enum,
+    ["create", "amend", "suspend", "resume", "complete", "cancel", "archive"],
+  );
+  for (const field of ["operation", "from_status", "to_status", "reason", "evidence_refs", "recorded_at"]) {
+    assert.ok(value.properties.history.items.required.includes(field), `task lifecycle schema missing ${field}`);
+  }
+}
+
+function verifyDocs(map, detail, lifecycle) {
   const lowerMap = map.toLowerCase();
   const lowerDetail = detail.toLowerCase();
   for (const text of [
@@ -195,6 +244,8 @@ function verifyDocs(map, detail) {
   ]) {
     assert.ok(lowerDetail.includes(text.toLowerCase()), `detail doc missing ${text}`);
   }
+  assert.match(detail, /version improvement/i, "detail doc must define the architecture version-improvement review");
+  assert.match(lifecycle, /Architecture Admission Review/, "task lifecycle doc must define the architecture admission review");
 
   for (const id of REQUIRED_WORKFLOW_IDS) {
     assert.ok(lowerMap.includes(id.toLowerCase()), `source map missing workflow id: ${id}`);
@@ -204,6 +255,21 @@ function verifyDocs(map, detail) {
   for (const id of ["setup-matt-pocock-skills", "git-guardrails-claude-code", "in-progress-skills", "deprecated-skills"]) {
     assert.ok(lowerMap.includes(id.toLowerCase()), `source map missing exclusion id: ${id}`);
   }
+}
+
+function verifyTaskLifecycleGovernance(commandMap, policy) {
+  for (const text of ["task-lifecycle", "deferred", "cancelled", "archived", "closeout-commit-routing"]) {
+    assert.ok(commandMap.includes(text), `task write command map missing ${text}`);
+  }
+  assert.equal(policy.task_lifecycle_contract?.route, "JV-32/task-lifecycle");
+  const taskMutation = policy.policy_tiers
+    ?.find((tier) => tier.policy === "approval_required")
+    ?.rules?.find((rule) => rule.action_class === "task_state_mutation");
+  assert.ok(taskMutation, "approval policy task_state_mutation rule missing");
+  assert.ok(taskMutation.required_evidence.includes("JV-32 task-lifecycle route"));
+  assert.ok(taskMutation.required_evidence.includes("append-only lifecycle history"));
+  assert.ok(taskMutation.required_evidence.includes("Architecture Admission Review when a promoted subsystem contract changes"));
+  assert.match(policy.task_lifecycle_contract?.architecture_version_review || "", /Admission Record/);
 }
 
 function verifyReadModel(value, sourceRegistry) {
@@ -250,8 +316,19 @@ function verifyArchitectureAdmission(value) {
   }
   assert.equal(record.architecture_decision, "promoted");
   assert.equal(record.detail_doc, "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-catalog.md");
-  assert.ok(record.source_of_truth.includes("$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json"));
+  assert.deepEqual(record.source_of_truth, ARCHITECTURE_VERSION_REVIEW_REFS.slice(0, 3));
   assert.ok(record.verifiers.includes("node scripts/verify-morrowise-dev-workflow-catalog.mjs"));
+
+  const review = record.version_review;
+  assert.ok(review && typeof review === "object" && !Array.isArray(review), "JV-32 admission record requires version_review");
+  assert.equal(review.scope, "version_improvement");
+  assert.match(review.reviewed_at, /^\d{4}-\d{2}-\d{2}$/);
+  assert.deepEqual(review.contract_refs, ARCHITECTURE_VERSION_REVIEW_REFS);
+  assert.equal(review.contract_fingerprint, architectureContractFingerprint(review.contract_refs), "version_review.contract_fingerprint is stale");
+  assert.ok(["updated", "no_index_change"].includes(review.index_action), "version_review.index_action must record index decision");
+  assert.equal(review.sync_check_ref, "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check");
+  assert.ok(review.evidence_refs?.includes("node scripts/verify-morrowise-dev-workflow-catalog.mjs"));
+  assert.ok(review.reason, "version_review requires a reason");
 }
 
 function verifyWiringFixture(value) {
@@ -288,6 +365,27 @@ function verifyNegativeFixtures(value) {
     ],
   };
   assert.throws(() => verifyArchitectureAdmission(architectureWithoutDetail), /detail_doc/);
+
+  const staleArchitectureReview = structuredClone(architectureRegistry);
+  staleArchitectureReview.records.find((item) => item.id === "morrowise-dev-workflow-catalog").version_review = {
+    scope: "version_improvement",
+    reviewed_at: "2026-07-18",
+    contract_refs: ARCHITECTURE_VERSION_REVIEW_REFS,
+    contract_fingerprint: "stale-review-fingerprint",
+    index_action: "no_index_change",
+    sync_check_ref: "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+    evidence_refs: ["node scripts/verify-morrowise-dev-workflow-catalog.mjs"],
+    reason: "Fixture proves stale version review cannot pass.",
+  };
+  assert.throws(() => verifyArchitectureAdmission(staleArchitectureReview), /contract_fingerprint/);
+}
+
+function architectureContractFingerprint(refs) {
+  const source = refs.map((ref) => {
+    const [fileRef] = ref.replace(/^\$COLLAB\//, "").split("#");
+    return `${ref}\n${fs.readFileSync(path.join(collabRoot, fileRef), "utf8")}`;
+  }).join("\n---\n");
+  return crypto.createHash("sha256").update(source).digest("hex").slice(0, 16);
 }
 
 function assertSafeRef(recordId, ref) {

@@ -2215,6 +2215,51 @@
           "$COLLAB/harness-mc/public/data/capability-runtime-status.json"
         ]
       }
+    },
+    {
+      "id": "generated-read-model-refresh-20260718",
+      "title": "自動紀錄：2026-07-18 generated read model refresh",
+      "status": "completed",
+      "track": "maintenance",
+      "completed_at": "2026-07-18",
+      "commits": [
+        "419d21f"
+      ],
+      "done_condition": "重新產生並提交 Notion sync、工具索引與 verifier suite health 三份唯讀資料快照；快照必須保留實際失敗狀態與可操作 next_action，不得把過期或失敗資料寫成健康。",
+      "summary": "已重新產生並提交 Notion sync、工具索引與 verifier suite health；當前 51/52 verifier 通過，KJ live snapshot 過期如實顯示並導向 test:kj-handoff-live-sync。",
+      "note": "auto-task：generated read model refresh 原本沒有專屬 work anchor，依 worktree-commit 流程建立完成紀錄；不修正 KJ snapshot 本身。",
+      "jv32_route": {
+        "batch": "auto closeout generated data refresh",
+        "workflows": [
+          "task-lifecycle",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "public/data/notion-sync-state.json",
+          "public/data/tools.json",
+          "public/data/verifier-suite-health.json"
+        ],
+        "decision_output": "可追溯的 generated read model refresh commit",
+        "execution_boundary": "只提交本機生成的唯讀資料與 task evidence；不得讀取秘密、變更外部系統、push 或部署。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "completed",
+            "reason": "依 worktree-commit 的 auto-task 規則，為已驗證的 generated read model refresh 補上唯一可稽核完成紀錄。",
+            "evidence_refs": [
+              "419d21f",
+              "npm run test:notion-sync-state",
+              "npm run test:tools-data",
+              "npm run test:verifier-suite-health"
+            ],
+            "recorded_at": "2026-07-18"
+          }
+        ]
+      }
     }
   ]
 }

@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-task-lifecycle-jv32-gate-038bae0-20260718T151806Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "038bae0",
+  "project": "morrowise",
+  "task_id": "task-lifecycle-jv32-gate",
+  "status": "updated",
+  "summary": "ARCHITECTURE.md 已依 JV-40 Admission Record version review 受控同步，保留薄索引與 schema 來源。",
+  "created_at": "2026-07-18T15:18:06.594Z",
+  "actor": "codex",
+  "session_id": "codex-20260718-jv40-governance"
+}

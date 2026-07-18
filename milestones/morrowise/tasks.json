@@ -3259,7 +3259,13 @@
     },
     {
       "id": "task-lifecycle-jv32-gate",
-      "status": "in_progress",
+      "status": "completed",
+      "completed_at": "2026-07-18",
+      "commits": [
+        "8dd92f7",
+        "038bae0"
+      ],
+      "summary": "已將新增、修改、停用、恢復、完成、取消與封存接入 JV-32 task-lifecycle：加入 schema、catalog route、command map、approval policy、changed-only validator 與正反 fixture；既有 promoted catalog 的 Admission Record version review、fingerprint verifier 與 ARCHITECTURE.md 受控薄索引同步亦已完成。",
       "title": "JV-40 任務生命週期接入 JV-32（新增／修改／停用／完成 gate）",
       "track": "governance",
       "order_label": "JV-40",
@@ -3333,6 +3339,23 @@
               "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py"
             ],
             "recorded_at": "2026-07-18"
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "JV-40 的 lifecycle contract、validator、負向 fixture、Admission Record version review 與受控 ARCHITECTURE.md 索引同步均已驗證並完成本機 commit。",
+            "evidence_refs": [
+              "8dd92f7",
+              "038bae0",
+              "task.commit_attached-morrowise-task-lifecycle-jv32-gate-038bae0-20260718T151806Z",
+              "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+              "node scripts/verify-validate-tasks.mjs",
+              "npm run test:tasks",
+              "npm run test:architecture-subsystems",
+              "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
+            ],
+            "recorded_at": "2026-07-18"
           }
         ]
       },
@@ -3366,7 +3389,7 @@
           "reason": "新增 task-lifecycle 屬於既有 JV-32 contract 的版本演進；索引只補 canonical schema 入口與驗證日期，不複製 route 細節。"
         }
       },
-      "note": "2026-07-18 Vincent 核准：新增、修改、停用 task 必須接入 JV-32，並要求一次補齊後做模擬驗證。此 task 是 lifecycle governance 的唯一 work anchor。2026-07-18 已補 Architecture Admission Review 閉環：既有 JV-32 的受管 contract 變更會使 verifier 以 fingerprint 攔截 stale Admission Record，並要求受控 ARCHITECTURE.md sync check。status 維持 in_progress，待完整驗證與 Vincent 明確 commit 核准後才可轉 completed。"
+      "note": "2026-07-18 Vincent 核准：新增、修改、停用 task 必須接入 JV-32，並要求一次補齊後做模擬驗證。此 task 是 lifecycle governance 的唯一 work anchor。2026-07-18 已補 Architecture Admission Review 閉環：既有 JV-32 的受管 contract 變更會使 verifier 以 fingerprint 攔截 stale Admission Record，並要求受控 ARCHITECTURE.md sync check。完成證據：8dd92f7、038bae0、task event 與本 task listed verifiers。"
     }
   ]
 }

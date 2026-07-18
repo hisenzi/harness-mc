@@ -507,10 +507,15 @@
     {
       "id": "yt-c13",
       "title": "修正手機版選單「預約諮詢」點擊沒反應",
-      "status": "in_progress",
+      "status": "completed",
       "track": "phase-2",
       "done_condition": "手機版漢堡選單開啟後點擊底部「預約諮詢」CTA，選單會關閉、body overflow 解鎖、URL/hash 到 #contact，畫面捲到聯絡區；preview 手機 viewport 驗證",
-      "note": "2026-06-22 手機版回報：選單底部「預約諮詢」點擊後看似沒反應。FACTLOCK：HiNavbar.astro mobile CTA href 為 /#contact；public/src hi-blocks.js 原本只對 .hi-navbar__mobile-link 與 .hi-navbar__mobile-sub-link 綁關閉選單，未包含 .hi-navbar__mobile-actions .hi-navbar__btn，導致全屏 mobile menu 不關閉、使用者看不到 anchor scroll 結果。修正需同步 public/scripts/hi-blocks.js 與 src/scripts/hi-blocks.js，避免 source/public drift。"
+      "note": "2026-06-22 手機版回報：選單底部「預約諮詢」點擊後看似沒反應。FACTLOCK：HiNavbar.astro mobile CTA href 為 /#contact；public/src hi-blocks.js 原本只對 .hi-navbar__mobile-link 與 .hi-navbar__mobile-sub-link 綁關閉選單，未包含 .hi-navbar__mobile-actions .hi-navbar__btn，導致全屏 mobile menu 不關閉、使用者看不到 anchor scroll 結果。修正需同步 public/scripts/hi-blocks.js 與 src/scripts/hi-blocks.js，避免 source/public drift。",
+      "completed_at": "2026-07-18",
+      "commits": [
+        "035b0a5"
+      ],
+      "summary": "行動選單 CTA 已納入關閉選單 selector；2026-07-18 以 390×844 手機 viewport 驗證，點擊後選單關閉、body overflow 解鎖、URL 到 #contact 且聯絡區位於畫面起點。"
     }
   ]
 }

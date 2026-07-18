@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-yutianlaw-yt-c13-9a17f07-20260718T072357Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "9a17f07",
+  "project": "yutianlaw",
+  "task_id": "yt-c13",
+  "status": "updated",
+  "summary": "記錄 yt-c13 手機選單驗收、GitHub 遠端狀態審計與詹秉恆卡片文案修正的 session 日報。",
+  "created_at": "2026-07-18T07:23:57.370Z",
+  "actor": "codex",
+  "session_id": "019f73e7-4324-7132-b2f4-190e17572924"
+}

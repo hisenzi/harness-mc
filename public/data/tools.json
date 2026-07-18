@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-09T17:08:21.294Z",
+  "generatedAt": "2026-07-18T15:09:16.622Z",
   "sourceStatus": {
     "skills": "scanned",
     "scripts": {
@@ -753,7 +753,7 @@
       "name": "mba3-move.sh",
       "description": "mba3-move.sh — MBA-3 出國環境搬運（pack: MBA-1→SSD ／ restore: SSD→MBA-3）",
       "location": "000_Agent",
-      "lastModified": "2026-07-09T06:28:16.657Z"
+      "lastModified": "2026-07-11T07:19:52.875Z"
     },
     {
       "name": "morrowise-action-runner.mjs",
@@ -897,7 +897,7 @@
       "name": "validate-tasks.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-07-07T04:09:38.492Z"
+      "lastModified": "2026-07-18T15:06:58.013Z"
     },
     {
       "name": "verify-apply-task-events.mjs",
@@ -1023,7 +1023,7 @@
       "name": "verify-morrowise-dev-workflow-catalog.mjs",
       "description": ",",
       "location": "harness-mc",
-      "lastModified": "2026-07-08T13:55:15.559Z"
+      "lastModified": "2026-07-18T15:08:35.154Z"
     },
     {
       "name": "verify-morrowise-live-dashboard-data.mjs",
@@ -1197,7 +1197,7 @@
       "name": "verify-validate-tasks.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-07-07T04:09:54.426Z"
+      "lastModified": "2026-07-18T15:07:11.187Z"
     },
     {
       "name": "verify-verifier-suite-health.mjs",
@@ -1247,6 +1247,14 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-07-10",
+      "message": "fix(migration): harden MBA-3 restore safety",
+      "repo": "notyet-harness",
+      "files": [
+        "000_Agent/scripts/mba3-move.sh"
+      ]
+    },
     {
       "date": "2026-07-10",
       "message": "docs(skills): add architecture triage rules",
@@ -1378,17 +1386,6 @@
       "repo": "harness-mc",
       "files": [
         "scripts/verify-pai-domain-taxonomy.mjs"
-      ]
-    },
-    {
-      "date": "2026-07-06",
-      "message": "feat(harness-mc): System Attention 納入 pulse/proposals、新增 Harness governance 卡 (JV-13+JV-15)",
-      "repo": "harness-mc",
-      "files": [
-        "scripts/generate-morrowise-auditor.mjs",
-        "scripts/generate-morrowise-live-dashboard.mjs",
-        "scripts/verify-generate-morrowise-auditor.mjs",
-        "scripts/verify-morrowise-live-dashboard-data.mjs"
       ]
     }
   ]

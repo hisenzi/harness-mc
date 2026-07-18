@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-01T12:25:00+08:00",
+  "generated_at": "2026-07-18T15:38:31.202Z",
   "generated_by": "codex",
   "task_anchor": "morrowise/KJ-LIVE-01",
   "source_of_truth": {
@@ -11,9 +11,9 @@
     "data_source_id": "f046f40f-ac75-41ed-afa8-67379159316c",
     "data_source_url": "collection://f046f40f-ac75-41ed-afa8-67379159316c",
     "fetch_evidence": {
-      "page_fetch_as_of": "2026-07-01T11:43:17.145Z",
+      "page_fetch_as_of": "2026-07-18T15:38:31.202Z",
       "data_source_fetch": "notion-fetch collection://f046f40f-ac75-41ed-afa8-67379159316c",
-      "sql_query_result": "has_more=false; data_source_ids=[f046f40f-ac75-41ed-afa8-67379159316c]"
+      "sql_query_result": "notion-query-data-sources unavailable; fallback scoped search found 43/43 page IDs and 43 page fetches matched title, type, status, workstream, owner, target date, key gate, blocker, and description."
     }
   },
   "legacy_sources_not_authoritative": [

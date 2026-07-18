@@ -3502,7 +3502,12 @@
     {
       "id": "architecture-current-state-drift-reconcile",
       "title": "ARCHITECTURE.md 目前系統現況漂移修正",
-      "status": "in_progress",
+      "status": "completed",
+      "completed_at": "2026-07-19",
+      "commits": [
+        "6fef387"
+      ],
+      "summary": "已以 morrowise-system read model 重建 current-state marker；隔離 worktree 的 current-state sync check、self-test、System Pulse verifier 與 MorroWise read-model verifier 均通過。notyet-harness 的文件 commit 會以 append-only task event 另行附掛。",
       "track": "governance",
       "order_label": "ARC-MAINT-01",
       "priority": "high",
@@ -3563,6 +3568,25 @@
               "reason": "工作範圍不含 registry relationship 異動。"
             },
             "recorded_at": "2026-07-19"
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "current-state marker 已恢復為 morrowise-system read model 的受控投影；驗證顯示 drift 偵測與 System Pulse 路徑均可重跑。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/public/data/morrowise-system.json",
+              "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-current-state.py",
+              "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+              "npm run test:system-pulse",
+              "npm run test:morrowise-system-json"
+            ],
+            "architecture_relation_impact": {
+              "decision": "none",
+              "relationship_ids": [],
+              "reason": "closeout 僅確認既有 current-state marker 已同步，未新增、修改或退役 relationship。"
+            },
+            "recorded_at": "2026-07-19"
           }
         ]
       },
@@ -3588,7 +3612,12 @@
     {
       "id": "architecture-subsystem-index-relationship-map-v1",
       "title": "ARCHITECTURE.md 子系統關係圖 thin sync v1",
-      "status": "in_progress",
+      "status": "completed",
+      "completed_at": "2026-07-19",
+      "commits": [
+        "6fef387"
+      ],
+      "summary": "Architecture Admission Registry 已納入可驗證 relationship records；既有同步器產生 ARCHITECTURE 關係圖，JV-32 lifecycle impact gate 與新增／修改／退役模擬驗證均已通過。notyet-harness 的文件 commit 會以 append-only task event 另行附掛。",
       "track": "governance",
       "order_label": "ARC-REL-01",
       "priority": "high",
@@ -3655,6 +3684,27 @@
               "decision": "add",
               "relationship_ids": ["morrowise-dev-workflow-catalog-governs-architecture-subsystem-index"],
               "reason": "關係正本與 generated map 在本次 work scope 內建立。"
+            },
+            "recorded_at": "2026-07-19"
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "relationship registry、thin sync、JV-32 impact gate 與負向／正向模擬驗證均已完成；既有 Architecture Admission Record 已完成 version review。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
+              "$COLLAB/harness-mc/scripts/verify-architecture-subsystems.mjs",
+              "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+              "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py",
+              "npm run test:architecture-subsystems",
+              "npm run test:tasks",
+              "npm run test:system-pulse"
+            ],
+            "architecture_relation_impact": {
+              "decision": "none",
+              "relationship_ids": [],
+              "reason": "關係已在 create/amend event 以 add 決定建立；本 closeout 不再改變 relationship 正本。"
             },
             "recorded_at": "2026-07-19"
           }

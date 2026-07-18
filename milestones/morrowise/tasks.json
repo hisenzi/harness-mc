@@ -3498,6 +3498,199 @@
         "reason": "本 task 只維護既有 KJ snapshot、verifier 與 read model 的新鮮度，沒有變更已 promoted 的 subsystem contract，也不新增可收編的架構元件。"
       },
       "note": "2026-07-19 自動 closeout：此 task 以 JV-32 記錄 KJ live snapshot 例行維護，避免為單次 metadata refresh 修改既有已完成任務的 completion lineage。"
+    },
+    {
+      "id": "architecture-current-state-drift-reconcile",
+      "title": "ARCHITECTURE.md 目前系統現況漂移修正",
+      "status": "in_progress",
+      "track": "governance",
+      "order_label": "ARC-MAINT-01",
+      "priority": "high",
+      "dependencies": [
+        "morrowise-system-json-generator-v0",
+        "architecture-subsystem-index-live-sync"
+      ],
+      "done_condition": "ARCHITECTURE.md 的 architecture-current-state generated marker 與當前 morrowise-system.json 一致，sync --check、Architecture Pulse 與 System Pulse 均不再因該 marker drift 失敗；此 task 不改變任何 subsystem 或 relationship contract。",
+      "acceptance": [
+        "A01｜以現有 morrowise-system.json 作為唯一 current-state 正本重建 ARCHITECTURE.md marker，不手寫任務統計、open loops 或 next anchor。",
+        "A02｜sync-architecture-current-state.py --check 在同步後通過，且 marker 外的人工架構文字沒有被修改。",
+        "A03｜npm run test:system-pulse 與 Architecture Pulse 針對 current-state 的檢查通過；若其他既有 finding 存在，須分開列示，不得誤稱為此 marker 已同步。",
+        "A04｜本 task 的 architecture relation impact 為 none；不得藉由修正 generated marker 建立、推論或淘汰子系統關係。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/public/data/morrowise-system.json",
+        "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+        "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-current-state.py",
+        "$COLLAB/harness-mc/scripts/run-system-pulse.mjs"
+      ],
+      "jv32_route": {
+        "batch": "Architecture relationship visibility batch",
+        "workflows": ["task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
+        "decision_input": ["architecture-current-state sync check drift", "morrowise-system read model", "Architecture Pulse evidence"],
+        "decision_output": "受控 current-state marker 修正與可重跑 drift evidence",
+        "execution_boundary": "只讀 generated morrowise-system read model，且只寫 ARCHITECTURE.md 的 architecture-current-state marker；不得讀取 runtime auth、秘密、外部 mirror，或變更 subsystem relationship registry。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "已確認 ARCHITECTURE.md current-state marker 落後 canonical generated read model，需獨立修正以避免混入關係圖功能。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/public/data/morrowise-system.json",
+              "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-current-state.py"
+            ],
+            "architecture_relation_impact": {
+              "decision": "none",
+              "relationship_ids": [],
+              "reason": "此 task 只修正既有 generated marker 的內容漂移，不改跨子系統關係。"
+            },
+            "recorded_at": "2026-07-19"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 已核准以隔離 worktree 立即修正 marker，並要求完成後做模擬驗證。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#architecture-current-state-drift-reconcile"
+            ],
+            "architecture_relation_impact": {
+              "decision": "none",
+              "relationship_ids": [],
+              "reason": "工作範圍不含 registry relationship 異動。"
+            },
+            "recorded_at": "2026-07-19"
+          }
+        ]
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/architecture-current-state-drift-reconcile",
+        "hc_refs": ["#rightProblem", "#sourceBoundary", "#risk", "#evidenceBased"],
+        "hc_reasoning": "真正問題不是手動把 ARCHITECTURE.md 改成看起來最新，而是恢復 generated read model 到 human entry 的可驗證投影。#sourceBoundary 固定 morrowise-system.json 為 current-state 正本；#risk 防止修正 marker 時同時混入關係圖或人工架構敘述；#evidenceBased 要求 sync check 與 System Pulse，而非只檢視文字。",
+        "hc_confidence": 0.92,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/public/data/morrowise-system.json",
+          "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-current-state.py",
+          "$COLLAB/harness-mc/scripts/run-system-pulse.mjs"
+        ],
+        "source_boundary": "HC 是思考檢查，不是正本；current state 正本仍是 generated read model，ARCHITECTURE.md 只保留受控 marker 投影。"
+      },
+      "architecture_decision": {
+        "decision": "not_required",
+        "evaluated_at": "2026-07-19",
+        "reason": "本 task 只修復既有 generated current-state marker 漂移，不新增或改變 source-of-truth、subsystem、runtime、verifier 或跨系統關係。"
+      },
+      "note": "2026-07-19 Vincent 核准：ARCHITECTURE.md 要明確呈現系統關係前，先將既有 current-state marker 與 canonical read model 對齊；此維護項與關係圖功能分開追蹤。"
+    },
+    {
+      "id": "architecture-subsystem-index-relationship-map-v1",
+      "title": "ARCHITECTURE.md 子系統關係圖 thin sync v1",
+      "status": "in_progress",
+      "track": "governance",
+      "order_label": "ARC-REL-01",
+      "priority": "high",
+      "dependencies": [
+        "architecture-subsystem-index-live-sync",
+        "task-lifecycle-jv32-gate"
+      ],
+      "done_condition": "Architecture Admission Registry 以可驗證 relationship records 作為唯一關係正本，既有同步器自動產生 ARCHITECTURE.md 子系統關係圖與查核表；JV-32 task lifecycle 對新增、修改、停用架構關係具 machine-checkable impact evidence，sync check 與 System Pulse 可偵測任何漂移。",
+      "acceptance": [
+        "A01｜morrowise-architecture-subsystems.json 新增正規化 relationship registry：每條邊必有 id、status、from、to、type、summary、contract_refs、task_anchor、verifiers、last_verified_at；from/to 必須是有效 Admission Record，不得引用 secrets、runtime auth、browser cookies 或外部 mirror。",
+        "A02｜relationship type 與 status 使用受控 vocabulary；verifier 要拒絕自我連線、重複 edge、未知 record、非 active endpoint 的 active edge、缺合約或驗證器、以及未經明示允許的 dependency cycle。",
+        "A03｜既有 sync-architecture-subsystems.py 擴充為同時管理 architecture-subsystems 與 architecture-relationships marker，不新增第二支同步器；兩區塊均具 registry fingerprint、idempotent sync、--check 與 self-test。",
+        "A04｜ARCHITECTURE.md 顯示 generated Mermaid 關係圖及薄型關係查核表；active 關係才進圖，deferred 不得冒充現況，marker 外人工架構段不得被覆寫。",
+        "A05｜JV-32 task-lifecycle create／amend／suspend／cancel／archive 的 changed-only validation 對架構關係影響要求 explicit decision：none/add/update/retire；非 none 必須列 relationship ids，並在 closeout 驗證受控 architecture sync。",
+        "A06｜架構關係圖是既有 architecture-subsystem-index 的 version improvement；更新其 Admission Record version review，不建立平行 subsystem。新增、修改、停用 task 的 command map、lifecycle spec、validator fixture 與關係圖同步流程要使用同一決策語意。",
+        "A07｜完成實測與模擬：新增 edge、修改 edge、retire edge 分別證明 verifier／sync check 會先 fail，修正正本並同步後才 pass；另確認 current-state marker 漂移與 relationship marker 漂移可被各自辨識。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
+        "$COLLAB/harness-mc/scripts/verify-architecture-subsystems.mjs",
+        "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
+        "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+        "$COLLAB/harness-mc/system-workflow/docs/task-write-command-map.md",
+        "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py",
+        "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md"
+      ],
+      "jv32_route": {
+        "batch": "Architecture relationship visibility batch",
+        "workflows": ["domain-modeling", "task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
+        "decision_input": ["Architecture Admission Registry", "JV-32 lifecycle gate", "marker-based auto-doc contract", "System Pulse drift evidence"],
+        "decision_output": "單一 relationship 正本、受控生成關係圖與 task lifecycle 連動 gate",
+        "execution_boundary": "只修改 local registry、schema/verifier、sync script、ARCHITECTURE.md generated marker 與 canonical task metadata；不得讀取秘密、runtime auth、Cookie、外部 mirror，或執行 commit、push、部署、外部通知。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 要求在 ARCHITECTURE.md 明確看見系統架構關係，且架構微調後必須由薄層正本連動。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
+              "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate"
+            ],
+            "architecture_relation_impact": {
+              "decision": "add",
+              "relationship_ids": ["morrowise-dev-workflow-catalog-governs-architecture-subsystem-index"],
+              "reason": "建立有證據的第一條治理關係，並建立後續 edge 的正規化 registry 與 closeout gate。"
+            },
+            "recorded_at": "2026-07-19"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 已核准以隔離 worktree 實作 registry、同步器、JV-32 impact gate 與模擬驗證。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#architecture-subsystem-index-relationship-map-v1"
+            ],
+            "architecture_relation_impact": {
+              "decision": "add",
+              "relationship_ids": ["morrowise-dev-workflow-catalog-governs-architecture-subsystem-index"],
+              "reason": "關係正本與 generated map 在本次 work scope 內建立。"
+            },
+            "recorded_at": "2026-07-19"
+          }
+        ]
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/architecture-subsystem-index-relationship-map-v1",
+        "hc_refs": ["#rightProblem", "#systemDynamics", "#sourceBoundary", "#risk", "#constraints", "#evidenceBased"],
+        "hc_reasoning": "真正問題不是補一張手繪總圖，而是讓跨子系統依賴有唯一、可驗證且能隨正本變更同步的表達。#systemDynamics 防止系統微調後文件靜默漂移；#sourceBoundary 固定 relationship registry 為正本、ARCHITECTURE.md 為 generated thin view；#risk 禁止由檔案掃描猜關係或把 secrets 放進 edge；#constraints 擴充既有 index sync，不另建平行圖譜；#evidenceBased 要求新增、修改、停用 edge 的負向 fixture 真正失敗。",
+        "hc_confidence": 0.95,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
+          "$COLLAB/harness-mc/scripts/verify-architecture-subsystems.mjs",
+          "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
+          "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py"
+        ],
+        "source_boundary": "HC 是思考檢查，不是正本；registry、task lifecycle schema、verifier 與 generated marker 才是可重跑的 canonical evidence。"
+      },
+      "architecture_decision": {
+        "decision": "not_required",
+        "evaluated_at": "2026-07-19",
+        "reason": "本 task 是既有 architecture-subsystem-index 與 JV-32 catalog 的 version improvement，不建立平行 subsystem；relationship map 由既有 Admission Registry 與受控 ARCHITECTURE.md marker 承接。",
+        "admission_review": {
+          "scope": "version_improvement",
+          "admission_record_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#architecture-subsystem-index",
+          "index_action": "updated",
+          "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+          "evidence_refs": [
+            "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#architecture-subsystem-index",
+            "$COLLAB/harness-mc/scripts/verify-architecture-subsystems.mjs",
+            "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py"
+          ],
+          "reason": "同一 registry 與同步器新增 relationship view，不新增第二個架構入口。"
+        }
+      },
+      "note": "2026-07-19 Vincent 核准：ARCHITECTURE.md 必須直接看得出系統關係，但保持薄層；架構微調或改變時，由 registry 正本、JV-32 lifecycle impact 與 System Pulse check 共同連動。"
     }
   ]
 }

@@ -26,6 +26,12 @@ Owner task：`$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-
 
 不存在 `disabled` status。使用者說「停用」時，必須在 `deferred`、`cancelled`、`archived` 中選一個語意正確的結果。`blocked` 仍是 active task，不是停用。
 
+對 MorroWise 的新增、修改、暫緩、恢復、完成、取消與封存，最新 lifecycle event 另須有 `architecture_relation_impact`。它只回答「本次 mutation 是否改變跨子系統關係」，不是第二份架構正本：
+
+- `none`：不改關係，`relationship_ids` 必為空陣列。
+- `add`／`update`／`retire`：必列 stable relationship ids，並在 Architecture Admission Registry 更新正本、跑受控 sync check。
+- 不得由 task note、chat、Canvas 或檔案掃描推論關係；只信 `$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json` 的 relationship records。
+
 ## 最小記錄
 
 ```json
@@ -39,6 +45,11 @@ Owner task：`$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-
       "to_status": "todo",
       "reason": "說明 canonical task 為何需要修改。",
       "evidence_refs": ["可重跑的文件、verifier 或 task ref"],
+      "architecture_relation_impact": {
+        "decision": "none",
+        "relationship_ids": [],
+        "reason": "本次 mutation 不改變跨子系統關係。"
+      },
       "recorded_at": "YYYY-MM-DD"
     }]
   }
@@ -51,7 +62,7 @@ Owner task：`$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-
 
 1. 先判斷正本 project 與 active owner task；跨 repo 變更不得直接繞過 task event single-writer 流程。
 2. Vincent 明確核准 task-state mutation 後，追加 lifecycle event 與所需的 `jv32_route`。
-3. 執行 `node scripts/validate-tasks.mjs --changed-only`。新 task、語意修改、停用、恢復與完成若缺 route、history、理由、狀態一致性或 closeout 條件，必須 fail。
+3. 執行 `node scripts/validate-tasks.mjs --changed-only`。新 task、語意修改、停用、恢復與完成若缺 route、history、理由、狀態一致性、architecture_relation_impact 或 closeout 條件，必須 fail。
 4. 執行 `node scripts/generate-data.mjs`，確認 generated surface 只反映 canonical state。
 5. 完成 status 額外依 JV-32 `closeout-commit-routing` 走 verification-before-completion、必要的 cc-log、worktree-commit 與 task completion evidence；此 route 不取代 Vincent 的 commit／push 核准。
 
@@ -60,6 +71,8 @@ Owner task：`$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-
 若 task 變更的是已 promoted 架構子系統的正本、schema、verifier、policy 或 routing，不能只因 `ARCHITECTURE.md` 是薄索引就略過架構收編判斷。task 的 `architecture_decision.admission_review` 必須記錄：既有 Admission Record、`updated` 或 `no_index_change` 的索引決定、理由、證據與 `sync-architecture-subsystems.py --check` 參照。
 
 對 JV-32，`verify-morrowise-dev-workflow-catalog.mjs` 會比對 Admission Record 的受管 contract fingerprint；任一受管來源內容變動，都會要求先更新 `version_review`，再由受控 sync 重建／檢查 `ARCHITECTURE.md` marker block。這是架構索引同步，不是把 workflow 的細節複製進架構文件。
+
+若 lifecycle event 的 `architecture_relation_impact.decision` 為 `add`、`update` 或 `retire`，closeout 必須額外通過 architecture relationship verifier 與 `sync-architecture-subsystems.py --check`；否則 task 不得以「文件已補」宣稱架構關係已連動。
 
 ## 外部與安全邊界
 

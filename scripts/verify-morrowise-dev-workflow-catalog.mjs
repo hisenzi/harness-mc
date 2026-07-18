@@ -7,6 +7,9 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const collabRoot = path.resolve(root, "..");
+const notyetRoot = process.env.MORROWISE_NOTYET_ROOT
+  ? path.resolve(process.env.MORROWISE_NOTYET_ROOT)
+  : path.join(collabRoot, "notyet-harness");
 
 const registryPath = path.join(root, "system-workflow", "registries", "morrowise-dev-workflow-catalog.json");
 const schemaPath = path.join(root, "system-workflow", "schemas", "morrowise-dev-workflow.schema.json");
@@ -220,6 +223,9 @@ function verifyTaskLifecycleSchema(value) {
   for (const field of ["operation", "from_status", "to_status", "reason", "evidence_refs", "recorded_at"]) {
     assert.ok(value.properties.history.items.required.includes(field), `task lifecycle schema missing ${field}`);
   }
+  const relationshipImpact = value.properties.history.items.properties.architecture_relation_impact;
+  assert.ok(relationshipImpact, "task lifecycle schema missing architecture_relation_impact");
+  assert.deepEqual(relationshipImpact.properties.decision.enum, ["none", "add", "update", "retire"]);
 }
 
 function verifyDocs(map, detail, lifecycle) {
@@ -258,7 +264,7 @@ function verifyDocs(map, detail, lifecycle) {
 }
 
 function verifyTaskLifecycleGovernance(commandMap, policy) {
-  for (const text of ["task-lifecycle", "deferred", "cancelled", "archived", "closeout-commit-routing"]) {
+  for (const text of ["task-lifecycle", "deferred", "cancelled", "archived", "closeout-commit-routing", "architecture_relation_impact"]) {
     assert.ok(commandMap.includes(text), `task write command map missing ${text}`);
   }
   assert.equal(policy.task_lifecycle_contract?.route, "JV-32/task-lifecycle");
@@ -383,7 +389,7 @@ function verifyNegativeFixtures(value) {
 function architectureContractFingerprint(refs) {
   const source = refs.map((ref) => {
     const [fileRef] = ref.replace(/^\$COLLAB\//, "").split("#");
-    return `${ref}\n${fs.readFileSync(path.join(collabRoot, fileRef), "utf8")}`;
+    return `${ref}\n${fs.readFileSync(resolveCollabRef(fileRef), "utf8")}`;
   }).join("\n---\n");
   return crypto.createHash("sha256").update(source).digest("hex").slice(0, 16);
 }
@@ -397,8 +403,18 @@ function assertSafeRef(recordId, ref) {
 function assertResolvableRef(recordId, ref) {
   assert.match(ref, /^\$COLLAB\//, `${recordId} ref must use $COLLAB: ${ref}`);
   const [fileRef] = ref.replace(/^\$COLLAB\//, "").split("#");
-  const filePath = path.join(collabRoot, fileRef);
+  const filePath = resolveCollabRef(fileRef);
   assert.equal(fs.existsSync(filePath), true, `${recordId} ref does not resolve: ${ref}`);
+}
+
+function resolveCollabRef(fileRef) {
+  if (fileRef === "harness-mc" || fileRef.startsWith("harness-mc/")) {
+    return path.join(root, fileRef.replace(/^harness-mc\/?/, ""));
+  }
+  if (fileRef === "notyet-harness" || fileRef.startsWith("notyet-harness/")) {
+    return path.join(notyetRoot, fileRef.replace(/^notyet-harness\/?/, ""));
+  }
+  return path.join(collabRoot, fileRef);
 }
 
 function hasExternalTrackerWrite(value) {

@@ -27,6 +27,9 @@ try {
   assert.doesNotMatch(result.stdout, /TELEGRAM_BOT_TOKEN|TELEGRAM_CHAT_ID/);
 
   const scriptText = fs.readFileSync("scripts/run-system-pulse.mjs", "utf8");
+  assert.match(scriptText, /MORROWISE_NOTYET_ROOT/, "System Pulse must support an explicit notyet worktree root for isolated verification");
+  assert.match(scriptText, /--system-json/, "System Pulse must pass its explicit current-state read model to the marker sync");
+  assert.match(scriptText, /--registry-json/, "System Pulse must pass its explicit Architecture Admission Registry to the marker sync");
   assert.match(scriptText, /SYSTEM_PULSE_APPLY_TASK_EVENTS/);
   assert.match(scriptText, /system-pulse\.v0/);
   assert.match(scriptText, /sync:architecture-subsystems/);

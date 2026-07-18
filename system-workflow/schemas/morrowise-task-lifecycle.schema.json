@@ -27,6 +27,19 @@
             "items": { "type": "string", "minLength": 1 }
           },
           "recorded_at": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+          "architecture_relation_impact": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["decision", "relationship_ids", "reason"],
+            "properties": {
+              "decision": { "type": "string", "enum": ["none", "add", "update", "retire"] },
+              "relationship_ids": {
+                "type": "array",
+                "items": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" }
+              },
+              "reason": { "type": "string", "minLength": 1 }
+            }
+          },
           "reactivation_criteria": { "type": "string", "minLength": 1 },
           "replacement_task_id": { "type": "string", "minLength": 1 },
           "no_replacement_reason": { "type": "string", "minLength": 1 },

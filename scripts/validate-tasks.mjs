@@ -28,6 +28,7 @@ const ARCHITECTURE_ADMISSION_REVIEW_SCOPES = new Set(["version_improvement"]);
 const ARCHITECTURE_ADMISSION_INDEX_ACTIONS = new Set(["updated", "no_index_change"]);
 const ARCHITECTURE_SYNC_CHECK_REF = "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check";
 const ARCHITECTURE_GATE_TRACKS = new Set(["governance", "runtime-delivery", "auditor-mvp"]);
+const ARCHITECTURE_RELATION_IMPACT_DECISIONS = new Set(["none", "add", "update", "retire"]);
 const TASK_LIFECYCLE_OPERATIONS = new Set(["create", "amend", "suspend", "resume", "complete", "cancel", "archive"]);
 
 function parseArgs(argv) {
@@ -207,7 +208,10 @@ function validateTask(task, { project = "", changed = false, changedOnly = false
   }
   if (requiresTaskLifecycleRoute({ task, changed, changedOnly })) {
     problems.push(...validateTaskLifecycleRoute(task));
-    problems.push(...validateTaskLifecycleEvidence(task, { previousTask }));
+    problems.push(...validateTaskLifecycleEvidence(task, {
+      previousTask,
+      requireArchitectureRelationImpact: project === "morrowise",
+    }));
   }
   if (requiresArchitectureDecision(task, project, includeProjectScope) && !("architecture_decision" in task)) {
     problems.push("architecture_decision is required before closing MorroWise governance/runtime-delivery/auditor-mvp tasks");
@@ -241,7 +245,7 @@ function validateTaskLifecycleRoute(task) {
   return [];
 }
 
-function validateTaskLifecycleEvidence(task, { previousTask = null } = {}) {
+function validateTaskLifecycleEvidence(task, { previousTask = null, requireArchitectureRelationImpact = false } = {}) {
   const problems = [];
   if (!task.task_lifecycle || typeof task.task_lifecycle !== "object" || Array.isArray(task.task_lifecycle)) {
     return ["task_lifecycle is required for changed or new canonical task mutations"];
@@ -292,6 +296,14 @@ function validateTaskLifecycleEvidence(task, { previousTask = null } = {}) {
   const last = history.at(-1);
   if (!last || typeof last !== "object" || Array.isArray(last)) return problems;
 
+  if (requireArchitectureRelationImpact) {
+    if (!Object.hasOwn(last, "architecture_relation_impact")) {
+      problems.push("task_lifecycle.history last architecture_relation_impact is required for changed MorroWise task mutations");
+    } else {
+      problems.push(...validateArchitectureRelationImpact(last.architecture_relation_impact));
+    }
+  }
+
   if (last.to_status !== task.status) {
     problems.push("task_lifecycle.history last to_status must match task.status");
   }
@@ -333,6 +345,35 @@ function validateTaskLifecycleEvidence(task, { previousTask = null } = {}) {
     problems.push("completed task lifecycle mutations require jv32_route.workflows to include closeout-commit-routing");
   }
 
+  return problems;
+}
+
+function validateArchitectureRelationImpact(impact) {
+  const problems = [];
+  if (!impact || typeof impact !== "object" || Array.isArray(impact)) {
+    return ["architecture_relation_impact must be an object"];
+  }
+  if (!ARCHITECTURE_RELATION_IMPACT_DECISIONS.has(impact.decision)) {
+    problems.push("architecture_relation_impact.decision must be none, add, update, or retire");
+  }
+  if (!Array.isArray(impact.relationship_ids)) {
+    problems.push("architecture_relation_impact.relationship_ids must be an array");
+  } else {
+    if (impact.decision === "none" && impact.relationship_ids.length > 0) {
+      problems.push("architecture_relation_impact none must use an empty relationship_ids array");
+    }
+    if (["add", "update", "retire"].includes(impact.decision) && impact.relationship_ids.length === 0) {
+      problems.push("architecture_relation_impact add/update/retire requires relationship_ids");
+    }
+    for (const id of impact.relationship_ids) {
+      if (!nonEmptyString(id) || !/^[A-Za-z0-9._-]+$/.test(id)) {
+        problems.push("architecture_relation_impact.relationship_ids entries must be stable relationship ids");
+      }
+    }
+  }
+  if (!nonEmptyString(impact.reason)) {
+    problems.push("architecture_relation_impact.reason must be a non-empty string");
+  }
   return problems;
 }
 

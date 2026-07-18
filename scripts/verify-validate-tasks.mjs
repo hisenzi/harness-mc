@@ -212,6 +212,11 @@ closedWithArchitectureDecision.tasks[0].architecture_decision = {
   evaluated_at: "2026-07-07",
   reason: "Fixture task does not add a reusable subsystem."
 };
+closedWithArchitectureDecision.tasks[0].task_lifecycle.history[0].architecture_relation_impact = {
+  decision: "none",
+  relationship_ids: [],
+  reason: "Fixture task does not change a cross-subsystem relationship."
+};
 writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), closedWithArchitectureDecision);
 
 const architectureDecisionPass = run(["--changed-only", "--project", "morrowise"]);
@@ -252,6 +257,42 @@ writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), validAdmissi
 const validAdmissionReviewResult = run(["--changed-only", "--project", "morrowise"]);
 if (!validAdmissionReviewResult.output.includes("Task validation OK")) {
   throw new Error("Expected valid Architecture Admission Review fixture to pass.");
+}
+
+const missingRelationshipImpact = structuredClone(closedWithArchitectureDecision);
+delete missingRelationshipImpact.tasks[0].task_lifecycle.history[0].architecture_relation_impact;
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), missingRelationshipImpact);
+
+const missingRelationshipImpactResult = run(["--changed-only", "--project", "morrowise"], { expectFailure: true });
+if (!missingRelationshipImpactResult.output.includes("task_lifecycle.history last architecture_relation_impact is required for changed MorroWise task mutations")) {
+  throw new Error("Expected missing architecture relationship impact to fail validation.");
+}
+
+const malformedRelationshipImpact = structuredClone(closedWithArchitectureDecision);
+malformedRelationshipImpact.tasks[0].task_lifecycle.history[0].architecture_relation_impact = {
+  decision: "add",
+  relationship_ids: [],
+  reason: "Fixture intentionally omits the added relationship id."
+};
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), malformedRelationshipImpact);
+
+const malformedRelationshipImpactResult = run(["--changed-only", "--project", "morrowise"], { expectFailure: true });
+if (!malformedRelationshipImpactResult.output.includes("architecture_relation_impact add/update/retire requires relationship_ids")) {
+  throw new Error("Expected malformed architecture relationship impact to fail validation.");
+}
+
+for (const decision of ["add", "update", "retire"]) {
+  const validRelationshipImpact = structuredClone(closedWithArchitectureDecision);
+  validRelationshipImpact.tasks[0].task_lifecycle.history[0].architecture_relation_impact = {
+    decision,
+    relationship_ids: ["morrowise-dev-workflow-catalog-governs-architecture-subsystem-index"],
+    reason: `Fixture validates a ${decision} relationship decision with a stable relationship id.`,
+  };
+  writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), validRelationshipImpact);
+  const result = run(["--changed-only", "--project", "morrowise"]);
+  if (!result.output.includes("Task validation OK")) {
+    throw new Error(`Expected valid ${decision} architecture relationship impact to pass.`);
+  }
 }
 
 const lifecycleRouteMissing = structuredClone(baseTasks);

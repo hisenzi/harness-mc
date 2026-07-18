@@ -9,7 +9,12 @@ import { processPulseProposals } from "./pulse-proposal-queue.mjs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const collabRoot = path.resolve(root, "..");
-const notyetRoot = path.join(collabRoot, "notyet-harness");
+const notyetRoot = process.env.MORROWISE_NOTYET_ROOT
+  ? path.resolve(process.env.MORROWISE_NOTYET_ROOT)
+  : path.join(collabRoot, "notyet-harness");
+const architectureDoc = path.join(notyetRoot, "000_Agent", "ARCHITECTURE.md");
+const morrowiseSystemReadModel = path.join(root, "public", "data", "morrowise-system.json");
+const architectureRegistry = path.join(root, "system-workflow", "registries", "morrowise-architecture-subsystems.json");
 const outPath = path.join(root, "public", "data", "system-pulse.json");
 const notifyPath = path.join(notyetRoot, "schedule", "lib", "notify.sh");
 
@@ -31,13 +36,27 @@ const plan = [
   step(
     "sync:architecture-current-state",
     "python3",
-    [path.join(notyetRoot, "000_Agent", "scripts", "sync-architecture-current-state.py"), "--check"],
+    [
+      path.join(notyetRoot, "000_Agent", "scripts", "sync-architecture-current-state.py"),
+      "--check",
+      "--system-json",
+      morrowiseSystemReadModel,
+      "--target-doc",
+      architectureDoc,
+    ],
     collabRoot,
   ),
   step(
     "sync:architecture-subsystems",
     "python3",
-    [path.join(notyetRoot, "000_Agent", "scripts", "sync-architecture-subsystems.py"), "--check"],
+    [
+      path.join(notyetRoot, "000_Agent", "scripts", "sync-architecture-subsystems.py"),
+      "--check",
+      "--registry-json",
+      architectureRegistry,
+      "--target-doc",
+      architectureDoc,
+    ],
     collabRoot,
   ),
   step(

@@ -7,9 +7,12 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const collabRoot = path.resolve(root, "..");
+const notyetRoot = process.env.MORROWISE_NOTYET_ROOT
+  ? path.resolve(process.env.MORROWISE_NOTYET_ROOT)
+  : path.join(collabRoot, "notyet-harness");
 const registryPath = path.join(root, "system-workflow", "registries", "morrowise-architecture-subsystems.json");
 const tasksPath = path.join(root, "milestones", "morrowise", "tasks.json");
-const architecturePath = path.join(collabRoot, "notyet-harness", "000_Agent", "ARCHITECTURE.md");
+const architecturePath = path.join(notyetRoot, "000_Agent", "ARCHITECTURE.md");
 const packageJson = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
 const registry = readJson(registryPath);
 const morrowiseTasks = readJson(tasksPath).tasks || [];
@@ -17,6 +20,8 @@ const architectureDoc = fs.readFileSync(architecturePath, "utf8");
 
 const STATUS = new Set(["active", "deprecated", "superseded", "deferred"]);
 const DECISIONS = new Set(["promoted", "not_required", "deferred"]);
+const RELATIONSHIP_STATUS = new Set(["active", "degraded", "deferred", "retired"]);
+const RELATIONSHIP_TYPES = new Set(["governs", "depends_on", "feeds", "observes", "delivers_via", "feedback_to", "supersedes"]);
 const REQUIRED_FIELDS = [
   "id",
   "name",
@@ -33,6 +38,18 @@ const REQUIRED_FIELDS = [
   "degraded_state",
   "architecture_decision",
   "last_promoted_at",
+  "last_verified_at",
+];
+const REQUIRED_RELATIONSHIP_FIELDS = [
+  "id",
+  "status",
+  "from",
+  "to",
+  "type",
+  "summary",
+  "contract_refs",
+  "task_anchor",
+  "verifiers",
   "last_verified_at",
 ];
 const FORBIDDEN_REF_PATTERNS = [
@@ -52,7 +69,11 @@ assert.equal(registry.verifier_ref, "npm run test:architecture-subsystems");
 assert.deepEqual(registry.decision_vocabulary, [...DECISIONS]);
 assert.deepEqual(registry.status_vocabulary, [...STATUS]);
 assert.deepEqual(registry.required_record_fields, REQUIRED_FIELDS);
+assert.deepEqual(registry.relationship_status_vocabulary, [...RELATIONSHIP_STATUS]);
+assert.deepEqual(registry.relationship_type_vocabulary, [...RELATIONSHIP_TYPES]);
+assert.deepEqual(registry.required_relationship_fields, REQUIRED_RELATIONSHIP_FIELDS);
 assert.ok(Array.isArray(registry.records) && registry.records.length >= 1, "at least one architecture subsystem record is required");
+assert.ok(Array.isArray(registry.relationships) && registry.relationships.length >= 1, "at least one verified architecture relationship is required");
 
 const taskIds = new Set(morrowiseTasks.map((task) => task.id));
 const seen = new Set();
@@ -63,6 +84,60 @@ for (const record of registry.records) {
 }
 
 assert.equal(seen.size, registry.records.length, "architecture subsystem ids must be unique");
+
+const relationshipIds = new Set();
+const relationshipSignatures = new Set();
+for (const relationship of registry.relationships) {
+  validateRelationship(relationship);
+  relationshipIds.add(relationship.id);
+  relationshipSignatures.add(`${relationship.from}:${relationship.type}:${relationship.to}`);
+}
+assert.equal(relationshipIds.size, registry.relationships.length, "architecture relationship ids must be unique");
+assert.equal(relationshipSignatures.size, registry.relationships.length, "architecture relationship edges must not be duplicated");
+assertNoDependencyCycles(registry.relationships);
+
+const catalogGovernance = registry.relationships.find((relationship) => relationship.id === "morrowise-dev-workflow-catalog-governs-architecture-subsystem-index");
+assert.ok(catalogGovernance, "JV-32 governance relationship fixture is required");
+assert.equal(catalogGovernance.type, "governs");
+assert.equal(catalogGovernance.from, "morrowise-dev-workflow-catalog");
+assert.equal(catalogGovernance.to, "architecture-subsystem-index");
+
+for (const decision of ["add", "update", "retire"]) {
+  const simulated = {
+    ...catalogGovernance,
+    id: `simulation-${decision}-relationship`,
+    status: decision === "retire" ? "retired" : "active",
+    summary: `Simulation verifies a valid ${decision} relationship decision remains schema-safe.`,
+  };
+  assert.doesNotThrow(() => validateRelationship(simulated), `${decision} relationship simulation must validate`);
+}
+assert.throws(
+  () => validateRelationship({ ...catalogGovernance, id: "simulation-self-relationship", to: catalogGovernance.from }),
+  /must not create a self relationship/,
+);
+assert.throws(
+  () => assertNoDependencyCycles([
+    catalogGovernance,
+    {
+      ...catalogGovernance,
+      id: "simulation-reverse-governance",
+      from: catalogGovernance.to,
+      to: catalogGovernance.from,
+    },
+  ]),
+  /dependency cycle/,
+);
+assertNoDependencyCycles([
+  catalogGovernance,
+  {
+    ...catalogGovernance,
+    id: "simulation-feedback-loop",
+    status: "active",
+    type: "feedback_to",
+    from: catalogGovernance.to,
+    to: catalogGovernance.from,
+  },
+]);
 
 const notifier = registry.records.find((record) => record.id === "morrowise-trusted-notifier");
 assert.ok(notifier, "Notifier fixture is required");
@@ -98,6 +173,14 @@ for (const forbiddenLabel of [
   assert.equal(block.includes(forbiddenLabel), false, `ARCHITECTURE subsystem block must stay zh-TW; found ${forbiddenLabel}`);
 }
 assert.match(block, new RegExp(`Registry 指紋：\`${registryFingerprint(registry)}\``), "ARCHITECTURE block fingerprint must match registry");
+
+const relationshipBlock = architectureRelationshipBlock();
+assert.match(relationshipBlock, /## 子系統關係（自動產生）|<!-- architecture-relationships:start -->/);
+assert.match(relationshipBlock, /```mermaid/);
+assert.match(relationshipBlock, /MorroWise 開發工作流 Catalog/);
+assert.match(relationshipBlock, /架構子系統索引同步/);
+assert.match(relationshipBlock, /治理/);
+assert.match(relationshipBlock, new RegExp(`Registry 指紋：\`${registryFingerprint(registry)}\``), "ARCHITECTURE relationship block fingerprint must match registry");
 
 const supersededFixture = fixtureRecord({ status: "superseded", superseded_by: "replacement", superseded_reason: "" });
 assert.throws(() => validateRecord(supersededFixture, { checkRefs: false }), /superseded_reason/);
@@ -156,6 +239,60 @@ function validateRecord(record, { checkRefs = true } = {}) {
   }
 }
 
+function validateRelationship(relationship) {
+  for (const field of REQUIRED_RELATIONSHIP_FIELDS) {
+    assert.ok(Object.hasOwn(relationship, field), `relationship ${relationship.id || "(missing id)"} missing ${field}`);
+  }
+
+  assert.equal(relationshipIds.has(relationship.id), false, `duplicate architecture relationship id: ${relationship.id}`);
+  assert.ok(RELATIONSHIP_STATUS.has(relationship.status), `${relationship.id} has invalid relationship status`);
+  assert.ok(RELATIONSHIP_TYPES.has(relationship.type), `${relationship.id} has invalid relationship type`);
+  assert.notEqual(relationship.from, relationship.to, `${relationship.id} must not create a self relationship`);
+  assert.ok(seen.has(relationship.from), `${relationship.id} from must reference an Admission Record`);
+  assert.ok(seen.has(relationship.to), `${relationship.id} to must reference an Admission Record`);
+  assert.ok(relationship.status !== "active" || (recordById(relationship.from).status === "active" && recordById(relationship.to).status === "active"), `${relationship.id} active relationship endpoints must be active`);
+  assert.equal(typeof relationship.summary, "string", `${relationship.id} summary must be text`);
+  assert.ok(Array.isArray(relationship.contract_refs) && relationship.contract_refs.length > 0, `${relationship.id} must list contract_refs`);
+  assert.ok(Array.isArray(relationship.verifiers) && relationship.verifiers.length > 0, `${relationship.id} must list verifier commands`);
+  assert.match(relationship.last_verified_at, /^\d{4}-\d{2}-\d{2}$/, `${relationship.id} last_verified_at must be YYYY-MM-DD`);
+
+  for (const ref of refsFrom(relationship.contract_refs, relationship.task_anchor)) {
+    assertSafeRef(relationship.id, ref);
+    assertResolvableRef(relationship.id, ref);
+  }
+  const taskId = String(relationship.task_anchor).split("#")[1] || "";
+  assert.ok(taskIds.has(taskId), `${relationship.id} task_anchor task id must exist in morrowise tasks.json`);
+  for (const command of relationship.verifiers) {
+    assertVerifierCommand(relationship.id, command);
+  }
+}
+
+function recordById(id) {
+  return registry.records.find((record) => record.id === id);
+}
+
+function assertNoDependencyCycles(relationships) {
+  const graph = new Map();
+  for (const relationship of relationships) {
+    if (relationship.status !== "active" || relationship.type === "feedback_to") continue;
+    if (!graph.has(relationship.from)) graph.set(relationship.from, []);
+    graph.get(relationship.from).push(relationship.to);
+  }
+
+  const visiting = new Set();
+  const visited = new Set();
+  const visit = (node) => {
+    if (visiting.has(node)) throw new Error(`architecture relationship dependency cycle detected at ${node}`);
+    if (visited.has(node)) return;
+    visiting.add(node);
+    for (const neighbor of graph.get(node) || []) visit(neighbor);
+    visiting.delete(node);
+    visited.add(node);
+  };
+
+  for (const node of graph.keys()) visit(node);
+}
+
 function refsFrom(...values) {
   return values.flatMap((value) => {
     if (!value) return [];
@@ -173,7 +310,7 @@ function assertResolvableRef(recordId, ref) {
   if (ref.startsWith("$HOME/")) return;
   assert.match(ref, /^\$COLLAB\//, `${recordId} ref must use $COLLAB or $HOME: ${ref}`);
   const [fileRef] = ref.replace(/^\$COLLAB\//, "").split("#");
-  const filePath = path.join(collabRoot, fileRef);
+  const filePath = resolveCollabRef(fileRef);
   assert.equal(fs.existsSync(filePath), true, `${recordId} ref does not resolve: ${ref}`);
 }
 
@@ -194,16 +331,32 @@ function assertVerifierCommand(recordId, command) {
     const match = command.match(/"\$COLLAB\/([^"]+)"/) || command.match(/\$COLLAB\/(\S+)/);
     assert.ok(match, `${recordId} python verifier must reference a $COLLAB script: ${command}`);
     const script = match[1].split(/\s+/)[0];
-    assert.equal(fs.existsSync(path.join(collabRoot, script)), true, `${recordId} python verifier missing: ${command}`);
+    assert.equal(fs.existsSync(resolveCollabRef(script)), true, `${recordId} python verifier missing: ${command}`);
     return;
   }
 
   throw new Error(`${recordId} unsupported verifier command: ${command}`);
 }
 
+function resolveCollabRef(fileRef) {
+  if (fileRef === "harness-mc" || fileRef.startsWith("harness-mc/")) {
+    return path.join(root, fileRef.replace(/^harness-mc\/?/, ""));
+  }
+  if (fileRef === "notyet-harness" || fileRef.startsWith("notyet-harness/")) {
+    return path.join(notyetRoot, fileRef.replace(/^notyet-harness\/?/, ""));
+  }
+  return path.join(collabRoot, fileRef);
+}
+
 function architectureSubsystemBlock() {
   const match = architectureDoc.match(/## 子系統索引（自動產生）[\s\S]*?<!-- architecture-subsystems:end -->/);
   assert.ok(match, "ARCHITECTURE.md must contain zh-TW architecture subsystem generated block");
+  return match[0];
+}
+
+function architectureRelationshipBlock() {
+  const match = architectureDoc.match(/## 子系統關係（自動產生）[\s\S]*?<!-- architecture-relationships:end -->/);
+  assert.ok(match, "ARCHITECTURE.md must contain zh-TW architecture relationship generated block");
   return match[0];
 }
 

@@ -2,8 +2,8 @@
   "registry_id": "morrowise-architecture-subsystems.v0",
   "task_id": "architecture-subsystem-index-live-sync",
   "status": "formal_registry",
-  "updated_at": "2026-07-18",
-  "generated_at": "2026-07-18",
+  "updated_at": "2026-07-19",
+  "generated_at": "2026-07-19",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
   "verifier_ref": "npm run test:architecture-subsystems",
   "sync_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\"",
@@ -49,6 +49,53 @@
     "architecture_decision",
     "last_promoted_at",
     "last_verified_at"
+  ],
+  "relationship_status_vocabulary": [
+    "active",
+    "degraded",
+    "deferred",
+    "retired"
+  ],
+  "relationship_type_vocabulary": [
+    "governs",
+    "depends_on",
+    "feeds",
+    "observes",
+    "delivers_via",
+    "feedback_to",
+    "supersedes"
+  ],
+  "required_relationship_fields": [
+    "id",
+    "status",
+    "from",
+    "to",
+    "type",
+    "summary",
+    "contract_refs",
+    "task_anchor",
+    "verifiers",
+    "last_verified_at"
+  ],
+  "relationships": [
+    {
+      "id": "morrowise-dev-workflow-catalog-governs-architecture-subsystem-index",
+      "status": "active",
+      "from": "morrowise-dev-workflow-catalog",
+      "to": "architecture-subsystem-index",
+      "type": "governs",
+      "summary": "JV-32 task lifecycle 對架構影響要求顯式判斷；Architecture Admission Record 與受控 sync check 是既有工作流的 closeout evidence。",
+      "contract_refs": [
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+        "$COLLAB/harness-mc/system-workflow/docs/task-write-command-map.md"
+      ],
+      "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#architecture-subsystem-index-relationship-map-v1",
+      "verifiers": [
+        "npm run test:architecture-subsystems",
+        "npm run test:tasks"
+      ],
+      "last_verified_at": "2026-07-19"
+    }
   ],
   "records": [
     {
@@ -141,9 +188,9 @@
       "id": "architecture-subsystem-index",
       "name": "架構子系統索引同步",
       "status": "active",
-      "role": "由 Architecture Admission Records 支撐的 ARCHITECTURE.md 自動產生子系統索引。",
-      "summary": "registry 是正本；同步腳本更新 ARCHITECTURE.md marker block，--check 讓 system-pulse 能抓到漂移。",
-      "capability": "架構索引即時同步",
+      "role": "由 Architecture Admission Records 與 relationship records 支撐的 ARCHITECTURE.md 自動產生索引與關係圖。",
+      "summary": "registry 是正本；同一同步腳本更新 ARCHITECTURE.md 的子系統索引與關係圖 marker，--check 讓 system-pulse 能抓到任何薄層漂移。",
+      "capability": "架構索引與關係圖即時同步",
       "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
       "detail_doc": "$COLLAB/notyet-harness/000_Agent/skills/promote-to-architecture/SKILL.md",
       "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#architecture-subsystem-index-live-sync",
@@ -154,7 +201,8 @@
       ],
       "allowed_actions": [
         "更新 Architecture Admission Records",
-        "產生 ARCHITECTURE.md 子系統 marker block",
+        "更新有合約與驗證證據的 subsystem relationship records",
+        "產生 ARCHITECTURE.md 子系統索引與關係圖 marker block",
         "檢查 ARCHITECTURE.md 漂移"
       ],
       "forbidden_actions": [
@@ -164,10 +212,24 @@
         "把 dashboards、Canvas、Heptabase 或 chat 當成正本"
       ],
       "safety_boundary": "同步只讀 architecture subsystem registry，且只寫 ARCHITECTURE.md 自動產生 marker block。它不讀 credentials、runtime auth stores、browser cookies 或外部 mirror。",
-      "degraded_state": "registry schema 失敗、verifier command 遺失、ARCHITECTURE.md marker block 漂移，或 system-pulse 不再包含此同步檢查。",
+      "degraded_state": "registry schema 或 relationship schema 失敗、verifier command 遺失、ARCHITECTURE.md 任一 marker block 漂移，或 system-pulse 不再包含此同步檢查。",
       "architecture_decision": "promoted",
       "last_promoted_at": "2026-07-07",
-      "last_verified_at": "2026-07-07",
+      "last_verified_at": "2026-07-19",
+      "version_review": {
+        "scope": "version_improvement",
+        "reviewed_at": "2026-07-19",
+        "contract_refs": [
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
+          "$COLLAB/harness-mc/scripts/verify-architecture-subsystems.mjs",
+          "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py",
+          "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+          "$COLLAB/harness-mc/system-workflow/docs/task-write-command-map.md"
+        ],
+        "index_action": "updated",
+        "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+        "reason": "relationship records 成為同一 Architecture Admission Registry 的正規化關係正本；既有同步器擴充為產生薄型關係圖與查核表，JV-32 lifecycle impact 讓變更不靠人記憶。"
+      },
       "supersedes": [],
       "superseded_by": null
     },
@@ -205,10 +267,10 @@
       "degraded_state": "catalog registry/schema/verifier/read model 缺失、adapter_only 誤標為 accepted、close_rule 缺失、或 ARCHITECTURE.md 被手寫 catalog 細節時，此子系統必須維持 deferred/degraded，不得 promoted。",
       "architecture_decision": "promoted",
       "last_promoted_at": "2026-07-08",
-      "last_verified_at": "2026-07-18",
+      "last_verified_at": "2026-07-19",
       "version_review": {
         "scope": "version_improvement",
-        "reviewed_at": "2026-07-18",
+        "reviewed_at": "2026-07-19",
         "contract_refs": [
           "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
           "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json",
@@ -224,15 +286,16 @@
           "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
           "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
         ],
-        "contract_fingerprint": "41bdca81e1a4e130",
+        "contract_fingerprint": "a719fb0a65537d07",
         "index_action": "updated",
         "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
         "evidence_refs": [
           "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
           "node scripts/verify-validate-tasks.mjs",
+          "npm run test:tasks",
           "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
         ],
-        "reason": "JV-40 將 canonical task lifecycle 納入既有 JV-32，新增 schema、validator、approval 與 closeout routing 的閉環；更新既有 Admission Record 與薄索引，不建立平行子系統。"
+        "reason": "architecture-subsystem-index-relationship-map-v1 將每個 changed MorroWise lifecycle mutation 的 architecture_relation_impact 納入既有 JV-32 contract；新增、修改與退役關係必須回到同一 Admission Registry 與受控 thin sync，不建立平行 task 或架構系統。"
       },
       "supersedes": [],
       "superseded_by": null

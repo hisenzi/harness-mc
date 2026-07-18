@@ -3390,6 +3390,114 @@
         }
       },
       "note": "2026-07-18 Vincent 核准：新增、修改、停用 task 必須接入 JV-32，並要求一次補齊後做模擬驗證。此 task 是 lifecycle governance 的唯一 work anchor。2026-07-18 已補 Architecture Admission Review 閉環：既有 JV-32 的受管 contract 變更會使 verifier 以 fingerprint 攔截 stale Admission Record，並要求受控 ARCHITECTURE.md sync check。完成證據：8dd92f7、038bae0、task event 與本 task listed verifiers。"
+    },
+    {
+      "id": "KJ-LIVE-04",
+      "title": "KJ live snapshot 新鮮度維護",
+      "status": "completed",
+      "track": "governance",
+      "order_label": "KJ-LIVE-04",
+      "priority": "high",
+      "dependencies": [
+        "KJ-LIVE-01",
+        "KJ-LIVE-02",
+        "KJ-LIVE-03"
+      ],
+      "done_condition": "KJ Notion source snapshot 在新鮮度門檻內，並以受限、無秘密的來源比對證明 43 筆資料與 MC mirror 一致；KJ read model、handoff live sync 與 mirror reconcile verifier 均須通過。",
+      "acceptance": [
+        "KJ snapshot 的 generated_at 與 page_fetch_as_of 反映實際來源驗證時間，且 fallback 證據清楚標記 connector 查詢限制，不宣稱未執行的 SQL 結果。",
+        "Notion 來源頁面與 snapshot 43 筆 task 的 title、type、status、workstream、owner、target date、key gate、blocker、description 均一致。",
+        "KJ handoff live sync 與 MC mirror reconcile verifier 均通過，MC drift 為 0，B2/B3 命名維持正確。",
+        "產生的 Notion integration 與 verifier health read model 反映目前已驗證狀態，且不包含 token、帳密、Cookie 或 runtime auth 內容。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/system-workflow/snapshots/kj-notion-tasks-snapshot.json",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#KJ-LIVE-01",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#KJ-LIVE-02",
+        "$COLLAB/harness-mc/milestones/kj-bilingual/tasks.json",
+        "$COLLAB/CC本機協作_無Git/KJ/260612_KJ_雙語班/scripts/update-handoff.py"
+      ],
+      "completed_at": "2026-07-19",
+      "commits": [
+        "723c600"
+      ],
+      "summary": "已刷新 KJ Notion 43 筆 source snapshot 與衍生 read model；來源逐筆比對一致、MC mirror drift 為 0，KJ handoff live sync、mirror reconcile 與 read model verifier 均通過。",
+      "verification": [
+        "npm run test:kj-notion-read-model",
+        "npm run test:kj-handoff-live-sync",
+        "npm run test:kj-mirror-reconcile",
+        "node scripts/validate-tasks.mjs --changed-only",
+        "git diff --check"
+      ],
+      "jv32_route": {
+        "batch": "KJ live snapshot maintenance batch",
+        "workflows": [
+          "task-lifecycle",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "KJ-LIVE-01 snapshot freshness rule",
+          "KJ-LIVE-02 handoff verifier failure evidence",
+          "source-to-mirror comparison evidence"
+        ],
+        "decision_output": "可稽核的 KJ snapshot refresh、read model health 與 closeout evidence",
+        "execution_boundary": "僅更新本地 canonical task metadata、已驗證 snapshot 與 generated read model；不得讀取或保存秘密、寫入 Notion／Heptabase、commit、push 或部署。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "KJ handoff verifier 因 snapshot 超過 14 天新鮮度門檻失敗，需建立獨立維護紀錄，避免回寫或重開既有已完成的 KJ-LIVE-01 至 03。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/system-workflow/snapshots/kj-notion-tasks-snapshot.json",
+              "npm run test:kj-handoff-live-sync"
+            ],
+            "recorded_at": "2026-07-19"
+          },
+          {
+            "operation": "complete",
+            "from_status": "todo",
+            "to_status": "completed",
+            "reason": "已以來源逐筆比對刷新 KJ snapshot，並完成 KJ read model、handoff、mirror 與 changed-only task validator 驗證；本機 commit 已保留可追溯證據。",
+            "evidence_refs": [
+              "723c600",
+              "npm run test:kj-notion-read-model",
+              "npm run test:kj-handoff-live-sync",
+              "npm run test:kj-mirror-reconcile",
+              "node scripts/validate-tasks.mjs --changed-only"
+            ],
+            "recorded_at": "2026-07-19"
+          }
+        ]
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/KJ-LIVE-04",
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#risk",
+          "#evidenceBased"
+        ],
+        "hc_reasoning": "真正問題不是讓 verifier 靜音，而是 snapshot 新鮮度失效後，source、handoff 與 mirror 會失去可驗證的時間邊界。#sourceBoundary 固定 KJ Notion 為來源、snapshot 為可稽核讀取證據、MC 為 mirror；#risk 避免把舊 snapshot 或 connector 限制誤判成來源已壞；#evidenceBased 要求逐筆一致性與三個 KJ verifier，而非只更新時間戳。",
+        "hc_confidence": 0.93,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/system-workflow/snapshots/kj-notion-tasks-snapshot.json",
+          "$COLLAB/harness-mc/milestones/kj-bilingual/tasks.json",
+          "npm run test:kj-notion-read-model",
+          "npm run test:kj-handoff-live-sync",
+          "npm run test:kj-mirror-reconcile"
+        ],
+        "source_boundary": "HC 只是思考檢查，不是正本；canonical task state 在 tasks.json，KJ 來源資料在 Notion，snapshot 與 generated read model 為可驗證的本地 evidence layer。"
+      },
+      "architecture_decision": {
+        "decision": "not_required",
+        "evaluated_at": "2026-07-19",
+        "reason": "本 task 只維護既有 KJ snapshot、verifier 與 read model 的新鮮度，沒有變更已 promoted 的 subsystem contract，也不新增可收編的架構元件。"
+      },
+      "note": "2026-07-19 自動 closeout：此 task 以 JV-32 記錄 KJ live snapshot 例行維護，避免為單次 metadata refresh 修改既有已完成任務的 completion lineage。"
     }
   ]
 }

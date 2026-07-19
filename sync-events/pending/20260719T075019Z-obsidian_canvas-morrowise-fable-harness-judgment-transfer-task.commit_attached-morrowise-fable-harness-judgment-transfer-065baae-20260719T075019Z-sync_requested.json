@@ -1,0 +1,16 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-morrowise-fable-harness-judgment-transfer-task.commit_attached-morrowise-fable-harness-judgment-transfer-065baae-20260719T075019Z-20260719T075019Z",
+  "type": "sync_requested",
+  "target": "obsidian_canvas",
+  "status": "pending",
+  "source_event_id": "task.commit_attached-morrowise-fable-harness-judgment-transfer-065baae-20260719T075019Z",
+  "project": "morrowise",
+  "task_id": "fable-harness-judgment-transfer",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-07-19T07:50:19Z",
+  "actor": "codex",
+  "session_id": "mc-task-2-20260719"
+}

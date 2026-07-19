@@ -1,11 +1,18 @@
 {
-  "generated_at": "2026-07-09T17:09:26.518Z",
+  "generated_at": "2026-07-19T12:06:53.578Z",
   "applied": [
     {
-      "file": "20260709T170833Z-notyet-harness-04b5b7c-morrowise-local-nongit-data-backup-spec.json",
-      "event_id": "task.commit_attached-morrowise-local-nongit-data-backup-spec-04b5b7c-20260709T170833Z",
+      "file": "20260719T120640Z-notyet-harness-6095bd9-morrowise-architecture-pulse-source-edit.json",
+      "event_id": "task.commit_attached-morrowise-architecture-pulse-source-edit-6095bd9-20260719T120640Z",
       "project": "morrowise",
-      "task_id": "local-nongit-data-backup-spec",
+      "task_id": "architecture-pulse-source-edit",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260719T120640Z-notyet-harness-82d1150-morrowise-task-lifecycle-jv32-gate.json",
+      "event_id": "task.commit_attached-morrowise-task-lifecycle-jv32-gate-82d1150-20260719T120640Z",
+      "project": "morrowise",
+      "task_id": "task-lifecycle-jv32-gate",
       "type": "task.commit_attached"
     }
   ],

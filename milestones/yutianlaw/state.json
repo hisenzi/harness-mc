@@ -111,7 +111,9 @@
       "status": "done",
       "completed_at": "2026-06-07",
       "commits": [
-        "339be49"
+        "339be49",
+        "bbb01da",
+        "9a17f07"
       ]
     },
     "yt-A1": {
@@ -319,7 +321,8 @@
       "status": "completed",
       "completed_at": "2026-07-18",
       "commits": [
-        "035b0a5"
+        "035b0a5",
+        "9a17f07"
       ],
       "summary": "行動選單 CTA 已納入關閉選單 selector；2026-07-18 以 390×844 手機 viewport 驗證，點擊後選單關閉、body overflow 解鎖、URL 到 #contact 且聯絡區位於畫面起點。"
     },

@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-yutianlaw-team-spotlight-rail-260607-9a17f07-20260719T105916Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "9a17f07",
+  "project": "yutianlaw",
+  "task_id": "team-spotlight-rail-260607",
+  "status": "updated",
+  "summary": "補齊 9a17f07 日報對詹秉恆成員級 CTA 文案修正的 task 追溯；同一 commit 亦已掛 yt-c13。",
+  "created_at": "2026-07-19T18:59:16+08:00",
+  "actor": "codex",
+  "session_id": "019f73e7-4324-7132-b2f4-190e17572924"
+}

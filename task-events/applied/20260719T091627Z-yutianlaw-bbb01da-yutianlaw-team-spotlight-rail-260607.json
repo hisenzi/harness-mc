@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-yutianlaw-team-spotlight-rail-260607-bbb01da-20260719T091627Z",
+  "type": "task.commit_attached",
+  "repo": "yutianlaw",
+  "commit": "bbb01da",
+  "project": "yutianlaw",
+  "task_id": "team-spotlight-rail-260607",
+  "status": "updated",
+  "summary": "更正 commit ownership：bbb01da 修改 HiTeam 成員級 CTA 與 lawyers data，歸入 team spotlight／HiTeam task，不屬於圖片資源 task p1-7。",
+  "created_at": "2026-07-19T09:16:27Z",
+  "actor": "codex",
+  "session_id": "019f77d9-8c85-7642-979c-afe926622086"
+}

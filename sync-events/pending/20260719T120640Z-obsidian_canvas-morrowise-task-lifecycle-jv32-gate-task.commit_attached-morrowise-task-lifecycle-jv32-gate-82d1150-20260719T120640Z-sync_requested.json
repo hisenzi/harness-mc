@@ -1,0 +1,16 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-morrowise-task-lifecycle-jv32-gate-task.commit_attached-morrowise-task-lifecycle-jv32-gate-82d1150-20260719T120640Z-20260719T120640Z",
+  "type": "sync_requested",
+  "target": "obsidian_canvas",
+  "status": "pending",
+  "source_event_id": "task.commit_attached-morrowise-task-lifecycle-jv32-gate-82d1150-20260719T120640Z",
+  "project": "morrowise",
+  "task_id": "task-lifecycle-jv32-gate",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-07-19T12:06:40.319Z",
+  "actor": "codex",
+  "session_id": "codex-mc-task-2-20260719"
+}

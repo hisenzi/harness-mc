@@ -203,7 +203,8 @@
       "commits": [
         "bfeae22",
         "38712f6",
-        "228b51d"
+        "228b51d",
+        "065baae"
       ],
       "summary": "完成 Fable 5 harness governance 健檢與判斷力外化：A-G 制度文件、source-of-truth delta map、入口 patch plan、對抗審查/read-back/amendment、兩輪 Codex 驗證交接與 optional cost-efficiency research design 均已落檔；B plan patches P1-P4+C1 保持待 Vincent 另行批准。"
     },
@@ -359,7 +360,8 @@
       "commits": [
         "3e2fe28",
         "f179c7d",
-        "97eb4dd"
+        "97eb4dd",
+        "6095bd9"
       ],
       "summary": "2026-07-03 完成 ARCHITECTURE.md source edit：AP-01~08 逐項處置（header contract、source-of-truth 改指 $COLLAB、歷史附錄 A-H 分區、symlink 表 $COLLAB 化、OC 排程/Notion/OC-MC 降級歷史並附現行權威指引）；新增「目前系統現況」generated marker 區由 sync-architecture-current-state.py 從 morrowise-system.json 同步（--check 可測 drift）；auditor 重跑 findings 8→0，auditor-findings-open loop 自動關閉。殘留：MBA-2 update-symlinks-table.py 輸出格式待 HiSenzi 更新為 $COLLAB 形式。"
     },
@@ -683,6 +685,33 @@
     },
     "client-form-onboarding-template": {
       "status": "todo"
+    },
+    "document-source-registry-and-human-sync": {
+      "status": "todo",
+      "commits": [
+        "16504609a705ee61f1a1be169606c45672ba7fdc"
+      ]
+    },
+    "model-execution-evidence-contract": {
+      "status": "todo",
+      "commits": [
+        "16504609a705ee61f1a1be169606c45672ba7fdc"
+      ]
+    },
+    "multi-machine-repo-coordination-gate": {
+      "status": "todo",
+      "commits": [
+        "a8b50cccfe87ff943d4b49196b355d6107ef517c"
+      ]
+    },
+    "task-lifecycle-jv32-gate": {
+      "status": "in_progress",
+      "commits": [
+        "8dd92f7",
+        "038bae0",
+        "82d1150"
+      ],
+      "summary": "JV-40 v1 已完成基本 task lifecycle；2026-07-19 依 Vincent 核准 reopen 為唯一 weekly core，正在落地 semantic task intake、單一 WIP、review date 到期攔截與禁止自動延長。"
     }
   }
 }

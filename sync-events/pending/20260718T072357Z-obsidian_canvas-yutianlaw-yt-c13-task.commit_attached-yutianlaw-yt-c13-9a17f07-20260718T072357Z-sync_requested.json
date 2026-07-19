@@ -1,0 +1,16 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-yutianlaw-yt-c13-task.commit_attached-yutianlaw-yt-c13-9a17f07-20260718T072357Z-20260718T072357Z",
+  "type": "sync_requested",
+  "target": "obsidian_canvas",
+  "status": "pending",
+  "source_event_id": "task.commit_attached-yutianlaw-yt-c13-9a17f07-20260718T072357Z",
+  "project": "yutianlaw",
+  "task_id": "yt-c13",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-07-18T07:23:57.370Z",
+  "actor": "codex",
+  "session_id": "019f73e7-4324-7132-b2f4-190e17572924"
+}

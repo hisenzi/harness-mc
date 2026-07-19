@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-task-lifecycle-jv32-gate-82d1150-20260719T120640Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "82d1150",
+  "project": "morrowise",
+  "task_id": "task-lifecycle-jv32-gate",
+  "status": "updated",
+  "summary": "Synced the generated ARCHITECTURE.md subsystem index for JV-40 semantic intake and weekly-core gate.",
+  "created_at": "2026-07-19T12:06:40.319Z",
+  "actor": "codex",
+  "session_id": "codex-mc-task-2-20260719"
+}

@@ -125,9 +125,12 @@
       "status": "completed",
       "completed_at": "2026-06-16",
       "commits": [
-        "ac10c35"
+        "ac10c35",
+        "576ca74",
+        "e1067de",
+        "2f36055"
       ],
-      "summary": "新增 single-writer reducer，支援 pending events 套用、duplicate 去重、unknown task/type rejection、commit append 與 basic status transitions。",
+      "summary": "single-writer reducer 已支援 pending apply、duplicate／unknown／人工錯掛 rejection、commit append 與 basic status transitions；2026-07-19 補強為只寫 touched task，避免重建整個 project state。",
       "external_refs": {
         "heptabase": {
           "whiteboard": "MorroWise / system-ops",

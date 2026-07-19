@@ -904,6 +904,9 @@
       "id": "reality-tax-daily-review-task",
       "title": "Reality Tax Daily Review 排程任務契約",
       "status": "in_progress",
+      "commits": [
+        "5e65726"
+      ],
       "track": "runtime-delivery",
       "order_label": "MW-RT-01",
       "dependencies": [
@@ -925,6 +928,28 @@
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-reality-tax-gate.json",
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-adapter-contract.json"
       ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准以既有 daily review task 承接 intake 紀錄；本次只補 5e65726 evidence 並修正 state overlay 與 definition 一致，不建立 successor、取消或改變 scope。",
+            "evidence_refs": [
+              "5e65726",
+              "$COLLAB/harness-mc/milestones/morrowise/notes/reality-tax-daily-review-task.md",
+              "Vincent 2026-07-19 current session: 可以～（核准 Phase 2 commit）"
+            ],
+            "recorded_at": "2026-07-19"
+          }
+        ]
+      },
       "hc_decision": {
         "task_scope": "morrowise/reality-tax-daily-review-task",
         "hc_refs": [
@@ -2976,6 +3001,9 @@
     {
       "id": "document-source-registry-and-human-sync",
       "status": "todo",
+      "commits": [
+        "9d11047"
+      ],
       "title": "JV-36 文件架構分類、Source of Truth 索引、人讀文件同步與每日健檢",
       "track": "governance",
       "order_label": "JV-36",
@@ -3074,6 +3102,18 @@
               "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mc-dashboard-priority-ia-v2",
               "$COLLAB/harness-mc/milestones/morrowise/notes/mc-dashboard-priority-ia-v2.md",
               "$COLLAB/notyet-harness/000_Agent/skills/promote-to-architecture/SKILL.md"
+            ],
+            "recorded_at": "2026-07-19"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准將 9d11047 的文件控制面板 note 回填至既有 JV-36 evidence；本次不實作 registry/generator、不改 task scope 或 status。",
+            "evidence_refs": [
+              "9d11047",
+              "$COLLAB/harness-mc/milestones/morrowise/notes/document-source-registry-and-human-sync.md",
+              "Vincent 2026-07-19 current session: 可以～（核准 Phase 2 commit）"
             ],
             "recorded_at": "2026-07-19"
           }
@@ -3358,9 +3398,11 @@
       "review_date": "2026-07-26",
       "commits": [
         "8dd92f7",
-        "038bae0"
+        "038bae0",
+        "33639b9",
+        "82d1150"
       ],
-      "summary": "JV-40 v1 已完成基本 task lifecycle；2026-07-19 依 Vincent 核准 reopen 為唯一 weekly core，正在落地 semantic task intake、單一 WIP、review date 到期攔截與禁止自動延長。",
+      "summary": "JV-40 已以 33639b9 實作 semantic task intake、單一 weekly_core、review_date 到期攔截、禁止自動延長與負向 fixture；82d1150 已由 cross-repo event 掛入受控 ARCHITECTURE.md 索引。依 Vincent 核准維持唯一 weekly core 至 2026-07-26；尚未收到 complete 決策，因此 task 仍為 in_progress。",
       "title": "JV-40 任務生命週期接入 JV-32（新增／修改／停用／完成 gate）",
       "track": "governance",
       "order_label": "JV-40",
@@ -3516,6 +3558,21 @@
               ],
               "next_review_date": "2026-07-26"
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准的 JV-40 version improvement 已由 33639b9 實作，82d1150 已由 cross-repo event 掛入受控 ARCHITECTURE.md 索引；本次只回填 evidence 與 current summary，保留唯一 weekly_core、review_date=2026-07-26，未宣告 complete 或自動延長。",
+            "evidence_refs": [
+              "33639b9",
+              "82d1150",
+              "2f36055",
+              "node scripts/verify-validate-tasks.mjs",
+              "node scripts/verify-work-anchor-preflight.mjs",
+              "Vincent 2026-07-19 current session: 可以進行『機械強制與 event 套用』"
+            ],
+            "recorded_at": "2026-07-19"
           }
         ]
       },

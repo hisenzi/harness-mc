@@ -218,14 +218,38 @@
       "completed_at": "2026-06-16",
       "commits": [
         "ac10c35",
-        "576ca74"
+        "576ca74",
+        "e1067de",
+        "2f36055"
       ],
-      "summary": "新增 single-writer reducer，支援 pending events 套用、duplicate 去重、unknown task/type rejection、commit append 與 basic status transitions。",
+      "summary": "single-writer reducer 已支援 pending apply、duplicate／unknown／人工錯掛 rejection、commit append 與 basic status transitions；2026-07-19 補強為只寫 touched task，避免重建整個 project state。",
       "depends_on": [
         "acp-task-event-outbox"
       ],
-      "done_condition": "新增 scripts/apply-task-events.mjs：讀取 pending task events，idempotent apply 到現有 milestones/*/tasks.json；支援 duplicate event_id 去重、unknown_task/unknown_type rejected queue、commit append、completed/reopened/blocked 基本事件。apply 後跑 generate-data.mjs。",
-      "note": "已新增 apply-task-events reducer + verification script：pending events 可套用到 milestones/*/tasks.json，支援 duplicate event_id、unknown_task、unknown_type rejected queue，以及 completed/reopened/blocked/commit_attached。待完整驗證與 commit 後標 completed。2026-06-29 queue evidence：commit 576ca74 新增 7 筆 cross-repo pending events，供 reducer 後續套用。",
+      "done_condition": "scripts/apply-task-events.mjs 必須 idempotent 套用 pending events，只更新 event 命中的 task state，不得重寫同 project 的無關 state；支援 duplicate、unknown 與人工 wrong-owner rejection、commit append、completed/reopened/blocked，並在 apply 後重建 generated data。",
+      "note": "已新增 apply-task-events reducer + verification script：pending events 可套用到 state overlay，支援 duplicate event_id、unknown_task、unknown_type rejected queue，以及 completed/reopened/blocked/commit_attached。2026-06-29 queue evidence：commit 576ca74 新增 7 筆 cross-repo pending events。2026-07-19 version improvement：隔離 dry-run 發現 reducer 會把 touched project 的全部 task 重寫進 state，造成無關 task snapshot 與 legacy note 遺失；已改為 touchedTaskIds 精準寫入，fixture 驗證無 state task 不會被新增、legacy state metadata 保留。另新增受控 manual rejection，錯掛 bbb01da→p1-7 留下 wrong_task_owner rejected 紀錄，再以新 event 掛到 team-spotlight-rail-260607。",
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "Vincent 核准 event 套用；dry-run 定位全 project state rewrite 與 wrong-task routing 風險後，補強既有 reducer，而不新增平行 event task。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/scripts/apply-task-events.mjs",
+              "$COLLAB/harness-mc/scripts/verify-apply-task-events.mjs",
+              "$COLLAB/harness-mc/task-events/latest-report.json"
+            ],
+            "recorded_at": "2026-07-19"
+          }
+        ]
+      },
       "batch": "control-console",
       "external_refs": {
         "heptabase": {

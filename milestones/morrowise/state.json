@@ -195,7 +195,10 @@
       "summary": "完成 Reality Tax Gate 通用工作流協定：同一概念研究或討論超過 30 分鐘且沒有 24 小時內實質 output 時，Agent 必須選擇 attach_output、create_task_anchor、make_small_demo、kill_loop 或 mark_reality_gap；協定已明確區分 workflow gate 與 daily review scheduler task，並以 HC refs 作 reasoning layer 而非 task state authority。"
     },
     "reality-tax-daily-review-task": {
-      "status": "todo"
+      "status": "in_progress",
+      "commits": [
+        "5e65726"
+      ]
     },
     "fable-harness-judgment-transfer": {
       "status": "completed",
@@ -689,7 +692,8 @@
     "document-source-registry-and-human-sync": {
       "status": "todo",
       "commits": [
-        "16504609a705ee61f1a1be169606c45672ba7fdc"
+        "16504609a705ee61f1a1be169606c45672ba7fdc",
+        "9d11047"
       ]
     },
     "model-execution-evidence-contract": {
@@ -709,9 +713,10 @@
       "commits": [
         "8dd92f7",
         "038bae0",
+        "33639b9",
         "82d1150"
       ],
-      "summary": "JV-40 v1 已完成基本 task lifecycle；2026-07-19 依 Vincent 核准 reopen 為唯一 weekly core，正在落地 semantic task intake、單一 WIP、review date 到期攔截與禁止自動延長。"
+      "summary": "JV-40 已以 33639b9 實作 semantic task intake、單一 weekly_core、review_date 到期攔截、禁止自動延長與負向 fixture；82d1150 已由 cross-repo event 掛入受控 ARCHITECTURE.md 索引。依 Vincent 核准維持唯一 weekly core 至 2026-07-26；尚未收到 complete 決策，因此 task 仍為 in_progress。"
     }
   }
 }

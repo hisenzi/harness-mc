@@ -2923,7 +2923,7 @@
       ],
       "done_condition": "建立 MorroWise 文件架構治理、同步與每日健檢底座：shared、long-lived、workflow-changing 文件必須依 system_id、Agent Control Plane 五層架構、文件角色、受眾與 write policy 分類；以 $COLLAB/harness-mc/system-workflow/registries/morrowise-document-sources.json 作為文件 Source of Truth 索引正本，搭配 schema、verifier、漏登記偵測、generator 與 generated read model。$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md 的 managed blocks，以及 $COLLAB/notyet-harness/000_Agent/docs/morrowise/human/ 的人讀入口與分層內容，必須由該 registry/read model 決定內容與 lineage，不得掃檔自行推論架構。任何 registered source 修改、移動、淘汰或摘要影響變更，都必須被 Git diff + registry impact gate 機械辨識；npm run sync:morrowise-docs -- --changed-only 只更新受影響 targets，之後真實 documentation sync check 全綠才允許 closeout。另新增 single-writer documentation-health-pulse，透過現有 agent-agnostic scheduler 在 owner role 主機每日 Asia/Taipei 21:00 執行真實文件健檢，先原子寫入安全、read-only、可追溯的最新報告，再依 healthy/degraded/blocked/unknown 回傳固定 exit code 與必要通知；排程只檢查與報告，不在背景直接改寫 ARCHITECTURE.md、human/、task state、commit 或 push。",
       "acceptance": [
-        "A01｜適用範圍與 seed inventory 明確：scope_version=v1 的 managed roots 至少涵蓋 $COLLAB/AGENTS.md、$COLLAB/notyet-harness/000_Agent/、$COLLAB/notyet-harness/schedule/tasks/、$COLLAB/harness-mc/system-workflow/docs/、registries/、schemas/；exclusions 至少排除 memory/daily、archive/historical、reports、raw run logs、secrets、.env、.tmp、vendor/node_modules 與純 generated body。符合納管條件的 UTF-8 .md/.json/.yaml/.yml 必須由單一 document record 或 source_family record 覆蓋；完成時輸出 seed inventory 的 total、covered、excluded、unregistered 與 exclusion reason，不能用未量化的『主要文件已登記』關閉 task。",
+        "A01｜適用範圍與 seed inventory 明確：scope_version=v1 的 managed roots 至少涵蓋 $COLLAB/AGENTS.md、$COLLAB/notyet-harness/000_Agent/、$COLLAB/notyet-harness/schedule/tasks/、$COLLAB/harness-mc/system-workflow/docs/、registries/、schemas/、milestones/morrowise/notes/；exclusions 至少排除 memory/daily、archive/historical、reports、raw run logs、secrets、.env、.tmp、vendor/node_modules 與純 generated body。符合納管條件的 UTF-8 .md/.json/.yaml/.yml 必須由單一 document record 或 source_family record 覆蓋；task-linked 長期議題紀錄須可登錄為 decision/explanation 類文件並由 ARCHITECTURE.md generated document index 產生薄連結。完成時輸出 seed inventory 的 total、covered、excluded、unregistered 與 exclusion reason，不能用未量化的『主要文件已登記』關閉 task。",
         "A02｜Folder Contract 正式化：將 $COLLAB/notyet-harness/000_Agent/docs/morrowise/folder-contract-v0.md 升級或 supersede 為 active v1，明訂 Agent 寫文件前的分類、位置、source of truth、受眾、write policy、stale rule、verifier 與 task/architecture lineage；v0 不得維持 evaluation draft 卻被當成生效規則。",
         "A03｜系統架構分類固定化：architecture_layer vocabulary 固定為 entry、rules、capabilities、runtime、governance；每筆文件同時具備 system_id 與 architecture_layer，不能只依檔案所在資料夾猜測分類。",
         "A04｜文件角色與受眾固定化：document_role 至少支援 canonical、protocol、schema、detail、runbook、evidence、generated、mirror、human_guide；audience 固定為 human、agent、both；write_policy 至少支援 manual、generated_only、managed_block、append_only、mirror_only。",
@@ -2985,6 +2985,34 @@
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#runtime-scheduler-v0",
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#system-pulse-schedule-task"
       ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ],
+        "decision_input": [
+          "既有 JV-36 文件治理、Document Source Registry、generated document index 與 ARCHITECTURE.md managed-block 合約",
+          "MC-DASH-V2-A06 的文獻、演進與文章素材保存要求，以及 Vincent 對 ARCHITECTURE.md 薄連結的新增要求"
+        ],
+        "decision_output": "擴充 JV-36 seed inventory 與 generated document index 合約，使 task-linked 長期議題紀錄可登錄並在 ARCHITECTURE.md 產生不複製正文的薄連結。",
+        "execution_boundary": "本次 amend 只更新 canonical task 的治理範圍與 lineage；不實作 registry、generator，不手改 ARCHITECTURE.md managed block，也不授權 commit、push 或部署。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 要求 MC-DASH-V2-A06 的議題演進與文章素材可由完整架構找到；因此把 milestones/morrowise/notes 納入 JV-36 managed roots，並明定由 Document Source Registry 與 generated document index 產生 ARCHITECTURE.md 薄連結。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mc-dashboard-priority-ia-v2",
+              "$COLLAB/harness-mc/milestones/morrowise/notes/mc-dashboard-priority-ia-v2.md",
+              "$COLLAB/notyet-harness/000_Agent/skills/promote-to-architecture/SKILL.md"
+            ],
+            "recorded_at": "2026-07-19"
+          }
+        ]
+      },
       "hc_decision": {
         "task_scope": "morrowise/document-source-registry-and-human-sync",
         "hc_refs": [
@@ -3498,6 +3526,91 @@
         "reason": "本 task 只維護既有 KJ snapshot、verifier 與 read model 的新鮮度，沒有變更已 promoted 的 subsystem contract，也不新增可收編的架構元件。"
       },
       "note": "2026-07-19 自動 closeout：此 task 以 JV-32 記錄 KJ live snapshot 例行維護，避免為單次 metadata refresh 修改既有已完成任務的 completion lineage。"
+    },
+    {
+      "id": "mc-dashboard-priority-ia-v2",
+      "title": "MC 儀表板資訊優先級與繁中化決策 v2",
+      "status": "todo",
+      "track": "mc-surface",
+      "order_label": "MC-DASH-V2",
+      "priority": "high",
+      "done_condition": "完成一張容易掃讀的 MC 儀表板議題紀錄，核准繁中介面、輕重緩急排序、資料正本、首頁與下鑽邊界，並留下可直接建立後續 MorroWise system／harness-mc surface 實作 task 與文章素材的決策依據；本 task 不直接實作 UI。",
+      "acceptance": [
+        "MC-DASH-V2-A01：tasks.json 是唯一行動正本，議題紀錄只保存決策、理由、文獻、影響、演進與文章素材，不複製 status、priority、progress 或 next action。",
+        "MC-DASH-V2-A02：議題紀錄維持結論先行與四個主要區塊，僅讀標題、目前結論與各區首句即可在 30 秒內掌握問題、建議方案及影響。",
+        "MC-DASH-V2-A03：最終方案明確回答現在是否需要處理、先處理什麼、資料是否可信，並定義首頁與下鑽頁各自保留的資訊。",
+        "MC-DASH-V2-A04：所有使用者可見標題、按鈕、狀態、空狀態與錯誤訊息採繁體中文；task id、檔名、CLI 與 schema field 等技術識別碼可保留原文但不得主導首頁。",
+        "MC-DASH-V2-A05：決策記錄必須處理 MorroWise 活系統讀錯 project task chain、例外排序可能互相遮蔽、首頁資訊過密與單一讀取入口未落實等已知缺口，並指出後續 system 與 surface task owner。",
+        "MC-DASH-V2-A06：每筆關鍵文獻都記錄來源、關鍵觀點及如何影響本案；演進區只記方向轉折；文章素材至少包含核心論點、反直覺發現、案例與候選題目。",
+        "MC-DASH-V2-A07：本議題紀錄須由 JV-36 Document Source Registry 登錄，並由 generated document index 在 ARCHITECTURE.md 產生薄連結；薄連結只列摘要、正本、task anchor、狀態與 verifier，不複製文獻、演進或文章素材正文，也不得手改 ARCHITECTURE.md managed block。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/morrowise/notes/mc-dashboard-priority-ia-v2.md",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-drilldown-pages.md",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-read-model-contract.md",
+        "$COLLAB/harness-mc/scripts/generate-morrowise-live-dashboard.mjs",
+        "$COLLAB/harness-mc/app/page.tsx",
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-live-dashboard-mockup",
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-live-dashboard-homepage-implementation",
+        "$COLLAB/notyet-harness/300_Obsidian_brain/HC/_index/hc-registry.md"
+      ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ],
+        "decision_input": [
+          "既有 MC 首頁、MorroWise live dashboard read model、generator 與下鑽頁 draft spec 的唯讀盤點",
+          "Stephen Few、Ben Shneiderman、Nielsen Norman Group、Google SRE、Grafana 與 W3C 的 dashboard／progressive disclosure／alerting／localization 原則",
+          "HC #rightProblem、#infoNeeded、#optimization、#organization、#vincentThinking 的結構收斂結果"
+        ],
+        "decision_output": "一張 task-linked 單頁議題紀錄，以及核准後可分流至 MorroWise system 與 harness-mc surface owner 的繁中儀表板決策。",
+        "execution_boundary": "本 task 只建立與維護 canonical task 及單頁議題紀錄；不得在本輪修改 UI、generator、read model contract、generated JSON、外部 tracker、Heptabase、Canvas，也不授權 commit、push 或部署。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准使用 JV-32，把 MC 儀表板重規劃建立為可追蹤 work anchor，並要求以最少結構保存最終決定、思考脈絡、影響決策的文獻、演進與文章素材。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/mc-dashboard-priority-ia-v2.md",
+              "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-drilldown-pages.md",
+              "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+              "$COLLAB/notyet-harness/300_Obsidian_brain/HC/_index/hc-registry.md"
+            ],
+            "recorded_at": "2026-07-19"
+          }
+        ]
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/mc-dashboard-priority-ia-v2",
+        "hc_refs": [
+          "#rightProblem",
+          "#infoNeeded",
+          "#optimization",
+          "#organization",
+          "#vincentThinking"
+        ],
+        "hc_reasoning": "真正問題不是文件散落本身，而是每次接續工作或輸出文章時，找回目前決定、理由、依據與轉折的成本過高。#infoNeeded 將必要資訊收斂為行動狀態與思考脈絡兩類；#optimization 以找回速度、可讀性與再利用為主要目標，選擇一題兩檔的滿足解；#organization 採結論先行與四區塊；#vincentThinking 固定 tasks.json 為行動正本、議題紀錄為思考正本，其他 spec、ADR、article seed 只在門檻觸發後產生，避免第二正本與未來漂移。",
+        "hc_confidence": 0.9,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
+          "$COLLAB/harness-mc/milestones/morrowise/project.json#Task ownership routing",
+          "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-drilldown-pages.md",
+          "$COLLAB/harness-mc/scripts/generate-morrowise-live-dashboard.mjs",
+          "$COLLAB/harness-mc/public/data/morrowise-live-dashboard.json",
+          "$COLLAB/notyet-harness/300_Obsidian_brain/HC/_index/hc-registry.md"
+        ],
+        "source_boundary": "HC 只是思考檢查，不是正本；canonical 行動狀態的正本仍是 MorroWise tasks.json，議題紀錄只保存決策脈絡，generated dashboard 與未來 article seed 都是下游呈現或輸出。"
+      },
+      "architecture_decision": {
+        "decision": "not_required",
+        "evaluated_at": "2026-07-19",
+        "reason": "本 task 僅建立規劃與決策 work anchor，不新增 architecture subsystem；議題紀錄的 ARCHITECTURE.md 薄連結由 JV-36 Document Source Registry 與 generated document index 承接，不手寫 managed block。若核准後進入 system implementation，需在後續 task 重新做 Admission Review。"
+      },
+      "note": "2026-07-19 Vincent 核准以 JV-32 create 建立本 task。人工維護預設只保留 Task＋單頁議題紀錄；Spec、ADR、Article Seed 與 Daily Memory 不列為每個議題的必備層。議題紀錄需由 JV-36 registry 納管並在 ARCHITECTURE.md 產生薄連結，但不得複製正文或形成第二正本。方案核准後，才依 ownership routing 建立必要的 MorroWise system 與 harness-mc surface 實作 task。"
     }
   ]
 }

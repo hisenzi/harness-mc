@@ -1495,10 +1495,11 @@
       "commits": [
         "bfeae22",
         "38712f6",
-        "228b51d"
+        "228b51d",
+        "065baae"
       ],
       "summary": "完成 Fable 5 harness governance 健檢與判斷力外化：A-G 制度文件、source-of-truth delta map、入口 patch plan、對抗審查/read-back/amendment、兩輪 Codex 驗證交接與 optional cost-efficiency research design 均已落檔；B plan patches P1-P4+C1 保持待 Vincent 另行批准。",
-      "note": "2026-07-04 整合決策：不另開 agent-control-plane-harness project。Fable 5 是一次性高階 auditor，產物是 MorroWise governance upgrade。第一階段只做唯讀診斷與改造藍圖；任何既有入口文件修改必須有 patch plan、備份與 Vincent 明確批准。此 task 應引用既有 live-system admission、task ownership routing、manual live sync、wiring gate、verifier suite health 與 multi-session commit race governance，不得重寫平行制度。2026-07-05 完成：Phase 0-2 全交付於 $COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/（A-G + delta map + README + amendment + optional research design，13 docs）；經 Vincent 人工驗收 4 findings、fresh-context 對抗審查 18 findings、Codex 兩輪外部驗證（phase2-verification-handoff.md 6 findings、phase2-acceptance-readiness-handoff.md 4 findings）全部修復；notyet-harness delivery commit 38712f6 的 pending task-event 已套用；B plan 的入口 patches P1-P4+C1 維持 pending approval，不在本 completed 動作中執行。",
+      "note": "2026-07-04 整合決策：不另開 agent-control-plane-harness project。Fable 5 是一次性高階 auditor，產物是 MorroWise governance upgrade。第一階段只做唯讀診斷與改造藍圖；任何既有入口文件修改必須有 patch plan、備份與 Vincent 明確批准。此 task 應引用既有 live-system admission、task ownership routing、manual live sync、wiring gate、verifier suite health 與 multi-session commit race governance，不得重寫平行制度。2026-07-05 完成：Phase 0-2 全交付於 $COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/（A-G + delta map + README + amendment + optional research design，13 docs）；經 Vincent 人工驗收 4 findings、fresh-context 對抗審查 18 findings、Codex 兩輪外部驗證（phase2-verification-handoff.md 6 findings、phase2-acceptance-readiness-handoff.md 4 findings）全部修復；notyet-harness delivery commit 38712f6 的 pending task-event 已套用；B plan 的入口 patches P1-P4+C1 維持 pending approval，不在本 completed 動作中執行。2026-07-19 version_improvement：Vincent 決定不新增 JV-42；CORE 的「回答先行」與「相關不等於重複」規則歸本 task，因其負責 Harness 判斷力外化與 CORE 治理入口。notyet-harness commit 065baae 已加入可直接執行的判準；本 task 保持 completed、不 reopen，JV-41 仍只負責 skill-candidate-review。",
       "hc_decision": {
         "task_scope": "morrowise/fable-harness-judgment-transfer",
         "hc_refs": [
@@ -1519,6 +1520,33 @@
           "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-session-commit-race-governance"
         ],
         "source_boundary": "HC is a thinking check only. Canonical project/task state remains in $COLLAB/harness-mc/milestones/morrowise/tasks.json and project.json. Fable 5 outputs must become MorroWise governance docs, patch plans, verifiers, or future task anchors; they must not become a parallel source of truth."
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "將已核准的 CORE 回答先行與重複判斷規則記為既有 Harness 判斷力外化 task 的 version improvement，避免新增零散 JV-42。",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness/000_Agent/CORE.md",
+              "065baae",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#skill-candidate-review-gate"
+            ],
+            "recorded_at": "2026-07-19"
+          }
+        ]
+      },
+      "architecture_decision": {
+        "decision": "not_required",
+        "evaluated_at": "2026-07-19",
+        "reason": "此 version improvement 只補強既有 CORE 行為判準與 task lineage，不新增 architecture subsystem、runtime、registry、verifier、scheduler、adapter 或 surface。"
       }
     },
     {

@@ -28,6 +28,9 @@ export function applyTaskEvents(options = {}) {
     .filter((fileName) => fileName.endsWith(".json"))
     .sort();
 
+  validateManualRejectionReview(options.manualRejections, options.manualRejectionReview);
+  validateManualRejectionTargets(pendingDir, pendingFiles, options.manualRejections);
+
   const seenEventIds = collectProcessedEventIds(eventsRoot);
   const tasksCache = new Map();
   const report = {
@@ -53,6 +56,21 @@ export function applyTaskEvents(options = {}) {
       continue;
     }
 
+    const manualRejectionReason = options.manualRejections?.get(eventId);
+    if (manualRejectionReason) {
+      seenEventIds.add(eventId);
+      rejectEvent({
+        source,
+        fileName,
+        event,
+        reason: manualRejectionReason,
+        manualReview: options.manualRejectionReview,
+        rejectedDir,
+        report,
+      });
+      continue;
+    }
+
     if (!SUPPORTED_TYPES.has(event.type)) {
       seenEventIds.add(eventId);
       rejectEvent({ source, fileName, event, reason: "unknown_type", rejectedDir, report });
@@ -71,6 +89,7 @@ export function applyTaskEvents(options = {}) {
     applyEventToTask(task, event);
     enqueueSyncRequests(root, event, task);
     projectTasks.dirty = true;
+    projectTasks.touchedTaskIds.add(task.id);
     seenEventIds.add(eventId);
 
     moveEventFile(source, path.join(appliedDir, fileName), event, "applied");
@@ -79,8 +98,9 @@ export function applyTaskEvents(options = {}) {
 
   for (const projectTasks of tasksCache.values()) {
     if (projectTasks?.dirty) {
-      for (const task of projectTasks.data.tasks || []) {
-        projectTasks.state.tasks[task.id] = stateFromTask(task);
+      for (const taskId of projectTasks.touchedTaskIds) {
+        const task = projectTasks.data.tasks.find((item) => item.id === taskId);
+        if (task) projectTasks.state.tasks[task.id] = stateFromTask(task);
       }
       writeJson(projectTasks.statePath, projectTasks.state);
     }
@@ -101,6 +121,34 @@ export function applyTaskEvents(options = {}) {
   }
 
   return report;
+}
+
+function validateManualRejectionReview(manualRejections, review) {
+  if (!(manualRejections instanceof Map) || manualRejections.size === 0) return;
+  const isValid = review
+    && typeof review === "object"
+    && !Array.isArray(review)
+    && review.approved_by === "Vincent"
+    && isDateOnly(review.approved_at)
+    && Array.isArray(review.evidence_refs)
+    && review.evidence_refs.length > 0
+    && review.evidence_refs.every((ref) => typeof ref === "string" && ref.trim().length > 0);
+  if (!isValid) {
+    throw new Error("manual rejection requires explicit Vincent approval evidence");
+  }
+}
+
+function validateManualRejectionTargets(pendingDir, pendingFiles, manualRejections) {
+  if (!(manualRejections instanceof Map) || manualRejections.size === 0) return;
+  const pendingEventIds = new Set(
+    pendingFiles
+      .map((fileName) => readJson(path.join(pendingDir, fileName))?.event_id)
+      .filter(Boolean),
+  );
+  const missingEventIds = [...manualRejections.keys()].filter((eventId) => !pendingEventIds.has(eventId));
+  if (missingEventIds.length > 0) {
+    throw new Error(`manual rejection event_id not found in pending queue: ${missingEventIds.join(", ")}`);
+  }
 }
 
 function collectProcessedEventIds(eventsRoot) {
@@ -135,6 +183,7 @@ function loadProjectTasks(root, project, tasksCache) {
     state: {},
     data: null,
     dirty: false,
+    touchedTaskIds: new Set(),
   };
   projectTasks.state = fs.existsSync(projectTasks.statePath) ? readJson(projectTasks.statePath) : { tasks: {} };
   if (!projectTasks.state.tasks) projectTasks.state.tasks = {};
@@ -221,8 +270,13 @@ function appendCommit(task, commit) {
   if (!task.commits.includes(commit)) task.commits.push(commit);
 }
 
-function rejectEvent({ source, fileName, event, reason, rejectedDir, report }) {
-  const record = { rejected_at: new Date().toISOString(), reason, event };
+function rejectEvent({ source, fileName, event, reason, manualReview, rejectedDir, report }) {
+  const record = {
+    rejected_at: new Date().toISOString(),
+    reason,
+    ...(manualReview ? { manual_review: manualReview } : {}),
+    event,
+  };
   moveEventFile(source, path.join(rejectedDir, fileName), record, "rejected");
   report.rejected.push({ file: fileName, event_id: event?.event_id, reason });
 }
@@ -250,6 +304,12 @@ function dateOnly(value) {
   return new Date(value).toISOString().slice(0, 10);
 }
 
+function isDateOnly(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value || ""))) return false;
+  const parsed = new Date(`${value}T00:00:00Z`);
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+}
+
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
 }
@@ -260,6 +320,49 @@ function writeJson(filePath, value) {
 
 const isCli = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
 if (isCli) {
-  const report = applyTaskEvents();
+  const report = applyTaskEvents(parseCliArgs(process.argv.slice(2)));
   console.log(JSON.stringify(report, null, 2));
+}
+
+function parseCliArgs(argv) {
+  const manualRejections = new Map();
+  const manualRejectionReview = { evidence_refs: [] };
+  let hasManualReviewArg = false;
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    if (arg === "--reject-event") {
+      const value = argv[++index] || "";
+      const separator = value.indexOf("=");
+      if (separator <= 0 || separator === value.length - 1) {
+        throw new Error("--reject-event must be <event_id>=<reason>");
+      }
+      const eventId = value.slice(0, separator);
+      const reason = value.slice(separator + 1);
+      if (!/^[a-z][a-z0-9_]*$/.test(reason)) {
+        throw new Error(`manual rejection reason must be a stable snake_case code: ${reason}`);
+      }
+      manualRejections.set(eventId, reason);
+    } else if (arg === "--rejection-approved-by") {
+      manualRejectionReview.approved_by = argv[++index] || "";
+      hasManualReviewArg = true;
+    } else if (arg === "--rejection-approved-at") {
+      manualRejectionReview.approved_at = argv[++index] || "";
+      hasManualReviewArg = true;
+    } else if (arg === "--rejection-evidence-ref") {
+      manualRejectionReview.evidence_refs.push(argv[++index] || "");
+      hasManualReviewArg = true;
+    } else if (arg === "--help" || arg === "-h") {
+      console.log("Usage: node scripts/apply-task-events.mjs [--reject-event <event_id>=<reason> --rejection-approved-by Vincent --rejection-approved-at YYYY-MM-DD --rejection-evidence-ref <ref>]...");
+      process.exit(0);
+    } else {
+      throw new Error(`Unknown argument: ${arg}`);
+    }
+  }
+  if (hasManualReviewArg && manualRejections.size === 0) {
+    throw new Error("manual rejection approval fields require at least one --reject-event");
+  }
+  return {
+    manualRejections,
+    ...(manualRejections.size > 0 ? { manualRejectionReview } : {}),
+  };
 }

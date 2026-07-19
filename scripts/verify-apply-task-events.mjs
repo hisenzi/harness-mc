@@ -5,6 +5,39 @@ import path from "node:path";
 import { applyTaskEvents } from "./apply-task-events.mjs";
 
 const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "apply-task-events-"));
+const manualRejectionReview = {
+  approved_by: "Vincent",
+  approved_at: "2026-07-19",
+  evidence_refs: ["current-session: Vincent approved reviewed event application"],
+};
+
+const missingReviewRoot = fs.mkdtempSync(path.join(os.tmpdir(), "apply-task-events-missing-review-"));
+fs.mkdirSync(path.join(missingReviewRoot, "milestones", "demo-project"), { recursive: true });
+fs.mkdirSync(path.join(missingReviewRoot, "task-events", "pending"), { recursive: true });
+writeJson(path.join(missingReviewRoot, "milestones", "demo-project", "tasks.json"), {
+  tasks: [{ id: "task-1", title: "Review gate fixture", status: "todo" }],
+});
+writeJson(path.join(missingReviewRoot, "task-events", "pending", "001-manual-reject.json"), {
+  event_id: "evt-review-required",
+  type: "task.commit_attached",
+  repo: "demo-repo",
+  commit: "bad0000",
+  project: "demo-project",
+  task_id: "task-1",
+  summary: "Manual rejection must carry approval evidence.",
+  created_at: "2026-07-19T09:00:00+08:00",
+  actor: "codex",
+  session_id: "session-review",
+});
+assert.throws(
+  () => applyTaskEvents({
+    root: missingReviewRoot,
+    runGenerateData: false,
+    manualRejections: new Map([["evt-review-required", "wrong_task_owner"]]),
+  }),
+  /manual rejection requires explicit Vincent approval evidence/,
+);
+assert.equal(fs.readdirSync(path.join(missingReviewRoot, "task-events", "pending")).length, 1, "missing review evidence must fail before moving events");
 
 const projectDir = path.join(tmpRoot, "milestones", "demo-project");
 const pendingDir = path.join(tmpRoot, "task-events", "pending");
@@ -37,7 +70,26 @@ writeJson(path.join(projectDir, "tasks.json"), {
       title: "Third task",
       status: "todo",
     },
+    {
+      id: "task-4",
+      title: "Untouched task with legacy state metadata",
+      status: "todo",
+    },
+    {
+      id: "task-5",
+      title: "Untouched task without state",
+      status: "todo",
+    },
   ],
+});
+
+writeJson(path.join(projectDir, "state.json"), {
+  tasks: {
+    "task-4": {
+      status: "todo",
+      note: "This unrelated legacy state metadata must remain byte-equivalent.",
+    },
+  },
 });
 
 writeEvent("001-complete.json", {
@@ -144,14 +196,48 @@ writeEvent("008-unknown-project.json", {
   session_id: "session-6",
 });
 
-const report = applyTaskEvents({ root: tmpRoot, runGenerateData: false });
+writeEvent("009-manual-reject.json", {
+  event_id: "evt-wrong-task-owner",
+  type: "task.commit_attached",
+  repo: "demo-repo",
+  commit: "bad0004",
+  project: "demo-project",
+  task_id: "task-3",
+  summary: "A reviewer found that this commit belongs to another task.",
+  created_at: "2026-06-15T14:00:00+08:00",
+  actor: "codex",
+  session_id: "session-7",
+});
+
+assert.throws(
+  () => applyTaskEvents({
+    root: tmpRoot,
+    runGenerateData: false,
+    manualRejections: new Map([["evt-misspelled-owner", "wrong_task_owner"]]),
+    manualRejectionReview,
+  }),
+  /manual rejection event_id not found in pending queue: evt-misspelled-owner/,
+);
+assert.equal(fs.readdirSync(pendingDir).length, 9, "unmatched manual rejection must fail before moving any event");
+assert.equal(fs.readdirSync(path.join(tmpRoot, "task-events", "applied")).length, 0, "unmatched manual rejection must not apply events");
+assert.equal(fs.readdirSync(path.join(tmpRoot, "task-events", "rejected")).length, 0, "unmatched manual rejection must not reject events");
+
+const report = applyTaskEvents({
+  root: tmpRoot,
+  runGenerateData: false,
+  manualRejections: new Map([["evt-wrong-task-owner", "wrong_task_owner"]]),
+  manualRejectionReview,
+});
 
 assert.equal(report.applied.length, 4);
-assert.equal(report.rejected.length, 4);
+assert.equal(report.rejected.length, 5);
 assert.equal(report.duplicates.length, 1);
 assert.equal(report.rejected.find((item) => item.event_id === "evt-unknown-task").reason, "unknown_task");
 assert.equal(report.rejected.find((item) => item.event_id === "evt-unknown-type").reason, "unknown_type");
 assert.equal(report.rejected.find((item) => item.event_id === "evt-unknown-project").reason, "unknown_task");
+assert.equal(report.rejected.find((item) => item.event_id === "evt-wrong-task-owner").reason, "wrong_task_owner");
+const manualRejectionRecord = JSON.parse(fs.readFileSync(path.join(tmpRoot, "task-events", "rejected", "009-manual-reject.json"), "utf8"));
+assert.deepEqual(manualRejectionRecord.manual_review, manualRejectionReview);
 
 const definitionsAfterApply = JSON.parse(fs.readFileSync(path.join(projectDir, "tasks.json"), "utf8"));
 assert.equal(definitionsAfterApply.tasks.find((task) => task.id === "task-1").status, "in_progress");
@@ -162,6 +248,7 @@ const state = JSON.parse(fs.readFileSync(path.join(projectDir, "state.json"), "u
 const task1 = state.tasks["task-1"];
 const task2 = state.tasks["task-2"];
 const task3 = state.tasks["task-3"];
+const task4 = state.tasks["task-4"];
 
 assert.equal(task1.status, "completed");
 assert.equal(task1.completed_at, "2026-06-15");
@@ -173,15 +260,20 @@ assert.deepEqual(task2.commits, ["def5678"]);
 
 assert.equal(task3.status, "blocked");
 assert.deepEqual(task3.commits, ["fed4321", "bee9999"]);
+assert.deepEqual(task4, {
+  status: "todo",
+  note: "This unrelated legacy state metadata must remain byte-equivalent.",
+});
+assert.equal(Object.hasOwn(state.tasks, "task-5"), false, "untouched task without state must not be auto-added");
 
 assert.deepEqual(fs.readdirSync(pendingDir), []);
 assert.equal(fs.readdirSync(path.join(tmpRoot, "task-events", "applied")).length, 4);
-assert.equal(fs.readdirSync(path.join(tmpRoot, "task-events", "rejected")).length, 4);
+assert.equal(fs.readdirSync(path.join(tmpRoot, "task-events", "rejected")).length, 5);
 
 const reportPath = path.join(tmpRoot, "task-events", "latest-report.json");
 const writtenReport = JSON.parse(fs.readFileSync(reportPath, "utf8"));
 assert.equal(writtenReport.applied.length, 4);
-assert.equal(writtenReport.rejected.length, 4);
+assert.equal(writtenReport.rejected.length, 5);
 assert.equal(writtenReport.duplicates.length, 1);
 
 const syncPendingDir = path.join(tmpRoot, "sync-events", "pending");

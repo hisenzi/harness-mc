@@ -3224,10 +3224,28 @@
             "reason": "由 credential lifecycle governance Admission Record 正式治理已收編的通知 delivery adapter 之最小權限、輪替、事件與安全健康摘要邊界；關係正本與薄層索引均已同步驗證。"
           },
           "recorded_at": "2026-07-19"
+        }, {
+          "operation": "amend",
+          "from_status": "completed",
+          "to_status": "completed",
+          "reason": "依 closeout-commit-routing 回填 JV-39 主實作 commit hash，維持 completed 狀態並保留可追溯 commit evidence。",
+          "evidence_refs": [
+            "f646aad",
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#credential-lifecycle-governance"
+          ],
+          "architecture_relation_impact": {
+            "decision": "none",
+            "relationship_ids": [],
+            "reason": "本次只回填既有 completed task 的 commit evidence；Architecture Admission Record 與 relationship 均未變更。"
+          },
+          "recorded_at": "2026-07-19"
         }]
       },
       "status": "completed",
       "completed_at": "2026-07-19",
+      "commits": [
+        "f646aad"
+      ],
       "summary": "完成 agent-neutral 的六類憑證生命週期治理：能力 registry 延伸、安全三機摘要與 credential health read model、MC 顯示、GitHub Actions 最小權限、負向 verifier 與 ARCHITECTURE.md 受控薄層同步；所有外部憑證與帳號操作仍保持未執行。",
       "title": "JV-39 安全憑證生命週期與三機安全啟用治理",
       "track": "governance",

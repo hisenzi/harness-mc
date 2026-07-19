@@ -3611,6 +3611,98 @@
         "reason": "本 task 僅建立規劃與決策 work anchor，不新增 architecture subsystem；議題紀錄的 ARCHITECTURE.md 薄連結由 JV-36 Document Source Registry 與 generated document index 承接，不手寫 managed block。若核准後進入 system implementation，需在後續 task 重新做 Admission Review。"
       },
       "note": "2026-07-19 Vincent 核准以 JV-32 create 建立本 task。人工維護預設只保留 Task＋單頁議題紀錄；Spec、ADR、Article Seed 與 Daily Memory 不列為每個議題的必備層。議題紀錄需由 JV-36 registry 納管並在 ARCHITECTURE.md 產生薄連結，但不得複製正文或形成第二正本。方案核准後，才依 ownership routing 建立必要的 MorroWise system 與 harness-mc surface 實作 task。"
+    },
+    {
+      "id": "skill-candidate-review-gate",
+      "title": "JV-41 Task Review／Closeout 的 Skill 候選提醒 Gate",
+      "status": "todo",
+      "track": "governance",
+      "order_label": "JV-41",
+      "priority": "medium",
+      "dependencies": [
+        "morrowise-dev-workflow-catalog",
+        "task-lifecycle-jv32-gate"
+      ],
+      "done_condition": "在既有 JV-32 Review／Closeout 流程加入 skill-candidate-review：task 驗收完成或 closeout 前，依可追溯證據輸出 not_applicable、observe、create_skill 或 update_skill，向 Vincent 顯示理由與下一步；只有 Vincent 核准後才轉入 skill-authoring。此 gate 不自動建立、修改或安裝 skill，不新增排程、通知系統或第二套 task lifecycle。",
+      "acceptance": [
+        "JV-41-A01｜定位明確：本 task 是 JV-32／JV-40 的 version improvement，只補 Review／Closeout 缺少的 skill 候選檢查；不得重做 workflow catalog、task lifecycle、skill builder，也不得形成新 architecture subsystem。",
+        "JV-41-A02｜觸發時機固定：正式檢查只在 task 驗收完成或 closeout 前執行；task create／amend、一般聊天、每日排程與背景健康檢查不得自動發出 skill 提醒。使用者明確說『做成 skill』時仍可直接走既有 skill-authoring，不必等待 closeout。",
+        "JV-41-A03｜候選判準固定：使用者明確要求，或同一方法已在至少兩次獨立執行中成功且具有穩定 input、steps、output 與 verifier，才可判 create_skill；找到既有 skill 時只能判 update_skill；只有單次案例、驗證不足或仍高度專案特化時判 observe／not_applicable。",
+        "JV-41-A04｜輸出最小化：skill_candidate_review 只保存 outcome、reason、evidence_refs、existing_skill_ref、next_action 與 reviewed_at；不複製 task state、對話全文、秘密或 runtime auth。observe 必須給下次重看條件，create_skill／update_skill 必須列出目標 skill 與可驗證依據。",
+        "JV-41-A05｜提醒不等於執行：create_skill／update_skill 只向 Vincent 顯示一次清楚提案；未取得核准不得建立、修改、安裝或發布 skill，也不得阻止原 task 在其他驗收已通過時正常 closeout。",
+        "JV-41-A06｜避免重複：提案前先查正式 skill index、現有 skill description 與相關 canonical task；能更新既有 skill 就不新建。domain-specific skill 化 task（例如 JV-34）維持原 owner，不被本 gate 吞併。",
+        "JV-41-A07｜實作與驗證範圍：正式 review skill 由 v1.0 升級並補版本紀錄，JV-32 catalog／task write command map 登記 skill-candidate-review route；fixtures 至少覆蓋 not_applicable、observe、create_skill、update_skill、既有 skill 去重、未核准禁止寫檔與一般 create／amend 不觸發。完成前執行 JV-32 version-improvement Architecture Admission Review 與受控索引 sync check。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/skills/review/SKILL.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/vincent-superpowers/05-review/SKILL.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/vincent-superpowers/06-skill-authoring/SKILL.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/hisenzi-skill-builder/SKILL.md",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-dev-workflow-catalog",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate"
+      ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ],
+        "decision_input": [
+          "正式 review skill 缺少 skill 候選提醒的現況",
+          "vincent-superpowers review 已有人工詢問語意，但未接入 canonical lifecycle",
+          "JV-32 workflow catalog 與 JV-40 task lifecycle 的既有 completion boundary",
+          "JV-34 只處理客戶表單流程 skill 化，不能承接通用規則的查重結果"
+        ],
+        "decision_output": "一個非阻斷、可追溯且需 Vincent 核准的 skill-candidate-review gate，接入既有 Review／Closeout 而不建立平行系統。",
+        "execution_boundary": "本次只建立 canonical todo task；不得修改任何 SKILL.md、JV-32 catalog、schema、verifier、ARCHITECTURE.md、外部 tracker、Canvas 或 Heptabase，也不授權 commit、push 或部署。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 確認既有 JV-32、JV-40、review、skill-authoring 與 JV-34 都未提供通用且可追蹤的 skill 候選提醒 gate，核准新增 JV-41 作為小型補強 task。",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness/000_Agent/skills/review/SKILL.md",
+              "$COLLAB/notyet-harness/000_Agent/skills/vincent-superpowers/05-review/SKILL.md",
+              "$COLLAB/notyet-harness/000_Agent/skills/vincent-superpowers/06-skill-authoring/SKILL.md",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#client-form-onboarding-template"
+            ],
+            "recorded_at": "2026-07-19"
+          }
+        ]
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/skill-candidate-review-gate",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#risk",
+          "#optimization",
+          "#sourceBoundary",
+          "#evidenceBased"
+        ],
+        "hc_reasoning": "真正問題不是 Agent 不知道怎麼寫 skill，而是 task 成功後缺少固定、低摩擦且不會過早固化的提醒時點。#rightProblem 將需求收斂為 Review／Closeout 的候選判定；#systemDynamics 同時防止可複用方法被遺忘與 skill 數量無限制膨脹；#risk 禁止未核准自動建檔、安裝或重複造 skill；#optimization 只增加一次四值判定，不新增排程或第二套 lifecycle；#sourceBoundary 將 task state、候選判定、Vincent 核准與 skill 正本分開；#evidenceBased 要求重複成功、穩定 contract、現有 skill 查重與負向 fixtures。",
+        "hc_confidence": 0.94,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/000_Agent/skills/review/SKILL.md",
+          "$COLLAB/notyet-harness/000_Agent/skills/vincent-superpowers/05-review/SKILL.md",
+          "$COLLAB/notyet-harness/000_Agent/skills/vincent-superpowers/06-skill-authoring/SKILL.md",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#client-form-onboarding-template"
+        ],
+        "source_boundary": "HC 只負責思考檢查，不是正本；task 狀態由 MorroWise tasks.json 管理，route contract 由 JV-32 catalog 管理，skill 內容仍以正式 SKILL.md 為正本，任何 skill 寫入需 Vincent 核准。"
+      },
+      "architecture_decision": {
+        "decision": "deferred",
+        "evaluated_at": "2026-07-19",
+        "reason": "JV-41 是既有 promoted JV-32 workflow catalog 與 JV-40 lifecycle 的 version improvement，不新增 architecture subsystem；待 route、fixtures、review skill 版本更新與 Admission Record fingerprint 證據完成後，再受控更新既有索引的 version review。"
+      },
+      "note": "2026-07-19 查重結論：沒有重複 task；新增 JV-41 作為 JV-32／JV-40 的小型補強。現階段只建立 todo work anchor，不修改任何 skill。依 MorroWise 核心改善規則，本 task 只有在被選為當週唯一核心改善項目時才可轉 in_progress；review date 到期未完成則 reframe、defer 或 cancel，不自動延長。"
     }
   ]
 }

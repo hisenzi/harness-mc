@@ -19,12 +19,12 @@ Owner task：`$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-
 | `create` | 建立新 task | `from_status` 必為 `null` | 建立原因與來源證據 |
 | `amend` | 同一 status 下的語意修改，或一般進度狀態變化 | `to_status` 必與現況一致 | 修改原因與證據 |
 | `suspend` | 暫時停用／等待條件 | `to_status` 必為 `deferred` | `reactivation_criteria` |
-| `resume` | 從 `deferred` 回到可執行狀態 | 不可仍是 `deferred` | 恢復依據 |
+| `resume` | 從 `deferred` 或已關閉狀態重新進入可執行狀態 | 不可仍是 `deferred`／closed | 恢復依據 |
 | `complete` | 結束為 `done`／`completed`／`fixed` | 必經 `closeout-commit-routing` | 驗收／verifier／commit 或 task-event 證據 |
 | `cancel` | 不再執行 | `to_status` 必為 `cancelled` | `replacement_task_id` 或 `no_replacement_reason` |
 | `archive` | 歷史封存或已被取代 | `to_status` 必為 `archived` | 封存原因；若有取代者填 `superseded_by` |
 
-不存在 `disabled` status。使用者說「停用」時，必須在 `deferred`、`cancelled`、`archived` 中選一個語意正確的結果。`blocked` 仍是 active task，不是停用。
+不存在 `disabled` status。使用者說「停用」時，必須在 `deferred`、`cancelled`、`archived` 中選一個語意正確的結果。`blocked` 仍是 active task，不是停用。不得從 canonical `tasks.json` 物理刪除 task，也不得刪除整份檔案；不再執行時必須保留歷史並走 `cancel` 或 `archive`。
 
 ## 最小記錄
 
@@ -47,13 +47,63 @@ Owner task：`$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-
 
 `history` 為 append-only；既有 event 不可覆寫。內容只可保存安全 metadata、原因與 evidence reference，不可保存 token、Cookie、帳號、秘密、runtime auth 或私人設定。
 
+## Semantic Task Intake
+
+MorroWise 的新增或語意修改 task 在寫入正本前，必須把 `semantic_intake` 放在本次最新 lifecycle event。它不是關鍵字查重，而是固定檢查四個邊界：問題、owner／source of truth、輸入輸出、lifecycle／completion。
+
+```json
+{
+  "semantic_intake": {
+    "outcome": "amend",
+    "compared_task_refs": ["morrowise/morrowise-dev-workflow-catalog"],
+    "scope_comparison": {
+      "problem": "兩者都在處理 canonical task intake。",
+      "owner_source_of_truth": "owner 與正本同為 JV-32／tasks.json。",
+      "inputs_outputs": "沿用既有 route、schema 與 verifier。",
+      "lifecycle_completion": "完成邊界仍是同一個 version improvement。"
+    },
+    "decision_reason": "同一責任邊界，更新既有 task，不新增 task。",
+    "approval": {
+      "status": "approved",
+      "approved_by": "Vincent",
+      "approved_at": "YYYY-MM-DD",
+      "evidence_refs": ["可持久查核的核准與 task ref"]
+    }
+  }
+}
+```
+
+結果與寫入規則固定如下：
+
+- `reuse`：read-only 結果，不得產生 canonical mutation。
+- `amend`：只用於既有 task，且必須有 Vincent 明確核准。
+- `replace`：只由新 successor 的 create event 使用，必須填 `replaces_task_refs`；被取代 task 必須在同一 canonical state 中 archive 或 cancel。
+- `genuinely_new`：只用於新 task。
+- 無法判定、比較引用不存在或未核准時 hard-fail。
+
+只有 `commits`、`completed_at`、`summary`、`external_refs`、`jv32_route`、`task_lifecycle` 的 bookkeeping-only mutation 可不重跑 semantic intake；status、scope、note、done condition、依賴、weekly core 與 review date 都是語意變更。
+
+## Weekly Core 與 Review Date
+
+MorroWise 每次最多一個 task 可設 `weekly_core: true`。該 task 必須同時是 `in_progress` 且有 `review_date: YYYY-MM-DD`；首次進入 slot 時，最新 lifecycle event 必須帶 `weekly_core_review.decision: admit`、Vincent 核准證據與相同的 `next_review_date`。
+
+當 Asia/Taipei 的 `as_of >= review_date`，validator 與 work-anchor preflight 都會 hard-fail。只能由 Vincent 明確選擇：
+
+- `reframe`：維持 `in_progress`，更新 scope 與 review date；event 必須精確記錄 `previous_review_date`、`next_review_date`、`new_scope` 及重新核准。
+- `suspend`：task 轉 `deferred`，清除 weekly core／review date，保留 `reactivation_criteria`。
+- `cancel`：task 轉 `cancelled`，清除 weekly core／review date，保留 replacement 或 no-replacement 理由。
+- `complete`：驗收後走既有 closeout route，清除 weekly core／review date；最新 event 必須記錄 `weekly_core_review.decision: complete` 與 Vincent 核准。
+
+禁止在 task 仍為 `in_progress` 時直接清掉 weekly core，也禁止只改日期、以未回覆或排程默認延長。
+
 ## Gate 與驗證
 
 1. 先判斷正本 project 與 active owner task；跨 repo 變更不得直接繞過 task event single-writer 流程。
 2. Vincent 明確核准 task-state mutation 後，追加 lifecycle event 與所需的 `jv32_route`。
-3. 執行 `node scripts/validate-tasks.mjs --changed-only`。新 task、語意修改、停用、恢復與完成若缺 route、history、理由、狀態一致性或 closeout 條件，必須 fail。
-4. 執行 `node scripts/generate-data.mjs`，確認 generated surface 只反映 canonical state。
-5. 完成 status 額外依 JV-32 `closeout-commit-routing` 走 verification-before-completion、必要的 cc-log、worktree-commit 與 task completion evidence；此 route 不取代 Vincent 的 commit／push 核准。
+3. 執行 `node scripts/validate-tasks.mjs --changed-only`。新 task、語意修改、停用、恢復與完成若缺 route、history、semantic intake、理由、狀態一致性或 closeout 條件，必須 fail；測試／回放可用 `--as-of YYYY-MM-DD` 固定時鐘。
+4. 進入 MorroWise implementation 前執行 `node scripts/work-anchor-preflight.mjs --project morrowise --task-id <id> --event implementation --scope <path>`；到期 weekly core 必須先處置，不能繼續改檔。
+5. 執行 `node scripts/generate-data.mjs`，確認 generated surface 只反映 canonical state。
+6. 完成 status 額外依 JV-32 `closeout-commit-routing` 走 verification-before-completion、必要的 cc-log、worktree-commit 與 task completion evidence；此 route 不取代 Vincent 的 commit／push 核准。
 
 ## Architecture Admission Review
 

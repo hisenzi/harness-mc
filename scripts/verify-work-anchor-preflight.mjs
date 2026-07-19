@@ -196,4 +196,75 @@ assert.deepEqual(
   ["write_boundary"],
 );
 
+const weeklyCoreFixturePath = path.join(tmpDir, "weekly-core-tasks.json");
+fs.writeFileSync(
+  weeklyCoreFixturePath,
+  JSON.stringify({
+    tasks: [
+      {
+        id: "task-lifecycle-jv32-gate",
+        title: "JV-40 weekly core runtime fixture",
+        status: "in_progress",
+        track: "governance",
+        order_label: "JV-40",
+        done_condition: "Runtime preflight blocks execution once the explicit review date arrives.",
+        weekly_core: true,
+        review_date: "2026-07-25",
+        hc_decision: {
+          task_scope: "morrowise/task-lifecycle-jv32-gate",
+          hc_refs: ["#rightProblem", "#risk"],
+          hc_reasoning: "Fixture validates the live weekly core deadline gate.",
+          hc_confidence: 0.8,
+          evidence_refs: ["milestones/morrowise/tasks.json"],
+          source_boundary: "HC is a thinking check, not source of truth; tasks.json remains canonical.",
+        },
+      },
+      {
+        id: "non-core-maintenance-task",
+        title: "Non-core task must not bypass an expired weekly core",
+        status: "in_progress",
+        track: "operations",
+        done_condition: "Fixture proves the global weekly core deadline blocks every MorroWise execution target.",
+      },
+    ],
+  }, null, 2),
+  "utf-8",
+);
+
+const expiredWeeklyCore = runPreflight({
+  project: "morrowise",
+  tasks: weeklyCoreFixturePath,
+  taskId: "task-lifecycle-jv32-gate",
+  intent: "continue weekly core implementation",
+  asOf: "2026-07-25",
+  proposedAcceptance: [],
+});
+assert.equal(expiredWeeklyCore.decision, "blocked");
+assert.equal(expiredWeeklyCore.weekly_core_gate.decision, "blocked");
+assert.match(expiredWeeklyCore.blocked_reason, /review_date has arrived/);
+
+const currentWeeklyCore = runPreflight({
+  project: "morrowise",
+  tasks: weeklyCoreFixturePath,
+  taskId: "task-lifecycle-jv32-gate",
+  intent: "continue weekly core implementation",
+  asOf: "2026-07-24",
+  proposedAcceptance: [],
+});
+assert.equal(currentWeeklyCore.decision, "allow");
+assert.equal(currentWeeklyCore.weekly_core_gate.decision, "allow");
+
+const nonCoreTargetWithExpiredWeeklyCore = runPreflight({
+  project: "morrowise",
+  tasks: weeklyCoreFixturePath,
+  taskId: "non-core-maintenance-task",
+  intent: "start unrelated maintenance while weekly core is overdue",
+  asOf: "2026-07-25",
+  proposedAcceptance: [],
+});
+assert.equal(nonCoreTargetWithExpiredWeeklyCore.decision, "blocked");
+assert.equal(nonCoreTargetWithExpiredWeeklyCore.weekly_core_gate.decision, "blocked");
+assert.match(nonCoreTargetWithExpiredWeeklyCore.blocked_reason, /task-lifecycle-jv32-gate/);
+assert.match(nonCoreTargetWithExpiredWeeklyCore.blocked_reason, /review_date has arrived/);
+
 console.log("Work-anchor preflight verification OK");

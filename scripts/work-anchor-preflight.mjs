@@ -28,6 +28,7 @@ function parseArgs(argv) {
     reportFormat: null,
     modelTier: null,
     verifyPlan: null,
+    asOf: todayInTaipei(),
     json: false,
   };
 
@@ -49,6 +50,10 @@ function parseArgs(argv) {
     else if (arg === "--report-format") args.reportFormat = argv[++i];
     else if (arg === "--model-tier") args.modelTier = argv[++i];
     else if (arg === "--verify-plan") args.verifyPlan = argv[++i];
+    else if (arg === "--as-of") {
+      args.asOf = argv[++i];
+      if (!isDateOnly(args.asOf)) throw new Error(`--as-of must be YYYY-MM-DD, got: ${args.asOf}`);
+    }
     else if (arg === "--json") args.json = true;
     else if (arg === "--help" || arg === "-h") args.help = true;
     else throw new Error(`Unknown argument: ${arg}`);
@@ -81,6 +86,7 @@ function usage() {
     "  --report-format <text>                 回報格式（無模板時必填其一）",
     "  --model-tier <tier>                    派工模型分級（C 契約 §3）",
     "  --verify-plan <text>                   驗證路徑（C 契約 §7：實作者不得自我驗證）",
+    "  --as-of <YYYY-MM-DD>                  Weekly core deadline clock（default: Asia/Taipei today）",
     "  --json                                Output machine-readable JSON",
   ].join("\n");
 }
@@ -111,6 +117,8 @@ function summarizeTask(task) {
     track: task.track || null,
     done_condition: task.done_condition || null,
     hc_decision: task.hc_decision || null,
+    weekly_core: task.weekly_core === true,
+    review_date: task.review_date || null,
   };
 }
 
@@ -174,6 +182,9 @@ export function runPreflight(args) {
     : activeTasks[0] || null;
   const hcGate = targetTask ? evaluateHcGate(targetTask, project) : null;
   const eventGate = args.event ? evaluateEventGate(args, targetTask, hcGate) : null;
+  const weeklyCoreGate = project === "morrowise"
+    ? evaluateWeeklyCoreGate(tasks, targetTask, args.asOf || todayInTaipei())
+    : null;
 
   const result = {
     project,
@@ -185,13 +196,19 @@ export function runPreflight(args) {
     active_task: targetTask,
     hc_gate: hcGate,
     event_gate: eventGate,
+    weekly_core_gate: weeklyCoreGate,
     decision:
-      targetTask && (!hcGate || hcGate.decision === "allow") && (!eventGate || eventGate.decision === "allow")
+      targetTask
+        && (!hcGate || hcGate.decision === "allow")
+        && (!eventGate || eventGate.decision === "allow")
+        && (!weeklyCoreGate || weeklyCoreGate.decision === "allow")
         ? "allow"
         : "blocked",
     next_required_step: targetTask
       ? hcGate?.decision === "blocked"
         ? "先輸出 HC decision block；確認 HC 是 thinking check 且 evidence/source-of-truth 清楚後，才可進入 work-anchor / implementation flow。"
+        : weeklyCoreGate?.decision === "blocked"
+          ? "先由 Vincent 明確選擇 reframe、suspend、cancel 或 complete，更新 canonical task 後才可繼續。"
         : "進入 execution，並把 active_task 作為 work anchor。"
       : args.taskId
         ? "指定 task 不是 active 狀態；先更新或確認 task 狀態，才可開始改檔。"
@@ -205,12 +222,87 @@ export function runPreflight(args) {
     result.blocked_reason = `Target task ${args.taskId} is not active or does not exist.`;
   } else if (hcGate?.decision === "blocked") {
     result.blocked_reason = hcGate.reason;
+  } else if (weeklyCoreGate?.decision === "blocked") {
+    result.blocked_reason = weeklyCoreGate.reason;
   } else if (eventGate?.decision === "blocked") {
     result.blocked_reason = eventGate.reason;
     result.next_required_step = eventGate.next_required_step;
   }
 
   return result;
+}
+
+function evaluateWeeklyCoreGate(tasks, targetTask, asOf) {
+  const weeklyCoreTasks = tasks.filter((task) => task?.weekly_core === true);
+  if (weeklyCoreTasks.length > 1) {
+    return {
+      decision: "blocked",
+      reason: `at most one MorroWise task may have weekly_core=true; found ${weeklyCoreTasks.length}`,
+      as_of: asOf,
+      task_ids: weeklyCoreTasks.map((task) => task.id),
+    };
+  }
+
+  const weeklyCoreTask = weeklyCoreTasks[0] || null;
+  if (weeklyCoreTask && weeklyCoreTask.status !== "in_progress") {
+    return {
+      decision: "blocked",
+      reason: `weekly_core task ${weeklyCoreTask.id} requires status in_progress before any MorroWise execution`,
+      as_of: asOf,
+      task_ids: weeklyCoreTasks.map((task) => task.id),
+    };
+  }
+
+  if (weeklyCoreTask && !isDateOnly(weeklyCoreTask.review_date)) {
+    return {
+      decision: "blocked",
+      reason: `weekly_core task ${weeklyCoreTask.id} requires a valid review_date before any MorroWise execution`,
+      as_of: asOf,
+      task_ids: weeklyCoreTasks.map((task) => task.id),
+    };
+  }
+
+  if (weeklyCoreTask && weeklyCoreTask.review_date <= asOf) {
+    return {
+      decision: "blocked",
+      reason: `weekly_core task ${weeklyCoreTask.id} review_date has arrived (${weeklyCoreTask.review_date}); explicit reframe, suspend, cancel, or complete is required`,
+      as_of: asOf,
+      task_ids: weeklyCoreTasks.map((task) => task.id),
+    };
+  }
+
+  if (!targetTask?.weekly_core) {
+    return {
+      decision: "allow",
+      reason: weeklyCoreTask
+        ? `Target task does not occupy the MorroWise weekly core slot; ${weeklyCoreTask.id} is current through ${weeklyCoreTask.review_date}.`
+        : "Target task does not occupy the MorroWise weekly core slot; no weekly core is currently selected.",
+      as_of: asOf,
+      task_ids: weeklyCoreTasks.map((task) => task.id),
+    };
+  }
+
+  return {
+    decision: "allow",
+    reason: `weekly_core review window is current through ${weeklyCoreTask.review_date}`,
+    as_of: asOf,
+    task_ids: weeklyCoreTasks.map((task) => task.id),
+  };
+}
+
+function isDateOnly(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value || ""))) return false;
+  const parsed = new Date(`${value}T00:00:00Z`);
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+}
+
+function todayInTaipei() {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Taipei",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
 }
 
 // JV-17 事件點 gate（morrowise/dispatch-gate-extension）。
@@ -311,6 +403,7 @@ export function formatMarkdown(result) {
     `existing task state: total=${result.existing_task_state.total}, active=${result.existing_task_state.active}, done=${result.existing_task_state.done}, other=${result.existing_task_state.other}`,
     `active task: ${result.active_task ? `${result.active_task.id} (${result.active_task.status})` : "none"}`,
     `hc gate: ${result.hc_gate ? `${result.hc_gate.decision} (${result.hc_gate.reason})` : "n/a"}`,
+    `weekly core gate: ${result.weekly_core_gate ? `${result.weekly_core_gate.decision} (${result.weekly_core_gate.reason})` : "n/a"}`,
     `result: ${result.decision}`,
     `next required step: ${result.next_required_step}`,
   ];

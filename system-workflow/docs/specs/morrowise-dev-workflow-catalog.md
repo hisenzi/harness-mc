@@ -23,7 +23,7 @@ The catalog turns useful external software-development workflow patterns into Mo
 - `grill-me` is a pre-workflow stress test because it is stateless.
 - `grill-with-docs` is the formal workflow start because it leaves durable artifacts.
 - `to-issues` and `triage` are `adapter_only` when they imply external issue tracker writes.
-- `task-lifecycle` 是新增、語意修改、暫緩、恢復、完成、取消與封存 canonical task 的內建 route；它不建立第二套 task system。
+- `task-lifecycle` 是新增、語意修改、暫緩、恢復、完成、取消與封存 canonical task 的內建 route；它用 semantic intake 固定 `reuse|amend|replace|genuinely_new`，並機械限制單一 weekly core 與 review date，不建立第二套 task system。
 - `prototype` remains prototype status until its answer is captured into a durable MorroWise artifact.
 - `resolving-merge-conflicts` is deferred until MorroWise has a merge-operation owner and verification boundary.
 - `closeout-commit-routing` is the closeout route: verified work goes through `verification-before-completion`, optional `cc-log`, then `worktree-commit`, then task completion evidence.
@@ -60,7 +60,7 @@ Roadmap placeholder labels must not use bare future `JV-xx` numbers. Use anchor-
 
 ## Canonical Task Lifecycle
 
-`task-lifecycle` 將 canonical task mutation 接入 JV-32。新建或變更 task 必須有 `jv32_route.workflows` 的 `task-lifecycle` 與 append-only `task_lifecycle.history`。停用不得使用模糊 `disabled`，而是明確使用 `deferred`、`cancelled` 或 `archived`；完成仍必須走下方的 `closeout-commit-routing`。完整欄位、狀態語意與 cross-repo boundary 見 [MorroWise Canonical Task Lifecycle](morrowise-task-lifecycle.md)。
+`task-lifecycle` 將 canonical task mutation 接入 JV-32。MorroWise 新建或語意變更 task 必須在最新 event 記錄四維 scope comparison、canonical task refs、固定 intake outcome 與 Vincent approval；`reuse` 不寫正本。每次最多一個 `weekly_core: true`，且必須有未到期 review date；到期只能由 Vincent 明確核准 reframe、suspend、cancel 或 complete。停用不得使用模糊 `disabled`，而是明確使用 `deferred`、`cancelled` 或 `archived`；完成仍必須走下方的 `closeout-commit-routing`。完整欄位、狀態語意與 cross-repo boundary 見 [MorroWise Canonical Task Lifecycle](morrowise-task-lifecycle.md)。
 
 ## Closeout Rules
 

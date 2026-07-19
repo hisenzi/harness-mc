@@ -77,24 +77,7 @@ const baseTasks = {
 
 writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), baseTasks);
 writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), {
-  tasks: [
-    {
-      id: "morrowise-seed-task",
-      title: "Seed MorroWise task",
-      status: "todo",
-      track: "governance",
-      order_label: "JV-VERIFY-00",
-      done_condition: "Seed task validates MorroWise project routing.",
-      hc_decision: {
-        task_scope: "morrowise/seed",
-        hc_refs: ["#rightProblem"],
-        hc_reasoning: "Fixture keeps MorroWise task validation active.",
-        hc_confidence: 0.7,
-        evidence_refs: ["milestones/morrowise/tasks.json"],
-        source_boundary: "HC is a thinking check, not source of truth; tasks.json remains canonical."
-      }
-    }
-  ]
+  tasks: [morrowiseSeedTask()]
 });
 git(["add", "milestones/harness-mc/tasks.json"]);
 git(["add", "milestones/morrowise/tasks.json"]);
@@ -109,6 +92,25 @@ const legacyWarn = run(["--project", "harness-mc"]);
 if (!legacyWarn.output.includes("Task validation OK")) {
   throw new Error("Expected full project scan to warn but pass.");
 }
+
+const deletedCanonicalTask = structuredClone(baseTasks);
+deletedCanonicalTask.tasks = deletedCanonicalTask.tasks.filter((task) => task.id !== "acp-good-task");
+writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), deletedCanonicalTask);
+
+const deletedCanonicalTaskResult = run(["--changed-only", "--project", "harness-mc"], { expectFailure: true });
+if (!deletedCanonicalTaskResult.output.includes("canonical task deletion is forbidden; retain the task and use cancel or archive lifecycle")) {
+  throw new Error("Expected direct canonical task deletion to fail.");
+}
+
+writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), baseTasks);
+
+fs.unlinkSync(path.join(repo, "milestones", "harness-mc", "tasks.json"));
+const deletedCanonicalTaskFileResult = run(["--changed-only", "--project", "harness-mc"], { expectFailure: true });
+if (!deletedCanonicalTaskFileResult.output.includes("canonical tasks.json deletion is forbidden; restore the file and use cancel or archive lifecycle")) {
+  throw new Error("Expected direct canonical tasks.json deletion to fail.");
+}
+
+writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), baseTasks);
 
 const changedTasks = structuredClone(baseTasks);
 changedTasks.tasks.push({
@@ -192,11 +194,15 @@ const closedWithoutArchitectureDecision = {
             to_status: "completed",
             reason: "Fixture records a newly created historical closeout record.",
             evidence_refs: ["milestones/morrowise/tasks.json"],
-            recorded_at: "2026-07-18"
+            recorded_at: "2026-07-18",
+            semantic_intake: semanticIntake("genuinely_new", {
+              comparedTaskRefs: ["morrowise/morrowise-seed-task"],
+            })
           }
         ]
       }
-    }
+    },
+    morrowiseSeedTask()
   ]
 };
 writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), closedWithoutArchitectureDecision);
@@ -501,6 +507,43 @@ function lifecycleEvent(operation, fromStatus, toStatus, extras = {}) {
   };
 }
 
+function semanticIntake(outcome, { comparedTaskRefs = [], replacesTaskRefs = [] } = {}) {
+  return {
+    outcome,
+    compared_task_refs: comparedTaskRefs,
+    scope_comparison: {
+      problem: "Compared the problem being solved.",
+      owner_source_of_truth: "Compared the canonical owner and source of truth.",
+      inputs_outputs: "Compared inputs and outputs.",
+      lifecycle_completion: "Compared lifecycle and completion boundaries.",
+    },
+    decision_reason: `Fixture records the ${outcome} semantic intake decision.`,
+    approval: {
+      status: "approved",
+      approved_by: "Vincent",
+      approved_at: "2026-07-19",
+      evidence_refs: ["current-session: approved task mutation fixture"],
+    },
+    ...(replacesTaskRefs.length > 0 ? { replaces_task_refs: replacesTaskRefs } : {}),
+  };
+}
+
+function weeklyCoreReview(decision, {
+  previousReviewDate,
+  nextReviewDate,
+  newScope,
+} = {}) {
+  return {
+    decision,
+    approved_by: "Vincent",
+    approved_at: "2026-07-19",
+    evidence_refs: ["current-session: approved weekly core fixture"],
+    ...(previousReviewDate ? { previous_review_date: previousReviewDate } : {}),
+    ...(nextReviewDate ? { next_review_date: nextReviewDate } : {}),
+    ...(newScope ? { new_scope: newScope } : {}),
+  };
+}
+
 function lifecycleTask(id, status, history, workflows = ["task-lifecycle"]) {
   return {
     id,
@@ -519,6 +562,34 @@ function lifecycleTask(id, status, history, workflows = ["task-lifecycle"]) {
     },
     jv32_route: { workflows },
     task_lifecycle: { route: "JV-32/task-lifecycle", history }
+  };
+}
+
+function morrowiseTask(id, status, history, extras = {}) {
+  return {
+    ...lifecycleTask(id, status, history),
+    track: "governance",
+    order_label: `JV-${id.toUpperCase()}`,
+    ...extras,
+  };
+}
+
+function morrowiseSeedTask() {
+  return {
+    id: "morrowise-seed-task",
+    title: "Seed MorroWise task",
+    status: "todo",
+    track: "governance",
+    order_label: "JV-VERIFY-00",
+    done_condition: "Seed task validates MorroWise project routing.",
+    hc_decision: {
+      task_scope: "morrowise/seed",
+      hc_refs: ["#rightProblem"],
+      hc_reasoning: "Fixture keeps MorroWise task validation active.",
+      hc_confidence: 0.7,
+      evidence_refs: ["milestones/morrowise/tasks.json"],
+      source_boundary: "HC is a thinking check, not source of truth; tasks.json remains canonical."
+    }
   };
 }
 
@@ -555,6 +626,208 @@ writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), allLegalLif
 const allLegalLifecycleOperationsPass = run(["--changed-only", "--project", "harness-mc"]);
 if (!allLegalLifecycleOperationsPass.output.includes("Task validation OK")) {
   throw new Error("Expected create, amend, suspend, resume, complete, cancel, and archive fixtures to pass.");
+}
+
+const semanticIntakeMissing = {
+  tasks: [
+    morrowiseSeedTask(),
+    morrowiseTask("semantic-intake-missing", "todo", [
+      lifecycleEvent("create", null, "todo"),
+    ]),
+  ],
+};
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), semanticIntakeMissing);
+
+const missingSemanticIntake = run(["--changed-only", "--project", "morrowise", "--as-of", "2026-07-19"], { expectFailure: true });
+if (!missingSemanticIntake.output.includes("semantic_intake is required for a MorroWise semantic task mutation")) {
+  throw new Error("Expected missing semantic task intake error.");
+}
+
+const semanticReuseMutation = {
+  tasks: [
+    morrowiseSeedTask(),
+    morrowiseTask("semantic-reuse-mutation", "todo", [
+      lifecycleEvent("create", null, "todo", {
+        semantic_intake: semanticIntake("reuse", {
+          comparedTaskRefs: ["morrowise/morrowise-seed-task"],
+        }),
+      }),
+    ]),
+  ],
+};
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), semanticReuseMutation);
+
+const reuseMutation = run(["--changed-only", "--project", "morrowise", "--as-of", "2026-07-19"], { expectFailure: true });
+if (!reuseMutation.output.includes("semantic_intake.outcome reuse is read-only and must not mutate canonical task state")) {
+  throw new Error("Expected reuse mutation hard-fail.");
+}
+
+const semanticCreateAsAmend = {
+  tasks: [
+    morrowiseSeedTask(),
+    morrowiseTask("semantic-create-as-amend", "todo", [
+      lifecycleEvent("create", null, "todo", {
+        semantic_intake: semanticIntake("amend", {
+          comparedTaskRefs: ["morrowise/morrowise-seed-task"],
+        }),
+      }),
+    ]),
+  ],
+};
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), semanticCreateAsAmend);
+
+const createAsAmend = run(["--changed-only", "--project", "morrowise", "--as-of", "2026-07-19"], { expectFailure: true });
+if (!createAsAmend.output.includes("new MorroWise tasks require semantic_intake.outcome genuinely_new or replace")) {
+  throw new Error("Expected create outcome mapping error.");
+}
+
+const semanticSelfOnlyComparison = {
+  tasks: [
+    morrowiseSeedTask(),
+    morrowiseTask("semantic-self-only", "todo", [
+      lifecycleEvent("create", null, "todo", {
+        semantic_intake: semanticIntake("genuinely_new", {
+          comparedTaskRefs: ["morrowise/semantic-self-only"],
+        }),
+      }),
+    ]),
+  ],
+};
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), semanticSelfOnlyComparison);
+
+const selfOnlyComparison = run(["--changed-only", "--project", "morrowise", "--as-of", "2026-07-19"], { expectFailure: true });
+if (!selfOnlyComparison.output.includes("semantic_intake.compared_task_refs must include at least one other canonical task")) {
+  throw new Error("Expected a self-only semantic intake comparison to fail.");
+}
+
+const dualWeeklyCore = {
+  tasks: [
+    morrowiseSeedTask(),
+    morrowiseTask("weekly-core-a", "in_progress", [
+      lifecycleEvent("create", null, "in_progress", {
+        semantic_intake: semanticIntake("genuinely_new", {
+          comparedTaskRefs: ["morrowise/morrowise-seed-task"],
+        }),
+        weekly_core_review: weeklyCoreReview("admit", { nextReviewDate: "2026-07-26" }),
+      }),
+    ], { weekly_core: true, review_date: "2026-07-26" }),
+    morrowiseTask("weekly-core-b", "in_progress", [
+      lifecycleEvent("create", null, "in_progress", {
+        semantic_intake: semanticIntake("genuinely_new", {
+          comparedTaskRefs: ["morrowise/weekly-core-a"],
+        }),
+        weekly_core_review: weeklyCoreReview("admit", { nextReviewDate: "2026-07-27" }),
+      }),
+    ], { weekly_core: true, review_date: "2026-07-27" }),
+  ],
+};
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), dualWeeklyCore);
+
+const dualWeeklyCoreResult = run(["--changed-only", "--project", "morrowise", "--as-of", "2026-07-19"], { expectFailure: true });
+if (!dualWeeklyCoreResult.output.includes("at most one MorroWise task may have weekly_core=true")) {
+  throw new Error("Expected single weekly core WIP error.");
+}
+
+const weeklyCoreBaseline = {
+  tasks: [
+    morrowiseSeedTask(),
+    morrowiseTask("weekly-core-review", "in_progress", [
+      lifecycleEvent("create", null, "in_progress", {
+        semantic_intake: semanticIntake("genuinely_new", {
+          comparedTaskRefs: ["morrowise/morrowise-seed-task"],
+        }),
+        weekly_core_review: weeklyCoreReview("admit", { nextReviewDate: "2026-07-25" }),
+      }),
+    ], { weekly_core: true, review_date: "2026-07-25" }),
+  ],
+};
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), weeklyCoreBaseline);
+git(["add", "milestones/morrowise/tasks.json"]);
+git(["commit", "-m", "seed weekly core review fixture"]);
+
+const overdueWeeklyCore = structuredClone(weeklyCoreBaseline);
+const overdueWeeklyCoreTask = overdueWeeklyCore.tasks.find((task) => task.id === "weekly-core-review");
+overdueWeeklyCoreTask.note = "Fixture keeps an overdue weekly core task in progress.";
+overdueWeeklyCoreTask.task_lifecycle.history.push(lifecycleEvent("amend", "in_progress", "in_progress", {
+  semantic_intake: semanticIntake("amend", {
+    comparedTaskRefs: ["morrowise/morrowise-seed-task"],
+  }),
+}));
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), overdueWeeklyCore);
+
+const overdueWeeklyCoreResult = run(["--changed-only", "--project", "morrowise", "--as-of", "2026-07-25"], { expectFailure: true });
+if (!overdueWeeklyCoreResult.output.includes("weekly_core review_date has arrived; choose reframe, suspend, cancel, or complete")) {
+  throw new Error("Expected overdue weekly core hard-fail.");
+}
+
+const automaticReviewExtension = structuredClone(weeklyCoreBaseline);
+const automaticReviewExtensionTask = automaticReviewExtension.tasks.find((task) => task.id === "weekly-core-review");
+automaticReviewExtensionTask.review_date = "2026-08-01";
+automaticReviewExtensionTask.task_lifecycle.history.push(lifecycleEvent("amend", "in_progress", "in_progress", {
+  semantic_intake: semanticIntake("amend", {
+    comparedTaskRefs: ["morrowise/morrowise-seed-task"],
+  }),
+}));
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), automaticReviewExtension);
+
+const automaticReviewExtensionResult = run(["--changed-only", "--project", "morrowise", "--as-of", "2026-07-24"], { expectFailure: true });
+if (!automaticReviewExtensionResult.output.includes("review_date changes require weekly_core_review.decision reframe with renewed Vincent approval")) {
+  throw new Error("Expected automatic review date extension error.");
+}
+
+const approvedReframe = structuredClone(automaticReviewExtension);
+approvedReframe.tasks.find((task) => task.id === "weekly-core-review").task_lifecycle.history.at(-1).weekly_core_review = weeklyCoreReview("reframe", {
+  previousReviewDate: "2026-07-25",
+  nextReviewDate: "2026-08-01",
+  newScope: "Finish the deterministic semantic intake and weekly core enforcement contract.",
+});
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), approvedReframe);
+
+const approvedReframeResult = run(["--changed-only", "--project", "morrowise", "--as-of", "2026-07-24"]);
+if (!approvedReframeResult.output.includes("Task validation OK")) {
+  throw new Error("Expected an explicitly approved weekly core reframe to pass.");
+}
+
+const weeklyCoreCompleteWithoutReview = structuredClone(weeklyCoreBaseline);
+const weeklyCoreCompleteWithoutReviewTask = weeklyCoreCompleteWithoutReview.tasks.find((task) => task.id === "weekly-core-review");
+weeklyCoreCompleteWithoutReviewTask.status = "completed";
+weeklyCoreCompleteWithoutReviewTask.weekly_core = false;
+delete weeklyCoreCompleteWithoutReviewTask.review_date;
+weeklyCoreCompleteWithoutReviewTask.jv32_route.workflows.push("closeout-commit-routing");
+weeklyCoreCompleteWithoutReviewTask.architecture_decision = {
+  decision: "not_required",
+  evaluated_at: "2026-07-19",
+  reason: "Fixture completion does not create or change a reusable architecture subsystem.",
+};
+weeklyCoreCompleteWithoutReviewTask.task_lifecycle.history.push(lifecycleEvent("complete", "in_progress", "completed", {
+  semantic_intake: semanticIntake("amend", {
+    comparedTaskRefs: ["morrowise/morrowise-seed-task"],
+  }),
+}));
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), weeklyCoreCompleteWithoutReview);
+
+const weeklyCoreCompleteWithoutReviewResult = run(["--changed-only", "--project", "morrowise", "--as-of", "2026-07-24"], { expectFailure: true });
+if (!weeklyCoreCompleteWithoutReviewResult.output.includes("weekly_core_review.decision complete with renewed Vincent approval is required")) {
+  throw new Error("Expected weekly core completion without explicit Vincent approval to fail.");
+}
+
+const approvedWeeklyCoreComplete = structuredClone(weeklyCoreCompleteWithoutReview);
+approvedWeeklyCoreComplete.tasks.find((task) => task.id === "weekly-core-review").task_lifecycle.history.at(-1).weekly_core_review = weeklyCoreReview("complete");
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), approvedWeeklyCoreComplete);
+
+const approvedWeeklyCoreCompleteWithStaleDate = structuredClone(approvedWeeklyCoreComplete);
+approvedWeeklyCoreCompleteWithStaleDate.tasks.find((task) => task.id === "weekly-core-review").review_date = "2026-07-25";
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), approvedWeeklyCoreCompleteWithStaleDate);
+
+const approvedWeeklyCoreCompleteWithStaleDateResult = run(["--changed-only", "--project", "morrowise", "--as-of", "2026-07-24"], { expectFailure: true });
+if (!approvedWeeklyCoreCompleteWithStaleDateResult.output.includes("review_date is only allowed when weekly_core=true")) {
+  throw new Error("Expected a completed weekly core with a stale review_date to fail.");
+}
+
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), approvedWeeklyCoreComplete);
+const approvedWeeklyCoreCompleteResult = run(["--changed-only", "--project", "morrowise", "--as-of", "2026-07-24"]);
+if (!approvedWeeklyCoreCompleteResult.output.includes("Task validation OK")) {
+  throw new Error("Expected an explicitly approved weekly core completion to pass.");
 }
 
 console.log("validate-tasks verification OK");

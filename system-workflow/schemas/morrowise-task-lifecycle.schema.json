@@ -1,53 +1,396 @@
 {
   "$id": "https://hisenzi.local/schemas/morrowise-task-lifecycle.schema.json",
-  "title": "MorroWise Canonical Task Lifecycle",
+  "title": "MorroWise Governed Canonical Task",
+  "$comment": "This contract intentionally validates the whole canonical task object, not a detached task_lifecycle fragment.",
   "type": "object",
-  "additionalProperties": false,
-  "required": ["route", "history"],
+  "additionalProperties": true,
+  "required": [
+    "task_lifecycle"
+  ],
   "properties": {
-    "route": { "const": "JV-32/task-lifecycle" },
-    "history": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "type": "object",
-        "additionalProperties": true,
-        "required": ["operation", "from_status", "to_status", "reason", "evidence_refs", "recorded_at"],
-        "properties": {
-          "operation": {
-            "type": "string",
-            "enum": ["create", "amend", "suspend", "resume", "complete", "cancel", "archive"]
-          },
-          "from_status": { "type": ["string", "null"] },
-          "to_status": { "type": "string", "minLength": 1 },
-          "reason": { "type": "string", "minLength": 1 },
-          "evidence_refs": {
-            "type": "array",
-            "minItems": 1,
-            "items": { "type": "string", "minLength": 1 }
-          },
-          "recorded_at": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
-          "reactivation_criteria": { "type": "string", "minLength": 1 },
-          "replacement_task_id": { "type": "string", "minLength": 1 },
-          "no_replacement_reason": { "type": "string", "minLength": 1 },
-          "superseded_by": { "type": "string", "minLength": 1 }
+    "status": {
+      "type": "string"
+    },
+    "weekly_core": {
+      "type": "boolean"
+    },
+    "review_date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "task_lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "route",
+        "history"
+      ],
+      "properties": {
+        "route": {
+          "const": "JV-32/task-lifecycle"
         },
-        "allOf": [
-          {
-            "if": { "properties": { "operation": { "const": "suspend" } } },
-            "then": { "required": ["reactivation_criteria"] }
-          },
-          {
-            "if": { "properties": { "operation": { "const": "cancel" } } },
-            "then": {
-              "anyOf": [
-                { "required": ["replacement_task_id"] },
-                { "required": ["no_replacement_reason"] }
-              ]
+        "history": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+              "operation",
+              "from_status",
+              "to_status",
+              "reason",
+              "evidence_refs",
+              "recorded_at"
+            ],
+            "properties": {
+              "operation": {
+                "type": "string",
+                "enum": [
+                  "create",
+                  "amend",
+                  "suspend",
+                  "resume",
+                  "complete",
+                  "cancel",
+                  "archive"
+                ]
+              },
+              "from_status": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "to_status": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidence_refs": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "recorded_at": {
+                "type": "string",
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+              },
+              "semantic_intake": {
+                "$ref": "#/$defs/semantic_intake"
+              },
+              "weekly_core_review": {
+                "$ref": "#/$defs/weekly_core_review"
+              },
+              "reactivation_criteria": {
+                "type": "string",
+                "minLength": 1
+              },
+              "replacement_task_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "no_replacement_reason": {
+                "type": "string",
+                "minLength": 1
+              },
+              "superseded_by": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "operation": {
+                      "const": "suspend"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "reactivation_criteria"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "operation": {
+                      "const": "cancel"
+                    }
+                  }
+                },
+                "then": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "replacement_task_id"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "no_replacement_reason"
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "weekly_core": {
+            "const": true
+          }
+        },
+        "required": [
+          "weekly_core"
+        ]
+      },
+      "then": {
+        "required": [
+          "status",
+          "review_date"
+        ],
+        "properties": {
+          "status": {
+            "const": "in_progress"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "review_date"
+        ]
+      },
+      "then": {
+        "required": [
+          "weekly_core"
+        ],
+        "properties": {
+          "weekly_core": {
+            "const": true
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "approval_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "approved_by",
+        "approved_at",
+        "evidence_refs"
+      ],
+      "properties": {
+        "status": {
+          "const": "approved"
+        },
+        "approved_by": {
+          "const": "Vincent"
+        },
+        "approved_at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "semantic_intake": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "outcome",
+        "compared_task_refs",
+        "scope_comparison",
+        "decision_reason",
+        "approval"
+      ],
+      "properties": {
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "reuse",
+            "amend",
+            "replace",
+            "genuinely_new"
+          ]
+        },
+        "compared_task_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[^/]+/[^/]+$"
+          }
+        },
+        "scope_comparison": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "problem",
+            "owner_source_of_truth",
+            "inputs_outputs",
+            "lifecycle_completion"
+          ],
+          "properties": {
+            "problem": {
+              "type": "string",
+              "minLength": 1
+            },
+            "owner_source_of_truth": {
+              "type": "string",
+              "minLength": 1
+            },
+            "inputs_outputs": {
+              "type": "string",
+              "minLength": 1
+            },
+            "lifecycle_completion": {
+              "type": "string",
+              "minLength": 1
             }
           }
-        ]
-      }
+        },
+        "decision_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "approval": {
+          "$ref": "#/$defs/approval_evidence"
+        },
+        "replaces_task_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[^/]+/[^/]+$"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "replace"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "replaces_task_refs"
+            ]
+          }
+        }
+      ]
+    },
+    "weekly_core_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision",
+        "approved_by",
+        "approved_at",
+        "evidence_refs"
+      ],
+      "properties": {
+        "decision": {
+          "type": "string",
+          "enum": [
+            "admit",
+            "reframe",
+            "suspend",
+            "cancel",
+            "complete"
+          ]
+        },
+        "approved_by": {
+          "const": "Vincent"
+        },
+        "approved_at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "previous_review_date": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "next_review_date": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "new_scope": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "decision": {
+                "const": "admit"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "next_review_date"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "decision": {
+                "const": "reframe"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "previous_review_date",
+              "next_review_date",
+              "new_scope"
+            ]
+          }
+        }
+      ]
     }
   }
 }

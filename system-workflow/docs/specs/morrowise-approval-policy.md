@@ -46,6 +46,8 @@ OpenClaw is historical source material only. The active policy is `$COLLAB` cent
 6. A runner may produce a commit plan or draft patch only. Actual `git commit` must go through the `worktree-commit` confirmation gate. `push` and `deploy` require explicit Vincent approval.
 7. `worktree-commit` is the only approved local commit gate. It is not just a recommendation label; it requires dirty-tree scan, per-file diff review, logical commit grouping, 4C review, path policy check, explicit Vincent confirmation, commit execution, and task-state/event follow-up.
 
+For MorroWise semantic task writes, approval evidence is recorded inside the latest `semantic_intake`; `reuse` remains read-only. Selecting, reframing, suspending, cancelling, or completing the single `weekly_core` slot requires a separate `weekly_core_review` approval record. An arrived review date cannot be extended by silence, scheduler behavior, or an unapproved date edit.
+
 ## Tier 1: Allowed
 
 Allowed actions may proceed when they stay inside the active task scope and have no external side effects.
@@ -64,7 +66,7 @@ Approval-required actions must stop and show the exact intended action, evidence
 
 | Action class | Examples | Required evidence |
 |---|---|---|
-| `task_state_mutation` | Reorder, create, update, close, or bulk change tasks. | Task id, diff preview, reason, verification plan. |
+| `task_state_mutation` | Reorder, create, update, close, or bulk change tasks. | Task id, diff preview, reason, verification plan, semantic intake for MorroWise semantic writes, and weekly core review evidence when applicable. |
 | `memory_write_or_update` | CORE, long-term memory, private/shared memory write. | Target file, exact text, reason for persistence. |
 | `schedule_mutation` | Add/edit/delete cron, LaunchAgent, recurring automation. | Old state, new state, rollback path. |
 | `external_sync_or_write` | Heptabase, Notion, Telegram, Obsidian API, public posting, email. | Destination, payload preview, driver, dry-run when available. |

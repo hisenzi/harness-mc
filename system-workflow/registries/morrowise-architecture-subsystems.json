@@ -176,7 +176,7 @@
       "name": "MorroWise 開發工作流 Catalog",
       "status": "active",
       "role": "MorroWise 開發工作流治理與 router gate 的正式子系統。",
-      "summary": "把外部 software-development workflow pattern 轉成 MorroWise 可治理 catalog、registry、schema、verifier 與 read-only read model；ARCHITECTURE.md 只索引此子系統，不複製 catalog 細節。",
+      "summary": "把開發 workflow 與 canonical task mutation 轉成 MorroWise 可治理的 catalog、semantic intake、單一 weekly core／review gate、schema、verifier、runtime preflight 與 read-only read model；ARCHITECTURE.md 只保留薄索引。",
       "capability": "開發工作流治理",
       "source_of_truth": [
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
@@ -192,6 +192,8 @@
         "建立 workflow catalog registry",
         "產生 read-only dev workflow read model",
         "將外部 issue tracker 語意標成 adapter_only",
+        "以四維 semantic intake 分流 reuse、amend、replace、genuinely_new",
+        "以單一 weekly core 與 review date gate 阻擋無核准續期",
         "把未完成能力維持 deferred 或 degraded 狀態"
       ],
       "forbidden_actions": [
@@ -202,13 +204,13 @@
         "把 ARCHITECTURE.md 當成 catalog 正本"
       ],
       "safety_boundary": "JV-32 只治理 workflow metadata 與 read-only generated read model；它不得安裝外部 skills、修改 hooks、讀取 credentials 或把 GitHub/GitLab/Notion 等外部 tracker 升格成 MorroWise 正本。",
-      "degraded_state": "catalog registry/schema/verifier/read model 缺失、adapter_only 誤標為 accepted、close_rule 缺失、或 ARCHITECTURE.md 被手寫 catalog 細節時，此子系統必須維持 deferred/degraded，不得 promoted。",
+      "degraded_state": "catalog registry/schema/verifier/read model 缺失、semantic intake 可繞過、同時存在多個 weekly core、到期 review 可自動延長、adapter_only 誤標為 accepted、close_rule 缺失或薄索引被手寫細節時，必須維持 deferred/degraded。",
       "architecture_decision": "promoted",
       "last_promoted_at": "2026-07-08",
-      "last_verified_at": "2026-07-18",
+      "last_verified_at": "2026-07-19",
       "version_review": {
         "scope": "version_improvement",
-        "reviewed_at": "2026-07-18",
+        "reviewed_at": "2026-07-19",
         "contract_refs": [
           "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
           "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json",
@@ -221,18 +223,21 @@
           "$COLLAB/harness-mc/system-workflow/registries/morrowise-wiring-gate.json",
           "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
           "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+          "$COLLAB/harness-mc/scripts/work-anchor-preflight.mjs",
+          "$COLLAB/harness-mc/scripts/verify-work-anchor-preflight.mjs",
           "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
           "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
         ],
-        "contract_fingerprint": "41bdca81e1a4e130",
+        "contract_fingerprint": "fb1cebeb3b63b8f8",
         "index_action": "updated",
         "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
         "evidence_refs": [
           "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
           "node scripts/verify-validate-tasks.mjs",
+          "node scripts/verify-work-anchor-preflight.mjs",
           "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
         ],
-        "reason": "JV-40 將 canonical task lifecycle 納入既有 JV-32，新增 schema、validator、approval 與 closeout routing 的閉環；更新既有 Admission Record 與薄索引，不建立平行子系統。"
+        "reason": "JV-40 version improvement 將 semantic task intake、單一 weekly core、全域 review date 到期攔截、完成決策核准、禁止自動延長與 canonical task 物理刪除攔截接入既有 schema、validator、approval policy 與 work-anchor runtime；更新同一 Admission Record 與薄索引，不建立平行子系統。"
       },
       "supersedes": [],
       "superseded_by": null

@@ -29,12 +29,17 @@ const ARCHITECTURE_ADMISSION_INDEX_ACTIONS = new Set(["updated", "no_index_chang
 const ARCHITECTURE_SYNC_CHECK_REF = "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check";
 const ARCHITECTURE_GATE_TRACKS = new Set(["governance", "runtime-delivery", "auditor-mvp"]);
 const TASK_LIFECYCLE_OPERATIONS = new Set(["create", "amend", "suspend", "resume", "complete", "cancel", "archive"]);
+const SEMANTIC_INTAKE_OUTCOMES = new Set(["reuse", "amend", "replace", "genuinely_new"]);
+const SEMANTIC_SCOPE_FIELDS = ["problem", "owner_source_of_truth", "inputs_outputs", "lifecycle_completion"];
+const WEEKLY_CORE_REVIEW_DECISIONS = new Set(["admit", "reframe", "suspend", "cancel", "complete"]);
+const BOOKKEEPING_ONLY_FIELDS = new Set(["commits", "completed_at", "summary", "external_refs", "jv32_route", "task_lifecycle"]);
 
 function parseArgs(argv) {
   const args = {
     changedOnly: false,
     projects: new Set(),
     tracks: new Set(),
+    asOf: todayInTaipei(),
   };
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -45,6 +50,9 @@ function parseArgs(argv) {
       args.projects.add(argv[++i]);
     } else if (arg === "--track") {
       args.tracks.add(argv[++i]);
+    } else if (arg === "--as-of") {
+      args.asOf = argv[++i];
+      if (!isDateOnly(args.asOf)) throw new Error(`--as-of must be YYYY-MM-DD, got: ${args.asOf}`);
     } else if (arg === "--help" || arg === "-h") {
       args.help = true;
     } else {
@@ -57,7 +65,7 @@ function parseArgs(argv) {
 
 function usage() {
   return [
-    "Usage: node scripts/validate-tasks.mjs [--changed-only] [--project <id>] [--track <id>]",
+    "Usage: node scripts/validate-tasks.mjs [--changed-only] [--project <id>] [--track <id>] [--as-of YYYY-MM-DD]",
     "",
     "Validates milestone task schema without making historical legacy data fatal.",
     "Changed/new control-plane and MorroWise tasks fail; historical issues warn.",
@@ -162,7 +170,13 @@ function isCurrentWriteScope({ task, changed, changedOnly, project = "" }) {
   return changedOnly && changed && isPortableAgentScope(task, project, true);
 }
 
-function validateTask(task, { project = "", changed = false, changedOnly = false, previousTask = null } = {}) {
+function validateTask(task, {
+  project = "",
+  changed = false,
+  changedOnly = false,
+  previousTask = null,
+  canonicalTaskRefs = new Map(),
+} = {}) {
   const problems = [];
   const includeProjectScope = !changedOnly || changed;
 
@@ -208,6 +222,12 @@ function validateTask(task, { project = "", changed = false, changedOnly = false
   if (requiresTaskLifecycleRoute({ task, changed, changedOnly })) {
     problems.push(...validateTaskLifecycleRoute(task));
     problems.push(...validateTaskLifecycleEvidence(task, { previousTask }));
+    if (project === "morrowise" && isSemanticTaskMutation(task, previousTask)) {
+      problems.push(...validateSemanticTaskIntake(task, { previousTask, canonicalTaskRefs }));
+    }
+    if (project === "morrowise") {
+      problems.push(...validateWeeklyCoreTransition(task, { previousTask }));
+    }
   }
   if (requiresArchitectureDecision(task, project, includeProjectScope) && !("architecture_decision" in task)) {
     problems.push("architecture_decision is required before closing MorroWise governance/runtime-delivery/auditor-mvp tasks");
@@ -221,6 +241,21 @@ function validateTask(task, { project = "", changed = false, changedOnly = false
 
 function nonEmptyString(value) {
   return typeof value === "string" && value.trim().length > 0;
+}
+
+function isDateOnly(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value || ""))) return false;
+  const parsed = new Date(`${value}T00:00:00Z`);
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+}
+
+function todayInTaipei() {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Taipei",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
 }
 
 function requiresHcDecision(task, project = "", includeProjectScope = false) {
@@ -345,6 +380,181 @@ function expectedLifecycleOperation(previousStatus, nextStatus) {
   return "amend";
 }
 
+function isSemanticTaskMutation(task, previousTask) {
+  if (!previousTask) return true;
+  return JSON.stringify(semanticTaskSnapshot(task)) !== JSON.stringify(semanticTaskSnapshot(previousTask));
+}
+
+function semanticTaskSnapshot(task) {
+  return Object.fromEntries(
+    Object.entries(task || {}).filter(([field]) => !BOOKKEEPING_ONLY_FIELDS.has(field)),
+  );
+}
+
+function validateSemanticTaskIntake(task, { previousTask, canonicalTaskRefs }) {
+  const last = task.task_lifecycle?.history?.at(-1);
+  const intake = last?.semantic_intake;
+  const problems = [];
+
+  if (!intake || typeof intake !== "object" || Array.isArray(intake)) {
+    return ["semantic_intake is required for a MorroWise semantic task mutation"];
+  }
+
+  if (!SEMANTIC_INTAKE_OUTCOMES.has(intake.outcome)) {
+    problems.push("semantic_intake.outcome must be reuse, amend, replace, or genuinely_new");
+  }
+  if (intake.outcome === "reuse") {
+    problems.push("semantic_intake.outcome reuse is read-only and must not mutate canonical task state");
+  }
+  if (!previousTask && !["genuinely_new", "replace"].includes(intake.outcome)) {
+    problems.push("new MorroWise tasks require semantic_intake.outcome genuinely_new or replace");
+  }
+  if (previousTask && intake.outcome !== "amend") {
+    problems.push("existing MorroWise tasks require semantic_intake.outcome amend");
+  }
+
+  if (!Array.isArray(intake.compared_task_refs) || intake.compared_task_refs.length === 0) {
+    problems.push("semantic_intake.compared_task_refs must be a non-empty canonical project/task-id array");
+  } else {
+    const selfRef = `morrowise/${task.id}`;
+    if (intake.compared_task_refs.every((ref) => ref === selfRef)) {
+      problems.push("semantic_intake.compared_task_refs must include at least one other canonical task");
+    }
+    for (const ref of intake.compared_task_refs) {
+      if (!nonEmptyString(ref) || !canonicalTaskRefs.has(ref)) {
+        problems.push(`semantic_intake.compared_task_refs contains unresolved canonical task ref: ${ref}`);
+      }
+    }
+  }
+
+  const scope = intake.scope_comparison;
+  if (!scope || typeof scope !== "object" || Array.isArray(scope)) {
+    problems.push("semantic_intake.scope_comparison must compare four task boundaries");
+  } else {
+    for (const field of SEMANTIC_SCOPE_FIELDS) {
+      if (!nonEmptyString(scope[field])) {
+        problems.push(`semantic_intake.scope_comparison.${field} must be a non-empty string`);
+      }
+    }
+  }
+
+  if (!nonEmptyString(intake.decision_reason)) {
+    problems.push("semantic_intake.decision_reason must be a non-empty string");
+  }
+  problems.push(...validateVincentApproval(intake.approval, "semantic_intake.approval", { requireStatus: true }));
+
+  if (intake.outcome === "replace") {
+    if (!Array.isArray(intake.replaces_task_refs) || intake.replaces_task_refs.length === 0) {
+      problems.push("semantic_intake.replace requires replaces_task_refs");
+    } else {
+      for (const ref of intake.replaces_task_refs) {
+        const replaced = canonicalTaskRefs.get(ref);
+        if (!replaced) {
+          problems.push(`semantic_intake.replaces_task_refs contains unresolved canonical task ref: ${ref}`);
+        } else if (!["archived", "cancelled"].includes(String(replaced.status))) {
+          problems.push(`semantic_intake.replace target must be archived or cancelled in the same canonical state: ${ref}`);
+        }
+      }
+    }
+  }
+
+  return problems;
+}
+
+function validateVincentApproval(approval, prefix, { requireStatus = false } = {}) {
+  const problems = [];
+  if (!approval || typeof approval !== "object" || Array.isArray(approval)) {
+    return [`${prefix} must record explicit Vincent approval`];
+  }
+  if (requireStatus && approval.status !== "approved") {
+    problems.push(`${prefix}.status must equal approved`);
+  }
+  if (approval.approved_by !== "Vincent") {
+    problems.push(`${prefix}.approved_by must equal Vincent`);
+  }
+  if (!isDateOnly(approval.approved_at)) {
+    problems.push(`${prefix}.approved_at must be YYYY-MM-DD`);
+  }
+  if (!Array.isArray(approval.evidence_refs) || approval.evidence_refs.length === 0 || approval.evidence_refs.some((ref) => !nonEmptyString(ref))) {
+    problems.push(`${prefix}.evidence_refs must be a non-empty string array`);
+  }
+  return problems;
+}
+
+function validateWeeklyCoreTransition(task, { previousTask }) {
+  const problems = [];
+  const previousCore = previousTask?.weekly_core === true;
+  const currentCore = task.weekly_core === true;
+  const last = task.task_lifecycle?.history?.at(-1);
+  const review = last?.weekly_core_review;
+
+  if (!previousCore && currentCore) {
+    problems.push(...validateWeeklyCoreReview(review, {
+      expectedDecision: "admit",
+      nextReviewDate: task.review_date,
+    }));
+  }
+
+  if (previousCore && currentCore && previousTask.review_date !== task.review_date) {
+    if (review?.decision !== "reframe") {
+      problems.push("review_date changes require weekly_core_review.decision reframe with renewed Vincent approval");
+    } else {
+      problems.push(...validateWeeklyCoreReview(review, {
+        expectedDecision: "reframe",
+        previousReviewDate: previousTask.review_date,
+        nextReviewDate: task.review_date,
+      }));
+    }
+  }
+
+  if (previousCore && !currentCore) {
+    if (task.status === "in_progress") {
+      problems.push("an in_progress weekly core task cannot clear weekly_core without reframe, suspend, cancel, or complete");
+    } else if (task.status === "deferred") {
+      problems.push(...validateWeeklyCoreReview(review, { expectedDecision: "suspend" }));
+    } else if (task.status === "cancelled") {
+      problems.push(...validateWeeklyCoreReview(review, { expectedDecision: "cancel" }));
+    } else if (CLOSED_STATUSES.has(task.status)) {
+      problems.push(...validateWeeklyCoreReview(review, { expectedDecision: "complete" }));
+    } else if (!CLOSED_STATUSES.has(task.status)) {
+      problems.push("leaving weekly_core requires deferred, cancelled, or completed status");
+    }
+  }
+
+  return problems;
+}
+
+function validateWeeklyCoreReview(review, {
+  expectedDecision,
+  previousReviewDate,
+  nextReviewDate,
+} = {}) {
+  const problems = [];
+  if (!review || typeof review !== "object" || Array.isArray(review)) {
+    return [`weekly_core_review.decision ${expectedDecision} with renewed Vincent approval is required`];
+  }
+  if (!WEEKLY_CORE_REVIEW_DECISIONS.has(review.decision)) {
+    problems.push("weekly_core_review.decision must be admit, reframe, suspend, cancel, or complete");
+  }
+  if (review.decision !== expectedDecision) {
+    problems.push(`weekly_core_review.decision must equal ${expectedDecision}`);
+  }
+  problems.push(...validateVincentApproval(review, "weekly_core_review"));
+
+  if (["admit", "reframe"].includes(expectedDecision) && review.next_review_date !== nextReviewDate) {
+    problems.push("weekly_core_review.next_review_date must match task.review_date");
+  }
+  if (expectedDecision === "reframe") {
+    if (review.previous_review_date !== previousReviewDate) {
+      problems.push("weekly_core_review.previous_review_date must match the prior review_date");
+    }
+    if (!nonEmptyString(review.new_scope)) {
+      problems.push("weekly_core_review.new_scope is required for reframe");
+    }
+  }
+  return problems;
+}
+
 function validateHcDecision(decision) {
   const problems = [];
   if (!decision || typeof decision !== "object" || Array.isArray(decision)) {
@@ -456,15 +666,90 @@ function validateArchitectureAdmissionReview(review) {
   return problems;
 }
 
-export function validateTasks({ changedOnly = false, projects = new Set(), tracks = new Set() } = {}) {
+function collectCanonicalTaskRefs() {
+  const refs = new Map();
+  for (const project of listProjectDirs()) {
+    const filePath = path.join(milestonesDir, project, "tasks.json");
+    try {
+      const raw = readJson(filePath);
+      for (const { task } of extractTasks(raw)) {
+        if (nonEmptyString(task?.id)) refs.set(`${project}/${task.id}`, task);
+      }
+    } catch {
+      // Invalid files are reported by the main validation pass.
+    }
+  }
+  return refs;
+}
+
+function validateMorrowiseWeeklyCore(tasks, { asOf }) {
+  const diagnostics = [];
+  const weeklyCoreTasks = tasks.filter((task) => task?.weekly_core === true);
+
+  if (weeklyCoreTasks.length > 1) {
+    diagnostics.push({
+      taskId: null,
+      message: `at most one MorroWise task may have weekly_core=true; found ${weeklyCoreTasks.length}`,
+    });
+  }
+
+  for (const task of tasks) {
+    const taskId = nonEmptyString(task?.id) ? task.id : null;
+    if (Object.hasOwn(task || {}, "weekly_core") && typeof task.weekly_core !== "boolean") {
+      diagnostics.push({ taskId, message: "weekly_core must be a boolean when present" });
+    }
+    if (Object.hasOwn(task || {}, "review_date") && task.weekly_core !== true) {
+      diagnostics.push({ taskId, message: "review_date is only allowed when weekly_core=true" });
+    }
+    if (task?.weekly_core !== true) continue;
+
+    if (task.status !== "in_progress") {
+      diagnostics.push({ taskId, message: "weekly_core=true requires status in_progress" });
+    }
+    if (!isDateOnly(task.review_date)) {
+      diagnostics.push({ taskId, message: "weekly_core=true requires review_date in YYYY-MM-DD" });
+    } else if (task.review_date <= asOf) {
+      diagnostics.push({
+        taskId,
+        message: `weekly_core review_date has arrived; choose reframe, suspend, cancel, or complete (review_date=${task.review_date}, as_of=${asOf})`,
+      });
+    }
+  }
+
+  return diagnostics;
+}
+
+export function validateTasks({
+  changedOnly = false,
+  projects = new Set(),
+  tracks = new Set(),
+  asOf = todayInTaipei(),
+} = {}) {
   const changedFiles = getChangedTaskFiles();
   const diagnostics = [];
+  const canonicalTaskRefs = collectCanonicalTaskRefs();
+
+  if (changedOnly) {
+    for (const filePath of changedFiles) {
+      if (fs.existsSync(filePath)) continue;
+      const project = path.basename(path.dirname(filePath));
+      if (projects.size > 0 && !projects.has(project)) continue;
+      diagnostics.push({
+        severity: "error",
+        project,
+        filePath,
+        taskId: null,
+        container: "tasks",
+        message: "canonical tasks.json deletion is forbidden; restore the file and use cancel or archive lifecycle",
+      });
+    }
+  }
 
   for (const project of listProjectDirs()) {
     if (projects.size > 0 && !projects.has(project)) continue;
 
     const filePath = path.join(milestonesDir, project, "tasks.json");
-    if (changedOnly && !changedFiles.has(filePath)) continue;
+    if (changedOnly && !changedFiles.has(filePath) && project !== "morrowise") continue;
 
     let raw;
     try {
@@ -484,6 +769,36 @@ export function validateTasks({ changedOnly = false, projects = new Set(), track
     const relFile = path.relative(root, filePath);
     const previous = readHeadTasks(relFile);
 
+    if (changedOnly && changedFiles.has(filePath)) {
+      const currentTaskIds = new Set(entries.map(({ task }) => String(task?.id || "")).filter(Boolean));
+      for (const previousTaskId of previous.keys()) {
+        if (!currentTaskIds.has(previousTaskId)) {
+          diagnostics.push({
+            severity: "error",
+            project,
+            filePath,
+            taskId: previousTaskId,
+            container: "tasks",
+            message: "canonical task deletion is forbidden; retain the task and use cancel or archive lifecycle",
+          });
+        }
+      }
+    }
+
+    if (project === "morrowise") {
+      for (const issue of validateMorrowiseWeeklyCore(entries.map((entry) => entry.task), { asOf })) {
+        diagnostics.push({
+          severity: "error",
+          project,
+          filePath,
+          taskId: issue.taskId,
+          container: "tasks",
+          message: issue.message,
+        });
+      }
+      if (changedOnly && !changedFiles.has(filePath)) continue;
+    }
+
     for (const { task, container } of entries) {
       if (tracks.size > 0 && !tracks.has(String(task.track || ""))) continue;
 
@@ -495,7 +810,13 @@ export function validateTasks({ changedOnly = false, projects = new Set(), track
       const lifecycleMutation = requiresTaskLifecycleRoute({ task, changed, changedOnly });
       const severity = isCurrentWriteScope({ task, changed, changedOnly, project }) || lifecycleMutation ? "error" : "warn";
 
-      for (const problem of validateTask(task, { project, changed, changedOnly, previousTask })) {
+      for (const problem of validateTask(task, {
+        project,
+        changed,
+        changedOnly,
+        previousTask,
+        canonicalTaskRefs,
+      })) {
         diagnostics.push({
           severity,
           project,

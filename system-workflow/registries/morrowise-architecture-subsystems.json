@@ -95,6 +95,24 @@
         "npm run test:tasks"
       ],
       "last_verified_at": "2026-07-19"
+    },
+    {
+      "id": "morrowise-credential-lifecycle-governance-governs-notification-delivery-adapters",
+      "status": "active",
+      "from": "morrowise-credential-lifecycle-governance",
+      "to": "morrowise-notification-delivery-adapters",
+      "type": "governs",
+      "summary": "憑證生命週期合約為通知 adapter 提供最小權限、輪替、事件與安全機器健康摘要的共同治理邊界；它不讀取或寫入 adapter 的任何憑證值。",
+      "contract_refs": [
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-credential-lifecycle.md",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json"
+      ],
+      "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#credential-lifecycle-governance",
+      "verifiers": [
+        "npm run test:credential-lifecycle",
+        "npm run test:architecture-subsystems"
+      ],
+      "last_verified_at": "2026-07-19"
     }
   ],
   "records": [
@@ -297,6 +315,41 @@
         ],
         "reason": "architecture-subsystem-index-relationship-map-v1 將每個 changed MorroWise lifecycle mutation 的 architecture_relation_impact 納入既有 JV-32 contract；新增、修改與退役關係必須回到同一 Admission Registry 與受控 thin sync，不建立平行 task 或架構系統。"
       },
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "morrowise-credential-lifecycle-governance",
+      "name": "MorroWise 憑證生命週期治理",
+      "status": "active",
+      "role": "以安全中繼資料管理跨能力、跨機器的憑證生命週期與健康狀態。",
+      "summary": "既有 API / CLI / MCP Capability Registry 是正本；credential lifecycle contract 對應能力、六種憑證類別與 MBA-1、MBA-2、MBA-3 的安全摘要。generated credential health 只呈現姿態、連線觀測、時間與下一步，絕不呈現憑證值或私密位置。",
+      "capability": "憑證生命週期安全治理",
+      "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+      "detail_doc": "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-credential-lifecycle.md",
+      "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#credential-lifecycle-governance",
+      "verifiers": [
+        "npm run test:credential-lifecycle",
+        "npm run test:capability-registry",
+        "npm run test:architecture-subsystems"
+      ],
+      "allowed_actions": [
+        "讀取受限欄位的安全機器摘要",
+        "產生只讀 credential health 資料模型",
+        "記錄輪替、事件與復原所需的安全生命週期中繼資料",
+        "將 stale 或 missing machine 誠實標示為需要處理"
+      ],
+      "forbidden_actions": [
+        "讀取或輸出任何憑證值、私密位置、帳號登入資料或瀏覽器工作階段",
+        "以 dashboard、log 或 verifier 保存敏感欄位名稱或 private runtime 設定",
+        "從健康資料模型執行輪替、撤銷、登入或外部寫入",
+        "把 MBA-1、MBA-2、MBA-3 的本機資料互相複製"
+      ],
+      "safety_boundary": "此子系統僅接受 schema 驗證後的安全摘要，並把未觀測、過期或缺少摘要的機器維持為 unknown、stale 或 missing。憑證值只可留在核准的加密 vault 或本機 secure store，永不進入 repository、task、read model、dashboard、log 或 verifier。",
+      "degraded_state": "任何機器摘要缺失、過期、欄位不合格、出現疑似私密值，或 GitHub Actions 違反最小權限與不信任 PR 邊界時，健康狀態必須 degraded 或 missing，不得宣稱已連線或健康。",
+      "architecture_decision": "promoted",
+      "last_promoted_at": "2026-07-19",
+      "last_verified_at": "2026-07-19",
       "supersedes": [],
       "superseded_by": null
     }

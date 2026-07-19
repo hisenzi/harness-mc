@@ -1,6 +1,6 @@
 {
   "schema_version": "verifier-suite-health.v0",
-  "generated_at": "2026-07-18T15:56:38.897Z",
+  "generated_at": "2026-07-19T00:21:05.066Z",
   "read_only": true,
   "source": {
     "package_scripts": "$COLLAB/harness-mc/package.json#scripts",
@@ -36,14 +36,14 @@
     ]
   },
   "summary": {
-    "total": 52,
-    "passed": 52,
+    "total": 53,
+    "passed": 53,
     "failed": 0,
     "skipped": 1,
     "skipped_scripts": [
       "test:verifier-suite-health"
     ],
-    "duration_ms": 7987
+    "duration_ms": 7480
   },
   "verifiers": [
     {
@@ -51,54 +51,54 @@
       "command": "node scripts/verify-apply-task-events.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 31,
+      "duration_ms": 25,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:architecture-subsystems",
       "command": "node scripts/verify-architecture-subsystems.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 27,
+      "duration_ms": 25,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:capability-drift",
       "command": "node scripts/verify-capability-drift.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 28,
+      "duration_ms": 27,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:capability-registry",
       "command": "node scripts/verify-morrowise-capability-registry.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 25,
+      "duration_ms": 23,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:capability-runtime-status",
       "command": "node scripts/verify-capability-runtime-status.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 23,
+      "duration_ms": 21,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:closeout-residual-ledger",
       "command": "node scripts/verify-closeout-residual-ledger.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 21,
+      "duration_ms": 23,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:commit-attention",
@@ -107,16 +107,16 @@
       "exit_code": 0,
       "duration_ms": 23,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:commit-cleanup-plan",
       "command": "node scripts/verify-morrowise-commit-cleanup-plan.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 22,
+      "duration_ms": 21,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:commit-planning-gate",
@@ -125,43 +125,52 @@
       "exit_code": 0,
       "duration_ms": 21,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:config-sync-state",
       "command": "node scripts/verify-config-sync-state.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 26,
+      "duration_ms": 24,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
+    },
+    {
+      "script": "test:credential-lifecycle",
+      "command": "node scripts/verify-credential-lifecycle-governance.mjs",
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 22,
+      "failure_excerpt": null,
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:hc-framing-gate",
       "command": "node scripts/verify-hc-framing-gate.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 953,
+      "duration_ms": 1191,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:kj-handoff-live-sync",
       "command": "node scripts/verify-kj-handoff-live-sync.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 49,
+      "duration_ms": 50,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:kj-mirror-reconcile",
       "command": "node scripts/verify-kj-mirror-reconcile.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 21,
+      "duration_ms": 20,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:kj-notion-read-model",
@@ -170,25 +179,25 @@
       "exit_code": 0,
       "duration_ms": 20,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:live-system-admission",
       "command": "node scripts/verify-morrowise-live-system-admission.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 22,
+      "duration_ms": 21,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:morrowise-approval",
       "command": "node scripts/verify-morrowise-approval-policy.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 21,
+      "duration_ms": 19,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:morrowise-auditor",
@@ -197,16 +206,16 @@
       "exit_code": 0,
       "duration_ms": 22,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:morrowise-auditor-generator",
       "command": "node scripts/verify-generate-morrowise-auditor.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 87,
+      "duration_ms": 38,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:morrowise-console",
@@ -215,70 +224,70 @@
       "exit_code": 0,
       "duration_ms": 20,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:morrowise-live-dashboard",
       "command": "node scripts/verify-morrowise-live-dashboard-data.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 35,
+      "duration_ms": 28,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:morrowise-live-loop",
       "command": "node scripts/verify-morrowise-live-dashboard-loop.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 2894,
+      "duration_ms": 2661,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:morrowise-loop",
       "command": "node scripts/verify-morrowise-proactive-loop.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 40,
+      "duration_ms": 41,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:morrowise-notifier-source",
       "command": "node scripts/verify-morrowise-notifier-source.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 996,
+      "duration_ms": 412,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:morrowise-product-promotions",
       "command": "node scripts/verify-morrowise-product-promotions.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 33,
+      "duration_ms": 20,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:morrowise-read-model-card",
       "command": "node scripts/verify-morrowise-read-model-card.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 23,
+      "duration_ms": 20,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:morrowise-recommendations",
       "command": "node scripts/verify-morrowise-recommendations.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 21,
+      "duration_ms": 20,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:morrowise-runner",
@@ -287,25 +296,25 @@
       "exit_code": 0,
       "duration_ms": 22,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:morrowise-schema",
       "command": "node scripts/verify-morrowise-system-schema.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 21,
+      "duration_ms": 19,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:morrowise-system-json",
       "command": "node scripts/verify-morrowise-system-json.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 28,
+      "duration_ms": 27,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:morrowise-triggers",
@@ -314,34 +323,34 @@
       "exit_code": 0,
       "duration_ms": 20,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:morrowise-wiring",
       "command": "node scripts/verify-morrowise-wiring-gate.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 25,
+      "duration_ms": 24,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:notification-adapter-contract",
       "command": "node scripts/verify-morrowise-notification-adapter-contract.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 432,
+      "duration_ms": 254,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:notification-outbox",
       "command": "node scripts/verify-notification-outbox-contract.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 65,
+      "duration_ms": 58,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:notion-sync-state",
@@ -350,52 +359,52 @@
       "exit_code": 0,
       "duration_ms": 24,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:pai-domain-taxonomy",
       "command": "node scripts/verify-pai-domain-taxonomy.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 23,
+      "duration_ms": 24,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:pulse-proposals",
       "command": "node scripts/verify-pulse-proposal-queue.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 35,
+      "duration_ms": 33,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:reality-tax-gate",
       "command": "node scripts/verify-morrowise-reality-tax-gate.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 23,
+      "duration_ms": 22,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:required-publish-flow",
       "command": "node scripts/verify-required-publish-flow.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 71,
+      "duration_ms": 70,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:schedule-health",
       "command": "node scripts/verify-schedule-health.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 27,
+      "duration_ms": 24,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:skill-version-backfill",
@@ -404,25 +413,25 @@
       "exit_code": 0,
       "duration_ms": 22,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:skills",
       "command": "node scripts/verify-validate-skills.mjs && node scripts/validate-skills.mjs --changed-only",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 63,
+      "duration_ms": 61,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:sync-event-queue",
       "command": "node scripts/verify-sync-event-queue.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 22,
+      "duration_ms": 21,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:system-pulse",
@@ -431,16 +440,16 @@
       "exit_code": 0,
       "duration_ms": 45,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:task-event-dashboard",
       "command": "node scripts/verify-task-event-dashboard-data.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 23,
+      "duration_ms": 22,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:task-event-outbox",
@@ -449,7 +458,7 @@
       "exit_code": 0,
       "duration_ms": 21,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:task-state",
@@ -458,25 +467,25 @@
       "exit_code": 0,
       "duration_ms": 20,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:tasks",
       "command": "node scripts/verify-validate-tasks.mjs && node scripts/validate-tasks.mjs --changed-only",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 946,
+      "duration_ms": 1200,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:tools-data",
       "command": "node scripts/verify-generate-tools-data.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 56,
+      "duration_ms": 55,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:visual-sync-coverage",
@@ -485,34 +494,34 @@
       "exit_code": 0,
       "duration_ms": 23,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:work-anchor-preflight",
       "command": "node scripts/verify-work-anchor-preflight.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 23,
+      "duration_ms": 22,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:worktree-commit-race",
       "command": "node scripts/verify-worktree-commit-race-governance.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 124,
+      "duration_ms": 126,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     },
     {
       "script": "test:worktree-status",
       "command": "node scripts/generate-worktree-status.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 279,
+      "duration_ms": 363,
       "failure_excerpt": null,
-      "last_run_at": "2026-07-18T15:56:38.897Z"
+      "last_run_at": "2026-07-19T00:21:05.066Z"
     }
   ],
   "next_action": {

@@ -1,7 +1,7 @@
 {
   "registry_id": "morrowise-api-cli-mcp-capability-registry.v0",
   "task_id": "api-cli-mcp-capability-registry-v0",
-  "updated_at": "2026-07-08",
+  "updated_at": "2026-07-19",
   "status": "formal_registry",
   "purpose": "Track API / CLI / MCP capabilities as verifiable MorroWise system components with update history, boundaries, owner tasks, and next actions.",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
@@ -24,6 +24,7 @@
     "auth_boundary",
     "read_write_boundary",
     "secret_policy",
+    "credential_governance",
     "status",
     "verifier",
     "next_action",
@@ -45,6 +46,49 @@
     "legacy": "Capability remains documented as fallback or history, not normal path.",
     "prototype": "Capability is being shaped and must not be treated as stable infrastructure.",
     "unknown": "Capability was reported or discovered but lacks enough verified metadata."
+  },
+  "credential_lifecycle_contract": {
+    "schema_version": "credential-lifecycle.v0",
+    "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#credential-lifecycle-governance",
+    "spec_ref": "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-credential-lifecycle.md",
+    "machine_ids": [
+      "MBA-1",
+      "MBA-2",
+      "MBA-3"
+    ],
+    "credential_classes": [
+      "service_static",
+      "ci_federated",
+      "human_account",
+      "device_session",
+      "recovery",
+      "private_runtime"
+    ],
+    "machine_summary_allowed_fields": [
+      "schema_version",
+      "machine_id",
+      "posture",
+      "connection_observed",
+      "observed_at",
+      "next_action",
+      "sanitized_evidence_ref"
+    ],
+    "metadata_allowed_fields": [
+      "credential_class",
+      "owner_role",
+      "consumer",
+      "least_privilege_contract",
+      "rotation_policy",
+      "last_rotated_at",
+      "rotation_due_at",
+      "recovery_rule",
+      "incident_state",
+      "next_action",
+      "sanitized_evidence_ref",
+      "last_verified_at"
+    ],
+    "value_boundary": "Credential values remain only in an approved encrypted vault or local secure store. This registry and generated read models store safe lifecycle metadata only.",
+    "github_actions_baseline": "Use least-privilege job permissions, OIDC or short-lived federation where external identity is required, and never expose credentials to untrusted pull-request code, artifacts, caches, or logs."
   },
   "capabilities": [
     {
@@ -78,6 +122,21 @@
         ]
       },
       "secret_policy": "No token or local auth path content may be stored in registry or generated read model.",
+      "credential_governance": {
+        "applicability": "applicable",
+        "credential_class": "device_session",
+        "owner_role": "Vincent",
+        "consumer": "Heptabase Desktop Local CLI Server",
+        "least_privilege_contract": "Use the existing desktop session only for explicit task-card operations.",
+        "rotation_policy": "human-session-event-driven",
+        "last_rotated_at": null,
+        "rotation_due_at": null,
+        "recovery_rule": "Re-authenticate through the official desktop flow after an approved incident or session loss.",
+        "incident_state": "unknown",
+        "next_action": "Verify a sanitized local posture before enabling this capability on a machine.",
+        "sanitized_evidence_ref": "credential-lifecycle-contract-only",
+        "last_verified_at": "2026-07-19"
+      },
       "status": "ready",
       "verifier": [
         "npm run test:capability-registry"
@@ -128,6 +187,21 @@
         ]
       },
       "secret_policy": "Never store OAuth token, MCP auth content, Notion token, or local runtime auth paths.",
+      "credential_governance": {
+        "applicability": "applicable",
+        "credential_class": "device_session",
+        "owner_role": "Vincent",
+        "consumer": "Legacy MCP fallback only",
+        "least_privilege_contract": "Do not use as the normal path; any recovery use needs an explicit approved task.",
+        "rotation_policy": "human-session-event-driven",
+        "last_rotated_at": null,
+        "rotation_due_at": null,
+        "recovery_rule": "Use the documented migration recovery path before any fallback activation.",
+        "incident_state": "unknown",
+        "next_action": "Keep legacy fallback disabled unless an approved recovery task requires it.",
+        "sanitized_evidence_ref": "credential-lifecycle-contract-only",
+        "last_verified_at": "2026-07-19"
+      },
       "status": "legacy",
       "verifier": [
         "npm run test:capability-registry"
@@ -180,6 +254,10 @@
         ]
       },
       "secret_policy": "Do not read browser profiles, cookies, storage state, or auth files while verifying CLI availability.",
+      "credential_governance": {
+        "applicability": "not_applicable",
+        "reason": "Local CLI availability policy does not connect to a credential consumer."
+      },
       "status": "legacy",
       "verifier": [
         "npm run test:capability-registry",
@@ -270,6 +348,21 @@
         ]
       },
       "secret_policy": "Never store Telegram token, LINE channel access token, Notion token, chat id values, user/group/room ids, or thread auth data in git or generated read models.",
+      "credential_governance": {
+        "applicability": "applicable",
+        "credential_class": "service_static",
+        "owner_role": "Vincent",
+        "consumer": "Configured notification delivery adapter",
+        "least_privilege_contract": "Permit only the intended delivery operation for an explicitly configured adapter.",
+        "rotation_policy": "create-validate-cutover-revoke",
+        "last_rotated_at": null,
+        "rotation_due_at": null,
+        "recovery_rule": "Disable the affected adapter, use an approved fallback, then replace and verify through a separate task.",
+        "incident_state": "unknown",
+        "next_action": "Verify a sanitized local posture before enabling delivery on each machine.",
+        "sanitized_evidence_ref": "credential-lifecycle-contract-only",
+        "last_verified_at": "2026-07-19"
+      },
       "status": "ready",
       "verifier": [
         "npm run test:notification-adapter-contract",
@@ -337,6 +430,10 @@
         ]
       },
       "secret_policy": "MCP registration policy may store provider names, scopes, owner tasks, and safe probe results only; never store credential values, command env secrets, tokens, or local auth file contents.",
+      "credential_governance": {
+        "applicability": "not_applicable",
+        "reason": "Registration scope policy is metadata-only and does not connect to a credential consumer."
+      },
       "status": "ready",
       "verifier": [
         "npm run test:capability-registry",
@@ -392,6 +489,21 @@
         ]
       },
       "secret_policy": "Only store Firecrawl capability metadata and disposition state; never store API keys, env values, token content, or local auth file contents.",
+      "credential_governance": {
+        "applicability": "applicable",
+        "credential_class": "service_static",
+        "owner_role": "Vincent",
+        "consumer": "Firecrawl MCP only if an approved capability task enables it",
+        "least_privilege_contract": "Keep blocked until ownership, scope, and explicit enablement are verified.",
+        "rotation_policy": "create-validate-cutover-revoke",
+        "last_rotated_at": null,
+        "rotation_due_at": null,
+        "recovery_rule": "Keep blocked and use the documented disposition path; do not restore from local runtime state.",
+        "incident_state": "unknown",
+        "next_action": "Resolve ownership and approved enablement before any runtime use.",
+        "sanitized_evidence_ref": "credential-lifecycle-contract-only",
+        "last_verified_at": "2026-07-19"
+      },
       "status": "blocked",
       "verifier": [
         "npm run test:capability-registry",
@@ -448,6 +560,21 @@
         ]
       },
       "secret_policy": "Use registry-by-declaration plus session probe audit. Store provider/account_scope/auth_boundary/safe_probe/audit_frequency/allowed_session_use metadata only; never store account secrets, cookies, tokens, connector payloads, or local runtime auth content.",
+      "credential_governance": {
+        "applicability": "applicable",
+        "credential_class": "human_account",
+        "owner_role": "Vincent",
+        "consumer": "Approved account-level connector session",
+        "least_privilege_contract": "Use only the declared connector scope for an explicitly approved session task.",
+        "rotation_policy": "human-account-event-driven",
+        "last_rotated_at": null,
+        "rotation_due_at": null,
+        "recovery_rule": "Use the official account recovery flow and re-verify through a safe session probe.",
+        "incident_state": "unknown",
+        "next_action": "Maintain declaration plus safe session-probe audit without inspecting private account state.",
+        "sanitized_evidence_ref": "credential-lifecycle-contract-only",
+        "last_verified_at": "2026-07-19"
+      },
       "status": "ready",
       "verifier": [
         "npm run test:capability-registry",

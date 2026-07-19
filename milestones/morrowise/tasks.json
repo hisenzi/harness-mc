@@ -3186,9 +3186,49 @@
           "reason": "Vincent 核准建立三機安全憑證生命週期治理 task。",
           "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#credential-lifecycle-governance"],
           "recorded_at": "2026-07-18"
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "in_progress",
+          "reason": "Vincent 已明確授權執行 JV-39；先建立不含憑證值的 lifecycle contract、sanitized metadata、machine-scoped read model 與 verifier。",
+          "evidence_refs": [
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#credential-lifecycle-governance",
+            "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json"
+          ],
+          "architecture_relation_impact": {
+            "decision": "none",
+            "relationship_ids": [],
+            "reason": "本次狀態轉換只開始既有治理 task；任何新架構 relationship 會在正本、Admission Record 與 closeout evidence 都建立後另行記錄。"
+          },
+          "recorded_at": "2026-07-19"
+        }, {
+          "operation": "complete",
+          "from_status": "in_progress",
+          "to_status": "completed",
+          "reason": "六類憑證生命週期合約、既有 capability registry 延伸、安全機器摘要產生器、負向 verifier、MC read-only surface、GitHub Pages 最小權限與 Architecture Admission Record 均已完成並通過驗證；未執行任何憑證、帳號、密碼庫、輪替、撤銷、commit、push 或部署外部效果。",
+          "evidence_refs": [
+            "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-credential-lifecycle.md",
+            "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json#credential_lifecycle_contract",
+            "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-credential-lifecycle-governance",
+            "npm run test:credential-lifecycle",
+            "npm run test:capability-registry",
+            "npm run test:architecture-subsystems",
+            "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+            "npm run build"
+          ],
+          "architecture_relation_impact": {
+            "decision": "add",
+            "relationship_ids": [
+              "morrowise-credential-lifecycle-governance-governs-notification-delivery-adapters"
+            ],
+            "reason": "由 credential lifecycle governance Admission Record 正式治理已收編的通知 delivery adapter 之最小權限、輪替、事件與安全健康摘要邊界；關係正本與薄層索引均已同步驗證。"
+          },
+          "recorded_at": "2026-07-19"
         }]
       },
-      "status": "todo",
+      "status": "completed",
+      "completed_at": "2026-07-19",
+      "summary": "完成 agent-neutral 的六類憑證生命週期治理：能力 registry 延伸、安全三機摘要與 credential health read model、MC 顯示、GitHub Actions 最小權限、負向 verifier 與 ARCHITECTURE.md 受控薄層同步；所有外部憑證與帳號操作仍保持未執行。",
       "title": "JV-39 安全憑證生命週期與三機安全啟用治理",
       "track": "governance",
       "order_label": "JV-39",
@@ -3251,11 +3291,18 @@
         "source_boundary": "HC is a thinking check only, not source of truth. Canonical security policy is the lifecycle spec; canonical integration contract is the existing capability registry; observed status is a sanitized machine-scoped read model; secret values remain outside $COLLAB in Vincent-managed encrypted storage and local secure stores."
       },
       "architecture_decision": {
-        "decision": "deferred",
-        "evaluated_at": "2026-07-18",
-        "reason": "JV-39 先建立治理 task 與驗收契約，不宣稱已有 credential runtime。若後續完成 lifecycle spec、既有 capability registry 的安全欄位、sanitized machine-scoped read model、generator、negative verifier、MC surface 與 Admission Record，才評估收編為 ARCHITECTURE.md generated 子系統索引；不得因規劃階段建立第二套整合 registry 或把密碼庫視為 Agent runtime。"
+        "decision": "promoted",
+        "evaluated_at": "2026-07-19",
+        "registry_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-credential-lifecycle-governance",
+        "detail_doc": "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-credential-lifecycle.md",
+        "reason": "JV-39 已完成 lifecycle spec、既有 capability registry 安全欄位、sanitized machine-scoped read model、generator、negative verifier、MC surface 與 Admission Record；因此收編為 ARCHITECTURE.md generated 子系統索引，且只保留薄層關係與 verifier anchor，不把密碼庫視為 Agent runtime。",
+        "admission_record_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-credential-lifecycle-governance",
+        "relationship_ids": [
+          "morrowise-credential-lifecycle-governance-governs-notification-delivery-adapters"
+        ],
+        "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
       },
-      "note": "2026-07-18 Vincent 核准建立 JV-39。規劃已以 OWASP、NIST、GitHub Actions 與 Secret Manager 官方文件進行桌上壓測；原案補強為 v1.1：憑證六類分流、三機對等本機啟用、受信任安全摘要、Actions／OIDC 邊界、類型化輪替、遺失裝置／復原／退役與負向 fixtures。本 task 只建立治理合約與可驗收範圍，不選定密碼庫品牌、不接觸憑證值、不替任何機器建立例外。"
+      "note": "2026-07-18 Vincent 核准建立 JV-39。規劃已以 OWASP、NIST、GitHub Actions 與 Secret Manager 官方文件進行桌上壓測；原案補強為 v1.1：憑證六類分流、三機對等本機啟用、受信任安全摘要、Actions／OIDC 邊界、類型化輪替、遺失裝置／復原／退役與負向 fixtures。本 task 只建立治理合約與可驗收範圍，不選定密碼庫品牌、不接觸憑證值、不替任何機器建立例外。2026-07-19 已完成 source／contract／verifier／generator／surface 驗收並收編 Admission Record；MBA-1、MBA-2、MBA-3 目前均因沒有已核准的安全摘要而誠實顯示 missing_machine，未對任何機器進行外部設定或例外處理。"
     },
     {
       "id": "task-lifecycle-jv32-gate",

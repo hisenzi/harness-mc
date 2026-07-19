@@ -19,9 +19,7 @@ const capabilities = registry.capabilities.map((capability) => {
     scope: capability.scope,
     status: capability.status,
     entrypoint: capability.entrypoint,
-    auth_boundary: capability.auth_boundary,
-    secret_policy: capability.secret_policy,
-    read_write_boundary: capability.read_write_boundary,
+    credential_governance: publicCredentialGovernance(capability.credential_governance),
     verifier: capability.verifier,
     next_action: capability.next_action,
     latest_history: latestHistory,
@@ -52,6 +50,12 @@ const readModel = {
   stale_rule: "stale if registry.updated_at is older than latest capability history date or this file is not regenerated after registry changes",
   write_boundary: "read-only generated data; do not execute API / CLI / MCP capabilities from this surface",
   verifier_ref: "npm run test:capability-registry",
+  credential_lifecycle: {
+    schema_version: registry.credential_lifecycle_contract?.schema_version || "unknown",
+    task_anchor: registry.credential_lifecycle_contract?.task_anchor || null,
+    read_model: "$COLLAB/harness-mc/public/data/credential-health.json",
+    value_boundary: "safe lifecycle metadata only; no credential values or local secure-store locations",
+  },
   discovery: registry.discovery,
   summary: {
     total: capabilities.length,
@@ -66,3 +70,16 @@ const readModel = {
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, `${JSON.stringify(readModel, null, 2)}\n`);
 console.log(`Generated ${outPath} — ${capabilities.length} capabilities`);
+
+function publicCredentialGovernance(governance) {
+  if (!governance || governance.applicability === "not_applicable") {
+    return { applicability: "not_applicable" };
+  }
+  return {
+    applicability: "applicable",
+    credential_class: governance.credential_class,
+    incident_state: governance.incident_state,
+    next_action: governance.next_action,
+    last_verified_at: governance.last_verified_at,
+  };
+}

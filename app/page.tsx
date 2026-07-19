@@ -185,6 +185,28 @@ interface CapabilityRuntimeStatusReadModel {
   }[];
 }
 
+interface CredentialHealthReadModel {
+  generated_at: string;
+  read_only: true;
+  stale_rule: string;
+  summary: {
+    total: number;
+    fresh: number;
+    stale: number;
+    missing_machine: number;
+    unknown: number;
+  };
+  machines: {
+    machine_id: "MBA-1" | "MBA-2" | "MBA-3";
+    posture: "configured" | "degraded" | "unknown" | "not_applicable";
+    connection_observed: "observed" | "not_observed" | "unknown" | "not_applicable" | "missing_machine";
+    observed_at: string | null;
+    freshness: "fresh" | "stale" | "missing_machine" | "unknown";
+    next_action: string;
+    sanitized_evidence_ref: string;
+  }[];
+}
+
 interface ProactiveLoopScenario {
   scenario_id: string;
   label: string;
@@ -1515,6 +1537,67 @@ function ApiCliMcpCapabilityCard({ data, runtimeStatus }: { data: CapabilityRead
   );
 }
 
+function CredentialHealthCard({ data }: { data: CredentialHealthReadModel | null }) {
+  if (!data) {
+    return (
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
+        <div className="text-[13px] text-[var(--text-muted)]">憑證生命週期狀態載入中</div>
+      </div>
+    );
+  }
+
+  const attention = data.summary.stale + data.summary.missing_machine + data.summary.unknown;
+  return (
+    <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
+      <div className="mb-4 flex items-start justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <StatusDot status={attention > 0 ? "needs_fix" : "completed"} />
+            <div className="font-semibold text-heading">憑證生命週期</div>
+          </div>
+          <div className="mt-1 text-[11px] text-[var(--text-muted)]">只顯示安全中繼資料，不讀取或顯示任何憑證值</div>
+        </div>
+        <span className={credentialHealthPillClass(attention > 0 ? "needs_review" : "fresh")}>
+          {attention > 0 ? `${attention} needs review` : "healthy"}
+        </span>
+      </div>
+
+      <div className="grid grid-cols-3 gap-2">
+        <SummaryMetric label="fresh" value={String(data.summary.fresh)} tone="green" />
+        <SummaryMetric label="stale" value={String(data.summary.stale)} tone={data.summary.stale > 0 ? "yellow" : "green"} />
+        <SummaryMetric label="missing" value={String(data.summary.missing_machine)} tone={data.summary.missing_machine > 0 ? "yellow" : "green"} />
+      </div>
+
+      <div className="mt-4 space-y-2">
+        {data.machines.map((machine) => (
+          <div key={machine.machine_id} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 rounded-lg border border-[var(--border)] bg-black/10 px-3 py-2">
+            <div className="min-w-0">
+              <div className="text-[12px] font-medium text-[var(--text)]">{machine.machine_id}</div>
+              <div className="truncate text-[11px] text-[var(--text-muted)]">
+                {machine.connection_observed === "missing_machine" ? "尚未收到安全摘要" : `${machine.posture} · ${machine.observed_at || "unknown"}`}
+              </div>
+              <div className="truncate text-[11px] text-[var(--text-muted)]">{machine.next_action}</div>
+            </div>
+            <span className={credentialHealthPillClass(machine.freshness)}>{machine.freshness}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-4 rounded-lg border border-[var(--border)] bg-black/10 p-3 text-[11px] leading-relaxed text-[var(--text-muted)]">
+        source: credential-health.json · read-only · stale or missing summaries never count as healthy
+      </div>
+    </div>
+  );
+}
+
+function credentialHealthPillClass(state: "fresh" | "stale" | "missing_machine" | "unknown" | "needs_review") {
+  const base = "shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-mono";
+  if (state === "fresh") return `${base} border-green-400/30 text-green-400`;
+  if (state === "stale") return `${base} border-yellow-400/30 text-yellow-400`;
+  if (state === "missing_machine" || state === "needs_review") return `${base} border-orange-400/30 text-orange-400`;
+  return `${base} border-[var(--border)] text-[var(--text-muted)]`;
+}
+
 function capabilityStatusRank(status: CapabilityReadModel["capabilities"][number]["status"]) {
   if (status === "blocked") return 4;
   if (status === "unknown") return 3;
@@ -1683,6 +1766,7 @@ export default function HomePage() {
   const [liveDashboard, setLiveDashboard] = useState<LiveDashboardData | null>(null);
   const [capabilities, setCapabilities] = useState<CapabilityReadModel | null>(null);
   const [capabilityRuntimeStatus, setCapabilityRuntimeStatus] = useState<CapabilityRuntimeStatusReadModel | null>(null);
+  const [credentialHealth, setCredentialHealth] = useState<CredentialHealthReadModel | null>(null);
   const [visualSyncCoverage, setVisualSyncCoverage] = useState<VisualSyncCoverageData | null>(null);
 
   useEffect(() => {
@@ -1704,6 +1788,11 @@ export default function HomePage() {
     fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/capability-runtime-status.json`)
       .then((r) => r.json())
       .then(setCapabilityRuntimeStatus)
+      .catch(() => {});
+
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/credential-health.json`)
+      .then((r) => r.json())
+      .then(setCredentialHealth)
       .catch(() => {});
 
     fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/visual-sync-coverage.json`)
@@ -1785,6 +1874,9 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div id="api-cli-mcp-capabilities">
           <ApiCliMcpCapabilityCard data={capabilities} runtimeStatus={capabilityRuntimeStatus} />
+        </div>
+        <div id="credential-health">
+          <CredentialHealthCard data={credentialHealth} />
         </div>
 
         {/* 記憶 */}

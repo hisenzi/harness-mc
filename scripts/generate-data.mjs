@@ -3,6 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
 import { mergeTaskDefinitionsWithState } from "./task-state.mjs";
+import { sortTasksByPlan } from "../lib/taskOrdering.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -36,13 +37,16 @@ function normalize(t) {
     track: t.track || "dev",
     order: t.order ?? null,
     order_label: t.order_label || "",
+    priority: t.priority || "",
+    capability_domain: t.capability_domain || "",
+    task_kind: t.task_kind || "",
     foundation: t.foundation ?? null,
     issues_found: t.issues_found ?? 0,
     issues_fixed: t.issues_fixed ?? 0,
     verdict: t.verdict ?? null,
     note: t.note || "",
     done_condition: t.done_condition || "",
-    depends_on: t.depends_on || [],
+    dependencies: t.dependencies || t.depends_on || [],
     completed_at: t.completed_at || null,
     commits: t.commits || [],
     summary: t.summary || "",
@@ -90,8 +94,9 @@ for (const dir of fs.readdirSync(milestonesDir)) {
       meta = JSON.parse(fs.readFileSync(projectPath, "utf-8").replace(/^﻿/, ""));
     }
 
+    const orderedTasks = sortTasksByPlan(tasks);
     const stat = fs.statSync(tasksPath);
-    const done = tasks.filter((t) => ["done", "completed", "fixed"].includes(t.status)).length;
+    const done = orderedTasks.filter((t) => ["done", "completed", "fixed"].includes(t.status)).length;
 
     const projectStatus = meta.status || "active";
     if (projectStatus === "archived") continue;
@@ -107,12 +112,13 @@ for (const dir of fs.readdirSync(milestonesDir)) {
       domainLabel: domain?.label || domain?.id || "未對應",
       domainColor: domain?.color || "#71717a",
       priority: meta.priority || "medium",
-      tasks,
+      tasks: orderedTasks,
       lastModified: gitTime(path.join(milestonesDir, dir), stat.mtime.toISOString()),
       done,
       total: tasks.length,
       tracks: meta.tracks || {},
       decision_refs: meta.decision_refs || [],
+      project_map: meta.project_map || null,
     });
   } catch {
     // skip malformed

@@ -3956,7 +3956,7 @@
     {
       "id": "morrowise-project-init-v1",
       "title": "開案 v1：成果契約、任務分類與 Operating Loop Map",
-      "status": "todo",
+      "status": "in_progress",
       "track": "governance",
       "order_label": "MW-PI-01",
       "priority": "high",
@@ -4037,6 +4037,53 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "MW-PI-01 已通過 implementation preflight，並開始實作成果契約、starter task taxonomy、Operating Loop Map、MC link 與對應 verifier；不占用 JV-40 的 weekly_core slot。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/scripts/work-anchor-preflight.mjs",
+              "$COLLAB/harness-mc/scripts/verify-project-init-v1.mjs",
+              "$COLLAB/harness-mc/scripts/verify-morrowise-operating-map.mjs",
+              "Vincent 2026-07-20 current session: 可以開始"
+            ],
+            "recorded_at": "2026-07-20",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/mc-dashboard-priority-ia-v2"
+              ],
+              "scope_comparison": {
+                "problem": "實作仍處理開案成果契約、分類／排序與 Operating Loop Map，沒有轉成其他問題。",
+                "owner_source_of_truth": "owner 仍是 MW-PI-01；canonical task state 在 MorroWise tasks.json，Map 與 dashboard 仍是唯讀 surface。",
+                "inputs_outputs": "輸入仍為 project-init request、canonical task evidence 與既有 control-plane spec；輸出仍是 contract、taxonomy、Map、route/link 與 verifier。",
+                "lifecycle_completion": "完成邊界維持 PI-A01 至 PI-A06；本次只將既有 anchor 從 todo 轉為 in_progress，不宣告完成。"
+              },
+              "decision_reason": "此為同一 task 已獲核准範圍內的執行狀態更新，不建立平行 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-20",
+                "evidence_refs": [
+                  "Vincent 2026-07-20 current session: 可以寫入 MorroWise／harness-mc 的 canonical tasks 並進入實作",
+                  "Vincent 2026-07-20 current session: 可以開始"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "回填 MW-PI-01 實作 commit 884feda；此為 commit accounting，沒有改變 task scope 或 status。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc@884feda",
+              "$COLLAB/harness-mc/scripts/verify-project-init-v1.mjs"
+            ],
+            "recorded_at": "2026-07-20"
           }
         ]
       },
@@ -4062,6 +4109,9 @@
         "evaluated_at": "2026-07-20",
         "reason": "本案可能改善既有 project-init 與 control-plane 的 interaction，但尚未證明需要新增 architecture subsystem；完成後再依實際受管 contract 變更做 Admission Review，ARCHITECTURE.md 不在本次 bootstrap 手寫。"
       },
+      "commits": [
+        "884feda"
+      ],
       "note": "2026-07-20：此為單一 work anchor，避免在 taxonomy contract 未落地前預先膨脹多張 implementation task。它不設 weekly_core，因 JV-40 仍是本週唯一已 admission 的 MorroWise core task；需要轉為 weekly core 時，須由 Vincent 另行明確選入並設定 review_date。"
     }
   ]

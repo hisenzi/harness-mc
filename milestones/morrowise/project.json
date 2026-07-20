@@ -21,6 +21,12 @@
       "note": "查 MorroWise / Jarvis / live-system ownership 前先讀；定義活系統、主動服務、通知、feedback loop 不另開平行 project。"
     }
   ],
+  "project_map": {
+    "kind": "operating-loop",
+    "source": "milestones/morrowise/maps/operating-loop.json",
+    "dashboard_path": "/projects/morrowise/map",
+    "label": "查看 Operating Loop Map"
+  },
   "goals": [
     "把 000_Agent/docs/morrowise/ 的 v0 評估文件轉成正式、task-backed 的 MorroWise 專案邊界。",
     "建立第一個可驗證閉環：ARCHITECTURE.md source -> auditor/report -> read model -> MC read-only surface -> next action。",

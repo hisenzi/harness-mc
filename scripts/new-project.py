@@ -7,8 +7,12 @@ new-project.py — 開案自動化（MC 版）
 standalone 類型自動建 GitHub repo + 更新 repos.json + ARCHITECTURE.md。
 
 用法：
-  python3 scripts/new-project.py --id "my-project" --name "我的專案" --desc "一句話說明" --type internal
-  python3 scripts/new-project.py --id "my-app" --name "我的應用" --desc "說明" --type standalone
+  python3 scripts/new-project.py --id "my-project" --name "我的專案" --desc "一句話說明" --type internal \\
+    --problem "要解決的問題" --impact "不解決的影響" --metric "衡量指標" \\
+    --baseline "目前基準" --target "量化目標" --due "2026-08-31" --measurement-source "資料來源或驗證指令"
+  python3 scripts/new-project.py --id "my-app" --name "我的應用" --desc "說明" --type standalone \\
+    --problem "要解決的問題" --impact "不解決的影響" --metric "衡量指標" \\
+    --baseline "目前基準" --target "量化目標" --due "2026-08-31" --measurement-source "資料來源或驗證指令"
   python3 scripts/new-project.py promote --id "my-project"
 """
 
@@ -29,9 +33,67 @@ ARCH_MD      = AGENT_DIR / "ARCHITECTURE.md"
 STANDALONE_DIR = COLLAB_DIR
 GEN_DATA     = MC_DIR / "scripts" / "generate-data.mjs"
 
+PRIORITY_ALIASES = {
+    "P0": "P0",
+    "P1": "P1",
+    "P2": "P2",
+    "high": "P0",
+    "medium": "P1",
+    "low": "P2",
+}
+
+PLACEHOLDER_MARKERS = (
+    "tbd",
+    "todo",
+    "請填",
+    "請補",
+    "待補",
+    "待定",
+    "<",
+    ">",
+)
+
+
+def is_placeholder(value: str) -> bool:
+    normalized = (value or "").strip().lower()
+    return not normalized or any(marker in normalized for marker in PLACEHOLDER_MARKERS)
+
+
+def validate_outcome_contract(parser, args):
+    required = {
+        "--problem": args.problem,
+        "--impact": args.impact,
+        "--metric": args.metric,
+        "--baseline": args.baseline,
+        "--target": args.target,
+        "--due": args.due,
+        "--measurement-source": args.measurement_source,
+    }
+    missing = [flag for flag, value in required.items() if is_placeholder(value)]
+    if missing:
+        parser.error(f"開案成果契約缺少或仍是 placeholder：{', '.join(missing)}")
+
+    try:
+        datetime.strptime(args.due, "%Y-%m-%d")
+    except ValueError:
+        parser.error("--due 必須是 YYYY-MM-DD")
+
+    args.priority = PRIORITY_ALIASES[args.priority]
+
 
 def make_project_json(args) -> dict:
     proj_type = args.type
+    outcome = {
+        "problem_statement": args.problem,
+        "impact": args.impact,
+        "success_target": {
+            "metric": args.metric,
+            "baseline": args.baseline,
+            "target": args.target,
+            "due": args.due,
+        },
+        "measurement_source": args.measurement_source,
+    }
 
     base = {
         "name":        args.name,
@@ -44,38 +106,50 @@ def make_project_json(args) -> dict:
         "tracks": {
             "phase-1": "Phase 1",
         },
+        "outcome": outcome,
+        "task_taxonomy": {
+            "version": "v1",
+            "sort_rule": "dependencies_then_priority_then_id",
+            "capability_domains": [
+                "direction-governance",
+                "source-memory",
+                "sensing-events",
+                "judgment-priority",
+                "approval-safety",
+                "action-delivery",
+                "feedback-learning",
+                "heartbeat-scheduling",
+                "dashboard-surface",
+                "knowledge-capture",
+                "verification-immunity",
+            ],
+            "task_kinds": ["discover", "decide", "design", "implement", "verify", "operate", "closeout"],
+            "priority_order": ["P0", "P1", "P2"],
+        },
+        "goals": [
+            f"解決：{args.problem}",
+            f"{args.metric} 從 {args.baseline} 提升至 {args.target}，截止 {args.due}",
+        ],
+        "risks": [
+            {
+                "risk": "成果契約或量測來源失效，導致專案無法驗收。",
+                "impact": "high",
+                "probability": "medium",
+                "mitigation": "在 Phase 1 驗收前重跑 measurement_source 並確認 baseline/target。",
+            },
+        ],
+        "success_criteria": [
+            {
+                "criterion": f"{args.metric} 達到 {args.target}",
+                "verify_cmd": args.measurement_source,
+                "expected": f"baseline={args.baseline}; target={args.target}; due={args.due}",
+            },
+        ],
+        "decisions": [],
     }
 
     if proj_type == "standalone":
         base["tracks"]["deploy"] = "部署"
-        base.update({
-            "goals": [
-                "MVP 上線",
-                "（請補充）",
-            ],
-            "risks": [
-                {"risk": "部署延遲", "impact": "medium", "probability": "medium", "mitigation": "先本機驗證再上 Zeabur"},
-            ],
-            "success_criteria": [
-                {"criterion": "可部署到目標平台", "verify_cmd": "curl -s -o /dev/null -w '%{http_code}' <URL>", "expected": "200"},
-                {"criterion": "核心功能可正常操作", "verify_cmd": "（填入驗證指令）", "expected": "（預期結果）"},
-            ],
-            "decisions": [],
-        })
-    else:
-        base.update({
-            "goals": [
-                "（請填入目標 1）",
-                "（請填入目標 2）",
-            ],
-            "risks": [
-                {"risk": "（請填入風險）", "impact": "medium", "probability": "medium", "mitigation": "（請填入應對方式）"},
-            ],
-            "success_criteria": [
-                {"criterion": "（請填入驗收標準）", "verify_cmd": "（驗證指令）", "expected": "（預期結果）"},
-            ],
-            "decisions": [],
-        })
 
     return base
 
@@ -89,21 +163,36 @@ def make_tasks_json(args) -> dict:
                 "title":  "需求確認（功能範圍、使用者角色、完成定義）",
                 "status": "todo",
                 "track":  "phase-1",
-                "done_condition": "goals + success_criteria 已填入 project.json，非 placeholder"
+                "order_label": "PI-01",
+                "priority": args.priority,
+                "capability_domain": "direction-governance",
+                "task_kind": "discover",
+                "dependencies": [],
+                "done_condition": "outcome.problem_statement、impact、success_target 與 measurement_source 已由需求確認驗證，且沒有 placeholder"
             },
             {
                 "id":     "p1-2",
                 "title":  "架構設計（技術棧選定、系統架構文件）",
                 "status": "todo",
                 "track":  "phase-1",
-                "done_condition": "ARCHITECTURE.md 或等效文件已建立"
+                "order_label": "PI-02",
+                "priority": "P1",
+                "capability_domain": "source-memory",
+                "task_kind": "design",
+                "dependencies": ["p1-1"],
+                "done_condition": "ARCHITECTURE.md 或等效文件已建立，並能對照 outcome contract"
             },
             {
                 "id":     "p1-verify",
                 "title":  "Phase 1 驗收整合",
                 "status": "todo",
                 "track":  "phase-1",
-                "done_condition": "success_criteria + done_condition + 環境異動彙整完成",
+                "order_label": "PI-03",
+                "priority": "P2",
+                "capability_domain": "verification-immunity",
+                "task_kind": "verify",
+                "dependencies": ["p1-1", "p1-2"],
+                "done_condition": "success_criteria、done_condition、量測來源與環境異動均已驗證",
                 "note":   "前置任務全 done 後執行"
             }
         ]
@@ -292,6 +381,13 @@ def rebuild_mc():
 def create(args):
     """新建專案"""
     project_dir = PROJECTS_DIR / args.id
+    project = make_project_json(args)
+    tasks = make_tasks_json(args)
+
+    if args.dry_run:
+        print(json.dumps({"project": project, "tasks": tasks}, ensure_ascii=False, indent=2))
+        return
+
     if project_dir.exists():
         print(f"❌ 專案 '{args.id}' 已存在：{project_dir}")
         sys.exit(1)
@@ -301,13 +397,13 @@ def create(args):
 
     proj_path = project_dir / "project.json"
     proj_path.write_text(
-        json.dumps(make_project_json(args), ensure_ascii=False, indent=2) + "\n"
+        json.dumps(project, ensure_ascii=False, indent=2) + "\n"
     )
     print(f"✅ 建立：{proj_path.name}")
 
     ms_path = project_dir / "tasks.json"
     ms_path.write_text(
-        json.dumps(make_tasks_json(args), ensure_ascii=False, indent=2) + "\n"
+        json.dumps(tasks, ensure_ascii=False, indent=2) + "\n"
     )
     print(f"✅ 建立：{ms_path.name}")
 
@@ -336,7 +432,7 @@ def create(args):
     if args.type == "standalone":
         print(f"   Repo: https://github.com/hisenzi/{args.id}")
         print(f"   本地: Claude_協作/{args.id}/")
-    print("   ⚠️ 待辦：補充 project.json placeholder + 更新 MEMORY.md [P1]")
+    print("   ✅ 成果契約與 starter task taxonomy 已建立；下一步依 task lifecycle 執行。")
 
 
 def main():
@@ -351,10 +447,17 @@ def main():
     parser.add_argument("--name",     help="專案名稱")
     parser.add_argument("--desc",     help="一句話描述")
     parser.add_argument("--type",     choices=["internal", "standalone"], help="專案類型（必填）")
-    parser.add_argument("--due",      default="TBD",  help="預計完成日 YYYY-MM-DD")
-    parser.add_argument("--priority", default="high", choices=["high", "medium", "low"])
+    parser.add_argument("--problem", default=None, help="要解決的具體問題")
+    parser.add_argument("--impact", default=None, help="不解決或解決後的影響")
+    parser.add_argument("--metric", default=None, help="量化成功指標")
+    parser.add_argument("--baseline", default=None, help="目前量測基準")
+    parser.add_argument("--target", default=None, help="目標數值或門檻")
+    parser.add_argument("--due", default=None, help="成果目標日 YYYY-MM-DD")
+    parser.add_argument("--measurement-source", default=None, help="量測資料來源或驗證指令")
+    parser.add_argument("--priority", default="P1", choices=["P0", "P1", "P2", "high", "medium", "low"])
     parser.add_argument("--deploy",   default=None, help="部署目標 (zeabur/vps)")
     parser.add_argument("--no-sync",  action="store_true", help="只建檔，不同步 Obsidian")
+    parser.add_argument("--dry-run", action="store_true", help="只輸出 project/tasks contract，不建立檔案或同步")
     parser.add_argument("--template", default=None, help="（已棄用，請用 --type）")
     parser.add_argument("--repo-path", default=None, help="（已棄用，standalone 自動建）")
 
@@ -371,6 +474,8 @@ def main():
         parser.error("需要 --id, --name, --desc")
     if not args.type:
         parser.error("需要 --type (internal 或 standalone)")
+
+    validate_outcome_contract(parser, args)
 
     create(args)
 

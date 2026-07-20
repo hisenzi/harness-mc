@@ -1,0 +1,163 @@
+{
+  "version": "1.0",
+  "kind": "operating-loop",
+  "title": "MorroWise Operating Loop Map",
+  "as_of": "2026-07-20",
+  "diagram_note": "箭頭表示系統關係與回饋，不表示單一路徑或固定執行順序。",
+  "source_boundary": "這是唯讀的溝通與導覽 Map。task 狀態正本仍在 milestones/*/tasks.json；Map 的狀態只是一個需附 evidence_refs 與 as_of 的觀測快照，不得反寫 canonical task state。",
+  "nodes": [
+    {
+      "id": "direction-governance",
+      "label": "方向與治理",
+      "detail": "邊界、owner、task lifecycle、admission",
+      "status": "verified",
+      "as_of": "2026-07-20",
+      "evidence_refs": [
+        "$COLLAB/harness-mc/milestones/morrowise/project.json",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate"
+      ],
+      "position": { "x": 500, "y": 60 }
+    },
+    {
+      "id": "source-memory",
+      "label": "正本與記憶",
+      "detail": "tasks／registries／read models；文件與現況仍有漂移",
+      "status": "watch",
+      "as_of": "2026-07-20",
+      "evidence_refs": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-source-map-reconciliation.md"
+      ],
+      "position": { "x": 500, "y": 180 }
+    },
+    {
+      "id": "sensing-events",
+      "label": "感知與事件",
+      "detail": "changes／events／worktrees／capability；三機觀測尚未完成",
+      "status": "watch",
+      "as_of": "2026-07-20",
+      "evidence_refs": [
+        "$COLLAB/harness-mc/task-events",
+        "$COLLAB/harness-mc/scripts/generate-worktree-status.mjs"
+      ],
+      "position": { "x": 500, "y": 300 }
+    },
+    {
+      "id": "judgment-priority",
+      "label": "判斷與優先級",
+      "detail": "Growth Gate／HC／recommendation；目前仍以 fixture 為主",
+      "status": "risk",
+      "as_of": "2026-07-20",
+      "evidence_refs": [
+        "$COLLAB/harness-mc/system-workflow/docs/specs/control-plane-operating-loop.md",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mc-dashboard-priority-ia-v2"
+      ],
+      "position": { "x": 500, "y": 420 }
+    },
+    {
+      "id": "approval-safety",
+      "label": "批准與安全",
+      "detail": "allowed／approval required／forbidden",
+      "status": "verified",
+      "as_of": "2026-07-20",
+      "evidence_refs": [
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
+        "$COLLAB/notyet-harness/000_Agent/CORE.md"
+      ],
+      "position": { "x": 500, "y": 540 }
+    },
+    {
+      "id": "action-delivery",
+      "label": "行動與送達",
+      "detail": "runner／reducer／Notifier；無人值守觸發退化",
+      "status": "watch",
+      "as_of": "2026-07-20",
+      "evidence_refs": [
+        "$COLLAB/harness-mc/system-workflow/docs/specs/control-plane-operating-loop.md",
+        "$COLLAB/harness-mc/scripts/notification-outbox.mjs"
+      ],
+      "position": { "x": 500, "y": 660 }
+    },
+    {
+      "id": "feedback-learning",
+      "label": "回饋與學習",
+      "detail": "task events／proposal／write-back；真實 Weekly Review 未閉環",
+      "status": "risk",
+      "as_of": "2026-07-20",
+      "evidence_refs": [
+        "$COLLAB/harness-mc/task-events",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md"
+      ],
+      "position": { "x": 500, "y": 780 }
+    },
+    {
+      "id": "heartbeat-scheduling",
+      "label": "心跳與排程",
+      "detail": "3 個 launchd job 目前皆 exit 126",
+      "status": "critical",
+      "as_of": "2026-07-20",
+      "evidence_refs": [
+        "$COLLAB/harness-mc/scripts/verify-schedule-health.mjs",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/control-plane-operating-loop.md"
+      ],
+      "position": { "x": 150, "y": 300 }
+    },
+    {
+      "id": "dashboard-surface",
+      "label": "MC 儀表板",
+      "detail": "唯讀但資訊過密、讀錯 task chain；繁中與下鑽 route 未完成",
+      "status": "watch",
+      "as_of": "2026-07-20",
+      "evidence_refs": [
+        "$COLLAB/harness-mc/app/projects/page.tsx",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-drilldown-pages.md"
+      ],
+      "position": { "x": 850, "y": 420 }
+    },
+    {
+      "id": "knowledge-capture",
+      "label": "知識收編",
+      "detail": "Skill／Architecture／Product／文章素材；規則已有，情境觸發未串",
+      "status": "watch",
+      "as_of": "2026-07-20",
+      "evidence_refs": [
+        "$COLLAB/notyet-harness/000_Agent/skills/SKILLS-INDEX.md",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json"
+      ],
+      "position": { "x": 150, "y": 780 }
+    },
+    {
+      "id": "verification-immunity",
+      "label": "橫切驗證／免疫",
+      "detail": "fixture verifier 強；live runtime／語意 drift 驗證不足",
+      "status": "watch",
+      "as_of": "2026-07-20",
+      "evidence_refs": [
+        "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+        "$COLLAB/harness-mc/scripts/verify-morrowise-reality-tax-gate.mjs"
+      ],
+      "position": { "x": 850, "y": 660 }
+    }
+  ],
+  "relationships": [
+    { "from": "direction-governance", "to": "source-memory", "type": "loop" },
+    { "from": "source-memory", "to": "sensing-events", "type": "loop" },
+    { "from": "sensing-events", "to": "judgment-priority", "type": "loop" },
+    { "from": "judgment-priority", "to": "approval-safety", "type": "loop" },
+    { "from": "approval-safety", "to": "action-delivery", "type": "loop" },
+    { "from": "action-delivery", "to": "feedback-learning", "type": "loop" },
+    { "from": "feedback-learning", "to": "source-memory", "type": "feedback" },
+    { "from": "heartbeat-scheduling", "to": "sensing-events", "type": "dependency" },
+    { "from": "sensing-events", "to": "dashboard-surface", "type": "surface" },
+    { "from": "judgment-priority", "to": "dashboard-surface", "type": "surface" },
+    { "from": "feedback-learning", "to": "dashboard-surface", "type": "surface" },
+    { "from": "feedback-learning", "to": "knowledge-capture", "type": "capture" },
+    { "from": "knowledge-capture", "to": "direction-governance", "type": "feedback" },
+    { "from": "verification-immunity", "to": "source-memory", "type": "guard", "label": "守門" },
+    { "from": "verification-immunity", "to": "judgment-priority", "type": "guard", "label": "守門" },
+    { "from": "verification-immunity", "to": "action-delivery", "type": "guard", "label": "守門" },
+    { "from": "verification-immunity", "to": "heartbeat-scheduling", "type": "guard", "label": "守門" },
+    { "from": "verification-immunity", "to": "dashboard-surface", "type": "guard", "label": "守門" }
+  ],
+  "mermaid": "flowchart TB\n    D[方向與治理] --> M[正本與記憶] --> S[感知與事件] --> J[判斷與優先級] --> A[批准與安全] --> R[行動與送達] --> F[回饋與學習] --> M\n    H[心跳與排程] --> S\n    S --> UI[MC 儀表板]\n    J --> UI\n    F --> UI\n    F --> P[知識收編] --> D\n    V[橫切驗證／免疫] -.守門.-> M\n    V -.守門.-> J\n    V -.守門.-> R\n    V -.守門.-> H\n    V -.守門.-> UI"
+}

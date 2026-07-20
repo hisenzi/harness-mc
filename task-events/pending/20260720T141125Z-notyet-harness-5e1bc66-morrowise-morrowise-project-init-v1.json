@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-morrowise-project-init-v1-5e1bc66-20260720T141125Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "5e1bc66",
+  "project": "morrowise",
+  "task_id": "morrowise-project-init-v1",
+  "status": "updated",
+  "summary": "project-init skill v3.11 已補上成果契約必填欄位、placeholder rejection、starter task taxonomy、deterministic ordering 與 dry-run 規則；等待 MC task-event single-writer 流程套用。",
+  "created_at": "2026-07-20T14:11:25.000Z",
+  "actor": "codex",
+  "session_id": "codex-morrowise-project-init-v1-20260720"
+}

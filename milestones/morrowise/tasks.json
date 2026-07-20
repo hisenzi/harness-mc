@@ -4019,6 +4019,17 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "回填 MW-PI-01 實作 commit 884feda；此為 commit accounting，沒有改變 task scope 或 status。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc@884feda",
+              "$COLLAB/harness-mc/scripts/verify-project-init-v1.mjs"
+            ],
+            "recorded_at": "2026-07-20"
           }
         ]
       },
@@ -4044,6 +4055,9 @@
         "evaluated_at": "2026-07-20",
         "reason": "本案可能改善既有 project-init 與 control-plane 的 interaction，但尚未證明需要新增 architecture subsystem；完成後再依實際受管 contract 變更做 Admission Review，ARCHITECTURE.md 不在本次 bootstrap 手寫。"
       },
+      "commits": [
+        "884feda"
+      ],
       "note": "2026-07-20：此為單一 work anchor，避免在 taxonomy contract 未落地前預先膨脹多張 implementation task。它不設 weekly_core，因 JV-40 仍是本週唯一已 admission 的 MorroWise core task；需要轉為 weekly core 時，須由 Vincent 另行明確選入並設定 review_date。"
     }
   ]

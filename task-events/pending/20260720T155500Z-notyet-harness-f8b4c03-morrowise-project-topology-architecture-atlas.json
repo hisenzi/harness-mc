@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-project-topology-architecture-atlas-f8b4c03-20260720T155500Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "f8b4c03",
+  "project": "morrowise",
+  "task_id": "project-topology-architecture-atlas",
+  "status": "updated",
+  "summary": "Notyet 已提交 Project Topology Contract、generated Architecture Atlas 與 project-local worktree-safe Python sync/verifier。",
+  "created_at": "2026-07-20T15:55:00.018Z",
+  "actor": "codex",
+  "session_id": "codex-jv43-20260720"
+}

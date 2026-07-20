@@ -4154,6 +4154,122 @@
       "completed_at": "2026-07-20",
       "summary": "開案 v1 已將問題、影響、量化目標與量測來源設為必填成果契約；starter tasks 具 taxonomy 與 deterministic 順序，MC `/projects` 可進入唯讀 Operating Loop Map，對應正負向 verifier 均已通過。",
       "note": "2026-07-20：此為單一 work anchor，避免在 taxonomy contract 未落地前預先膨脹多張 implementation task。它不設 weekly_core，因 JV-40 仍是本週唯一已 admission 的 MorroWise core task；需要轉為 weekly core 時，須由 Vincent 另行明確選入並設定 review_date。"
+    },
+    {
+      "id": "project-topology-architecture-atlas",
+      "title": "JV-43 Project Topology Registry、Architecture Atlas 與既有專案遷移治理",
+      "status": "in_progress",
+      "track": "governance",
+      "order_label": "JV-43",
+      "priority": "high",
+      "dependencies": [
+        "task-lifecycle-jv32-gate"
+      ],
+      "done_condition": "所有正式專案可由 ARCHITECTURE.md 的 Atlas 定位其 canonical home、topology profile、文件正本與 repo 正本；每筆既有資料均有 inventory classification、驗證證據與 migration state。專案內 .worktrees/<task> 的 verifier 必須可正確解析 $COLLAB；遷移只能在 record 已核准後以 Git worktree 指令或明確資料遷移程序執行。",
+      "acceptance": [
+        "A01｜新增 nested project-local worktree 的自動化 fixture：architecture subsystem verifier 與 worktree status generator 必須在 $COLLAB/harness-mc/.worktrees/<task> 執行並通過；不得把 .worktrees 誤判為 $COLLAB 或只掃描 worktree siblings。",
+        "A02｜建立唯一 Project Topology Registry 與 schema，記錄 canonical project home、project type、topology profile、document_ref、repo_ref、inventory classification、migration state、last verified 與 evidence；它只連結 JV-36／JV-37 正本，不複製文件或 repo 狀態。",
+        "A03｜建立 Project Topology Contract：每個正式專案有單一 home、baseline skeleton、可擴充 profile；Git worktree 一律使用 專案/.worktrees/<task>；.gitignore 是實際忽略規則，_gitignore/README.md 與 manifest.yml 是人讀可見的 local-artifact 清單，不保存秘密。",
+        "A04｜盤點 $COLLAB 現有資料夾並分類 canonical_project、git_worktree、generated、runtime、archive 或 unknown；盤點為 read-only，未知項目不可被自動搬移或刪除。",
+        "A05｜建立 ARCHITECTURE.md generated-only MorroWise Architecture Atlas：每列顯示架構／專案、狀態、正本、detail、verifier、task anchor 與 freshness；Atlas 是唯一人讀入口，不是第二正本。",
+        "A06｜Atlas generator 與 verifier 必須由 registry 產生並檢查 marker drift、無效 reference、重複 source-of-truth、缺 verifier 與 stale evidence；dashboard、Canvas、Heptabase 與 chat 一律只能是衍生 surface。",
+        "A07｜Git worktree 遷移前，逐筆確認 branch、HEAD、dirty state 與 worktree registration；只可用 git worktree move 或在收尾後 remove，不得以 Finder 直接移動。每個非 Git 專案遷移也必須先有 approved migration record 與可回復驗證。",
+        "A08｜完成前通過 task schema、work-anchor preflight、nested-worktree fixture、Topology Registry schema／verifier、Atlas sync --check 與 relevant existing architecture subsystem verifier；不得讀取 secrets、runtime auth、browser cookies 或私有帳號資料。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/folder-contract-v0.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/git-worktree/SKILL.md",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-atlas-manifest.json",
+        "$COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/project-topology-contract-v1.md"
+      ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "domain-modeling",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "JV-36 document source boundary",
+          "JV-37 repo and worktree boundary",
+          "Architecture Admission Record pattern",
+          "project-local .worktrees baseline failure evidence"
+        ],
+        "decision_output": "Project Topology Registry、generated Architecture Atlas、inventory and migration governance contract，以及 nested worktree-safe verifier boundary。",
+        "execution_boundary": "本 task 可修改本地 contract、registry、schema、verifier、generated read model 與 ARCHITECTURE.md marker block；不得以 Finder 搬移、刪除任何現有 project/worktree、讀取秘密、寫外部 tracker、commit、push 或部署，除非另有 Vincent 明確核准。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 核准建立並開始執行 JV-43，將 project-local worktree、跨專案 source-of-truth、Architecture Atlas、既有專案盤點與安全遷移納入同一個可驗證治理 work anchor。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/scripts/verify-architecture-subsystems.mjs",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate"
+            ],
+            "recorded_at": "2026-07-20",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/document-source-registry-and-human-sync",
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/architecture-subsystem-index-live-sync"
+              ],
+              "scope_comparison": {
+                "problem": "JV-36 管文件身份、JV-37 管 repo/worktree 協調，但沒有 task 管理專案 home、結構 profile、跨域索引與既有資料遷移狀態。",
+                "owner_source_of_truth": "新的 owner 是 Project Topology Registry；文件與 repo 的正本仍分別留在 JV-36 與 JV-37，Atlas 只作 generated read model。",
+                "inputs_outputs": "輸入是現有 project／repo／文件 registry 與 read-only inventory；輸出是 topology contract、registry、Atlas、verifier 與 migration records。",
+                "lifecycle_completion": "完成邊界是 nested-worktree fixture、registry schema、Atlas drift check 與已核准的遷移 records；不以單次資料夾整理或 Finder 搬移宣稱完成。"
+              },
+              "decision_reason": "相鄰任務的責任邊界不能承接 project home 與跨域 Atlas，因此 outcome=genuinely_new，建立單一 JV-43 work anchor 而不重複 JV-36 或 JV-37。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-20",
+                "evidence_refs": [
+                  "Vincent 2026-07-20 current session: 可以進行",
+                  "Vincent 2026-07-20 current session: 可以"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/project-topology-architecture-atlas",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#sourceBoundary",
+          "#risk",
+          "#evidenceBased"
+        ],
+        "hc_reasoning": "真正問題不是替資料夾改名，而是 Agent 缺少可定位的 project home、可驗證的結構 profile 與跨專案人讀入口。#rightProblem 將結果固定為 registry、Atlas、inventory 與安全遷移，而非一次性清理；#systemDynamics 將新增結構回寫 contract，使後續相似專案遵循同一規則；#sourceBoundary 將文件、repo、topology、generated Atlas 與 dashboard 分離；#risk 禁止 Finder 搬移 dirty／detached worktree 與把 local runtime 當專案資料；#evidenceBased 要求 nested-worktree fixture、inventory 證據、schema 與 drift verifier。",
+        "hc_confidence": 0.93,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/scripts/verify-architecture-subsystems.mjs",
+          "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json"
+        ],
+        "source_boundary": "HC 只用於思考檢查，不是正本；canonical task state 在 MorroWise tasks.json，文件身份仍由 JV-36 管理，repo/worktree state 仍由 JV-37 管理；Topology Registry 只保存其關係與遷移狀態，Architecture Atlas 是 generated read model。"
+      },
+      "architecture_decision": {
+        "decision": "deferred",
+        "evaluated_at": "2026-07-20",
+        "reason": "JV-43 已建立 Topology Registry、link manifest、generator、verifier 與 ARCHITECTURE.md Atlas，但其本身目前是既有 Agent Control Plane 內的治理能力，不另建立 runtime／scheduler／adapter subsystem。若未來要將其升格為獨立 active subsystem，必須在兩個 repo 的正式提交整合後，以 Architecture Admission Record 另行審查。"
+      },
+      "note": "2026-07-20：Vincent 選定 project/.worktrees/<task>。Safety prerequisite 已以 harness-mc commit f8960a7 與 notyet-harness commit 402d663 加入 /.worktrees/ ignore rule。nested worktree baseline 發現 verifier 假設 repo 為 $COLLAB 直屬目錄；本 task 以 test-first 建立 Git common-dir resolver、43 筆 root inventory、profile/schema/contract、Atlas link manifest 與 generated project directory。JV-36、JV-37 是關聯 owner，不合併、不重複記錄其正本；既有 root-level worktree 維持 blocked，尚未搬移。QA 2026-07-20：work-anchor preflight、task schema、project-local worktree fixture、Topology Registry、Atlas manifest、Atlas drift/self-test、Topology Contract 與既有 subsystem sync 全數通過；inventory 為 canonical_project 15、git_worktree 10、unknown 9、runtime 5、archive 2、generated 2，migrated_or_verified 為空。"
     }
   ]
 }

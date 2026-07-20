@@ -3,10 +3,11 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveCollabRoot } from "./lib/collab-root.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
-const collabRoot = path.resolve(root, "..");
+const collabRoot = resolveCollabRoot(root);
 const registryPath = path.join(root, "system-workflow", "registries", "morrowise-architecture-subsystems.json");
 const tasksPath = path.join(root, "milestones", "morrowise", "tasks.json");
 const architecturePath = path.join(collabRoot, "notyet-harness", "000_Agent", "ARCHITECTURE.md");

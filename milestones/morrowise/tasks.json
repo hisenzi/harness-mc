@@ -4122,6 +4122,44 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "push gate 發現 MW-PI-01 新增 test:project-init-v1 後，既有 JV-32 Admission Record 對完整 package.json 的 fingerprint 已過期。此為同一 task 的 closeout 修正：更新既有 version review 與受控 ARCHITECTURE.md generated markers，不重開 task、不改變成果契約、task taxonomy、Operating Loop Map 或 status。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/package.json",
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
+              "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs",
+              "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py",
+              "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-current-state.py",
+              "Vincent 2026-07-21 current session: 可以修正並 commit"
+            ],
+            "recorded_at": "2026-07-21",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-dev-workflow-catalog",
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/architecture-subsystem-index-live-sync"
+              ],
+              "scope_comparison": {
+                "problem": "本次只補 MW-PI-01 對既有 package.json 受管合約的 Admission Review 漏記；不改變開案成果契約、task 分類／排序或 Operating Loop Map 的原問題與輸出。",
+                "owner_source_of_truth": "MW-PI-01 仍擁有 project-init contract；既有 JV-32 Admission Record 是 architecture version review 正本；ARCHITECTURE.md 的兩個 marker 仍是受控 generated mirror，不是 task state 正本。",
+                "inputs_outputs": "輸入是既有 MW-PI-01 package script、JV-32 contract refs 與 push-gate stale fingerprint；輸出是更新的既有 Admission Record fingerprint、驗證證據與 regenerated ARCHITECTURE.md markers，不新增 registry、subsystem 或 task。",
+                "lifecycle_completion": "task 保持 completed；本 event 僅補 version-improvement closeout 證據與 sync，沒有重新開啟工作、變更 weekly core 或延長 review date。"
+              },
+              "decision_reason": "相關不等於重複：缺的是既有 MW-PI-01 的 Admission Review closeout，不是新的 project-init、JV-32 或 JV-40 工作範圍，因此 outcome=amend。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-21",
+                "evidence_refs": [
+                  "Vincent 2026-07-21 current session: 可以修正並 commit"
+                ]
+              }
+            }
           }
         ]
       },
@@ -4144,8 +4182,24 @@
       },
       "architecture_decision": {
         "decision": "not_required",
-        "evaluated_at": "2026-07-20",
-        "reason": "本案更新既有 project-init contract 與 read-only Map surface，但沒有新增或改變已 promoted architecture subsystem 的 owner／registry contract；Map 明確維持 task state 正本邊界，因此不需新增 ARCHITECTURE.md subsystem。"
+        "evaluated_at": "2026-07-21",
+        "reason": "MW-PI-01 仍沒有新增或改變已 promoted subsystem 的 owner、安全邊界、fresh-build 順序或成果契約；test:project-init-v1 只使完整 package.json 受管 contract 需要重做既有 version review。因此不新增 ARCHITECTURE.md subsystem，但必須更新既有 JV-32 Admission Record 與 generated index。",
+        "admission_review": {
+          "scope": "version_improvement",
+          "admission_record_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
+          "index_action": "updated",
+          "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+          "evidence_refs": [
+            "$COLLAB/harness-mc/package.json",
+            "npm run test:project-init-v1",
+            "npm run build",
+            "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+            "npm run test:architecture-subsystems",
+            "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+            "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-current-state.py\" --check"
+          ],
+          "reason": "MW-PI-01 的 package script 新增觸及 JV-32 已明定的完整 package.json contract，但未改 fresh-build wiring 或增加子系統；因此只刷新既有 Admission Record version review、fingerprint 與薄索引。"
+        }
       },
       "commits": [
         "884feda",

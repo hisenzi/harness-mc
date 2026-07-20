@@ -4243,6 +4243,42 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "回填 Notyet Atlas freshness 穩定化 commit e0411c6 與 cross-date self-test 證據；JV-43 的範圍與狀態均不變，仍待既有專案遷移 records 的後續核准與執行。",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness@e0411c6",
+              "$COLLAB/harness-mc/task-events/pending/20260720T161133Z-notyet-harness-e0411c6-morrowise-project-topology-architecture-atlas.json",
+              "$COLLAB/notyet-harness/000_Agent/scripts/verify-architecture-atlas.py",
+              "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-atlas.py"
+            ],
+            "recorded_at": "2026-07-21",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/document-source-registry-and-human-sync",
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/architecture-subsystem-index-live-sync"
+              ],
+              "scope_comparison": {
+                "problem": "仍是 Atlas 對應 project topology 與跨專案治理入口的同一問題；本次只修正 derived output 每日漂移。",
+                "owner_source_of_truth": "Project Topology Registry、Atlas link manifest、Notyet generated Atlas 與原有 task ownership 邊界不變；JV-36 與 JV-37 仍各自擁有文件與 repo 正本。",
+                "inputs_outputs": "輸入仍是 topology registry、Atlas manifest、canonical task 與 evidence date；輸出仍是 thin-link Atlas、contract、verifier 與 migration governance records，只移除 elapsed-day 的序列化。",
+                "lifecycle_completion": "A01 至 A08 的完成邊界不變；本次 evidence 只證實 Atlas 不會因日期跨日而無意義 drift，不宣告任務完成或既有資料遷移已執行。"
+              },
+              "decision_reason": "這是已核准 JV-43 範圍內的 verifier-driven 穩定性修正與 commit accounting，不建立平行 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-21",
+                "evidence_refs": [
+                  "Vincent 2026-07-21 current session: 可以"
+                ]
+              }
+            }
           }
         ]
       },
@@ -4269,7 +4305,7 @@
         "evaluated_at": "2026-07-20",
         "reason": "JV-43 已建立 Topology Registry、link manifest、generator、verifier 與 ARCHITECTURE.md Atlas，但其本身目前是既有 Agent Control Plane 內的治理能力，不另建立 runtime／scheduler／adapter subsystem。若未來要將其升格為獨立 active subsystem，必須在兩個 repo 的正式提交整合後，以 Architecture Admission Record 另行審查。"
       },
-      "note": "2026-07-20：Vincent 選定 project/.worktrees/<task>。Safety prerequisite 已以 harness-mc commit f8960a7 與 notyet-harness commit 402d663 加入 /.worktrees/ ignore rule。nested worktree baseline 發現 verifier 假設 repo 為 $COLLAB 直屬目錄；本 task 以 test-first 建立 Git common-dir resolver、43 筆 root inventory、profile/schema/contract、Atlas link manifest 與 generated project directory。JV-36、JV-37 是關聯 owner，不合併、不重複記錄其正本；既有 root-level worktree 維持 blocked，尚未搬移。QA 2026-07-20：work-anchor preflight、task schema、project-local worktree fixture、Topology Registry、Atlas manifest、Atlas drift/self-test、Topology Contract 與既有 subsystem sync 全數通過；inventory 為 canonical_project 15、git_worktree 10、unknown 9、runtime 5、archive 2、generated 2，migrated_or_verified 為空。"
+  "note": "2026-07-20：Vincent 選定 project/.worktrees/<task>。Safety prerequisite 已以 harness-mc commit f8960a7 與 notyet-harness commit 402d663 加入 /.worktrees/ ignore rule。nested worktree baseline 發現 verifier 假設 repo 為 $COLLAB 直屬目錄；本 task 以 test-first 建立 Git common-dir resolver、43 筆 root inventory、profile/schema/contract、Atlas link manifest 與 generated project directory。JV-36、JV-37 是關聯 owner，不合併、不重複記錄其正本；既有 root-level worktree 維持 blocked，尚未搬移。QA 2026-07-20：work-anchor preflight、task schema、project-local worktree fixture、Topology Registry、Atlas manifest、Atlas drift/self-test、Topology Contract 與既有 subsystem sync 全數通過；inventory 為 canonical_project 15、git_worktree 10、unknown 9、runtime 5、archive 2、generated 2，migrated_or_verified 為空。2026-07-21：Atlas freshness 改為穩定輸出 evidence date 與 warn-after threshold；elapsed age 僅供 stale validation，不再造成每日 marker drift。cross-date self-test 與完整 Notyet QA 均通過；Notyet commit e0411c6 已由 pending task event 記錄。"
     }
   ]
 }

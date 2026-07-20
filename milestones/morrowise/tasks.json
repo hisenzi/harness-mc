@@ -3817,16 +3817,17 @@
       "id": "mc-dashboard-priority-ia-v2",
       "title": "MC 儀表板資訊優先級與繁中化決策 v2",
       "status": "todo",
-      "track": "mc-surface",
+      "track": "governance",
       "order_label": "MC-DASH-V2",
       "priority": "high",
-      "done_condition": "完成一張容易掃讀的 MC 儀表板議題紀錄，核准繁中介面、輕重緩急排序、資料正本、首頁與下鑽邊界，並留下可直接建立後續 MorroWise system／harness-mc surface 實作 task 與文章素材的決策依據；本 task 不直接實作 UI。",
+      "summary": "已核准最終 IA：保留既有資料鏈，先修正正本與優先級 contract；首頁成為例外與行動優先的繁中控制台，完整 task／event／worktree／approval 與技術證據留在下鑽頁。MC-LIVE-SYS-10 保留給後續 UI 下鑽實作；本 task 待 JV-36 薄連結完成後才可結案。",
+      "done_condition": "以治理方式完成一張容易掃讀的 MC 儀表板議題紀錄：已核准繁中介面、輕重緩急排序、資料正本與首頁／下鑽邊界，並留下後續 MorroWise system／harness-mc surface 實作 task 與文章素材的決策依據；MC-LIVE-SYS-10 專供後續 UI 下鑽實作。本 task 不直接實作 UI；須待 JV-36 Document Source Registry 產生 ARCHITECTURE.md 薄連結後才可 completed。",
       "acceptance": [
         "MC-DASH-V2-A01：tasks.json 是唯一行動正本，議題紀錄只保存決策、理由、文獻、影響、演進與文章素材，不複製 status、priority、progress 或 next action。",
         "MC-DASH-V2-A02：議題紀錄維持結論先行與四個主要區塊，僅讀標題、目前結論與各區首句即可在 30 秒內掌握問題、建議方案及影響。",
         "MC-DASH-V2-A03：最終方案明確回答現在是否需要處理、先處理什麼、資料是否可信，並定義首頁與下鑽頁各自保留的資訊。",
         "MC-DASH-V2-A04：所有使用者可見標題、按鈕、狀態、空狀態與錯誤訊息採繁體中文；task id、檔名、CLI 與 schema field 等技術識別碼可保留原文但不得主導首頁。",
-        "MC-DASH-V2-A05：決策記錄必須處理 MorroWise 活系統讀錯 project task chain、例外排序可能互相遮蔽、首頁資訊過密與單一讀取入口未落實等已知缺口，並指出後續 system 與 surface task owner。",
+        "MC-DASH-V2-A05：決策記錄必須處理 MorroWise 活系統讀錯 project task chain、例外排序可能互相遮蔽、首頁資訊過密與單一讀取入口未落實等已知缺口，並指出後續 system 與 surface task owner；MC-LIVE-SYS-10 僅保留給後續 UI 下鑽實作，不得與本治理 task 共用身份。",
         "MC-DASH-V2-A06：每筆關鍵文獻都記錄來源、關鍵觀點及如何影響本案；演進區只記方向轉折；文章素材至少包含核心論點、反直覺發現、案例與候選題目。",
         "MC-DASH-V2-A07：本議題紀錄須由 JV-36 Document Source Registry 登錄，並由 generated document index 在 ARCHITECTURE.md 產生薄連結；薄連結只列摘要、正本、task anchor、狀態與 verifier，不複製文獻、演進或文章素材正文，也不得手改 ARCHITECTURE.md managed block。"
       ],
@@ -3849,7 +3850,7 @@
           "Stephen Few、Ben Shneiderman、Nielsen Norman Group、Google SRE、Grafana 與 W3C 的 dashboard／progressive disclosure／alerting／localization 原則",
           "HC #rightProblem、#infoNeeded、#optimization、#organization、#vincentThinking 的結構收斂結果"
         ],
-        "decision_output": "一張 task-linked 單頁議題紀錄，以及核准後可分流至 MorroWise system 與 harness-mc surface owner 的繁中儀表板決策。",
+        "decision_output": "一張已核准的 task-linked 單頁議題紀錄：以 MC-DASH-V2 承接儀表板治理決策，後續 UI 下鑽實作保留 MC-LIVE-SYS-10 身份，再分流至 MorroWise system 與 harness-mc surface owner。",
         "execution_boundary": "本 task 只建立與維護 canonical task 及單頁議題紀錄；不得在本輪修改 UI、generator、read model contract、generated JSON、外部 tracker、Heptabase、Canvas，也不授權 commit、push 或部署。"
       },
       "task_lifecycle": {
@@ -3867,6 +3868,40 @@
               "$COLLAB/notyet-harness/300_Obsidian_brain/HC/_index/hc-registry.md"
             ],
             "recorded_at": "2026-07-19"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准最終 IA，將本 task 從 MC surface 規劃定位為 dashboard governance decision：保留 MC-DASH-V2 作為決策 work anchor，並保留 MC-LIVE-SYS-10 給後續 UI 下鑽實作，避免身份碰撞；本輪不改 UI、generator 或 read model。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/mc-dashboard-priority-ia-v2.md",
+              "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-drilldown-pages.md",
+              "Vincent 2026-07-20 current session: 可以進行 Amend mc-dashboard-priority-ia-v2；改為 governance；解除 MC-LIVE-SYS-10 身份碰撞；核准最終 IA"
+            ],
+            "recorded_at": "2026-07-20",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-dev-workflow-catalog",
+                "harness-mc/morrowise-live-dashboard-homepage-implementation"
+              ],
+              "scope_comparison": {
+                "problem": "既有 task 已處理 MC 儀表板決策；本次只核准最終 IA 與責任邊界，不是新的 UI 問題。",
+                "owner_source_of_truth": "owner 仍是 MorroWise tasks.json 的 mc-dashboard-priority-ia-v2；MC-LIVE-SYS-10 的 UI spec 不成為本 task 正本。",
+                "inputs_outputs": "輸入為既有 dashboard data/read-model/spec 與決策紀錄；輸出是已核准 IA、track=governance 與後續 implementation owner boundary，不是 UI、generator 或 data 修改。",
+                "lifecycle_completion": "本 task 須待 JV-36 Document Source Registry 生成 ARCHITECTURE.md 薄連結才可 completed；UI implementation 須另建 canonical task，並採用 MC-LIVE-SYS-10 spec／acceptance identity 承接。"
+              },
+              "decision_reason": "同一問題、同一 action source 與同一決策紀錄；只需 amend 既有 task，不另建重複 task，並將 UI identity 與 governance identity 分開。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-20",
+                "evidence_refs": [
+                  "Vincent 2026-07-20 current session: 可以進行 Amend mc-dashboard-priority-ia-v2；改為 governance；解除 MC-LIVE-SYS-10 身份碰撞；核准最終 IA"
+                ]
+              }
+            }
           }
         ]
       },
@@ -3896,7 +3931,7 @@
         "evaluated_at": "2026-07-19",
         "reason": "本 task 僅建立規劃與決策 work anchor，不新增 architecture subsystem；議題紀錄的 ARCHITECTURE.md 薄連結由 JV-36 Document Source Registry 與 generated document index 承接，不手寫 managed block。若核准後進入 system implementation，需在後續 task 重新做 Admission Review。"
       },
-      "note": "2026-07-19 Vincent 核准以 JV-32 create 建立本 task。人工維護預設只保留 Task＋單頁議題紀錄；Spec、ADR、Article Seed 與 Daily Memory 不列為每個議題的必備層。議題紀錄需由 JV-36 registry 納管並在 ARCHITECTURE.md 產生薄連結，但不得複製正文或形成第二正本。方案核准後，才依 ownership routing 建立必要的 MorroWise system 與 harness-mc surface 實作 task。"
+      "note": "2026-07-19 Vincent 核准以 JV-32 create 建立本 task。人工維護預設只保留 Task＋單頁議題紀錄；Spec、ADR、Article Seed 與 Daily Memory 不列為每個議題的必備層。議題紀錄需由 JV-36 registry 納管並在 ARCHITECTURE.md 產生薄連結，但不得複製正文或形成第二正本。2026-07-20 Vincent 核准最終 IA：本 task 為 MC-DASH-V2 governance decision，MC-LIVE-SYS-10 保留給後續 UI 下鑽實作；未另建 implementation task。"
     },
     {
       "id": "skill-candidate-review-gate",

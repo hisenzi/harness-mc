@@ -3,12 +3,13 @@
 > Task：`morrowise/mc-dashboard-priority-ia-v2`
 > 行動正本：`$COLLAB/harness-mc/milestones/morrowise/tasks.json`
 > 架構入口：待 JV-36 Document Source Registry 上線後，由 generated document index 在 `ARCHITECTURE.md` 產生薄連結；本頁不作架構正本。
-> 目前結論：保留既有資料鏈，先修正正本與優先級判斷，再把首頁收斂為「例外與行動優先」的繁中控制台；本結論仍待 Vincent 核准。
+> 目前結論（已核准）：保留既有資料鏈，先修正正本與優先級判斷，再把首頁收斂為「例外與行動優先」的繁中控制台；MC-LIVE-SYS-10 保留給後續 UI 下鑽實作。
+> 身份邊界：`MC-DASH-V2` 是本 task 的治理／決策身份；`MC-LIVE-SYS-10` 是後續 UI 下鑽實作的規格與驗收身份。
 > 執行狀態、優先級與下一步一律以 `tasks.json` 為準。
 
 ## 1. 決定與影響
 
-### 建議決定
+### 核准決定
 
 MC 首頁不再平均陳列所有系統資訊，而依下列順序呈現：
 
@@ -36,6 +37,12 @@ MC 首頁不再平均陳列所有系統資訊，而依下列順序呈現：
 - 不把議題紀錄變成第二份 task 狀態表。
 - 核准方案後，再依 ownership routing 建立必要的 MorroWise system 與 harness-mc surface 實作 task。
 
+### 核准範圍（2026-07-20）
+
+- 本 task 改列為 governance：它負責決定首頁順序、資料正本、繁中顯示與首頁／下鑽邊界，不直接做介面。
+- `MC-DASH-V2` 保留為本決策的唯一 work anchor；`MC-LIVE-SYS-10` 保留為後續 UI 下鑽頁實作與驗收，兩者不得共用身份。
+- 本輪沒有建立 implementation task，也沒有修改 UI、generator、read model 或 generated JSON。
+
 ## 2. 判斷脈絡
 
 ### 現況與限制
@@ -52,7 +59,7 @@ MC 首頁不再平均陳列所有系統資訊，而依下列順序呈現：
 |---|---|---|
 | 只調整首頁文案與卡片順序 | 不採用 | 無法修正正本錯置、雙重排序與缺少下鑽頁等結構問題。 |
 | 全面重建資料模型與首頁 | 不採用 | 既有 13 個 surfaces 已有可重用 contract；重建會製造第二套資料鏈。 |
-| 保留資料鏈，修正正本與優先級 contract，再做首頁收斂與下鑽 | 建議採用 | 能處理根因，同時控制改動面與未來維護成本。 |
+| 保留資料鏈，修正正本與優先級 contract，再做首頁收斂與下鑽 | 已核准採用 | 能處理根因，同時控制改動面與未來維護成本。 |
 
 ### 證據與文獻
 
@@ -76,6 +83,7 @@ MC 首頁不再平均陳列所有系統資訊，而依下列順序呈現：
 | 2026-07-19 | Vincent 核准使用 JV-32。 | 以 `JV-32/task-lifecycle:create` 建立 canonical work anchor，暫不進入 UI 實作。 | `morrowise-task-lifecycle.md`。 |
 | 2026-07-19 | Vincent 要求演進紀錄與文章素材可由整體架構找到。 | 保留本頁為決策脈絡正本，改由 JV-36 registry 在 `ARCHITECTURE.md` 生成薄連結，不手寫或複製正文。 | `document-source-registry-and-human-sync`、`promote-to-architecture`。 |
 | 2026-07-19 | 發現 `MC-LIVE-SYS-10` 已被既有下鑽頁 spec 與驗收 ID 使用。 | 規劃 task 保留 `mc-dashboard-priority-ia-v2`，另以 `MC-DASH-V2` 作為 order label，避免與後續 UI 實作身份碰撞。 | `morrowise-live-dashboard-drilldown-pages.md`、`tasks.json`。 |
+| 2026-07-20 | Vincent 核准最終 IA，要求本 task 改列 governance 並解除身份碰撞。 | `MC-DASH-V2` 成為治理／決策 work anchor；`MC-LIVE-SYS-10` 專供後續 UI 下鑽實作的規格與驗收。本輪不建立 implementation task。 | 本 session 的明確核准、`morrowise-live-dashboard-drilldown-pages.md`。 |
 
 ### 後續驗證門檻
 

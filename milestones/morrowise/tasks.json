@@ -3898,6 +3898,117 @@
         "reason": "JV-41 是既有 promoted JV-32 workflow catalog 與 JV-40 lifecycle 的 version improvement，不新增 architecture subsystem；待 route、fixtures、review skill 版本更新與 Admission Record fingerprint 證據完成後，再受控更新既有索引的 version review。"
       },
       "note": "2026-07-19 查重結論：沒有重複 task；新增 JV-41 作為 JV-32／JV-40 的小型補強。現階段只建立 todo work anchor，不修改任何 skill。依 MorroWise 核心改善規則，本 task 只有在被選為當週唯一核心改善項目時才可轉 in_progress；review date 到期未完成則 reframe、defer 或 cancel，不自動延長。"
+    },
+    {
+      "id": "morrowise-project-init-v1",
+      "title": "開案 v1：成果契約、任務分類與 Operating Loop Map",
+      "status": "todo",
+      "track": "governance",
+      "order_label": "MW-PI-01",
+      "priority": "high",
+      "dependencies": [
+        "task-lifecycle-jv32-gate",
+        "mc-dashboard-priority-ia-v2"
+      ],
+      "done_condition": "開案流程以可驗證的成果契約取代 placeholder goals，並提供可重跑的任務分類／排序規則與唯讀 Operating Loop Map；MC `/projects` 可在不反寫 task state 的前提下連到該 Map，且實作與負向模擬驗證均有證據。",
+      "acceptance": [
+        "PI-A01｜project-init contract 要求 problem_statement、impact、success_target.metric、baseline、target、due 與 measurement_source；placeholder、空值或無量化／量測來源的開案必須被拒絕。",
+        "PI-A02｜任務以 capability_domain、task_kind、priority、dependencies 與 order_label 分層；排序由 dependencies、priority、id 的 deterministic rule 導出，不再依 tasks.json 物理排列。",
+        "PI-A03｜建立單一可讀的 Operating Loop Map，關係圖採 Vincent 指定的十個能力域與橫切驗證；狀態必有 evidence_refs 與 as_of，不把 Map 當 task status 正本。",
+        "PI-A04｜`/projects` 提供繁體中文、唯讀的 Map 入口；MorroWise system task 與 harness-mc surface task 的 ownership 維持分開。",
+        "PI-A05｜Map 明確引用既有 control-plane-operating-loop 與 dashboard drilldown specs，不複製第二份控制迴路或手寫 generated current state。",
+        "PI-A06｜驗證含 valid contract、placeholder rejection、taxonomy deterministic ordering、map evidence boundary 與 dashboard route/link；模擬不能宣稱 localhost runtime 已啟動。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/skills/project-init/SKILL.md",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/control-plane-operating-loop.md",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-drilldown-pages.md",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mc-dashboard-priority-ia-v2",
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#acp-control-plane-operating-loop"
+      ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "Vincent 2026-07-20：優化開案流程、補成果／量化目標、整理 task 分類、以架構圖溝通並由 MC `/projects` 連結",
+          "現有 MorroWise task order／track 的盤點與既有 control-plane／dashboard specs",
+          "project-init skill 與 new-project command 的 placeholder goals 現況"
+        ],
+        "decision_output": "一個跨 project-init、MorroWise canonical task 與 harness-mc read-only surface 的開案 v1 contract；後續 implementation slices 需依 owner 分流，不建立第二份 task state 或 control loop 正本。",
+        "execution_boundary": "先建立隔離 worktree；可修改受管的 contract、validator、Map source、MC surface 與對應 tests。不得讀 secrets、反寫 visual mirrors、直接更新外部 tracker、commit、push 或部署未經 Vincent 後續核准。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 已核准把開案流程優化寫入 MorroWise／harness-mc canonical tasks 並進入實作。語意查重後確認本案同時涵蓋 project outcome contract、task taxonomy 與 read-only Operating Loop Map；既有 JV-40 只提供 lifecycle gate、既有 control-plane spec 是需引用的控制迴路、MC-DASH-V2 是決策記錄，均不承接本案的輸入輸出與完成邊界。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mc-dashboard-priority-ia-v2",
+              "$COLLAB/harness-mc/system-workflow/docs/specs/control-plane-operating-loop.md",
+              "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-drilldown-pages.md",
+              "$COLLAB/notyet-harness/000_Agent/skills/project-init/SKILL.md",
+              "Vincent 2026-07-20 current session: 可以開始"
+            ],
+            "recorded_at": "2026-07-20",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/mc-dashboard-priority-ia-v2",
+                "harness-mc/acp-control-plane-operating-loop"
+              ],
+              "scope_comparison": {
+                "problem": "本案解決開案時缺少問題／量化成果契約、任務分類與排序漂移、系統關係難以讀取；JV-40 解決 lifecycle mutation gate，既有 control-plane spec 解釋控制迴路，MC-DASH-V2 保存儀表板決策。",
+                "owner_source_of_truth": "本案 canonical action owner 是 MorroWise tasks.json／project-init contract；Map 與 MC surface 都只能讀取正本。既有 task 的 owner 分別是 lifecycle gate、control-plane spec 與 dashboard decision record。",
+                "inputs_outputs": "本案輸入為 project-init request、canonical tasks 與 control-plane evidence；輸出為 required outcome contract、deterministic taxonomy、Map source、read-only route/link 與 verifiers。既有 task 沒有提供這個組合輸出。",
+                "lifecycle_completion": "本案以 contract rejection、deterministic ordering、Map evidence boundary、dashboard link 與模擬驗證為完成邊界；不宣稱完成既有 JV-40 或重寫 control-plane spec。"
+              },
+              "decision_reason": "四個 scope 維度均不同，且現有 task 僅可作 gate、source evidence 或 decision input；因此 outcome=genuinely_new。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-20",
+                "evidence_refs": [
+                  "Vincent 2026-07-20 current session: 可以寫入 MorroWise／harness-mc 的 canonical tasks 並進入實作",
+                  "Vincent 2026-07-20 current session: 可以開始"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/morrowise-project-init-v1",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#sourceBoundary",
+          "#evidenceBased"
+        ],
+        "hc_reasoning": "真正問題不是多一張漂亮圖或多幾個欄位，而是開案的意圖、可量測成果、task ownership 與系統關係沒有同時進入可驗證閉環。#rightProblem 將問題固定為 contract 與分類，而非只重排清單；#systemDynamics 將 Map、判斷與回饋保留為關係圖而非順序圖；#sourceBoundary 固定 tasks.json／project contract 為正本、Map／dashboard 為唯讀 read model；#evidenceBased 要求正向與負向 simulation 證明 placeholder、任意排序及無證據狀態會被攔下。",
+        "hc_confidence": 0.91,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/system-workflow/docs/specs/control-plane-operating-loop.md",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate",
+          "$COLLAB/notyet-harness/000_Agent/skills/project-init/SKILL.md"
+        ],
+        "source_boundary": "HC 只用於思考檢查；canonical task state 在 MorroWise tasks.json，project outcome contract 在 project.json／init command，Operating Loop Map 與 `/projects` surface 只讀取正本。"
+      },
+      "architecture_decision": {
+        "decision": "deferred",
+        "evaluated_at": "2026-07-20",
+        "reason": "本案可能改善既有 project-init 與 control-plane 的 interaction，但尚未證明需要新增 architecture subsystem；完成後再依實際受管 contract 變更做 Admission Review，ARCHITECTURE.md 不在本次 bootstrap 手寫。"
+      },
+      "note": "2026-07-20：此為單一 work anchor，避免在 taxonomy contract 未落地前預先膨脹多張 implementation task。它不設 weekly_core，因 JV-40 仍是本週唯一已 admission 的 MorroWise core task；需要轉為 weekly core 時，須由 Vincent 另行明確選入並設定 review_date。"
     }
   ]
 }

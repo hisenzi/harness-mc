@@ -10,6 +10,9 @@ public/data/*
 next-env.d.ts
 .env
 
+# Local isolated feature worktrees
+.worktrees/
+
 # macOS
 .DS_Store
 

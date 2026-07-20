@@ -2,6 +2,7 @@ node_modules/
 .next/
 out/
 .tmp/
+/.worktrees/
 public/data/*
 !public/data/
 !public/data/tools.json

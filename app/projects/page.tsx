@@ -37,6 +37,7 @@ interface Project {
   total: number;
   tracks: Record<string, string>;
   decision_refs?: DecisionRef[];
+  current_focus?: CurrentFocus | null;
 }
 
 interface DecisionRef {
@@ -44,6 +45,15 @@ interface DecisionRef {
   title: string;
   path: string;
   note?: string;
+}
+
+interface CurrentFocus {
+  horizon: string;
+  outcome: string;
+  evidence: string;
+  lead_commitment: string;
+  decision_needed: string;
+  task_refs?: string[];
 }
 
 const trackMeta: Record<string, { bg: string; text: string }> = {
@@ -134,9 +144,12 @@ export default function ProjectsPage() {
           color: p.domainColor || legacyTypeColor[p.type] || "var(--accent)",
         },
       ]),
-    ).values(),
+  ).values(),
   ).sort((a, b) => a.label.localeCompare(b.label, "zh-Hant"));
   const displayed: Project[] = getDisplayedProjects(projects, domainFilter);
+  const lifeFocusProjects = projects.filter(
+    (project) => project.domain === "Life-Focus" && project.current_focus,
+  );
 
   if (loading) {
     return (
@@ -209,6 +222,53 @@ export default function ProjectsPage() {
           </button>
         </div>
       </div>
+
+      {lifeFocusProjects.length > 0 && domainFilter !== "completed" && (
+        <section className="rounded-xl border border-cyan-500/30 bg-cyan-500/5 p-4 mb-5">
+          <div className="flex items-center gap-2 text-[13px] font-medium tracking-wide text-cyan-300">
+            <span>目前焦點</span>
+            <span className="text-[11px] text-[var(--text-muted)]">Life Focus</span>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mt-3">
+            {lifeFocusProjects.map((project) => {
+              const focus = project.current_focus!;
+              return (
+                <button
+                  key={project.project}
+                  type="button"
+                  onClick={() => setSelected(project)}
+                  className="rounded-lg border border-[var(--border)] bg-[var(--card)] p-3 text-left hover:border-cyan-400/60 transition"
+                >
+                  <div className="flex items-baseline justify-between gap-3">
+                    <span className="text-small font-medium text-[var(--text)]">{project.name}</span>
+                    <span className="text-caption text-cyan-300 shrink-0">{focus.horizon}</span>
+                  </div>
+                  <p className="mt-1 text-body font-semibold leading-snug">{focus.outcome}</p>
+                  <div className="mt-3 grid gap-2 text-small">
+                    <div>
+                      <span className="text-[var(--text-muted)]">成果證據：</span>
+                      <span>{focus.evidence}</span>
+                    </div>
+                    <div>
+                      <span className="text-[var(--text-muted)]">領先行動：</span>
+                      <span>{focus.lead_commitment}</span>
+                    </div>
+                    <div>
+                      <span className="text-[var(--text-muted)]">目前決策：</span>
+                      <span>{focus.decision_needed}</span>
+                    </div>
+                  </div>
+                  {project.decision_refs && project.decision_refs.length > 0 && (
+                    <div className="mt-3 text-caption text-cyan-300">
+                      已連結 {project.decision_refs.length} 份決策文件 →
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       <div className="flex items-center gap-3 mb-3">
         <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">{domainFilter === "completed" ? "已完成" : "進行中"}</div>

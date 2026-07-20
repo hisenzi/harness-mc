@@ -113,6 +113,7 @@ for (const dir of fs.readdirSync(milestonesDir)) {
       total: tasks.length,
       tracks: meta.tracks || {},
       decision_refs: meta.decision_refs || [],
+      current_focus: meta.current_focus || null,
     });
   } catch {
     // skip malformed

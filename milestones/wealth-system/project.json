@@ -11,6 +11,18 @@
     "operate": "Operate（讓系統轉）",
     "expand": "Expand（按需擴充）"
   },
+  "current_focus": {
+    "horizon": "90 天",
+    "outcome": "完成換房／增貸後資本配置的可驗收決策包",
+    "evidence": "完成財務現況盤點、安全槓桿壓力測試與保留／配置／不動用方案的書面決定",
+    "lead_commitment": "先完成 b-1 的六個核心數字，再完成 b-2 的現況盤點",
+    "decision_needed": "在安全槓桿護欄下，決定增貸資金的保留、配置或不動用方案",
+    "task_refs": [
+      "b-1",
+      "b-2",
+      "b-6"
+    ]
+  },
   "goals": [
     "建立終態驅動的財務目標：從人生場景倒推財務自由數字、月投入、收入缺口",
     "自動化現金流分流：薪水進帳即自動分配至投資/預備金/生活，不靠意志力",
@@ -57,6 +69,20 @@
       "criterion": "月度檢查流程已建立",
       "verify_cmd": "日曆提醒 + 檢查模板存在",
       "expected": "每月 1 號有提醒，模板有三個數字欄位"
+    }
+  ],
+  "decision_refs": [
+    {
+      "adr": "WEALTH-DECISION-001",
+      "title": "安全槓桿增貸決策系統設計",
+      "path": "$COLLAB/house123_buy/safe-leverage-system-design.md",
+      "note": "安全槓桿守門、壓力測試與阻擋條件的既有正本。"
+    },
+    {
+      "adr": "WEALTH-DECISION-002",
+      "title": "槓桿駕照系統落地文件",
+      "path": "$COLLAB/house123_buy/leverage-license-implementation-handoff.md",
+      "note": "銀行條件、理專方案壓力測試與最終決策輸出的既有落地文件。"
     }
   ]
 }

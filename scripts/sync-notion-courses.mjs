@@ -115,6 +115,7 @@ function pageToTask(page) {
   const triage = formulaVal(prop(page, "Triage總分"));
   const link = urlVal(prop(page, "課程連結"));
   const note = richText(prop(page, "備註"));
+  const outputRef = richText(prop(page, "服務輸出"));
 
   const parts = [];
   if (pillar) parts.push(`柱:${pillar}`);
@@ -132,6 +133,7 @@ function pageToTask(page) {
     completed_at: status === "DONE" ? new Date().toISOString().slice(0, 10) : null,
     commits: [],
     note: parts.join(" | "),
+    output_ref: outputRef,
     summary: "",
   };
 }

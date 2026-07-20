@@ -14,6 +14,7 @@ interface Course {
   energy?: string;
   pct?: number;
   link?: string;
+  output_ref?: string;
 }
 
 interface LearningData {
@@ -85,6 +86,11 @@ function CourseCard({ course }: { course: Course }) {
         {course.triage != null && course.triage > 0 && (
           <span className="px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-400">
             T:{course.triage}
+          </span>
+        )}
+        {course.output_ref && (
+          <span className="px-1.5 py-0.5 rounded bg-red-500/15 text-red-300">
+            服務輸出：{course.output_ref}
           </span>
         )}
       </div>
@@ -176,10 +182,10 @@ export default function LearningPage() {
           <Link href="/" className="text-[var(--text-muted)] hover:text-[var(--text)] text-body">
             ← MC
           </Link>
-          <h1 className="text-title font-bold">學習進度</h1>
+          <h1 className="text-title font-bold">學習資源庫</h1>
         </div>
         <p className="text-[var(--text-muted)] text-body mt-1">
-          共 {data.summary.total} 項 · NOW {data.summary.now} · NEXT {data.summary.next} · DONE {data.summary.done}
+          課程是專案輸入；共 {data.summary.total} 項 · NOW {data.summary.now} · NEXT {data.summary.next} · DONE {data.summary.done}
         </p>
 
         <div className="flex flex-wrap gap-1.5 mt-3">

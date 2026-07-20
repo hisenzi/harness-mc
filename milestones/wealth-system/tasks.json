@@ -53,13 +53,45 @@
     },
     {
       "id": "b-6",
-      "title": "⑥ 預備金 + 債務決策（預備金目標 = 月支出×6，債務處置優先級）",
+      "title": "⑥ 預備金 + 債務／資本配置決策（預備金目標 = 月支出×6，債務處置優先級）",
       "status": "todo",
       "track": "build",
-      "done_condition": "兩個決定已記錄：預備金目標金額 + 債務處置策略（先還 or 並行）",
+      "done_condition": "三個決定已記錄：預備金目標金額、債務處置策略（先還 or 並行）、換房／增貸後資金的保留／配置／不動用方案；全部通過既有安全槓桿護欄。",
       "est_hours": 1,
       "depends_on": [],
-      "note": "Layer 2C：一次性決策，獨立於主線，隨時可做"
+      "note": "Layer 2C：一次性決策，獨立於主線，隨時可做；本季 Life Focus 的決策輸出。課程總表已建立吳淡如財商課 → wealth-system/b-6（NEXT）；MC mirror 需在具 NOTION_TOKEN 的既有同步環境完成刷新後才可顯示該課程。",
+      "hc_decision": {
+        "task_scope": "wealth-system/b-6",
+        "hc_refs": ["#rightProblem", "#systemDynamics", "#risk"],
+        "hc_reasoning": "把增貸問題從追求核准額度改為保留不被迫賣出的能力；焦點卡只呈現既有護欄與待決定方案，不把它包裝成投資推薦。",
+        "hc_confidence": 0.9,
+        "evidence_refs": [
+          "milestones/wealth-system/project.json",
+          "$COLLAB/house123_buy/safe-leverage-system-design.md",
+          "$COLLAB/house123_buy/leverage-license-implementation-handoff.md"
+        ],
+        "source_boundary": "HC 是思考檢查；wealth-system task、既有決策文件與驗證證據才是正本。"
+      },
+      "jv32_route": {
+        "workflows": ["task-lifecycle"]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准將既有預備金與債務決策擴成換房／增貸後資本配置決策，並以既有安全槓桿文件作為護欄。",
+            "evidence_refs": [
+              "milestones/wealth-system/project.json",
+              "$COLLAB/house123_buy/safe-leverage-system-design.md",
+              "$COLLAB/house123_buy/leverage-license-implementation-handoff.md"
+            ],
+            "recorded_at": "2026-07-20"
+          }
+        ]
+      }
     },
     {
       "id": "o-1",

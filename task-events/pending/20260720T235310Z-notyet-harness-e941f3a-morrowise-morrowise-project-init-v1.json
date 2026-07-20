@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-morrowise-project-init-v1-e941f3a-20260720T235310Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "e941f3a",
+  "project": "morrowise",
+  "task_id": "morrowise-project-init-v1",
+  "status": "updated",
+  "summary": "ARCHITECTURE.md 的 current-state 與 JV-32 subsystem index 已依 MW-PI-01 Admission Review 受控同步；task 保持 completed。",
+  "created_at": "2026-07-20T23:53:10.368Z",
+  "actor": "codex",
+  "session_id": "codex-morrowise-project-init-admission-20260721"
+}

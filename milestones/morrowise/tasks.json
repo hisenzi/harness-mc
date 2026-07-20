@@ -3393,16 +3393,18 @@
     },
     {
       "id": "task-lifecycle-jv32-gate",
-      "status": "in_progress",
-      "weekly_core": true,
-      "review_date": "2026-07-26",
+      "status": "completed",
+      "weekly_core": false,
+      "completed_at": "2026-07-20",
       "commits": [
         "8dd92f7",
         "038bae0",
         "33639b9",
-        "82d1150"
+        "82d1150",
+        "bb29e95",
+        "5b95f10"
       ],
-      "summary": "JV-40 已以 33639b9 實作 semantic task intake、單一 weekly_core、review_date 到期攔截、禁止自動延長與負向 fixture；82d1150 已由 cross-repo event 掛入受控 ARCHITECTURE.md 索引。依 Vincent 核准維持唯一 weekly core 至 2026-07-26；尚未收到 complete 決策，因此 task 仍為 in_progress。",
+      "summary": "JV-40 已將 semantic task intake、scope／approval gate、單一 weekly_core、review_date 到期人工決策與負向 fixture 接入既有 JV-32；bb29e95 使 fresh worktree 的標準 build 在 dashboard 前生成並驗證 read model，5b95f10 已整合至 canonical main，Admission Record 與 ARCHITECTURE.md 薄索引同步且驗證通過。",
       "title": "JV-40 任務生命週期接入 JV-32（新增／修改／停用／完成 gate）",
       "track": "governance",
       "order_label": "JV-40",
@@ -3573,6 +3575,55 @@
               "Vincent 2026-07-19 current session: 可以進行『機械強制與 event 套用』"
             ],
             "recorded_at": "2026-07-19"
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "bb29e95 已在 canonical main 生成並驗證 fresh-worktree 的 JV-32 read model 閉環；Admission Record 已更新、ARCHITECTURE.md 薄索引已同步，並完成 task、preflight、approval、system-pulse、catalog、dashboard 與 architecture verifier 鏈。",
+            "evidence_refs": [
+              "bb29e95",
+              "5b95f10",
+              "npm run build",
+              "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+              "node scripts/verify-architecture-subsystems.mjs",
+              "node scripts/verify-validate-tasks.mjs",
+              "node scripts/verify-work-anchor-preflight.mjs",
+              "npm run test:morrowise-approval",
+              "npm run test:system-pulse",
+              "node scripts/verify-morrowise-live-dashboard-data.mjs",
+              "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
+            ],
+            "recorded_at": "2026-07-20",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-dev-workflow-catalog"
+              ],
+              "scope_comparison": {
+                "problem": "本次完成既有 JV-40 的 fresh-worktree generator／verifier 閉環與既有治理 contract，不是新的 task-management 問題。",
+                "owner_source_of_truth": "owner 仍是 JV-40；canonical state 仍在 MorroWise tasks.json，受管 contract 仍是既有 JV-32 registry、schema、verifier 與 Admission Record。",
+                "inputs_outputs": "輸入是既有 JV-32 contract、fresh worktree 失敗證據與 Vincent 核准；輸出是 standard build 的 generator／verifier 閉環、更新的 Admission Record 與同步薄索引。",
+                "lifecycle_completion": "完成邊界是 canonical main 整合、ARCHITECTURE sync、fresh-worktree build、catalog／architecture／task／preflight／approval／system-pulse／dashboard verifier 全部通過；JV-36 與 JV-41 仍是後續不同責任的 task。"
+              },
+              "decision_reason": "相關不等於重複：閉環修復屬既有 JV-40 的 version improvement，故 outcome=amend；不新增或取代 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-20",
+                "evidence_refs": [
+                  "Vincent 2026-07-20 current session: 進行「合併到 main」；將 JV-40 改為 completed、釋放 weekly_core。"
+                ]
+              }
+            },
+            "weekly_core_review": {
+              "decision": "complete",
+              "approved_by": "Vincent",
+              "approved_at": "2026-07-20",
+              "evidence_refs": [
+                "Vincent 2026-07-20 current session: 進行「合併到 main」；將 JV-40 改為 completed、釋放 weekly_core。"
+              ]
+            }
           }
         ]
       },
@@ -3591,8 +3642,8 @@
       },
       "architecture_decision": {
         "decision": "not_required",
-        "evaluated_at": "2026-07-19",
-        "reason": "JV-40 是已 promoted 的 JV-32 catalog version improvement，不新增平行 subsystem；2026-07-19 實作 semantic intake、weekly core validator 與 work-anchor runtime，更新既有 Admission Record 與薄索引。",
+        "evaluated_at": "2026-07-20",
+        "reason": "JV-40 是已 promoted 的 JV-32 catalog version improvement，不新增平行 subsystem；2026-07-20 將 package.json 的 fresh-build generator／verifier 順序納入受管 contract，更新既有 Admission Record 並同步 ARCHITECTURE.md 薄索引。",
         "admission_review": {
           "scope": "version_improvement",
           "admission_record_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
@@ -3600,6 +3651,9 @@
           "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
           "evidence_refs": [
             "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate",
+            "bb29e95",
+            "5b95f10",
+            "npm run build",
             "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
             "$COLLAB/harness-mc/system-workflow/schemas/morrowise-task-lifecycle.schema.json",
             "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
@@ -3609,7 +3663,7 @@
             "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
             "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
           ],
-          "reason": "本次實際修改 JV-32 lifecycle schema、catalog、approval policy、validator、negative fixtures 與 work-anchor runtime；沿用同一 promoted subsystem，更新 Admission Record fingerprint、最近驗證時間與 ARCHITECTURE.md 薄索引，不建立新子系統。"
+          "reason": "本次沿用同一 promoted subsystem，將 fresh-worktree 的 read model generator／verifier 閉環與 package.json build wiring 納入既有 Admission Record contract；更新 fingerprint、最近驗證時間與 ARCHITECTURE.md 薄索引，不建立新子系統。"
         }
       },
       "note": "2026-07-18 Vincent 核准：新增、修改、停用 task 必須接入 JV-32，並要求一次補齊後做模擬驗證。此 task 是 lifecycle governance 的唯一 work anchor。2026-07-18 已補 Architecture Admission Review 閉環：既有 JV-32 的受管 contract 變更會使 verifier 以 fingerprint 攔截 stale Admission Record，並要求受控 ARCHITECTURE.md sync check。完成證據：8dd92f7、038bae0、task event 與本 task listed verifiers。2026-07-19 version_improvement roadmap／weekly_core review：被選為當週唯一 MorroWise 核心改善項目並轉 in_progress 時，必須同時記錄 weekly_core 與 review_date；到 review_date 仍未完成，只能由 Vincent 明確選擇 amend(reframe)、suspend（defer，to_status=deferred）或 cancel。amend(reframe) 必須記錄新 scope 與原因、重新取得 Vincent 核准；若仍維持 in_progress，必須同時設定新的明確 review_date，否則不得續留 weekly_core。suspend 必須記錄 reactivation criteria；cancel 必須記錄原因與 replacement／no replacement。禁止自動延長 review_date，也不得以未回覆默認續期。2026-07-19 Vincent 核准進行機械強制與 event 套用；JV-40 已以 resume 重開為唯一 weekly_core，review_date=2026-07-26。實作範圍固定為 semantic intake 結構與 outcome mapping、單一 WIP／到期／reframe validator、work-anchor runtime gate、負向 fixture、Admission Record 與受控薄索引；完成驗證前維持 in_progress。"

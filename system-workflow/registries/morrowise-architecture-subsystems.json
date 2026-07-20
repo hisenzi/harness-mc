@@ -2,8 +2,8 @@
   "registry_id": "morrowise-architecture-subsystems.v0",
   "task_id": "architecture-subsystem-index-live-sync",
   "status": "formal_registry",
-  "updated_at": "2026-07-18",
-  "generated_at": "2026-07-18",
+  "updated_at": "2026-07-20",
+  "generated_at": "2026-07-20",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
   "verifier_ref": "npm run test:architecture-subsystems",
   "sync_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\"",
@@ -207,10 +207,10 @@
       "degraded_state": "catalog registry/schema/verifier/read model 缺失、semantic intake 可繞過、同時存在多個 weekly core、到期 review 可自動延長、adapter_only 誤標為 accepted、close_rule 缺失或薄索引被手寫細節時，必須維持 deferred/degraded。",
       "architecture_decision": "promoted",
       "last_promoted_at": "2026-07-08",
-      "last_verified_at": "2026-07-19",
+      "last_verified_at": "2026-07-20",
       "version_review": {
         "scope": "version_improvement",
-        "reviewed_at": "2026-07-19",
+        "reviewed_at": "2026-07-20",
         "contract_refs": [
           "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
           "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json",
@@ -225,19 +225,22 @@
           "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
           "$COLLAB/harness-mc/scripts/work-anchor-preflight.mjs",
           "$COLLAB/harness-mc/scripts/verify-work-anchor-preflight.mjs",
+          "$COLLAB/harness-mc/package.json",
           "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
           "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
         ],
-        "contract_fingerprint": "fb1cebeb3b63b8f8",
+        "contract_fingerprint": "a4bb089a8a981582",
         "index_action": "updated",
         "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
         "evidence_refs": [
+          "npm run build",
           "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
           "node scripts/verify-validate-tasks.mjs",
           "node scripts/verify-work-anchor-preflight.mjs",
+          "npm run test:architecture-subsystems",
           "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
         ],
-        "reason": "JV-40 version improvement 將 semantic task intake、單一 weekly core、全域 review date 到期攔截、完成決策核准、禁止自動延長與 canonical task 物理刪除攔截接入既有 schema、validator、approval policy 與 work-anchor runtime；更新同一 Admission Record 與薄索引，不建立平行子系統。"
+        "reason": "JV-40 version improvement 將 semantic task intake、單一 weekly core、全域 review date 到期攔截、完成決策核准、禁止自動延長與 canonical task 物理刪除攔截接入既有 schema、validator、approval policy 與 work-anchor runtime；另把 package.json 的 fresh-build generator／verifier 順序列為受管合約，讓 read model 缺失或驗證失敗會在 dashboard 生成前中止；更新同一 Admission Record 與薄索引，不建立平行子系統。"
       },
       "supersedes": [],
       "superseded_by": null

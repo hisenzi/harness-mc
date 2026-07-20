@@ -3956,7 +3956,7 @@
     {
       "id": "morrowise-project-init-v1",
       "title": "開案 v1：成果契約、任務分類與 Operating Loop Map",
-      "status": "in_progress",
+      "status": "completed",
       "track": "governance",
       "order_label": "MW-PI-01",
       "priority": "high",
@@ -4084,6 +4084,44 @@
               "$COLLAB/harness-mc/scripts/verify-project-init-v1.mjs"
             ],
             "recorded_at": "2026-07-20"
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "MW-PI-01 已在兩個 local main 合併後完成成果契約、starter task taxonomy／排序、唯讀 Operating Loop Map、MC `/projects` 入口與正負向 verifier；未把 Map 反寫為 task state，也未宣稱 localhost runtime 已啟動。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc@1690f46",
+              "$COLLAB/notyet-harness@4f32003",
+              "$COLLAB/harness-mc/scripts/verify-project-init-v1.mjs",
+              "$COLLAB/harness-mc/scripts/verify-morrowise-operating-map.mjs",
+              "$COLLAB/harness-mc/task-events/pending/20260720T141125Z-notyet-harness-5e1bc66-morrowise-morrowise-project-init-v1.json",
+              "Vincent 2026-07-20 current session: 繼續完成；選擇 1 本機合併"
+            ],
+            "recorded_at": "2026-07-20",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/mc-dashboard-priority-ia-v2"
+              ],
+              "scope_comparison": {
+                "problem": "仍是開案缺少可驗證成果契約、task 分類／排序與系統關係導覽的同一問題。",
+                "owner_source_of_truth": "owner 仍是 MW-PI-01；project contract、canonical tasks、Map source 與 dashboard read-only surface 的邊界不變。",
+                "inputs_outputs": "輸入仍是開案需求與既有 control-plane evidence；輸出已落地為 contract、taxonomy、Map、route/link 與 verifiers。",
+                "lifecycle_completion": "PI-A01 至 PI-A06 已由 task、project-init、task-event verifier 與 production build 證據覆蓋；完成不涉及 pending event 的 apply 或 localhost runtime 宣稱。"
+              },
+              "decision_reason": "這是既有 MW-PI-01 的驗收收尾，不建立平行 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-20",
+                "evidence_refs": [
+                  "Vincent 2026-07-20 current session: 繼續完成",
+                  "Vincent 2026-07-20 current session: 1"
+                ]
+              }
+            }
           }
         ]
       },
@@ -4105,13 +4143,16 @@
         "source_boundary": "HC 只用於思考檢查；canonical task state 在 MorroWise tasks.json，project outcome contract 在 project.json／init command，Operating Loop Map 與 `/projects` surface 只讀取正本。"
       },
       "architecture_decision": {
-        "decision": "deferred",
+        "decision": "not_required",
         "evaluated_at": "2026-07-20",
-        "reason": "本案可能改善既有 project-init 與 control-plane 的 interaction，但尚未證明需要新增 architecture subsystem；完成後再依實際受管 contract 變更做 Admission Review，ARCHITECTURE.md 不在本次 bootstrap 手寫。"
+        "reason": "本案更新既有 project-init contract 與 read-only Map surface，但沒有新增或改變已 promoted architecture subsystem 的 owner／registry contract；Map 明確維持 task state 正本邊界，因此不需新增 ARCHITECTURE.md subsystem。"
       },
       "commits": [
-        "884feda"
+        "884feda",
+        "1690f46"
       ],
+      "completed_at": "2026-07-20",
+      "summary": "開案 v1 已將問題、影響、量化目標與量測來源設為必填成果契約；starter tasks 具 taxonomy 與 deterministic 順序，MC `/projects` 可進入唯讀 Operating Loop Map，對應正負向 verifier 均已通過。",
       "note": "2026-07-20：此為單一 work anchor，避免在 taxonomy contract 未落地前預先膨脹多張 implementation task。它不設 weekly_core，因 JV-40 仍是本週唯一已 admission 的 MorroWise core task；需要轉為 weekly core 時，須由 Vincent 另行明確選入並設定 review_date。"
     }
   ]

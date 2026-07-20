@@ -12,6 +12,7 @@
     "source_of_truth",
     "schema_ref",
     "verifier_ref",
+    "maintenance_policy",
     "classification_vocabulary",
     "migration_state_vocabulary",
     "profiles",
@@ -26,6 +27,16 @@
     "source_of_truth": { "type": "string", "pattern": "^\\$COLLAB/" },
     "schema_ref": { "type": "string", "pattern": "^\\$COLLAB/" },
     "verifier_ref": { "const": "npm run test:project-topology" },
+    "maintenance_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["startup_command", "evidence_warn_after_days", "startup_rule"],
+      "properties": {
+        "startup_command": { "const": "npm run health:project-topology" },
+        "evidence_warn_after_days": { "type": "integer", "minimum": 1 },
+        "startup_rule": { "type": "string", "minLength": 1 }
+      }
+    },
     "document_registry_ref": { "type": "string" },
     "repo_coordination_ref": { "type": "string" },
     "write_boundary": { "$ref": "#/$defs/writeBoundary" },

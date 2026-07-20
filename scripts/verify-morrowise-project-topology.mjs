@@ -21,6 +21,11 @@ assert.equal(registry.task_id, "project-topology-architecture-atlas");
 assert.equal(registry.source_of_truth, "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json");
 assert.equal(registry.schema_ref, "$COLLAB/harness-mc/system-workflow/schemas/morrowise-project-topology.schema.json");
 assert.equal(registry.verifier_ref, "npm run test:project-topology");
+assert.ok(registry.maintenance_policy, "topology registry must define maintenance_policy");
+const maintenancePolicy = registry.maintenance_policy;
+assert.equal(maintenancePolicy.startup_command, "npm run health:project-topology");
+assert.equal(maintenancePolicy.evidence_warn_after_days, 30);
+assert.match(maintenancePolicy.startup_rule, /blocked/i, "maintenance policy must define the startup blocking rule");
 assert.equal(schema.$id, "https://hisenzi.local/schemas/morrowise-project-topology.schema.json");
 
 const classifications = new Set(["canonical_project", "git_worktree", "generated", "runtime", "archive", "unknown"]);

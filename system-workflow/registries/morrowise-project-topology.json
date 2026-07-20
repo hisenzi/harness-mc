@@ -2,11 +2,16 @@
   "registry_id": "morrowise-project-topology.v1",
   "task_id": "project-topology-architecture-atlas",
   "status": "formal_registry",
-  "updated_at": "2026-07-20",
+  "updated_at": "2026-07-21",
   "inventory_as_of": "2026-07-20",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json",
   "schema_ref": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-project-topology.schema.json",
   "verifier_ref": "npm run test:project-topology",
+  "maintenance_policy": {
+    "startup_command": "npm run health:project-topology",
+    "evidence_warn_after_days": 30,
+    "startup_rule": "blocked integrity findings stop folder or worktree mutation; action findings remain visible but do not block unrelated scoped work"
+  },
   "document_registry_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
   "repo_coordination_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate",
   "write_boundary": {

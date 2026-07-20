@@ -2,7 +2,7 @@
   "registry_id": "morrowise-architecture-atlas-manifest.v1",
   "kind": "link_manifest",
   "task_id": "project-topology-architecture-atlas",
-  "updated_at": "2026-07-20",
+  "updated_at": "2026-07-21",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-atlas-manifest.json",
   "verifier_ref": "npm run test:architecture-atlas",
   "write_boundary": {
@@ -71,12 +71,13 @@
       ],
       "verifier_refs": [
         "npm run test:project-topology",
+        "npm run test:project-topology-maintenance",
         "python3 $COLLAB/notyet-harness/000_Agent/scripts/verify-project-topology-contract.py"
       ],
       "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#project-topology-architecture-atlas",
       "status_source": { "kind": "task", "field": "status" },
       "freshness_source": { "kind": "registry", "field": "inventory_as_of" },
-      "last_verified_at": "2026-07-20",
+      "last_verified_at": "2026-07-21",
       "freshness_warn_after_days": 30
     },
     {

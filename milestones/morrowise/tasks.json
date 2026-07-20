@@ -4165,7 +4165,7 @@
       "dependencies": [
         "task-lifecycle-jv32-gate"
       ],
-      "done_condition": "所有正式專案可由 ARCHITECTURE.md 的 Atlas 定位其 canonical home、topology profile、文件正本與 repo 正本；每筆既有資料均有 inventory classification、驗證證據與 migration state。專案內 .worktrees/<task> 的 verifier 必須可正確解析 $COLLAB；遷移只能在 record 已核准後以 Git worktree 指令或明確資料遷移程序執行。",
+      "done_condition": "所有正式專案可由 ARCHITECTURE.md 的 Atlas 定位其 canonical home、topology profile、文件正本與 repo 正本；每筆既有資料均有 inventory classification、驗證證據與 migration state。專案內 .worktrees/<task> 的 verifier 必須可正確解析 $COLLAB；遷移只能在 record 已核准後以 Git worktree 指令或明確資料遷移程序執行。任何 session 觸及 project folder 或 worktree 時，都能由共享 startup gate、health command 與 generated Maintenance Inbox 得到下一步，不依賴前一段 chat 或 agent memory。",
       "acceptance": [
         "A01｜新增 nested project-local worktree 的自動化 fixture：architecture subsystem verifier 與 worktree status generator 必須在 $COLLAB/harness-mc/.worktrees/<task> 執行並通過；不得把 .worktrees 誤判為 $COLLAB 或只掃描 worktree siblings。",
         "A02｜建立唯一 Project Topology Registry 與 schema，記錄 canonical project home、project type、topology profile、document_ref、repo_ref、inventory classification、migration state、last verified 與 evidence；它只連結 JV-36／JV-37 正本，不複製文件或 repo 狀態。",
@@ -4174,7 +4174,9 @@
         "A05｜建立 ARCHITECTURE.md generated-only MorroWise Architecture Atlas：每列顯示架構／專案、狀態、正本、detail、verifier、task anchor 與 freshness；Atlas 是唯一人讀入口，不是第二正本。",
         "A06｜Atlas generator 與 verifier 必須由 registry 產生並檢查 marker drift、無效 reference、重複 source-of-truth、缺 verifier 與 stale evidence；dashboard、Canvas、Heptabase 與 chat 一律只能是衍生 surface。",
         "A07｜Git worktree 遷移前，逐筆確認 branch、HEAD、dirty state 與 worktree registration；只可用 git worktree move 或在收尾後 remove，不得以 Finder 直接移動。每個非 Git 專案遷移也必須先有 approved migration record 與可回復驗證。",
-        "A08｜完成前通過 task schema、work-anchor preflight、nested-worktree fixture、Topology Registry schema／verifier、Atlas sync --check 與 relevant existing architecture subsystem verifier；不得讀取 secrets、runtime auth、browser cookies 或私有帳號資料。"
+        "A08｜完成前通過 task schema、work-anchor preflight、nested-worktree fixture、Topology Registry schema／verifier、Atlas sync --check 與 relevant existing architecture subsystem verifier；不得讀取 secrets、runtime auth、browser cookies 或私有帳號資料。",
+        "A09｜版本化 `$COLLAB/notyet-harness/000_Agent/CORE.md` 的 Project Topology Operation Gate，以及 `$COLLAB/AGENTS.md`／notyet-harness direct entry，必須要求觸及 project folder／worktree 前執行 `npm run health:project-topology` 並讀 generated Maintenance Inbox；`blocked` 停止本 scope mutation，`attention` 可見但不阻擋無關 scope。",
+        "A10｜Maintenance health scanner 必須以 Topology Registry policy 區分 integrity error 與既知 action：未登錄 root、missing／duplicate record 或 stale evidence 必須非零退出；已登錄 unknown 與 legacy blocked worktree 必須保留 owner／next action 但可零退出。ARCHITECTURE.md Inbox marker 必須可由 generator 重建且不可序列化動態 elapsed-day 資料。"
       ],
       "source_refs": [
         "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
@@ -4185,7 +4187,12 @@
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json",
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-atlas-manifest.json",
-        "$COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/project-topology-contract-v1.md"
+        "$COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/project-topology-contract-v1.md",
+        "$COLLAB/notyet-harness/000_Agent/CORE.md",
+        "$COLLAB/AGENTS.md",
+        "$COLLAB/harness-mc/scripts/project-topology-health.mjs",
+        "$COLLAB/harness-mc/scripts/verify-project-topology-maintenance.mjs",
+        "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-atlas.py"
       ],
       "jv32_route": {
         "workflows": [
@@ -4279,6 +4286,43 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 指出跨 session 不能靠人記得維護；在既有 JV-43 scope 內補上共享 startup gate、registry-driven health scanner 與 generated Maintenance Inbox，讓下一位 Agent 可自行取得分類與遷移下一步，不把待辦複製進 chat 或 memory。",
+            "evidence_refs": [
+              "$COLLAB/AGENTS.md",
+              "$COLLAB/harness-mc/scripts/project-topology-health.mjs",
+              "$COLLAB/harness-mc/scripts/verify-project-topology-maintenance.mjs",
+              "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-atlas.py",
+              "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md"
+            ],
+            "recorded_at": "2026-07-21",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/document-source-registry-and-human-sync",
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/architecture-subsystem-index-live-sync"
+              ],
+              "scope_comparison": {
+                "problem": "仍是 project home、folder classification 與安全遷移治理；補的是 session restart 時能重新取得此治理狀態的可驗證入口。",
+                "owner_source_of_truth": "Project Topology Registry 繼續是 folder classification、migration state 與 maintenance policy 的唯一正本；JV-36、JV-37 分別保有文件與 repo 正本，Atlas 只提供 generated thin link。",
+                "inputs_outputs": "輸入仍是 registry、root-level inventory、task anchor 與跨專案 Atlas manifest；輸出新增 health report、startup routing 與 generated Inbox，不新增第二份 status tracker。",
+                "lifecycle_completion": "A01 至 A08 保持，新增 A09 至 A10 要求 startup gate、error/action boundary、Inbox marker drift 與 deterministic test；不宣稱已實體遷移任何既有資料夾。"
+              },
+              "decision_reason": "使用者要求一次做到位的維護閉環；這是既有 JV-43 的缺口修補，不應另開平行 task 或用記憶代替正本。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-21",
+                "evidence_refs": [
+                  "Vincent 2026-07-21 current session: 一次做到位"
+                ]
+              }
+            }
           }
         ]
       },
@@ -4305,7 +4349,7 @@
         "evaluated_at": "2026-07-20",
         "reason": "JV-43 已建立 Topology Registry、link manifest、generator、verifier 與 ARCHITECTURE.md Atlas，但其本身目前是既有 Agent Control Plane 內的治理能力，不另建立 runtime／scheduler／adapter subsystem。若未來要將其升格為獨立 active subsystem，必須在兩個 repo 的正式提交整合後，以 Architecture Admission Record 另行審查。"
       },
-  "note": "2026-07-20：Vincent 選定 project/.worktrees/<task>。Safety prerequisite 已以 harness-mc commit f8960a7 與 notyet-harness commit 402d663 加入 /.worktrees/ ignore rule。nested worktree baseline 發現 verifier 假設 repo 為 $COLLAB 直屬目錄；本 task 以 test-first 建立 Git common-dir resolver、43 筆 root inventory、profile/schema/contract、Atlas link manifest 與 generated project directory。JV-36、JV-37 是關聯 owner，不合併、不重複記錄其正本；既有 root-level worktree 維持 blocked，尚未搬移。QA 2026-07-20：work-anchor preflight、task schema、project-local worktree fixture、Topology Registry、Atlas manifest、Atlas drift/self-test、Topology Contract 與既有 subsystem sync 全數通過；inventory 為 canonical_project 15、git_worktree 10、unknown 9、runtime 5、archive 2、generated 2，migrated_or_verified 為空。2026-07-21：Atlas freshness 改為穩定輸出 evidence date 與 warn-after threshold；elapsed age 僅供 stale validation，不再造成每日 marker drift。cross-date self-test 與完整 Notyet QA 均通過；Notyet commit e0411c6 已由 pending task event 記錄。"
+  "note": "2026-07-20：Vincent 選定 project/.worktrees/<task>。Safety prerequisite 已以 harness-mc commit f8960a7 與 notyet-harness commit 402d663 加入 /.worktrees/ ignore rule。nested worktree baseline 發現 verifier 假設 repo 為 $COLLAB 直屬目錄；本 task 以 test-first 建立 Git common-dir resolver、43 筆 root inventory、profile/schema/contract、Atlas link manifest 與 generated project directory。JV-36、JV-37 是關聯 owner，不合併、不重複記錄其正本；既有 root-level worktree 維持 blocked，尚未搬移。QA 2026-07-20：work-anchor preflight、task schema、project-local worktree fixture、Topology Registry、Atlas manifest、Atlas drift/self-test、Topology Contract 與既有 subsystem sync 全數通過；inventory 為 canonical_project 15、git_worktree 10、unknown 9、runtime 5、archive 2、generated 2，migrated_or_verified 為空。2026-07-21：Atlas freshness 改為穩定輸出 evidence date 與 warn-after threshold；elapsed age 僅供 stale validation，不再造成每日 marker drift。cross-date self-test 與完整 Notyet QA 均通過；Notyet commit e0411c6 已由 pending task event 記錄。2026-07-21 maintenance-loop QA：A01–A10 均以 fresh verifier 通過；新增 shared startup gate、registry-driven health command、error/action fixture 與 generated Maintenance Inbox。live health 為 attention（errors 0、actions 19）：9 筆已登錄 unknown 與 10 筆 legacy root-level worktree 均保留 owner／next action，未進行任何 Finder 或 Git 實體搬移；未登錄 root、missing／duplicate record 與 stale evidence 的 fixture 均 fail closed。"
     }
   ]
 }

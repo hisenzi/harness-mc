@@ -85,9 +85,34 @@ const ARCHITECTURE_VERSION_REVIEW_REFS = [
   "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
   "$COLLAB/harness-mc/scripts/work-anchor-preflight.mjs",
   "$COLLAB/harness-mc/scripts/verify-work-anchor-preflight.mjs",
+  "$COLLAB/harness-mc/package.json",
   "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
   "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs",
 ];
+
+const packageJson = readJson(packageJsonPath);
+const prebuild = packageJson.scripts?.prebuild || "";
+const devWorkflowGenerator = "node scripts/generate-morrowise-dev-workflows.mjs";
+const catalogVerifier = "node scripts/verify-morrowise-dev-workflow-catalog.mjs";
+const liveDashboardGenerator = "node scripts/generate-morrowise-live-dashboard.mjs";
+const devWorkflowGeneratorIndex = prebuild.indexOf(devWorkflowGenerator);
+const catalogVerifierIndex = prebuild.indexOf(catalogVerifier);
+const liveDashboardGeneratorIndex = prebuild.indexOf(liveDashboardGenerator);
+assert.notEqual(
+  devWorkflowGeneratorIndex,
+  -1,
+  "prebuild must generate the JV-32 read model before dashboard generation and catalog verification",
+);
+assert.notEqual(catalogVerifierIndex, -1, "prebuild must verify the generated JV-32 read model");
+assert.notEqual(liveDashboardGeneratorIndex, -1, "prebuild must generate the MorroWise live dashboard");
+assert.ok(
+  devWorkflowGeneratorIndex < catalogVerifierIndex,
+  "prebuild must verify the JV-32 read model after generating it",
+);
+assert.ok(
+  catalogVerifierIndex < liveDashboardGeneratorIndex,
+  "prebuild must verify the JV-32 read model before the dashboard consumes it",
+);
 
 for (const file of [registryPath, schemaPath, taskLifecycleSchemaPath, sourceMapPath, detailDocPath, taskLifecycleDocPath, taskWriteMapPath, approvalPolicyPath, generatorPath, readModelPath]) {
   assert.ok(fs.existsSync(file), `required JV-32 artifact missing: ${path.relative(root, file)}`);
@@ -100,7 +125,6 @@ const readModel = readJson(readModelPath);
 const tasks = readJson(tasksPath).tasks || [];
 const architectureRegistry = readJson(architectureRegistryPath);
 const wiringGate = readJson(wiringGatePath);
-const packageJson = readJson(packageJsonPath);
 const sourceMap = fs.readFileSync(sourceMapPath, "utf8");
 const detailDoc = fs.readFileSync(detailDocPath, "utf8");
 const taskLifecycleDoc = fs.readFileSync(taskLifecycleDocPath, "utf8");
@@ -407,8 +431,7 @@ function verifyNegativeFixtures(value) {
 
 function architectureContractFingerprint(refs) {
   const source = refs.map((ref) => {
-    const [fileRef] = ref.replace(/^\$COLLAB\//, "").split("#");
-    return `${ref}\n${fs.readFileSync(path.join(collabRoot, fileRef), "utf8")}`;
+    return `${ref}\n${fs.readFileSync(resolveCollabRef(ref), "utf8")}`;
   }).join("\n---\n");
   return crypto.createHash("sha256").update(source).digest("hex").slice(0, 16);
 }
@@ -421,9 +444,15 @@ function assertSafeRef(recordId, ref) {
 
 function assertResolvableRef(recordId, ref) {
   assert.match(ref, /^\$COLLAB\//, `${recordId} ref must use $COLLAB: ${ref}`);
-  const [fileRef] = ref.replace(/^\$COLLAB\//, "").split("#");
-  const filePath = path.join(collabRoot, fileRef);
+  const filePath = resolveCollabRef(ref);
   assert.equal(fs.existsSync(filePath), true, `${recordId} ref does not resolve: ${ref}`);
+}
+
+function resolveCollabRef(ref) {
+  const [fileRef] = ref.replace(/^\$COLLAB\//, "").split("#");
+  if (fileRef === "harness-mc") return root;
+  if (fileRef.startsWith("harness-mc/")) return path.join(root, fileRef.slice("harness-mc/".length));
+  return path.join(collabRoot, fileRef);
 }
 
 function hasExternalTrackerWrite(value) {

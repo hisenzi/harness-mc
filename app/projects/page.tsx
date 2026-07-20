@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { StatusDot } from "../components/StatusDot";
 import { getDisplayedProjects } from "./projectFilters.mjs";
+import { sortTasksByPlan } from "../../lib/taskOrdering.mjs";
 
 interface Task {
   id: string;
@@ -11,6 +12,10 @@ interface Task {
   status: string;
   track: string;
   order_label?: string;
+  priority?: string;
+  capability_domain?: string;
+  task_kind?: string;
+  dependencies?: string[];
   foundation?: string | null;
   issues_found?: number;
   issues_fixed?: number;
@@ -37,6 +42,14 @@ interface Project {
   total: number;
   tracks: Record<string, string>;
   decision_refs?: DecisionRef[];
+  project_map?: ProjectMap | null;
+}
+
+interface ProjectMap {
+  kind: "operating-loop";
+  source: string;
+  dashboard_path: string;
+  label: string;
 }
 
 interface DecisionRef {
@@ -137,6 +150,7 @@ export default function ProjectsPage() {
     ).values(),
   ).sort((a, b) => a.label.localeCompare(b.label, "zh-Hant"));
   const displayed: Project[] = getDisplayedProjects(projects, domainFilter);
+  const mapProjects = projects.filter((project) => project.project_map);
 
   if (loading) {
     return (
@@ -208,6 +222,19 @@ export default function ProjectsPage() {
             completed
           </button>
         </div>
+        {mapProjects.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {mapProjects.map((project) => (
+              <Link
+                key={project.project}
+                href={project.project_map!.dashboard_path}
+                className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-3 py-2 text-small text-cyan-200 hover:border-cyan-400 transition"
+              >
+                架構圖 · {project.name} →
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="flex items-center gap-3 mb-3">
@@ -293,10 +320,25 @@ export default function ProjectsPage() {
                 </div>
               )}
 
+              {selected.project_map && (
+                <Link
+                  href={selected.project_map.dashboard_path}
+                  onClick={() => setSelected(null)}
+                  className="mt-4 flex items-center justify-between gap-3 rounded-lg border border-cyan-500/30 bg-cyan-500/10 p-3 text-small text-cyan-200 hover:border-cyan-400 transition"
+                >
+                  <span>
+                    <span className="font-medium">架構圖</span>
+                    <span className="ml-2 text-caption text-cyan-100/70">{selected.project_map.label}</span>
+                  </span>
+                  <span aria-hidden="true">→</span>
+                </Link>
+              )}
+
               {(() => {
-                const tracks = [...new Set(selected.tasks.map((t) => t.track))];
+                const orderedTasks = sortTasksByPlan(selected.tasks) as Task[];
+                const tracks = [...new Set(orderedTasks.map((t) => t.track))];
                 return tracks.map((key) => {
-                  const tasks = selected.tasks.filter((t) => t.track === key);
+                  const tasks = orderedTasks.filter((t) => t.track === key);
                   const doneCount = tasks.filter(
                     (t) => t.status === "done" || t.status === "completed" || t.status === "fixed"
                   ).length;
@@ -336,6 +378,16 @@ export default function ProjectsPage() {
                             <span className={isDone ? "text-[var(--text-muted)] line-through" : ""}>
                               {task.title}
                             </span>
+                            {task.priority && (
+                              <span className="text-caption px-1.5 py-0.5 rounded bg-violet-500/15 text-violet-300">
+                                {task.priority}
+                              </span>
+                            )}
+                            {task.capability_domain && task.task_kind && (
+                              <span className="text-caption text-[var(--text-muted)]">
+                                {task.capability_domain} · {task.task_kind}
+                              </span>
+                            )}
                             {foundationBadge(task.foundation)}
                             {verdictBadge(task.verdict)}
                             {task.issues_found && task.issues_found > 0 ? (

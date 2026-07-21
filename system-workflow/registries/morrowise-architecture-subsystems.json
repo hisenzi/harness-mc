@@ -229,7 +229,7 @@
           "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
           "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
         ],
-        "contract_fingerprint": "600ff30ab3ad9f4f",
+        "contract_fingerprint": "7135584de0a414ea",
         "index_action": "no_index_change",
         "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
         "evidence_refs": [

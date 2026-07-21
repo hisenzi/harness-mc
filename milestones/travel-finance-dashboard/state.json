@@ -334,6 +334,9 @@
     "p2-notion-to-ledger-importer": {
       "status": "completed",
       "completed_at": "2026-07-06",
+      "commits": [
+        "8deb8a1"
+      ],
       "summary": "Completed Notion-to-ledger importer: reads 旅遊快記 read-only, maps Notion rows into trip-scoped travel ledger draft transactions, preserves source_ref/raw_text evidence, routes proxy/unknown rows to review_queue, documents Fukuoka smoke flow, and verifies fixture output through the ledger verifier.",
       "external_refs": {
         "notion_travel_inbox": {
@@ -365,6 +368,14 @@
           "data_boundary": "read_only_notion_to_trip_scoped_travel_ledger_no_daily_finance_dashboard_writes"
         }
       }
+    },
+    "p3-live-dashboard-and-fund-cashflow": {
+      "status": "completed",
+      "completed_at": "2026-07-20",
+      "commits": [
+        "909f963",
+        "8ebf787"
+      ]
     }
   }
 }

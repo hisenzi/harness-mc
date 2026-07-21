@@ -717,6 +717,16 @@
         "82d1150"
       ],
       "summary": "JV-40 已以 33639b9 實作 semantic task intake、單一 weekly_core、review_date 到期攔截、禁止自動延長與負向 fixture；82d1150 已由 cross-repo event 掛入受控 ARCHITECTURE.md 索引。依 Vincent 核准維持唯一 weekly core 至 2026-07-26；尚未收到 complete 決策，因此 task 仍為 in_progress。"
+    },
+    "morrowise-project-init-v1": {
+      "status": "completed",
+      "completed_at": "2026-07-20",
+      "commits": [
+        "884feda",
+        "1690f46",
+        "5e1bc66"
+      ],
+      "summary": "開案 v1 已將問題、影響、量化目標與量測來源設為必填成果契約；starter tasks 具 taxonomy 與 deterministic 順序，MC `/projects` 可進入唯讀 Operating Loop Map，對應正負向 verifier 均已通過。"
     }
   }
 }

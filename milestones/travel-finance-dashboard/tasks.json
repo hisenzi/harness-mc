@@ -586,6 +586,97 @@
       "done_condition": "travel-finance-dashboard 的 project.json 與 Phase 1 tasks.json 已建立，並保留 Notion Travel Inbox API 驗證與 API/CLI/MCP 接線 task anchor",
       "summary": "建立旅遊財務儀表板 MC 開案資料：Notion 口袋入口、travel ledger、回國會計腦、dashboard/handoff tracks 與 9 張 Phase 1 tasks；Phase 1 tasks 保持 todo，不把規劃誤標完成。",
       "note": "auto-task：開案 commit 無對應既有 task，依 worktree-commit Step 7 補建完成紀錄"
+    },
+    {
+      "id": "p3-live-dashboard-and-fund-cashflow",
+      "title": "建立可重用的即時旅遊基金金流與支出比例儀表板",
+      "status": "in_progress",
+      "track": "dashboard",
+      "depends_on": [
+        "p2-standalone-dashboard-build",
+        "p2-notion-to-ledger-importer"
+      ],
+      "done_condition": "可由任何一趟旅遊的 Notion 快記產生 read-only dashboard read model，正確顯示旅遊基金金流、信用卡待轉帳淨額與食衣住行消費比例，且轉帳不混入消費統計。",
+      "acceptance": [
+        "旅遊基金入金以負數金額表示；指定紀錄的數值與 Notion 欄位可讀回驗證",
+        "付款方式／金流視圖分別顯示信用卡支出、基金現金入金與信用卡待轉帳淨額，不把付款方式誤當消費分類",
+        "食衣住行比例僅使用已知分類的消費交易；轉帳與未確認代買不計入比例，未知分類明確列為需確認",
+        "dashboard 只讀 trip-scoped travel ledger／generated read model，不直接以 Notion 畫面或日常 finance-dashboard records 作計算來源",
+        "提供可重跑的 fixture／verifier，覆蓋負數基金入金、金流淨額與四類消費比例"
+      ],
+      "hc_decision": {
+        "task_scope": "travel-finance-dashboard/p3-live-dashboard-and-fund-cashflow",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemBoundary",
+          "#verification"
+        ],
+        "hc_reasoning": "問題不是再加一個付款清單，而是讓每趟旅行能可靠判讀基金淨金流與消費結構；轉帳是資金移動，不能污染食衣住行比例。Notion 保留為證據入口，travel ledger/read model 才是 dashboard 計算邊界。",
+        "hc_confidence": 0.91,
+        "evidence_refs": [
+          "$COLLAB/travel-finance-dashboard/docs/travel-accounting-rules.md",
+          "$COLLAB/travel-finance-dashboard/docs/travel-ledger-schema.md",
+          "$COLLAB/travel-finance-dashboard/docs/dashboard-surface-plan.md",
+          "$COLLAB/harness-mc/milestones/travel-finance-dashboard/tasks.json#p2-notion-to-ledger-importer"
+        ],
+        "source_boundary": "HC is a thinking check, not source of truth; Notion evidence, travel ledger/read model, verifier output, and this canonical task remain authoritative."
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "live Notion travel evidence",
+          "travel ledger/read model contract",
+          "Vincent-approved fund-cashflow semantics"
+        ],
+        "decision_output": "可重用的旅遊金流與消費結構 dashboard",
+        "execution_boundary": "Notion 寫入只限已核准的兩筆金額修正；dashboard 僅讀 trip-scoped ledger/read model，不讀取或寫入日常 finance-dashboard。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 指定此新 task，承接已完成的靜態 dashboard 與 Notion importer，補上可跨旅遊重用的基金金流與食衣住行統計。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/travel-finance-dashboard/tasks.json#p2-standalone-dashboard-build",
+              "$COLLAB/harness-mc/milestones/travel-finance-dashboard/tasks.json#p2-notion-to-ledger-importer",
+              "$COLLAB/harness-mc/milestones/travel-finance-dashboard/tasks.json#p3-live-dashboard-and-fund-cashflow"
+            ],
+            "recorded_at": "2026-07-19",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "travel-finance-dashboard/p2-standalone-dashboard-build",
+                "travel-finance-dashboard/p2-notion-to-ledger-importer"
+              ],
+              "scope_comparison": {
+                "problem": "既有 dashboard 驗證大阪靜態清帳，既有 importer 只產生 ledger draft；本 task 處理每趟旅行的基金淨金流與消費結構判讀。",
+                "owner_source_of_truth": "正本仍為 travel-finance-dashboard 的 canonical tasks.json；計算正本為 trip-scoped travel ledger/read model，不是 Notion 畫面。",
+                "inputs_outputs": "輸入為已核准修正後的 Notion 證據與 importer ledger；輸出為唯讀 dashboard read model、金流淨額與分類比例。",
+                "lifecycle_completion": "完成條件是負數基金入金、金流與四類比例皆有可重跑驗證；不取代既有 static dashboard 或 importer 的完成紀錄。"
+              },
+              "decision_reason": "與兩個既有 task 有上下游關係但問題、輸出與完成邊界不同，因此建立 genuinely_new task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-19",
+                "evidence_refs": [
+                  "$COLLAB/harness-mc/milestones/travel-finance-dashboard/tasks.json#p3-live-dashboard-and-fund-cashflow"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "note": "2026-07-19: Vincent confirmed the reusable scope and task id. Initial live correction covers two JPY fund receipts; FX remains out of scope until explicitly confirmed."
     }
   ]
 }

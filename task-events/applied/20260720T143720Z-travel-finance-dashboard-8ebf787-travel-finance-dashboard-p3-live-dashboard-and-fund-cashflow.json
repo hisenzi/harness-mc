@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-travel-finance-dashboard-p3-live-dashboard-and-fund-cashflow-8ebf787-20260720T143720Z",
+  "type": "task.commit_attached",
+  "repo": "travel-finance-dashboard",
+  "commit": "8ebf787",
+  "project": "travel-finance-dashboard",
+  "task_id": "p3-live-dashboard-and-fund-cashflow",
+  "status": "updated",
+  "summary": "Added an in-dashboard, collapsible settlement guide so the Fukuoka review page explains payment responsibility, fund repayment, and direct-settlement boundaries at the point of use.",
+  "created_at": "2026-07-20T14:37:20.103Z",
+  "actor": "codex",
+  "session_id": "codex-travel-finance-20260720"
+}

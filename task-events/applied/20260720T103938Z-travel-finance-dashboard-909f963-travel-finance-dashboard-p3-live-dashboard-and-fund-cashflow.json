@@ -1,0 +1,13 @@
+{
+  "event_id": "task.completed-travel-finance-dashboard-p3-live-dashboard-and-fund-cashflow-909f963-20260720T103938Z",
+  "type": "task.completed",
+  "repo": "travel-finance-dashboard",
+  "commit": "909f963",
+  "project": "travel-finance-dashboard",
+  "task_id": "p3-live-dashboard-and-fund-cashflow",
+  "status": "completed",
+  "summary": "Integrated the reusable read-only Fukuoka fund-cashflow dashboard: receipt and payout matching, direct-settlement exclusion, currency-separated cashflow, expandable details, and verifier coverage.",
+  "created_at": "2026-07-20T10:39:38.655Z",
+  "actor": "codex",
+  "session_id": "codex-travel-finance-20260720"
+}

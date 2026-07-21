@@ -1,18 +1,32 @@
 {
-  "generated_at": "2026-07-19T12:06:53.578Z",
+  "generated_at": "2026-07-20T23:27:15.796Z",
   "applied": [
     {
-      "file": "20260719T120640Z-notyet-harness-6095bd9-morrowise-architecture-pulse-source-edit.json",
-      "event_id": "task.commit_attached-morrowise-architecture-pulse-source-edit-6095bd9-20260719T120640Z",
-      "project": "morrowise",
-      "task_id": "architecture-pulse-source-edit",
+      "file": "20260720T103613Z-travel-finance-dashboard-8deb8a1-travel-finance-dashboard-p2-notion-to-ledger-importer.json",
+      "event_id": "task.commit_attached-travel-finance-dashboard-p2-notion-to-ledger-importer-8deb8a1-20260720T103613Z",
+      "project": "travel-finance-dashboard",
+      "task_id": "p2-notion-to-ledger-importer",
       "type": "task.commit_attached"
     },
     {
-      "file": "20260719T120640Z-notyet-harness-82d1150-morrowise-task-lifecycle-jv32-gate.json",
-      "event_id": "task.commit_attached-morrowise-task-lifecycle-jv32-gate-82d1150-20260719T120640Z",
+      "file": "20260720T103938Z-travel-finance-dashboard-909f963-travel-finance-dashboard-p3-live-dashboard-and-fund-cashflow.json",
+      "event_id": "task.completed-travel-finance-dashboard-p3-live-dashboard-and-fund-cashflow-909f963-20260720T103938Z",
+      "project": "travel-finance-dashboard",
+      "task_id": "p3-live-dashboard-and-fund-cashflow",
+      "type": "task.completed"
+    },
+    {
+      "file": "20260720T141125Z-notyet-harness-5e1bc66-morrowise-morrowise-project-init-v1.json",
+      "event_id": "task.commit_attached-morrowise-morrowise-project-init-v1-5e1bc66-20260720T141125Z",
       "project": "morrowise",
-      "task_id": "task-lifecycle-jv32-gate",
+      "task_id": "morrowise-project-init-v1",
+      "type": "task.commit_attached"
+    },
+    {
+      "file": "20260720T143720Z-travel-finance-dashboard-8ebf787-travel-finance-dashboard-p3-live-dashboard-and-fund-cashflow.json",
+      "event_id": "task.commit_attached-travel-finance-dashboard-p3-live-dashboard-and-fund-cashflow-8ebf787-20260720T143720Z",
+      "project": "travel-finance-dashboard",
+      "task_id": "p3-live-dashboard-and-fund-cashflow",
       "type": "task.commit_attached"
     }
   ],

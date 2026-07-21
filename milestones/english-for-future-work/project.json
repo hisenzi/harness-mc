@@ -17,7 +17,7 @@
   },
   "goals": [
     "把 20 小時法則、SIFT 非顯見思維、大量輸出練習整理成可跨領域使用的方法論。",
-    "建立一套可複製的 20 天訓練包模板，讓每天 1 小時能固定完成輸入、輸出、AI 回饋與資產回寫。",
+    "先以 Pilot 0 跑 20 天、每天 20 分鐘的低摩擦訓練，驗證固定觸發、語音輸出、AI 回饋與紀錄閉環；通過後再累積至 20 小時正式訓練。",
     "以 English for Future Work 作為第一個 domain pack，驗證 Personal Vocabulary / Concept OS 是否能支援工作英文輸出。",
     "將訓練成果沉澱為可重複使用的句型、段落、Email、Q&A、口說稿與 AI feedback prompts。",
     "建立活系統機制：當方法論或架構原型更新時，能掃描使用該模型的應用包並產生新的 task 規劃與優化建議。",
@@ -67,9 +67,9 @@
       "expected": "無輸出"
     },
     {
-      "criterion": "English for Future Work v1 能驗收 20 小時成果：active vocabulary、句型、段落、Email、Q&A、口說稿。",
-      "verify_cmd": "rg \"active|sentence patterns|Email|Q&A|speaking\" \"$COLLAB/English-for-Future-Work\"",
-      "expected": "能找到對應驗收欄位或模板"
+      "criterion": "Pilot 0 能驗收 20 天 × 20 分鐘的低摩擦閉環；通過後才進入累積 20 小時的正式輸出驗收。",
+      "verify_cmd": "rg \"20 天|20 分鐘|5%|Day 7|Day 14|Day 20|Pilot 1\" \"$COLLAB/English-for-Future-Work\"",
+      "expected": "能找到每日流程、最小版、三個診斷節點與 Pilot 1 閘門"
     },
     {
       "criterion": "Domain Adaptation Guide 能說明如何複製到至少 3 個非英文領域。",
@@ -119,6 +119,19 @@
       ],
       "hc_used": [
         "#sift",
+        "#optimization"
+      ]
+    },
+    {
+      "topic": "pilot_0_low_friction_test",
+      "decision": "先執行 20 天 × 每天 20 分鐘（共 6 小時 40 分）的 Pilot 0；20 小時保留為通過可行性測試後的 Pilot 1 成果門檻。",
+      "reason": "先驗證固定觸發、ChatGPT 語音陪跑、最小 5% 行動與每週診斷是否能持續，避免把 2,000 字、20 句或 100 個輸出變成第一天的摩擦來源。",
+      "alternatives_rejected": [
+        "維持 20 天 × 每天 1 小時：與目前可持續的每日 20 分鐘限制不符。",
+        "把 20 小時硬壓入 20 天：會用輸出量取代習慣與可用性驗證。"
+      ],
+      "hc_used": [
+        "#constraints",
         "#optimization"
       ]
     },

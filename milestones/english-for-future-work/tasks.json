@@ -27,15 +27,37 @@
     },
     {
       "id": "t2-training-pack-template",
-      "title": "設計 20 天訓練包結構",
-      "status": "todo",
+      "title": "設計 Pilot 0：20 天 × 20 分鐘訓練包結構",
+      "status": "in_progress",
       "track": "templates",
-      "done_condition": "20-Day Training Pack Template 可讓任一領域填入每日 1 小時訓練流程",
+      "done_condition": "Pilot 0 訓練包能以每天 20 分鐘完成固定觸發、語音輸出、AI 回饋與單行紀錄，並在 Day 20 產出是否進入 Pilot 1 的判定。",
+      "note": "2026-07-21：Vincent 已選定先跑 20 天／6 小時 40 分的低摩擦可行性測試；20 小時改為 Pilot 1 的累積成果門檻。",
       "acceptance": [
-        "每天包含 input、micro-output、AI feedback、asset library 回寫、口說或展示練習",
-        "定義每天 100 個 micro outputs 的可持續拆法",
-        "定義 Day 1-20 的節奏與回顧節點"
-      ]
+        "每天定義標準 20 分鐘版與 5% 最小版（1 分鐘、1 句專案英文），且不要求補課",
+        "每天包含一個工作情境、語音輸出、最多三個高影響回饋、一次重說與單行 Daily Log",
+        "定義 Day 1 基線、Day 7／14 診斷、Day 20 feasibility review 與 Pilot 1 gate"
+      ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 已決定先進行 20 天、每天 20 分鐘的低摩擦可行性測試，因此將訓練包改為 Pilot 0 的可執行結構。",
+            "evidence_refs": [
+              "milestones/english-for-future-work/tasks.json",
+              "$COLLAB/English-for-Future-Work/01-methodology/pilot-0-low-friction-loop.md"
+            ],
+            "recorded_at": "2026-07-21"
+          }
+        ]
+      }
     },
     {
       "id": "t3-vocabulary-concept-os",
@@ -51,39 +73,102 @@
     },
     {
       "id": "t4-daily-output-template",
-      "title": "建立 Daily Output 模板",
+      "title": "建立 Pilot 0 Daily Log 模板",
       "status": "todo",
       "track": "templates",
-      "done_condition": "Daily Output Sheet 可引導每天完成造句、改寫、短答、段落、Email 或口說輸出",
+      "done_condition": "Daily Log 可在兩分鐘內記錄工作情境、錯誤標籤、兩個片語與翌日複習；完整逐字稿仍留在 ChatGPT 對話。",
       "acceptance": [
-        "包含 micro-output 計數與類型",
-        "包含 AI 修正前 / 修正後 / 自己再改一次三欄",
-        "包含可回寫 phrase library 的欄位"
-      ]
+        "單筆記錄不超過一行，並可標示 20 分鐘版或 5% 最小版",
+        "包含 W／C／G／R／F 五種缺口標籤與重說句",
+        "Phrase Bank 只在 Day 7／14／20 回顧時更新，不成為每日步驟"
+      ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Daily Log 已調整為 Pilot 0 的兩分鐘單行紀錄，將逐字稿保留在 ChatGPT 對話，以降低每日摩擦。",
+            "evidence_refs": [
+              "milestones/english-for-future-work/tasks.json",
+              "$COLLAB/English-for-Future-Work/02-templates/daily-log-template.md"
+            ],
+            "recorded_at": "2026-07-21"
+          }
+        ]
+      }
     },
     {
       "id": "t5-ai-feedback-prompts",
-      "title": "建立 AI Feedback Prompt Library",
+      "title": "建立 Pilot 0 ChatGPT Voice Coach Prompt Library",
       "status": "todo",
       "track": "templates",
-      "done_condition": "Prompt library 能讓 AI 回饋保持 B1-B2、可重用、貼近 Vincent 原意",
+      "done_condition": "Prompt library 能讓 ChatGPT 語音陪跑維持 B1-B2、專案導向、最多三個高影響回饋，並輸出固定 Daily Log。",
       "acceptance": [
-        "包含 rewrite、grade、speaking version、email version、phrase extraction prompts",
-        "每個 prompt 都限制不要過度高級化",
-        "包含跨領域版本，不只英文學習版本"
-      ]
+        "包含週初設定、每日開始、每日結束與週回顧四個 prompt",
+        "所有 prompt 限制不要過度高級化、不以腔調評分、保留 Vincent 原意",
+        "支援 AI、Development、UI/UX、Business 四種工作情境"
+      ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "語音陪跑 prompt 已限定 B1-B2、最多三項高影響回饋與重說，讓 AI 回饋可直接進入 Daily Log。",
+            "evidence_refs": [
+              "milestones/english-for-future-work/tasks.json",
+              "$COLLAB/English-for-Future-Work/03-prompt-library/chatgpt-voice-coach.md"
+            ],
+            "recorded_at": "2026-07-21"
+          }
+        ]
+      }
     },
     {
       "id": "t6-english-pack-v1",
-      "title": "建立第一個示範包：English for Future Work v1",
+      "title": "建立第一個示範包：English for Future Work Pilot 0",
       "status": "todo",
       "track": "english-pack",
-      "done_condition": "英文 20 天包可支援工作英文輸出訓練，含 2000 字分層與每日 topic",
+      "done_condition": "英文 20 天包以每週一個工作 lane 安排每日情境，將 2,000 字分類降為長期詞彙地圖，而非每日背誦配額。",
       "acceptance": [
-        "包含 Core English、AI、UI/UX、Brand、Business、Development、Personal Vocabulary 分類",
-        "包含 20 天 topic map",
-        "包含 20 小時成果驗收：句型、段落、Email、Q&A、口說稿"
-      ]
+        "包含 AI Agent、Development、UI/UX／Design、Business／Client Messaging 四週 topic map",
+        "每個 topic 將 Core English 動作詞與 domain noun 組成可用片語，而非孤立字表",
+        "包含 Day 20 的兩段 60 秒無稿專案說明與 Pilot 1 gate"
+      ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "示範包已改為 20 天工作情境 topic map，將 2,000 字定位為長期詞彙地圖而非每日配額。",
+            "evidence_refs": [
+              "milestones/english-for-future-work/tasks.json",
+              "$COLLAB/English-for-Future-Work/04-english-pack/pilot-0-topic-map.md"
+            ],
+            "recorded_at": "2026-07-21"
+          }
+        ]
+      }
     },
     {
       "id": "t7-domain-adaptation-guide",
@@ -99,15 +184,36 @@
     },
     {
       "id": "t8-20hour-pilot-review",
-      "title": "跑一次 20 小時自測與回顧",
+      "title": "完成 Pilot 0 Day 20 可行性回顧",
       "status": "todo",
       "track": "pilot",
-      "done_condition": "完成 English for Future Work 第一輪 20 小時 pilot，並產出 v2 修正清單",
+      "done_condition": "完成 20 天／6 小時 40 分 Pilot 0，判定是否達到 16 次練習、可用片語、無稿口說與低摩擦閉環門檻，並決定是否啟動 Pilot 1。",
       "acceptance": [
-        "記錄每天輸出數與完成資產",
-        "列出有效、太重、需簡化的環節",
-        "回寫 Methodology / Templates / English Pack 的 v2 修正項"
-      ]
+        "記錄 20 分鐘版、5% 最小版、漏做日與不補課恢復狀態",
+        "Day 7／14／20 各產出一次錯誤分布、保留片語與摩擦點回顧",
+        "Day 20 明確輸出 Pilot 1：開始／調整後開始／暫不開始 三種判定之一"
+      ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "回顧任務已由原本的 20 小時驗收改為 Pilot 0 Day 20 feasibility review，明確決定是否進入 Pilot 1。",
+            "evidence_refs": [
+              "milestones/english-for-future-work/tasks.json",
+              "$COLLAB/English-for-Future-Work/06-pilot-review/pilot-0-scoreboard.md"
+            ],
+            "recorded_at": "2026-07-21"
+          }
+        ]
+      }
     },
     {
       "id": "t9-methodology-version-registry",

@@ -229,17 +229,18 @@
           "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
           "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
         ],
-        "contract_fingerprint": "7135584de0a414ea",
+        "contract_fingerprint": "bd2f9ccdac23737e",
         "index_action": "no_index_change",
         "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
         "evidence_refs": [
           "npm run build",
           "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
           "npm run build in isolated single-repo worktree",
+          "npm run test:morrowise-auditor-isolated",
           "npm run test:architecture-subsystems",
           "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
         ],
-        "reason": "GitHub Pages 單 repo build 證明 JV-32 verifier 曾把 source_doc/source_skill 的外部 provenance 誤當 CI 必備檔。此次改為只要求正規化後仍屬 harness-mc 的 canonical ref 必須存在；跨 repo 或本機 intake evidence 仍受 $COLLAB 語法、禁止 path traversal 與安全檢查，但可在 isolated build 缺席。新增 regression fixtures 同時保留缺 harness-owned ref 必須 fail、path traversal 必須 fail 的邊界；不新增子系統或改變 ARCHITECTURE.md 薄索引文字。"
+        "reason": "GitHub Pages 單 repo build 證明 auditor generator 曾把完整 $COLLAB sibling layout 誤當 CI 必備條件。此次僅將 auditor 的 $COLLAB 解析改為在單 repo checkout 退回其父目錄：harness-mc 正本仍可解析，外部 provenance 會如實產生 source_missing finding，不得冒充已驗證。新增 isolated-checkout regression 並接入 prebuild；完整雙 repo auditor verifier 維持不放寬。此為既有 JV-32 contract 的可攜性版本修正，不新增子系統或改變 ARCHITECTURE.md 薄索引文字。"
       },
       "supersedes": [],
       "superseded_by": null

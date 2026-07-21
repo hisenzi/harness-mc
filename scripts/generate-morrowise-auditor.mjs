@@ -10,8 +10,24 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
-const collabRoot = path.resolve(root, "..");
+const collabRoot = resolveCollabRoot(root);
 const outPath = path.join(root, "public", "data", "morrowise-auditor.json");
+
+function resolveCollabRoot(start) {
+  let candidate = start;
+  while (true) {
+    if (
+      fs.existsSync(path.join(candidate, "harness-mc")) &&
+      fs.existsSync(path.join(candidate, "notyet-harness"))
+    ) {
+      return candidate;
+    }
+    const parent = path.dirname(candidate);
+    if (parent === candidate) break;
+    candidate = parent;
+  }
+  throw new Error(`Unable to resolve $COLLAB from ${start}`);
+}
 
 const HEADER_CONTRACT_FIELDS = ["Status", "Owner", "Read when", "Write policy", "Stale rule", "Warn after", "Error after", "Verifier"];
 

@@ -116,3 +116,32 @@ MC 首頁不再平均陳列所有系統資訊，而依下列順序呈現：
 1. 《真正有用的儀表板，不是完整，而是讓你知道下一步》
 2. 《卡片都有資料，為什麼儀表板仍可能是假的？》
 3. 《從六種文件收斂成兩個正本：AI 協作如何避免知識漂移》
+
+## 5. Phase 2A 治理定錨與對帳（2026-07-22）
+
+本段只記錄已核准 task 的 canonical 對帳與啟動順序；行動狀態仍以 `tasks.json` 為唯一正本，不在本頁複製 status 或 progress。
+
+### 已對帳的 operation batch
+
+| 項目 | Canonical task／owner | 對帳結論 | 本階段操作與開始門檻 |
+|---|---|---|---|
+| IA 決策錨點 | `morrowise/mc-dashboard-priority-ia-v2` | 既有 `MC-DASH-V2` 已是 governance；`MC-LIVE-SYS-10` 已只屬 UI spec／驗收。 | 保留既有身份；本頁只補對帳紀錄，不重做 UI。JV-36 產生薄連結前不可結案。 |
+| Action Priority Read Model | `morrowise/action-priority-read-model-v2` | 已核准 `genuinely_new`，是 canonical task 的唯讀 priority 層。 | 選為唯一 weekly core；本週只完成 deterministic input／output、priority／dedupe／freshness／verifier contract，不做 UI、daily loop 或 task state 自動化。 |
+| Trusted Heartbeat Runtime | `morrowise/trusted-heartbeat-runtime-v1` | 已核准 `genuinely_new`，沿用既有 scheduler，不另建 scheduler。 | 維持 todo；只在 priority read model 完成後才供後續 daily loop 與 JV-36.R5 消費。 |
+| Reality Tax lineage | `morrowise/reality-tax-daily-review-task` → `morrowise/morrowise-live-decision-loop-v1` | `replace` 已完成：舊 task 為 cancelled，successor 已建立。 | 禁止啟動 successor，直到 priority read model、trusted heartbeat 與 lifecycle gate 都通過；不得建立第二個 daily loop。 |
+| 文件控制面 | `morrowise/document-source-registry-and-human-sync`（JV-36） | 既有 Roadmap-in-Anchor；R1–R5 已定義。 | 維持同一 anchor；R1–R4 不是另一個 task identity，R5 必須等待 trusted heartbeat。 |
+| 儀表板 surface | `harness-mc/morrowise-priority-dashboard-surface-v2` | 既有 surface task，且已被 priority read model 阻擋。 | 維持 blocked；只能在 read model 驗收後做繁中首頁與五個真實下鑽。 |
+| Skill candidate gate | `morrowise/skill-candidate-review-gate`（JV-41） | 既有 closeout-only review gate。 | 維持 todo；每個 task 的 E2E／closeout 成功時才做候選提醒，不建立或安裝 skill。 |
+
+### 唯一 weekly core 與依賴邊界
+
+2026-07-22 選入 `action-priority-read-model-v2` 作為唯一 weekly core，`review_date=2026-07-29`。選擇理由是 JV-36.R1–R4 各自仍為完整文件治理交付，不能把文字 slice 偽裝成可由 lifecycle 管理的獨立 weekly core；priority read model 則已有單一 canonical owner、可驗證輸入輸出與明確的下游 consumer。
+
+依賴順序固定為：`JV-32／JV-40 lifecycle gates → Action Priority Read Model → {harness-mc Surface, Live Daily Decision Loop}`；`既有 scheduler／run evidence → Trusted Heartbeat Runtime → {Live Daily Decision Loop, JV-36.R5}`。JV-36.R1–R4 與 priority core 可各自排程，但本週只允許一個 `weekly_core=true`。
+
+### Phase 2A 的可驗證不變量
+
+- MorroWise system／governance tasks 只以 `$COLLAB/harness-mc/milestones/morrowise/tasks.json` 為 canonical task state；harness-mc surface task 只消費它的 read model，不持有可寫 task state。
+- 舊 Reality Tax task 維持 cancelled，successor 未執行；本階段沒有第二個 active daily decision loop，也沒有新增 scheduler、`jobs.json` 或 cron。
+- `weekly_core` 只允許一個、必為 `in_progress` 且含明確 `review_date`；到期只能經 Vincent 的 reframe／suspend／cancel／complete 決策，不得自動延期。
+- 每個下游實作在開始前都必須記錄 owner、正本、輸入、輸出、verifier、停止條件與 architecture decision；本階段本身不提前做 Architecture Admission。

@@ -17,6 +17,8 @@ The catalog turns useful external software-development workflow patterns into Mo
 5. A workflow can close only through its `close_rule`; chat-only completion is not enough.
 6. Completed work routes through `closeout-commit-routing` before task completion is claimed.
 
+`source_doc` and `source_skill` are provenance metadata, not build dependencies. The verifier always requires safe `$COLLAB/...` syntax without path traversal; it requires a path to resolve only when the normalized reference is owned by `$COLLAB/harness-mc`. Cross-repo or local intake evidence may be unavailable in an isolated single-repo build, and its absence must not make CI claim that the catalog itself is invalid.
+
 ## Router Rules
 
 - `ask-matt` is a router pattern, not an executor.

@@ -229,19 +229,17 @@
           "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
           "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
         ],
-        "contract_fingerprint": "8cc25efc79fcb870",
-        "index_action": "updated",
+        "contract_fingerprint": "600ff30ab3ad9f4f",
+        "index_action": "no_index_change",
         "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
         "evidence_refs": [
           "npm run build",
-          "npm run test:project-init-v1",
           "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
-          "node scripts/verify-validate-tasks.mjs",
-          "node scripts/verify-work-anchor-preflight.mjs",
+          "npm run build in isolated single-repo worktree",
           "npm run test:architecture-subsystems",
           "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
         ],
-        "reason": "JV-40 version improvement 已把 semantic task intake、單一 weekly core、全域 review date 到期攔截、完成決策核准、禁止自動延長與 canonical task 物理刪除攔截接入既有 schema、validator、approval policy 與 work-anchor runtime，並把 package.json 的 fresh-build generator／verifier 順序列為受管合約。MW-PI-01 後續新增 test:project-init-v1，未改變 fresh-build 順序或新增子系統，但依完整 package.json contract 仍必須重做既有 Admission Record version review；本次更新 fingerprint、最近驗證與薄索引，不建立平行子系統。"
+        "reason": "GitHub Pages 單 repo build 證明 JV-32 verifier 曾把 source_doc/source_skill 的外部 provenance 誤當 CI 必備檔。此次改為只要求正規化後仍屬 harness-mc 的 canonical ref 必須存在；跨 repo 或本機 intake evidence 仍受 $COLLAB 語法、禁止 path traversal 與安全檢查，但可在 isolated build 缺席。新增 regression fixtures 同時保留缺 harness-owned ref 必須 fail、path traversal 必須 fail 的邊界；不新增子系統或改變 ARCHITECTURE.md 薄索引文字。"
       },
       "supersedes": [],
       "superseded_by": null

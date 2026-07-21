@@ -132,6 +132,7 @@ const taskWriteMap = fs.readFileSync(taskWriteMapPath, "utf8");
 const approvalPolicy = readJson(approvalPolicyPath);
 const taskIds = new Set(tasks.map((task) => task.id));
 
+verifyPortableSourceReferenceFixtures(registry);
 verifyRegistry(registry);
 verifySchema(schema);
 verifyTaskLifecycleSchema(taskLifecycleSchema);
@@ -144,6 +145,37 @@ verifyWiringFixture(wiringGate);
 verifyNegativeFixtures(registry);
 
 console.log("MorroWise dev workflow catalog verification OK");
+
+function verifyPortableSourceReferenceFixtures(value) {
+  const first = structuredClone(value.workflows[0]);
+
+  assert.doesNotThrow(
+    () => validateWorkflow({
+      ...first,
+      source_doc: "$COLLAB/.tmp/ci-missing-intake.md",
+      source_skill: "$COLLAB/harness-mc/package.json",
+    }),
+    "missing external intake evidence must not block a single-repo verification",
+  );
+  assert.doesNotThrow(
+    () => validateWorkflow({
+      ...first,
+      source_doc: "$COLLAB/harness-mc/package.json",
+      source_skill: "$COLLAB/notyet-harness/000_Agent/skills/ci-missing/SKILL.md",
+    }),
+    "missing cross-repo source evidence must not block a single-repo verification",
+  );
+  assert.throws(
+    () => validateWorkflow({ ...first, source_doc: "$COLLAB/harness-mc/ci-missing-canonical.md" }),
+    /ref does not resolve/,
+    "missing harness-owned source must remain a verification failure",
+  );
+  assert.throws(
+    () => validateWorkflow({ ...first, source_doc: "$COLLAB/harness-mc/../notyet-harness/ci-missing-source.md" }),
+    /path traversal/,
+    "path traversal must not reclassify external provenance as a canonical source",
+  );
+}
 
 function verifyRegistry(value) {
   assert.equal(value.registry_id, "morrowise-dev-workflow-catalog.v0");
@@ -218,7 +250,7 @@ function validateWorkflow(workflow) {
 
   for (const ref of [workflow.source_doc, workflow.source_skill].filter(Boolean)) {
     assertSafeRef(workflow.id, ref);
-    assertResolvableRef(workflow.id, ref);
+    assertWorkflowSourceRef(workflow.id, ref);
   }
 
   if (String(workflow.external_effect).match(/install|hooks_modify/i)) {
@@ -437,15 +469,31 @@ function architectureContractFingerprint(refs) {
 }
 
 function assertSafeRef(recordId, ref) {
+  const [fileRef] = ref.replace(/^\$COLLAB\//, "").split("#");
+  assert.equal(
+    fileRef.split(/[\\/]/).includes(".."),
+    false,
+    `${recordId} contains path traversal: ${ref}`,
+  );
   for (const pattern of FORBIDDEN_REF_PATTERNS) {
     assert.equal(pattern.test(ref), false, `${recordId} contains forbidden source/auth ref: ${ref}`);
   }
 }
 
-function assertResolvableRef(recordId, ref) {
+function assertWorkflowSourceRef(recordId, ref) {
   assert.match(ref, /^\$COLLAB\//, `${recordId} ref must use $COLLAB: ${ref}`);
+  if (!isHarnessOwnedRef(ref)) return;
   const filePath = resolveCollabRef(ref);
   assert.equal(fs.existsSync(filePath), true, `${recordId} ref does not resolve: ${ref}`);
+}
+
+function isHarnessOwnedRef(ref) {
+  const relativePath = path.relative(root, resolveCollabRef(ref));
+  return relativePath === "" || (
+    relativePath !== ".."
+    && !relativePath.startsWith(`..${path.sep}`)
+    && !path.isAbsolute(relativePath)
+  );
 }
 
 function resolveCollabRef(ref) {

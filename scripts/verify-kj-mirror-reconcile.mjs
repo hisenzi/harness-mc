@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import { resolveCollabRoot } from "./collab-root.mjs";
 
 const root = process.cwd();
-const collabRoot = path.dirname(root);
+const collabRoot = resolveCollabRoot(root);
 const snapshotPath = path.join(root, "system-workflow/snapshots/kj-notion-tasks-snapshot.json");
 const reportPath = path.join(root, "system-workflow/reports/kj-mirror-reconcile-report.md");
 const mcMirrorPath = path.join(root, "milestones/kj-bilingual/tasks.json");

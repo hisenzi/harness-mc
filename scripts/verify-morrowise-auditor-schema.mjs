@@ -2,11 +2,12 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveCollabRoot } from "./collab-root.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const schemaPath = path.join(root, "system-workflow", "schemas", "morrowise-auditor.schema.json");
-const specPath = path.join(root, "..", "notyet-harness", "000_Agent", "docs", "morrowise", "auditor-mvp.md");
+const specPath = path.join(resolveCollabRoot(root), "notyet-harness", "000_Agent", "docs", "morrowise", "auditor-mvp.md");
 const tasksPath = path.join(root, "milestones", "morrowise", "tasks.json");
 
 const schema = readJson(schemaPath);

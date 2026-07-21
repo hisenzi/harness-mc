@@ -2,9 +2,10 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
+import { resolveCollabRoot } from "./collab-root.mjs";
 
 const root = process.cwd();
-const collabRoot = path.dirname(root);
+const collabRoot = resolveCollabRoot(root);
 const snapshotPath = path.join(root, "system-workflow/snapshots/kj-notion-tasks-snapshot.json");
 const handoffPath = path.join(collabRoot, "CC本機協作_無Git/KJ/260612_KJ_雙語班/HANDOFF_260701.md");
 const updateScriptPath = path.join(collabRoot, "CC本機協作_無Git/KJ/260612_KJ_雙語班/scripts/update-handoff.py");

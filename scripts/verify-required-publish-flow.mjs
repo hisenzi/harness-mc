@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { resolveCollabRoot } from "./collab-root.mjs";
 
-const collabRoot = path.resolve(process.cwd(), "..");
+const collabRoot = resolveCollabRoot(process.cwd());
 const notyetRoot = path.join(collabRoot, "notyet-harness");
 
 function read(relativePath) {

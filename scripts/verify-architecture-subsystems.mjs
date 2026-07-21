@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
-const collabRoot = path.resolve(root, "..");
+const collabRoot = resolveCollabRoot(root);
 const registryPath = path.join(root, "system-workflow", "registries", "morrowise-architecture-subsystems.json");
 const tasksPath = path.join(root, "milestones", "morrowise", "tasks.json");
 const architecturePath = path.join(collabRoot, "notyet-harness", "000_Agent", "ARCHITECTURE.md");
@@ -14,6 +14,22 @@ const packageJson = JSON.parse(fs.readFileSync(path.join(root, "package.json"), 
 const registry = readJson(registryPath);
 const morrowiseTasks = readJson(tasksPath).tasks || [];
 const architectureDoc = fs.readFileSync(architecturePath, "utf8");
+
+function resolveCollabRoot(start) {
+  let candidate = start;
+  while (true) {
+    if (
+      fs.existsSync(path.join(candidate, "harness-mc")) &&
+      fs.existsSync(path.join(candidate, "notyet-harness"))
+    ) {
+      return candidate;
+    }
+    const parent = path.dirname(candidate);
+    if (parent === candidate) break;
+    candidate = parent;
+  }
+  throw new Error(`Unable to resolve $COLLAB from ${start}`);
+}
 
 const STATUS = new Set(["active", "deprecated", "superseded", "deferred"]);
 const DECISIONS = new Set(["promoted", "not_required", "deferred"]);

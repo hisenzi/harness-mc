@@ -3,21 +3,21 @@
 > 既有 owner task：`morrowise/reality-tax-daily-review-task`
 > 行動正本：`$COLLAB/harness-mc/milestones/morrowise/tasks.json`
 > 本頁角色：每日排程議題紀錄；不取代 task state、schedule YAML、event schema 或 delivery adapter。
-> Semantic intake 建議：`replace`，尚待 Vincent 對 task-state mutation 明確核准；本輪不取消舊 task、不建立 successor。
+> Semantic intake：`replace`，Vincent 已於 2026-07-21 核准 task-state mutation；舊 task 已取消，唯一 successor 為 `morrowise/morrowise-live-decision-loop-v1`。
 > 已吸收範圍：task intake、weekly core、review date 與到期 gate 已由 JV-40 實作，本頁只保留薄連結。
 
 ## 1. 目前決定
 
 每日建議不能另開一張與既有 Reality Tax Daily Review 平行的 task。現有 task 已擁有 daily schedule、scheduler、delivery 與 Reality Tax 行為，但新需求已由「研究損耗檢查」擴成「全 MorroWise 每日決策摘要」。
 
-建議在 Vincent 明確核准後，以同一個 canonical mutation batch：
+已於同一個 canonical mutation batch 完成：
 
 1. 將 `reality-tax-daily-review-task` 由 `in_progress` 轉為 `cancelled`，記錄 replacement reason。
-2. 建立 successor（候選 id：`morrowise-daily-decision-review`）。
+2. 建立 successor：`morrowise-live-decision-loop-v1`。
 3. 新舊 task 使用 reciprocal replacement refs。
 4. Successor 保留 Reality Tax 30 分鐘／24 小時檢查，不遺失原始問題。
 
-在以上裁決前，禁止先建立 `morrowise-live-decision-loop-v1`、`daily-recommendation.v0` task 或其他平行 daily task。
+此後禁止建立 `daily-recommendation.v0` 或其他平行 daily task；所有每日決策實作都必須收斂至 successor。
 
 ## 2. 已由 JV-40 吸收
 

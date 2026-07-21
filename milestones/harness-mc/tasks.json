@@ -2284,6 +2284,60 @@
           }
         ]
       }
+    },
+    {
+      "id": "morrowise-priority-dashboard-surface-v2",
+      "title": "MorroWise Priority Dashboard Surface v2",
+      "status": "todo",
+      "track": "morrowise-system",
+      "order_label": "MC-LIVE-SYS-10",
+      "priority": "high",
+      "dependencies": ["morrowise-live-dashboard-homepage-implementation"],
+      "blocked_by": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
+      "done_condition": "建立只讀 action-priority-read-model-v2 的 MorroWise dashboard surface：全繁中首頁、五個真實下鑽頁、fresh-session 無 task id 的正確選擇與多 Agent 一致性；完成端到端驗收前不得以 fixture、硬編資料或舊 dashboard read model 宣稱完成。",
+      "acceptance": [
+        "MC-LIVE-SYS-10 只屬本 UI surface task；MC-DASH-V2 仍是 MorroWise governance decision，不得重新造成身份碰撞。",
+        "首頁與五個下鑽頁均為繁體中文，且每一頁只讀 action-priority-read-model-v2；不得直接拼讀 tasks.json、多份 generated JSON 或 fixture。",
+        "五個下鑽頁必須使用真實 route/data boundary，至少覆蓋候選行動、優先級理由、依賴／阻塞、freshness/verifier、daily decision/replacement lineage；不得只做視覺 mockup。",
+        "fresh session 不提供 task id 與多 Agent 選擇時，surface 必須顯示同一可追溯候選或拒絕理由；讀取失敗／過期／degraded 必須可見而非假綠燈。",
+        "完成需與 priority read model、trusted heartbeat、daily decision、Architecture Admission 和跨 repo sync check 一起通過 E2E；本 task 不自行改 task state、runtime、scheduler、skill、commit、push 或部署。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mc-dashboard-priority-ia-v2",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-drilldown-pages.md",
+        "$COLLAB/harness-mc/app/"
+      ],
+      "jv32_route": {
+        "workflows": ["task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
+        "decision_input": ["approved MC-DASH-V2 governance IA", "action-priority-read-model-v2", "existing dashboard routes and drilldown spec"],
+        "decision_output": "MC-LIVE-SYS-10 read-only priority dashboard surface",
+        "execution_boundary": "只可改 harness-mc UI/surface 與其 verifier；不得反寫 MorroWise tasks、建立第二 read model、接觸 secrets、或自動 commit/push/deploy。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [{
+          "operation": "create",
+          "from_status": null,
+          "to_status": "todo",
+          "reason": "Vincent 核准在 MorroWise system 正本已建立 priority read model anchor 後，建立唯一 MC-LIVE-SYS-10 dashboard surface task，承接原本保留的 UI identity。",
+          "evidence_refs": [
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mc-dashboard-priority-ia-v2",
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
+            "Vincent 2026-07-21 current session: 核准此 batch，完成後驗證有無缺漏及正確性"
+          ],
+          "recorded_at": "2026-07-21"
+        }]
+      },
+      "hc_decision": {
+        "task_scope": "harness-mc/morrowise-priority-dashboard-surface-v2",
+        "hc_refs": ["#rightProblem", "#sourceBoundary", "#systemDynamics", "#risk", "#evidenceBased"],
+        "hc_reasoning": "真正問題不是再加一張儀表板，而是 UI 若自行讀 task、fixture 或舊 read model，fresh session 與多 Agent 會得到不一致的行動答案。此 task 將 surface 限定為唯一 priority read model 的消費者，並讓 degraded 與 replacement lineage 可見。",
+        "hc_confidence": 0.91,
+        "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#mc-dashboard-priority-ia-v2", "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2"],
+        "source_boundary": "HC 只是思考檢查，不是正本；MorroWise tasks.json 是行動正本，priority read model 是 generated source，harness-mc dashboard 只是唯讀 surface。"
+      },
+      "note": "本 task 是最後一層 harness-mc surface，不是 priority、heartbeat 或 decision 的正本。只在上游 read model 已有 generator/verifier 且可 fresh-build 後實作；JV-41 保持 todo，不在此建立或修改 skill。"
     }
   ]
 }

@@ -2751,6 +2751,42 @@
               "$COLLAB/harness-mc/milestones/morrowise/tasks.json#skill-candidate-review-gate"
             ],
             "recorded_at": "2026-07-19"
+          },
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "Vincent 核准修正 GitHub Pages 單 repo build：JV-32 verifier 原本把 source_doc/source_skill 的外部 provenance 當成 CI 必備檔，造成 catalog 本體正確卻無法部署。此版本改善保留安全 $COLLAB 路徑檢查並禁止 path traversal；僅要求正規化後仍屬 harness-mc 的 canonical ref 必須存在，跨 repo 或本機 intake evidence 可在 isolated build 缺席。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs",
+              "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-catalog.md",
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
+              "GitHub Actions run 29788808115"
+            ],
+            "recorded_at": "2026-07-21",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-dev-workflow-catalog",
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/morrowise-project-init-v1"
+              ],
+              "scope_comparison": {
+                "problem": "本次處理 JV-32 catalog verifier 對外部 provenance 的 CI false-negative；JV-40 只治理 task lifecycle，MW-PI-01 只治理開案成果契約，均不擁有此 build failure。",
+                "owner_source_of_truth": "owner 仍是 MorroWise JV-32；catalog registry、detail doc 與 verifier 仍在 harness-mc，沒有新增第二個 source of truth。",
+                "inputs_outputs": "輸入是既有 source_doc/source_skill 與 isolated single-repo build layout；輸出是可攜 verifier 規則與 regression fixture，不新增 runtime、read model、dashboard 或 adapter。",
+                "lifecycle_completion": "既有 completed JV-32 接受 version improvement 並維持 completed；只刷新同一 Architecture Admission Record 與 generated thin index，不建立新 task。"
+              },
+              "decision_reason": "相關 task 不等於重複：比對問題、owner、輸入輸出與完成邊界後，唯一正確路徑是 amend 既有 JV-32。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-21",
+                "evidence_refs": [
+                  "Vincent 2026-07-21 current session: 可以開始修"
+                ]
+              }
+            }
           }
         ]
       },
@@ -2779,31 +2815,32 @@
       },
       "architecture_decision": {
         "decision": "promoted",
-        "evaluated_at": "2026-07-19",
+        "evaluated_at": "2026-07-21",
         "registry_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
         "detail_doc": "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-catalog.md",
-        "reason": "JV-32 已落 durable source-map/detail doc、machine-readable registry/schema、verifier、generator、generated read model、read_model_surface_only wiring fixture，且安全邊界禁止 installer/hooks/secrets/external tracker writes；Architecture Admission Record 已 promoted，ARCHITECTURE.md 只由 sync script 產生薄索引，不複製 catalog 細節。2026-07-19 task-management roadmap 只補 task lineage，未改受管 contract。",
+        "reason": "JV-32 已落 durable source-map/detail doc、machine-readable registry/schema、verifier、generator、generated read model、read_model_surface_only wiring fixture，且安全邊界禁止 installer/hooks/secrets/external tracker writes；Architecture Admission Record 已 promoted，ARCHITECTURE.md 只由 sync script 產生薄索引，不複製 catalog 細節。2026-07-21 單 repo CI portability hardening 改變既有 verifier contract，故刷新同一 Admission Record，不新增子系統。",
         "admission_review": {
           "scope": "version_improvement",
           "admission_record_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
           "index_action": "no_index_change",
           "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
           "evidence_refs": [
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-dev-workflow-catalog",
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate",
-            "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
-            "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog"
+            "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs",
+            "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-catalog.md",
+            "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
+            "npm run build in isolated single-repo worktree"
           ],
-          "reason": "本次只把 semantic intake、approval 與 weekly_core 規劃寫回既有 task；未修改 JV-32 registry、schema、verifier、generator、runtime 或架構索引，因此不更新 ARCHITECTURE.md。"
+          "reason": "本次更新 JV-32 verifier 與 regression fixture，將 external provenance 與 harness-mc-owned canonical ref 分開驗證；要同步既有 generated index 的 registry fingerprint，但不改 ARCHITECTURE.md 薄索引內容或新增子系統。"
         }
       },
       "completed_at": "2026-07-08",
       "commits": [
         "428a951",
-        "f741108"
+        "f741108",
+        "1ef799c"
       ],
       "summary": "Completed JV-32 MorroWise dev workflow catalog gate: durable source map/detail doc, registry/schema, generator, verifier with negative fixtures, read_model_surface_only wiring, live dashboard surface, and promoted Architecture Admission Record.",
-      "note": "2026-07-08 Vincent 裁決：不另開案，先在 MorroWise 裡寫 task。此 task 來自對 $COLLAB/.tmp/skills-main 的安全掃描與 workflow 評估；scan verdict 為可讀取參考，但外部 repo 不可直接安裝或執行。模擬驗證後補強 v2 條件：.tmp 只能作 intake evidence、需 durable source map/detail doc、需 negative fixtures、需 adapter_only 狀態、第一階段只做 registry/read model/verifier，dashboard/homepage surface 不列為首步必做。2026-07-08 implementation：已新增 source-map/detail doc、catalog registry/schema、generator、verifier、generated read model、read_model_surface_only wiring fixture、live dashboard read model surface，並將 Architecture Admission Record promoted；worktree-commit 已回填 commits/completed_at/summary。2026-07-09 version_improvement：補充 Roadmap-in-Anchor Task 寫法。當系統型/MVP 工作需要保留完整 roadmap，但不宜提前開滿 future tasks 時，使用單一 active anchor task 承接完整思路；future slices 寫入 task note，不提前實體化；待 input/output、安全邊界、驗收方式與 Vincent implementation approval 明確後再拆 task。此補強不新增 runtime、read model、verifier、dashboard 或 source-of-truth family；architecture_decision 維持原 task promoted，不因寫法補強另開架構 task。2026-07-12 version_improvement／extended_by=JV-37：JV-32 繼續作唯一開發 workflow catalog 與 Router，不另建 Repo workflow 系統。JV-37 未實作前，不把 Repo Ready 或 Remote Closeout 寫成 accepted runtime；待 JV-37 deterministic gate、負向 fixtures 與 workflow hooks 有證據後，再由 JV-37 更新 catalog registry/detail doc/verifier：所有會寫 repo 的 workflow 在首次 mutation 前必經 Repo Ready，既有 closeout-commit-routing 則延伸為同一次明確核准涵蓋 exact-scope commit、正常 push 與 remote SHA verification。JV-32 維持 completed，不 reopen；本段只建立 lineage 與 completion boundary，不宣稱 runtime 已存在。2026-07-19 version_improvement roadmap／task-management intake：在任何新增 task 提案前先走 semantic task-intake，比對所有相關 canonical tasks，輸出固定為 reuse、amend、replace、genuinely_new；scope gate 必須比對問題、owner／source of truth、輸入輸出與 lifecycle／completion boundary，僅相關或共享關鍵字不得視為重複。CORE／Fable 保留通用重複判斷，JV-32 只把它特化成 task intake。outcome mapping 固定：reuse 不做 task mutation；amend 必須經 Vincent 核准後走 amend；replace 必須經 Vincent 核准後建立 successor，並將舊 task archive／superseded 或 cancel；genuinely_new 必須經 Vincent 核准後走 create。無法判定或未核准時 hard-fail，不得先建或修改 task。weekly_core admission 同屬 JV-32：每週最多一個 MorroWise 核心改善 task 為 in_progress，選入時必須有 Vincent 明確核准與 review_date；未來 schema 固定 weekly_core 為 boolean、review_date 為 YYYY-MM-DD。fresh-session 驗收需證明 Codex、Claude Code 與共享 Agent 在無人提醒下仍走相同 intake／admission route。本段只有 roadmap 與 completion boundary；JV-32 維持 completed，不宣稱 catalog registry、schema、verifier、negative fixtures 或 runtime 已更新。未來實作必須另經 Vincent 核准，並完成 JV-32 version-improvement Architecture Admission Review、Admission Record 更新與受控 ARCHITECTURE.md sync check。"
+      "note": "2026-07-08 Vincent 裁決：不另開案，先在 MorroWise 裡寫 task。此 task 來自對 $COLLAB/.tmp/skills-main 的安全掃描與 workflow 評估；scan verdict 為可讀取參考，但外部 repo 不可直接安裝或執行。模擬驗證後補強 v2 條件：.tmp 只能作 intake evidence、需 durable source map/detail doc、需 negative fixtures、需 adapter_only 狀態、第一階段只做 registry/read model/verifier，dashboard/homepage surface 不列為首步必做。2026-07-08 implementation：已新增 source-map/detail doc、catalog registry/schema、generator、verifier、generated read model、read_model_surface_only wiring fixture、live dashboard read model surface，並將 Architecture Admission Record promoted；worktree-commit 已回填 commits/completed_at/summary。2026-07-09 version_improvement：補充 Roadmap-in-Anchor Task 寫法。當系統型/MVP 工作需要保留完整 roadmap，但不宜提前開滿 future tasks 時，使用單一 active anchor task 承接完整思路；future slices 寫入 task note，不提前實體化；待 input/output、安全邊界、驗收方式與 Vincent implementation approval 明確後再拆 task。此補強不新增 runtime、read model、verifier、dashboard 或 source-of-truth family；architecture_decision 維持原 task promoted，不因寫法補強另開架構 task。2026-07-12 version_improvement／extended_by=JV-37：JV-32 繼續作唯一開發 workflow catalog 與 Router，不另建 Repo workflow 系統。JV-37 未實作前，不把 Repo Ready 或 Remote Closeout 寫成 accepted runtime；待 JV-37 deterministic gate、負向 fixtures 與 workflow hooks 有證據後，再由 JV-37 更新 catalog registry/detail doc/verifier：所有會寫 repo 的 workflow 在首次 mutation 前必經 Repo Ready，既有 closeout-commit-routing 則延伸為同一次明確核准涵蓋 exact-scope commit、正常 push 與 remote SHA verification。JV-32 維持 completed，不 reopen；本段只建立 lineage 與 completion boundary，不宣稱 runtime 已存在。2026-07-19 version_improvement roadmap／task-management intake：在任何新增 task 提案前先走 semantic task-intake，比對所有相關 canonical tasks，輸出固定為 reuse、amend、replace、genuinely_new；scope gate 必須比對問題、owner／source of truth、輸入輸出與 lifecycle／completion boundary，僅相關或共享關鍵字不得視為重複。CORE／Fable 保留通用重複判斷，JV-32 只把它特化成 task intake。outcome mapping 固定：reuse 不做 task mutation；amend 必須經 Vincent 核准後走 amend；replace 必須經 Vincent 核准後建立 successor，並將舊 task archive／superseded 或 cancel；genuinely_new 必須經 Vincent 核准後走 create。無法判定或未核准時 hard-fail，不得先建或修改 task。weekly_core admission 同屬 JV-32：每週最多一個 MorroWise 核心改善 task 為 in_progress，選入時必須有 Vincent 明確核准與 review_date；未來 schema 固定 weekly_core 為 boolean、review_date 為 YYYY-MM-DD。fresh-session 驗收需證明 Codex、Claude Code 與共享 Agent 在無人提醒下仍走相同 intake／admission route。本段只有 roadmap 與 completion boundary；JV-32 維持 completed，不宣稱 catalog registry、schema、verifier、negative fixtures 或 runtime 已更新。未來實作必須另經 Vincent 核准，並完成 JV-32 version-improvement Architecture Admission Review、Admission Record 更新與受控 ARCHITECTURE.md sync check。2026-07-21 version improvement：GitHub Pages 單 repo build 證明 verifier 把 external provenance 當 CI 必備檔；修正後只要求正規化後仍屬 harness-mc 的 canonical ref 存在，跨 repo 或本機 intake evidence 可缺席，但仍受安全 $COLLAB 路徑與禁止 path traversal 檢查，並以正反 fixture 防回歸。"
     },
     {
       "id": "local-nongit-data-backup-spec",

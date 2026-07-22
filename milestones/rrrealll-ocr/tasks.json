@@ -271,6 +271,345 @@
       },
       "completed_at": "2026-07-22",
       "summary": "RRREALLL OCR 已由 canonical contract 重建至 MC，並經 origin/main、GitHub Pages Actions 與 live projects.json 驗證可見。"
+    },
+    {
+      "id": "p2-architecture-product-passport-contract",
+      "title": "確立正式產品架構、資料雙通道與產品護照契約",
+      "status": "completed",
+      "completed_at": "2026-07-23",
+      "summary": "已將 MVP 固定為 Zeabur runtime + Supabase Postgres／private Storage + server-side OCR，並以產品護照取代掃描歷史作為市售洗髮精研究資料模型；產品身份只含品牌與產品名稱，配方變更由 formula fingerprint 管理。",
+      "track": "product",
+      "order_label": "RRO-03",
+      "priority": "P0",
+      "capability_domain": "product-architecture",
+      "task_kind": "decide",
+      "dependencies": ["p0-bootstrap-existing-root", "p1-publish-mc-read-model"],
+      "depends_on": ["p0-bootstrap-existing-root", "p1-publish-mc-read-model"],
+      "done_condition": "ARCHITECTURE.md 明確定義正式 runtime、一般掃描與自願貢獻兩條資料通道、canonical data／候選資料／產品護照的邊界、產品身份欄位與後續任務相依關係。",
+      "acceptance": [
+        "A01｜架構圖清楚分開一般掃描與經使用者明確同意的研究貢獻；一般掃描不形成使用者歷史或研究資料庫。",
+        "A02｜架構圖將 inci_core、inci_alias、shampoo_rules 定義為 canonical；OCR／alias 未知項只能進 candidate／judge queue，不能直接回寫。",
+        "A03｜產品護照包含 market_product、formula version、formula ingredient、submission evidence、analysis run 與 review state，且 product identity 僅為 brand_name + product_name。",
+        "A04｜部署與資料決策明列 Zeabur、Supabase Postgres、Supabase private Storage、server-side OCR；MVP 不導入 R2 或 Neon。"
+      ],
+      "jv32_route": {
+        "workflows": ["task-lifecycle", "implement", "code-review", "closeout-commit-routing"],
+        "decision_input": [
+          "$COLLAB/rrrealll-ocr/or/meeting-260722.md",
+          "$COLLAB/rrrealll-ocr/or/database/table.md",
+          "Vincent 2026-07-23：產品身份不用容量、條碼（有則記）、銷售地區；使用 HC 思考；補完 task 及架構圖"
+        ],
+        "decision_output": "可追溯的 MVP 架構與資料契約，讓後續實作不再延續 prototype 的 scans history／本機 JSON 模式。",
+        "execution_boundary": "只寫入產品架構、project contract 與 canonical task 規劃；不得在本任務中遷移 Supabase、部署 Zeabur、上傳資料或改動原始 prototype。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "既有 tasks 只有開案與 MC 可見性，尚未承接已確認的部署、隱私、研究資料與產品身份決策，需先形成可驗收的架構正本。",
+            "evidence_refs": [
+              "$COLLAB/rrrealll-ocr/or/meeting-260722.md",
+              "$COLLAB/rrrealll-ocr/or/database/table.md"
+            ],
+            "recorded_at": "2026-07-23"
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "已完成雙資料通道、產品護照、canonical boundary、MVP runtime 與不納入欄位的架構決策，並落成 project home 的架構圖。",
+            "evidence_refs": [
+              "$COLLAB/rrrealll-ocr/ARCHITECTURE.md",
+              "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json"
+            ],
+            "recorded_at": "2026-07-23"
+          }
+        ]
+      },
+      "hc_decision": {
+        "task_scope": "rrrealll-ocr/p2-architecture-product-passport-contract",
+        "hc_refs": ["#rightProblem", "#sourceBoundary", "#systemDynamics", "#risk", "#constraints"],
+        "hc_reasoning": "真正問題不是替 prototype 選一個資料庫，而是在無帳號、低留存的消費者體驗下，建立可審核且可研究的市售配方資料。以產品護照隔離研究資料、以 judge queue 阻止 OCR 污染 canonical，能同時保留隱私、可追溯性與未來研究價值。",
+        "hc_confidence": 0.93,
+        "evidence_refs": [
+          "$COLLAB/rrrealll-ocr/or/meeting-260722.md",
+          "$COLLAB/rrrealll-ocr/or/database/table.md"
+        ],
+        "source_boundary": "HC is a thinking check, not source of truth；meeting-260722.md 保留需求來源、CSV／Supabase tables 保留種子資料來源、ARCHITECTURE.md 保留架構契約、MC tasks.json 保留任務正本。"
+      }
+    },
+    {
+      "id": "p3-supabase-canonical-data-and-passport-schema",
+      "title": "建立 Supabase canonical data 與產品護照 schema／seed",
+      "status": "todo",
+      "track": "data",
+      "order_label": "RRO-04",
+      "priority": "P0",
+      "capability_domain": "data-foundation",
+      "task_kind": "build",
+      "dependencies": ["p2-architecture-product-passport-contract"],
+      "depends_on": ["p2-architecture-product-passport-contract"],
+      "done_condition": "Supabase migration 可重跑建立 canonical INCI／alias／rule tables、產品護照與審核 queue，並以提供的 CSV 驗證 150 INCI、400 alias、80 rules 全數載入。",
+      "acceptance": [
+        "A01｜migration 建立或明確遷移至 inci_core、inci_alias、shampoo_rules，並拒絕與 legacy inci_main／inci_aliases 或 prototype snapshot 並列為正本。",
+        "A02｜market_product 僅含 system id、brand_name、product_name；不以容量、條碼、銷售地區作產品身份。",
+        "A03｜market_formula_version 使用 formula_fingerprint，market_formula_ingredient 保存 INCI 順序與 match confidence；配方更新不覆寫舊版本。",
+        "A04｜product_submission、ingredient_candidate、analysis_run 與 review state 可追溯 evidence、判定者與 dataset／rule／engine version。",
+        "A05｜seed verifier 輸出 150/150、400/400、80/80；失敗時不可宣稱資料已可用。"
+      ],
+      "jv32_route": {
+        "workflows": ["task-lifecycle", "implement", "tdd", "code-review"],
+        "decision_input": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/rrrealll-ocr/or/database"],
+        "decision_output": "可重跑的 Supabase schema、seed 與 verifier。",
+        "execution_boundary": "只使用 Vincent 提供的 Supabase project 與非秘密 migration／seed files；不得把 user scan 直接匯入 canonical data。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [{
+          "operation": "create",
+          "from_status": null,
+          "to_status": "todo",
+          "reason": "既有 export 與 prototype schema 存在多個命名／資料來源，需以 migration 固定唯一 canonical data 與產品護照模型。",
+          "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/rrrealll-ocr/or/database/table.md"],
+          "recorded_at": "2026-07-23"
+        }]
+      },
+      "hc_decision": {
+        "task_scope": "rrrealll-ocr/p3-supabase-canonical-data-and-passport-schema",
+        "hc_refs": ["#sourceBoundary", "#systemDynamics", "#risk"],
+        "hc_reasoning": "先固化唯一 canonical schema，才能阻止三套舊資料來源與日後 OCR 候選互相覆寫；產品護照以版本而非覆寫保存市場配方演變。",
+        "hc_confidence": 0.92,
+        "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
+        "source_boundary": "HC is a thinking check, not source of truth；Supabase migration 與資料驗證輸出才是此任務完成證據。"
+      }
+    },
+    {
+      "id": "p4-ocr-normalization-and-versioned-analysis-api",
+      "title": "實作 OCR 正規化、低信心邊界與 versioned analysis API",
+      "status": "todo",
+      "track": "product",
+      "order_label": "RRO-05",
+      "priority": "P0",
+      "capability_domain": "analysis-runtime",
+      "task_kind": "build",
+      "dependencies": ["p3-supabase-canonical-data-and-passport-schema"],
+      "depends_on": ["p3-supabase-canonical-data-and-passport-schema"],
+      "done_condition": "API 能把 OCR／貼上文字正規化為已匹配、低信心與未知三類，僅以 canonical 資料與 80 rules 執行可追溯分析，且不以未知成分預設低風險。",
+      "acceptance": [
+        "A01｜貼上文字與 OCR 輸入均保存 ingredient order、raw token、canonical match、confidence 與 unresolved reason 於本次分析範圍。",
+        "A02｜unknown／low-confidence 會顯示未確定與候選送審入口；不得套用 prototype 的低刺激／敏感友善預設。",
+        "A03｜分析結果含 cleanliness、mildness、sensitive friendliness、controversial components、完整風險清單與白話訊息。",
+        "A04｜analysis_run 保存 dataset version、rule version、engine version、triggered rule ids 與 input fingerprint；相同輸入可重現。",
+        "A05｜測試覆蓋已匹配、別名命中、未知、低信心與至少一項複合 rule。"
+      ],
+      "jv32_route": {
+        "workflows": ["task-lifecycle", "implement", "tdd", "code-review"],
+        "decision_input": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/rrrealll-ocr/or/database/shampoo_rules_rows.csv"],
+        "decision_output": "可測試且有版本證據的分析 API。",
+        "execution_boundary": "不得把 AI fallback／硬編碼 snapshot 當正式資料或在 server/client 暴露服務密鑰。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [{
+          "operation": "create",
+          "from_status": null,
+          "to_status": "todo",
+          "reason": "prototype 的 local scans、硬編碼資料與 simulated fallback 不符合正式的資料來源與安全判讀邊界。",
+          "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/rrrealll-ocr/or/成分刺激度比對_Google_AI_Studio/server.ts"],
+          "recorded_at": "2026-07-23"
+        }]
+      },
+      "hc_decision": {
+        "task_scope": "rrrealll-ocr/p4-ocr-normalization-and-versioned-analysis-api",
+        "hc_refs": ["#rightProblem", "#risk", "#confirmationBias"],
+        "hc_reasoning": "消費者要的是可信判讀，不是看似完整的假資料；未知與低信心成分必須顯示不確定性並保留重現證據。",
+        "hc_confidence": 0.95,
+        "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
+        "source_boundary": "HC is a thinking check, not source of truth；canonical tables、rule evaluator 與測試 fixture 是分析真實性來源。"
+      }
+    },
+    {
+      "id": "p5-consumer-three-input-result-flow",
+      "title": "建立獨立消費者三輸入與白話判讀介面",
+      "status": "todo",
+      "track": "product",
+      "order_label": "RRO-06",
+      "priority": "P0",
+      "capability_domain": "consumer-experience",
+      "task_kind": "build",
+      "dependencies": ["p2-architecture-product-passport-contract"],
+      "depends_on": ["p2-architecture-product-passport-contract"],
+      "done_condition": "獨立 app 提供相機掃描、圖片上傳、複製貼上三種入口，並呈現雷達指標、爭議／不確定提示、完整成分風險與可關閉的白話教學。",
+      "acceptance": [
+        "A01｜三種入口在手機情境可開始輸入；相機權限拒絕、無檔案與 OCR 失敗有可理解處理。",
+        "A02｜結果頁同時呈現清潔度、溫和度、敏感友善度、爭議成分；雷達方向與標籤不混淆正向與風險。",
+        "A03｜完整成分列表含 C／D／E 風險與未確定狀態；白話教學預設關閉且可自行展開。",
+        "A04｜未登入的一般掃描不顯示可回溯 scan history，也不以此寫入市售研究資料。",
+        "A05｜介面僅消費已驗證 API contract，不直接讀取 Supabase service credential。"
+      ],
+      "jv32_route": {
+        "workflows": ["task-lifecycle", "implement", "tdd", "code-review"],
+        "decision_input": ["$COLLAB/rrrealll-ocr/or/meeting-260722.md", "$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
+        "decision_output": "可部署的 consumer web surface 與三種輸入流程。",
+        "execution_boundary": "可參考 prototype 互動意圖，但不得延用其掃描歷史、假資料 fallback 或未保護的管理端 API。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [{
+          "operation": "create",
+          "from_status": null,
+          "to_status": "todo",
+          "reason": "消費者需求已明確指定三個輸入入口與易懂結果，但現有 prototype 不可直接視為可部署產品。",
+          "evidence_refs": ["$COLLAB/rrrealll-ocr/or/meeting-260722.md", "$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
+          "recorded_at": "2026-07-23"
+        }]
+      },
+      "hc_decision": {
+        "task_scope": "rrrealll-ocr/p5-consumer-three-input-result-flow",
+        "hc_refs": ["#rightProblem", "#designThinking", "#utility"],
+        "hc_reasoning": "賣場決策的核心是快速理解而非專家面板；三種輸入降低摩擦，白話教學採 opt-in 才不干擾重複使用者。",
+        "hc_confidence": 0.9,
+        "evidence_refs": ["$COLLAB/rrrealll-ocr/or/meeting-260722.md"],
+        "source_boundary": "HC is a thinking check, not source of truth；可觀察的入口、結果狀態與 E2E fixture 才是驗收依據。"
+      }
+    },
+    {
+      "id": "p6-opt-in-product-passport-and-judge-queue",
+      "title": "建立自願貢獻、產品護照與法官審核後台",
+      "status": "todo",
+      "track": "data",
+      "order_label": "RRO-07",
+      "priority": "P0",
+      "capability_domain": "research-data-governance",
+      "task_kind": "build",
+      "dependencies": ["p3-supabase-canonical-data-and-passport-schema", "p4-ocr-normalization-and-versioned-analysis-api"],
+      "depends_on": ["p3-supabase-canonical-data-and-passport-schema", "p4-ocr-normalization-and-versioned-analysis-api"],
+      "done_condition": "只有明確同意的資料會進 product_submission；審核者可建立或合併產品護照、選擇 formula version、處理 candidate 與保留 provenance，且一般 scan 不會混入。",
+      "acceptance": [
+        "A01｜一般 scan 與 opt-in contribution 是不同 API／資料寫入路徑；未同意者不能產生 product_submission。",
+        "A02｜自願貢獻的證據影像存 private bucket，不公開 URL；審核後只將必要的標準化配方資料提升至 market product passport。",
+        "A03｜審核者能 approve／reject／merge candidate，且每次決策含 reviewer、時間、reason 與來源 submission。",
+        "A04｜同品牌＋產品名以 formula_fingerprint 判斷相同或新配方版本；不以容量、條碼、銷售地區拆分身份。",
+        "A05｜前台可見 formula version 僅由已審核、指定 current 的產品護照資料提供。"
+      ],
+      "jv32_route": {
+        "workflows": ["task-lifecycle", "implement", "tdd", "code-review"],
+        "decision_input": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/rrrealll-ocr/or/meeting-260722.md"],
+        "decision_output": "受 consent 與 judge queue 保護的市場配方研究資料流程。",
+        "execution_boundary": "不得把 evidence image 變成公開資產、不得用 consumer scans 補資料庫、不得省略審核 provenance。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [{
+          "operation": "create",
+          "from_status": null,
+          "to_status": "todo",
+          "reason": "市售洗髮精資料庫需要長期研究價值，但原始需求也要求一般使用者無歷史與 canonical 資料防污染，因此需獨立 opt-in／judge flow。",
+          "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/rrrealll-ocr/or/meeting-260722.md"],
+          "recorded_at": "2026-07-23"
+        }]
+      },
+      "hc_decision": {
+        "task_scope": "rrrealll-ocr/p6-opt-in-product-passport-and-judge-queue",
+        "hc_refs": ["#sourceBoundary", "#systemDynamics", "#risk", "#feedbackLoops"],
+        "hc_reasoning": "把研究資料與無痕體驗分道，才能讓更多資料反饋匹配品質而不犧牲消費者隱私；judge queue 是防止錯誤回饋迴路的必要閘門。",
+        "hc_confidence": 0.94,
+        "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
+        "source_boundary": "HC is a thinking check, not source of truth；consent record、review log、RLS 與實際測試才是合規與來源邊界的證據。"
+      }
+    },
+    {
+      "id": "p7-zeabur-supabase-secure-deployment",
+      "title": "部署 Zeabur runtime 與 Supabase 私有資料服務",
+      "status": "todo",
+      "track": "quality",
+      "order_label": "RRO-08",
+      "priority": "P0",
+      "capability_domain": "secure-delivery",
+      "task_kind": "operate",
+      "dependencies": ["p4-ocr-normalization-and-versioned-analysis-api", "p5-consumer-three-input-result-flow", "p6-opt-in-product-passport-and-judge-queue"],
+      "depends_on": ["p4-ocr-normalization-and-versioned-analysis-api", "p5-consumer-three-input-result-flow", "p6-opt-in-product-passport-and-judge-queue"],
+      "done_condition": "Zeabur 上的獨立 consumer app/API 已連到 Supabase，私有 bucket、RLS、server-side secrets、影像刪除流程、rate limit 與 runtime health 均可驗證。",
+      "acceptance": [
+        "A01｜Zeabur runtime 只持有 server-side 環境變數；browser bundle、repo 與 log 不含 service role／OCR provider secret。",
+        "A02｜Supabase canonical tables 與 private evidence bucket 有 RLS／server boundary；非管理者不能列出、下載或改寫他人 submission。",
+        "A03｜一般 scan 的影像、raw OCR text 與未同意分析資料在回傳後刪除，不建立可回看的使用者歷史。",
+        "A04｜opt-in evidence 有 private retention／purge job 與可驗證的失敗告警；不使用 Zeabur Volume 當影像資料庫。",
+        "A05｜production health probe、error handling、rate limit 與 rollback 方式已記錄並實測。"
+      ],
+      "jv32_route": {
+        "workflows": ["task-lifecycle", "implement", "verification-before-completion", "closeout-commit-routing", "cc-push"],
+        "decision_input": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
+        "decision_output": "實際可公開使用且不暴露資料／密鑰的 MVP runtime。",
+        "execution_boundary": "只部署 RRREALLL product runtime；不得將管理看板 MC 視為產品部署，也不得將雲端 credential 寫回 repo。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [{
+          "operation": "create",
+          "from_status": null,
+          "to_status": "todo",
+          "reason": "MVP runtime 已決定為 Zeabur + Supabase，但尚未建立正式 deployment、RLS、storage retention 或 live evidence。",
+          "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
+          "recorded_at": "2026-07-23"
+        }]
+      },
+      "hc_decision": {
+        "task_scope": "rrrealll-ocr/p7-zeabur-supabase-secure-deployment",
+        "hc_refs": ["#constraints", "#risk", "#utility"],
+        "hc_reasoning": "MVP 以既有 Supabase 資料與 Zeabur runtime 減少服務數量；安全、私有儲存與刪除流程先於 CDN／多雲最佳化。",
+        "hc_confidence": 0.91,
+        "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
+        "source_boundary": "HC is a thinking check, not source of truth；deployment config、RLS probe、purge verification 與 live health evidence 才能完成本任務。"
+      }
+    },
+    {
+      "id": "p8-end-to-end-release-acceptance",
+      "title": "以真實資料邊界完成三輸入端到端發布驗收",
+      "status": "todo",
+      "track": "quality",
+      "order_label": "RRO-09",
+      "priority": "P0",
+      "capability_domain": "release-validation",
+      "task_kind": "verify",
+      "dependencies": ["p7-zeabur-supabase-secure-deployment"],
+      "depends_on": ["p7-zeabur-supabase-secure-deployment"],
+      "done_condition": "正式網址以貼上、上傳、相機各跑一條成功 fixture，並逐項驗證資料數量、分析可追溯性、unknown safety、無痕一般 scan 與 opt-in 產品護照。",
+      "acceptance": [
+        "A01｜seed verifier 在 target Supabase 證明 150/150 INCI、400/400 alias、80/80 rule。",
+        "A02｜貼上、圖片上傳、相機掃描三條 flow 皆在公開 runtime 產生可讀結果；失敗狀態可被看見且不假裝成功。",
+        "A03｜fixture 至少覆蓋 alias 命中、C／D／E 風險提示、unknown／low-confidence 與複合規則命中。",
+        "A04｜一般 scan 後查無可回看 history／raw evidence；只有明確 opt-in 的 submission 可進 review queue。",
+        "A05｜已審核產品護照能顯示 brand＋product、formula version、成分順序、analysis version 與 review state，且沒有容量／條碼／銷售地區身份欄位。"
+      ],
+      "jv32_route": {
+        "workflows": ["task-lifecycle", "verification-before-completion", "code-review", "closeout-commit-routing", "cc-push"],
+        "decision_input": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json"],
+        "decision_output": "有可重跑證據的 MVP release acceptance，不再把 prototype build 或 MC card 當產品完成。",
+        "execution_boundary": "只執行已核准 production／fixture 驗收；若 live data boundary 或三種入口任一失敗，任務保持未完成。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [{
+          "operation": "create",
+          "from_status": null,
+          "to_status": "todo",
+          "reason": "原始成果目標已定義三種入口與資料數量，但需要將產品護照、隱私與正式 runtime 一起納入可觀察的發布驗收。",
+          "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json"],
+          "recorded_at": "2026-07-23"
+        }]
+      },
+      "hc_decision": {
+        "task_scope": "rrrealll-ocr/p8-end-to-end-release-acceptance",
+        "hc_refs": ["#confirmationBias", "#risk", "#rightProblem"],
+        "hc_reasoning": "避免把 UI build、MC 發布或單一路徑成功誤認為可用產品；最後驗收必須同時反證資料邊界、三種使用情境與研究資料治理。",
+        "hc_confidence": 0.96,
+        "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
+        "source_boundary": "HC is a thinking check, not source of truth；驗收腳本、production probe 與結果紀錄才是 release truth。"
+      }
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
     "name": "RRREALLL 洗髮精成分掃描",
-    "description": "以 OCR 與專家規則把洗髮精成分轉為大眾可理解的判讀結果。",
+    "description": "以三種輸入、OCR 與版本化專家規則，把洗髮精成分轉為大眾可理解且可追溯的判讀結果。",
     "type": "standalone",
     "domain": "臨時",
     "status": "active",
@@ -11,30 +11,33 @@
     "tracks": {
       "bootstrap": "開案與資料邊界",
       "product": "洗髮精判讀產品",
+      "data": "canonical 成分資料、產品護照與法官審核",
       "quality": "驗收與發布準備"
     },
     "outcome": {
       "problem_statement": "一般消費者看不懂洗髮精成分表，也無法把風險提示轉成選購判斷。",
       "impact": "消費者在賣場掃描後仍會因資訊生硬而無法比較產品，增加選擇困難與對爭議成分的焦慮。",
       "success_target": {
-        "metric": "資料庫 150 個 INCI、400 個別名與 80 條洗髮精規則皆可載入，並完成貼上文字、上傳圖片、相機掃描三種入口到五維判讀的驗收。",
+        "metric": "資料庫 150 個 INCI、400 個別名與 80 條洗髮精規則皆可載入，並完成貼上文字、上傳圖片、相機掃描三種入口到可追溯判讀、無痕一般掃描與 opt-in 產品護照的驗收。",
         "baseline": "現有 AI Studio prototype 使用 41 條靜態規則與本機 JSON，未串接提供的資料庫。",
-        "target": "150/150 INCI、400/400 別名、80/80 規則驗證通過，三種入口各完成一條端到端驗收。",
+        "target": "150/150 INCI、400/400 別名、80/80 規則驗證通過，三種入口各完成一條端到端驗收，且一般 scan 與產品研究資料的寫入邊界可觀察。",
         "due": "2026-07-29"
       },
-      "measurement_source": "$COLLAB/rrrealll-ocr/or/database/{inci_core_rows.csv,inci_alias_rows.csv,shampoo_rules_rows.csv} 的列數與專案 end-to-end acceptance verifier"
+      "measurement_source": "$COLLAB/rrrealll-ocr/or/database/{inci_core_rows.csv,inci_alias_rows.csv,shampoo_rules_rows.csv} 的列數、Supabase seed verifier、production end-to-end acceptance verifier",
+      "architecture_path": "$COLLAB/rrrealll-ocr/ARCHITECTURE.md"
     },
     "goals": [
       "讓一般消費者在一次掃描或貼上後，取得五維指標、爭議成分提示與白話選購說明。",
       "把 150 個 INCI、400 個 alias、80 條 shampoo rules 納入可驗證的資料讀取與判讀管線。",
-      "建立 unknown alias 的人工審核入口，避免 OCR／新資料直接寫入 canonical ingredient data。"
+      "建立 unknown alias 的人工審核入口，避免 OCR／新資料直接寫入 canonical ingredient data。",
+      "讓經使用者明確同意且經法官審核的市售配方形成可研究的產品護照，而不把一般 scan history 當資料庫。"
     ],
     "risks": [
       {
         "risk": "OCR 文字品質與別名映射不完整會造成錯誤判讀。",
         "impact": "high",
         "probability": "medium",
-        "mitigation": "保存原始文字、顯示低信心項目，並把未知 alias 送往人工審核而非自動寫入資料正本。"
+        "mitigation": "顯示低信心與未辨識項目；只有 opt-in submission 可建立候選供人工審核，絕不自動寫入 canonical。"
       },
       {
         "risk": "一週內同時完成資料、分析、OCR 與部署可能擴張範圍。",
@@ -43,10 +46,10 @@
         "mitigation": "本週僅驗收洗髮精；食品與個人化權重列為後續，不納入本期交付。"
       },
       {
-        "risk": "部署平台與正式 Supabase 連線尚未選定。",
-        "impact": "medium",
-        "probability": "high",
-        "mitigation": "先以本機可驗收資料來源與環境變數契約完成產品；部署只在 Vincent 指定平台後執行。"
+        "risk": "Zeabur 與 Supabase 的正式 runtime 尚未部署，且私有影像、RLS、purge 與密鑰邊界未經 live 驗證。",
+        "impact": "high",
+        "probability": "medium",
+        "mitigation": "固定 MVP 為 Zeabur runtime + Supabase Postgres/private Storage；在發布前以 production probe 驗證 RLS、rate limit、影像刪除與 secret isolation。"
       }
     ],
     "success_criteria": [
@@ -64,6 +67,11 @@
         "criterion": "未知 alias 與低信心 OCR 不會直接更新 ingredient canonical data。",
         "verify_cmd": "data-boundary acceptance verifier",
         "expected": "只產生人工審核候選或明確的未辨識結果。"
+      },
+      {
+        "criterion": "一般掃描與市售配方研究資料有可驗證的 consent／review 邊界。",
+        "verify_cmd": "data-boundary and product-passport acceptance verifier",
+        "expected": "一般 scan 無歷史；只有 opt-in submission 經 judge review 才可形成產品護照或 canonical candidate。"
       }
     ],
     "decisions": [
@@ -96,12 +104,31 @@
       },
       {
         "topic": "系統成長迴路",
-        "decision": "每次分析以輸入成分為 trigger，經正規化與 80-rule 判讀輸出結果；未知 alias 與低信心項目進人工審核隊列，審核後才回饋資料正本。",
-        "reason": "讓資料擴充有可驗證的 source → process → output → feedback 邊界，而不是依賴人工記憶。",
+        "decision": "一般分析只回傳結果；明確 opt-in 的市售配方才可經正規化、judge review 與產品護照形成可研究資料，未知 alias 由 reviewer 核准後才回饋資料正本。",
+        "reason": "讓資料擴充有 consent → evidence → review → canonical feedback 的可驗證邊界，而不是把一般使用者 history 當成研究資料。",
         "alternatives_rejected": [
-          "只在 UI 顯示未辨識成分、不留審核脈絡：無法改善後續匹配率。"
+          "直接保存所有 scan：會違反低留存體驗並污染研究資料來源。"
         ],
         "hc_used": ["#systemDynamics", "#feedbackLoops"]
+      },
+      {
+        "topic": "MVP runtime 與影像儲存",
+        "decision": "Zeabur 承載 consumer app/API 與 server-side OCR；Supabase Postgres 為 canonical data，Supabase private Storage 為暫時或 opt-in evidence image；不用 Zeabur Volume、R2 或 Neon 作 MVP 資料層。",
+        "reason": "沿用既有 Supabase SQL 資料與管理能力可減少一週內的服務數量，同時保留私有 storage、RLS 與可部署 runtime 邊界。",
+        "alternatives_rejected": [
+          "Zeabur Volume 存使用者影像：不適合作為私有證據與保留治理資料庫。",
+          "MVP 同時導入 R2 或 Neon：增加服務與 source-of-truth 複雜度，沒有立即驗收價值。"
+        ],
+        "hc_used": ["#constraints", "#utility", "#risk"]
+      },
+      {
+        "topic": "產品護照與產品身份",
+        "decision": "研究資料以產品護照保存 market_product、formula version、formula ingredient、submission evidence、analysis run 與 review state；產品身份只以 brand_name + product_name 建立，formula_fingerprint 區分配方版本。",
+        "reason": "市售配方會改版；以版本與來源鏈保存資料，避免同名產品覆寫，同時避免把容量、條碼、銷售地區誤當身份。",
+        "alternatives_rejected": [
+          "用 scans table 同時當使用者歷史與產品資料庫：來源、隱私、版本與審核責任會混在一起。"
+        ],
+        "hc_used": ["#sourceBoundary", "#systemDynamics", "#risk"]
       }
     ]
 }

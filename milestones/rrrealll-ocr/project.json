@@ -1,8 +1,8 @@
 {
-  "project": {
     "name": "RRREALLL 洗髮精成分掃描",
     "description": "以 OCR 與專家規則把洗髮精成分轉為大眾可理解的判讀結果。",
     "type": "standalone",
+    "domain": "臨時",
     "status": "active",
     "priority": "P0",
     "created": "2026-07-22",
@@ -104,5 +104,4 @@
         "hc_used": ["#systemDynamics", "#feedbackLoops"]
       }
     ]
-  }
 }

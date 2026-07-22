@@ -124,6 +124,80 @@
         ],
         "source_boundary": "HC 只作思考檢查；project contract、canonical task、Topology Registry 與原始資料各自維持正本邊界。"
       }
+    },
+    {
+      "id": "p1-publish-mc-read-model",
+      "title": "重建並發布 RRREALLL OCR 的 MC 專案讀模型",
+      "status": "in_progress",
+      "track": "quality",
+      "order_label": "RRO-02",
+      "priority": "P0",
+      "capability_domain": "delivery",
+      "task_kind": "operate",
+      "dependencies": ["p0-bootstrap-existing-root"],
+      "done_condition": "MC 的 generated projects read model 與 GitHub Pages 部署都能讀到 rrrealll-ocr 的完整專案識別、PAI 領域與 bootstrap 任務；2026-07-29 目標日維持在 canonical project contract，不宣稱未部署的產品功能已完成。",
+      "acceptance": [
+        "A01｜從 canonical milestones/rrrealll-ocr/{project,tasks}.json 重跑 generator 後，public/data/projects.json 含 rrrealll-ocr、完整名稱／說明、PAI 領域、P0 優先級與 p0-bootstrap-existing-root；canonical project.json 仍記錄 2026-07-29 目標日。",
+        "A02｜harness-mc 的 prebuild／build 與 task validation 通過；生成資料由腳本產生，不手改 public/data/projects.json。",
+        "A03｜main 在 fetch 後無分歧，這次的 canonical task 與生成資料提交至 origin/main；既有無關異動需在提交範圍內明確處理，不可靜默遺漏。",
+        "A04｜GitHub Actions 的 Deploy to GitHub Pages 對本次 head commit 成功，且線上 data/projects.json 可讀到 rrrealll-ocr；若 CDN 快取未更新，明確回報，不以本機狀態冒充部署成功。"
+      ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "verification-before-completion",
+          "closeout-commit-routing",
+          "cc-push"
+        ],
+        "decision_input": [
+          "Vincent 2026-07-22：重建 MC 資料並部署",
+          "milestones/rrrealll-ocr/{project,tasks}.json",
+          "harness-mc public/data/projects.json 與 .github/workflows/deploy.yml"
+        ],
+        "decision_output": "由 canonical RRREALLL project contract 生成可部署的 MC read model，並以 Actions 與 live JSON 驗證發布。",
+        "execution_boundary": "只重跑 harness-mc 既有 generator、驗證、Git commit/push 與 GitHub Pages 部署；不得讀取 secrets、修改產品原始資料、建立新外部服務或把其他專案的未驗證變更混入。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 明確要求將已建立的 RRREALLL OCR project contract 重建到 MC 讀模型並部署；此任務只處理發布可見性，不擴張到產品功能或正式資料庫部署。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json",
+              "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p0-bootstrap-existing-root",
+              "$COLLAB/harness-mc/scripts/generate-data.mjs",
+              "$COLLAB/harness-mc/.github/workflows/deploy.yml"
+            ],
+            "recorded_at": "2026-07-22",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "rrrealll-ocr/p0-bootstrap-existing-root",
+                "morrowise/morrowise-project-init-v1"
+              ],
+              "scope_comparison": {
+                "problem": "bootstrap 已建立 root 與 contract，但 MC read model 尚未重建，儀表板因此看不到新專案。",
+                "owner_source_of_truth": "RRREALLL project contract 是本案內容正本；MC generated JSON 僅為可重跑 read model；GitHub Pages 是發布表面。",
+                "inputs_outputs": "輸入為 canonical contract、既有 generator 與 deployment workflow；輸出為 verified local/read-only MC project data 與成功部署證據。",
+                "lifecycle_completion": "只有 local data、build、origin/main 與 live JSON 都驗證後才能完成；不把部署 MC 等同產品功能發布。"
+              },
+              "decision_reason": "此任務是完成已開案內容的 MC 可見性與部署驗證，與 root bootstrap 或 project-init 機制本身不同。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-22",
+                "evidence_refs": [
+                  "Vincent 2026-07-22 current session: 重建 MC 資料並部署"
+                ]
+              }
+            }
+          }
+        ]
+      }
     }
   ]
 }

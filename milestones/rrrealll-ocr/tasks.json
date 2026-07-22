@@ -128,14 +128,14 @@
     {
       "id": "p1-publish-mc-read-model",
       "title": "重建並發布 RRREALLL OCR 的 MC 專案讀模型",
-      "status": "in_progress",
+      "status": "completed",
       "track": "quality",
       "order_label": "RRO-02",
       "priority": "P0",
       "capability_domain": "delivery",
       "task_kind": "operate",
       "commits": ["968cdb6"],
-      "note": "2026-07-22：本機 generator、PAI taxonomy、Admission Review、architecture sync 與 Pages build 已通過；待 origin/main 與 live GitHub Pages 驗證。",
+      "note": "2026-07-22：本機 generator、PAI taxonomy、Admission Review、Pages build、origin/main、GitHub Actions 與線上 projects.json 均已驗證；此任務只完成 MC 可見性，不代表產品功能或正式資料庫部署完成。",
       "dependencies": ["p0-bootstrap-existing-root"],
       "done_condition": "MC 的 generated projects read model 與 GitHub Pages 部署都能讀到 rrrealll-ocr 的完整專案識別、PAI 領域與 bootstrap 任務；2026-07-29 目標日維持在 canonical project contract，不宣稱未部署的產品功能已完成。",
       "acceptance": [
@@ -230,9 +230,47 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "harness-mc@89ca697 已推送至 origin/main；GitHub Actions Deploy to GitHub Pages run 29933000261 成功，且 live projects.json 已讀到 rrrealll-ocr（P0、臨時、1/2）。這完成 MC read model 的發布驗證，不宣稱產品功能或正式資料庫已部署。",
+            "evidence_refs": [
+              "89ca697",
+              "https://github.com/hisenzi/harness-mc/actions/runs/29933000261",
+              "https://hisenzi.github.io/harness-mc/data/projects.json",
+              "npm run build",
+              "npm run test:tasks",
+              "npm run test:task-event-outbox"
+            ],
+            "recorded_at": "2026-07-22",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "rrrealll-ocr/p1-publish-mc-read-model"
+              ],
+              "scope_comparison": {
+                "problem": "MC 儀表板缺少 RRREALLL 專案可見性；此問題已由 canonical contract 到 live Pages 的完整證據閉環解決。",
+                "owner_source_of_truth": "RRREALLL project contract 與 tasks.json 仍為正本；generated JSON 與 Pages 僅為可重跑的發布表面。",
+                "inputs_outputs": "輸入是 canonical contract、89ca697、Actions 成功與 live JSON；輸出是可驗證的 MC 專案讀模型。",
+                "lifecycle_completion": "A01-A04 已完成；產品功能、OCR、資料庫與正式服務部署仍不在此任務範圍。"
+              },
+              "decision_reason": "接受條件均以本機、遠端與線上資料驗證完成，因此結束同一發布任務。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-22",
+                "evidence_refs": [
+                  "Vincent 2026-07-22 current session: 重建 MC 資料並部署"
+                ]
+              }
+            }
           }
         ]
-      }
+      },
+      "completed_at": "2026-07-22",
+      "summary": "RRREALLL OCR 已由 canonical contract 重建至 MC，並經 origin/main、GitHub Pages Actions 與 live projects.json 驗證可見。"
     }
   ]
 }

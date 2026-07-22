@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hisenzi.local/schemas/morrowise-project-topology.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "registry_id",
+    "task_id",
+    "status",
+    "updated_at",
+    "inventory_as_of",
+    "source_of_truth",
+    "schema_ref",
+    "verifier_ref",
+    "maintenance_policy",
+    "classification_vocabulary",
+    "migration_state_vocabulary",
+    "profiles",
+    "records"
+  ],
+  "properties": {
+    "registry_id": { "const": "morrowise-project-topology.v1" },
+    "task_id": { "const": "project-topology-architecture-atlas" },
+    "status": { "enum": ["formal_registry", "deprecated", "superseded"] },
+    "updated_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "inventory_as_of": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "source_of_truth": { "type": "string", "pattern": "^\\$COLLAB/" },
+    "schema_ref": { "type": "string", "pattern": "^\\$COLLAB/" },
+    "verifier_ref": { "const": "npm run test:project-topology" },
+    "maintenance_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["startup_command", "evidence_warn_after_days", "startup_rule"],
+      "properties": {
+        "startup_command": { "const": "npm run health:project-topology" },
+        "evidence_warn_after_days": { "type": "integer", "minimum": 1 },
+        "startup_rule": { "type": "string", "minLength": 1 }
+      }
+    },
+    "document_registry_ref": { "type": "string" },
+    "repo_coordination_ref": { "type": "string" },
+    "write_boundary": { "$ref": "#/$defs/writeBoundary" },
+    "classification_vocabulary": {
+      "type": "array",
+      "items": { "enum": ["canonical_project", "git_worktree", "generated", "runtime", "archive", "unknown"] },
+      "uniqueItems": true
+    },
+    "migration_state_vocabulary": {
+      "type": "array",
+      "items": { "enum": ["not_assessed", "inventory_only", "blocked", "exempt", "planned", "approved", "migrated", "verified"] },
+      "uniqueItems": true
+    },
+    "profiles": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/profile" },
+      "minItems": 1
+    },
+    "records": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/record" },
+      "minItems": 1
+    }
+  },
+  "$defs": {
+    "writeBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed", "forbidden"],
+      "properties": {
+        "allowed": { "type": "array", "items": { "type": "string" } },
+        "forbidden": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "applies_to", "baseline", "extension_policy", "local_artifact_policy"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "applies_to": { "type": "string" },
+        "baseline": { "type": "array", "items": { "type": "string" } },
+        "extension_policy": { "type": "string" },
+        "local_artifact_policy": { "type": "string" }
+      }
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "path_label",
+        "classification",
+        "migration_state",
+        "project_home_ref",
+        "topology_profile",
+        "evidence",
+        "last_verified_at",
+        "notes"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        "path_label": { "type": "string", "pattern": "^\\$COLLAB/" },
+        "classification": { "enum": ["canonical_project", "git_worktree", "generated", "runtime", "archive", "unknown"] },
+        "migration_state": { "enum": ["not_assessed", "inventory_only", "blocked", "exempt", "planned", "approved", "migrated", "verified"] },
+        "project_home_ref": { "type": ["string", "null"] },
+        "topology_profile": { "type": ["string", "null"] },
+        "document_ref": { "type": ["string", "null"] },
+        "repo_ref": { "type": ["string", "null"] },
+        "evidence": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "last_verified_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

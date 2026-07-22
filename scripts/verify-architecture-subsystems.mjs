@@ -3,6 +3,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveCollabRoot } from "./lib/collab-root.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -14,22 +15,6 @@ const packageJson = JSON.parse(fs.readFileSync(path.join(root, "package.json"), 
 const registry = readJson(registryPath);
 const morrowiseTasks = readJson(tasksPath).tasks || [];
 const architectureDoc = fs.readFileSync(architecturePath, "utf8");
-
-function resolveCollabRoot(start) {
-  let candidate = start;
-  while (true) {
-    if (
-      fs.existsSync(path.join(candidate, "harness-mc")) &&
-      fs.existsSync(path.join(candidate, "notyet-harness"))
-    ) {
-      return candidate;
-    }
-    const parent = path.dirname(candidate);
-    if (parent === candidate) break;
-    candidate = parent;
-  }
-  throw new Error(`Unable to resolve $COLLAB from ${start}`);
-}
 
 const STATUS = new Set(["active", "deprecated", "superseded", "deferred"]);
 const DECISIONS = new Set(["promoted", "not_required", "deferred"]);

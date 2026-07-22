@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-project-topology-architecture-atlas-ec22336-20260720T221159Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "ec22336",
+  "project": "morrowise",
+  "task_id": "project-topology-architecture-atlas",
+  "status": "updated",
+  "summary": "Versioned CORE topology gate and generated Maintenance Inbox make JV-43 discoverable across sessions and machines.",
+  "created_at": "2026-07-20T22:11:59.490Z",
+  "actor": "codex",
+  "session_id": "codex-jv43-20260721"
+}

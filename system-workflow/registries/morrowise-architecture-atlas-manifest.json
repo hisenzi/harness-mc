@@ -1,0 +1,124 @@
+{
+  "registry_id": "morrowise-architecture-atlas-manifest.v1",
+  "kind": "link_manifest",
+  "task_id": "project-topology-architecture-atlas",
+  "updated_at": "2026-07-21",
+  "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-atlas-manifest.json",
+  "verifier_ref": "npm run test:architecture-atlas",
+  "write_boundary": {
+    "allowed": [
+      "Declare only the links, reader labels, verifier references, and freshness policy needed to generate the Architecture Atlas.",
+      "Read task status and topology inventory from their canonical sources at generation time."
+    ],
+    "forbidden": [
+      "Store a second source of truth for task state, document identity, repository state, or project topology.",
+      "Treat dashboard, Canvas, Heptabase, chat, browser state, or local runtime metadata as Atlas authority."
+    ]
+  },
+  "records": [
+    {
+      "id": "agent-control-plane",
+      "name": "Agent Control Plane",
+      "summary": "共享規則、能力、runtime 與治理的人讀架構入口。",
+      "source_of_truth_ref": "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md"
+      ],
+      "detail_refs": [
+        "$COLLAB/notyet-harness/000_Agent/decisions/ADR-003-agent-control-plane.md"
+      ],
+      "verifier_refs": [
+        "python3 $COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-current-state.py --check",
+        "python3 $COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py --check"
+      ],
+      "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#architecture-subsystem-index-live-sync",
+      "status_source": { "kind": "task", "field": "status" },
+      "freshness_source": { "kind": "static", "field": "last_verified_at" },
+      "last_verified_at": "2026-07-20",
+      "freshness_warn_after_days": 90
+    },
+    {
+      "id": "architecture-subsystem-catalog",
+      "name": "Architecture Subsystem Catalog",
+      "summary": "已收編子系統的正本、邊界、驗證與任務索引。",
+      "source_of_truth_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
+      "source_refs": [
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json"
+      ],
+      "detail_refs": [
+        "$COLLAB/notyet-harness/000_Agent/skills/promote-to-architecture/SKILL.md"
+      ],
+      "verifier_refs": [
+        "npm run test:architecture-subsystems",
+        "python3 $COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py --check"
+      ],
+      "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#architecture-subsystem-index-live-sync",
+      "status_source": { "kind": "task", "field": "status" },
+      "freshness_source": { "kind": "registry", "field": "generated_at" },
+      "last_verified_at": "2026-07-20",
+      "freshness_warn_after_days": 90
+    },
+    {
+      "id": "project-topology-registry",
+      "name": "Project Topology Registry",
+      "summary": "正式專案 home、profile、文件／repo 連結與遷移狀態的唯一拓撲正本。",
+      "source_of_truth_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json",
+      "source_refs": [
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json"
+      ],
+      "detail_refs": [
+        "$COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/project-topology-contract-v1.md"
+      ],
+      "verifier_refs": [
+        "npm run test:project-topology",
+        "npm run test:project-topology-maintenance",
+        "python3 $COLLAB/notyet-harness/000_Agent/scripts/verify-project-topology-contract.py"
+      ],
+      "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#project-topology-architecture-atlas",
+      "status_source": { "kind": "task", "field": "status" },
+      "freshness_source": { "kind": "registry", "field": "inventory_as_of" },
+      "last_verified_at": "2026-07-21",
+      "freshness_warn_after_days": 30
+    },
+    {
+      "id": "document-source-registry",
+      "name": "JV-36 Document Source Registry",
+      "summary": "文件身份、正本與衍生關係的責任邊界；尚待任務落地。",
+      "source_of_truth_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync"
+      ],
+      "detail_refs": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync"
+      ],
+      "verifier_refs": [
+        "npm run test:tasks"
+      ],
+      "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
+      "status_source": { "kind": "task", "field": "status" },
+      "freshness_source": { "kind": "static", "field": "last_verified_at" },
+      "last_verified_at": "2026-07-20",
+      "freshness_warn_after_days": 30
+    },
+    {
+      "id": "repo-coordination-contract",
+      "name": "JV-37 Repo Coordination Contract",
+      "summary": "repo class、worktree、remote truth 與收尾責任邊界；尚待任務落地。",
+      "source_of_truth_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate",
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate"
+      ],
+      "detail_refs": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate"
+      ],
+      "verifier_refs": [
+        "npm run test:tasks"
+      ],
+      "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate",
+      "status_source": { "kind": "task", "field": "status" },
+      "freshness_source": { "kind": "static", "field": "last_verified_at" },
+      "last_verified_at": "2026-07-20",
+      "freshness_warn_after_days": 30
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+{
+  "registry_id": "morrowise-project-topology.v1",
+  "task_id": "project-topology-architecture-atlas",
+  "status": "formal_registry",
+  "updated_at": "2026-07-22",
+  "inventory_as_of": "2026-07-22",
+  "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json",
+  "schema_ref": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-project-topology.schema.json",
+  "verifier_ref": "npm run test:project-topology",
+  "maintenance_policy": {
+    "startup_command": "npm run health:project-topology",
+    "evidence_warn_after_days": 30,
+    "startup_rule": "blocked integrity findings stop folder or worktree mutation; action findings remain visible but do not block unrelated scoped work"
+  },
+  "document_registry_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
+  "repo_coordination_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate",
+  "write_boundary": {
+    "allowed": [
+      "record a project home, topology profile, cross-registry reference, inventory classification, migration state, and verified evidence",
+      "generate read-only inventory and Architecture Atlas views",
+      "recommend a migration record after read-only preflight"
+    ],
+    "forbidden": [
+      "duplicate JV-36 document identity or JV-37 Git state as a second source of truth",
+      "move, remove, or delete a project or worktree without an approved migration record",
+      "read secrets, runtime auth, browser cookies, or private account data",
+      "treat dashboards, Canvas, Heptabase, or chat as canonical state"
+    ]
+  },
+  "classification_vocabulary": [
+    "canonical_project",
+    "git_worktree",
+    "generated",
+    "runtime",
+    "archive",
+    "unknown"
+  ],
+  "migration_state_vocabulary": [
+    "not_assessed",
+    "inventory_only",
+    "blocked",
+    "exempt",
+    "planned",
+    "approved",
+    "migrated",
+    "verified"
+  ],
+  "profiles": [
+    {
+      "id": "git-repository",
+      "applies_to": "Canonical Git projects with a repository root at the registered project home.",
+      "baseline": ["README.md or project entry", "docs/ when durable project documentation exists", "_gitignore/README.md and manifest.yml when visible local-artifact inventory is needed", ".worktrees/<task> for active Git worktrees"],
+      "extension_policy": "Project-specific src, app, data, assets, scripts, tests, or system-workflow directories are allowed when documented by the project contract.",
+      "local_artifact_policy": ".gitignore is enforcement; _gitignore/ is the tracked human-readable manifest and must not contain secrets or replace tool-required native locations."
+    },
+    {
+      "id": "morrowise-control-plane",
+      "applies_to": "Canonical control-plane repositories such as harness-mc.",
+      "baseline": ["milestones/", "system-workflow/registries/", "system-workflow/schemas/", "system-workflow/docs/", "scripts/", "public/data/ generated-only"],
+      "extension_policy": "New control-plane capability requires task anchor, source boundary, verifier, and generated/read-model boundary before promotion.",
+      "local_artifact_policy": "Use the git-repository local-artifact policy and keep generated data outside canonical task or registry state."
+    },
+    {
+      "id": "agent-control-plane",
+      "applies_to": "Canonical shared agent repositories such as notyet-harness.",
+      "baseline": ["000_Agent/", "000_Agent/docs/agent-control-plane/", "000_Agent/decisions/", "000_Agent/skills/", "000_Agent/memory/"],
+      "extension_policy": "Stable contracts and ADRs live in their named folders; historical material remains separately labelled and is not current state.",
+      "local_artifact_policy": "Use the git-repository local-artifact policy and keep local agent runtime outside shared source-of-truth paths."
+    },
+    {
+      "id": "non-git-project",
+      "applies_to": "Intentional local projects that do not yet use Git.",
+      "baseline": ["README.md or project entry", "docs/ or assets/ when applicable", "_gitignore/ manifest if local artifacts require visibility"],
+      "extension_policy": "May add a type-specific layout; must either adopt Git or record why it remains a non-Git canonical project.",
+      "local_artifact_policy": "If a tool generates local artifacts, maintain an explicit manifest; do not invent a fake .gitignore without a Git repository."
+    },
+    {
+      "id": "legacy-root-worktree",
+      "applies_to": "Git worktrees that currently sit beside their canonical project at $COLLAB root.",
+      "baseline": ["registered Git worktree", "project_home_ref", "repo_ref", "current Git preflight evidence"],
+      "extension_policy": "This is a migration-only profile: no new worktree may use it. Move only through an approved record and Git worktree move, or remove only after safe closeout.",
+      "local_artifact_policy": "Do not add project content or local manifests here; the destination profile is the canonical project's .worktrees/<task> convention."
+    },
+    {
+      "id": "runtime-local",
+      "applies_to": "Tool runtime, cache, temporary, or local session directories.",
+      "baseline": ["tool-owned runtime layout only"],
+      "extension_policy": "Do not place canonical project data here; promote durable material into its registered project home.",
+      "local_artifact_policy": "Runtime directories are exempt from project migration and must not be inspected for secrets during inventory."
+    },
+    {
+      "id": "historical-archive",
+      "applies_to": "Historical or migration-package material retained for reference.",
+      "baseline": ["archive descriptor or README when practical"],
+      "extension_policy": "Extract reusable patterns into an active canonical location; do not use archive state as current source of truth.",
+      "local_artifact_policy": "Archive content is exempt from topology migration unless Vincent approves a restoration or retirement record."
+    }
+  ],
+  "records": [
+    {"id":"tmp-staging","path_label":"$COLLAB/_tmp","classification":"runtime","migration_state":"exempt","project_home_ref":null,"topology_profile":"runtime-local","document_ref":null,"repo_ref":null,"evidence":["$COLLAB/_tmp"],"last_verified_at":"2026-07-20","notes":"Temporary intake area; nested repositories are evidence only and are not auto-promoted."},
+    {"id":"agents-runtime","path_label":"$COLLAB/.agents","classification":"runtime","migration_state":"exempt","project_home_ref":null,"topology_profile":"runtime-local","document_ref":null,"repo_ref":null,"evidence":["$COLLAB/.agents"],"last_verified_at":"2026-07-20","notes":"Local agent runtime; not a canonical project home."},
+    {"id":"claude-runtime","path_label":"$COLLAB/.claude","classification":"runtime","migration_state":"exempt","project_home_ref":null,"topology_profile":"runtime-local","document_ref":null,"repo_ref":null,"evidence":["$COLLAB/.claude"],"last_verified_at":"2026-07-20","notes":"Local Claude runtime; not a canonical project home."},
+    {"id":"codex-runtime","path_label":"$COLLAB/.codex","classification":"runtime","migration_state":"exempt","project_home_ref":null,"topology_profile":"runtime-local","document_ref":null,"repo_ref":null,"evidence":["$COLLAB/.codex"],"last_verified_at":"2026-07-20","notes":"Local Codex runtime; not a canonical project home."},
+    {"id":"openclaw-historical","path_label":"$COLLAB/.openclaw_260418","classification":"archive","migration_state":"exempt","project_home_ref":null,"topology_profile":"historical-archive","document_ref":"$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md","repo_ref":null,"evidence":["$COLLAB/.openclaw_260418","$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md"],"last_verified_at":"2026-07-20","notes":"Historical OpenClaw material; it may supply patterns but is not current state."},
+    {"id":"preview-runtime","path_label":"$COLLAB/.preview","classification":"generated","migration_state":"exempt","project_home_ref":null,"topology_profile":"runtime-local","document_ref":null,"repo_ref":null,"evidence":["$COLLAB/.preview"],"last_verified_at":"2026-07-20","notes":"Preview output/runtime area; not a canonical project home."},
+    {"id":"tmp-runtime","path_label":"$COLLAB/.tmp","classification":"runtime","migration_state":"exempt","project_home_ref":null,"topology_profile":"runtime-local","document_ref":null,"repo_ref":null,"evidence":["$COLLAB/.tmp"],"last_verified_at":"2026-07-20","notes":"Temporary runtime area; not a canonical project home."},
+    {"id":"literal-tilde-directory","path_label":"$COLLAB/~","classification":"unknown","migration_state":"not_assessed","project_home_ref":null,"topology_profile":null,"document_ref":null,"repo_ref":null,"evidence":["$COLLAB/~"],"last_verified_at":"2026-07-20","notes":"Unexpected literal root directory; retain until ownership and intent are confirmed."},
+    {"id":"cc-local-nongit","path_label":"$COLLAB/CC本機協作_無Git","classification":"unknown","migration_state":"not_assessed","project_home_ref":null,"topology_profile":null,"document_ref":null,"repo_ref":null,"evidence":["$COLLAB/CC本機協作_無Git"],"last_verified_at":"2026-07-20","notes":"Local non-Git collection; requires owner and retention assessment before migration."},
+    {"id":"design-agent","path_label":"$COLLAB/Design-Agent","classification":"canonical_project","migration_state":"inventory_only","project_home_ref":"$COLLAB/Design-Agent","topology_profile":"git-repository","document_ref":null,"repo_ref":"$COLLAB/Design-Agent","evidence":["$COLLAB/Design-Agent/.git"],"last_verified_at":"2026-07-20","notes":"Canonical Git repository; existing untracked content requires normal Git preflight before any migration."},
+    {"id":"english-future-work","path_label":"$COLLAB/English-for-Future-Work","classification":"unknown","migration_state":"not_assessed","project_home_ref":null,"topology_profile":null,"document_ref":null,"repo_ref":null,"evidence":["$COLLAB/English-for-Future-Work/README.md"],"last_verified_at":"2026-07-20","notes":"Has a project README but no root Git metadata; owner/type requires confirmation."},
+    {"id":"finance-dashboard","path_label":"$COLLAB/finance-dashboard","classification":"canonical_project","migration_state":"inventory_only","project_home_ref":"$COLLAB/finance-dashboard","topology_profile":"git-repository","document_ref":null,"repo_ref":"$COLLAB/finance-dashboard","evidence":["$COLLAB/finance-dashboard/.git"],"last_verified_at":"2026-07-20","notes":"Canonical Git repository; dirty state remains a separate Git preflight concern."},
+    {"id":"halal-com-tw","path_label":"$COLLAB/halal.com.tw","classification":"unknown","migration_state":"not_assessed","project_home_ref":null,"topology_profile":null,"document_ref":null,"repo_ref":null,"evidence":["$COLLAB/halal.com.tw"],"last_verified_at":"2026-07-20","notes":"Unclassified local directory; no root Git metadata detected."},
+    {"id":"harness-mc","path_label":"$COLLAB/harness-mc","classification":"canonical_project","migration_state":"inventory_only","project_home_ref":"$COLLAB/harness-mc","topology_profile":"morrowise-control-plane","document_ref":"$COLLAB/harness-mc/milestones/morrowise/tasks.json","repo_ref":"$COLLAB/harness-mc","evidence":["$COLLAB/harness-mc/.git","$COLLAB/harness-mc/milestones/morrowise/tasks.json"],"last_verified_at":"2026-07-20","notes":"Canonical MorroWise control-plane repository; root-level legacy worktrees are separately blocked records."},
+    {"id":"harness-mc-acp-event-pipeline","path_label":"$COLLAB/harness-mc-acp-event-pipeline","classification":"git_worktree","migration_state":"blocked","project_home_ref":"$COLLAB/harness-mc","topology_profile":"legacy-root-worktree","document_ref":null,"repo_ref":"$COLLAB/harness-mc","evidence":["$COLLAB/harness-mc-acp-event-pipeline/.git"],"last_verified_at":"2026-07-20","notes":"Detached worktree; requires current Git state preflight and explicit migration record."},
+    {"id":"harness-mc-architecture-relationship","path_label":"$COLLAB/harness-mc-architecture-relationship","classification":"git_worktree","migration_state":"blocked","project_home_ref":"$COLLAB/harness-mc","topology_profile":"legacy-root-worktree","document_ref":null,"repo_ref":"$COLLAB/harness-mc","evidence":["$COLLAB/harness-mc-architecture-relationship/.git"],"last_verified_at":"2026-07-20","notes":"Root-level legacy worktree; migration requires Git preflight."},
+    {"id":"harness-mc-jv39-credential-governance","path_label":"$COLLAB/harness-mc-jv39-credential-governance","classification":"git_worktree","migration_state":"blocked","project_home_ref":"$COLLAB/harness-mc","topology_profile":"legacy-root-worktree","document_ref":null,"repo_ref":"$COLLAB/harness-mc","evidence":["$COLLAB/harness-mc-jv39-credential-governance/.git"],"last_verified_at":"2026-07-20","notes":"Dirty root-level legacy worktree; migration requires Git preflight."},
+    {"id":"harness-mc-jv40-closeout-repair","path_label":"$COLLAB/harness-mc-jv40-closeout-repair","classification":"git_worktree","migration_state":"blocked","project_home_ref":"$COLLAB/harness-mc","topology_profile":"legacy-root-worktree","document_ref":null,"repo_ref":"$COLLAB/harness-mc","evidence":["$COLLAB/harness-mc-jv40-closeout-repair/.git"],"last_verified_at":"2026-07-20","notes":"Dirty root-level legacy worktree; migration requires Git preflight."},
+    {"id":"harness-mc-jv40-fresh-validation","path_label":"$COLLAB/harness-mc-jv40-fresh-validation","classification":"git_worktree","migration_state":"blocked","project_home_ref":"$COLLAB/harness-mc","topology_profile":"legacy-root-worktree","document_ref":null,"repo_ref":"$COLLAB/harness-mc","evidence":["$COLLAB/harness-mc-jv40-fresh-validation/.git"],"last_verified_at":"2026-07-20","notes":"Detached and dirty root-level legacy worktree; migration requires Git preflight."},
+    {"id":"harness-mc-mc-dashboard-ia-governance","path_label":"$COLLAB/harness-mc-mc-dashboard-ia-governance","classification":"git_worktree","migration_state":"blocked","project_home_ref":"$COLLAB/harness-mc","topology_profile":"legacy-root-worktree","document_ref":null,"repo_ref":"$COLLAB/harness-mc","evidence":["$COLLAB/harness-mc-mc-dashboard-ia-governance/.git"],"last_verified_at":"2026-07-20","notes":"Root-level legacy worktree; migration requires Git preflight."},
+    {"id":"harness-mc-morrowise-project-init-admission","path_label":"$COLLAB/harness-mc-morrowise-project-init-admission","classification":"git_worktree","migration_state":"blocked","project_home_ref":"$COLLAB/harness-mc","topology_profile":"legacy-root-worktree","document_ref":null,"repo_ref":"$COLLAB/harness-mc","evidence":["$COLLAB/harness-mc-morrowise-project-init-admission/.git"],"last_verified_at":"2026-07-22","notes":"Root-level legacy worktree; migration requires Git preflight."},
+    {"id":"hc-global-workforce-bridge","path_label":"$COLLAB/HC_global-workforce-bridge","classification":"unknown","migration_state":"not_assessed","project_home_ref":null,"topology_profile":null,"document_ref":null,"repo_ref":null,"evidence":["$COLLAB/HC_global-workforce-bridge"],"last_verified_at":"2026-07-20","notes":"Unclassified local directory; no root Git metadata detected."},
+    {"id":"hiblocks","path_label":"$COLLAB/hiblocks","classification":"canonical_project","migration_state":"inventory_only","project_home_ref":"$COLLAB/hiblocks","topology_profile":"git-repository","document_ref":null,"repo_ref":"$COLLAB/hiblocks","evidence":["$COLLAB/hiblocks/.git"],"last_verified_at":"2026-07-20","notes":"Canonical Git repository; stale external worktree registration remains JV-37 reconciliation work."},
+    {"id":"house123-buy","path_label":"$COLLAB/house123_buy","classification":"canonical_project","migration_state":"inventory_only","project_home_ref":"$COLLAB/house123_buy","topology_profile":"git-repository","document_ref":null,"repo_ref":"$COLLAB/house123_buy","evidence":["$COLLAB/house123_buy/.git"],"last_verified_at":"2026-07-20","notes":"Canonical Git repository; root-level worktree is separately blocked."},
+    {"id":"house123-buy-leverage","path_label":"$COLLAB/house123_buy-leverage","classification":"git_worktree","migration_state":"blocked","project_home_ref":"$COLLAB/house123_buy","topology_profile":"legacy-root-worktree","document_ref":null,"repo_ref":"$COLLAB/house123_buy","evidence":["$COLLAB/house123_buy-leverage/.git"],"last_verified_at":"2026-07-20","notes":"Dirty root-level legacy worktree; migration requires Git preflight."},
+    {"id":"indiebooks","path_label":"$COLLAB/indiebooks","classification":"canonical_project","migration_state":"inventory_only","project_home_ref":"$COLLAB/indiebooks","topology_profile":"git-repository","document_ref":null,"repo_ref":"$COLLAB/indiebooks","evidence":["$COLLAB/indiebooks/.git"],"last_verified_at":"2026-07-20","notes":"Canonical Git repository; untracked documentation requires normal Git preflight."},
+    {"id":"kids-reward","path_label":"$COLLAB/kids-reward","classification":"canonical_project","migration_state":"inventory_only","project_home_ref":"$COLLAB/kids-reward","topology_profile":"git-repository","document_ref":null,"repo_ref":"$COLLAB/kids-reward","evidence":["$COLLAB/kids-reward/.git"],"last_verified_at":"2026-07-20","notes":"Canonical Git repository; local .claude content remains a normal Git preflight concern."},
+    {"id":"leo","path_label":"$COLLAB/Leo","classification":"unknown","migration_state":"not_assessed","project_home_ref":null,"topology_profile":null,"document_ref":null,"repo_ref":null,"evidence":["$COLLAB/Leo"],"last_verified_at":"2026-07-20","notes":"Unclassified local directory; no root Git metadata detected."},
+    {"id":"mapelon-files","path_label":"$COLLAB/Mapelon_2.0_files","classification":"unknown","migration_state":"not_assessed","project_home_ref":null,"topology_profile":null,"document_ref":null,"repo_ref":null,"evidence":["$COLLAB/Mapelon_2.0_files/.gitignore"],"last_verified_at":"2026-07-20","notes":"Container has nested Git candidates; do not infer a canonical project home before owner review."},
+    {"id":"market-watchtower","path_label":"$COLLAB/market-watchtower","classification":"canonical_project","migration_state":"inventory_only","project_home_ref":"$COLLAB/market-watchtower","topology_profile":"non-git-project","document_ref":"$COLLAB/market-watchtower/README.md","repo_ref":null,"evidence":["$COLLAB/market-watchtower/package.json","$COLLAB/market-watchtower/README.md"],"last_verified_at":"2026-07-20","notes":"Intentional non-Git project candidate; Git adoption is a separate migration decision."},
+    {"id":"mba3-migration-package","path_label":"$COLLAB/MBA-3搬家包","classification":"archive","migration_state":"exempt","project_home_ref":null,"topology_profile":"historical-archive","document_ref":"$COLLAB/MBA-3搬家包/README.md","repo_ref":null,"evidence":["$COLLAB/MBA-3搬家包/README.md"],"last_verified_at":"2026-07-20","notes":"Migration package retained as archive; do not move without a restoration or retirement record."},
+    {"id":"root-node-modules","path_label":"$COLLAB/node_modules","classification":"generated","migration_state":"exempt","project_home_ref":null,"topology_profile":"runtime-local","document_ref":null,"repo_ref":null,"evidence":["$COLLAB/node_modules"],"last_verified_at":"2026-07-20","notes":"Generated dependency directory; never a project home."},
+    {"id":"notyet-website","path_label":"$COLLAB/notyet_website","classification":"unknown","migration_state":"not_assessed","project_home_ref":null,"topology_profile":null,"document_ref":null,"repo_ref":null,"evidence":["$COLLAB/notyet_website"],"last_verified_at":"2026-07-20","notes":"Container has a nested Git candidate; do not infer a canonical project home before owner review."},
+    {"id":"notyet-harness","path_label":"$COLLAB/notyet-harness","classification":"canonical_project","migration_state":"inventory_only","project_home_ref":"$COLLAB/notyet-harness","topology_profile":"agent-control-plane","document_ref":"$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md","repo_ref":"$COLLAB/notyet-harness","evidence":["$COLLAB/notyet-harness/.git","$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md"],"last_verified_at":"2026-07-20","notes":"Canonical shared agent repository; root-level legacy worktrees are separately blocked records."},
+    {"id":"notyet-harness-acp-event-pipeline","path_label":"$COLLAB/notyet-harness-acp-event-pipeline","classification":"git_worktree","migration_state":"blocked","project_home_ref":"$COLLAB/notyet-harness","topology_profile":"legacy-root-worktree","document_ref":null,"repo_ref":"$COLLAB/notyet-harness","evidence":["$COLLAB/notyet-harness-acp-event-pipeline/.git"],"last_verified_at":"2026-07-20","notes":"Detached root-level legacy worktree; migration requires Git preflight."},
+    {"id":"notyet-harness-architecture-relationship","path_label":"$COLLAB/notyet-harness-architecture-relationship","classification":"git_worktree","migration_state":"blocked","project_home_ref":"$COLLAB/notyet-harness","topology_profile":"legacy-root-worktree","document_ref":null,"repo_ref":"$COLLAB/notyet-harness","evidence":["$COLLAB/notyet-harness-architecture-relationship/.git"],"last_verified_at":"2026-07-20","notes":"Root-level legacy worktree; migration requires Git preflight."},
+    {"id":"notyet-harness-jv39-credential-governance","path_label":"$COLLAB/notyet-harness-jv39-credential-governance","classification":"git_worktree","migration_state":"blocked","project_home_ref":"$COLLAB/notyet-harness","topology_profile":"legacy-root-worktree","document_ref":null,"repo_ref":"$COLLAB/notyet-harness","evidence":["$COLLAB/notyet-harness-jv39-credential-governance/.git"],"last_verified_at":"2026-07-20","notes":"Root-level legacy worktree; migration requires Git preflight."},
+    {"id":"rrrealll-v2","path_label":"$COLLAB/RRREALLL_V2.0","classification":"canonical_project","migration_state":"inventory_only","project_home_ref":"$COLLAB/RRREALLL_V2.0","topology_profile":"git-repository","document_ref":null,"repo_ref":"$COLLAB/RRREALLL_V2.0","evidence":["$COLLAB/RRREALLL_V2.0/.git"],"last_verified_at":"2026-07-20","notes":"Canonical Git repository; untracked assets require normal Git preflight."},
+    {"id":"rrrealll-ocr","path_label":"$COLLAB/rrrealll-ocr","classification":"unknown","migration_state":"not_assessed","project_home_ref":null,"topology_profile":null,"document_ref":"$COLLAB/rrrealll-ocr/or/README.md","repo_ref":null,"evidence":["$COLLAB/rrrealll-ocr/or","$COLLAB/rrrealll-ocr/or/README.md"],"last_verified_at":"2026-07-22","notes":"Existing local source folder selected by Vincent for a new standalone project. Keep as unknown until the project outcome contract and Git adoption are explicitly completed; do not infer a canonical home from its contents."},
+    {"id":"thinking-gym","path_label":"$COLLAB/thinking-gym","classification":"canonical_project","migration_state":"inventory_only","project_home_ref":"$COLLAB/thinking-gym","topology_profile":"git-repository","document_ref":null,"repo_ref":"$COLLAB/thinking-gym","evidence":["$COLLAB/thinking-gym/.git"],"last_verified_at":"2026-07-20","notes":"Canonical Git repository."},
+    {"id":"travel-finance-dashboard","path_label":"$COLLAB/travel-finance-dashboard","classification":"canonical_project","migration_state":"inventory_only","project_home_ref":"$COLLAB/travel-finance-dashboard","topology_profile":"git-repository","document_ref":null,"repo_ref":"$COLLAB/travel-finance-dashboard","evidence":["$COLLAB/travel-finance-dashboard/.git"],"last_verified_at":"2026-07-20","notes":"Canonical Git repository; dirty state and external worktree remain Git preflight concerns."},
+    {"id":"wealth-system","path_label":"$COLLAB/wealth-system","classification":"canonical_project","migration_state":"inventory_only","project_home_ref":"$COLLAB/wealth-system","topology_profile":"git-repository","document_ref":null,"repo_ref":"$COLLAB/wealth-system","evidence":["$COLLAB/wealth-system/.git"],"last_verified_at":"2026-07-20","notes":"Canonical Git repository."},
+    {"id":"yutianlaw","path_label":"$COLLAB/yutianlaw","classification":"canonical_project","migration_state":"inventory_only","project_home_ref":"$COLLAB/yutianlaw","topology_profile":"git-repository","document_ref":null,"repo_ref":"$COLLAB/yutianlaw","evidence":["$COLLAB/yutianlaw/.git"],"last_verified_at":"2026-07-20","notes":"Canonical Git repository."},
+    {"id":"yutianlaw-comingsoon","path_label":"$COLLAB/yutianlaw_comingsoon","classification":"canonical_project","migration_state":"inventory_only","project_home_ref":"$COLLAB/yutianlaw_comingsoon","topology_profile":"git-repository","document_ref":null,"repo_ref":"$COLLAB/yutianlaw_comingsoon","evidence":["$COLLAB/yutianlaw_comingsoon/.git"],"last_verified_at":"2026-07-20","notes":"Canonical Git repository."},
+    {"id":"digital-operations-architect","path_label":"$COLLAB/數位營運架構師","classification":"unknown","migration_state":"not_assessed","project_home_ref":null,"topology_profile":null,"document_ref":null,"repo_ref":null,"evidence":["$COLLAB/數位營運架構師"],"last_verified_at":"2026-07-20","notes":"Unclassified local directory; no root Git metadata detected."}
+  ]
+}

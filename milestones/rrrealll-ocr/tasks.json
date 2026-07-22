@@ -1,0 +1,90 @@
+{
+  "project": "rrrealll-ocr",
+  "tasks": [
+    {
+      "id": "p0-bootstrap-existing-root",
+      "title": "將既有 RRREALLL OCR 資料夾建立為唯一 project home",
+      "status": "in_progress",
+      "track": "bootstrap",
+      "order_label": "RRO-01",
+      "priority": "P0",
+      "capability_domain": "direction-governance",
+      "task_kind": "decide",
+      "dependencies": [],
+      "done_condition": "$COLLAB/rrrealll-ocr 已是 Git project root、or/ 未被搬移或覆寫，Topology Registry 將其標為 canonical_project 並通過 health check。",
+      "acceptance": [
+        "根目錄有 Git metadata，且 git status 可在不讀取秘密的情況下執行。",
+        "or/meeting-260722.md、or/OCR-思考脈絡.md、or/database 與 AI Studio prototype 均保留原位置。",
+        "Topology Registry 對 $COLLAB/rrrealll-ocr 的 record 有唯一 canonical_project home 與 evidence。"
+      ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "Vincent 指定 $COLLAB/rrrealll-ocr 作為現有資料夾 project home",
+          "Project Topology Registry 對 existing unknown root 的分類規則",
+          "洗髮精 OCR 原始需求、資料與 prototype"
+        ],
+        "decision_output": "唯一 project home、可追溯的 Git root 與不搬移原始來源的 bootstrap boundary。",
+        "execution_boundary": "只可建立本地 Git metadata、README 與 project boundary；不得讀取 secrets、建立外部 repo、選定部署平台、上傳資料或修改原始資料內容。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 指定直接使用既有 RRREALLL OCR 資料夾並以一週為成果目標；在任何產品程式或資料遷移前，先建立唯一 project home 與可驗證的來源邊界。",
+            "evidence_refs": [
+              "$COLLAB/rrrealll-ocr/or/meeting-260722.md",
+              "$COLLAB/rrrealll-ocr/or/OCR-思考脈絡.md",
+              "$COLLAB/rrrealll-ocr/or/database/table.md",
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json"
+            ],
+            "recorded_at": "2026-07-22",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/project-topology-architecture-atlas",
+                "morrowise/morrowise-project-init-v1"
+              ],
+              "scope_comparison": {
+                "problem": "Topology task 管全域資料夾分類，project-init task 管開案機制；兩者都不擁有 RRREALLL 的產品範圍與既有來源邊界。",
+                "owner_source_of_truth": "RRREALLL project.json 與 tasks.json 是本案的成果與任務正本；Topology Registry 只保存 root classification；or/ 保留原始來源。",
+                "inputs_outputs": "輸入是既有資料夾、原始需求與資料庫 export；輸出是單一 Git project home、project contract 與後續可追蹤的產品 work anchor。",
+                "lifecycle_completion": "bootstrap 完成需 root Git metadata、來源未搬移、registry classification 與 health check；產品功能與部署另開後續 task。"
+              },
+              "decision_reason": "這是新的外部產品 project，而非對既有 MorroWise topology 或 project-init 能力的 amendment。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-22",
+                "evidence_refs": [
+                  "Vincent 2026-07-22 current session: 直接用這個資料夾 $COLLAB/rrrealll-ocr/",
+                  "Vincent 2026-07-22 current session: 成果目標日 1週後"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "hc_decision": {
+        "task_scope": "rrrealll-ocr/p0-bootstrap-existing-root",
+        "hc_refs": ["#rightProblem", "#sourceBoundary", "#risk"],
+        "hc_reasoning": "先把既有來源與新 project home 的邊界固定，避免重複 repo 或為了整理而搬移尚需追溯的原始資料；產品功能從這個可驗證邊界再往前推進。",
+        "hc_confidence": 0.94,
+        "evidence_refs": [
+          "$COLLAB/rrrealll-ocr/or/meeting-260722.md",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json"
+        ],
+        "source_boundary": "HC 只作思考檢查；project contract、canonical task、Topology Registry 與原始資料各自維持正本邊界。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "project": {
+    "name": "RRREALLL 洗髮精成分掃描",
+    "description": "以 OCR 與專家規則把洗髮精成分轉為大眾可理解的判讀結果。",
+    "type": "standalone",
+    "status": "active",
+    "priority": "P0",
+    "created": "2026-07-22",
+    "estimated_completion": "2026-07-29",
+    "project_home": "$COLLAB/rrrealll-ocr",
+    "tracks": {
+      "bootstrap": "開案與資料邊界",
+      "product": "洗髮精判讀產品",
+      "quality": "驗收與發布準備"
+    },
+    "outcome": {
+      "problem_statement": "一般消費者看不懂洗髮精成分表，也無法把風險提示轉成選購判斷。",
+      "impact": "消費者在賣場掃描後仍會因資訊生硬而無法比較產品，增加選擇困難與對爭議成分的焦慮。",
+      "success_target": {
+        "metric": "資料庫 150 個 INCI、400 個別名與 80 條洗髮精規則皆可載入，並完成貼上文字、上傳圖片、相機掃描三種入口到五維判讀的驗收。",
+        "baseline": "現有 AI Studio prototype 使用 41 條靜態規則與本機 JSON，未串接提供的資料庫。",
+        "target": "150/150 INCI、400/400 別名、80/80 規則驗證通過，三種入口各完成一條端到端驗收。",
+        "due": "2026-07-29"
+      },
+      "measurement_source": "$COLLAB/rrrealll-ocr/or/database/{inci_core_rows.csv,inci_alias_rows.csv,shampoo_rules_rows.csv} 的列數與專案 end-to-end acceptance verifier"
+    },
+    "goals": [
+      "讓一般消費者在一次掃描或貼上後，取得五維指標、爭議成分提示與白話選購說明。",
+      "把 150 個 INCI、400 個 alias、80 條 shampoo rules 納入可驗證的資料讀取與判讀管線。",
+      "建立 unknown alias 的人工審核入口，避免 OCR／新資料直接寫入 canonical ingredient data。"
+    ],
+    "risks": [
+      {
+        "risk": "OCR 文字品質與別名映射不完整會造成錯誤判讀。",
+        "impact": "high",
+        "probability": "medium",
+        "mitigation": "保存原始文字、顯示低信心項目，並把未知 alias 送往人工審核而非自動寫入資料正本。"
+      },
+      {
+        "risk": "一週內同時完成資料、分析、OCR 與部署可能擴張範圍。",
+        "impact": "high",
+        "probability": "medium",
+        "mitigation": "本週僅驗收洗髮精；食品與個人化權重列為後續，不納入本期交付。"
+      },
+      {
+        "risk": "部署平台與正式 Supabase 連線尚未選定。",
+        "impact": "medium",
+        "probability": "high",
+        "mitigation": "先以本機可驗收資料來源與環境變數契約完成產品；部署只在 Vincent 指定平台後執行。"
+      }
+    ],
+    "success_criteria": [
+      {
+        "criterion": "150 個 INCI、400 個 alias、80 條 shampoo rule 的 source-data contract 可重跑驗證。",
+        "verify_cmd": "end-to-end acceptance verifier",
+        "expected": "150/150、400/400、80/80 全數通過。"
+      },
+      {
+        "criterion": "三種輸入入口都能產生五維判讀、爭議提示與可讀說明。",
+        "verify_cmd": "end-to-end acceptance verifier",
+        "expected": "貼上文字、上傳圖片、相機掃描各有一條成功 fixture。"
+      },
+      {
+        "criterion": "未知 alias 與低信心 OCR 不會直接更新 ingredient canonical data。",
+        "verify_cmd": "data-boundary acceptance verifier",
+        "expected": "只產生人工審核候選或明確的未辨識結果。"
+      }
+    ],
+    "decisions": [
+      {
+        "topic": "本期產品範圍",
+        "decision": "本週只交付洗髮精成分判讀；食品與個人化權重延後。",
+        "reason": "使用者當前痛點、資料庫與 80 條規則都聚焦洗髮精；加入食品會稀釋一週成果。",
+        "alternatives_rejected": [
+          "同步擴及食品：缺少同等規則與驗收資料。"
+        ],
+        "hc_used": ["#rightProblem", "#constraints"]
+      },
+      {
+        "topic": "專案 home 與既有素材",
+        "decision": "$COLLAB/rrrealll-ocr 是唯一 project home；or/ 保留原始需求、資料與 AI Studio prototype，不以搬移取代盤點。",
+        "reason": "Vincent 已指定直接使用此資料夾，且 topology gate 要求既有來源先保留可追溯邊界。",
+        "alternatives_rejected": [
+          "另 clone 同名 standalone repo：會形成第二個 project home。"
+        ],
+        "hc_used": ["#sourceBoundary", "#risk"]
+      },
+      {
+        "topic": "資料寫入邊界",
+        "decision": "OCR 與 alias 比對只產生候選；canonical ingredient 與 rule data 僅經人工審核更新。",
+        "reason": "原始需求明確禁止新資料直接寫入正式資料庫，且 OCR 有不確定性。",
+        "alternatives_rejected": [
+          "掃描後自動新增 alias：會污染成分正本。"
+        ],
+        "hc_used": ["#risk", "#feedbackLoops"]
+      },
+      {
+        "topic": "系統成長迴路",
+        "decision": "每次分析以輸入成分為 trigger，經正規化與 80-rule 判讀輸出結果；未知 alias 與低信心項目進人工審核隊列，審核後才回饋資料正本。",
+        "reason": "讓資料擴充有可驗證的 source → process → output → feedback 邊界，而不是依賴人工記憶。",
+        "alternatives_rejected": [
+          "只在 UI 顯示未辨識成分、不留審核脈絡：無法改善後續匹配率。"
+        ],
+        "hc_used": ["#systemDynamics", "#feedbackLoops"]
+      }
+    ]
+  }
+}

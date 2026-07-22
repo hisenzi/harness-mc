@@ -4374,6 +4374,42 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "/projects regression test 納入 package prebuild 後改變既有 JV-32 受管 package contract fingerprint。此為 MW-PI-01 已有 Admission Review 的 version improvement：只刷新既有 Admission Record 與 generated thin index，不新增 subsystem、不改 project-init 成果契約。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/package.json",
+              "$COLLAB/harness-mc/app/projects/projectFilters.test.mjs",
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
+              "Vincent 2026-07-22 current session: MC上沒看到 RRREALLL 洗髮精成分掃描"
+            ],
+            "recorded_at": "2026-07-22",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-project-init-v1",
+                "morrowise/morrowise-dev-workflow-catalog",
+                "harness-mc/projects-default-complete-visibility"
+              ],
+              "scope_comparison": {
+                "problem": "沒有新的 architecture 問題；只因受管 package contract 多了一個 regression test，而需要更新既有 fingerprint。",
+                "owner_source_of_truth": "MW-PI-01 保持 package contract 的既有 Admission Review owner；JV-32 Admission Record 保持 version review 正本；ARCHITECTURE.md 保持 generated index。",
+                "inputs_outputs": "輸入是 project filter test/prebuild 變更與 stale fingerprint；輸出是同一 Admission Record 的最新 fingerprint 與 index sync evidence。",
+                "lifecycle_completion": "task 保持 completed；本 amend 不重新開啟 project-init、不改 weekly core，也不把 UI bug 說成新 architecture subsystem。"
+              },
+              "decision_reason": "既有 MW-PI-01 已明確承接完整 package.json contract 的 Admission Review；本次只需 amend 同一 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-22",
+                "evidence_refs": [
+                  "Vincent 2026-07-22 current session: MC上沒看到 RRREALLL 洗髮精成分掃描"
+                ]
+              }
+            }
           }
         ]
       },

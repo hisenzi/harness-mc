@@ -229,8 +229,8 @@
           "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
           "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
         ],
-        "contract_fingerprint": "9e090ff603e5e45f",
-        "index_action": "no_index_change",
+        "contract_fingerprint": "8ae351af21bd8452",
+        "index_action": "updated",
         "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
         "evidence_refs": [
           "npm run build",
@@ -238,13 +238,14 @@
           "npm run build in isolated single-repo worktree",
           "npm run test:morrowise-auditor-isolated",
           "npm run test:architecture-subsystems",
+          "npm run test:project-filters",
           "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
           "922c84f",
           "1ef799c",
           "433a972",
           "0bb51b3"
         ],
-        "reason": "2026-07-21 已合入的 JV-32 provenance CI portability、fresh-worktree COLLAB resolution、auditor portability 與 topology gate 改變了既有受管 contract refs；本次只刷新同一 Admission Record 的 fingerprint 與驗證日期。既有 subsystem owner、安全邊界、workflow semantics 與 ARCHITECTURE.md 薄索引文字均未改變。"
+        "reason": "2026-07-22 的 /projects regression test 被納入 package prebuild，因 package.json 是既有受管 contract ref 而需要刷新同一 Admission Record 的 fingerprint 與 generated thin index。既有 subsystem owner、安全邊界與 workflow semantics 均未改變。"
       },
       "supersedes": [],
       "superseded_by": null

@@ -2342,7 +2342,13 @@
     {
       "id": "projects-default-complete-visibility",
       "title": "修正 /projects 預設篩選隱藏已完成專案",
-      "status": "in_progress",
+      "status": "completed",
+      "completed_at": "2026-07-22",
+      "commits": [
+        "46497da",
+        "279ca8b"
+      ],
+      "summary": "修正 /projects 的 default all 與領域篩選不再排除已完成專案，預設標題改為『專案清單』；3 個 regression tests、production build、origin/main、Pages workflow 29934978761 與 live RRREALLL 2/2 record 均已驗證。",
       "track": "phase-1",
       "priority": "high",
       "dependencies": [
@@ -2418,6 +2424,20 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "完成 A01–A05：all／領域篩選保留 completed project，completed filter 與 UI 文案維持正確；回歸測試、production build、origin/main、GitHub Pages 與公開 RRREALLL read model 已逐一驗證。",
+            "evidence_refs": [
+              "46497da",
+              "npm run test:project-filters (3/3 pass)",
+              "npm run build (2026-07-22 pass)",
+              "https://github.com/hisenzi/harness-mc/actions/runs/29934978761",
+              "https://hisenzi.github.io/harness-mc/data/projects.json"
+            ],
+            "recorded_at": "2026-07-22"
           }
         ]
       },
@@ -2438,7 +2458,7 @@
         ],
         "source_boundary": "HC 只作思考檢查；projects.json 是 generated read model，RRREALLL contract 是內容正本，harness-mc task 與 UI source 才是本修正的 canonical scope。"
       },
-      "note": "2026-07-22 根因已重現：live rrrealll-ocr 為 active、2/2；default all 不顯示它，completed filter 顯示它。"
+      "note": "2026-07-22 根因已重現並修正：live rrrealll-ocr 為 active、2/2；原 default all 不顯示它，修正後 all 與領域篩選都保留它。"
     }
   ]
 }

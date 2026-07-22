@@ -207,10 +207,10 @@
       "degraded_state": "catalog registry/schema/verifier/read model 缺失、semantic intake 可繞過、同時存在多個 weekly core、到期 review 可自動延長、adapter_only 誤標為 accepted、close_rule 缺失或薄索引被手寫細節時，必須維持 deferred/degraded。",
       "architecture_decision": "promoted",
       "last_promoted_at": "2026-07-08",
-      "last_verified_at": "2026-07-21",
+      "last_verified_at": "2026-07-22",
       "version_review": {
         "scope": "version_improvement",
-        "reviewed_at": "2026-07-21",
+        "reviewed_at": "2026-07-22",
         "contract_refs": [
           "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
           "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json",
@@ -229,7 +229,7 @@
           "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
           "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
         ],
-        "contract_fingerprint": "bd2f9ccdac23737e",
+        "contract_fingerprint": "9e090ff603e5e45f",
         "index_action": "no_index_change",
         "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
         "evidence_refs": [
@@ -238,9 +238,13 @@
           "npm run build in isolated single-repo worktree",
           "npm run test:morrowise-auditor-isolated",
           "npm run test:architecture-subsystems",
-          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
+          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+          "922c84f",
+          "1ef799c",
+          "433a972",
+          "0bb51b3"
         ],
-        "reason": "GitHub Pages 單 repo build 證明 auditor generator 曾把完整 $COLLAB sibling layout 誤當 CI 必備條件。此次僅將 auditor 的 $COLLAB 解析改為在單 repo checkout 退回其父目錄：harness-mc 正本仍可解析，外部 provenance 會如實產生 source_missing finding，不得冒充已驗證。新增 isolated-checkout regression 並接入 prebuild；完整雙 repo auditor verifier 維持不放寬。此為既有 JV-32 contract 的可攜性版本修正，不新增子系統或改變 ARCHITECTURE.md 薄索引文字。"
+        "reason": "2026-07-21 已合入的 JV-32 provenance CI portability、fresh-worktree COLLAB resolution、auditor portability 與 topology gate 改變了既有受管 contract refs；本次只刷新同一 Admission Record 的 fingerprint 與驗證日期。既有 subsystem owner、安全邊界、workflow semantics 與 ARCHITECTURE.md 薄索引文字均未改變。"
       },
       "supersedes": [],
       "superseded_by": null

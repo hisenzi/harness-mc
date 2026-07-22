@@ -4302,6 +4302,45 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "RRREALLL OCR 的 MC 發布 build 發現既有 JV-32 Admission Record 在 2026-07-21 合入 topology／CI portability contract 後仍保留舊 fingerprint。此為既有 MW-PI-01 的 deployment closeout 修正：只刷新同一組受管 contract 的 version review 與驗證證據，不重開 project-init、不改變成果契約或新增 architecture subsystem。",
+            "evidence_refs": [
+              "922c84f",
+              "1ef799c",
+              "433a972",
+              "0bb51b3",
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
+              "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs",
+              "Vincent 2026-07-22 current session: 重建 MC 資料並部署"
+            ],
+            "recorded_at": "2026-07-22",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-project-init-v1",
+                "morrowise/morrowise-dev-workflow-catalog",
+                "morrowise/project-topology-architecture-atlas"
+              ],
+              "scope_comparison": {
+                "problem": "部署前 verifier 阻擋的是既有 promoted JV-32 contract 的 review metadata 過期，不是 RRREALLL 產品內容或新的 project-init 能力缺漏。",
+                "owner_source_of_truth": "MW-PI-01 保持 project-init contract owner；JV-32 Admission Record 保持 version review 正本；ARCHITECTURE.md 保持受控 generated index。",
+                "inputs_outputs": "輸入是已合入的 contract ref 變更與 stale fingerprint；輸出是相同 Admission Record 的最新 fingerprint、verifier evidence 與無索引語意變更結論。",
+                "lifecycle_completion": "MW-PI-01 維持 completed；本 amend 只消除 deployment gate 的 metadata drift，不新增 active MorroWise work 或延長任何 weekly core。"
+              },
+              "decision_reason": "現有 task 已明確擁有 project-init 對完整 package.json／JV-32 contract 的 Admission Review closeout；此次是同一受管 contract 的後續 fingerprint refresh，因此為 amend 而非新 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-22",
+                "evidence_refs": [
+                  "Vincent 2026-07-22 current session: 重建 MC 資料並部署"
+                ]
+              }
+            }
           }
         ]
       },

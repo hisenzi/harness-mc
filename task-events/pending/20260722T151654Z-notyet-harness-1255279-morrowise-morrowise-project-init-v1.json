@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-project-init-v1-1255279-20260722T151654Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "1255279",
+  "project": "morrowise",
+  "task_id": "morrowise-project-init-v1",
+  "status": "updated",
+  "summary": "Synchronized the generated Architecture subsystem index after the verified JV-32 admission-review refresh.",
+  "created_at": "2026-07-22T15:16:54Z",
+  "actor": "codex",
+  "session_id": "codex-rrrealll-ocr-20260722"
+}

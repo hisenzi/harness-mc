@@ -4341,6 +4341,39 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "附加 0089c44 作為既有 MW-PI-01 Admission Review refresh 的本機 commit evidence；task 維持 completed，沒有改變 project-init 範圍或架構決策。",
+            "evidence_refs": [
+              "0089c44",
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog"
+            ],
+            "recorded_at": "2026-07-22",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-project-init-v1",
+                "morrowise/morrowise-dev-workflow-catalog"
+              ],
+              "scope_comparison": {
+                "problem": "沒有新問題；只補既有 version-review closeout 的 commit evidence。",
+                "owner_source_of_truth": "MW-PI-01 task 與 JV-32 Admission Record 保持各自正本角色。",
+                "inputs_outputs": "輸入是已完成的 0089c44；輸出是 task commit linkage。",
+                "lifecycle_completion": "task 仍為 completed，無新功能、無新 subsystem、無 active work。"
+              },
+              "decision_reason": "這是同一 completed task 的 commit evidence 補登，因此為 amend。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-22",
+                "evidence_refs": [
+                  "Vincent 2026-07-22 current session: 重建 MC 資料並部署"
+                ]
+              }
+            }
           }
         ]
       },
@@ -4384,7 +4417,8 @@
       },
       "commits": [
         "884feda",
-        "1690f46"
+        "1690f46",
+        "0089c44"
       ],
       "completed_at": "2026-07-20",
       "summary": "開案 v1 已將問題、影響、量化目標與量測來源設為必填成果契約；starter tasks 具 taxonomy 與 deterministic 順序，MC `/projects` 可進入唯讀 Operating Loop Map，對應正負向 verifier 均已通過。",

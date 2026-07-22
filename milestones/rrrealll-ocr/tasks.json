@@ -134,6 +134,8 @@
       "priority": "P0",
       "capability_domain": "delivery",
       "task_kind": "operate",
+      "commits": ["968cdb6"],
+      "note": "2026-07-22：本機 generator、PAI taxonomy、Admission Review、architecture sync 與 Pages build 已通過；待 origin/main 與 live GitHub Pages 驗證。",
       "dependencies": ["p0-bootstrap-existing-root"],
       "done_condition": "MC 的 generated projects read model 與 GitHub Pages 部署都能讀到 rrrealll-ocr 的完整專案識別、PAI 領域與 bootstrap 任務；2026-07-29 目標日維持在 canonical project contract，不宣稱未部署的產品功能已完成。",
       "acceptance": [
@@ -186,6 +188,39 @@
                 "lifecycle_completion": "只有 local data、build、origin/main 與 live JSON 都驗證後才能完成；不把部署 MC 等同產品功能發布。"
               },
               "decision_reason": "此任務是完成已開案內容的 MC 可見性與部署驗證，與 root bootstrap 或 project-init 機制本身不同。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-22",
+                "evidence_refs": [
+                  "Vincent 2026-07-22 current session: 重建 MC 資料並部署"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "附加 968cdb6 與本機 build evidence；GitHub Pages 尚未部署驗證，任務保持 in_progress。",
+            "evidence_refs": [
+              "968cdb6",
+              "npm run build",
+              "$COLLAB/harness-mc/public/data/projects.json"
+            ],
+            "recorded_at": "2026-07-22",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "rrrealll-ocr/p1-publish-mc-read-model"
+              ],
+              "scope_comparison": {
+                "problem": "MC read model 已在本機驗證，但尚缺 origin/main 與 live Pages 證據。",
+                "owner_source_of_truth": "RRREALLL project contract 與 task 保持正本；generated JSON 與 Pages 只是 read-only delivery surfaces。",
+                "inputs_outputs": "輸入是 968cdb6、local generator 與 build evidence；輸出是可追溯的 publish commit linkage。",
+                "lifecycle_completion": "A04 尚未完成，故 task 不可標 completed。"
+              },
+              "decision_reason": "只追加同一發布任務的本機 commit evidence，未改變範圍或完成狀態。",
               "approval": {
                 "status": "approved",
                 "approved_by": "Vincent",

@@ -4,7 +4,9 @@
     {
       "id": "p0-bootstrap-existing-root",
       "title": "將既有 RRREALLL OCR 資料夾建立為唯一 project home",
-      "status": "in_progress",
+      "status": "completed",
+      "completed_at": "2026-07-22",
+      "summary": "既有資料夾已成為唯一 RRREALLL OCR Git project home；原始需求、資料庫 export 與 AI Studio prototype 均保留在 or/，Topology Registry 已可驗證其 canonical classification。",
       "track": "bootstrap",
       "order_label": "RRO-01",
       "priority": "P0",
@@ -68,6 +70,43 @@
                 "evidence_refs": [
                   "Vincent 2026-07-22 current session: 直接用這個資料夾 $COLLAB/rrrealll-ocr/",
                   "Vincent 2026-07-22 current session: 成果目標日 1週後"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "已建立 $COLLAB/rrrealll-ocr 的本地 Git root 與 README／ignore boundary，並確認原始需求、資料庫 export 與 prototype 未被搬移；registry 可安全升格為 canonical_project。",
+            "evidence_refs": [
+              "$COLLAB/rrrealll-ocr/.git",
+              "$COLLAB/rrrealll-ocr/README.md",
+              "$COLLAB/rrrealll-ocr/or/meeting-260722.md",
+              "$COLLAB/rrrealll-ocr/or/OCR-思考脈絡.md",
+              "$COLLAB/rrrealll-ocr/or/database/table.md",
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json"
+            ],
+            "recorded_at": "2026-07-22",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/project-topology-architecture-atlas",
+                "morrowise/morrowise-project-init-v1"
+              ],
+              "scope_comparison": {
+                "problem": "沒有改變本案問題，只完成既有 bootstrap 的 root identity、來源邊界與分類驗收。",
+                "owner_source_of_truth": "RRREALLL project contract 與 task 保持本案正本；Topology Registry 保存唯一 root classification；or/ 保持來源內容。",
+                "inputs_outputs": "輸入是已建立的本地 Git metadata、README 與來源完整性證據；輸出是 verified canonical_project record 與完成的 bootstrap task。",
+                "lifecycle_completion": "bootstrap 到此完成；資料契約、分析引擎、三種輸入與部署需要各自的新 task 與驗收。"
+              },
+              "decision_reason": "這是同一 bootstrap task 的可驗證完成，不引入新的 product scope 或共享治理能力。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-22",
+                "evidence_refs": [
+                  "Vincent 2026-07-22 current session: 直接用這個資料夾 $COLLAB/rrrealll-ocr/"
                 ]
               }
             }

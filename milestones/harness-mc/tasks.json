@@ -2338,6 +2338,107 @@
         "source_boundary": "HC 只是思考檢查，不是正本；MorroWise tasks.json 是行動正本，priority read model 是 generated source，harness-mc dashboard 只是唯讀 surface。"
       },
       "note": "本 task 是最後一層 harness-mc surface，不是 priority、heartbeat 或 decision 的正本。只在上游 read model 已有 generator/verifier 且可 fresh-build 後實作；JV-41 保持 todo，不在此建立或修改 skill。"
+    },
+    {
+      "id": "projects-default-complete-visibility",
+      "title": "修正 /projects 預設篩選隱藏已完成專案",
+      "status": "in_progress",
+      "track": "phase-1",
+      "priority": "high",
+      "dependencies": [
+        "projects-completed-filter-task-progress-bug",
+        "projects-pai-domain-filter-alignment"
+      ],
+      "done_condition": "`all` 與 PAI 領域篩選均保留已完成專案；`completed` 仍只顯示 task 完成度為 100% 的專案，且 UI 文案、可重跑測試、production build 與 live GitHub Pages 都能驗證。",
+      "acceptance": [
+        "A01｜`getDisplayedProjects(projects, \"all\")` 包含 RRREALLL 這類 done === total 的專案。",
+        "A02｜PAI 領域篩選只依領域過濾，不再因專案完成而隱藏；`completed` 篩選仍只顯示 done === total。",
+        "A03｜/projects 的預設清單標題不再把 all 篩選誤標為『進行中』。",
+        "A04｜新增可重跑的 filter regression test，先重現已完成專案被 all 隱藏，再以最小修正通過。",
+        "A05｜production build、origin/main、GitHub Pages Actions 與 live projects.json 驗證完成；不得把 RRREALLL 產品功能或資料庫狀態混入此 UI 修正。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/app/projects/page.tsx",
+        "$COLLAB/harness-mc/app/projects/projectFilters.mjs",
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#projects-completed-filter-task-progress-bug",
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#projects-pai-domain-filter-alignment",
+        "https://hisenzi.github.io/harness-mc/data/projects.json"
+      ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "verification-before-completion",
+          "closeout-commit-routing",
+          "cc-push"
+        ],
+        "decision_input": [
+          "Vincent 2026-07-22 current session: MC上沒看到 RRREALLL 洗髮精成分掃描",
+          "live projects.json：rrrealll-ocr status=active, done=2, total=2",
+          "app/projects/projectFilters.mjs：default all 排除 isProjectComplete"
+        ],
+        "decision_output": "一致且可驗證的 /projects 預設、領域與已完成篩選行為。",
+        "execution_boundary": "只修改 harness-mc 的 /projects 篩選、文案與 regression test，以及必要 task evidence；不得修改 RRREALLL 產品資料、讀取 secrets、建立外部服務或混入既有 generated public/data 異動。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 回報已部署的 RRREALLL 專案在 MC 看不到。根因驗證顯示資料存在且 Pages 成功，但 /projects 的 default all 呼叫會排除 done === total 的專案；需以獨立 surface task 修正，不能回寫或重開已完成的 RRREALLL 發布 task。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/app/projects/projectFilters.mjs",
+              "https://hisenzi.github.io/harness-mc/data/projects.json",
+              "Vincent 2026-07-22 current session: MC上沒看到 RRREALLL 洗髮精成分掃描"
+            ],
+            "recorded_at": "2026-07-22",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "harness-mc/projects-completed-filter-task-progress-bug",
+                "harness-mc/projects-pai-domain-filter-alignment",
+                "rrrealll-ocr/p1-publish-mc-read-model"
+              ],
+              "scope_comparison": {
+                "problem": "既有 completed task 修正的是 project.status 與 task progress 的衝突；本次是 default all 將真正完成專案完全排除，問題與驗收不同。",
+                "owner_source_of_truth": "RRREALLL contract 與 generated projects.json 維持資料正本／read model 角色；本 task 只擁有 harness-mc 的 /projects display filter。",
+                "inputs_outputs": "輸入是 deployed projects.json、projectFilters 行為與使用者回報；輸出是可重跑的 filter regression test 與正確 UI 可見性。",
+                "lifecycle_completion": "完成條件是 UI filter、文案、local build、remote deploy 與 live evidence；不修改產品功能、OCR 或資料庫狀態。"
+              },
+              "decision_reason": "問題、owner、輸入輸出與完成邊界均不同於既有 completed filter task 和 RRREALLL 發布 task，因此建立唯一 harness-mc surface task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-22",
+                "evidence_refs": [
+                  "Vincent 2026-07-22 current session: MC上沒看到 RRREALLL 洗髮精成分掃描"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "hc_decision": {
+        "task_scope": "harness-mc/projects-default-complete-visibility",
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#systemDynamics",
+          "#evidenceBased"
+        ],
+        "hc_reasoning": "真正問題不是 RRREALLL 的 canonical data 缺漏，而是 default all 的 UI semantics 與使用者期待相反。#rightProblem 將修正鎖在 filter visibility；#sourceBoundary 保持 milestones/read model 為正本、UI 只讀；#systemDynamics 確認 source → generated JSON → Pages 正常，斷點只在 surface filter；#evidenceBased 要求先紅測再改，並以部署後 live data 重驗。",
+        "hc_confidence": 0.97,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/app/projects/projectFilters.mjs",
+          "$COLLAB/harness-mc/app/projects/page.tsx",
+          "https://hisenzi.github.io/harness-mc/data/projects.json"
+        ],
+        "source_boundary": "HC 只作思考檢查；projects.json 是 generated read model，RRREALLL contract 是內容正本，harness-mc task 與 UI source 才是本修正的 canonical scope。"
+      },
+      "note": "2026-07-22 根因已重現：live rrrealll-ocr 為 active、2/2；default all 不顯示它，completed filter 顯示它。"
     }
   ]
 }

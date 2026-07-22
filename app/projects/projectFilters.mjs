@@ -9,7 +9,9 @@ export function filterProjectsByDomain(projects, domainFilter) {
 }
 
 export function getDisplayedProjects(projects, domainFilter) {
-  const filtered = filterProjectsByDomain(projects, domainFilter);
-  if (domainFilter === "completed") return filtered;
-  return filtered.filter((project) => !isProjectComplete(project));
+  return filterProjectsByDomain(projects, domainFilter);
+}
+
+export function getProjectsSectionLabel(domainFilter) {
+  return domainFilter === "completed" ? "已完成" : "專案清單";
 }

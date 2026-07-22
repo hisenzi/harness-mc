@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { StatusDot } from "../components/StatusDot";
-import { getDisplayedProjects } from "./projectFilters.mjs";
+import { getDisplayedProjects, getProjectsSectionLabel } from "./projectFilters.mjs";
 import { sortTasksByPlan } from "../../lib/taskOrdering.mjs";
 
 interface Task {
@@ -238,7 +238,7 @@ export default function ProjectsPage() {
       </div>
 
       <div className="flex items-center gap-3 mb-3">
-        <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">{domainFilter === "completed" ? "已完成" : "進行中"}</div>
+        <div className="text-[13px] font-medium tracking-wide text-[var(--text)]">{getProjectsSectionLabel(domainFilter)}</div>
         <div className="text-[11px] text-[var(--text-muted)]">{displayed.length} 專案</div>
         <div className="flex-1 border-t border-[var(--border)]"></div>
       </div>

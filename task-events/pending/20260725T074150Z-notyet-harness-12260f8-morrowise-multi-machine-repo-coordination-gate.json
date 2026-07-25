@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-multi-machine-repo-coordination-gate-12260f8-20260725T074150Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "12260f8",
+  "project": "morrowise",
+  "task_id": "multi-machine-repo-coordination-gate",
+  "status": "updated",
+  "summary": "JV-37 amend attached: legacy skill entry points now enforce branch-first exception preflight; task remains todo.",
+  "created_at": "2026-07-25T07:41:50.100Z",
+  "actor": "codex",
+  "session_id": "codex-phase1-integration-handoff-20260725"
+}

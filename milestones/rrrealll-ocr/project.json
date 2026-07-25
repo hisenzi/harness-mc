@@ -1,134 +1,107 @@
 {
-    "name": "RRREALLL 洗髮精成分掃描",
-    "description": "以三種輸入、OCR 與版本化專家規則，把洗髮精成分轉為大眾可理解且可追溯的判讀結果。",
-    "type": "standalone",
-    "domain": "臨時",
-    "status": "active",
-    "priority": "P0",
-    "created": "2026-07-22",
-    "estimated_completion": "2026-07-29",
-    "project_home": "$COLLAB/rrrealll-ocr",
-    "tracks": {
-      "bootstrap": "開案與資料邊界",
-      "product": "洗髮精判讀產品",
-      "data": "canonical 成分資料、產品護照與法官審核",
-      "quality": "驗收與發布準備"
+  "name": "RRREALLL 洗髮精成分掃描",
+  "description": "以三種輸入、private scan record、OCR 與版本化專家規則，把洗髮精成分轉為大眾可理解、可追溯且受 Judge gate 保護的判讀結果。",
+  "type": "standalone",
+  "domain": "臨時",
+  "status": "active",
+  "priority": "P0",
+  "created": "2026-07-22",
+  "estimated_completion": "2026-07-29",
+  "project_home": "$COLLAB/rrrealll-ocr",
+  "tracks": {
+    "bootstrap": "開案與資料邊界",
+    "product": "洗髮精判讀產品",
+    "data": "Neon canonical data、private scan record、產品護照與 Judge 審核",
+    "quality": "安全部署、保留治理與發布驗收"
+  },
+  "outcome": {
+    "problem_statement": "一般消費者看不懂洗髮精成分表，也無法把風險提示轉成選購判斷；系統必須在不提供前台歷史的情況下，保存可審核的 private scan evidence。",
+    "impact": "消費者在賣場掃描後仍會因資訊生硬而無法比較產品，且未受治理的 OCR 資料會讓錯誤成分污染後續研究與產品資料。",
+    "success_target": {
+      "metric": "Neon 中的 150 INCI、400 aliases、80 shampoo rules 可由 repo 內 deterministic seed 重建；三種輸入都建立 private scan record、產出可追溯判讀，並只經 Judge approved 提升為產品護照。",
+      "baseline": "既有 prototype 使用靜態規則與本機資料，缺少唯一 canonical database、private record、Judge gate 與可部署的 retention contract。",
+      "target": "150/150 INCI、400/400 aliases、80/80 rules 驗證通過；貼上、上傳、相機各完成一條端到端驗收；所有成功分析進 pending_review，只有 approved 可形成已審核產品護照。",
+      "due": "2026-07-29"
     },
-    "outcome": {
-      "problem_statement": "一般消費者看不懂洗髮精成分表，也無法把風險提示轉成選購判斷。",
-      "impact": "消費者在賣場掃描後仍會因資訊生硬而無法比較產品，增加選擇困難與對爭議成分的焦慮。",
-      "success_target": {
-        "metric": "資料庫 150 個 INCI、400 個別名與 80 條洗髮精規則皆可載入，並完成貼上文字、上傳圖片、相機掃描三種入口到可追溯判讀、無痕一般掃描與 opt-in 產品護照的驗收。",
-        "baseline": "現有 AI Studio prototype 使用 41 條靜態規則與本機 JSON，未串接提供的資料庫。",
-        "target": "150/150 INCI、400/400 別名、80/80 規則驗證通過，三種入口各完成一條端到端驗收，且一般 scan 與產品研究資料的寫入邊界可觀察。",
-        "due": "2026-07-29"
-      },
-      "measurement_source": "$COLLAB/rrrealll-ocr/or/database/{inci_core_rows.csv,inci_alias_rows.csv,shampoo_rules_rows.csv} 的列數、Supabase seed verifier、production end-to-end acceptance verifier",
-      "architecture_path": "$COLLAB/rrrealll-ocr/ARCHITECTURE.md"
+    "measurement_source": "repo 內 db/migrations、db/seed、seed verifier、production end-to-end acceptance verifier 與受控 runtime probes",
+    "architecture_path": "$COLLAB/rrrealll-ocr/ARCHITECTURE.md"
+  },
+  "goals": [
+    "讓一般消費者在一次掃描或貼上後，取得清潔度、溫和度、敏感友善度、爭議成分、完整成分提示與白話說明。",
+    "以 Neon 的 inci_core、inci_alias、shampoo_rules 作為唯一 canonical data，並由 repo 內 deterministic seed 驗證 150／400／80 基準。",
+    "讓每次輸入自動建立 private scan record，保存 input、OCR、正規化與分析版本，同時不提供使用者前台掃描歷史。",
+    "以 Judge queue 阻止 OCR、raw scan 與低信心候選直接污染 canonical data；只有 approved 可提升為研究資料與產品護照。"
+  ],
+  "risks": [
+    {
+      "risk": "外部 OCR provider 的資料保留條款尚未確認，可能不符合 private evidence 與資料保存邊界。",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "provider 選擇與保留條款是 release blocker；未確認前不得宣告可公開發布。"
     },
-    "goals": [
-      "讓一般消費者在一次掃描或貼上後，取得五維指標、爭議成分提示與白話選購說明。",
-      "把 150 個 INCI、400 個 alias、80 條 shampoo rules 納入可驗證的資料讀取與判讀管線。",
-      "建立 unknown alias 的人工審核入口，避免 OCR／新資料直接寫入 canonical ingredient data。",
-      "讓經使用者明確同意且經法官審核的市售配方形成可研究的產品護照，而不把一般 scan history 當資料庫。"
-    ],
-    "risks": [
-      {
-        "risk": "OCR 文字品質與別名映射不完整會造成錯誤判讀。",
-        "impact": "high",
-        "probability": "medium",
-        "mitigation": "顯示低信心與未辨識項目；只有 opt-in submission 可建立候選供人工審核，絕不自動寫入 canonical。"
-      },
-      {
-        "risk": "一週內同時完成資料、分析、OCR 與部署可能擴張範圍。",
-        "impact": "high",
-        "probability": "medium",
-        "mitigation": "本週僅驗收洗髮精；食品與個人化權重列為後續，不納入本期交付。"
-      },
-      {
-        "risk": "Zeabur 與 Supabase 的正式 runtime 尚未部署，且私有影像、RLS、purge 與密鑰邊界未經 live 驗證。",
-        "impact": "high",
-        "probability": "medium",
-        "mitigation": "固定 MVP 為 Zeabur runtime + Supabase Postgres/private Storage；在發布前以 production probe 驗證 RLS、rate limit、影像刪除與 secret isolation。"
-      }
-    ],
-    "success_criteria": [
-      {
-        "criterion": "150 個 INCI、400 個 alias、80 條 shampoo rule 的 source-data contract 可重跑驗證。",
-        "verify_cmd": "end-to-end acceptance verifier",
-        "expected": "150/150、400/400、80/80 全數通過。"
-      },
-      {
-        "criterion": "三種輸入入口都能產生五維判讀、爭議提示與可讀說明。",
-        "verify_cmd": "end-to-end acceptance verifier",
-        "expected": "貼上文字、上傳圖片、相機掃描各有一條成功 fixture。"
-      },
-      {
-        "criterion": "未知 alias 與低信心 OCR 不會直接更新 ingredient canonical data。",
-        "verify_cmd": "data-boundary acceptance verifier",
-        "expected": "只產生人工審核候選或明確的未辨識結果。"
-      },
-      {
-        "criterion": "一般掃描與市售配方研究資料有可驗證的 consent／review 邊界。",
-        "verify_cmd": "data-boundary and product-passport acceptance verifier",
-        "expected": "一般 scan 無歷史；只有 opt-in submission 經 judge review 才可形成產品護照或 canonical candidate。"
-      }
-    ],
-    "decisions": [
-      {
-        "topic": "本期產品範圍",
-        "decision": "本週只交付洗髮精成分判讀；食品與個人化權重延後。",
-        "reason": "使用者當前痛點、資料庫與 80 條規則都聚焦洗髮精；加入食品會稀釋一週成果。",
-        "alternatives_rejected": [
-          "同步擴及食品：缺少同等規則與驗收資料。"
-        ],
-        "hc_used": ["#rightProblem", "#constraints"]
-      },
-      {
-        "topic": "專案 home 與既有素材",
-        "decision": "$COLLAB/rrrealll-ocr 是唯一 project home；or/ 保留原始需求、資料與 AI Studio prototype，不以搬移取代盤點。",
-        "reason": "Vincent 已指定直接使用此資料夾，且 topology gate 要求既有來源先保留可追溯邊界。",
-        "alternatives_rejected": [
-          "另 clone 同名 standalone repo：會形成第二個 project home。"
-        ],
-        "hc_used": ["#sourceBoundary", "#risk"]
-      },
-      {
-        "topic": "資料寫入邊界",
-        "decision": "OCR 與 alias 比對只產生候選；canonical ingredient 與 rule data 僅經人工審核更新。",
-        "reason": "原始需求明確禁止新資料直接寫入正式資料庫，且 OCR 有不確定性。",
-        "alternatives_rejected": [
-          "掃描後自動新增 alias：會污染成分正本。"
-        ],
-        "hc_used": ["#risk", "#feedbackLoops"]
-      },
-      {
-        "topic": "系統成長迴路",
-        "decision": "一般分析只回傳結果；明確 opt-in 的市售配方才可經正規化、judge review 與產品護照形成可研究資料，未知 alias 由 reviewer 核准後才回饋資料正本。",
-        "reason": "讓資料擴充有 consent → evidence → review → canonical feedback 的可驗證邊界，而不是把一般使用者 history 當成研究資料。",
-        "alternatives_rejected": [
-          "直接保存所有 scan：會違反低留存體驗並污染研究資料來源。"
-        ],
-        "hc_used": ["#systemDynamics", "#feedbackLoops"]
-      },
-      {
-        "topic": "MVP runtime 與影像儲存",
-        "decision": "Zeabur 承載 consumer app/API 與 server-side OCR；Supabase Postgres 為 canonical data，Supabase private Storage 為暫時或 opt-in evidence image；不用 Zeabur Volume、R2 或 Neon 作 MVP 資料層。",
-        "reason": "沿用既有 Supabase SQL 資料與管理能力可減少一週內的服務數量，同時保留私有 storage、RLS 與可部署 runtime 邊界。",
-        "alternatives_rejected": [
-          "Zeabur Volume 存使用者影像：不適合作為私有證據與保留治理資料庫。",
-          "MVP 同時導入 R2 或 Neon：增加服務與 source-of-truth 複雜度，沒有立即驗收價值。"
-        ],
-        "hc_used": ["#constraints", "#utility", "#risk"]
-      },
-      {
-        "topic": "產品護照與產品身份",
-        "decision": "研究資料以產品護照保存 market_product、formula version、formula ingredient、submission evidence、analysis run 與 review state；產品身份只以 brand_name + product_name 建立，formula_fingerprint 區分配方版本。",
-        "reason": "市售配方會改版；以版本與來源鏈保存資料，避免同名產品覆寫，同時避免把容量、條碼、銷售地區誤當身份。",
-        "alternatives_rejected": [
-          "用 scans table 同時當使用者歷史與產品資料庫：來源、隱私、版本與審核責任會混在一起。"
-        ],
-        "hc_used": ["#sourceBoundary", "#systemDynamics", "#risk"]
-      }
-    ]
+    {
+      "risk": "OCR 文字品質與別名映射不完整會造成錯誤判讀或錯誤資料回饋。",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "unknown／低信心必須明示；OCR 與 raw scan 只能進 private record 與 Judge queue，不能直接寫入 canonical。"
+    },
+    {
+      "risk": "rejected、duplicate、unresolved、failed 的 retention／purge、Judge SLA 與 signed URL 細節尚未定義。",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "將 retention、purge、權限、去重、backlog 警示與 private bucket policy 納入 RRO-08 release acceptance。"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "Neon schema 與 repo 內 deterministic seed 能重跑建立唯一 canonical data。",
+      "verify_cmd": "seed verifier",
+      "expected": "150/150 INCI、400/400 aliases、80/80 shampoo rules 通過。"
+    },
+    {
+      "criterion": "三種輸入都建立 private scan record 並產出含版本、unknown safety 與白話說明的初步判讀。",
+      "verify_cmd": "end-to-end acceptance verifier",
+      "expected": "貼上文字、上傳圖片、相機掃描各有一條成功 fixture；前台沒有 scan history。"
+    },
+    {
+      "criterion": "Judge gate 保護 canonical data 與產品護照。",
+      "verify_cmd": "data-boundary and product-passport acceptance verifier",
+      "expected": "所有成功分析進 pending_review；只有 approved 可提升，其他決策與 failed 保持可追溯且受 retention policy 管理。"
+    },
+    {
+      "criterion": "runtime、private evidence 與 secrets boundary 可驗證。",
+      "verify_cmd": "production security and retention acceptance verifier",
+      "expected": "Neon 是唯一 database、Object Storage evidence 保持 private、browser／repo／log 沒有 credential，retention／purge 與 signed URL policy 已實測。"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "本期產品範圍",
+      "decision": "本週只交付洗髮精成分判讀；食品、個人偏好權重、B2B 顯示控制與產品比較延後。",
+      "reason": "現有成果目標與可驗證資料只支援洗髮精；擴張範圍會稀釋一週內可驗收的交付。",
+      "alternatives_rejected": ["同步擴及食品或比較：缺少同等規則、資料與驗收證據。"],
+      "hc_used": ["#rightProblem", "#constraints"]
+    },
+    {
+      "topic": "scan record 與 Judge gate",
+      "decision": "每次掃描都自動建立 private scan record；成功分析一律 pending_review，僅 Judge approved 能形成研究資料或已審核產品護照。",
+      "reason": "保留完整可追溯 evidence，同時不讓 consumer 前台歷史或 OCR 候選直接成為資料正本。",
+      "alternatives_rejected": ["讓使用者選擇是否提交", "把一般 scan 當成無持久化 request", "OCR 自動新增 canonical alias"],
+      "hc_used": ["#sourceBoundary", "#systemDynamics", "#risk"]
+    },
+    {
+      "topic": "canonical data 與部署邊界",
+      "decision": "Neon PostgreSQL 是唯一 canonical database；Zeabur／Linode Tokyo 提供單一 web + API service；Zeabur Object Storage private bucket 保存圖片 evidence。",
+      "reason": "將資料、runtime、證據與 secret boundary 明確分層，避免第二正本、公開 evidence 或本機持久化取代受治理的資料服務。",
+      "alternatives_rejected": ["自架資料庫", "以 app Volume 保存證據", "公開圖片 URL", "browser 或 repo 持有 service credential"],
+      "hc_used": ["#constraints", "#sourceBoundary", "#risk"]
+    },
+    {
+      "topic": "產品護照 identity",
+      "decision": "產品 identity 只用 brand_name + product_name；條碼可保存但不參與 identity，容量與銷售地區排除；formula_fingerprint 管理配方版本。",
+      "reason": "使同名產品的配方演變可追溯，避免不穩定商業欄位造成錯誤去重或覆寫。",
+      "alternatives_rejected": ["以容量、條碼或銷售地區作 identity", "以新掃描覆寫既有配方"],
+      "hc_used": ["#sourceBoundary", "#systemDynamics"]
+    }
+  ]
 }

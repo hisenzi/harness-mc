@@ -274,10 +274,10 @@
     },
     {
       "id": "p2-architecture-product-passport-contract",
-      "title": "確立正式產品架構、資料雙通道與產品護照契約",
+      "title": "鎖定 Neon、private scan record 與 Judge gate 架構基線",
       "status": "completed",
       "completed_at": "2026-07-23",
-      "summary": "已將 MVP 固定為 Zeabur runtime + Supabase Postgres／private Storage + server-side OCR，並以產品護照取代掃描歷史作為市售洗髮精研究資料模型；產品身份只含品牌與產品名稱，配方變更由 formula fingerprint 管理。",
+      "summary": "已鎖定 Neon canonical data、每次掃描的 private record、Judge gate、private evidence 與產品護照；產品身份只含品牌與產品名稱，配方變更由 formula_fingerprint 管理。",
       "track": "product",
       "order_label": "RRO-03",
       "priority": "P0",
@@ -285,22 +285,22 @@
       "task_kind": "decide",
       "dependencies": ["p0-bootstrap-existing-root", "p1-publish-mc-read-model"],
       "depends_on": ["p0-bootstrap-existing-root", "p1-publish-mc-read-model"],
-      "done_condition": "ARCHITECTURE.md 明確定義正式 runtime、一般掃描與自願貢獻兩條資料通道、canonical data／候選資料／產品護照的邊界、產品身份欄位與後續任務相依關係。",
+      "done_condition": "ARCHITECTURE.md、README.md 與 project contract 明確定義 Neon、全量 private scan record、Judge gate、private evidence、產品 identity、retention release blocker 與後續任務相依關係。",
       "acceptance": [
-        "A01｜架構圖清楚分開一般掃描與經使用者明確同意的研究貢獻；一般掃描不形成使用者歷史或研究資料庫。",
-        "A02｜架構圖將 inci_core、inci_alias、shampoo_rules 定義為 canonical；OCR／alias 未知項只能進 candidate／judge queue，不能直接回寫。",
-        "A03｜產品護照包含 market_product、formula version、formula ingredient、submission evidence、analysis run 與 review state，且 product identity 僅為 brand_name + product_name。",
-        "A04｜部署與資料決策明列 Zeabur、Supabase Postgres、Supabase private Storage、server-side OCR；MVP 不導入 R2 或 Neon。"
+        "A01｜每次相機、上傳、貼上輸入都建立 private scan record；前台無 scan history，也沒有是否提交選項。",
+        "A02｜inci_core、inci_alias、shampoo_rules 是 Neon canonical tables；OCR 與 raw scan 不得直接寫入。",
+        "A03｜成功分析進 pending_review，Judge 只可作 approved、rejected、duplicate、unresolved；只有 approved 可提升為產品護照。",
+        "A04｜部署與證據邊界明列 Zeabur／Linode Tokyo、Neon、Zeabur Object Storage private bucket、server-side OCR 與 retention release blocker。"
       ],
       "jv32_route": {
         "workflows": ["task-lifecycle", "implement", "code-review", "closeout-commit-routing"],
         "decision_input": [
-          "$COLLAB/rrrealll-ocr/or/meeting-260722.md",
-          "$COLLAB/rrrealll-ocr/or/database/table.md",
-          "Vincent 2026-07-23：產品身份不用容量、條碼（有則記）、銷售地區；使用 HC 思考；補完 task 及架構圖"
+          "$COLLAB/rrrealll-ocr/ARCHITECTURE.md",
+          "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json",
+          "2026-07-23 handoff：Neon、全量 private scan record、Judge gate、private evidence、retention release blocker"
         ],
-        "decision_output": "可追溯的 MVP 架構與資料契約，讓後續實作不再延續 prototype 的 scans history／本機 JSON 模式。",
-        "execution_boundary": "只寫入產品架構、project contract 與 canonical task 規劃；不得在本任務中遷移 Supabase、部署 Zeabur、上傳資料或改動原始 prototype。"
+        "decision_output": "可追溯的新 MVP 架構與資料契約，讓後續實作以 private record 與 Judge gate 保護 canonical data。",
+        "execution_boundary": "只寫入產品架構、project contract 與 canonical task 規劃；不得在本任務中遷移 Neon、部署 Zeabur、上傳資料或改動原始 prototype。"
       },
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
@@ -326,24 +326,99 @@
               "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json"
             ],
             "recorded_at": "2026-07-23"
+          },
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "依 2026-07-23 handoff 將架構 baseline 改為 Neon、全量 private scan record、Judge gate、private evidence 與 retention release blocker；本 task 已完成更新後的契約決策，後續實作仍由 RRO-04 至 RRO-09 承接。",
+            "evidence_refs": [
+              "$COLLAB/rrrealll-ocr/ARCHITECTURE.md",
+              "$COLLAB/rrrealll-ocr/README.md",
+              "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json",
+              "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json"
+            ],
+            "recorded_at": "2026-07-23"
           }
         ]
       },
       "hc_decision": {
         "task_scope": "rrrealll-ocr/p2-architecture-product-passport-contract",
         "hc_refs": ["#rightProblem", "#sourceBoundary", "#systemDynamics", "#risk", "#constraints"],
-        "hc_reasoning": "真正問題不是替 prototype 選一個資料庫，而是在無帳號、低留存的消費者體驗下，建立可審核且可研究的市售配方資料。以產品護照隔離研究資料、以 judge queue 阻止 OCR 污染 canonical，能同時保留隱私、可追溯性與未來研究價值。",
+        "hc_reasoning": "真正問題是把每次消費者掃描做成可治理 evidence，而不讓它污染 canonical data。private scan record、Judge gate 與 approved promotion 讓隱私、可追溯性與研究價值同時成立。",
         "hc_confidence": 0.93,
         "evidence_refs": [
           "$COLLAB/rrrealll-ocr/or/meeting-260722.md",
           "$COLLAB/rrrealll-ocr/or/database/table.md"
         ],
-        "source_boundary": "HC is a thinking check, not source of truth；meeting-260722.md 保留需求來源、CSV／Supabase tables 保留種子資料來源、ARCHITECTURE.md 保留架構契約、MC tasks.json 保留任務正本。"
+        "source_boundary": "HC is a thinking check, not source of truth；原始需求只作本機參考、repo 內 db/migrations／db/seed 保留部署資料來源、ARCHITECTURE.md 保留架構契約、MC tasks.json 保留任務正本。"
+      }
+    },
+    {
+      "id": "p2a-mvp-release-governance-contract",
+      "title": "鎖定最小 MVP 的發布治理與證據保存契約",
+      "status": "todo",
+      "track": "quality",
+      "order_label": "RRO-03A",
+      "priority": "P0",
+      "capability_domain": "release-governance",
+      "task_kind": "decide",
+      "dependencies": ["p2-architecture-product-passport-contract"],
+      "depends_on": ["p2-architecture-product-passport-contract"],
+      "done_condition": "OCR provider、private evidence、retention／purge、Judge governance 與 signed URL 的非秘密可實作契約已鎖定，RRO-04 至 RRO-08 可據此實作與驗證，且不把未決條件留到公開發布時才處理。",
+      "acceptance": [
+        "A01｜已選定 server-side OCR provider，並記錄其資料保留／刪除條款、失敗處理與不得在 browser、repo、log 暴露 secret 的邊界。",
+        "A02｜processing、pending_review、approved、rejected、duplicate、unresolved、failed 與其 evidence 都有保存期限、purge 觸發、失敗告警與可驗證的責任歸屬。",
+        "A03｜Judge 角色、權限、SLA、去重規則與 backlog 警示門檻已鎖定；只有 approved 可 promotion 至產品護照。",
+        "A04｜private bucket 的檔案大小、MIME type、存取角色、signed URL 過期時間與禁止公開 URL 的 policy 已鎖定。",
+        "A05｜上述決策以 repo 內不含 secret 的設定契約、驗收條件或文件保存，並成為 RRO-08 的必要前置條件。"
+      ],
+      "jv32_route": {
+        "workflows": ["task-lifecycle", "implement", "code-review"],
+        "decision_input": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json", "Vincent 2026-07-26：完整最小 MVP"],
+        "decision_output": "公開 MVP 可實作的發布治理契約，避免 OCR、private evidence、Judge 與 retention 在 runtime 完成後才被迫重設。",
+        "execution_boundary": "只鎖定非秘密的資料治理與驗收契約；不得寫入 credential、建立公開 evidence URL、部署 runtime 或以未確認的 provider 條款宣稱可發布。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [{
+          "operation": "create",
+          "from_status": null,
+          "to_status": "todo",
+          "reason": "Vincent 要求以完整最小 MVP 更新任務。HC 檢查發現 OCR provider、retention、Judge 與 signed URL 是實作前的硬約束，不能被藏在依賴所有功能完成後才開始的 RRO-08。",
+          "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p7-zeabur-supabase-secure-deployment"],
+          "recorded_at": "2026-07-26",
+          "semantic_intake": {
+            "outcome": "genuinely_new",
+            "compared_task_refs": ["rrrealll-ocr/p2-architecture-product-passport-contract", "rrrealll-ocr/p7-zeabur-supabase-secure-deployment"],
+            "scope_comparison": {
+              "problem": "RRO-03 已鎖定架構基線，RRO-08 處理部署；兩者之間缺少讓 provider、retention、Judge 與 signed URL 可先被鎖定、再被實作的發布治理完成邊界。",
+              "owner_source_of_truth": "ARCHITECTURE.md 保留產品架構，project.json 與 tasks.json 保留任務契約；runtime config、migration 與 verifier 才是後續實作證據。",
+              "inputs_outputs": "輸入為 locked MVP baseline 與未決 release blockers；輸出為不含 secret、可供 RRO-04 至 RRO-08 消費的發布治理契約與驗收條件。",
+              "lifecycle_completion": "本 task 完成只代表發布治理已鎖定；schema、scan pipeline、consumer UI、Judge runtime、部署與 E2E 驗收仍各自由既有 RRO task 承接。"
+            },
+            "decision_reason": "把先決治理從末端部署 task 拆出，避免資料保存與審核規則成為完成後才暴露的返工風險。",
+            "approval": {
+              "status": "approved",
+              "approved_by": "Vincent",
+              "approved_at": "2026-07-26",
+              "evidence_refs": ["Vincent 2026-07-26 current session: 完整最小 MVP；更新 task"]
+            }
+          }
+        }]
+      },
+      "hc_decision": {
+        "task_scope": "rrrealll-ocr/p2a-mvp-release-governance-contract",
+        "hc_refs": ["#rightProblem", "#constraints", "#systemDynamics", "#risk", "#confirmationBias"],
+        "hc_reasoning": "完整 MVP 的風險不是少一個畫面，而是 OCR、證據保存與 Judge decision 在資料進入後才發現沒有可執行的 retention 和權限規則。先把治理鎖定，才不會讓後續 private record 與產品護照形成不可逆的錯誤回饋迴路。",
+        "hc_confidence": 0.95,
+        "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json"],
+        "source_boundary": "HC is a thinking check, not source of truth；ARCHITECTURE.md、canonical tasks、runtime config、provider agreement 與 verifier remain canonical."
       }
     },
     {
       "id": "p3-supabase-canonical-data-and-passport-schema",
-      "title": "建立 Supabase canonical data 與產品護照 schema／seed",
+      "title": "建立 Neon canonical data、private scan record 與產品護照 schema／seed",
       "status": "todo",
       "track": "data",
       "order_label": "RRO-04",
@@ -352,19 +427,19 @@
       "task_kind": "build",
       "dependencies": ["p2-architecture-product-passport-contract"],
       "depends_on": ["p2-architecture-product-passport-contract"],
-      "done_condition": "Supabase migration 可重跑建立 canonical INCI／alias／rule tables、產品護照與審核 queue，並以提供的 CSV 驗證 150 INCI、400 alias、80 rules 全數載入。",
+      "done_condition": "Neon migration 可重跑建立 canonical INCI／alias／rule tables、private scan record、Judge decision 與產品護照，並以 repo 內 deterministic seed 驗證 150 INCI、400 aliases、80 rules。",
       "acceptance": [
-        "A01｜migration 建立或明確遷移至 inci_core、inci_alias、shampoo_rules，並拒絕與 legacy inci_main／inci_aliases 或 prototype snapshot 並列為正本。",
-        "A02｜market_product 僅含 system id、brand_name、product_name；不以容量、條碼、銷售地區作產品身份。",
-        "A03｜market_formula_version 使用 formula_fingerprint，market_formula_ingredient 保存 INCI 順序與 match confidence；配方更新不覆寫舊版本。",
-        "A04｜product_submission、ingredient_candidate、analysis_run 與 review state 可追溯 evidence、判定者與 dataset／rule／engine version。",
-        "A05｜seed verifier 輸出 150/150、400/400、80/80；失敗時不可宣稱資料已可用。"
+        "A01｜migration 建立或明確遷移至 inci_core、inci_alias、shampoo_rules；OCR 與 raw scan 沒有直接寫入 canonical path。",
+        "A02｜scan record 保存 private input、OCR、正規化、分析版本與 processing／pending_review／failed 狀態；Judge decision 可追溯判定者與原因。",
+        "A03｜market_product 只含 system id、brand_name、product_name；formula_fingerprint 管理配方版本，容量與銷售地區不參與 identity，條碼僅可選保存。",
+        "A04｜產品護照、配方成分順序、analysis version 與 approved promotion 可追溯 private evidence 與 Judge decision。",
+        "A05｜repo 內 deterministic seed verifier 輸出 150/150、400/400、80/80；失敗時不可宣稱資料已可用。"
       ],
       "jv32_route": {
         "workflows": ["task-lifecycle", "implement", "tdd", "code-review"],
-        "decision_input": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/rrrealll-ocr/or/database"],
-        "decision_output": "可重跑的 Supabase schema、seed 與 verifier。",
-        "execution_boundary": "只使用 Vincent 提供的 Supabase project 與非秘密 migration／seed files；不得把 user scan 直接匯入 canonical data。"
+        "decision_input": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json"],
+        "decision_output": "可重跑的 Neon schema、deterministic seed 與 verifier。",
+        "execution_boundary": "只使用 Vincent 提供的 Neon project 與 repo 內非秘密 migration／seed files；不得把 user scan 直接匯入 canonical data。"
       },
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
@@ -375,20 +450,27 @@
           "reason": "既有 export 與 prototype schema 存在多個命名／資料來源，需以 migration 固定唯一 canonical data 與產品護照模型。",
           "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/rrrealll-ocr/or/database/table.md"],
           "recorded_at": "2026-07-23"
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "todo",
+          "reason": "依 2026-07-23 handoff 將 RRO-04 改為 Neon canonical schema、private scan record、Judge decision、approved 產品護照與 repo 內 deterministic seed；尚未開始實作。",
+          "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json"],
+          "recorded_at": "2026-07-23"
         }]
       },
       "hc_decision": {
         "task_scope": "rrrealll-ocr/p3-supabase-canonical-data-and-passport-schema",
         "hc_refs": ["#sourceBoundary", "#systemDynamics", "#risk"],
-        "hc_reasoning": "先固化唯一 canonical schema，才能阻止三套舊資料來源與日後 OCR 候選互相覆寫；產品護照以版本而非覆寫保存市場配方演變。",
+        "hc_reasoning": "先固化 Neon canonical schema、scan record 與 Judge decision，才能阻止 OCR 候選、raw scan 與產品護照互相覆寫；配方演變必須以版本保存。",
         "hc_confidence": 0.92,
         "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
-        "source_boundary": "HC is a thinking check, not source of truth；Supabase migration 與資料驗證輸出才是此任務完成證據。"
+        "source_boundary": "HC is a thinking check, not source of truth；Neon migration、deterministic seed 與資料驗證輸出才是此任務完成證據。"
       }
     },
     {
       "id": "p4-ocr-normalization-and-versioned-analysis-api",
-      "title": "實作 OCR 正規化、低信心邊界與 versioned analysis API",
+      "title": "實作全量 scan record、OCR 正規化與 versioned analysis API",
       "status": "todo",
       "track": "product",
       "order_label": "RRO-05",
@@ -397,18 +479,18 @@
       "task_kind": "build",
       "dependencies": ["p3-supabase-canonical-data-and-passport-schema"],
       "depends_on": ["p3-supabase-canonical-data-and-passport-schema"],
-      "done_condition": "API 能把 OCR／貼上文字正規化為已匹配、低信心與未知三類，僅以 canonical 資料與 80 rules 執行可追溯分析，且不以未知成分預設低風險。",
+      "done_condition": "每個輸入先建立 private scan record，API 再把 OCR／貼上文字正規化為已匹配、低信心與未知三類，僅以 Neon canonical data 與 80 rules 執行可追溯分析，且不以未知成分預設低風險。",
       "acceptance": [
-        "A01｜貼上文字與 OCR 輸入均保存 ingredient order、raw token、canonical match、confidence 與 unresolved reason 於本次分析範圍。",
-        "A02｜unknown／low-confidence 會顯示未確定與候選送審入口；不得套用 prototype 的低刺激／敏感友善預設。",
-        "A03｜分析結果含 cleanliness、mildness、sensitive friendliness、controversial components、完整風險清單與白話訊息。",
-        "A04｜analysis_run 保存 dataset version、rule version、engine version、triggered rule ids 與 input fingerprint；相同輸入可重現。",
-        "A05｜測試覆蓋已匹配、別名命中、未知、低信心與至少一項複合 rule。"
+        "A01｜相機、上傳與貼上都先建立 scan record，保存 input reference、ingredient order、raw token、canonical match、confidence 與 unresolved reason。",
+        "A02｜unknown／low-confidence 顯示未確定與原因；不得套用低刺激／敏感友善預設或直接升格 canonical。",
+        "A03｜分析結果含 cleanliness、mildness、sensitive friendliness、controversial components、完整風險清單與白話訊息，成功後轉為 pending_review。",
+        "A04｜analysis version 保存 dataset、rule、engine、triggered rule ids 與 input fingerprint；相同輸入可重現。",
+        "A05｜失敗會留下 failed 與可觀察補償狀態；測試覆蓋已匹配、別名、未知、低信心與複合 rule。"
       ],
       "jv32_route": {
         "workflows": ["task-lifecycle", "implement", "tdd", "code-review"],
-        "decision_input": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/rrrealll-ocr/or/database/shampoo_rules_rows.csv"],
-        "decision_output": "可測試且有版本證據的分析 API。",
+        "decision_input": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json"],
+        "decision_output": "先建立 private scan record、再提供可測試且有版本證據的分析 API。",
         "execution_boundary": "不得把 AI fallback／硬編碼 snapshot 當正式資料或在 server/client 暴露服務密鑰。"
       },
       "task_lifecycle": {
@@ -420,12 +502,19 @@
           "reason": "prototype 的 local scans、硬編碼資料與 simulated fallback 不符合正式的資料來源與安全判讀邊界。",
           "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/rrrealll-ocr/or/成分刺激度比對_Google_AI_Studio/server.ts"],
           "recorded_at": "2026-07-23"
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "todo",
+          "reason": "依 2026-07-23 handoff 將 RRO-05 改為所有輸入先建立 private scan record，再進行 OCR、正規化、版本化分析、unknown safety 與 failed 補償；尚未開始實作。",
+          "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json"],
+          "recorded_at": "2026-07-23"
         }]
       },
       "hc_decision": {
         "task_scope": "rrrealll-ocr/p4-ocr-normalization-and-versioned-analysis-api",
         "hc_refs": ["#rightProblem", "#risk", "#confirmationBias"],
-        "hc_reasoning": "消費者要的是可信判讀，不是看似完整的假資料；未知與低信心成分必須顯示不確定性並保留重現證據。",
+        "hc_reasoning": "消費者要的是可信判讀，不是看似完整的假資料；所有輸入必須有 private record，未知與低信心必須顯示不確定性並保留重現證據。",
         "hc_confidence": 0.95,
         "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
         "source_boundary": "HC is a thinking check, not source of truth；canonical tables、rule evaluator 與測試 fixture 是分析真實性來源。"
@@ -433,7 +522,7 @@
     },
     {
       "id": "p5-consumer-three-input-result-flow",
-      "title": "建立獨立消費者三輸入與白話判讀介面",
+      "title": "建立三輸入、private record 告知與可信判讀介面",
       "status": "todo",
       "track": "product",
       "order_label": "RRO-06",
@@ -442,19 +531,19 @@
       "task_kind": "build",
       "dependencies": ["p2-architecture-product-passport-contract"],
       "depends_on": ["p2-architecture-product-passport-contract"],
-      "done_condition": "獨立 app 提供相機掃描、圖片上傳、複製貼上三種入口，並呈現雷達指標、爭議／不確定提示、完整成分風險與可關閉的白話教學。",
+      "done_condition": "獨立 app 提供相機掃描、圖片上傳、複製貼上三種入口，告知 private record 保存但不提供前台歷史，並呈現初步／已審核標示、雷達指標、爭議／不確定提示、完整成分風險與可關閉的白話教學。",
       "acceptance": [
         "A01｜三種入口在手機情境可開始輸入；相機權限拒絕、無檔案與 OCR 失敗有可理解處理。",
         "A02｜結果頁同時呈現清潔度、溫和度、敏感友善度、爭議成分；雷達方向與標籤不混淆正向與風險。",
         "A03｜完整成分列表含 C／D／E 風險與未確定狀態；白話教學預設關閉且可自行展開。",
-        "A04｜未登入的一般掃描不顯示可回溯 scan history，也不以此寫入市售研究資料。",
-        "A05｜介面僅消費已驗證 API contract，不直接讀取 Supabase service credential。"
+        "A04｜介面明確告知每次輸入都保存為 private scan record；未登入使用者不顯示可回溯 scan history。",
+        "A05｜未經 Judge 核准者標示初步判讀，已審核產品資料才可標示 approved；介面只消費已驗證 API contract，不讀取任何 service credential。"
       ],
       "jv32_route": {
         "workflows": ["task-lifecycle", "implement", "tdd", "code-review"],
-        "decision_input": ["$COLLAB/rrrealll-ocr/or/meeting-260722.md", "$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
-        "decision_output": "可部署的 consumer web surface 與三種輸入流程。",
-        "execution_boundary": "可參考 prototype 互動意圖，但不得延用其掃描歷史、假資料 fallback 或未保護的管理端 API。"
+        "decision_input": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json"],
+        "decision_output": "可部署的 consumer web surface、三種輸入、private record 告知與可信狀態標示。",
+        "execution_boundary": "可參考 prototype 互動意圖，但不得暴露前台歷史、假資料 fallback、未保護的管理端 API 或 service credential。"
       },
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
@@ -465,12 +554,19 @@
           "reason": "消費者需求已明確指定三個輸入入口與易懂結果，但現有 prototype 不可直接視為可部署產品。",
           "evidence_refs": ["$COLLAB/rrrealll-ocr/or/meeting-260722.md", "$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
           "recorded_at": "2026-07-23"
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "todo",
+          "reason": "依 2026-07-23 handoff 將 RRO-06 改為三輸入 UI、private record 保存告知、無前台 history 與初步／已審核標示；尚未開始實作。",
+          "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json"],
+          "recorded_at": "2026-07-23"
         }]
       },
       "hc_decision": {
         "task_scope": "rrrealll-ocr/p5-consumer-three-input-result-flow",
         "hc_refs": ["#rightProblem", "#designThinking", "#utility"],
-        "hc_reasoning": "賣場決策的核心是快速理解而非專家面板；三種輸入降低摩擦，白話教學採 opt-in 才不干擾重複使用者。",
+        "hc_reasoning": "賣場決策的核心是快速理解而非專家面板；三種輸入降低摩擦，白話教學預設關閉，private record 告知與審核狀態讓信任資訊不被隱藏。",
         "hc_confidence": 0.9,
         "evidence_refs": ["$COLLAB/rrrealll-ocr/or/meeting-260722.md"],
         "source_boundary": "HC is a thinking check, not source of truth；可觀察的入口、結果狀態與 E2E fixture 才是驗收依據。"
@@ -478,7 +574,7 @@
     },
     {
       "id": "p6-opt-in-product-passport-and-judge-queue",
-      "title": "建立自願貢獻、產品護照與法官審核後台",
+      "title": "建立 Judge queue、approved promotion 與產品護照",
       "status": "todo",
       "track": "data",
       "order_label": "RRO-07",
@@ -487,19 +583,19 @@
       "task_kind": "build",
       "dependencies": ["p3-supabase-canonical-data-and-passport-schema", "p4-ocr-normalization-and-versioned-analysis-api"],
       "depends_on": ["p3-supabase-canonical-data-and-passport-schema", "p4-ocr-normalization-and-versioned-analysis-api"],
-      "done_condition": "只有明確同意的資料會進 product_submission；審核者可建立或合併產品護照、選擇 formula version、處理 candidate 與保留 provenance，且一般 scan 不會混入。",
+      "done_condition": "所有成功分析都可在 Judge queue 決策；審核者只有在 approved 後才可建立或合併產品護照、選擇 formula version、處理 candidate 與保留 provenance。",
       "acceptance": [
-        "A01｜一般 scan 與 opt-in contribution 是不同 API／資料寫入路徑；未同意者不能產生 product_submission。",
-        "A02｜自願貢獻的證據影像存 private bucket，不公開 URL；審核後只將必要的標準化配方資料提升至 market product passport。",
-        "A03｜審核者能 approve／reject／merge candidate，且每次決策含 reviewer、時間、reason 與來源 submission。",
-        "A04｜同品牌＋產品名以 formula_fingerprint 判斷相同或新配方版本；不以容量、條碼、銷售地區拆分身份。",
-        "A05｜前台可見 formula version 僅由已審核、指定 current 的產品護照資料提供。"
+        "A01｜每個成功分析自動進 pending_review；Judge 只可作 approved、rejected、duplicate、unresolved，且每次決策含 reviewer、時間、reason 與來源 scan record。",
+        "A02｜圖片 evidence 保持 private bucket，不公開 URL；只有 approved 決策能將必要標準化資料提升至 market product passport。",
+        "A03｜OCR、raw scan、candidate 與未核准 decision 都不能直接更新 canonical data 或產品護照。",
+        "A04｜同品牌＋產品名以 formula_fingerprint 判斷相同或新配方版本；不以容量、條碼、銷售地區拆分 identity。",
+        "A05｜前台可見 formula version 僅由 approved、指定 current 的產品護照資料提供。"
       ],
       "jv32_route": {
         "workflows": ["task-lifecycle", "implement", "tdd", "code-review"],
-        "decision_input": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/rrrealll-ocr/or/meeting-260722.md"],
-        "decision_output": "受 consent 與 judge queue 保護的市場配方研究資料流程。",
-        "execution_boundary": "不得把 evidence image 變成公開資產、不得用 consumer scans 補資料庫、不得省略審核 provenance。"
+        "decision_input": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json"],
+        "decision_output": "受 Judge queue、approved promotion 與 private evidence 保護的市場配方研究資料流程。",
+        "execution_boundary": "不得把 evidence image 變成公開資產、不得用未核准 scan 補 canonical data、不得省略審核 provenance。"
       },
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
@@ -510,40 +606,47 @@
           "reason": "市售洗髮精資料庫需要長期研究價值，但原始需求也要求一般使用者無歷史與 canonical 資料防污染，因此需獨立 opt-in／judge flow。",
           "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/rrrealll-ocr/or/meeting-260722.md"],
           "recorded_at": "2026-07-23"
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "todo",
+          "reason": "依 2026-07-23 handoff 取消使用者提交選項，改為所有成功分析進 Judge queue，只有 approved 可 promotion 至產品護照；尚未開始實作。",
+          "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json"],
+          "recorded_at": "2026-07-23"
         }]
       },
       "hc_decision": {
         "task_scope": "rrrealll-ocr/p6-opt-in-product-passport-and-judge-queue",
         "hc_refs": ["#sourceBoundary", "#systemDynamics", "#risk", "#feedbackLoops"],
-        "hc_reasoning": "把研究資料與無痕體驗分道，才能讓更多資料反饋匹配品質而不犧牲消費者隱私；judge queue 是防止錯誤回饋迴路的必要閘門。",
+        "hc_reasoning": "所有 scan 都是 private evidence，但只有 approved 可回饋研究與產品護照；Judge queue 是防止錯誤回饋迴路與 canonical 污染的必要閘門。",
         "hc_confidence": 0.94,
         "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
-        "source_boundary": "HC is a thinking check, not source of truth；consent record、review log、RLS 與實際測試才是合規與來源邊界的證據。"
+        "source_boundary": "HC is a thinking check, not source of truth；scan record、review log、private evidence access control 與實際測試才是合規與來源邊界的證據。"
       }
     },
     {
       "id": "p7-zeabur-supabase-secure-deployment",
-      "title": "部署 Zeabur runtime 與 Supabase 私有資料服務",
+      "title": "部署 Zeabur／Neon／Object Storage secure runtime",
       "status": "todo",
       "track": "quality",
       "order_label": "RRO-08",
       "priority": "P0",
       "capability_domain": "secure-delivery",
       "task_kind": "operate",
-      "dependencies": ["p4-ocr-normalization-and-versioned-analysis-api", "p5-consumer-three-input-result-flow", "p6-opt-in-product-passport-and-judge-queue"],
-      "depends_on": ["p4-ocr-normalization-and-versioned-analysis-api", "p5-consumer-three-input-result-flow", "p6-opt-in-product-passport-and-judge-queue"],
-      "done_condition": "Zeabur 上的獨立 consumer app/API 已連到 Supabase，私有 bucket、RLS、server-side secrets、影像刪除流程、rate limit 與 runtime health 均可驗證。",
+      "dependencies": ["p2a-mvp-release-governance-contract", "p4-ocr-normalization-and-versioned-analysis-api", "p5-consumer-three-input-result-flow", "p6-opt-in-product-passport-and-judge-queue"],
+      "depends_on": ["p2a-mvp-release-governance-contract", "p4-ocr-normalization-and-versioned-analysis-api", "p5-consumer-three-input-result-flow", "p6-opt-in-product-passport-and-judge-queue"],
+      "done_condition": "Zeabur／Linode Tokyo 的單一 consumer app/API 已連到 Neon 與 Zeabur Object Storage，private bucket、server-side secrets、retention／purge、rate limit 與 runtime health 均可驗證。",
       "acceptance": [
-        "A01｜Zeabur runtime 只持有 server-side 環境變數；browser bundle、repo 與 log 不含 service role／OCR provider secret。",
-        "A02｜Supabase canonical tables 與 private evidence bucket 有 RLS／server boundary；非管理者不能列出、下載或改寫他人 submission。",
-        "A03｜一般 scan 的影像、raw OCR text 與未同意分析資料在回傳後刪除，不建立可回看的使用者歷史。",
-        "A04｜opt-in evidence 有 private retention／purge job 與可驗證的失敗告警；不使用 Zeabur Volume 當影像資料庫。",
+        "A01｜Zeabur runtime 只持有 server-side 環境變數；browser bundle、repo 與 log 不含 Neon、storage 或 OCR provider secret。",
+        "A02｜Neon canonical tables 與 Object Storage private evidence bucket 受 server boundary 保護；非管理者不能列出、下載或改寫他人 evidence。",
+        "A03｜每次 scan 的影像、raw OCR text 與分析 artifacts 都在 private record 中受保留治理，不建立可回看的前台歷史。",
+        "A04｜rejected、duplicate、unresolved、failed 與 evidence 有 private retention／purge job、失敗告警與已驗證的 signed URL policy；不使用 Zeabur Volume 當影像資料庫。",
         "A05｜production health probe、error handling、rate limit 與 rollback 方式已記錄並實測。"
       ],
       "jv32_route": {
         "workflows": ["task-lifecycle", "implement", "verification-before-completion", "closeout-commit-routing", "cc-push"],
         "decision_input": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
-        "decision_output": "實際可公開使用且不暴露資料／密鑰的 MVP runtime。",
+        "decision_output": "實際可公開使用、以 Neon 為唯一資料庫、且不暴露 private evidence／密鑰的 MVP runtime。",
         "execution_boundary": "只部署 RRREALLL product runtime；不得將管理看板 MC 視為產品部署，也不得將雲端 credential 寫回 repo。"
       },
       "task_lifecycle": {
@@ -555,15 +658,22 @@
           "reason": "MVP runtime 已決定為 Zeabur + Supabase，但尚未建立正式 deployment、RLS、storage retention 或 live evidence。",
           "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
           "recorded_at": "2026-07-23"
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "todo",
+          "reason": "依 2026-07-23 handoff 將 RRO-08 改為 Zeabur／Linode Tokyo、Neon、Object Storage private evidence、retention／purge、signed URL 與 secrets boundary；尚未開始部署。",
+          "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json"],
+          "recorded_at": "2026-07-23"
         }]
       },
       "hc_decision": {
         "task_scope": "rrrealll-ocr/p7-zeabur-supabase-secure-deployment",
         "hc_refs": ["#constraints", "#risk", "#utility"],
-        "hc_reasoning": "MVP 以既有 Supabase 資料與 Zeabur runtime 減少服務數量；安全、私有儲存與刪除流程先於 CDN／多雲最佳化。",
+        "hc_reasoning": "MVP 以 Neon canonical data 與 Zeabur runtime 固定服務邊界；private storage、retention／purge 與 secret isolation 先於最佳化。",
         "hc_confidence": 0.91,
         "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
-        "source_boundary": "HC is a thinking check, not source of truth；deployment config、RLS probe、purge verification 與 live health evidence 才能完成本任務。"
+        "source_boundary": "HC is a thinking check, not source of truth；deployment config、private evidence access probe、purge verification 與 live health evidence 才能完成本任務。"
       }
     },
     {
@@ -577,13 +687,13 @@
       "task_kind": "verify",
       "dependencies": ["p7-zeabur-supabase-secure-deployment"],
       "depends_on": ["p7-zeabur-supabase-secure-deployment"],
-      "done_condition": "正式網址以貼上、上傳、相機各跑一條成功 fixture，並逐項驗證資料數量、分析可追溯性、unknown safety、無痕一般 scan 與 opt-in 產品護照。",
+      "done_condition": "正式網址以貼上、上傳、相機各跑一條成功 fixture，並逐項驗證 deterministic seed、private scan record、分析可追溯性、unknown safety、Judge gate、approved 產品護照與 secret boundary。",
       "acceptance": [
-        "A01｜seed verifier 在 target Supabase 證明 150/150 INCI、400/400 alias、80/80 rule。",
+        "A01｜seed verifier 在 target Neon 證明 150/150 INCI、400/400 aliases、80/80 rules。",
         "A02｜貼上、圖片上傳、相機掃描三條 flow 皆在公開 runtime 產生可讀結果；失敗狀態可被看見且不假裝成功。",
         "A03｜fixture 至少覆蓋 alias 命中、C／D／E 風險提示、unknown／low-confidence 與複合規則命中。",
-        "A04｜一般 scan 後查無可回看 history／raw evidence；只有明確 opt-in 的 submission 可進 review queue。",
-        "A05｜已審核產品護照能顯示 brand＋product、formula version、成分順序、analysis version 與 review state，且沒有容量／條碼／銷售地區身份欄位。"
+        "A04｜每條成功 flow 都建立 private scan record 並進 pending_review；前台沒有 scan history，只有 approved 可成產品護照。",
+        "A05｜已審核產品護照能顯示 brand＋product、formula version、成分順序、analysis version 與 approved state，且沒有容量／條碼／銷售地區 identity 欄位。"
       ],
       "jv32_route": {
         "workflows": ["task-lifecycle", "verification-before-completion", "code-review", "closeout-commit-routing", "cc-push"],
@@ -600,12 +710,19 @@
           "reason": "原始成果目標已定義三種入口與資料數量，但需要將產品護照、隱私與正式 runtime 一起納入可觀察的發布驗收。",
           "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json"],
           "recorded_at": "2026-07-23"
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "todo",
+          "reason": "依 2026-07-23 handoff 將 RRO-09 改為驗收 deterministic seed、三輸入、private scan record、Judge gate、approved 產品護照與 secret boundary；尚未開始驗收。",
+          "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json"],
+          "recorded_at": "2026-07-23"
         }]
       },
       "hc_decision": {
         "task_scope": "rrrealll-ocr/p8-end-to-end-release-acceptance",
         "hc_refs": ["#confirmationBias", "#risk", "#rightProblem"],
-        "hc_reasoning": "避免把 UI build、MC 發布或單一路徑成功誤認為可用產品；最後驗收必須同時反證資料邊界、三種使用情境與研究資料治理。",
+        "hc_reasoning": "避免把 UI build、MC 發布或單一路徑成功誤認為可用產品；最後驗收必須同時反證 private scan record、Judge gate、三種使用情境、retention 與 secret boundary。",
         "hc_confidence": 0.96,
         "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
         "source_boundary": "HC is a thinking check, not source of truth；驗收腳本、production probe 與結果紀錄才是 release truth。"

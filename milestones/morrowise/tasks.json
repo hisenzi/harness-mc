@@ -3561,9 +3561,10 @@
         "33639b9",
         "82d1150",
         "bb29e95",
-        "5b95f10"
+        "5b95f10",
+        "82a4bcc"
       ],
-      "summary": "2026-07-25 已將 canonical task title 的繁體中文優先規範、changed-only Han 字元 gate、歷史相容策略與正反 fixtures 收編為既有 JV-32 version improvement；task、catalog、architecture、system-pulse 與受控薄索引同步驗證通過，目前維持 in_progress，等待明確 commit／push closeout 核准。",
+      "summary": "82a4bcc 已在 JV-32 專用 branch 完成繁中 title spec、changed-only Han 字元 gate、歷史相容 fixtures 與 Admission Record 的本機 commit；task、catalog、architecture、system-pulse 與薄索引同步驗證通過。Task 維持 in_progress，等待 notyet-harness 薄索引 commit 與明確 push／Remote Closeout 核准。",
       "title": "JV-40 任務生命週期接入 JV-32（新增／修改／停用／完成 gate）",
       "track": "governance",
       "order_label": "JV-40",
@@ -3827,6 +3828,21 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "82a4bcc 已提交 JV-32 繁中 title gate 的 harness-mc 實作與 Admission Record；本 event 只回填本機 commit evidence，notyet-harness 薄索引與 Remote Closeout 尚未完成，因此不改為 completed。",
+            "evidence_refs": [
+              "82a4bcc",
+              "npm run test:tasks",
+              "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+              "npm run test:architecture-subsystems",
+              "npm run test:system-pulse",
+              "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
+            ],
+            "recorded_at": "2026-07-25"
           }
         ]
       },

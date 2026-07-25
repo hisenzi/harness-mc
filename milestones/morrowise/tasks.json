@@ -5015,6 +5015,41 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "HiBlocks task 寫入前的 live topology health 發現未登錄 root；依 JV-43 契約完成 read-only inventory，將 Eddy_chatbot_web 登錄為 unknown / not_assessed，解除 integrity block，但不推測 canonical home 或執行資料夾遷移。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json",
+              "$COLLAB/harness-mc/scripts/project-topology-health.mjs",
+              "Vincent 2026-07-25 current session: 好的，先處理 JV-43 的登錄錯誤"
+            ],
+            "recorded_at": "2026-07-25",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/document-source-registry-and-human-sync",
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/project-topology-architecture-atlas"
+              ],
+              "scope_comparison": {
+                "problem": "仍是 JV-43 所管理的 root inventory coverage 與 project home 停止條件；本次只修正新增 root 未登錄造成的 integrity block。",
+                "owner_source_of_truth": "Project Topology Registry 繼續是 root classification 與 migration state 正本；JV-36、JV-37 的文件與 repo 邊界均不變。",
+                "inputs_outputs": "輸入是 Eddy_chatbot_web 的 read-only folder、Git metadata 與 project-entry 檢查；輸出是一筆 unknown / not_assessed record 及刷新後的 inventory date。",
+                "lifecycle_completion": "本次只完成 A04 與 A10 的單筆維護切片；JV-43 維持 in_progress，不以解除一個 health error 宣告整體 migration governance 完成。"
+              },
+              "decision_reason": "這是既有 JV-43 registry maintenance 的直接修正，不建立平行 task，也不把名稱當成專案身份證據。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-25",
+                "evidence_refs": [
+                  "Vincent 2026-07-25 current session: 好的，先處理 JV-43 的登錄錯誤"
+                ]
+              }
+            }
           }
         ]
       },

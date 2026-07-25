@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-task-lifecycle-jv32-gate-4fc7f01-20260725T090240Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "4fc7f01",
+  "project": "morrowise",
+  "task_id": "task-lifecycle-jv32-gate",
+  "status": "updated",
+  "summary": "4fc7f01 已同步 JV-32 繁中 title gate 的受控 ARCHITECTURE.md 薄索引；MC canonical task 維持 in_progress，等待 outbox apply 與 Remote Closeout。",
+  "created_at": "2026-07-25T09:02:40.309Z",
+  "actor": "codex",
+  "session_id": "019f930c-a4c8-74a0-ae3f-7cfe3f5ab507"
+}

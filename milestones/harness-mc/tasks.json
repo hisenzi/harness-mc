@@ -2287,7 +2287,7 @@
     },
     {
       "id": "morrowise-priority-dashboard-surface-v2",
-      "title": "MorroWise Priority Dashboard Surface v2",
+      "title": "MorroWise 優先級儀表板介面 v2",
       "status": "todo",
       "track": "morrowise-system",
       "order_label": "MC-LIVE-SYS-10",
@@ -2308,6 +2308,25 @@
         "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-drilldown-pages.md",
         "$COLLAB/harness-mc/app/"
       ],
+      "execution_contract": {
+        "owner": "harness-mc/morrowise-priority-dashboard-surface-v2",
+        "source_of_truth": "$COLLAB/harness-mc/public/data/action-priority-read-model-v2.json",
+        "inputs": [
+          "已驗證的 action-priority-read-model-v2",
+          "trusted heartbeat 與 daily decision 的唯讀 evidence",
+          "MC-DASH-V2 已核准 IA 與真實 route contract"
+        ],
+        "outputs": [
+          "繁中首頁與五個只讀真實下鑽頁",
+          "候選、理由、依賴／阻塞、freshness／verifier 與 replacement lineage 的可見 surface"
+        ],
+        "verifiers": [
+          "npm run test:morrowise-priority-dashboard-surface",
+          "npm run build",
+          "fresh-session E2E：無 task id 與多 Agent 得到同一候選或拒絕理由"
+        ],
+        "stop_condition": "priority read model、trusted heartbeat 或 daily decision 未通過各自 verifier 時停止；不得直接讀 tasks.json、fixture 或舊 dashboard read model，不得寫回 task state 或自行 commit／push／部署。"
+      },
       "jv32_route": {
         "workflows": ["task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
         "decision_input": ["approved MC-DASH-V2 governance IA", "action-priority-read-model-v2", "existing dashboard routes and drilldown spec"],
@@ -2327,6 +2346,17 @@
             "Vincent 2026-07-21 current session: 核准此 batch，完成後驗證有無缺漏及正確性"
           ],
           "recorded_at": "2026-07-21"
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "todo",
+          "reason": "Vincent 要求第一階段後續工作直接在既有 task 補齊一致 execution contract；本次只結構化 MC-LIVE-SYS-10 的 owner、正本、輸入、輸出、verifier 與停止條件，並依 changed-only 繁中 title gate 校正標題，不改 UI、read model 或 task state。",
+          "evidence_refs": [
+            "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-priority-dashboard-surface-v2",
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
+            "Vincent 2026-07-25 current session: 幫我確定下列兩項"
+          ],
+          "recorded_at": "2026-07-25"
         }]
       },
       "hc_decision": {

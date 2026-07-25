@@ -165,6 +165,25 @@ if (!malformedFailed.output.includes("hc_decision.hc_confidence must be a number
   throw new Error("Expected HC confidence range error.");
 }
 
+const incompleteExecutionContract = structuredClone(baseTasks);
+incompleteExecutionContract.tasks[0].execution_contract = {
+  owner: "harness-mc/acp-good-task",
+  source_of_truth: ["milestones/harness-mc/tasks.json"],
+  inputs: ["canonical task state"],
+  outputs: ["controlled result"],
+  verifiers: [],
+  stop_condition: "",
+};
+writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), incompleteExecutionContract);
+
+const incompleteExecutionContractResult = run(["--changed-only", "--project", "harness-mc"], { expectFailure: true });
+if (!incompleteExecutionContractResult.output.includes("execution_contract.verifiers must be a non-empty array")) {
+  throw new Error("Expected empty execution_contract.verifiers to fail validation.");
+}
+if (!incompleteExecutionContractResult.output.includes("execution_contract.stop_condition must be a non-empty string")) {
+  throw new Error("Expected missing execution_contract.stop_condition to fail validation.");
+}
+
 const closedWithoutArchitectureDecision = {
   tasks: [
     {

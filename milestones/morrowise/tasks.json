@@ -4639,11 +4639,13 @@
     },
     {
       "id": "action-priority-read-model-v2",
-      "title": "Action Priority Read Model v2",
-      "status": "todo",
+      "title": "行動優先級唯讀模型 v2",
+      "status": "in_progress",
       "track": "governance",
       "order_label": "MW-PRIORITY-V2",
       "priority": "high",
+      "weekly_core": true,
+      "review_date": "2026-07-29",
       "dependencies": ["morrowise-dev-workflow-catalog", "task-lifecycle-jv32-gate", "morrowise-system-json-generator-v0"],
       "done_condition": "建立只讀 MorroWise task 正本的 action priority read model v2，統一 priority、依賴、去重、freshness 與 verifier 結果；它是 dashboard surface 與每日決策 loop 的唯一優先級輸入，不得讓 UI、fixture 或第二份 task list 反向決定行動。",
       "acceptance": [
@@ -4685,6 +4687,51 @@
             },
             "decision_reason": "這是新增的 shared read-model contract，與既有 task 的 source ownership 不重疊，故以 genuinely_new 建立。",
             "approval": {"status": "approved", "approved_by": "Vincent", "approved_at": "2026-07-21", "evidence_refs": ["Vincent 2026-07-21 current session: 核准此 batch，完成後驗證有無缺漏及正確性"]}
+          }
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "in_progress",
+          "reason": "Vincent 核准將既有 Action Priority Read Model v2 選入唯一 weekly core，並依 changed-only title gate 將 canonical title 校正為繁體中文的「行動優先級唯讀模型 v2」。JV-36.R1–R4 仍是過大的 Roadmap-in-Anchor slice，不能偽裝成獨立 core；本週只完成 priority read-model 的 deterministic contract，保留 UI、daily loop、heartbeat runtime 與 JV-36.R5 的上游／下游邊界。",
+          "evidence_refs": [
+            "$COLLAB/harness-mc/milestones/morrowise/notes/mc-dashboard-priority-ia-v2.md",
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1",
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-live-decision-loop-v1",
+            "Vincent 2026-07-25 current session: 進行「將唯一 weekly core／review date 以 canonical task mutation 定錨。」"
+          ],
+          "recorded_at": "2026-07-25",
+          "semantic_intake": {
+            "outcome": "amend",
+            "compared_task_refs": [
+              "morrowise/document-source-registry-and-human-sync",
+              "morrowise/trusted-heartbeat-runtime-v1",
+              "morrowise/morrowise-live-decision-loop-v1"
+            ],
+            "scope_comparison": {
+              "problem": "既有 priority read-model task 已是唯一解決 canonical action selection 一致性的 owner；本次只把它選入單一 weekly-core slot，不建立第二個 read model 或 daily loop。",
+              "owner_source_of_truth": "task/action state 仍由 MorroWise tasks.json 管理；本 task 的 output 仍是唯讀 generated priority read model，dashboard 與 daily loop 只消費該 output。",
+              "inputs_outputs": "輸入維持 canonical task/lifecycle 與明確 runtime evidence；本週輸出限定為 deterministic priority、dedupe、freshness、verifier 與 next_action contract，不包含 UI、scheduler 或 task state 自動寫入。",
+              "lifecycle_completion": "2026-07-29 必須以 verifier 證據完成、reframe、suspend 或 cancel；不得自動延長。surface、daily loop 與 JV-36.R5 僅在各自上游完成後開始。"
+            },
+            "decision_reason": "JV-36.R1–R4 仍包含多個完整 control-plane 交付而不適合作為單一 task 的本週 exit；Action Priority Read Model 已有明確 canonical owner、依賴、consumer 與 verifier，因此以 amend 選入唯一 weekly core。",
+            "approval": {
+              "status": "approved",
+              "approved_by": "Vincent",
+              "approved_at": "2026-07-25",
+              "evidence_refs": [
+                "Vincent 2026-07-25 current session: 進行「將唯一 weekly core／review date 以 canonical task mutation 定錨。」"
+              ]
+            }
+          },
+          "weekly_core_review": {
+            "decision": "admit",
+            "approved_by": "Vincent",
+            "approved_at": "2026-07-25",
+            "evidence_refs": [
+              "Vincent 2026-07-25 current session: 進行「將唯一 weekly core／review date 以 canonical task mutation 定錨。」"
+            ],
+            "next_review_date": "2026-07-29"
           }
         }]
       },

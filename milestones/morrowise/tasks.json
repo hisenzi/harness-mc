@@ -4054,12 +4054,13 @@
     {
       "id": "mc-dashboard-priority-ia-v2",
       "title": "MC 儀表板資訊優先級與繁中化決策 v2",
-      "status": "todo",
+      "status": "completed",
       "track": "governance",
       "order_label": "MC-DASH-V2",
       "priority": "high",
-      "summary": "已核准最終 IA：保留既有資料鏈，先修正正本與優先級 contract；首頁成為例外與行動優先的繁中控制台，完整 task／event／worktree／approval 與技術證據留在下鑽頁。MC-LIVE-SYS-10 保留給後續 UI 下鑽實作；本 task 待 JV-36 薄連結完成後才可結案。",
-      "done_condition": "以治理方式完成一張容易掃讀的 MC 儀表板議題紀錄：已核准繁中介面、輕重緩急排序、資料正本與首頁／下鑽邊界，並留下後續 MorroWise system／harness-mc surface 實作 task 與文章素材的決策依據；MC-LIVE-SYS-10 專供後續 UI 下鑽實作。本 task 不直接實作 UI；須待 JV-36 Document Source Registry 產生 ARCHITECTURE.md 薄連結後才可 completed。",
+      "completed_at": "2026-07-26",
+      "summary": "第一階段治理定錨已完成：MC-DASH-V2 為唯一 IA 決策錨點，MC-LIVE-SYS-10 專屬後續 UI surface；候選工作 operation batch、依賴圖與唯一 weekly core/review_date 已在同一份治理紀錄定錨。JV-36 的 generated document index 薄連結保留為第三階段 R1–R4 的交付，不再阻塞本治理 task 結案。",
+      "done_condition": "以治理方式完成一張容易掃讀的 MC 儀表板議題紀錄：已核准繁中介面、輕重緩急排序、資料正本與首頁／下鑽邊界，並在同一份 task-linked 議題紀錄定錨候選工作 operation batch、依賴圖與唯一 weekly core/review_date；MC-LIVE-SYS-10 專供後續 UI 下鑽實作。本 task 不直接實作 UI。JV-36 Document Source Registry 產生的 ARCHITECTURE.md 薄連結屬第三階段 JV-36 R1–R4 交付，不能反向阻塞本治理 task 結案。",
       "acceptance": [
         "MC-DASH-V2-A01：tasks.json 是唯一行動正本，議題紀錄只保存決策、理由、文獻、影響、演進與文章素材，不複製 status、priority、progress 或 next action。",
         "MC-DASH-V2-A02：議題紀錄維持結論先行與四個主要區塊，僅讀標題、目前結論與各區首句即可在 30 秒內掌握問題、建議方案及影響。",
@@ -4067,7 +4068,7 @@
         "MC-DASH-V2-A04：所有使用者可見標題、按鈕、狀態、空狀態與錯誤訊息採繁體中文；task id、檔名、CLI 與 schema field 等技術識別碼可保留原文但不得主導首頁。",
         "MC-DASH-V2-A05：決策記錄必須處理 MorroWise 活系統讀錯 project task chain、例外排序可能互相遮蔽、首頁資訊過密與單一讀取入口未落實等已知缺口，並指出後續 system 與 surface task owner；MC-LIVE-SYS-10 僅保留給後續 UI 下鑽實作，不得與本治理 task 共用身份。",
         "MC-DASH-V2-A06：每筆關鍵文獻都記錄來源、關鍵觀點及如何影響本案；演進區只記方向轉折；文章素材至少包含核心論點、反直覺發現、案例與候選題目。",
-        "MC-DASH-V2-A07：本議題紀錄須由 JV-36 Document Source Registry 登錄，並由 generated document index 在 ARCHITECTURE.md 產生薄連結；薄連結只列摘要、正本、task anchor、狀態與 verifier，不複製文獻、演進或文章素材正文，也不得手改 ARCHITECTURE.md managed block。"
+        "MC-DASH-V2-A07：JV-36 R1–R4 實作時，本議題紀錄須由 Document Source Registry 登錄，並由 generated document index 在 ARCHITECTURE.md 產生薄連結；薄連結只列摘要、正本、task anchor、狀態與 verifier，不複製文獻、演進或文章素材正文，也不得手改 ARCHITECTURE.md managed block。這是第三階段交付，不阻塞第一階段治理定錨。"
       ],
       "source_refs": [
         "$COLLAB/harness-mc/milestones/morrowise/notes/mc-dashboard-priority-ia-v2.md",
@@ -4084,22 +4085,25 @@
         "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mc-dashboard-priority-ia-v2",
         "inputs": [
           "已核准的 MC IA、議題紀錄與既有 dashboard/read-model evidence",
-          "JV-36 generated document index 的薄連結結果"
+          "第一階段候選工作 semantic intake 與 Reality Tax replacement lineage"
         ],
         "outputs": [
           "可追溯的首頁／下鑽 IA、繁中化與 owner boundary 決策",
+          "候選工作 operation batch、依賴圖與唯一 weekly core/review_date 決策",
           "MC-LIVE-SYS-10 的獨立 UI implementation handoff"
         ],
         "verifiers": [
-          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
-          "node scripts/verify-morrowise-document-sources.mjs",
-          "python3 $COLLAB/notyet-harness/000_Agent/scripts/sync-morrowise-documentation.py --check"
+          "node scripts/verify-validate-tasks.mjs",
+          "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+          "npm run test:architecture-subsystems",
+          "npm run test:system-pulse"
         ],
-        "stop_condition": "JV-36 尚未產生受管薄連結時保持 todo；本 task 不得修改 UI、generator、read model 或把 MC-LIVE-SYS-10 重新併回治理身份。"
+        "stop_condition": "若候選工作沒有 approved semantic outcome、存在兩個 weekly core、Reality Tax replacement lineage 不完整，或把 UI／runtime 實作混入治理 batch 時停止；不得等待第三階段 JV-36 薄連結、修改 UI、generator、read model 或把 MC-LIVE-SYS-10 重新併回治理身份。"
       },
       "jv32_route": {
         "workflows": [
-          "task-lifecycle"
+          "task-lifecycle",
+          "closeout-commit-routing"
         ],
         "decision_input": [
           "既有 MC 首頁、MorroWise live dashboard read model、generator 與下鑽頁 draft spec 的唯讀盤點",
@@ -4170,8 +4174,48 @@
             "Vincent 2026-07-25 current session: 幫我確定下列兩項"
           ],
           "recorded_at": "2026-07-25"
+        },
+        {
+          "operation": "complete",
+          "from_status": "todo",
+          "to_status": "completed",
+          "reason": "Vincent 核准三階段完成法後，第一階段只完成治理定錨：已將 MC-DASH-V2／MC-LIVE-SYS-10 身份、候選 operation batch、依賴圖與唯一 weekly core/review_date 寫入同一份 task-linked 議題紀錄。JV-36 generated document index 薄連結改由第三階段 R1–R4 承接，不再把未實作文件控制面當作本治理 task 的完成阻塞。",
+          "evidence_refs": [
+            "$COLLAB/harness-mc/milestones/morrowise/notes/mc-dashboard-priority-ia-v2.md#第一階段治理定錨（2026-07-26）",
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1",
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-live-decision-loop-v1",
+            "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-priority-dashboard-surface-v2",
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#skill-candidate-review-gate",
+            "Vincent 2026-07-26 current session: 採用 flowchart 作為最新順序：3 階段完成法；一口氣完成，不要再回馬槍"
+          ],
+          "recorded_at": "2026-07-26",
+          "semantic_intake": {
+            "outcome": "amend",
+            "compared_task_refs": [
+              "morrowise/document-source-registry-and-human-sync",
+              "harness-mc/morrowise-priority-dashboard-surface-v2",
+              "morrowise/action-priority-read-model-v2"
+            ],
+            "scope_comparison": {
+              "problem": "既有 MC-DASH-V2 已完成 IA 與身份分離；本次只將其完成邊界改為第一階段治理定錨，而非提前實作文件控制面或 UI。",
+              "owner_source_of_truth": "治理決策仍由 MorroWise tasks.json 與其 task-linked 議題紀錄承接；JV-36 registry、priority read model 與 harness-mc surface 各自保有後續正本。",
+              "inputs_outputs": "輸入為既有 semantic intake、replacement lineage、task dependencies 與 weekly-core evidence；輸出為唯一 operation batch 與依賴圖，不新增 task system、daily loop、scheduler 或 runtime。",
+              "lifecycle_completion": "本 task 的治理決策已完成；JV-36 薄連結、UI、runtime 與 E2E 均屬後續階段 task，不能延長或重開本 task。"
+            },
+            "decision_reason": "三階段計畫將治理定錨、工作包設計與依賴驅動實作分開；故以 amend 完成既有 governance anchor，而非建立第二份 Phase-1 tracker 或把第三階段依賴倒灌。",
+            "approval": {
+              "status": "approved",
+              "approved_by": "Vincent",
+              "approved_at": "2026-07-26",
+              "evidence_refs": [
+                "Vincent 2026-07-26 current session: 採用 flowchart 作為最新順序：3 階段完成法；一口氣完成，不要再回馬槍"
+              ]
+            }
+          }
         }
-        ]
+      ]
       },
       "hc_decision": {
         "task_scope": "morrowise/mc-dashboard-priority-ia-v2",

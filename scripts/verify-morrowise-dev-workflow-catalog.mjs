@@ -71,6 +71,7 @@ const FORBIDDEN_REF_PATTERNS = [
   /browser[-_\s]?cookies/i,
 ];
 const EXTERNAL_TRACKER_WRITE_PATTERN = /\b(?:github|gitlab)[_\s-]?(?:issues?|tracker)|external\s+(?:issue\s+)?tracker\b/i;
+const JV32_PREBUILD_CONTRACT_REF = "$COLLAB/harness-mc/package.json#jv32-prebuild-contract";
 const ARCHITECTURE_VERSION_REVIEW_REFS = [
   "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
   "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json",
@@ -85,7 +86,7 @@ const ARCHITECTURE_VERSION_REVIEW_REFS = [
   "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
   "$COLLAB/harness-mc/scripts/work-anchor-preflight.mjs",
   "$COLLAB/harness-mc/scripts/verify-work-anchor-preflight.mjs",
-  "$COLLAB/harness-mc/package.json",
+  JV32_PREBUILD_CONTRACT_REF,
   "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
   "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs",
 ];
@@ -95,6 +96,7 @@ const prebuild = packageJson.scripts?.prebuild || "";
 const devWorkflowGenerator = "node scripts/generate-morrowise-dev-workflows.mjs";
 const catalogVerifier = "node scripts/verify-morrowise-dev-workflow-catalog.mjs";
 const liveDashboardGenerator = "node scripts/generate-morrowise-live-dashboard.mjs";
+const JV32_PREBUILD_COMMANDS = [devWorkflowGenerator, catalogVerifier, liveDashboardGenerator];
 const devWorkflowGeneratorIndex = prebuild.indexOf(devWorkflowGenerator);
 const catalogVerifierIndex = prebuild.indexOf(catalogVerifier);
 const liveDashboardGeneratorIndex = prebuild.indexOf(liveDashboardGenerator);
@@ -143,6 +145,7 @@ verifyTaskState(tasks);
 verifyArchitectureAdmission(architectureRegistry);
 verifyWiringFixture(wiringGate);
 verifyNegativeFixtures(registry);
+verifyArchitectureFingerprintBoundary();
 
 console.log("MorroWise dev workflow catalog verification OK");
 
@@ -461,11 +464,42 @@ function verifyNegativeFixtures(value) {
   assert.throws(() => verifyArchitectureAdmission(staleArchitectureReview), /contract_fingerprint/);
 }
 
-function architectureContractFingerprint(refs) {
+function verifyArchitectureFingerprintBoundary() {
+  const baseline = architectureContractFingerprint(ARCHITECTURE_VERSION_REVIEW_REFS);
+  const unrelatedPackageChange = structuredClone(packageJson);
+  unrelatedPackageChange.scripts["test:jv32-unrelated-fingerprint-fixture"] = "node -e \"process.exit(0)\"";
+  assert.equal(
+    architectureContractFingerprint(ARCHITECTURE_VERSION_REVIEW_REFS, { packageManifest: unrelatedPackageChange }),
+    baseline,
+    "unrelated package.json scripts must not change the JV-32 architecture contract fingerprint",
+  );
+
+  const requiredPrebuildChange = structuredClone(packageJson);
+  requiredPrebuildChange.scripts.prebuild = String(requiredPrebuildChange.scripts.prebuild || "")
+    .replace(catalogVerifier, "node scripts/verify-jv32-prebuild-fixture.mjs");
+  assert.notEqual(
+    architectureContractFingerprint(ARCHITECTURE_VERSION_REVIEW_REFS, { packageManifest: requiredPrebuildChange }),
+    baseline,
+    "changing a required JV-32 prebuild command must change the architecture contract fingerprint",
+  );
+}
+
+function architectureContractFingerprint(refs, { packageManifest = packageJson } = {}) {
   const source = refs.map((ref) => {
-    return `${ref}\n${fs.readFileSync(resolveCollabRef(ref), "utf8")}`;
+    return `${ref}\n${architectureContractSource(ref, { packageManifest })}`;
   }).join("\n---\n");
   return crypto.createHash("sha256").update(source).digest("hex").slice(0, 16);
+}
+
+function architectureContractSource(ref, { packageManifest }) {
+  if (ref === JV32_PREBUILD_CONTRACT_REF) {
+    const commands = String(packageManifest?.scripts?.prebuild || "")
+      .split("&&")
+      .map((command) => command.trim())
+      .filter((command) => JV32_PREBUILD_COMMANDS.includes(command));
+    return JSON.stringify({ contract: "jv32-prebuild-contract-v1", commands });
+  }
+  return fs.readFileSync(resolveCollabRef(ref), "utf8");
 }
 
 function assertSafeRef(recordId, ref) {

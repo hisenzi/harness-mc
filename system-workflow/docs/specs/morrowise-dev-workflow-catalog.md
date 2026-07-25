@@ -19,6 +19,8 @@ The catalog turns useful external software-development workflow patterns into Mo
 
 `source_doc` and `source_skill` are provenance metadata, not build dependencies. The verifier always requires safe `$COLLAB/...` syntax without path traversal; it requires a path to resolve only when the normalized reference is owned by `$COLLAB/harness-mc`. Cross-repo or local intake evidence may be unavailable in an isolated single-repo build, and its absence must not make CI claim that the catalog itself is invalid.
 
+The Architecture Admission version review records `$COLLAB/harness-mc/package.json#jv32-prebuild-contract`, not the whole manifest. This fragment fingerprints only the required JV-32 prebuild commands—generate the workflow read model, verify the catalog, then generate the live dashboard—in their effective order. Unrelated scripts or package metadata must not make the catalog review stale; removing, renaming, or reordering a required command must still fail the verifier.
+
 ## Router Rules
 
 - `ask-matt` is a router pattern, not an executor.

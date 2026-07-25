@@ -226,11 +226,11 @@
           "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
           "$COLLAB/harness-mc/scripts/work-anchor-preflight.mjs",
           "$COLLAB/harness-mc/scripts/verify-work-anchor-preflight.mjs",
-          "$COLLAB/harness-mc/package.json",
+          "$COLLAB/harness-mc/package.json#jv32-prebuild-contract",
           "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
           "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
         ],
-        "contract_fingerprint": "a8db2226e3547d5f",
+        "contract_fingerprint": "a8886b4dae7dc25e",
         "index_action": "no_index_change",
         "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
         "evidence_refs": [
@@ -242,7 +242,7 @@
           "npm run test:architecture-subsystems",
           "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
         ],
-        "reason": "2026-07-25 將 canonical task title 的繁體中文優先規範、changed-only Han 字元 gate、歷史相容策略與正反 fixtures 納入既有 JV-32 受管 contract。2026-07-27 再依 MW-GIT-AUTH-01 收緊 approval policy 與 package verifier wiring：建立或切換 branch/worktree 必須有 Vincent 精確核准，且同一核准完成 target-main integration、驗證與清理。兩項規則沿用同一 MorroWise 開發工作流 Catalog 子系統，ARCHITECTURE.md 薄索引不增加細節，因此 index_action=no_index_change，但刷新受管 contract fingerprint。"
+        "reason": "2026-07-25 將 canonical task title 的繁體中文優先規範、changed-only Han 字元 gate、歷史相容策略與正反 fixtures 納入既有 JV-32 受管 contract，並把 package.json fingerprint 收斂為三個必要 JV-32 prebuild command 的投影，避免無關 script／metadata 造成 Admission Record 假性 stale。2026-07-27 再依 MW-GIT-AUTH-01 收緊 approval policy 與 package verifier wiring：建立或切換 branch/worktree 必須有 Vincent 精確核准，且同一核准完成 target-main integration、驗證與清理。三項規則沿用同一 MorroWise 開發工作流 Catalog 子系統，ARCHITECTURE.md 薄索引不增加細節，因此 index_action=no_index_change，但刷新受管 contract fingerprint。"
       },
       "supersedes": [],
       "superseded_by": null

@@ -51,7 +51,7 @@ const baseTasks = {
   tasks: [
     {
       id: "acp-good-task",
-      title: "Good ACP task",
+      title: "合格 ACP 任務",
       status: "todo",
       track: "control-plane",
       order_label: "ACP-VERIFY-01",
@@ -69,7 +69,7 @@ const baseTasks = {
     },
     {
       id: "legacy-missing-fields",
-      title: "Legacy missing fields",
+      title: "歷史缺欄位任務",
       status: "todo",
     },
   ],
@@ -115,7 +115,7 @@ writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), baseTasks);
 const changedTasks = structuredClone(baseTasks);
 changedTasks.tasks.push({
   id: "acp-bad-task",
-  title: "Bad ACP task",
+  title: "缺欄位 ACP 任務",
   status: "todo",
   track: "control-plane",
 });
@@ -138,7 +138,7 @@ if (!failed.output.includes("hc_decision is required")) {
 const malformedHc = structuredClone(baseTasks);
 malformedHc.tasks.push({
   id: "acp-malformed-hc",
-  title: "Malformed HC task",
+  title: "HC 格式錯誤任務",
   status: "todo",
   track: "control-plane",
   order_label: "ACP-VERIFY-02",
@@ -169,7 +169,7 @@ const closedWithoutArchitectureDecision = {
   tasks: [
     {
       id: "morrowise-closed-without-arch",
-      title: "Closed without architecture decision",
+      title: "缺 Architecture Decision 的已關閉任務",
       status: "completed",
       track: "governance",
       order_label: "JV-VERIFY-01",
@@ -263,7 +263,7 @@ if (!validAdmissionReviewResult.output.includes("Task validation OK")) {
 const lifecycleRouteMissing = structuredClone(baseTasks);
 lifecycleRouteMissing.tasks.push({
   id: "acp-lifecycle-route-missing",
-  title: "Lifecycle route missing",
+  title: "缺 task lifecycle route 的任務",
   status: "todo",
   track: "control-plane",
   order_label: "ACP-VERIFY-03",
@@ -287,7 +287,7 @@ if (!missingLifecycleRoute.output.includes("jv32_route is required for changed o
 const lifecycleHistoryMissing = structuredClone(baseTasks);
 lifecycleHistoryMissing.tasks.push({
   id: "acp-lifecycle-history-missing",
-  title: "Lifecycle history missing",
+  title: "缺 task lifecycle history 的任務",
   status: "todo",
   track: "control-plane",
   order_label: "ACP-VERIFY-04",
@@ -452,7 +452,7 @@ if (!validLifecyclePass.output.includes("Task validation OK")) {
 const newTaskWithFollowupMutation = structuredClone(baseTasks);
 newTaskWithFollowupMutation.tasks.push({
   id: "acp-new-task-with-followup",
-  title: "New task with followup mutation",
+  title: "新任務與後續修改",
   status: "in_progress",
   track: "control-plane",
   order_label: "ACP-VERIFY-05",
@@ -547,7 +547,7 @@ function weeklyCoreReview(decision, {
 function lifecycleTask(id, status, history, workflows = ["task-lifecycle"]) {
   return {
     id,
-    title: `Lifecycle ${id}`,
+    title: `生命週期 ${id}`,
     status,
     track: "control-plane",
     order_label: `ACP-${id.toUpperCase()}`,
@@ -577,7 +577,7 @@ function morrowiseTask(id, status, history, extras = {}) {
 function morrowiseSeedTask() {
   return {
     id: "morrowise-seed-task",
-    title: "Seed MorroWise task",
+    title: "MorroWise 種子任務",
     status: "todo",
     track: "governance",
     order_label: "JV-VERIFY-00",
@@ -828,6 +828,40 @@ writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), approvedWeek
 const approvedWeeklyCoreCompleteResult = run(["--changed-only", "--project", "morrowise", "--as-of", "2026-07-24"]);
 if (!approvedWeeklyCoreCompleteResult.output.includes("Task validation OK")) {
   throw new Error("Expected an explicitly approved weekly core completion to pass.");
+}
+
+const traditionalChineseTitlePass = structuredClone(allLegalLifecycleOperations);
+const traditionalChineseTitleTask = lifecycleTask("traditional-title-pass", "todo", [
+  lifecycleEvent("create", null, "todo"),
+]);
+traditionalChineseTitleTask.title = "對話驅動 Prototype 生成流程可行性驗證";
+const mixedTechnicalTitleTask = lifecycleTask("mixed-technical-title-pass", "todo", [
+  lifecycleEvent("create", null, "todo"),
+]);
+mixedTechnicalTitleTask.title = "Paper Shader 轉接層與語意預設驗證";
+traditionalChineseTitlePass.tasks.push(traditionalChineseTitleTask, mixedTechnicalTitleTask);
+writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), traditionalChineseTitlePass);
+
+const traditionalChineseTitleResult = run(["--changed-only", "--project", "harness-mc"]);
+if (!traditionalChineseTitleResult.output.includes("Task validation OK")) {
+  throw new Error("Expected a Traditional Chinese title with immutable Prototype identifier to pass.");
+}
+
+const englishOnlyTitleRejected = structuredClone(allLegalLifecycleOperations);
+const englishOnlyTitleTask = lifecycleTask("english-title-rejected", "todo", [
+  lifecycleEvent("create", null, "todo"),
+]);
+englishOnlyTitleTask.title = "Conversation-to-Prototype Runtime Spike";
+const mixedTechnicalEnglishTitleTask = lifecycleTask("mixed-technical-english-title-rejected", "todo", [
+  lifecycleEvent("create", null, "todo"),
+]);
+mixedTechnicalEnglishTitleTask.title = "Paper Shader Integration";
+englishOnlyTitleRejected.tasks.push(englishOnlyTitleTask, mixedTechnicalEnglishTitleTask);
+writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), englishOnlyTitleRejected);
+
+const englishOnlyTitleResult = run(["--changed-only", "--project", "harness-mc"], { expectFailure: true });
+if (!englishOnlyTitleResult.output.includes("title must use Traditional Chinese as the primary language; immutable technical identifiers may remain in the original language")) {
+  throw new Error("Expected an all-English canonical task title to fail.");
 }
 
 console.log("validate-tasks verification OK");

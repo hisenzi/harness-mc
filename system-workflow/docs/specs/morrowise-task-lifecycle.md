@@ -12,6 +12,24 @@ Owner task：`$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-
 
 任何新增、語意修改、暫緩、恢復、完成、取消或封存 canonical task 的動作，都必須先有 Vincent 明確 task-state mutation 核准、可檢查的 diff、原因與驗證計畫，然後在 task 的 `jv32_route.workflows` 加入 `task-lifecycle`，並追加一筆 `task_lifecycle.history`。
 
+## Title 命名規範
+
+Canonical task 的 `title` 以繁體中文為主要語言。Task ID、產品名稱、套件名稱、API、CLI、schema field、Prototype 等不可變技術識別碼可保留原文，但不得使用全英文作為主要標題。
+
+允許：
+
+- `對話驅動 Prototype 生成流程可行性驗證`
+- `Paper Shader 轉接層與語意預設驗證`
+- `Block Registry 重複與分類檢查`
+
+拒絕：
+
+- `Conversation-to-Prototype Runtime Spike`
+- `Paper Shader Integration`
+- `Block Registry Validator`
+
+規範語意以繁體中文為準；validator 不以不可靠的字表猜測繁簡字形，而是在 changed-only 模式對新增或本次變更的 task 機械要求 `title` 至少包含一個 Han 字元。全 ASCII／全英文標題必須 fail；未變更的歷史 task 不追溯改寫，full scan 僅以 warning 顯示，待該 task 下次語意修改時再依本規範修正。
+
 ## Operation 與狀態
 
 | operation | 使用時機 | status 規則 | 額外資料 |

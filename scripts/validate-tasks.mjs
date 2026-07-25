@@ -33,6 +33,7 @@ const SEMANTIC_INTAKE_OUTCOMES = new Set(["reuse", "amend", "replace", "genuinel
 const SEMANTIC_SCOPE_FIELDS = ["problem", "owner_source_of_truth", "inputs_outputs", "lifecycle_completion"];
 const WEEKLY_CORE_REVIEW_DECISIONS = new Set(["admit", "reframe", "suspend", "cancel", "complete"]);
 const BOOKKEEPING_ONLY_FIELDS = new Set(["commits", "completed_at", "summary", "external_refs", "jv32_route", "task_lifecycle"]);
+const HAN_SCRIPT_PATTERN = /\p{Script=Han}/u;
 
 function parseArgs(argv) {
   const args = {
@@ -185,7 +186,11 @@ function validateTask(task, {
   }
 
   if (!nonEmptyString(task.id)) problems.push("id must be a non-empty string");
-  if (!nonEmptyString(task.title)) problems.push("title must be a non-empty string");
+  if (!nonEmptyString(task.title)) {
+    problems.push("title must be a non-empty string");
+  } else if ((!changedOnly || changed) && !HAN_SCRIPT_PATTERN.test(task.title)) {
+    problems.push("title must use Traditional Chinese as the primary language; immutable technical identifiers may remain in the original language");
+  }
   if (!nonEmptyString(task.status)) {
     problems.push("status must be a non-empty string");
   } else if (!VALID_STATUSES.has(task.status)) {

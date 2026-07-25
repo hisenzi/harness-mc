@@ -137,6 +137,136 @@
       "note": "此 task 是 selection surface，不是單純展示型 block gallery。SIFT 結論：mockup 要能產生可交給 agent 執行的選擇結果，例如 selected_recipe + block catalog_id sequence；之後才評估是否升級為 Astro demo page 或 /blocks catalog。"
     },
     {
+      "id": "conversation-to-prototype-runtime-spike",
+      "title": "對話驅動 Prototype 生成流程可行性驗證",
+      "status": "todo",
+      "track": "phase-1",
+      "priority": "high",
+      "depends_on": [
+        "p1-block-registry-rules",
+        "p1-block-layout-recipes",
+        "p1-block-layout-decision-index"
+      ],
+      "project_problem": "HiBlocks 缺少讓人與 Agent 共用的模組索引、Layout 語言及結構化交付方式。",
+      "core_value": {
+        "statement": "選得懂、交得出去、Agent 組得對",
+        "pillars": [
+          {
+            "label": "選得懂",
+            "description": "用編號、用途與預覽理解模組。"
+          },
+          {
+            "label": "交得出去",
+            "description": "把選擇、順序、參考圖與備註完整提交。"
+          },
+          {
+            "label": "Agent 組得對",
+            "description": "辨識衝突、提出理由並依核准結果產出 Prototype。"
+          }
+        ]
+      },
+      "done_condition": "完成一條最小且可重跑的 Conversation-to-Prototype runtime spike：對話是唯一主要操作面，使用者可依共享索引的簡單編號、用途與預覽選擇一組 Landing Page recipe / blocks、調整順序，並連同參考圖與備註結構化提交；Agent 依 registry / recipes 檢查 ID、缺件與衝突，提出附理由的組合方案，只有經 Vincent 核准後才更新同步 Prototype。HiBlocks 通用 schema 與 runtime 是正本，Dashboard 僅作驗證 demo，不另建獨立控制台。",
+      "acceptance": [
+        "A01｜共享模組索引與 Layout recipe 沿用既有 HBL-BLOCK / HBL-RECIPE 編號、用途、預覽與順序定義；本 task 不建立第二份模組清單。",
+        "A02｜定義單一結構化 submission contract，至少包含 selected_recipe、blocks（含順序）、reference_images 與 notes，並能從對話或 Decision Index 產出相同資料形狀。",
+        "A03｜Agent 在產出前驗證 catalog ID、recipe 引用、必要內容、順序與參考圖／需求衝突；有衝突時先說明判斷與替代方案，不直接覆寫使用者選擇。",
+        "A04｜流程明確區分 proposal、awaiting_approval、approved 與 prototype_updated；只有 Vincent 明確核准的方案可觸發 Prototype 更新。",
+        "A05｜以至少一個 Landing Page fixture 跑通「選擇模組 → 排序 → 附參考圖與備註 → Agent 檢查／提案 → 核准 → 同步 Prototype」，並由 verifier 證明輸入、決策與輸出可追溯。",
+        "A06｜HiBlocks 通用能力是 schema、runtime 與 Prototype 組合規則的唯一正本；Dashboard 只消費這些能力作為驗證 demo，不複製規則或形成獨立控制台。"
+      ],
+      "estimate": "8hr",
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/hiblocks/tasks.json#p1-block-registry-rules",
+        "$COLLAB/harness-mc/milestones/hiblocks/tasks.json#p1-block-layout-recipes",
+        "$COLLAB/harness-mc/milestones/hiblocks/tasks.json#p1-block-layout-decision-index",
+        "$COLLAB/hiblocks/src/components/blocks/blocks.manifest.json",
+        "$COLLAB/hiblocks/docs/site-prefill.md"
+      ],
+      "jv32_route": {
+        "batch": "HiBlocks Conversation-to-Prototype MVP",
+        "workflows": [
+          "grill-with-docs",
+          "domain-modeling",
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "HiBlocks block registry",
+          "Layout recipes",
+          "Decision Index selection JSON",
+          "使用者參考圖與備註",
+          "Vincent 核准結果"
+        ],
+        "decision_output": "可追溯的模組選擇、衝突判斷、核准方案與同步 Prototype",
+        "execution_boundary": "只建立 HiBlocks 通用 submission schema、runtime spike、fixture、verifier 與 Dashboard 驗證 demo；對話維持主要介面，不建立獨立控制台，不執行 commit、push、部署或外部服務寫入。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准建立最小 MVP task，驗證人與 Agent 能以共用模組索引、Layout 語言及結構化提交完成對話驅動 Prototype 組合。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/hiblocks/tasks.json#p1-block-registry-rules",
+              "$COLLAB/harness-mc/milestones/hiblocks/tasks.json#p1-block-layout-recipes",
+              "$COLLAB/harness-mc/milestones/hiblocks/tasks.json#p1-block-layout-decision-index",
+              "Vincent 2026-07-25 current session: 可以寫 task；補上專案要解決什麼？及核心價值「選得懂、交得出去、Agent 組得對」。"
+            ],
+            "recorded_at": "2026-07-25",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "hiblocks/p1-block-registry-rules",
+                "hiblocks/p1-block-layout-recipes",
+                "hiblocks/p1-block-layout-decision-index"
+              ],
+              "scope_comparison": {
+                "problem": "既有 tasks 分別定義模組字典、Layout recipes 與選擇介面；本 task 處理尚未被擁有的對話式結構化交付、Agent 衝突判斷、人工核准與同步 Prototype runtime。",
+                "owner_source_of_truth": "Registry task 擁有模組規則，Recipe task 擁有頁面組合語言，Decision Index task 擁有選擇介面；本 task 只擁有 Conversation-to-Prototype submission schema、runtime 狀態與核准後 Prototype 更新流程，正本留在 HiBlocks。",
+                "inputs_outputs": "輸入是 registry、recipes、selected_recipe、blocks 順序、reference_images、notes 與 Vincent 核准；輸出是衝突檢查、附理由提案、核准紀錄及同步 Prototype。",
+                "lifecycle_completion": "既有 tasks 在規則、recipe manifest 或 selection mockup 可驗證時完成；本 task 必須在一條完整 Landing Page fixture 經對話提交、Agent 判斷、人工核准及 Prototype 更新並通過 verifier 後才完成。"
+              },
+              "decision_reason": "四個責任邊界皆與既有索引／recipe／選擇介面不同，但又以其為依賴；因此建立 genuinely_new runtime task，而不是修改或重複既有 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-25",
+                "evidence_refs": [
+                  "Vincent 2026-07-25 current session: 可以寫 task；補上專案要解決什麼？及核心價值「選得懂、交得出去、Agent 組得對」。"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "hc_decision": {
+        "task_scope": "hiblocks/conversation-to-prototype-runtime-spike",
+        "hc_refs": [
+          "#rightProblem",
+          "#functionalClarity",
+          "#systemDynamics",
+          "#risk",
+          "#sourceBoundary"
+        ],
+        "hc_reasoning": "真正問題不是增加更多調整 bar 或另一套控制台，而是人與 Agent 沒有共用的模組字典、Layout 組合語言與可完整交付的 submission。#functionalClarity 讓編號、用途、預覽、順序、參考圖與備註可被雙方理解；#systemDynamics 固定選擇、衝突檢查、提案、人工核准、Prototype 更新的先後；#risk 防止 Agent 忽略衝突、未核准就產出或 Dashboard 複製正本；#sourceBoundary 固定 HiBlocks 通用 schema / runtime 為正本，Dashboard 僅驗證。",
+        "hc_confidence": 0.94,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/hiblocks/tasks.json#p1-block-registry-rules",
+          "$COLLAB/harness-mc/milestones/hiblocks/tasks.json#p1-block-layout-recipes",
+          "$COLLAB/harness-mc/milestones/hiblocks/tasks.json#p1-block-layout-decision-index",
+          "$COLLAB/hiblocks/docs/site-prefill.md",
+          "Vincent 2026-07-25 current session: 對話＋同步 Prototype，而不是獨立的 HiBlocks 控制台。"
+        ],
+        "source_boundary": "HC 只用來做思考檢查，不是正本；canonical task 在 harness-mc milestones/hiblocks/tasks.json，實作正本在 HiBlocks registry、schema、runtime、fixture 與 verifier。"
+      },
+      "note": "使用 UX 固定為「對話＋同步 Prototype」：Vincent 可從有簡單編號、用途與預覽的共享索引挑選模組，像購物車般組成 block 或 Landing Page，調整順序、附參考圖與備註後提交；Agent 若發現選擇互相衝突或有更適合方案，先提出理由並等待確認，再依核准結果組合 Prototype。"
+    },
+    {
       "id": "p1-3",
       "title": "DESIGN.md → Theme 生成管線（Claude prompt template + token contract）",
       "status": "todo",

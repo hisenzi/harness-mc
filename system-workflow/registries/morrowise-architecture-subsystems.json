@@ -226,11 +226,11 @@
           "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
           "$COLLAB/harness-mc/scripts/work-anchor-preflight.mjs",
           "$COLLAB/harness-mc/scripts/verify-work-anchor-preflight.mjs",
-          "$COLLAB/harness-mc/package.json",
+          "$COLLAB/harness-mc/package.json#jv32-prebuild-contract",
           "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
           "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
         ],
-        "contract_fingerprint": "0fe3f176aa39d646",
+        "contract_fingerprint": "56c934275a5f8610",
         "index_action": "updated",
         "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
         "evidence_refs": [
@@ -240,7 +240,7 @@
           "npm run test:architecture-subsystems",
           "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
         ],
-        "reason": "2026-07-25 將 canonical task title 的繁體中文優先規範、changed-only Han 字元 gate、歷史相容策略與正反 fixtures 納入既有 JV-32 受管 contract；刷新同一 Admission Record fingerprint 與 generated thin index，不建立新子系統。"
+        "reason": "2026-07-25 將 canonical task title 的繁體中文優先規範、changed-only Han 字元 gate、歷史相容策略與正反 fixtures 納入既有 JV-32 受管 contract；並把 package.json fingerprint 收斂為三個必要 JV-32 prebuild command 的投影，避免無關 script／metadata 造成 Admission Record 假性 stale。刷新同一 Admission Record fingerprint 與 generated thin index，不建立新子系統。"
       },
       "supersedes": [],
       "superseded_by": null

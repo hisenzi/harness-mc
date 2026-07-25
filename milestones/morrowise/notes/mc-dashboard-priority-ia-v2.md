@@ -7,6 +7,50 @@
 > 身份邊界：`MC-DASH-V2` 是本 task 的治理／決策身份；`MC-LIVE-SYS-10` 是後續 UI 下鑽實作的規格與驗收身份。
 > 執行狀態、優先級與下一步一律以 `tasks.json` 為準。
 
+## 第一階段治理定錨（2026-07-26）
+
+本節是 `MC-DASH-V2` 的唯一第一階段 operation batch 與依賴圖。它只保存經核准的治理裁決，不複製後續 task 的 status、實作進度或 runtime 資料；那些仍以 `tasks.json` 與各自 verifier 為準。
+
+### 候選工作裁決表
+
+| 候選 | 裁決 | Canonical owner | 第一階段結論 |
+|---|---|---|---|
+| `mc-dashboard-priority-ia-v2` | `amend` | MorroWise governance | 保留 `MC-DASH-V2`；`MC-LIVE-SYS-10` 只屬後續 UI surface。 |
+| `action-priority-read-model-v2` | `genuinely_new` | MorroWise | canonical task 的唯一唯讀優先級層；選為唯一 weekly core，`review_date=2026-07-29`。 |
+| `trusted-heartbeat-runtime-v1` | `genuinely_new` | MorroWise | 沿用既有 scheduler evidence；不得建立第二套 scheduler。 |
+| Reality Tax 每日決策 | `replace` | MorroWise | 舊 `reality-tax-daily-review-task` 已取消；唯一 successor 是 `morrowise-live-decision-loop-v1`。 |
+| `morrowise-priority-dashboard-surface-v2` | `genuinely_new` | harness-mc | 只在 priority read model 驗收後建立；不成為 MorroWise task 或第二 read model。 |
+| `document-source-registry-and-human-sync` | `amend` | MorroWise | 同一個 JV-36 anchor 受控分為 R1–R5；不重開文件治理系統。 |
+| `skill-candidate-review-gate` | `reuse` | MorroWise | 維持 `todo`；只在最終 E2E 成功後提醒，不建立、修改或安裝 skill。 |
+
+### 唯一 weekly core
+
+`action-priority-read-model-v2` 是唯一 `weekly_core=true` 的 MorroWise task，review date 為 `2026-07-29`。若到期，只能依 JV-40 由 Vincent 明確 reframe、suspend、cancel 或 complete；不自動延期。
+
+### 依賴圖與三階段邊界
+
+```mermaid
+flowchart TD
+  A["0. 治理定錨：MC-DASH-V2 governance、最終 IA、operation batch"] --> B["1. JV-32／JV-40 gate 重驗"]
+  B --> C["2. Semantic intake 與重疊裁決"]
+  C --> D1["3A. Action Priority Read Model v2"]
+  C --> D2["3B. Trusted Heartbeat Runtime v1"]
+  C --> D3["3C. JV-36 R1–R4 文件控制面"]
+  D1 --> E1["4A. harness-mc Surface"]
+  D1 --> E2["4B. 唯一每日決策 loop"]
+  D2 --> E2
+  D2 --> E3["4C. JV-36 R5 文件每日健檢"]
+  D3 --> E3
+  E1 --> F["5. Fresh-session E2E＋Architecture Admission"]
+  E2 --> F
+  E3 --> F
+  F --> G["6. JV-41：Skill candidate 提醒"]
+```
+
+- 第一階段到此結束：鎖定 owner、正本、operation、依賴、開始門檻、唯一 weekly core 與禁止事項；不實作 UI、runtime、scheduler、read model 或 skill。
+- 第二階段才為每個後續工作包填 `task id → operation → owner → source of truth → dependency → done condition → verifier → review_date → 預估工時`；Reality Tax 已完成 `replace` 裁決後才排其 critical path。
+- 第三階段才依圖實作；JV-36 R5 依賴 R1–R4 與 trusted heartbeat，且在真實 run evidence 前只能 `degraded`／`not live`。
+
 ## 1. 決定與影響
 
 ### 核准決定

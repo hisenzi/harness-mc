@@ -3553,9 +3553,8 @@
     },
     {
       "id": "task-lifecycle-jv32-gate",
-      "status": "completed",
+      "status": "in_progress",
       "weekly_core": false,
-      "completed_at": "2026-07-20",
       "commits": [
         "8dd92f7",
         "038bae0",
@@ -3564,14 +3563,14 @@
         "bb29e95",
         "5b95f10"
       ],
-      "summary": "JV-40 已將 semantic task intake、scope／approval gate、單一 weekly_core、review_date 到期人工決策與負向 fixture 接入既有 JV-32；bb29e95 使 fresh worktree 的標準 build 在 dashboard 前生成並驗證 read model，5b95f10 已整合至 canonical main，Admission Record 與 ARCHITECTURE.md 薄索引同步且驗證通過。",
+      "summary": "2026-07-25 已將 canonical task title 的繁體中文優先規範、changed-only Han 字元 gate、歷史相容策略與正反 fixtures 收編為既有 JV-32 version improvement；task、catalog、architecture、system-pulse 與受控薄索引同步驗證通過，目前維持 in_progress，等待明確 commit／push closeout 核准。",
       "title": "JV-40 任務生命週期接入 JV-32（新增／修改／停用／完成 gate）",
       "track": "governance",
       "order_label": "JV-40",
       "dependencies": [
         "morrowise-dev-workflow-catalog"
       ],
-      "done_condition": "將新增、語意修改、暫緩、恢復、完成、取消與封存 task 的 canonical state mutation 納入既有 JV-32：semantic intake 固定 reuse／amend／replace／genuinely_new 並檢查四個 scope 邊界；MorroWise 每次最多一個 weekly_core in_progress，必有 review_date，到期只能經 Vincent 明確 reframe／suspend／cancel／complete，禁止自動延長。catalog、schema、command map、approval policy、validator、work-anchor runtime、負向 fixture 與 Architecture Admission Review 必須使用同一套語意並驗證通過；不得新增第二套 task system或外部寫入。",
+      "done_condition": "將新增、語意修改、暫緩、恢復、完成、取消與封存 task 的 canonical state mutation 納入既有 JV-32：semantic intake 固定 reuse／amend／replace／genuinely_new 並檢查四個 scope 邊界；MorroWise 每次最多一個 weekly_core in_progress，必有 review_date，到期只能經 Vincent 明確 reframe／suspend／cancel／complete，禁止自動延長。Canonical task 的 title 必須以繁體中文為主要語言，不可變技術識別碼可保留原文；changed-only validator、正反 fixtures 與歷史相容策略必須驗證通過。catalog、schema、command map、approval policy、validator、work-anchor runtime、負向 fixture 與 Architecture Admission Review 必須使用同一套語意；不得新增第二套 task system或外部寫入。",
       "acceptance": [
         "A01｜JV-32 catalog 增加 task-lifecycle workflow，定義 create、amend、suspend、resume、complete、cancel、archive 的輸入、輸出、writes_to、external_effect、verifier_ref 與 close_rule；它是 JV-32 的內建 route，不是平行 task 系統。",
         "A02｜task lifecycle schema 固定 jv32_route 與 task_lifecycle.history 的最小欄位：operation、from_status、to_status、reason、evidence_refs、recorded_at；history 為 append-only，不儲存秘密、帳號、token、Cookie 或 runtime auth。",
@@ -3584,7 +3583,10 @@
         "A09｜本 task 完成前必須記錄 Architecture Admission Review：JV-32 是既有 promoted catalog 的 version improvement；Admission Record 的受管合約 fingerprint、最近驗證時間、索引決定與 evidence 必須更新，並通過受控 sync check。ARCHITECTURE.md 維持薄索引，不複製 task-lifecycle 細節。",
         "A10｜MorroWise semantic task mutation 的最新 event 必須記錄 outcome、canonical compared refs、問題／owner-source／輸入輸出／完成邊界、decision reason 與 Vincent approval；reuse 不得寫正本。",
         "A11｜全域最多一個 weekly_core=true，且必為 in_progress 與未到期 review_date；首次 admission 與 reframe 必須有結構化 Vincent approval，as_of >= review_date 時 validator 與 work-anchor preflight 均 hard-fail。",
-        "A12｜review_date 變更必須精確記錄 previous／next date 與 new_scope；仍 in_progress 不得直接清 weekly_core。負向 fixture 必須攔下雙核心、逾期、無核准延長與錯誤 intake outcome。"
+        "A12｜review_date 變更必須精確記錄 previous／next date 與 new_scope；仍 in_progress 不得直接清 weekly_core。負向 fixture 必須攔下雙核心、逾期、無核准延長與錯誤 intake outcome。",
+        "A13｜Canonical task 的 title 以繁體中文為主要語言；Task ID、產品名稱、套件名稱、API、CLI、schema field、Prototype 等不可變技術識別碼可保留原文，但不得使用全英文作為主要標題。",
+        "A14｜validate-tasks changed-only 模式只對新增或本次變更的 canonical task 強制 title 至少包含 Han 字元；全 ASCII／全英文標題必須 fail，未變更的歷史 task 不追溯改寫且 full scan 僅維持 warning。",
+        "A15｜verify-validate-tasks 必須包含允許與拒絕 fixtures：對話驅動 Prototype 生成流程可行性驗證、Paper Shader 轉接層與語意預設驗證須 pass；Conversation-to-Prototype Runtime Spike、Paper Shader Integration 須 fail。"
       ],
       "source_refs": [
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
@@ -3784,6 +3786,47 @@
                 "Vincent 2026-07-20 current session: 進行「合併到 main」；將 JV-40 改為 completed、釋放 weekly_core。"
               ]
             }
+          },
+          {
+            "operation": "resume",
+            "from_status": "completed",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准以既有 JV-32 owner task 收編 canonical task title 的繁體中文優先規範，並要求先更新 task 再執行；本次是既有 task lifecycle gate 的 version improvement，不建立平行規範或新 task。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+              "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
+              "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
+              "npm run test:tasks",
+              "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+              "npm run test:architecture-subsystems",
+              "npm run test:system-pulse",
+              "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+              "Vincent 2026-07-25 current session: 先寫 JV-32 Task，然後執行；使用推薦第一個，保留 Prototype。"
+            ],
+            "recorded_at": "2026-07-25",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-dev-workflow-catalog"
+              ],
+              "scope_comparison": {
+                "problem": "本次處理 canonical task 標題語言一致性，屬於既有 JV-32 task mutation gate 的輸入品質規則，不是新的 task-management 問題。",
+                "owner_source_of_truth": "Owner 仍是 task-lifecycle-jv32-gate；正本仍是 MorroWise tasks.json、task lifecycle spec 與 validate-tasks verifier。",
+                "inputs_outputs": "輸入是 Vincent 確認的繁中優先命名決策與既有 changed-only validation；輸出是同一 spec、validator、fixtures 與 Admission Record 的版本改善。",
+                "lifecycle_completion": "完成邊界是規範文字、changed-only 機械攔截、歷史相容、正反 fixtures、JV-32 verifier 與 Architecture Admission Review 全部通過。"
+              },
+              "decision_reason": "標題規則直接治理 canonical task mutation，責任、正本、輸入輸出與完成邊界皆屬既有 JV-32；因此 outcome=amend，不新增 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-25",
+                "evidence_refs": [
+                  "Vincent 2026-07-25 current session: 先寫 JV-32 Task，然後執行。",
+                  "Vincent 2026-07-25 current session: 使用推薦第一個，保留 Prototype 方便與 schema、程式碼及文件名稱一致。"
+                ]
+              }
+            }
           }
         ]
       },
@@ -3802,8 +3845,8 @@
       },
       "architecture_decision": {
         "decision": "not_required",
-        "evaluated_at": "2026-07-20",
-        "reason": "JV-40 是已 promoted 的 JV-32 catalog version improvement，不新增平行 subsystem；2026-07-20 將 package.json 的 fresh-build generator／verifier 順序納入受管 contract，更新既有 Admission Record 並同步 ARCHITECTURE.md 薄索引。",
+        "evaluated_at": "2026-07-25",
+        "reason": "JV-40 是已 promoted 的 JV-32 catalog version improvement，不新增平行 subsystem；2026-07-25 將 canonical task title 的繁中優先 spec、changed-only validator、歷史相容策略與 fixtures 納入受管 contract，更新既有 Admission Record 並同步 ARCHITECTURE.md 薄索引。",
         "admission_review": {
           "scope": "version_improvement",
           "admission_record_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
@@ -3811,19 +3854,17 @@
           "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
           "evidence_refs": [
             "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate",
-            "bb29e95",
-            "5b95f10",
-            "npm run build",
             "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
-            "$COLLAB/harness-mc/system-workflow/schemas/morrowise-task-lifecycle.schema.json",
             "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
             "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
-            "$COLLAB/harness-mc/scripts/work-anchor-preflight.mjs",
-            "$COLLAB/harness-mc/scripts/verify-work-anchor-preflight.mjs",
             "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
+            "npm run test:tasks",
+            "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+            "npm run test:architecture-subsystems",
+            "npm run test:system-pulse",
             "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
           ],
-          "reason": "本次沿用同一 promoted subsystem，將 fresh-worktree 的 read model generator／verifier 閉環與 package.json build wiring 納入既有 Admission Record contract；更新 fingerprint、最近驗證時間與 ARCHITECTURE.md 薄索引，不建立新子系統。"
+          "reason": "本次沿用同一 promoted subsystem，將 canonical task title 的繁體中文優先規範、changed-only Han 字元 gate、歷史相容與正反 fixtures 納入既有 Admission Record contract；更新 fingerprint、最近驗證時間與 ARCHITECTURE.md 薄索引，不建立新子系統。"
         }
       },
       "note": "2026-07-18 Vincent 核准：新增、修改、停用 task 必須接入 JV-32，並要求一次補齊後做模擬驗證。此 task 是 lifecycle governance 的唯一 work anchor。2026-07-18 已補 Architecture Admission Review 閉環：既有 JV-32 的受管 contract 變更會使 verifier 以 fingerprint 攔截 stale Admission Record，並要求受控 ARCHITECTURE.md sync check。完成證據：8dd92f7、038bae0、task event 與本 task listed verifiers。2026-07-19 version_improvement roadmap／weekly_core review：被選為當週唯一 MorroWise 核心改善項目並轉 in_progress 時，必須同時記錄 weekly_core 與 review_date；到 review_date 仍未完成，只能由 Vincent 明確選擇 amend(reframe)、suspend（defer，to_status=deferred）或 cancel。amend(reframe) 必須記錄新 scope 與原因、重新取得 Vincent 核准；若仍維持 in_progress，必須同時設定新的明確 review_date，否則不得續留 weekly_core。suspend 必須記錄 reactivation criteria；cancel 必須記錄原因與 replacement／no replacement。禁止自動延長 review_date，也不得以未回覆默認續期。2026-07-19 Vincent 核准進行機械強制與 event 套用；JV-40 已以 resume 重開為唯一 weekly_core，review_date=2026-07-26。實作範圍固定為 semantic intake 結構與 outcome mapping、單一 WIP／到期／reframe validator、work-anchor runtime gate、負向 fixture、Admission Record 與受控薄索引；完成驗證前維持 in_progress。"

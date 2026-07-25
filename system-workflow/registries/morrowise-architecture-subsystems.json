@@ -176,7 +176,7 @@
       "name": "MorroWise 開發工作流 Catalog",
       "status": "active",
       "role": "MorroWise 開發工作流治理與 router gate 的正式子系統。",
-      "summary": "把開發 workflow 與 canonical task mutation 轉成 MorroWise 可治理的 catalog、semantic intake、單一 weekly core／review gate、schema、verifier、runtime preflight 與 read-only read model；ARCHITECTURE.md 只保留薄索引。",
+      "summary": "把開發 workflow 與 canonical task mutation 轉成 MorroWise 可治理的 catalog、semantic intake、繁中 title、單一 weekly core／review gate、schema、verifier、runtime preflight 與 read-only read model；ARCHITECTURE.md 只保留薄索引。",
       "capability": "開發工作流治理",
       "source_of_truth": [
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
@@ -193,6 +193,7 @@
         "產生 read-only dev workflow read model",
         "將外部 issue tracker 語意標成 adapter_only",
         "以四維 semantic intake 分流 reuse、amend、replace、genuinely_new",
+        "以繁體中文優先 title gate 攔截新增或變更 task 的全英文標題",
         "以單一 weekly core 與 review date gate 阻擋無核准續期",
         "把未完成能力維持 deferred 或 degraded 狀態"
       ],
@@ -204,7 +205,7 @@
         "把 ARCHITECTURE.md 當成 catalog 正本"
       ],
       "safety_boundary": "JV-32 只治理 workflow metadata 與 read-only generated read model；它不得安裝外部 skills、修改 hooks、讀取 credentials 或把 GitHub/GitLab/Notion 等外部 tracker 升格成 MorroWise 正本。",
-      "degraded_state": "catalog registry/schema/verifier/read model 缺失、semantic intake 可繞過、同時存在多個 weekly core、到期 review 可自動延長、adapter_only 誤標為 accepted、close_rule 缺失或薄索引被手寫細節時，必須維持 deferred/degraded。",
+      "degraded_state": "catalog registry/schema/verifier/read model 缺失、semantic intake 可繞過、新增或變更 task 的全英文 title 可通過、同時存在多個 weekly core、到期 review 可自動延長、adapter_only 誤標為 accepted、close_rule 缺失或薄索引被手寫細節時，必須維持 deferred/degraded。",
       "architecture_decision": "promoted",
       "last_promoted_at": "2026-07-08",
       "last_verified_at": "2026-07-27",
@@ -229,17 +230,19 @@
           "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
           "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
         ],
-        "contract_fingerprint": "cce202e5f446eeea",
+        "contract_fingerprint": "a8db2226e3547d5f",
         "index_action": "no_index_change",
         "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
         "evidence_refs": [
           "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+          "node scripts/verify-validate-tasks.mjs",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise --as-of 2026-07-25",
           "node scripts/verify-morrowise-approval-policy.mjs",
           "node scripts/verify-explicit-git-isolation-approval.mjs --notyet-root <notyet-harness>",
           "npm run test:architecture-subsystems",
           "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
         ],
-        "reason": "2026-07-27 依 MW-GIT-AUTH-01 收緊 approval policy 與 package verifier wiring：建立或切換 branch/worktree 必須有 Vincent 精確核准，且同一核准完成 target-main integration、驗證與清理。沿用既有 MorroWise 開發工作流 Catalog 子系統，ARCHITECTURE.md 薄索引文字不增加細節，因此 index_action=no_index_change，但刷新受管 contract fingerprint。"
+        "reason": "2026-07-25 將 canonical task title 的繁體中文優先規範、changed-only Han 字元 gate、歷史相容策略與正反 fixtures 納入既有 JV-32 受管 contract。2026-07-27 再依 MW-GIT-AUTH-01 收緊 approval policy 與 package verifier wiring：建立或切換 branch/worktree 必須有 Vincent 精確核准，且同一核准完成 target-main integration、驗證與清理。兩項規則沿用同一 MorroWise 開發工作流 Catalog 子系統，ARCHITECTURE.md 薄索引不增加細節，因此 index_action=no_index_change，但刷新受管 contract fingerprint。"
       },
       "supersedes": [],
       "superseded_by": null

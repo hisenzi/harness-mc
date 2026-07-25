@@ -2,7 +2,7 @@
 
 > Task: `multi-machine-repo-coordination-gate` (`JV-37`)
 > Status: contract only; runtime not yet accepted
-> Updated: 2026-07-12
+> Updated: 2026-07-25
 > Read when: any Agent is about to modify a Git repo for the first time in a session, or is closing work that must reach remote truth
 
 ## Purpose
@@ -38,6 +38,30 @@ Before a file mutation, the hard gate covers only:
 
 Unrelated dirty or offline repos do not block the current task. `*tmp`, `00*` non-Git folders, teaching material, historical clones, and lifecycle `excluded|retired` are outside automatic synchronization.
 
+## Solo Development Default
+
+For a single developer with one active coding stream, Git branch isolation is the default; a second filesystem checkout is not. Use one normal working directory, one short-lived branch, one task, and an exact commit scope. A clean, verified micro-change on an `owner_single_writer` repo may go straight to `main` only after the normal branch/HEAD/upstream/ahead-behind handshake.
+
+Before proposing a linked worktree, run:
+
+```bash
+node "$COLLAB/harness-mc/scripts/worktree-exception-preflight.mjs" \
+  --reason <reason> --intent implementation|verification \
+  --evidence-ref "<durable decision or incident reference>"
+```
+
+| Reason | Result | Required next action |
+| --- | --- | --- |
+| `sequential_single_task` | continue; worktree denied | 使用同一工作目錄的一般 branch。這是成功路徑，不可當成 task BLOCKED。 |
+| `known_unrelated_dirty` | continue; worktree denied | 保留已分類 exclusions，使用精準 scope 的一般 branch；不得以 worktree 建立隔離工作區。 |
+| `unknown_or_overlapping_dirty` | blocked | Classify the owner or obtain Vincent's decision; do not use a worktree to bypass unknown or same-file changes. |
+| `concurrent_active_work` | allow; worktree allowed | 提供 evidence_ref，記錄兩條 active work 的 branch、task 與寫入範圍；再通過 Project Topology gate。 |
+| `urgent_hotfix_with_uncommitted_work` | allow; worktree allowed | 提供 incident evidence_ref；以暫時 worktree 處理 hotfix，完成後驗證、提交並收尾。 |
+| `explicit_vincent_request` | allow; worktree allowed | 提供 Vincent 指示的 evidence_ref，再通過 Project Topology gate。 |
+| `fresh_baseline_verification` | allow only with `intent=verification` | 提供 verifier evidence_ref；僅建立暫時 verification-only worktree，不得在其中實作功能。 |
+
+An approved implementation plan, a routine feature, documentation work, or a desire for a clean-looking directory is not a worktree exception. A permitted worktree still requires `cd "$COLLAB/harness-mc" && npm run health:project-topology`; this policy decides whether one is justified, while the topology gate decides whether its folder mutation is safe.
+
 ## Repo Ready
 
 Before the first file mutation:
@@ -55,8 +79,11 @@ Before the first file mutation:
 | clean, behind-only | recoverable | Run fast-forward-only update, verify `0/0`, then continue. |
 | ahead-only with durable exact-scope approval and unchanged remote SHA | recoverable | Retry a normal, exact-ref push; never force. |
 | generated-only dirty proven by registry and deterministic verifier | warning | Continue only when JV-37 classifier evidence exists. |
-| manual, mixed, or unknown dirty | `BLOCKED` | Preserve files and report the owning scope. Do not auto-commit. |
-| unauthorized ahead, diverged, detached, no upstream, auth/fetch failure | `BLOCKED` | Stop and report one reversible next action. |
+| classified manual dirty outside the exact scope, with Vincent-approved exclusions | warning | Preserve it; use a normal branch plus an exact path scope. |
+| manual, mixed, or unknown dirty that overlaps the target scope | `BLOCKED` | Preserve files and report the owning scope. Do not auto-commit or auto-create a worktree. |
+| new short-lived branch at verified base SHA, no local commits, no upstream | warning | Continue on the exact task scope; establish upstream only at the approved first push. |
+| existing local commits or unknown base with no upstream | `BLOCKED` | Stop and report one reversible reconciliation action. |
+| unauthorized ahead, diverged, detached, auth/fetch failure | `BLOCKED` | Stop and report one reversible next action. |
 
 ## Remote Closeout
 
@@ -72,7 +99,7 @@ Work is not complete at `committed_local`.
 
 ## Repo Classes
 
-- `shared_core_multi_writer`: one task per branch/worktree; feature workers do not write main; the integrator owns main integration.
+- `shared_core_multi_writer`: one task per branch; use a worktree only after the exception preflight allows it. Feature workers do not write main; the integrator owns main integration.
 - `owner_single_writer`: the task owner may update main after the branch/HEAD/upstream/ahead-behind handshake passes.
 
 JV-37 A03 is the only repo scope/classification contract. Existing worktree inventory consumes it; automation must not create another maintained-repo list.
@@ -87,4 +114,4 @@ JV-37 A03 is the only repo scope/classification contract. Existing worktree inve
 
 ## Current Enforcement
 
-JV-37 is still `todo`. Until its deterministic gate and negative fixtures are accepted, Agents must follow this contract explicitly and must not claim that Repo Ready or Remote Closeout is automated.
+`worktree-exception-preflight.mjs` and its negative fixtures enforce only the narrow selection rule above. JV-37 is otherwise still `todo`; until the remaining deterministic Repo Ready and Remote Closeout gate is accepted, Agents must follow this contract explicitly and must not claim that the full coordination workflow is automated.

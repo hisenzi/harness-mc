@@ -32,7 +32,7 @@ const TASK_LIFECYCLE_OPERATIONS = new Set(["create", "amend", "suspend", "resume
 const SEMANTIC_INTAKE_OUTCOMES = new Set(["reuse", "amend", "replace", "genuinely_new"]);
 const SEMANTIC_SCOPE_FIELDS = ["problem", "owner_source_of_truth", "inputs_outputs", "lifecycle_completion"];
 const WEEKLY_CORE_REVIEW_DECISIONS = new Set(["admit", "reframe", "suspend", "cancel", "complete"]);
-const BOOKKEEPING_ONLY_FIELDS = new Set(["commits", "completed_at", "summary", "external_refs", "jv32_route", "task_lifecycle"]);
+const BOOKKEEPING_ONLY_FIELDS = new Set(["commits", "completed_at", "summary", "external_refs", "execution_contract", "jv32_route", "task_lifecycle"]);
 const HAN_SCRIPT_PATTERN = /\p{Script=Han}/u;
 
 function parseArgs(argv) {
@@ -224,6 +224,9 @@ function validateTask(task, {
   if ("hc_decision" in task) {
     problems.push(...validateHcDecision(task.hc_decision));
   }
+  if ("execution_contract" in task) {
+    problems.push(...validateExecutionContract(task.execution_contract));
+  }
   if (requiresTaskLifecycleRoute({ task, changed, changedOnly })) {
     problems.push(...validateTaskLifecycleRoute(task));
     problems.push(...validateTaskLifecycleEvidence(task, { previousTask }));
@@ -246,6 +249,23 @@ function validateTask(task, {
 
 function nonEmptyString(value) {
   return typeof value === "string" && value.trim().length > 0;
+}
+
+function validateExecutionContract(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return ["execution_contract must be an object when present"];
+  }
+
+  const problems = [];
+  if (!nonEmptyString(value.owner)) problems.push("execution_contract.owner must be a non-empty string");
+  if (!nonEmptyString(value.source_of_truth)) problems.push("execution_contract.source_of_truth must be a non-empty string");
+  for (const field of ["inputs", "outputs", "verifiers"]) {
+    if (!Array.isArray(value[field]) || value[field].length === 0 || value[field].some((entry) => !nonEmptyString(entry))) {
+      problems.push(`execution_contract.${field} must be a non-empty array`);
+    }
+  }
+  if (!nonEmptyString(value.stop_condition)) problems.push("execution_contract.stop_condition must be a non-empty string");
+  return problems;
 }
 
 function isDateOnly(value) {

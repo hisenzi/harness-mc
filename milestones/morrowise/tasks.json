@@ -4063,6 +4063,9 @@
       "order_label": "MC-DASH-V2",
       "priority": "high",
       "completed_at": "2026-07-26",
+      "commits": [
+        "62915d8"
+      ],
       "summary": "第一階段治理定錨已完成：MC-DASH-V2 為唯一 IA 決策錨點，MC-LIVE-SYS-10 專屬後續 UI surface；候選工作 operation batch、依賴圖與唯一 weekly core/review_date 已在同一份治理紀錄定錨。JV-36 的 generated document index 薄連結保留為第三階段 R1–R4 的交付，不再阻塞本治理 task 結案。",
       "done_condition": "以治理方式完成一張容易掃讀的 MC 儀表板議題紀錄：已核准繁中介面、輕重緩急排序、資料正本與首頁／下鑽邊界，並在同一份 task-linked 議題紀錄定錨候選工作 operation batch、依賴圖與唯一 weekly core/review_date；MC-LIVE-SYS-10 專供後續 UI 下鑽實作。本 task 不直接實作 UI。JV-36 Document Source Registry 產生的 ARCHITECTURE.md 薄連結屬第三階段 JV-36 R1–R4 交付，不能反向阻塞本治理 task 結案。",
       "acceptance": [
@@ -4218,6 +4221,17 @@
               ]
             }
           }
+        },
+        {
+          "operation": "amend",
+          "from_status": "completed",
+          "to_status": "completed",
+          "reason": "回填 MC-DASH-V2 第一階段治理定錨 commit 62915d8；此為 completion evidence accounting，沒有改變已完成 task 的 scope、owner、輸出或 status。",
+          "evidence_refs": [
+            "$COLLAB/harness-mc@62915d8",
+            "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+          ],
+          "recorded_at": "2026-07-26"
         }
       ]
       },

@@ -96,18 +96,60 @@
       "title": "Block Registry 架構與新增規則定義",
       "status": "todo",
       "track": "phase-1",
+      "order_label": "HB-MVP-01",
       "done_condition": "定義 HiBlocks block registry 的必填 schema、HBL-BLOCK / HBL-RECIPE 編號規則、category / decision_tags / page_position / content_role / typography_role 欄位規則，以及「新增 block vs 現有 block variant」判斷流程；規則需寫入可被 agent 與 verifier 讀取的文件或 manifest schema，作為後續自動判斷與推薦的來源。",
       "estimate": "3hr",
-      "note": "由 041-sift 非顯見思維重看 block layout 索引：真正需求不是 gallery，而是開站前的決策系統。此 task 先建立規則層，讓之後新增 block 時能回答：是否已存在、如何歸類/tag、如何編號、是否遵守 typography token。不要先做 UI；先做 contract。"
+      "note": "由 041-sift 非顯見思維重看 block layout 索引：真正需求不是 gallery，而是開站前的決策系統。此 task 先建立規則層，讓之後新增 block 時能回答：是否已存在、如何歸類/tag、如何編號、是否遵守 typography token。不要先做 UI；先做 contract。",
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 要求為最小 MVP task 補上短編號，方便 Dashboard 辨識與對話引用；不修改 canonical task ID、範圍、狀態或完成條件。",
+            "evidence_refs": [
+              "Vincent 2026-07-25 current session: task 補上編號好辨識。"
+            ],
+            "recorded_at": "2026-07-25"
+          }
+        ]
+      }
     },
     {
       "id": "p1-block-registry-verifier",
       "title": "Block Registry Verifier：重複、分類、編號與字體系統檢查",
       "status": "todo",
       "track": "phase-1",
+      "order_label": "HB-MVP-02",
       "done_condition": "新增 npm script（例如 verify:block-registry），可檢查 blocks.manifest.json 的 catalog_id 唯一性、id/component/name 疑似重複、category / decision_tags 合法性、layout recipe 引用是否存在，並檢查 block CSS 不新增 raw font-size/line-height 而需使用 --hi-type-* typography token；驗證失敗需輸出可行修正方向。",
       "estimate": "4hr",
-      "note": "此 task 是新增 block 的自動守門器。重複判斷先採保守 heuristics：component/id/name/props/category/decision_tags/content_role 相似時警告「可能應做 variant」；編號先由現有最大序號推算建議值，但 commit 前仍需人工確認。字體檢查延伸既有 validate:typography，避免新 block 破壞中文手機字級基線。"
+      "note": "此 task 是新增 block 的自動守門器。重複判斷先採保守 heuristics：component/id/name/props/category/decision_tags/content_role 相似時警告「可能應做 variant」；編號先由現有最大序號推算建議值，但 commit 前仍需人工確認。字體檢查延伸既有 validate:typography，避免新 block 破壞中文手機字級基線。",
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 要求為最小 MVP task 補上短編號，方便 Dashboard 辨識與對話引用；不修改 canonical task ID、範圍、狀態或完成條件。",
+            "evidence_refs": [
+              "Vincent 2026-07-25 current session: task 補上編號好辨識。"
+            ],
+            "recorded_at": "2026-07-25"
+          }
+        ]
+      }
     },
     {
       "id": "p1-block-template-library",
@@ -123,24 +165,67 @@
       "title": "Layout Recipes：網站情境到 block sequence 的推薦層",
       "status": "todo",
       "track": "phase-1",
+      "order_label": "HB-MVP-03",
       "done_condition": "新增 layout-recipes.manifest.json，定義至少品牌過渡頁、專業服務網站、作品集網站、Landing/等待名單四種 HBL-RECIPE；每個 recipe 需包含 recommended_for / avoid_when / block sequence / replaceable slots / required_content / mobile_notes，並能通過 block registry verifier 的引用檢查。",
       "estimate": "3hr",
-      "note": "Recipe 層把 HiBlocks 從元件庫推進到開站處方系統：Vincent 或 agent 不必從 15+ block 重新挑，而是先選網站情境，再替換局部 block。此 task 不要求實作畫面，但資料結構要能被後續 HTML decision index 直接讀取。"
+      "note": "Recipe 層把 HiBlocks 從元件庫推進到開站處方系統：Vincent 或 agent 不必從 15+ block 重新挑，而是先選網站情境，再替換局部 block。此 task 不要求實作畫面，但資料結構要能被後續 HTML decision index 直接讀取。",
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 要求為最小 MVP task 補上短編號，方便 Dashboard 辨識與對話引用；不修改 canonical task ID、範圍、狀態或完成條件。",
+            "evidence_refs": [
+              "Vincent 2026-07-25 current session: task 補上編號好辨識。"
+            ],
+            "recorded_at": "2026-07-25"
+          }
+        ]
+      }
     },
     {
       "id": "p1-block-layout-decision-index",
-      "title": "Block Layout Decision Index HTML Mockup",
+      "title": "Block Layout 決策索引 HTML 靜態原型",
       "status": "todo",
       "track": "phase-1",
+      "order_label": "HB-MVP-04",
       "done_condition": "產出 docs/mockups/block-layout-decision-index.html 靜態 mockup：左側可選網站情境與 category filter，中間顯示推薦 recipe / block 卡片，右側顯示已挑選 layout / blocks，並能輸出 selection JSON；mockup 資料需來自 block registry 與 layout recipes，不手寫第二份清單；verifier 可打開 mockup 並檢查基本互動與 selection JSON shape。",
       "estimate": "5hr",
-      "note": "此 task 是 selection surface，不是單純展示型 block gallery。SIFT 結論：mockup 要能產生可交給 agent 執行的選擇結果，例如 selected_recipe + block catalog_id sequence；之後才評估是否升級為 Astro demo page 或 /blocks catalog。"
+      "note": "此 task 是 selection surface，不是單純展示型 block gallery。SIFT 結論：mockup 要能產生可交給 agent 執行的選擇結果，例如 selected_recipe + block catalog_id sequence；之後才評估是否升級為 Astro demo page 或 /blocks catalog。",
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 要求為最小 MVP task 補上短編號，方便 Dashboard 辨識與對話引用；依 changed-only 繁中標題 gate，同步將歷史全英文主標題改為繁中並保留不可變技術詞，不修改 canonical task ID、範圍、狀態或完成條件。",
+            "evidence_refs": [
+              "Vincent 2026-07-25 current session: task 補上編號好辨識。"
+            ],
+            "recorded_at": "2026-07-25"
+          }
+        ]
+      }
     },
     {
       "id": "conversation-to-prototype-runtime-spike",
       "title": "對話驅動 Prototype 生成流程可行性驗證",
       "status": "todo",
       "track": "phase-1",
+      "order_label": "HB-MVP-05",
       "priority": "high",
       "depends_on": [
         "p1-block-registry-rules",
@@ -241,6 +326,16 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 要求為最小 MVP task 補上短編號，方便 Dashboard 辨識與對話引用；不修改 canonical task ID、範圍、狀態或完成條件。",
+            "evidence_refs": [
+              "Vincent 2026-07-25 current session: task 補上編號好辨識。"
+            ],
+            "recorded_at": "2026-07-25"
           }
         ]
       },

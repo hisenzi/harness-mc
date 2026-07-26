@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-morrowise-second-brain-capture-gate-3b807ea-20260726T160531Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "3b807ea",
+  "project": "morrowise",
+  "task_id": "morrowise-second-brain-capture-gate",
+  "status": "updated",
+  "summary": "收錄心靈肌肉知識並新增可拒絕假入口、假來源資產與不完整實踐卡的第二大腦 capture Skill。",
+  "created_at": "2026-07-26T16:05:31.197Z",
+  "actor": "codex",
+  "session_id": "codex-2026-07-26-new-chat-2"
+}

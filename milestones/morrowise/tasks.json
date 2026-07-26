@@ -4889,10 +4889,16 @@
     {
       "id": "morrowise-second-brain-capture-gate",
       "title": "第二大腦知識庫收錄 Skill 與驗證整合",
-      "status": "in_progress",
+      "status": "completed",
       "track": "governance",
       "order_label": "JV-44",
       "priority": "high",
+      "completed_at": "2026-07-27",
+      "commits": [
+        "10ec137",
+        "3b807ea"
+      ],
+      "summary": "第二大腦收錄路線已正式整合：harness-mc/main 建立 canonical task，notyet-harness/main 收錄可追溯的心智訓練知識與共用 capture Skill；verifier 已拒絕假 AGENTS 入口、假來源資產與不完整實踐卡，兩個 remote main 均達成 0/0 parity，Harness Pages 部署成功。",
       "dependencies": [
         "morrowise-dev-workflow-catalog",
         "task-lifecycle-jv32-gate"
@@ -4969,7 +4975,11 @@
           "$COLLAB/notyet-harness/300_Obsidian_brain/知識庫/心智訓練/奧運金牌選手的「心靈肌肉」鍛鍊法"
         ],
         "runtime_evidence_required": false,
-        "evidence_refs": []
+        "evidence_refs": [
+          "$COLLAB/harness-mc@10ec137d635cba15647b8f5fbb3ba55997e10ab7",
+          "$COLLAB/notyet-harness@3b807eacfcf79f5e9b60ee4454b0edc782602ffe",
+          "https://github.com/hisenzi/harness-mc/actions/runs/30209696771"
+        ]
       },
       "jv32_route": {
         "workflows": [
@@ -5024,6 +5034,44 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "第二大腦知識、共用入口、capture Skill、verifier、負向 tests 與既有案例 migration 已發布；兩個 origin/main SHA 均與整合 worktree 相同且 ahead／behind=0/0，Harness Pages build 與 deploy 成功。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc@10ec137d635cba15647b8f5fbb3ba55997e10ab7",
+              "$COLLAB/notyet-harness@3b807eacfcf79f5e9b60ee4454b0edc782602ffe",
+              "$COLLAB/notyet-harness/000_Agent/skills/morrowise-second-brain-capture/tests/verify-capture.test.mjs",
+              "$COLLAB/notyet-harness/300_Obsidian_brain/知識庫/心智訓練/奧運金牌選手的「心靈肌肉」鍛鍊法/99_Agent取用模擬.md",
+              "https://github.com/hisenzi/harness-mc/actions/runs/30209696771"
+            ],
+            "recorded_at": "2026-07-27",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/memory-health-read-model",
+                "morrowise/skill-candidate-review-gate",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "本次只完成既有 JV-44 的 publication 與 remote closeout，不新增第二個收錄 workflow 或新問題。",
+                "owner_source_of_truth": "owner 仍是 JV-44；canonical task 仍在 MorroWise tasks.json，知識與 Skill 正本仍在 notyet-harness。",
+                "inputs_outputs": "輸入是已驗證的 10ec137、3b807ea、兩個 remote main parity 與 Pages workflow；輸出是既有 JV-44 的 completed state、關鍵 commits 與穩定 summary。",
+                "lifecycle_completion": "完成邊界維持 A01–A09：兩 repo main 均 0/0、主題 verifier 與負向 tests 通過、canonical task closeout 發布後才結束。"
+              },
+              "decision_reason": "這是既有 JV-44 的完成狀態 amendment，責任、正本與輸出邊界未改變，因此 outcome=amend，不建立或取代 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-27",
+                "evidence_refs": [
+                  "Vincent 2026-07-27 current session: push",
+                  "Vincent 2026-07-27 current session: 可以"
+                ]
+              }
+            }
           }
         ]
       },
@@ -5051,7 +5099,7 @@
         "evaluated_at": "2026-07-26",
         "reason": "本 task 先修正既有共享 Skill 與 verifier，尚未新增 runtime、scheduler、adapter、dashboard 或獨立 read model；完成真實案例、負向 fixtures 與雙 repo closeout 後再判斷是否需要 Architecture Admission。"
       },
-      "note": "2026-07-26 Vincent 要求一次解決並明確整理 main 歸屬。固定 publication order：① harness-mc/main 發布 in_progress canonical task；② notyet-harness/main 整合只含第二大腦 scope 的內容與 Skill；③ 回 harness-mc/main 完成 task closeout。"
+      "note": "2026-07-26 Vincent 要求一次解決並明確整理 main 歸屬。固定 publication order：① harness-mc/main 發布 in_progress canonical task；② notyet-harness/main 整合只含第二大腦 scope 的內容與 Skill；③ 回 harness-mc/main 完成 task closeout。2026-07-27：前兩步 remote parity 均為 0/0，Harness Pages workflow 30209696771 build／deploy 成功，進入第三步 closeout。"
     }
   ]
 }

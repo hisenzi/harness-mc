@@ -3202,6 +3202,38 @@
         ],
         "stop_condition": "任一 source coverage、cross-repo sync、host/runtime evidence 或安全 read boundary 未通過時停止；不得手改 generated ARCHITECTURE.md、human/、task state、commit 或 push。"
       },
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "R1 的 folder／taxonomy 契約須由文件 verifier 驗證；純說明文字不強迫程式 Red／Green，但 managed roots、分類 vocabulary 與 seed inventory 必須可重跑。",
+          "R2 缺登錄、重複 coverage、越過 realpath／symlink boundary 或碰敏感路徑時 registry verifier 必須失敗。",
+          "R3 相同 registry input 必須產生 deterministic documentation read model 與 ARCHITECTURE.md 薄連結，且 generated target 不可直接修改。",
+          "R4 source change 必須被 changed-only impact gate 辨識；跨 repo two-phase check 任一側不一致時不得 closeout。",
+          "R5 沒有 Trusted Heartbeat 真實 run evidence 時只能 degraded／not live，且每日健檢只報告、不得背景改寫文件、task、commit 或 push。"
+        ],
+        "test_level": [
+          "document_contract",
+          "schema",
+          "generator_contract",
+          "cross_repo_integration",
+          "runtime_safe_probe"
+        ],
+        "red_command": "node scripts/verify-morrowise-document-sources.mjs",
+        "expected_red_reason": "先加入 unregistered／ambiguous、non-deterministic output、changed-only drift、cross-repo mismatch 與 missing-runtime fixtures；在 registry、generator、impact gate 與 health runtime 尚未實作前應以預期原因失敗。",
+        "green_command": "node scripts/verify-morrowise-document-sources.mjs",
+        "full_regression_commands": [
+          "npm run test:morrowise-documentation-sync",
+          "node scripts/verify-morrowise-documentation-health.mjs",
+          "npm run test:architecture-subsystems",
+          "npm run test:system-pulse",
+          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
+        ],
+        "fixture_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync"
+        ],
+        "runtime_evidence_required": true,
+        "evidence_refs": []
+      },
       "jv32_route": {
         "workflows": [
           "task-lifecycle"
@@ -3285,6 +3317,40 @@
             "Vincent 2026-07-25 current session: 幫我確定下列兩項"
           ],
           "recorded_at": "2026-07-25"
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "todo",
+          "reason": "Vincent 核准將三階段 TDD 補強寫回既有 JV-36；本次加入 R1–R5 的文件契約、registry／generator／changed-only／cross-repo／runtime behavior cases 與驗證指令，不拆第二份文件 tracker。",
+          "evidence_refs": [
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1",
+            "Vincent 2026-07-26 current session: 可以進行補寫 task"
+          ],
+          "recorded_at": "2026-07-26",
+          "semantic_intake": {
+            "outcome": "amend",
+            "compared_task_refs": [
+              "morrowise/document-source-registry-and-human-sync",
+              "morrowise/trusted-heartbeat-runtime-v1",
+              "morrowise/architecture-subsystem-index-live-sync"
+            ],
+            "scope_comparison": {
+              "problem": "仍是 JV-36 單一文件控制面與 R5 report-only daily health，不是新增文件系統。",
+              "owner_source_of_truth": "文件身份與衍生關係仍由既有 JV-36 registry contract 擁有；Architecture Admission 與 heartbeat 保持各自正本。",
+              "inputs_outputs": "輸入輸出不變；test_contract 只把 R1–R5 的可觀察行為、反向案例與 runtime evidence 要求結構化。",
+              "lifecycle_completion": "JV-36 維持 todo；R1–R4 與依賴 heartbeat 的 R5 證據齊全後才可完成。"
+            },
+            "decision_reason": "這是既有 roadmap-in-anchor task 的測試契約 amendment，不需拆新 task 或 tracker。",
+            "approval": {
+              "status": "approved",
+              "approved_by": "Vincent",
+              "approved_at": "2026-07-26",
+              "evidence_refs": [
+                "Vincent 2026-07-26 current session: 可以進行補寫 task"
+              ]
+            }
+          }
         }
         ]
       },
@@ -3665,6 +3731,36 @@
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
         "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py"
       ],
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "可執行行為 task 缺 test_contract、Red、Green、完整 regression 或 evidence refs 時，changed-only validator 必須拒絕 completed。",
+          "純治理／文件 task 只有在記錄可驗證的 tdd_exemption reason 與替代 verifier 時才可完成。",
+          "Red／Green／regression 只作為既有 lifecycle evidence，不新增 task status、tracker 或自動 commit／push。",
+          "runtime task 只有 fixture 而沒有真實 safe run evidence 時，完成 gate 必須保持 degraded／not live。"
+        ],
+        "test_level": [
+          "schema",
+          "validator_contract",
+          "negative_fixture",
+          "historical_compatibility"
+        ],
+        "red_command": "node scripts/verify-validate-tasks.mjs",
+        "expected_red_reason": "加入缺 test_contract、缺 Red／Green／regression evidence、無理由 exemption 與 fixture-only runtime fixtures 後，既有 validator 尚未實作對應 completion gate。",
+        "green_command": "node scripts/verify-validate-tasks.mjs",
+        "full_regression_commands": [
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+          "node scripts/verify-work-anchor-preflight.mjs",
+          "npm run test:tasks",
+          "npm run test:architecture-subsystems"
+        ],
+        "fixture_refs": [
+          "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs"
+        ],
+        "runtime_evidence_required": false,
+        "evidence_refs": []
+      },
       "jv32_route": {
         "batch": "JV-32 task lifecycle governance batch",
         "workflows": ["grill-with-docs", "domain-modeling", "to-prd", "task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
@@ -3905,6 +4001,41 @@
               "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
             ],
             "recorded_at": "2026-07-25"
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准將三階段 TDD 補強寫回 canonical task；JV-32 已有 accepted tdd route，故 reuse catalog，並在 JV-40 增加 test_contract、Red／Green／regression evidence 與 runtime fixture-only completion gate 的實作契約，不新增 tracker 或 task status。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate",
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json#tdd",
+              "Vincent 2026-07-26 current session: 可以進行補寫 task"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-dev-workflow-catalog",
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/morrowise-wiring-gate-verifier"
+              ],
+              "scope_comparison": {
+                "problem": "TDD route 已存在，但 executable task 完成時尚未機械強制 Red、Green、完整 regression、exemption 與真實 runtime evidence。",
+                "owner_source_of_truth": "JV-32 catalog 繼續擁有 workflow 定義；JV-40 繼續擁有 canonical task schema、changed-only validator 與 completion enforcement，沒有新增第二正本。",
+                "inputs_outputs": "輸入是既有 tdd close_rule、task lifecycle 與 validator gap；輸出是同一 JV-40 的 test contract 與正反 completion fixtures。",
+                "lifecycle_completion": "JV-40 維持 in_progress；只有 schema／validator／fixtures／Admission Review 與完整 regression 通過後才可完成。"
+              },
+              "decision_reason": "比對 owner 與完成邊界後，JV-32 可 reuse；completion gate 的唯一正確 mutation 是 amend active JV-40。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
+            }
           }
         ]
       },
@@ -4272,7 +4403,8 @@
       "priority": "medium",
       "dependencies": [
         "morrowise-dev-workflow-catalog",
-        "task-lifecycle-jv32-gate"
+        "task-lifecycle-jv32-gate",
+        "morrowise-phase3-fresh-session-e2e-admission"
       ],
       "done_condition": "在既有 JV-32 Review／Closeout 流程加入 skill-candidate-review：task 驗收完成或 closeout 前，依可追溯證據輸出 not_applicable、observe、create_skill 或 update_skill，向 Vincent 顯示理由與下一步；只有 Vincent 核准後才轉入 skill-authoring。此 gate 不自動建立、修改或安裝 skill，不新增排程、通知系統或第二套 task lifecycle。",
       "acceptance": [
@@ -4311,6 +4443,33 @@
           "closeout negative fixtures：未核准不得寫入或安裝 skill"
         ],
         "stop_condition": "沒有兩次獨立成功、穩定 input／output／verifier，或 Vincent 未核准時停止在 observe／not_applicable；不得建立、修改、安裝 skill 或新增排程。"
+      },
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "not_applicable、observe、create_skill 與 update_skill 四種輸出必須由相同 canonical closeout evidence 得到 deterministic 結果。",
+          "既有 skill 命中時不得建立重複 skill；證據不足時只能 observe／not_applicable。",
+          "Vincent 未核准時不得建立、修改或安裝任何 skill，也不得把提醒變成 completion blocker。",
+          "只有最終 Fresh-session E2E 與 Architecture Admission 通過後，JV-41 才可開始提醒。"
+        ],
+        "test_level": [
+          "decision_contract",
+          "negative_fixture",
+          "skill_deduplication"
+        ],
+        "red_command": "node scripts/verify-skill-candidate-review.mjs",
+        "expected_red_reason": "先建立四值判定、skill 去重、未核准禁止寫檔及 final-admission dependency fixtures；正式 review route 尚未實作時應以預期原因失敗。",
+        "green_command": "node scripts/verify-skill-candidate-review.mjs",
+        "full_regression_commands": [
+          "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
+        ],
+        "fixture_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#skill-candidate-review-gate"
+        ],
+        "runtime_evidence_required": false,
+        "evidence_refs": []
       },
       "jv32_route": {
         "workflows": [
@@ -4353,6 +4512,40 @@
             "Vincent 2026-07-25 current session: 幫我確定下列兩項"
           ],
           "recorded_at": "2026-07-25"
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "todo",
+          "reason": "Vincent 核准將三階段 TDD 補強寫回 JV-41；加入四值提醒、既有 skill 去重、未核准禁止寫檔與 final-admission dependency 的測試契約，維持只提醒、不自動建立或安裝 skill。",
+          "evidence_refs": [
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#skill-candidate-review-gate",
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-phase3-fresh-session-e2e-admission",
+            "Vincent 2026-07-26 current session: 可以進行補寫 task"
+          ],
+          "recorded_at": "2026-07-26",
+          "semantic_intake": {
+            "outcome": "amend",
+            "compared_task_refs": [
+              "morrowise/skill-candidate-review-gate",
+              "morrowise/morrowise-phase3-fresh-session-e2e-admission",
+              "morrowise/task-lifecycle-jv32-gate"
+            ],
+            "scope_comparison": {
+              "problem": "仍是 Review／Closeout 的非阻斷 Skill candidate 提醒，不是 TDD gate 或自動 skill builder。",
+              "owner_source_of_truth": "JV-41 維持提醒 route owner；final admission 只提供開始條件，正式 SKILL.md 仍是 skill 正本。",
+              "inputs_outputs": "新增 test_contract 與 final dependency，不改四值輸出、核准邊界或禁止自動寫入規則。",
+              "lifecycle_completion": "JV-41 維持 todo；只有 final admission 完成後才可實作並驗證提醒。"
+            },
+            "decision_reason": "這是既有 JV-41 的 dependency 與 test contract amendment，沒有產生第二套 skill lifecycle。",
+            "approval": {
+              "status": "approved",
+              "approved_by": "Vincent",
+              "approved_at": "2026-07-26",
+              "evidence_refs": [
+                "Vincent 2026-07-26 current session: 可以進行補寫 task"
+              ]
+            }
+          }
         }
         ]
       },
@@ -4796,6 +4989,36 @@
         ],
         "stop_condition": "缺真實 machine/runtime evidence、僅有 fixture 或 scheduler 未載入時停止並標 degraded／blocked；不得新建 scheduler、通知通道或自動延長 task。"
       },
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "declared schedule、machine loaded state、last successful run 與 freshness 必須分層判定，不得以 plist 存在或 fixture 代替真實成功 run。",
+          "真實 safe metadata 新鮮時輸出 trusted；missing、stale、exit failure 或未載入時輸出 degraded／blocked 並附可追溯理由。",
+          "相同 runtime evidence 多次重跑必須得到 deterministic heartbeat read model。",
+          "不得讀 secret、token、cookie、raw auth，亦不得新建第二個 scheduler 或直接修改 task state。"
+        ],
+        "test_level": [
+          "unit",
+          "runtime_contract",
+          "safe_probe_integration",
+          "negative_fixture"
+        ],
+        "red_command": "node scripts/verify-trusted-heartbeat-runtime.mjs",
+        "expected_red_reason": "先加入 trusted、missing、stale、failed-run、unloaded 與 fixture-only evidence fixtures；trusted heartbeat generator／verifier 尚未實作時應以預期原因失敗。",
+        "green_command": "node scripts/verify-trusted-heartbeat-runtime.mjs",
+        "full_regression_commands": [
+          "npm run test:schedule-health",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "npm run test:system-pulse",
+          "npm run build"
+        ],
+        "fixture_refs": [
+          "$COLLAB/notyet-harness/schedule/dispatch.sh",
+          "$COLLAB/harness-mc/public/data/schedule-health.json"
+        ],
+        "runtime_evidence_required": true,
+        "evidence_refs": []
+      },
       "jv32_route": {
         "workflows": ["task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
         "decision_input": ["existing scheduler/runtime evidence", "JV-40 task lifecycle gate", "daily decision and JV-36 R5 prerequisites"],
@@ -4859,6 +5082,40 @@
               "evidence_refs": ["Vincent 2026-07-25 current session: 幫我確定下列兩項"]
             }
           }
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "todo",
+          "reason": "Vincent 核准將三階段 TDD 補強寫回既有 Trusted Heartbeat task；加入 declared／loaded／successful／freshness、safe probe、missing／stale／failed／fixture-only 的 Red／Green 與真實 runtime evidence 契約，不新增 scheduler。",
+          "evidence_refs": [
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1",
+            "$COLLAB/notyet-harness/schedule/dispatch.sh",
+            "Vincent 2026-07-26 current session: 可以進行補寫 task"
+          ],
+          "recorded_at": "2026-07-26",
+          "semantic_intake": {
+            "outcome": "amend",
+            "compared_task_refs": [
+              "morrowise/trusted-heartbeat-runtime-v1",
+              "morrowise/runtime-scheduler-v0",
+              "morrowise/system-pulse-schedule-task"
+            ],
+            "scope_comparison": {
+              "problem": "仍是既有 heartbeat 對真實 runtime evidence 的可信判定，不是第二個 scheduler 或 health loop。",
+              "owner_source_of_truth": "scheduler spec、safe run evidence 與 generated heartbeat read model 邊界不變。",
+              "inputs_outputs": "test_contract 只將原 acceptance 的正向、反向與 runtime evidence 行為轉成可重跑契約。",
+              "lifecycle_completion": "task 維持 todo；fixture 通過但沒有真實 run evidence 時不得完成或宣稱 live。"
+            },
+            "decision_reason": "既有 task 已完整擁有問題與輸出，故 outcome=amend。",
+            "approval": {
+              "status": "approved",
+              "approved_by": "Vincent",
+              "approved_at": "2026-07-26",
+              "evidence_refs": [
+                "Vincent 2026-07-26 current session: 可以進行補寫 task"
+              ]
+            }
+          }
         }]
       },
       "hc_decision": {
@@ -4913,6 +5170,34 @@
           "fresh-session／多 Agent deterministic selection fixture"
         ],
         "stop_condition": "任一 canonical input、freshness 或 verifier evidence 不足時停止在 blocked／degraded；不得寫 task state、實作 UI、啟動 daily loop、調整 weekly core 或自動 closeout。"
+      },
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "只從 canonical MorroWise task 與明列 evidence 產生候選，不得以物理排序、dashboard fixture、舊 mirror 或跨 project 同名 task 當正本。",
+          "weekly core、review_date、dependency、replacement、duplicate 與 freshness 規則必須提供 eligible／suppressed／blocked 的可解釋原因。",
+          "重複、已取消、被取代、過期或 verifier evidence 不足的候選不得成為推薦行動。",
+          "相同 input 在 fresh session、多 Agent 與多次重跑時必須選出同一候選或同一拒絕理由，且 read model 不寫 task state。"
+        ],
+        "test_level": [
+          "unit",
+          "canonical_input_contract",
+          "deterministic_selection",
+          "negative_fixture"
+        ],
+        "red_command": "node scripts/verify-action-priority-read-model.mjs",
+        "expected_red_reason": "先加入 canonical selection、duplicate／superseded／stale suppression、missing evidence 與 multi-run determinism fixtures；priority v2 generator／verifier 尚未實作時應以預期原因失敗。",
+        "green_command": "node scripts/verify-action-priority-read-model.mjs",
+        "full_regression_commands": [
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+          "npm run build"
+        ],
+        "fixture_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json"
+        ],
+        "runtime_evidence_required": false,
+        "evidence_refs": []
       },
       "jv32_route": {
         "workflows": ["task-lifecycle", "domain-modeling", "implement", "tdd", "code-review", "closeout-commit-routing"],
@@ -4997,6 +5282,40 @@
             "Vincent 2026-07-25 current session: 幫我確定下列兩項"
           ],
           "recorded_at": "2026-07-25"
+        }, {
+          "operation": "amend",
+          "from_status": "in_progress",
+          "to_status": "in_progress",
+          "reason": "Vincent 核准將三階段 TDD 補強寫回既有 Action Priority task；加入 canonical-only input、eligible／suppressed／blocked reason、duplicate／superseded／stale suppression 與 fresh-session／多 Agent deterministic Red／Green 契約，weekly core 與 review_date 不變。",
+          "evidence_refs": [
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
+            "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
+            "Vincent 2026-07-26 current session: 可以進行補寫 task"
+          ],
+          "recorded_at": "2026-07-26",
+          "semantic_intake": {
+            "outcome": "amend",
+            "compared_task_refs": [
+              "morrowise/action-priority-read-model-v2",
+              "morrowise/task-lifecycle-jv32-gate",
+              "harness-mc/morrowise-priority-dashboard-surface-v2"
+            ],
+            "scope_comparison": {
+              "problem": "仍是 canonical MorroWise action priority 的 deterministic read model，不是 UI 排序或第二份 task list。",
+              "owner_source_of_truth": "tasks.json 仍是 action 正本；priority v2 仍是唯一 generated read model，surface 僅為 consumer。",
+              "inputs_outputs": "test_contract 只把既有 canonical selection、suppression、freshness 與多 Agent 行為轉成可執行契約。",
+              "lifecycle_completion": "task 維持 in_progress 與唯一 weekly core；Red／Green、完整 regression、fresh build 與 deterministic evidence 齊全前不得完成。"
+            },
+            "decision_reason": "既有 task 擁有相同問題、owner、輸入輸出與完成邊界，故 outcome=amend。",
+            "approval": {
+              "status": "approved",
+              "approved_by": "Vincent",
+              "approved_at": "2026-07-26",
+              "evidence_refs": [
+                "Vincent 2026-07-26 current session: 可以進行補寫 task"
+              ]
+            }
+          }
         }]
       },
       "hc_decision": {
@@ -5050,6 +5369,36 @@
           "真實 runtime evidence 與 cancelled Reality Tax replacement lineage check"
         ],
         "stop_condition": "priority 或 heartbeat 未 verified、runtime stale／missing、或 replacement lineage 不完整時停止並輸出 blocked／degraded；不得寫 task lifecycle、排程、外部通知、commit、push 或部署。"
+      },
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "唯一輸入為 verified action priority、trusted heartbeat 與 Reality Tax replacement lineage，不得直接讀 fixture、舊 task 或第二 scheduler。",
+          "可信上游存在時輸出唯一 focus、理由與人工 next action；priority／heartbeat missing 或 stale 時必須 blocked／degraded。",
+          "相同 input 在 fresh session、多 Agent 與多次重跑時必須得到同一 daily decision 或同一拒絕理由。",
+          "不得自動改 weekly core、review_date、task lifecycle、排程、外部通知、commit、push 或部署。"
+        ],
+        "test_level": [
+          "state_transition_contract",
+          "deterministic_selection",
+          "runtime_integration",
+          "negative_fixture"
+        ],
+        "red_command": "node scripts/verify-morrowise-live-decision-loop.mjs",
+        "expected_red_reason": "先加入 verified、missing-priority、stale-heartbeat、replacement-lineage 與 multi-Agent determinism fixtures；唯一 decision loop 尚未實作時應以預期原因失敗。",
+        "green_command": "node scripts/verify-morrowise-live-decision-loop.mjs",
+        "full_regression_commands": [
+          "node scripts/verify-action-priority-read-model.mjs",
+          "node scripts/verify-trusted-heartbeat-runtime.mjs",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "npm run build"
+        ],
+        "fixture_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#reality-tax-daily-review-task",
+          "$COLLAB/harness-mc/milestones/morrowise/notes/reality-tax-daily-review-task.md"
+        ],
+        "runtime_evidence_required": true,
+        "evidence_refs": []
       },
       "jv32_route": {
         "workflows": ["task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
@@ -5111,6 +5460,42 @@
               "evidence_refs": ["Vincent 2026-07-25 current session: 幫我確定下列兩項"]
             }
           }
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "todo",
+          "reason": "Vincent 核准將三階段 TDD 補強寫回唯一 Daily Decision task；加入 verified priority、trusted heartbeat、replacement lineage、missing／stale upstream 與 fresh-session／多 Agent deterministic Red／Green 契約，不建立第二 daily loop。",
+          "evidence_refs": [
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-live-decision-loop-v1",
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1",
+            "Vincent 2026-07-26 current session: 可以進行補寫 task"
+          ],
+          "recorded_at": "2026-07-26",
+          "semantic_intake": {
+            "outcome": "amend",
+            "compared_task_refs": [
+              "morrowise/morrowise-live-decision-loop-v1",
+              "morrowise/reality-tax-daily-review-task",
+              "morrowise/action-priority-read-model-v2",
+              "morrowise/trusted-heartbeat-runtime-v1"
+            ],
+            "scope_comparison": {
+              "problem": "仍是取代 Reality Tax 後的唯一 evidence-backed daily decision，不是新 reminder 或 scheduler。",
+              "owner_source_of_truth": "canonical tasks、priority read model、heartbeat evidence 與 replacement lineage 邊界不變；本 task 仍是唯一 decision owner。",
+              "inputs_outputs": "test_contract 只把 verified／missing／stale 與 deterministic selection 行為轉成可重跑測試契約。",
+              "lifecycle_completion": "task 維持 todo；上游、真實 runtime、Red／Green、完整 regression 與 fresh-session evidence 齊全前不得完成。"
+            },
+            "decision_reason": "既有 successor 完整擁有問題與完成邊界，故 outcome=amend。",
+            "approval": {
+              "status": "approved",
+              "approved_by": "Vincent",
+              "approved_at": "2026-07-26",
+              "evidence_refs": [
+                "Vincent 2026-07-26 current session: 可以進行補寫 task"
+              ]
+            }
+          }
         }]
       },
       "hc_decision": {
@@ -5122,6 +5507,176 @@
         "source_boundary": "HC 只是思考檢查，不是正本；canonical task state 在 tasks.json，priority/heartbeat/decision output 是可重建 read model，人工 lifecycle 決策仍由 Vincent 明確核准。"
       },
       "architecture_decision": {"decision": "deferred", "evaluated_at": "2026-07-21", "reason": "此 task 取代既有 daily runtime 構想且新增 read-model consumer；待上游、真實 runtime、E2E 與 Admission Review 完成後裁決。"}
+    },
+    {
+      "id": "morrowise-phase3-fresh-session-e2e-admission",
+      "title": "MorroWise 第三階段 Fresh-session E2E 與架構入場驗收",
+      "status": "todo",
+      "track": "governance",
+      "order_label": "MW-PHASE3-ADMISSION",
+      "priority": "high",
+      "dependencies": [
+        "action-priority-read-model-v2",
+        "trusted-heartbeat-runtime-v1",
+        "document-source-registry-and-human-sync",
+        "morrowise-live-decision-loop-v1",
+        "task-lifecycle-jv32-gate"
+      ],
+      "blocked_by": "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-priority-dashboard-surface-v2",
+      "done_condition": "在 Action Priority、Trusted Heartbeat、JV-36 R1–R5、唯一 Daily Decision 與 harness-mc Surface 都完成各自 verifier 後，執行不帶 task id 的 fresh-session、多 Agent deterministic、真實 safe runtime、fresh single-repo build、task validator、Architecture Admission 與受控跨 repo sync E2E；所有 coverage 與 evidence refs 齊全才可 completed，且本 task 只驗收、不建立平行 read model、scheduler、tracker、skill 或自動 commit／push。",
+      "acceptance": [
+        "F-01｜Fresh session 不提供 task id，仍能從 canonical source 選到相同 task 與 semantic route，或輸出相同可追溯拒絕理由。",
+        "F-02｜Codex、Claude Code 與共享 Agent 使用相同 input，多次重跑得到 deterministic task、priority、heartbeat 與 daily decision 結果。",
+        "F-03｜runtime accepted 必須引用真實 safe probe／run evidence、freshness 與 degraded reason；fixture-only、plist-only 或未載入狀態不得假綠燈。",
+        "F-04｜Action Priority、dashboard、daily decision 與 document pulse 都能追到 canonical source、generator、generated output、verifier 與 next action。",
+        "F-05｜首頁與五個真實下鑽 route 全繁中且維持 read-only；不得直接拼讀 tasks.json、fixture、舊 mirror 或背景改 task state。",
+        "F-06｜Reality Tax replacement lineage 完整，系統中只有一個 daily decision loop、沒有第二 scheduler、第二 task system 或自動延期規則。",
+        "F-07｜每個 executable task 的 test_contract 都能追到預期 Red、Green、完整 regression 與 task-specific verifier evidence；豁免必須有理由與替代 verifier。",
+        "F-08｜fresh single-repo npm build、changed-only task validator 與相關 subsystem regression 全部通過。",
+        "F-09｜Architecture Admission Record、受控 ARCHITECTURE.md sync check 與跨 repo two-phase check 通過；不得手改 managed block。",
+        "F-10｜JV-41 只在本 task completed 後開始輸出 not_applicable／observe／create_skill／update_skill 提醒，絕不自動建立、修改或安裝 skill。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-live-decision-loop-v1",
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-priority-dashboard-surface-v2",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
+        "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md"
+      ],
+      "execution_contract": {
+        "owner": "morrowise/morrowise-phase3-fresh-session-e2e-admission",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-phase3-fresh-session-e2e-admission",
+        "inputs": [
+          "所有上游 task 的 canonical status、test contract、verifier 與 evidence refs",
+          "harness-mc Surface 的真實 route／read-model consumer evidence",
+          "安全 runtime runs、freshness、Architecture Admission 與跨 repo sync evidence"
+        ],
+        "outputs": [
+          "可重跑的 phase-3 coverage matrix 與 fresh-session／多 Agent E2E 判定",
+          "fresh build、Architecture Admission、task lifecycle 與 runtime truth 的整體驗收證據"
+        ],
+        "verifiers": [
+          "node scripts/verify-morrowise-phase3-e2e-admission.mjs",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "npm run build",
+          "npm run test:architecture-subsystems",
+          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
+        ],
+        "stop_condition": "任一上游 task、test contract、真實 runtime、route、fresh build、Admission Record 或跨 repo sync evidence 缺失／stale／failed 時停止並維持 todo／blocked；不得以 fixture 補綠、背景修改 task、建立 skill、commit、push 或部署。"
+      },
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "缺任一上游 completed／verifier／test evidence 時 integration admission 必須拒絕。",
+          "相同 canonical input 在 fresh session、多 Agent 與多次重跑時必須得到相同選擇或拒絕理由。",
+          "fixture-only、stale、missing 或 unloaded runtime evidence 必須判定 degraded／blocked。",
+          "所有 component 通過時才能產出 accepted coverage，且結果只引用正本與 evidence，不建立第二份狀態正本。"
+        ],
+        "test_level": [
+          "coverage_contract",
+          "fresh_session_e2e",
+          "multi_agent_determinism",
+          "runtime_integration",
+          "architecture_admission"
+        ],
+        "red_command": "node scripts/verify-morrowise-phase3-e2e-admission.mjs",
+        "expected_red_reason": "先建立 missing-upstream、missing-test-evidence、fixture-only runtime、multi-Agent mismatch 與 stale Architecture Admission fixtures；integration verifier 尚未實作時應以預期原因失敗。",
+        "green_command": "node scripts/verify-morrowise-phase3-e2e-admission.mjs",
+        "full_regression_commands": [
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+          "npm run test:architecture-subsystems",
+          "npm run test:system-pulse",
+          "npm run build",
+          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
+        ],
+        "fixture_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-phase3-fresh-session-e2e-admission"
+        ],
+        "runtime_evidence_required": true,
+        "evidence_refs": []
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "所有上游 canonical task、test、runtime、surface 與 Architecture Admission evidence",
+          "fresh-session、多 Agent deterministic 與 fresh single-repo build requirements"
+        ],
+        "decision_output": "單一 MorroWise 第三階段 integration admission 判定與 coverage evidence",
+        "execution_boundary": "只可建立驗收 fixture、verifier 與 evidence refs；不得反寫上游 state、建立平行 read model／tracker／scheduler、修改或安裝 skill、自動 commit／push／部署。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准將 TDD 補強完整放入既有三階段並寫回 task；現有 component task 與 harness surface 各自只驗收局部能力，沒有 canonical task 擁有第 5 節 Fresh-session E2E、fresh build、真實 runtime、Architecture Admission 與跨 repo coverage 的整體完成邊界，因此建立唯一 integration admission task。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mc-dashboard-priority-ia-v2",
+              "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-priority-dashboard-surface-v2",
+              "Vincent 2026-07-26 current session: 可以進行補寫 task"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/morrowise-wiring-gate-verifier",
+                "morrowise/live-system-admission-gate",
+                "harness-mc/morrowise-priority-dashboard-surface-v2",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "既有 wiring／admission gate 定義單一 component 入場規則，surface task 只擁有 UI，JV-40 只擁有 task lifecycle；沒有 task 追蹤完整第三階段跨 component fresh-session E2E 與最終 Admission。",
+                "owner_source_of_truth": "新 task 只擁有整合驗收 coverage 與 evidence refs；所有 component、task、runtime、surface 與 Architecture Admission 正本保持不變。",
+                "inputs_outputs": "輸入是所有上游 canonical evidence；輸出是單一可重跑 integration admission 判定，不新增業務 read model、scheduler、tracker 或寫回 runtime。",
+                "lifecycle_completion": "只有上游全部完成、真實 runtime、fresh-session／多 Agent、fresh build、Architecture Admission 與跨 repo sync 全通過才可 completed。"
+              },
+              "decision_reason": "比對問題、owner、輸入輸出與完成邊界後，原計畫第 5 節是獨立且尚無 owner 的驗收工作包，故 genuinely_new；仍寫入同一 canonical task system。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/morrowise-phase3-fresh-session-e2e-admission",
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#systemDynamics",
+          "#risk",
+          "#evidenceBased"
+        ],
+        "hc_reasoning": "真正問題不是再加一套 E2E dashboard，而是第三階段每個局部 task 可能各自綠燈，卻沒有人證明 fresh session、Agent 一致性、真實 runtime、surface、Architecture Admission 與跨 repo sync 一起成立。以單一 integration admission task 引用上游正本與 evidence，能封住 fixture 假綠燈和局部驗證缺口，同時禁止它成為第二 read model 或 tracker。",
+        "hc_confidence": 0.91,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
+          "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-priority-dashboard-surface-v2",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
+          "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md"
+        ],
+        "source_boundary": "HC 只負責思考檢查，不是正本；canonical component/task state、runtime evidence、surface output、Admission Record 與 ARCHITECTURE.md managed index 保持各自既有 ownership，本 task 只引用並驗收。"
+      },
+      "architecture_decision": {
+        "decision": "deferred",
+        "evaluated_at": "2026-07-26",
+        "reason": "本 task 目前只建立 integration admission 工作包與 completion boundary；待 verifier、fixtures、真實 runtime、fresh-session E2E 與受控 sync evidence 實作完成後，再判斷是既有 wiring/admission subsystem 的 version improvement 或需要更新 Admission Record。"
+      }
     },
     {
       "id": "project-topology-architecture-atlas",

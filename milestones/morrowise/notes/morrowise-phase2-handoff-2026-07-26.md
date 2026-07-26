@@ -49,7 +49,7 @@
    鎖定 task identity、owner、source of truth、dependency、semantic intake、weekly core、安全邊界與禁止事項。
 
 2. **第二階段：工作包與可信執行設計**
-   補齊每包的輸入、輸出、完成條件、停止條件、verifier、test contract、review window、review date、工時與 Acceptance Matrix。
+   補齊每包的輸入、輸出、開始／完成依賴、完成條件、停止條件、verifier、test contract、review control、工時與 Acceptance Matrix。Action Priority 是唯一使用 root `review_date` 的 weekly core，其餘七包使用 informational planning `review_window`。
 
 3. **第三階段：依賴驅動實作、整合與架構入場**
    完成 Action Priority、Trusted Heartbeat、JV-36、Surface、Daily Decision、Document Pulse，最後執行 Fresh-session E2E、fresh build 與 Architecture Admission。
@@ -72,7 +72,7 @@ flowchart TD
     B0["owner／正本／inputs／outputs"]
     B1["dependencies／done／stop"]
     B2["test contract／verifier／evidence contract"]
-    B3["review window／review_date／工時"]
+    B3["review control／工時"]
     B4["Acceptance Matrix＋work-anchor preflight"]
     B0 --> B1 --> B2 --> B3 --> B4
   end
@@ -163,32 +163,37 @@ flowchart TD
 - 8/8 有 `done_condition`。
 - 8/8 有 acceptance prose。
 - 8/8 有 `test_contract`。
-- 7/8 有一致的 `execution_contract`。
+- 8/8 有一致的 `execution_contract`。
+- 8/8 有 start／completion `dependency_gates`；JV-36 另具 R1–R4／R5 staged dependencies。
+- 8/8 有可審查的 `estimated_hours`。
+- 8/8 有正式 `acceptance_matrix`。
+- Action Priority 保持唯一 root `review_date=2026-07-29`；其餘 7/8 有 informational planning `review_window`。
+- 8/8 最新 canonical mutation 均有合法 `amend` lifecycle event、semantic intake 與 Vincent approval。
 - Final Admission task 已建立。
 - JV-41 已依賴 Final Admission task。
 - Action Priority 是唯一 weekly core，`review_date=2026-07-29`。
 - MorroWise changed-only task validator 為 0 issue。
 - harness-mc 目標修改未新增 warning；目前輸出的 40 項皆為既有 legacy warning。
 
-## 7. 第二階段固定七項缺口
+## 7. 最終 P2 合約與固定七項驗收
 
-第二階段只有以下七項缺口；完成後即封版，不再把第三階段實作證據倒灌成第二階段條件。
+第二階段只依以下七項驗收；通過後即封版，不再把第三階段實作證據倒灌成第二階段條件。
 
-| ID | 未完成項目 | 現況 | 完成條件 |
+| ID | 驗收項目 | 狀態 | 完成條件 |
 |---|---|---|---|
-| P2-01 | JV-40 execution contract | 缺 owner、source of truth、inputs、outputs、verifiers、stop condition | 在既有 JV-40 task 補齊一致 contract，不建新 task |
-| P2-02 | JV-36 分段依賴 | R1–R4 對 JV-40、R5 對 Trusted Heartbeat 的依賴未機械化 | 同一 JV-36 task 明確區分 start gate 與 R5 completion gate |
-| P2-03 | Surface start／completion dependency | 目前只明確 blocked by Action Priority；Heartbeat 與 Daily Decision 只存在 stop condition | 定錨 Surface 可開始條件與全部 route 可完成條件 |
-| P2-04 | Review windows | 只有 Action Priority 有 review date；其餘 7/8 缺少 | 為其餘七包設定可信 review window 與 `review_date` |
-| P2-05 | Estimated hours | 8/8 沒有預估工時 | 每包補上可審查的 estimated hours |
-| P2-06 | Acceptance Matrix | 8/8 只有 prose；0/8 具完整 matrix 欄位 | 每項具 stable ID、前置資料、步驟、pass、fail、verification |
-| P2-07 | 發布與封版 | 兩份 canonical task 修改未 commit／push；8/8 無 Heptabase／Canvas publication refs | 驗證、visual coverage、scoped commit、明確核准後 push |
+| P2-01 | JV-40 execution contract | 已完成 | 在既有 JV-40 task 補齊一致 contract，不建新 task |
+| P2-02 | JV-36 分段依賴 | 已完成 | 同一 JV-36 task 明確區分 R1–R4 start gate 與 R5 Heartbeat completion gate |
+| P2-03 | Surface start／completion dependency | 已完成 | Action Priority 為 start gate；Action Priority、Heartbeat、Daily Decision 為 completion gates |
+| P2-04 | Review control | 已完成 | Action Priority 保留唯一 root `review_date`；其餘七包使用可信 informational planning `review_window` |
+| P2-05 | Estimated hours | 已完成 | 8/8 補上可審查的 estimated hours |
+| P2-06 | Acceptance Matrix | 已完成 | 8/8 具 stable ID、前置資料、步驟、pass、fail、verification |
+| P2-07 | 驗證與封版 | 待完成 | 固定 P2 驗證通過並完成 scoped commit；push 僅在 Vincent 明確核准後執行 |
 
 ### 第二階段工作包固定欄位
 
 每包必須具有：
 
-`task id → operation → owner → source of truth → inputs → outputs → dependencies → done condition → stop condition → test contract → verifier → review_date → estimated hours`
+`task id → operation → owner → source of truth → inputs → outputs → start dependencies → completion dependencies → done condition → stop condition → test contract → verifier → review control → estimated hours → Acceptance Matrix`
 
 ### Test contract 邊界
 
@@ -208,21 +213,25 @@ Test contract 至少定義：
 
 ## 8. 第二階段封閉順序
 
-1. 在既有 JV-40 補齊 execution contract。
-2. 定錨 JV-36 的 R1–R4 start gate 與 R5 completion gate。
-3. 定錨 Surface 的開始條件與完整完成條件。
-4. 補齊八包 estimated hours 與其餘七包 review dates。
-5. 將 acceptance prose 轉成正式 Acceptance Matrix。
-6. 跑 changed-only validator、task verifier、data generation 與 diff checks。
-7. 依既有 task publication 規則完成 Heptabase／Canvas coverage；不得猜白板名稱。
-8. 使用 scoped commit 流程提交兩份 canonical task source；push 必須有 Vincent 明確核准。
+1. 已在既有八個 canonical task 完成 P2-01 至 P2-06 amendment。
+2. 跑 changed-only validator、task verifier 與 scoped diff checks；會寫入 generated data 的驗證只能在隔離副本執行，不得覆寫既有 dirty。
+3. 使用 scoped commit 流程提交已核對的 P2 範圍。
+4. Push 必須有 Vincent 明確核准；未核准時記為 `READY_TO_PUSH`，不視為 P2 驗收失敗。
+
+Heptabase／Canvas publication 是非阻擋的 post-P2 mirror closeout；只有 Vincent 要求實際發布時才需要確認精確 target，不納入 P2 exit gate。
 
 第二階段 exit gate：
 
 - P2-01 至 P2-07 全部通過。
 - Work-anchor preflight 回傳 `allow`。
 - 無新增 source-of-truth、registry、tracker、scheduler 或 daily loop。
-- Canonical source 與 visual mirror coverage 可追溯。
+- Canonical source、Acceptance Matrix 與 lifecycle evidence 可追溯。
+
+合約凍結規則：
+
+- P2 只依 P2-01 至 P2-07 驗收，不再新增 exit gate。
+- 只有 source-of-truth 衝突、安全問題、資料遺失／覆寫風險或合約內部矛盾可以重開 P2。
+- 其他新發現一律排入第三階段或改善建議。
 
 ## 9. 第三階段實作
 
@@ -449,15 +458,17 @@ flowchart TB
 - Branch：`codex/jv32-traditional-task-title`
 - Upstream：`origin/codex/jv32-traditional-task-title`
 - Ahead／behind：`0/0`
-- HEAD：`85de7cb chore(morrowise): record MC-DASH-V2 closeout evidence`
+- HEAD：`31af8c6 fix(tasks): restore follow-up task lifecycle evidence`
 - 前一筆 Phase 1 commit：`62915d8 docs(morrowise): close MC-DASH-V2 phase-one governance`
-- 兩份 canonical task source 目前未提交，合計 618 insertions、1 deletion。
+- P2-01 至 P2-06 的兩份 canonical task amendment 與 review-window validator／fixtures 目前未提交。
 
 本輪預期範圍：
 
 - `milestones/morrowise/tasks.json`
 - `milestones/harness-mc/tasks.json`
 - `milestones/morrowise/notes/morrowise-phase2-handoff-2026-07-26.md`
+- `scripts/validate-tasks.mjs`
+- `scripts/verify-validate-tasks.mjs`
 
 目前另有既存或來源未確認的 dirty／untracked 內容，必須保留且不得混入本輪 commit：
 
@@ -469,7 +480,7 @@ flowchart TB
 - `milestones/morrowise/maps/MorroWise_開發過程架構圖_V3_260726.svg`
 - `milestones/morrowise/maps/morrowise-development-architecture.html`
 - `milestones/morrowise/maps/morrowise-final-system-architecture.html`
-- 四筆 `task-events/pending/` 事件。
+- 既有 `task-events/pending/` 事件。
 
 不得 revert、刪除、stage 或重新產生上述內容，除非先確認其 owner 與 scope。
 
@@ -480,7 +491,8 @@ flowchart TB
 - `node scripts/validate-tasks.mjs --changed-only --project morrowise`：0 issue、0 warning。
 - `node scripts/validate-tasks.mjs --changed-only --project harness-mc`：通過；40 項為既有 legacy warning，目標 task 未新增 warning。
 - `git diff --check -- milestones/morrowise/tasks.json milestones/harness-mc/tasks.json`：通過。
-- 前一輪 task contract coverage audit：8/8。
+- 最終 P2 canonical task coverage audit：8/8。
+- `node scripts/verify-validate-tasks.mjs`：通過。
 - 前一輪 isolated single-repo fresh production build：通過。
 - 目前 live working tree 的 local build 曾受未追蹤 `milestones/fj-116-admissions/` 缺少 PAI domain mapping 影響；這不是本輪 MorroWise task 變更造成，不得為了通過 build 擅改該專案。
 
@@ -494,7 +506,7 @@ git -c core.quotepath=false status --short
 node scripts/work-anchor-preflight.mjs --project morrowise --task-id action-priority-read-model-v2 --intent "完成第二階段" --json
 ```
 
-確認 preflight 為 `allow` 後，依 P2-01 至 P2-07 完成 amendment。驗證至少包含：
+確認 preflight 為 `allow` 後，只完成尚未結束的 P2-07 verification／closeout。驗證至少包含：
 
 ```bash
 node scripts/validate-tasks.mjs --changed-only --project morrowise
@@ -511,6 +523,6 @@ Commit 前只 stage 本輪已核對範圍，使用 `worktree-commit` 防呆流�
 
 ## 15. 交接完成判定
 
-本文件只負責交接與邊界定錨，不代表第二階段已完成。
+本文件記錄最終 P2 合約；目前 P2-01 至 P2-06 已完成，P2-07 verification／closeout 尚未完成。
 
-下一個 Agent 的唯一近期目標是完成 P2-01 至 P2-07，跑完第二階段 exit gate，commit／push 後宣告第二階段封版；不得在此之前開始第三階段 runtime、UI、document pulse 或 Skill 實作，也不得再回頭重開第一階段。
+下一個 Agent 的唯一近期目標是完成 P2-07、跑完第二階段 exit gate，依 scoped commit 流程提交；push 只在 Vincent 明確核准時執行。不得在此之前開始第三階段 runtime、UI、document pulse 或 Skill 實作，也不得再回頭重開第一階段。

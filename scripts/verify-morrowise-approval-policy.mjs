@@ -20,7 +20,8 @@ const policy = JSON.parse(fs.readFileSync(policyPath, "utf-8"));
 const spec = fs.readFileSync(specPath, "utf-8");
 const schema = JSON.parse(fs.readFileSync(schemaPath, "utf-8"));
 
-assert(policy.policy_id === "morrowise-approval-policy.v0", "unexpected policy_id");
+assert(policy.policy_id === "morrowise-approval-policy.v1", "unexpected policy_id");
+assert(policy.contract_id === "MW-GIT-AUTH-01", "Git isolation contract id missing");
 assert(policy.task_id === "morrowise-approval-policy", "unexpected task_id");
 assert(policy.runner_gate?.default_policy === "approval_required", "default policy must be approval_required");
 assert(policy.core_rules?.direction_agreement_is_not_operation_approval === true, "direction agreement rule missing");
@@ -64,6 +65,7 @@ for (const actionClass of [
   "third_party_repo_skill_intake",
   "commit_push_deploy",
   "worktree_commit_gate",
+  "git_isolation_mutation",
   "visual_layer_overwrite_or_reverse_sync",
   "browser_submit_or_message",
 ]) {
@@ -76,6 +78,7 @@ for (const actionClass of [
   "reverse_write_from_visual_or_chat",
   "destructive_without_recovery",
   "history_rewrite_without_explicit_request",
+  "autonomous_git_isolation",
   "unreviewed_third_party_execution",
 ]) {
   assert(forbidden.has(actionClass), `forbidden class missing: ${actionClass}`);
@@ -109,6 +112,16 @@ assert(
   "runner gate must include worktree_commit_gate before git commit runs"
 );
 
+const isolationRule = tiers.get("approval_required").rules.find((rule) => rule.action_class === "git_isolation_mutation");
+assert(isolationRule, "git_isolation_mutation rule required");
+for (const evidence of ["exact Vincent approval", "repo and task id", "branch/worktree name and path", "target main", "cleanup plan"]) {
+  assert(isolationRule.required_evidence.includes(evidence), `git_isolation_mutation evidence missing: ${evidence}`);
+}
+assert(
+  policy.runner_gate.decision_order.some((step) => step.includes("MW-GIT-AUTH-01") && step.includes("branch/worktree")),
+  "runner gate must enforce MW-GIT-AUTH-01 before branch/worktree mutation"
+);
+
 for (const requiredInput of ["recommendation_id", "suggested_action", "risk_level", "requires_approval", "evidence_refs", "suggested_task_id"]) {
   assert(policy.runner_gate.input_required.includes(requiredInput), `runner input missing: ${requiredInput}`);
 }
@@ -129,6 +142,8 @@ for (const phrase of [
   "commit plan or draft patch",
   "worktree-commit",
   "worktree_commit_gate",
+  "MW-GIT-AUTH-01",
+  "git_isolation_mutation",
   "4C",
   "npm run test:morrowise-approval",
 ]) {

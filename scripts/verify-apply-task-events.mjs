@@ -1,8 +1,59 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { applyTaskEvents } from "./apply-task-events.mjs";
+
+const selectiveRoot = fs.mkdtempSync(path.join(os.tmpdir(), "apply-task-events-selective-"));
+const selectiveProjectDir = path.join(selectiveRoot, "milestones", "demo-project");
+const selectivePendingDir = path.join(selectiveRoot, "task-events", "pending");
+const selectiveScriptsDir = path.join(selectiveRoot, "scripts");
+fs.mkdirSync(selectiveProjectDir, { recursive: true });
+fs.mkdirSync(selectivePendingDir, { recursive: true });
+fs.mkdirSync(selectiveScriptsDir, { recursive: true });
+fs.writeFileSync(path.join(selectiveScriptsDir, "generate-data.mjs"), "");
+writeJson(path.join(selectiveProjectDir, "tasks.json"), {
+  tasks: [
+    { id: "task-1", title: "Selected task", status: "todo" },
+    { id: "task-2", title: "Preserved task", status: "todo" },
+  ],
+});
+writeJson(path.join(selectivePendingDir, "001-selected.json"), {
+  event_id: "evt-select-one",
+  type: "task.commit_attached",
+  repo: "demo-repo",
+  commit: "sel1111",
+  project: "demo-project",
+  task_id: "task-1",
+  summary: "Only this closeout event should apply.",
+  created_at: "2026-07-27T09:00:00+08:00",
+  actor: "codex",
+  session_id: "session-selective",
+});
+writeJson(path.join(selectivePendingDir, "002-preserved.json"), {
+  event_id: "evt-preserve-two",
+  type: "task.commit_attached",
+  repo: "demo-repo",
+  commit: "pre2222",
+  project: "demo-project",
+  task_id: "task-2",
+  summary: "This unrelated pending event must remain untouched.",
+  created_at: "2026-07-27T09:01:00+08:00",
+  actor: "codex",
+  session_id: "session-selective",
+});
+const selectiveResult = spawnSync(
+  process.execPath,
+  [new URL("./apply-task-events.mjs", import.meta.url).pathname, "--event-id", "evt-select-one"],
+  { cwd: selectiveRoot, encoding: "utf8" },
+);
+assert.equal(selectiveResult.status, 0, selectiveResult.stderr || selectiveResult.stdout);
+assert.deepEqual(fs.readdirSync(selectivePendingDir), ["002-preserved.json"]);
+assert.deepEqual(fs.readdirSync(path.join(selectiveRoot, "task-events", "applied")), ["001-selected.json"]);
+const selectiveState = JSON.parse(fs.readFileSync(path.join(selectiveProjectDir, "state.json"), "utf8"));
+assert.deepEqual(selectiveState.tasks["task-1"].commits, ["sel1111"]);
+assert.equal(Object.hasOwn(selectiveState.tasks, "task-2"), false);
 
 const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "apply-task-events-"));
 const manualRejectionReview = {

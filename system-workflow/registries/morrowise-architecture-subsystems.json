@@ -2,8 +2,8 @@
   "registry_id": "morrowise-architecture-subsystems.v0",
   "task_id": "architecture-subsystem-index-live-sync",
   "status": "formal_registry",
-  "updated_at": "2026-07-21",
-  "generated_at": "2026-07-21",
+  "updated_at": "2026-07-27",
+  "generated_at": "2026-07-27",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
   "verifier_ref": "npm run test:architecture-subsystems",
   "sync_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\"",
@@ -207,10 +207,10 @@
       "degraded_state": "catalog registry/schema/verifier/read model 缺失、semantic intake 可繞過、同時存在多個 weekly core、到期 review 可自動延長、adapter_only 誤標為 accepted、close_rule 缺失或薄索引被手寫細節時，必須維持 deferred/degraded。",
       "architecture_decision": "promoted",
       "last_promoted_at": "2026-07-08",
-      "last_verified_at": "2026-07-22",
+      "last_verified_at": "2026-07-27",
       "version_review": {
         "scope": "version_improvement",
-        "reviewed_at": "2026-07-22",
+        "reviewed_at": "2026-07-27",
         "contract_refs": [
           "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
           "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json",
@@ -229,23 +229,17 @@
           "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
           "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
         ],
-        "contract_fingerprint": "8ae351af21bd8452",
-        "index_action": "updated",
+        "contract_fingerprint": "cce202e5f446eeea",
+        "index_action": "no_index_change",
         "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
         "evidence_refs": [
-          "npm run build",
           "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
-          "npm run build in isolated single-repo worktree",
-          "npm run test:morrowise-auditor-isolated",
+          "node scripts/verify-morrowise-approval-policy.mjs",
+          "node scripts/verify-explicit-git-isolation-approval.mjs --notyet-root <notyet-harness>",
           "npm run test:architecture-subsystems",
-          "npm run test:project-filters",
-          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
-          "922c84f",
-          "1ef799c",
-          "433a972",
-          "0bb51b3"
+          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
         ],
-        "reason": "2026-07-22 的 /projects regression test 被納入 package prebuild，因 package.json 是既有受管 contract ref 而需要刷新同一 Admission Record 的 fingerprint 與 generated thin index。既有 subsystem owner、安全邊界與 workflow semantics 均未改變。"
+        "reason": "2026-07-27 依 MW-GIT-AUTH-01 收緊 approval policy 與 package verifier wiring：建立或切換 branch/worktree 必須有 Vincent 精確核准，且同一核准完成 target-main integration、驗證與清理。沿用既有 MorroWise 開發工作流 Catalog 子系統，ARCHITECTURE.md 薄索引文字不增加細節，因此 index_action=no_index_change，但刷新受管 contract fingerprint。"
       },
       "supersedes": [],
       "superseded_by": null

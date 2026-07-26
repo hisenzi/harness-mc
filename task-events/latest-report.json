@@ -1,32 +1,11 @@
 {
-  "generated_at": "2026-07-20T23:27:15.796Z",
+  "generated_at": "2026-07-26T17:13:16.935Z",
   "applied": [
     {
-      "file": "20260720T103613Z-travel-finance-dashboard-8deb8a1-travel-finance-dashboard-p2-notion-to-ledger-importer.json",
-      "event_id": "task.commit_attached-travel-finance-dashboard-p2-notion-to-ledger-importer-8deb8a1-20260720T103613Z",
-      "project": "travel-finance-dashboard",
-      "task_id": "p2-notion-to-ledger-importer",
-      "type": "task.commit_attached"
-    },
-    {
-      "file": "20260720T103938Z-travel-finance-dashboard-909f963-travel-finance-dashboard-p3-live-dashboard-and-fund-cashflow.json",
-      "event_id": "task.completed-travel-finance-dashboard-p3-live-dashboard-and-fund-cashflow-909f963-20260720T103938Z",
-      "project": "travel-finance-dashboard",
-      "task_id": "p3-live-dashboard-and-fund-cashflow",
-      "type": "task.completed"
-    },
-    {
-      "file": "20260720T141125Z-notyet-harness-5e1bc66-morrowise-morrowise-project-init-v1.json",
-      "event_id": "task.commit_attached-morrowise-morrowise-project-init-v1-5e1bc66-20260720T141125Z",
+      "file": "20260726T171302Z-notyet-harness-45216fa7a1fde443ac6941f2a837472bb24f942a-morrowise-multi-machine-repo-coordination-gate.json",
+      "event_id": "task.commit_attached-morrowise-multi-machine-repo-coordination-gate-45216fa7a1fde443ac6941f2a837472bb24f942a-20260726T171302Z",
       "project": "morrowise",
-      "task_id": "morrowise-project-init-v1",
-      "type": "task.commit_attached"
-    },
-    {
-      "file": "20260720T143720Z-travel-finance-dashboard-8ebf787-travel-finance-dashboard-p3-live-dashboard-and-fund-cashflow.json",
-      "event_id": "task.commit_attached-travel-finance-dashboard-p3-live-dashboard-and-fund-cashflow-8ebf787-20260720T143720Z",
-      "project": "travel-finance-dashboard",
-      "task_id": "p3-live-dashboard-and-fund-cashflow",
+      "task_id": "multi-machine-repo-coordination-gate",
       "type": "task.commit_attached"
     }
   ],

@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-multi-machine-repo-coordination-gate-45216fa7a1fde443ac6941f2a837472bb24f942a-20260726T171302Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "45216fa7a1fde443ac6941f2a837472bb24f942a",
+  "project": "morrowise",
+  "task_id": "multi-machine-repo-coordination-gate",
+  "status": "updated",
+  "summary": "Attach the explicit Git isolation approval contract commit.",
+  "created_at": "2026-07-27T01:13:02+08:00",
+  "actor": "codex",
+  "session_id": "019f9d4d-a4a4-7ec1-a9db-a22c24774df0"
+}

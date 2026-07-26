@@ -23,10 +23,12 @@ export function applyTaskEvents(options = {}) {
   fs.mkdirSync(appliedDir, { recursive: true });
   fs.mkdirSync(rejectedDir, { recursive: true });
 
-  const pendingFiles = fs
+  const allPendingFiles = fs
     .readdirSync(pendingDir)
     .filter((fileName) => fileName.endsWith(".json"))
     .sort();
+  validateSelectedEventTargets(pendingDir, allPendingFiles, options.eventIds);
+  const pendingFiles = selectPendingFiles(pendingDir, allPendingFiles, options.eventIds);
 
   validateManualRejectionReview(options.manualRejections, options.manualRejectionReview);
   validateManualRejectionTargets(pendingDir, pendingFiles, options.manualRejections);
@@ -136,6 +138,27 @@ function validateManualRejectionReview(manualRejections, review) {
   if (!isValid) {
     throw new Error("manual rejection requires explicit Vincent approval evidence");
   }
+}
+
+function validateSelectedEventTargets(pendingDir, pendingFiles, eventIds) {
+  if (!(eventIds instanceof Set)) return;
+  const pendingEventIds = new Set(
+    pendingFiles
+      .map((fileName) => readJson(path.join(pendingDir, fileName))?.event_id)
+      .filter(Boolean),
+  );
+  const missingEventIds = [...eventIds].filter((eventId) => !pendingEventIds.has(eventId));
+  if (missingEventIds.length > 0) {
+    throw new Error(`selected event_id not found in pending queue: ${missingEventIds.join(", ")}`);
+  }
+}
+
+function selectPendingFiles(pendingDir, pendingFiles, eventIds) {
+  if (!(eventIds instanceof Set)) return pendingFiles;
+  return pendingFiles.filter((fileName) => {
+    const eventId = readJson(path.join(pendingDir, fileName))?.event_id;
+    return eventIds.has(eventId);
+  });
 }
 
 function validateManualRejectionTargets(pendingDir, pendingFiles, manualRejections) {
@@ -325,12 +348,19 @@ if (isCli) {
 }
 
 function parseCliArgs(argv) {
+  const eventIds = new Set();
   const manualRejections = new Map();
   const manualRejectionReview = { evidence_refs: [] };
   let hasManualReviewArg = false;
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
-    if (arg === "--reject-event") {
+    if (arg === "--event-id") {
+      const eventId = argv[++index] || "";
+      if (!eventId) {
+        throw new Error("--event-id requires a non-empty event_id");
+      }
+      eventIds.add(eventId);
+    } else if (arg === "--reject-event") {
       const value = argv[++index] || "";
       const separator = value.indexOf("=");
       if (separator <= 0 || separator === value.length - 1) {
@@ -352,7 +382,7 @@ function parseCliArgs(argv) {
       manualRejectionReview.evidence_refs.push(argv[++index] || "");
       hasManualReviewArg = true;
     } else if (arg === "--help" || arg === "-h") {
-      console.log("Usage: node scripts/apply-task-events.mjs [--reject-event <event_id>=<reason> --rejection-approved-by Vincent --rejection-approved-at YYYY-MM-DD --rejection-evidence-ref <ref>]...");
+      console.log("Usage: node scripts/apply-task-events.mjs [--event-id <event_id>]... [--reject-event <event_id>=<reason> --rejection-approved-by Vincent --rejection-approved-at YYYY-MM-DD --rejection-evidence-ref <ref>]...");
       process.exit(0);
     } else {
       throw new Error(`Unknown argument: ${arg}`);
@@ -363,6 +393,7 @@ function parseCliArgs(argv) {
   }
   return {
     manualRejections,
+    ...(eventIds.size > 0 ? { eventIds } : {}),
     ...(manualRejections.size > 0 ? { manualRejectionReview } : {}),
   };
 }

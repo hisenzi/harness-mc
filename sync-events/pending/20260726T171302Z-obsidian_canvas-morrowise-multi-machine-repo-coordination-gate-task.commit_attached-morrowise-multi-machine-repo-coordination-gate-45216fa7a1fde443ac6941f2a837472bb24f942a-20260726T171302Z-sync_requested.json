@@ -1,0 +1,16 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-morrowise-multi-machine-repo-coordination-gate-task.commit_attached-morrowise-multi-machine-repo-coordination-gate-45216fa7a1fde443ac6941f2a837472bb24f942a-20260726T171302Z-20260726T171302Z",
+  "type": "sync_requested",
+  "target": "obsidian_canvas",
+  "status": "pending",
+  "source_event_id": "task.commit_attached-morrowise-multi-machine-repo-coordination-gate-45216fa7a1fde443ac6941f2a837472bb24f942a-20260726T171302Z",
+  "project": "morrowise",
+  "task_id": "multi-machine-repo-coordination-gate",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-07-27T01:13:02+08:00",
+  "actor": "codex",
+  "session_id": "019f9d4d-a4a4-7ec1-a9db-a22c24774df0"
+}

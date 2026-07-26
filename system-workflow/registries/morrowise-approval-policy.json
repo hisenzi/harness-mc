@@ -1,8 +1,9 @@
 {
-  "policy_id": "morrowise-approval-policy.v0",
+  "policy_id": "morrowise-approval-policy.v1",
+  "contract_id": "MW-GIT-AUTH-01",
   "task_id": "morrowise-approval-policy",
   "order_label": "MC-LIVE-18",
-  "updated_at": "2026-06-21",
+  "updated_at": "2026-07-27",
   "status": "formal_policy",
   "source_of_truth": "$COLLAB/harness-mc/milestones/harness-mc/tasks.json",
   "purpose": "Classify MorroWise action candidates before any runner, sync, browser, commit, memory, schedule, or external side effect can proceed.",
@@ -27,7 +28,8 @@
     "recovery_rule": "Destructive or irreversible work requires explicit Vincent approval plus a recovery plan. Prefer recoverable trash/archive over deletion.",
     "external_effect_rule": "Anything that leaves the machine, writes to an external service, submits a browser form, sends a message/email/post, or changes shared automation requires explicit approval.",
     "commit_boundary_rule": "A runner may produce a commit plan or draft patch only. Actual git commit must go through the worktree-commit confirmation gate. Push and deploy require explicit Vincent approval.",
-    "worktree_commit_gate_rule": "worktree-commit is the only approved local commit gate. It requires dirty-tree scan, per-file diff review, logical commit grouping, 4C review, path policy check, explicit Vincent confirmation, commit execution, and task-state/event follow-up."
+    "worktree_commit_gate_rule": "worktree-commit is the only approved local commit gate. It requires dirty-tree scan, per-file diff review, logical commit grouping, 4C review, path policy check, explicit Vincent confirmation, commit execution, and task-state/event follow-up.",
+    "git_isolation_rule": "MW-GIT-AUTH-01: creating or switching a Git branch or linked worktree requires exact Vincent approval. Approval owns create, execute, target-main integration, verification, and cleanup."
   },
   "task_lifecycle_contract": {
     "route": "JV-32/task-lifecycle",
@@ -136,6 +138,19 @@
           "reason": "worktree-commit is the controlled commit boundary that turns local work into durable history and then feeds task-state/event follow-up."
         },
         {
+          "action_class": "git_isolation_mutation",
+          "examples": ["create branch", "switch branch", "add linked worktree", "switch linked worktree", "run equivalent isolation script"],
+          "required_evidence": [
+            "exact Vincent approval",
+            "repo and task id",
+            "branch/worktree name and path",
+            "target main",
+            "cleanup plan"
+          ],
+          "runner_limit": "Without the complete MW-GIT-AUTH-01 evidence bundle, the runner remains read-only and returns BLOCKED. Preflight output, dirty files, concurrency, verification, or an implementation plan cannot grant permission.",
+          "reason": "Git isolation changes shared refs or filesystem topology and must not leave an unintegrated branch/worktree tail."
+        },
+        {
           "action_class": "visual_layer_overwrite_or_reverse_sync",
           "examples": ["overwrite Canvas", "refresh Heptabase", "use Canvas/Heptabase/chat to modify tasks.json"],
           "required_evidence": ["canonical source", "mirror destination", "manual edit risk check"],
@@ -180,6 +195,11 @@
           "reason": "History rewrites can destroy evidence and collaboration context."
         },
         {
+          "action_class": "autonomous_git_isolation",
+          "examples": ["create or switch branch from Agent judgment", "create worktree because the repo is dirty", "treat concurrency or verification as authorization"],
+          "reason": "Only exact Vincent approval can authorize MW-GIT-AUTH-01; Agent reasoning and preflight output are not permission."
+        },
+        {
           "action_class": "unreviewed_third_party_execution",
           "examples": ["run downloaded script", "source unknown env", "execute unknown postinstall"],
           "reason": "Third-party execution requires isolation, scan, and review."
@@ -193,6 +213,7 @@
       "If action_class matches forbidden, stop.",
       "If action_class is commit_push_deploy, stop at commit plan or draft patch; actual commit must be reclassified as worktree_commit_gate, and push/deploy require explicit Vincent approval.",
       "If action_class is worktree_commit_gate, require the full worktree-commit evidence bundle and explicit Vincent confirmation before git commit runs.",
+      "If action_class is git_isolation_mutation, require the full MW-GIT-AUTH-01 evidence bundle before branch/worktree creation or switching.",
       "If action_class matches approval_required or recommendation.requires_approval is true, request Vincent approval.",
       "If action_class matches allowed and evidence is sufficient, proceed only inside the active task scope.",
       "If no rule matches, default to approval_required."

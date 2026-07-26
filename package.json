@@ -21,6 +21,7 @@
     "test:skills": "node scripts/verify-validate-skills.mjs && node scripts/validate-skills.mjs --changed-only",
     "test:tasks": "node scripts/verify-validate-tasks.mjs && node scripts/validate-tasks.mjs --changed-only",
     "test:work-anchor-preflight": "node scripts/verify-work-anchor-preflight.mjs",
+    "test:git-isolation-approval": "node scripts/verify-explicit-git-isolation-approval.mjs",
     "test:required-publish-flow": "node scripts/verify-required-publish-flow.mjs",
     "test:hc-framing-gate": "node scripts/verify-hc-framing-gate.mjs",
     "test:morrowise-schema": "node scripts/verify-morrowise-system-schema.mjs",

@@ -2,7 +2,8 @@
 
 > Task: `morrowise-approval-policy` (`MC-LIVE-18`)
 > Status: formal policy
-> Updated: 2026-06-21
+> Contract: `MW-GIT-AUTH-01`
+> Updated: 2026-07-27
 > Machine-readable policy: `$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json`
 > Upstream: `morrowise-recommendation-engine-v0`
 
@@ -45,6 +46,7 @@ OpenClaw is historical source material only. The active policy is `$COLLAB` cent
 5. Anything that leaves the machine, writes to an external service, submits a browser form, sends a message/email/post, or changes shared automation requires explicit approval.
 6. A runner may produce a commit plan or draft patch only. Actual `git commit` must go through the `worktree-commit` confirmation gate. `push` and `deploy` require explicit Vincent approval.
 7. `worktree-commit` is the only approved local commit gate. It is not just a recommendation label; it requires dirty-tree scan, per-file diff review, logical commit grouping, 4C review, path policy check, explicit Vincent confirmation, commit execution, and task-state/event follow-up.
+8. Creating or switching a Git branch or linked worktree is an approval-required mutation. Dirty files, concurrent work, verification, or an implementation plan never substitute for exact Vincent approval.
 
 For MorroWise semantic task writes, approval evidence is recorded inside the latest `semantic_intake`; `reuse` remains read-only. Selecting, reframing, suspending, cancelling, or completing the single `weekly_core` slot requires a separate `weekly_core_review` approval record. An arrived review date cannot be extended by silence, scheduler behavior, or an unapproved date edit.
 
@@ -73,6 +75,7 @@ Approval-required actions must stop and show the exact intended action, evidence
 | `third_party_repo_skill_intake` | Install skill, copy repo into workspace, add unknown dependency. | Isolation path, security-scan verdict, L1-L4 review, source/license notes. |
 | `commit_push_deploy` | Git commit, push, deploy, release. Runner may only produce a commit plan or draft patch. | Staged paths, diff summary, verification output, message, path check. |
 | `worktree_commit_gate` | Run the `worktree-commit` process for a proposed commit. | Repo, task id, dirty-tree scan, grouped scope, full diff review, 4C review, verification output, path policy check, commit message, Vincent confirmation. |
+| `git_isolation_mutation` | Create/switch a branch; add/switch a linked worktree; run an equivalent script. | Exact Vincent approval, repo/task, branch/worktree name and path, target main, full lifecycle and cleanup plan. |
 | `visual_layer_overwrite_or_reverse_sync` | Overwrite Canvas, refresh Heptabase, use visual layer to edit task state. | Canonical source, mirror destination, manual edit risk check. |
 | `browser_submit_or_message` | Submit form, send message/email, payment, account deletion, OAuth approval. | Screenshot/page state, exact action, account/session context, risk. |
 
@@ -87,6 +90,7 @@ Forbidden actions are hard stops for recommendation engine and runner.
 | `reverse_write_from_visual_or_chat` | Heptabase/Canvas/screenshot/chat to canonical task state. | MC task state owns truth. |
 | `destructive_without_recovery` | `rm -rf`, bulk delete, account delete, discard data without backup. | Every step must be recoverable. |
 | `history_rewrite_without_explicit_request` | `git reset --hard`, force push, rebase published branch, delete branch with unmerged work. | History is evidence and collaboration context. |
+| `autonomous_git_isolation` | Create or switch a branch/worktree from Agent judgment, preflight output, dirty files, concurrency, or verification alone. | Only Vincent can authorize Git isolation; authorization must include integration and cleanup. |
 | `unreviewed_third_party_execution` | Run downloaded script, source unknown env, execute unknown postinstall. | Third-party code requires isolation, scan, and review. |
 
 ## Runner Gate
@@ -96,9 +100,10 @@ The future runner must evaluate action candidates in this order:
 1. If the action class matches `forbidden`, stop.
 2. If the action class is `commit_push_deploy`, stop at commit plan or draft patch. Actual commit must be reclassified as `worktree_commit_gate`; push/deploy remain `commit_push_deploy` and require explicit Vincent approval.
 3. If the action class is `worktree_commit_gate`, require the full `worktree-commit` evidence bundle and Vincent confirmation before any `git commit` runs.
-4. If the action class matches `approval_required`, or the recommendation says `requires_approval: true`, request Vincent approval.
-5. If the action class matches `allowed`, proceed only inside the active task scope.
-6. If no rule matches, default to `approval_required`.
+4. If the action class is `git_isolation_mutation`, require `MW-GIT-AUTH-01` evidence before any branch/worktree creation or switching.
+5. If the action class matches `approval_required`, or the recommendation says `requires_approval: true`, request Vincent approval.
+6. If the action class matches `allowed`, proceed only inside the active task scope.
+7. If no rule matches, default to `approval_required`.
 
 Required runner input:
 
@@ -124,6 +129,8 @@ The verifier checks:
 - forbidden classes include secrets, reverse visual/chat writes, destructive work, history rewrite, and unreviewed third-party execution;
 - approval-required classes include task state, memory, schedule, external sync/write, third-party intake, commit/push/deploy, visual-layer overwrite, and browser submit/message;
 - `worktree_commit_gate` exists as an approval-required class and requires the `worktree-commit` 4C evidence bundle;
+- `git_isolation_mutation` requires exact Vincent approval, target `main`, and cleanup evidence;
+- autonomous branch/worktree creation or switching is forbidden;
 - the runner default policy is `approval_required`;
 - no shared policy file uses hard-coded local `$COLLAB` absolute paths.
 

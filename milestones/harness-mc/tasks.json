@@ -2325,8 +2325,76 @@
           "npm run build",
           "fresh-session E2E：無 task id 與多 Agent 得到同一候選或拒絕理由"
         ],
-        "stop_condition": "priority read model、trusted heartbeat 或 daily decision 未通過各自 verifier 時停止；不得直接讀 tasks.json、fixture 或舊 dashboard read model，不得寫回 task state 或自行 commit／push／部署。"
+        "stop_condition": "priority read model、trusted heartbeat 或 daily decision 未通過各自 verifier 時停止；不得直接讀 tasks.json、fixture 或舊 dashboard read model，不得寫回 task state 或自行 commit／push／部署。",
+        "dependency_gates": {
+          "start_requires": [
+            "action-priority-read-model-v2"
+          ],
+          "completion_requires": [
+            "action-priority-read-model-v2",
+            "trusted-heartbeat-runtime-v1",
+            "morrowise-live-decision-loop-v1"
+          ]
+        },
+        "review_window": {
+          "kind": "planning_checkpoint",
+          "planned_review_date": "2026-08-05",
+          "trigger": [
+            "planned review date reached",
+            "dependency gate changed",
+            "estimate or acceptance scope changed"
+          ],
+          "review_owner": "harness-mc/morrowise-priority-dashboard-surface-v2",
+          "allowed_outcomes": [
+            "retain",
+            "reframe",
+            "defer"
+          ],
+          "enforcement": "informational_only",
+          "does_not_change_weekly_core": true,
+          "basis": "依 critical path、start/completion dependencies 與 estimated_hours 安排下一個人工規劃檢查點。"
+        }
       },
+      "estimated_hours": 24,
+      "acceptance_matrix": [
+        {
+          "id": "SURF2-P2-01",
+          "what": "Surface 只在 Action Priority contract 通過後開始，並只讀唯一 priority read model。",
+          "preconditions": [
+            "action-priority-read-model-v2 通過",
+            "MC-DASH-V2 IA 與真實 route contract 已核准"
+          ],
+          "steps": [
+            "開啟繁中首頁及五個下鑽 route",
+            "核對 candidate、reason、dependency、freshness、daily decision 與 replacement lineage"
+          ],
+          "pass_condition": "首頁及五個 route 均只讀相同 read model，missing／stale／degraded 有可見拒絕理由。",
+          "fail_condition": "直接拼讀 tasks.json、fixture、舊 mirror、硬編 fallback 或反寫 task state。",
+          "verification": [
+            "npm run test:morrowise-priority-dashboard-surface",
+            "npm run build"
+          ]
+        },
+        {
+          "id": "SURF2-P2-02",
+          "what": "Surface 只有在 Priority、Heartbeat 與 Daily Decision 完成條件通過後才可完成。",
+          "preconditions": [
+            "action-priority-read-model-v2 通過",
+            "trusted-heartbeat-runtime-v1 通過",
+            "morrowise-live-decision-loop-v1 通過"
+          ],
+          "steps": [
+            "執行任一上游 missing／failed／stale case",
+            "執行三個上游皆通過的 fresh-session case"
+          ],
+          "pass_condition": "任一上游不可信即停止；全部可信時多 Agent 得到相同候選或拒絕理由。",
+          "fail_condition": "缺 Heartbeat 或 Daily Decision 仍完成，或不同 session／Agent 顯示不同結果。",
+          "verification": [
+            "npm run test:morrowise-priority-dashboard-surface",
+            "fresh-session E2E：無 task id 與多 Agent 得到相同候選或拒絕理由"
+          ]
+        }
+      ],
       "test_contract": {
         "applicability": "required",
         "behavior_cases": [
@@ -2419,7 +2487,41 @@
               ]
             }
           }
-        }]
+        },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准依最終 P2 合約補齊既有工作包；本次只補 execution contract、start/completion dependency gates、review control、estimated hours 與正式 Acceptance Matrix，不執行 P3 實作或 evidence，不新增 task、tracker、registry、scheduler 或 daily loop。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/morrowise-phase2-handoff-2026-07-26.md",
+              "Vincent 2026-07-26 current session: 可以進行補寫 task"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/action-priority-read-model-v2",
+                "morrowise/morrowise-live-decision-loop-v1"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有工作包所擁有的問題；P2 僅把已核准的執行設計補成可判定合約，不建立新問題或新 task。",
+                "owner_source_of_truth": "既有 owner 與 canonical tasks.json ownership 不變；implementation/runtime/generated sources 保持各自既有 authority。",
+                "inputs_outputs": "既有 inputs/outputs 不變；新增 dependency gates、review control、工時與 Acceptance Matrix 只將原 acceptance 結構化。",
+                "lifecycle_completion": "Task status 不變；P2 合約完成不代表 P3 實作、runtime evidence、fresh build、Architecture Admission 或 skill 已完成。"
+              },
+              "decision_reason": "八個 canonical task 已完整承接全部工作包，故 outcome=amend；依最終 P2 合約禁止新增 task 或平行 planning system。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
+            }
+          }
+        ]
       },
       "hc_decision": {
         "task_scope": "harness-mc/morrowise-priority-dashboard-surface-v2",

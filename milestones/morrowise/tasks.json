@@ -3200,8 +3200,93 @@
           "npm run test:morrowise-documentation-sync",
           "node scripts/verify-morrowise-documentation-health.mjs"
         ],
-        "stop_condition": "任一 source coverage、cross-repo sync、host/runtime evidence 或安全 read boundary 未通過時停止；不得手改 generated ARCHITECTURE.md、human/、task state、commit 或 push。"
+        "stop_condition": "任一 source coverage、cross-repo sync、host/runtime evidence 或安全 read boundary 未通過時停止；不得手改 generated ARCHITECTURE.md、human/、task state、commit 或 push。",
+        "dependency_gates": {
+          "start_requires": [
+            "task-lifecycle-jv32-gate"
+          ],
+          "completion_requires": [
+            "trusted-heartbeat-runtime-v1"
+          ],
+          "staged_dependencies": [
+            {
+              "stage": "R1-R4",
+              "start_requires": [
+                "task-lifecycle-jv32-gate"
+              ],
+              "completion_requires": []
+            },
+            {
+              "stage": "R5",
+              "start_requires": [
+                "R1-R4",
+                "trusted-heartbeat-runtime-v1"
+              ],
+              "completion_requires": [
+                "R1-R4",
+                "trusted-heartbeat-runtime-v1"
+              ]
+            }
+          ]
+        },
+        "review_window": {
+          "kind": "planning_checkpoint",
+          "planned_review_date": "2026-08-03",
+          "trigger": [
+            "planned review date reached",
+            "dependency gate changed",
+            "estimate or acceptance scope changed"
+          ],
+          "review_owner": "morrowise/document-source-registry-and-human-sync",
+          "allowed_outcomes": [
+            "retain",
+            "reframe",
+            "defer"
+          ],
+          "enforcement": "informational_only",
+          "does_not_change_weekly_core": true,
+          "basis": "依 critical path、start/completion dependencies 與 estimated_hours 安排下一個人工規劃檢查點。"
+        }
       },
+      "estimated_hours": 40,
+      "acceptance_matrix": [
+        {
+          "id": "JV36-P2-01",
+          "what": "R1–R4 只在 JV-40 gate ready 後建立 registry、schema、generator 與 diff gate。",
+          "preconditions": [
+            "task-lifecycle-jv32-gate 通過",
+            "Document Registry 與 Architecture Admission ownership 分離"
+          ],
+          "steps": [
+            "執行 registry/schema/generator/diff negative fixtures",
+            "核對 canonical source、generated targets 與 cross-repo lineage"
+          ],
+          "pass_condition": "R1–R4 outputs 可重跑且 deterministic，所有 source 與 generated target 可追溯。",
+          "fail_condition": "缺 JV-40 gate 即執行、掃檔自行推論 authority、或 generated output 成為第二正本。",
+          "verification": [
+            "node scripts/verify-morrowise-document-sources.mjs",
+            "node scripts/generate-morrowise-documentation.mjs --check"
+          ]
+        },
+        {
+          "id": "JV36-P2-02",
+          "what": "R5 文件健檢只在 R1–R4 與 Trusted Heartbeat 通過後執行。",
+          "preconditions": [
+            "JV36 R1–R4 通過",
+            "trusted-heartbeat-runtime-v1 通過"
+          ],
+          "steps": [
+            "執行 healthy、degraded、blocked、unknown 與 stale runtime cases",
+            "核對報告先落盤、exit mapping、freshness 與 read-only boundary"
+          ],
+          "pass_condition": "R5 只檢查與報告，狀態及 exit code 固定且不在背景修改文件或 task。",
+          "fail_condition": "缺任一上游仍完成、報告未落盤即 exit，或健檢背景改寫 canonical source。",
+          "verification": [
+            "node scripts/verify-morrowise-documentation-health.mjs",
+            "node scripts/run-morrowise-documentation-health.mjs"
+          ]
+        }
+      ],
       "test_contract": {
         "applicability": "required",
         "behavior_cases": [
@@ -3351,7 +3436,40 @@
               ]
             }
           }
-        }
+        },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准依最終 P2 合約補齊既有工作包；本次只補 execution contract、start/completion dependency gates、review control、estimated hours 與正式 Acceptance Matrix，不執行 P3 實作或 evidence，不新增 task、tracker、registry、scheduler 或 daily loop。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/morrowise-phase2-handoff-2026-07-26.md",
+              "Vincent 2026-07-26 current session: 可以進行補寫 task"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/trusted-heartbeat-runtime-v1"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有工作包所擁有的問題；P2 僅把已核准的執行設計補成可判定合約，不建立新問題或新 task。",
+                "owner_source_of_truth": "既有 owner 與 canonical tasks.json ownership 不變；implementation/runtime/generated sources 保持各自既有 authority。",
+                "inputs_outputs": "既有 inputs/outputs 不變；新增 dependency gates、review control、工時與 Acceptance Matrix 只將原 acceptance 結構化。",
+                "lifecycle_completion": "Task status 不變；P2 合約完成不代表 P3 實作、runtime evidence、fresh build、Architecture Admission 或 skill 已完成。"
+              },
+              "decision_reason": "八個 canonical task 已完整承接全部工作包，故 outcome=amend；依最終 P2 合約禁止新增 task 或平行 planning system。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
+            }
+          }
         ]
       },
       "hc_decision": {
@@ -3731,6 +3849,70 @@
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
         "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py"
       ],
+      "execution_contract": {
+        "owner": "morrowise/task-lifecycle-jv32-gate",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate",
+        "inputs": [
+          "Canonical task 的 mutation 前後狀態、operation 與 semantic intake",
+          "JV-32 catalog、task lifecycle spec/schema、approval policy 與 verifier evidence",
+          "Test contract、runtime boundary、commit accounting 與 Vincent 明確核准"
+        ],
+        "outputs": [
+          "Completion evidence schema、changed-only validator 與正反 fixtures",
+          "單一 JV-32 task lifecycle admission／拒絕判定與可追溯 evidence route"
+        ],
+        "verifiers": [
+          "node scripts/verify-validate-tasks.mjs",
+          "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+          "node scripts/verify-work-anchor-preflight.mjs"
+        ],
+        "stop_condition": "任一 lifecycle route、semantic intake、test contract、runtime boundary、approval 或 completion evidence 不完整時停止；不得建立第二套 task system、背景修改 canonical state、自動 commit、push 或延長 review_date。",
+        "dependency_gates": {
+          "start_requires": [
+            "morrowise-dev-workflow-catalog"
+          ],
+          "completion_requires": []
+        },
+        "review_window": {
+          "kind": "planning_checkpoint",
+          "planned_review_date": "2026-07-29",
+          "trigger": [
+            "planned review date reached",
+            "dependency gate changed",
+            "estimate or acceptance scope changed"
+          ],
+          "review_owner": "morrowise/task-lifecycle-jv32-gate",
+          "allowed_outcomes": [
+            "retain",
+            "reframe",
+            "defer"
+          ],
+          "enforcement": "informational_only",
+          "does_not_change_weekly_core": true,
+          "basis": "依 critical path、start/completion dependencies 與 estimated_hours 安排下一個人工規劃檢查點。"
+        }
+      },
+      "estimated_hours": 8,
+      "acceptance_matrix": [
+        {
+          "id": "JV40-P2-01",
+          "what": "Completion evidence contract 能拒絕不完整 task lifecycle evidence。",
+          "preconditions": [
+            "JV-32 dev workflow catalog 維持可驗證",
+            "task lifecycle schema、spec 與 validator 為 canonical contract"
+          ],
+          "steps": [
+            "執行缺 lifecycle route、history、test contract 與 completion evidence 的負向 fixtures",
+            "執行完整合法 fixture"
+          ],
+          "pass_condition": "所有負向 fixtures 以預期理由失敗，合法 fixture 通過，且未建立第二套 task system。",
+          "fail_condition": "任一缺證據 fixture 通過、合法 fixture 失敗，或 validator 改寫 canonical task state。",
+          "verification": [
+            "node scripts/verify-validate-tasks.mjs",
+            "node scripts/verify-morrowise-dev-workflow-catalog.mjs"
+          ]
+        }
+      ],
       "test_contract": {
         "applicability": "required",
         "behavior_cases": [
@@ -4027,6 +4209,39 @@
                 "lifecycle_completion": "JV-40 維持 in_progress；只有 schema／validator／fixtures／Admission Review 與完整 regression 通過後才可完成。"
               },
               "decision_reason": "比對 owner 與完成邊界後，JV-32 可 reuse；completion gate 的唯一正確 mutation 是 amend active JV-40。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准依最終 P2 合約補齊既有工作包；本次只補 execution contract、start/completion dependency gates、review control、estimated hours 與正式 Acceptance Matrix，不執行 P3 實作或 evidence，不新增 task、tracker、registry、scheduler 或 daily loop。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/morrowise-phase2-handoff-2026-07-26.md",
+              "Vincent 2026-07-26 current session: 可以進行補寫 task"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-dev-workflow-catalog",
+                "morrowise/action-priority-read-model-v2"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有工作包所擁有的問題；P2 僅把已核准的執行設計補成可判定合約，不建立新問題或新 task。",
+                "owner_source_of_truth": "既有 owner 與 canonical tasks.json ownership 不變；implementation/runtime/generated sources 保持各自既有 authority。",
+                "inputs_outputs": "既有 inputs/outputs 不變；新增 dependency gates、review control、工時與 Acceptance Matrix 只將原 acceptance 結構化。",
+                "lifecycle_completion": "Task status 不變；P2 合約完成不代表 P3 實作、runtime evidence、fresh build、Architecture Admission 或 skill 已完成。"
+              },
+              "decision_reason": "八個 canonical task 已完整承接全部工作包，故 outcome=amend；依最終 P2 合約禁止新增 task 或平行 planning system。",
               "approval": {
                 "status": "approved",
                 "approved_by": "Vincent",
@@ -4442,8 +4657,55 @@
           "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
           "closeout negative fixtures：未核准不得寫入或安裝 skill"
         ],
-        "stop_condition": "沒有兩次獨立成功、穩定 input／output／verifier，或 Vincent 未核准時停止在 observe／not_applicable；不得建立、修改、安裝 skill 或新增排程。"
+        "stop_condition": "沒有兩次獨立成功、穩定 input／output／verifier，或 Vincent 未核准時停止在 observe／not_applicable；不得建立、修改、安裝 skill 或新增排程。",
+        "dependency_gates": {
+          "start_requires": [
+            "morrowise-phase3-fresh-session-e2e-admission"
+          ],
+          "completion_requires": [
+            "morrowise-phase3-fresh-session-e2e-admission"
+          ]
+        },
+        "review_window": {
+          "kind": "planning_checkpoint",
+          "planned_review_date": "2026-08-07",
+          "trigger": [
+            "planned review date reached",
+            "dependency gate changed",
+            "estimate or acceptance scope changed"
+          ],
+          "review_owner": "morrowise/skill-candidate-review-gate",
+          "allowed_outcomes": [
+            "retain",
+            "reframe",
+            "defer"
+          ],
+          "enforcement": "informational_only",
+          "does_not_change_weekly_core": true,
+          "basis": "依 critical path、start/completion dependencies 與 estimated_hours 安排下一個人工規劃檢查點。"
+        }
       },
+      "estimated_hours": 4,
+      "acceptance_matrix": [
+        {
+          "id": "JV41-P2-01",
+          "what": "JV-41 只在 Final Admission 通過後輸出 skill candidate 提醒。",
+          "preconditions": [
+            "morrowise-phase3-fresh-session-e2e-admission completed",
+            "至少兩次獨立成功與穩定 input／output／verifier 已定義"
+          ],
+          "steps": [
+            "執行 Final Admission 未通過、成功不足與完整候選 cases",
+            "核對 not_applicable／observe／create_skill／update_skill 建議"
+          ],
+          "pass_condition": "只輸出可追溯提醒，沒有自動建立、修改、安裝 skill 或新增排程。",
+          "fail_condition": "Final Admission 前啟動，或任何 case 自動修改 skill／scheduler／task state。",
+          "verification": [
+            "node scripts/verify-skill-candidate-review-gate.mjs",
+            "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+          ]
+        }
+      ],
       "test_contract": {
         "applicability": "required",
         "behavior_cases": [
@@ -4546,7 +4808,40 @@
               ]
             }
           }
-        }
+        },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准依最終 P2 合約補齊既有工作包；本次只補 execution contract、start/completion dependency gates、review control、estimated hours 與正式 Acceptance Matrix，不執行 P3 實作或 evidence，不新增 task、tracker、registry、scheduler 或 daily loop。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/morrowise-phase2-handoff-2026-07-26.md",
+              "Vincent 2026-07-26 current session: 可以進行補寫 task"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-phase3-fresh-session-e2e-admission",
+                "morrowise/morrowise-dev-workflow-catalog"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有工作包所擁有的問題；P2 僅把已核准的執行設計補成可判定合約，不建立新問題或新 task。",
+                "owner_source_of_truth": "既有 owner 與 canonical tasks.json ownership 不變；implementation/runtime/generated sources 保持各自既有 authority。",
+                "inputs_outputs": "既有 inputs/outputs 不變；新增 dependency gates、review control、工時與 Acceptance Matrix 只將原 acceptance 結構化。",
+                "lifecycle_completion": "Task status 不變；P2 合約完成不代表 P3 實作、runtime evidence、fresh build、Architecture Admission 或 skill 已完成。"
+              },
+              "decision_reason": "八個 canonical task 已完整承接全部工作包，故 outcome=amend；依最終 P2 合約禁止新增 task 或平行 planning system。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
+            }
+          }
         ]
       },
       "hc_decision": {
@@ -4987,8 +5282,56 @@
           "npm run test:schedule-health",
           "fresh single-repo build 與真實／stale／missing-runtime 正負向 fixtures"
         ],
-        "stop_condition": "缺真實 machine/runtime evidence、僅有 fixture 或 scheduler 未載入時停止並標 degraded／blocked；不得新建 scheduler、通知通道或自動延長 task。"
+        "stop_condition": "缺真實 machine/runtime evidence、僅有 fixture 或 scheduler 未載入時停止並標 degraded／blocked；不得新建 scheduler、通知通道或自動延長 task。",
+        "dependency_gates": {
+          "start_requires": [
+            "task-lifecycle-jv32-gate"
+          ],
+          "completion_requires": [
+            "runtime-scheduler-v0",
+            "system-pulse-schedule-task"
+          ]
+        },
+        "review_window": {
+          "kind": "planning_checkpoint",
+          "planned_review_date": "2026-07-30",
+          "trigger": [
+            "planned review date reached",
+            "dependency gate changed",
+            "estimate or acceptance scope changed"
+          ],
+          "review_owner": "morrowise/trusted-heartbeat-runtime-v1",
+          "allowed_outcomes": [
+            "retain",
+            "reframe",
+            "defer"
+          ],
+          "enforcement": "informational_only",
+          "does_not_change_weekly_core": true,
+          "basis": "依 critical path、start/completion dependencies 與 estimated_hours 安排下一個人工規劃檢查點。"
+        }
       },
+      "estimated_hours": 12,
+      "acceptance_matrix": [
+        {
+          "id": "THB1-P2-01",
+          "what": "Heartbeat contract 能以安全真實 probe 判定 freshness 與 degraded 狀態。",
+          "preconditions": [
+            "既有 scheduler 可安全沿用",
+            "Safe metadata probe 與受限 run evidence boundary 已定義"
+          ],
+          "steps": [
+            "執行 loaded、unloaded、missing、stale 與 fixture-only cases",
+            "核對 freshness、status、degraded reason 與 write boundary"
+          ],
+          "pass_condition": "只有真實且新鮮 evidence 可標 verified；其他情況固定映射為 degraded／blocked。",
+          "fail_condition": "以 plist-only、fixture-only、秘密值或未載入 scheduler 假綠燈。",
+          "verification": [
+            "node scripts/verify-trusted-heartbeat-runtime-v1.mjs",
+            "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+          ]
+        }
+      ],
       "test_contract": {
         "applicability": "required",
         "behavior_cases": [
@@ -5116,7 +5459,41 @@
               ]
             }
           }
-        }]
+        },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准依最終 P2 合約補齊既有工作包；本次只補 execution contract、start/completion dependency gates、review control、estimated hours 與正式 Acceptance Matrix，不執行 P3 實作或 evidence，不新增 task、tracker、registry、scheduler 或 daily loop。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/morrowise-phase2-handoff-2026-07-26.md",
+              "Vincent 2026-07-26 current session: 可以進行補寫 task"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/runtime-scheduler-v0",
+                "morrowise/system-pulse-schedule-task"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有工作包所擁有的問題；P2 僅把已核准的執行設計補成可判定合約，不建立新問題或新 task。",
+                "owner_source_of_truth": "既有 owner 與 canonical tasks.json ownership 不變；implementation/runtime/generated sources 保持各自既有 authority。",
+                "inputs_outputs": "既有 inputs/outputs 不變；新增 dependency gates、review control、工時與 Acceptance Matrix 只將原 acceptance 結構化。",
+                "lifecycle_completion": "Task status 不變；P2 合約完成不代表 P3 實作、runtime evidence、fresh build、Architecture Admission 或 skill 已完成。"
+              },
+              "decision_reason": "八個 canonical task 已完整承接全部工作包，故 outcome=amend；依最終 P2 合約禁止新增 task 或平行 planning system。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
+            }
+          }
+        ]
       },
       "hc_decision": {
         "task_scope": "morrowise/trusted-heartbeat-runtime-v1",
@@ -5169,8 +5546,37 @@
           "node scripts/validate-tasks.mjs --changed-only --project morrowise",
           "fresh-session／多 Agent deterministic selection fixture"
         ],
-        "stop_condition": "任一 canonical input、freshness 或 verifier evidence 不足時停止在 blocked／degraded；不得寫 task state、實作 UI、啟動 daily loop、調整 weekly core 或自動 closeout。"
+        "stop_condition": "任一 canonical input、freshness 或 verifier evidence 不足時停止在 blocked／degraded；不得寫 task state、實作 UI、啟動 daily loop、調整 weekly core 或自動 closeout。",
+        "dependency_gates": {
+          "start_requires": [
+            "task-lifecycle-jv32-gate"
+          ],
+          "completion_requires": [
+            "task-lifecycle-jv32-gate"
+          ]
+        }
       },
+      "estimated_hours": 16,
+      "acceptance_matrix": [
+        {
+          "id": "APV2-P2-01",
+          "what": "Priority read model contract 對相同 canonical input 產生 deterministic 候選或拒絕理由。",
+          "preconditions": [
+            "JV-40 gate ready",
+            "Canonical MorroWise tasks、dependency、weekly core 與 freshness inputs 可讀"
+          ],
+          "steps": [
+            "執行相同 input、多候選、blocked、stale 與 missing verifier fixtures",
+            "比較候選、priority reason、blocked reason 與 next action"
+          ],
+          "pass_condition": "相同 input 得到相同結果；不可信 input 明確 blocked／degraded，且輸出維持 read-only。",
+          "fail_condition": "結果依 session 改變、fixture 假綠燈、來源不可追溯或輸出反寫 task state。",
+          "verification": [
+            "node scripts/verify-action-priority-read-model-v2.mjs",
+            "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+          ]
+        }
+      ],
       "test_contract": {
         "applicability": "required",
         "behavior_cases": [
@@ -5316,7 +5722,41 @@
               ]
             }
           }
-        }]
+        },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准依最終 P2 合約補齊既有工作包；本次只補 execution contract、start/completion dependency gates、review control、estimated hours 與正式 Acceptance Matrix，不執行 P3 實作或 evidence，不新增 task、tracker、registry、scheduler 或 daily loop。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/morrowise-phase2-handoff-2026-07-26.md",
+              "Vincent 2026-07-26 current session: 可以進行補寫 task"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/morrowise-system-json-generator-v0"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有工作包所擁有的問題；P2 僅把已核准的執行設計補成可判定合約，不建立新問題或新 task。",
+                "owner_source_of_truth": "既有 owner 與 canonical tasks.json ownership 不變；implementation/runtime/generated sources 保持各自既有 authority。",
+                "inputs_outputs": "既有 inputs/outputs 不變；新增 dependency gates、review control、工時與 Acceptance Matrix 只將原 acceptance 結構化。",
+                "lifecycle_completion": "Task status 不變；P2 合約完成不代表 P3 實作、runtime evidence、fresh build、Architecture Admission 或 skill 已完成。"
+              },
+              "decision_reason": "八個 canonical task 已完整承接全部工作包，故 outcome=amend；依最終 P2 合約禁止新增 task 或平行 planning system。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
+            }
+          }
+        ]
       },
       "hc_decision": {
         "task_scope": "morrowise/action-priority-read-model-v2",
@@ -5368,8 +5808,57 @@
           "fresh-session／多 Agent selection fixture",
           "真實 runtime evidence 與 cancelled Reality Tax replacement lineage check"
         ],
-        "stop_condition": "priority 或 heartbeat 未 verified、runtime stale／missing、或 replacement lineage 不完整時停止並輸出 blocked／degraded；不得寫 task lifecycle、排程、外部通知、commit、push 或部署。"
+        "stop_condition": "priority 或 heartbeat 未 verified、runtime stale／missing、或 replacement lineage 不完整時停止並輸出 blocked／degraded；不得寫 task lifecycle、排程、外部通知、commit、push 或部署。",
+        "dependency_gates": {
+          "start_requires": [
+            "action-priority-read-model-v2",
+            "trusted-heartbeat-runtime-v1"
+          ],
+          "completion_requires": [
+            "action-priority-read-model-v2",
+            "trusted-heartbeat-runtime-v1"
+          ]
+        },
+        "review_window": {
+          "kind": "planning_checkpoint",
+          "planned_review_date": "2026-08-04",
+          "trigger": [
+            "planned review date reached",
+            "dependency gate changed",
+            "estimate or acceptance scope changed"
+          ],
+          "review_owner": "morrowise/morrowise-live-decision-loop-v1",
+          "allowed_outcomes": [
+            "retain",
+            "reframe",
+            "defer"
+          ],
+          "enforcement": "informational_only",
+          "does_not_change_weekly_core": true,
+          "basis": "依 critical path、start/completion dependencies 與 estimated_hours 安排下一個人工規劃檢查點。"
+        }
       },
+      "estimated_hours": 12,
+      "acceptance_matrix": [
+        {
+          "id": "DDV1-P2-01",
+          "what": "Daily Decision contract 只產生唯一、read-only、可追溯的每日決策。",
+          "preconditions": [
+            "Action Priority v2 通過",
+            "Trusted Heartbeat v1 通過"
+          ],
+          "steps": [
+            "執行 priority verified／blocked 與 heartbeat verified／degraded 組合",
+            "核對 action、reason、freshness、replacement lineage 與 next action"
+          ],
+          "pass_condition": "相同 input 得到相同每日決策；不可信 evidence 明確拒絕，且沒有第二 scheduler 或 task writer。",
+          "fail_condition": "自動延期、背景改 task state、建立平行 daily loop，或 missing evidence 仍輸出 accepted。",
+          "verification": [
+            "node scripts/verify-morrowise-live-decision-loop-v1.mjs",
+            "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+          ]
+        }
+      ],
       "test_contract": {
         "applicability": "required",
         "behavior_cases": [
@@ -5496,7 +5985,41 @@
               ]
             }
           }
-        }]
+        },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准依最終 P2 合約補齊既有工作包；本次只補 execution contract、start/completion dependency gates、review control、estimated hours 與正式 Acceptance Matrix，不執行 P3 實作或 evidence，不新增 task、tracker、registry、scheduler 或 daily loop。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/morrowise-phase2-handoff-2026-07-26.md",
+              "Vincent 2026-07-26 current session: 可以進行補寫 task"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/action-priority-read-model-v2",
+                "morrowise/trusted-heartbeat-runtime-v1"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有工作包所擁有的問題；P2 僅把已核准的執行設計補成可判定合約，不建立新問題或新 task。",
+                "owner_source_of_truth": "既有 owner 與 canonical tasks.json ownership 不變；implementation/runtime/generated sources 保持各自既有 authority。",
+                "inputs_outputs": "既有 inputs/outputs 不變；新增 dependency gates、review control、工時與 Acceptance Matrix 只將原 acceptance 結構化。",
+                "lifecycle_completion": "Task status 不變；P2 合約完成不代表 P3 實作、runtime evidence、fresh build、Architecture Admission 或 skill 已完成。"
+              },
+              "decision_reason": "八個 canonical task 已完整承接全部工作包，故 outcome=amend；依最終 P2 合約禁止新增 task 或平行 planning system。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
+            }
+          }
+        ]
       },
       "hc_decision": {
         "task_scope": "morrowise/morrowise-live-decision-loop-v1",
@@ -5564,8 +6087,63 @@
           "npm run test:architecture-subsystems",
           "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
         ],
-        "stop_condition": "任一上游 task、test contract、真實 runtime、route、fresh build、Admission Record 或跨 repo sync evidence 缺失／stale／failed 時停止並維持 todo／blocked；不得以 fixture 補綠、背景修改 task、建立 skill、commit、push 或部署。"
+        "stop_condition": "任一上游 task、test contract、真實 runtime、route、fresh build、Admission Record 或跨 repo sync evidence 缺失／stale／failed 時停止並維持 todo／blocked；不得以 fixture 補綠、背景修改 task、建立 skill、commit、push 或部署。",
+        "dependency_gates": {
+          "start_requires": [
+            "action-priority-read-model-v2",
+            "trusted-heartbeat-runtime-v1",
+            "document-source-registry-and-human-sync",
+            "morrowise-live-decision-loop-v1",
+            "morrowise-priority-dashboard-surface-v2"
+          ],
+          "completion_requires": [
+            "action-priority-read-model-v2",
+            "trusted-heartbeat-runtime-v1",
+            "document-source-registry-and-human-sync",
+            "morrowise-live-decision-loop-v1",
+            "morrowise-priority-dashboard-surface-v2"
+          ]
+        },
+        "review_window": {
+          "kind": "planning_checkpoint",
+          "planned_review_date": "2026-08-06",
+          "trigger": [
+            "planned review date reached",
+            "dependency gate changed",
+            "estimate or acceptance scope changed"
+          ],
+          "review_owner": "morrowise/morrowise-phase3-fresh-session-e2e-admission",
+          "allowed_outcomes": [
+            "retain",
+            "reframe",
+            "defer"
+          ],
+          "enforcement": "informational_only",
+          "does_not_change_weekly_core": true,
+          "basis": "依 critical path、start/completion dependencies 與 estimated_hours 安排下一個人工規劃檢查點。"
+        }
       },
+      "estimated_hours": 12,
+      "acceptance_matrix": [
+        {
+          "id": "ADM-P2-01",
+          "what": "Final Admission contract 只在三條交付線完成後接受 fresh-session E2E。",
+          "preconditions": [
+            "Action Priority、Trusted Heartbeat、JV-36、Daily Decision 與 Surface 均完成",
+            "Fresh build、runtime 與 Architecture Admission evidence boundaries 已定義"
+          ],
+          "steps": [
+            "執行 missing upstream、fixture-only runtime、Agent mismatch 與 stale admission cases",
+            "執行所有上游及真實 evidence 完整 case"
+          ],
+          "pass_condition": "只有所有上游與 admission evidence 通過時 accepted；結果 deterministic 且可追溯。",
+          "fail_condition": "局部綠燈即接受、fixture 補綠、不同 Agent 結果不一致或建立第二份狀態正本。",
+          "verification": [
+            "node scripts/verify-morrowise-phase3-e2e-admission.mjs",
+            "npm run test:architecture-subsystems"
+          ]
+        }
+      ],
       "test_contract": {
         "applicability": "required",
         "behavior_cases": [
@@ -5641,6 +6219,39 @@
                 "lifecycle_completion": "只有上游全部完成、真實 runtime、fresh-session／多 Agent、fresh build、Architecture Admission 與跨 repo sync 全通過才可 completed。"
               },
               "decision_reason": "比對問題、owner、輸入輸出與完成邊界後，原計畫第 5 節是獨立且尚無 owner 的驗收工作包，故 genuinely_new；仍寫入同一 canonical task system。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准依最終 P2 合約補齊既有工作包；本次只補 execution contract、start/completion dependency gates、review control、estimated hours 與正式 Acceptance Matrix，不執行 P3 實作或 evidence，不新增 task、tracker、registry、scheduler 或 daily loop。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/morrowise-phase2-handoff-2026-07-26.md",
+              "Vincent 2026-07-26 current session: 可以進行補寫 task"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-live-decision-loop-v1",
+                "harness-mc/morrowise-priority-dashboard-surface-v2"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有工作包所擁有的問題；P2 僅把已核准的執行設計補成可判定合約，不建立新問題或新 task。",
+                "owner_source_of_truth": "既有 owner 與 canonical tasks.json ownership 不變；implementation/runtime/generated sources 保持各自既有 authority。",
+                "inputs_outputs": "既有 inputs/outputs 不變；新增 dependency gates、review control、工時與 Acceptance Matrix 只將原 acceptance 結構化。",
+                "lifecycle_completion": "Task status 不變；P2 合約完成不代表 P3 實作、runtime evidence、fresh build、Architecture Admission 或 skill 已完成。"
+              },
+              "decision_reason": "八個 canonical task 已完整承接全部工作包，故 outcome=amend；依最終 P2 合約禁止新增 task 或平行 planning system。",
               "approval": {
                 "status": "approved",
                 "approved_by": "Vincent",

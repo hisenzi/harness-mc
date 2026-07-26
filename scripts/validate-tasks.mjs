@@ -32,6 +32,7 @@ const TASK_LIFECYCLE_OPERATIONS = new Set(["create", "amend", "suspend", "resume
 const SEMANTIC_INTAKE_OUTCOMES = new Set(["reuse", "amend", "replace", "genuinely_new"]);
 const SEMANTIC_SCOPE_FIELDS = ["problem", "owner_source_of_truth", "inputs_outputs", "lifecycle_completion"];
 const WEEKLY_CORE_REVIEW_DECISIONS = new Set(["admit", "reframe", "suspend", "cancel", "complete"]);
+const PLANNING_REVIEW_OUTCOMES = new Set(["retain", "reframe", "defer"]);
 const BOOKKEEPING_ONLY_FIELDS = new Set(["commits", "completed_at", "summary", "external_refs", "execution_contract", "jv32_route", "task_lifecycle"]);
 const HAN_SCRIPT_PATTERN = /\p{Script=Han}/u;
 
@@ -265,6 +266,34 @@ function validateExecutionContract(value) {
     }
   }
   if (!nonEmptyString(value.stop_condition)) problems.push("execution_contract.stop_condition must be a non-empty string");
+  if ("review_window" in value) {
+    const reviewWindow = value.review_window;
+    if (!reviewWindow || typeof reviewWindow !== "object" || Array.isArray(reviewWindow)) {
+      problems.push("execution_contract.review_window must be an object when present");
+    } else {
+      if (reviewWindow.kind !== "planning_checkpoint") {
+        problems.push("execution_contract.review_window.kind must be planning_checkpoint");
+      }
+      if (!isDateOnly(reviewWindow.planned_review_date)) {
+        problems.push("execution_contract.review_window.planned_review_date must be YYYY-MM-DD");
+      }
+      if (!Array.isArray(reviewWindow.trigger) || reviewWindow.trigger.length === 0 || reviewWindow.trigger.some((entry) => !nonEmptyString(entry))) {
+        problems.push("execution_contract.review_window.trigger must be a non-empty array");
+      }
+      if (!nonEmptyString(reviewWindow.review_owner)) {
+        problems.push("execution_contract.review_window.review_owner must be a non-empty string");
+      }
+      if (!Array.isArray(reviewWindow.allowed_outcomes) || reviewWindow.allowed_outcomes.length === 0 || reviewWindow.allowed_outcomes.some((entry) => !PLANNING_REVIEW_OUTCOMES.has(entry))) {
+        problems.push("execution_contract.review_window.allowed_outcomes must contain only retain, reframe, or defer");
+      }
+      if (reviewWindow.enforcement !== "informational_only") {
+        problems.push("execution_contract.review_window.enforcement must be informational_only");
+      }
+      if (reviewWindow.does_not_change_weekly_core !== true) {
+        problems.push("execution_contract.review_window.does_not_change_weekly_core must be true");
+      }
+    }
+  }
   return problems;
 }
 

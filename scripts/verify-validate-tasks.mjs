@@ -72,6 +72,34 @@ const baseTasks = {
       title: "歷史缺欄位任務",
       status: "todo",
     },
+    {
+      id: "review-window-base",
+      title: "檢視窗口基準任務",
+      status: "todo",
+      track: "control-plane",
+      order_label: "ACP-REVIEW-WINDOW",
+      done_condition: "Fixture validates a non-weekly planning review checkpoint.",
+      hc_decision: {
+        task_scope: "harness-mc/review-window-base",
+        hc_refs: ["#rightProblem"],
+        hc_reasoning: "Fixture separates a planning checkpoint from weekly-core lifecycle governance.",
+        hc_confidence: 0.8,
+        evidence_refs: ["milestones/harness-mc/tasks.json"],
+        source_boundary: "HC is a thinking check, not source of truth; tasks.json remains canonical."
+      },
+      jv32_route: { workflows: ["task-lifecycle"] },
+      task_lifecycle: {
+        route: "JV-32/task-lifecycle",
+        history: [{
+          operation: "create",
+          from_status: null,
+          to_status: "todo",
+          reason: "Fixture creates a governed task before its planning checkpoint is added.",
+          evidence_refs: ["milestones/harness-mc/tasks.json"],
+          recorded_at: "2026-07-18"
+        }]
+      }
+    },
   ],
 };
 
@@ -881,6 +909,42 @@ writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), englishOnly
 const englishOnlyTitleResult = run(["--changed-only", "--project", "harness-mc"], { expectFailure: true });
 if (!englishOnlyTitleResult.output.includes("title must use Traditional Chinese as the primary language; immutable technical identifiers may remain in the original language")) {
   throw new Error("Expected an all-English canonical task title to fail.");
+}
+
+const invalidPlanningReviewWindow = structuredClone(baseTasks);
+const invalidPlanningReviewWindowTask = invalidPlanningReviewWindow.tasks.find((task) => task.id === "review-window-base");
+invalidPlanningReviewWindowTask.execution_contract = {
+  owner: "harness-mc/review-window-base",
+  source_of_truth: "milestones/harness-mc/tasks.json#review-window-base",
+  inputs: ["canonical task"],
+  outputs: ["verified task contract"],
+  verifiers: ["node scripts/validate-tasks.mjs --changed-only --project harness-mc"],
+  stop_condition: "Missing contract evidence blocks completion.",
+  review_window: {
+    kind: "planning_checkpoint",
+    planned_review_date: "not-a-date",
+    trigger: ["scope_changed"],
+    review_owner: "Vincent",
+    allowed_outcomes: ["retain", "reframe", "defer"],
+    enforcement: "informational_only",
+    does_not_change_weekly_core: true,
+  },
+};
+invalidPlanningReviewWindowTask.task_lifecycle.history.push(lifecycleEvent("amend", "todo", "todo"));
+writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), invalidPlanningReviewWindow);
+
+const invalidPlanningReviewWindowResult = run(["--changed-only", "--project", "harness-mc"], { expectFailure: true });
+if (!invalidPlanningReviewWindowResult.output.includes("execution_contract.review_window.planned_review_date must be YYYY-MM-DD")) {
+  throw new Error("Expected an invalid planning review date to fail.");
+}
+
+const validPlanningReviewWindow = structuredClone(invalidPlanningReviewWindow);
+validPlanningReviewWindow.tasks.find((task) => task.id === "review-window-base").execution_contract.review_window.planned_review_date = "2026-07-29";
+writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), validPlanningReviewWindow);
+
+const validPlanningReviewWindowResult = run(["--changed-only", "--project", "harness-mc"]);
+if (!validPlanningReviewWindowResult.output.includes("Task validation OK")) {
+  throw new Error("Expected a valid planning review window to pass without changing weekly-core state.");
 }
 
 console.log("validate-tasks verification OK");

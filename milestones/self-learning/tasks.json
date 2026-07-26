@@ -379,6 +379,68 @@
       "commits": [],
       "note": "T:0 | AI 輔助程式開發",
       "summary": ""
+    },
+    {
+      "id": "mind-training-book-capture",
+      "title": "收錄《奧運金牌選手的「心靈肌肉」鍛鍊法》精選內容",
+      "status": "completed",
+      "track": "book",
+      "completed_at": "2026-07-26",
+      "commits": [
+        "3dbd8bd"
+      ],
+      "note": "Vincent 2026-07-26：將 13 張來源圖片收錄為 agent-neutral 第二大腦知識，並驗證未來 Agent 不依賴聊天記憶即可發現、追溯與應用。2026-07-26 本機驗收：13 張圖片、11 份知識 Markdown、65 條 wiki links 斷鏈為 0，三種 Agent 情境均能回溯頁碼／圖片；canonical JPEG 在 commit 前由外部程序重新編碼，像素尺寸一致且抽查可讀。notyet-harness 已 commit，push 尚待獨立核准。",
+      "summary": "已將指定書頁收錄為 agent-neutral 第二大腦知識，接上 shared AGENTS 路由，並通過三種可行動、可回溯頁碼與圖片的 Agent 取用模擬。",
+      "done_condition": "建立可追溯的來源筆記、MOC、原子概念筆記與實踐卡，接上 shared Agent 入口，並以 fresh-agent 模擬驗證可發現、可追溯、可應用。",
+      "acceptance": [
+        "A01｜13 張來源圖片均在來源筆記建立檔名與頁碼／內容對照，且 OCR 不確定處明確標示。",
+        "A02｜MOC 連結來源筆記、所有原子概念筆記與實踐卡；連結檢查不得有斷線。",
+        "A03｜notyet-harness Agent 入口可路由至知識庫 INDEX，再到本書 MOC；不依賴 HiSenzi 或聊天記憶。",
+        "A04｜fresh-agent 模擬在緊張調節、失敗復盤與專案壓力三種情境中，均能提出行動並回溯來源頁碼／圖片。",
+        "A05｜13 張來源影像內容完整保留於 source-pages；canonical JPEG 外部重編碼邊界須明示，跨機器可攜性另以 push closeout 審核，不得混稱為本機驗證已完成。"
+      ],
+      "hc_decision": {
+        "task_scope": "self-learning/mind-training-book-capture",
+        "hc_refs": ["#rightProblem", "#systemDynamics", "#evidenceBased", "#risk"],
+        "hc_reasoning": "真正要解決的不是把書頁 OCR 成檔，而是讓未來 Agent 在需要時能經共享入口取得可追溯、可行動的知識。以來源對照、索引路由與 fresh-agent 模擬阻斷知識孤島與無法驗證的應用。",
+        "hc_confidence": 0.9,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/AGENTS.md",
+          "$COLLAB/notyet-harness/300_Obsidian_brain/temp/奧運金牌選手的「心靈肌肉」鍛鍊法/",
+          "$COLLAB/harness-mc/milestones/self-learning/project.json"
+        ],
+        "source_boundary": "HC is a thinking check, not source of truth; self-learning tasks.json and the source images remain canonical."
+      },
+      "jv32_route": {
+        "workflows": ["task-lifecycle", "implement", "closeout-commit-routing"]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 核准將指定書頁收錄為可供未來 Agent 運用的第二大腦知識，並要求驗證 Agent 路由與模擬取用線路。",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness/300_Obsidian_brain/temp/奧運金牌選手的「心靈肌肉」鍛鍊法/",
+              "Vincent 2026-07-26：開始執行"
+            ],
+            "recorded_at": "2026-07-26"
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "第二大腦知識、shared Agent 入口與三種取用模擬均已完成並通過本機驗收；notyet-harness 關鍵 commit 已建立。",
+            "evidence_refs": [
+              "notyet-harness@3dbd8bd",
+              "$COLLAB/notyet-harness/300_Obsidian_brain/知識庫/心智訓練/奧運金牌選手的「心靈肌肉」鍛鍊法/99_Agent取用模擬.md"
+            ],
+            "recorded_at": "2026-07-26"
+          }
+        ]
+      }
     }
   ]
 }

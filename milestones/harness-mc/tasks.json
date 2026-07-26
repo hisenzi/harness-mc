@@ -2327,6 +2327,34 @@
         ],
         "stop_condition": "priority read model、trusted heartbeat 或 daily decision 未通過各自 verifier 時停止；不得直接讀 tasks.json、fixture 或舊 dashboard read model，不得寫回 task state 或自行 commit／push／部署。"
       },
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "繁中首頁只回答是否需處理、先做什麼與資料是否可信，詳細內容由五個真實下鑽 route 顯示。",
+          "首頁與下鑽只能消費 action-priority-read-model-v2 及明列的 heartbeat／decision evidence，不得直接拼讀 tasks.json、fixture 或舊 dashboard read model。",
+          "missing、stale、degraded 或 verifier failure 必須清楚顯示拒絕理由，不得以 fallback 硬編資料假綠燈。",
+          "fresh session 無 task id、多 Agent 與多次重跑必須顯示同一候選或同一拒絕理由；所有 route 維持 read-only。"
+        ],
+        "test_level": [
+          "domain",
+          "component",
+          "route_integration",
+          "fresh_session_e2e"
+        ],
+        "red_command": "npm run test:morrowise-priority-dashboard-surface",
+        "expected_red_reason": "先加入首頁 IA、五個 route、唯一 read-model consumer、degraded rendering 與 fresh-session determinism tests；surface 尚未實作時應以預期原因失敗。",
+        "green_command": "npm run test:morrowise-priority-dashboard-surface",
+        "full_regression_commands": [
+          "npm run build",
+          "node scripts/validate-tasks.mjs --changed-only --project harness-mc"
+        ],
+        "fixture_refs": [
+          "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-live-dashboard-drilldown-pages.md",
+          "$COLLAB/harness-mc/public/data/action-priority-read-model-v2.json"
+        ],
+        "runtime_evidence_required": false,
+        "evidence_refs": []
+      },
       "jv32_route": {
         "workflows": ["task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
         "decision_input": ["approved MC-DASH-V2 governance IA", "action-priority-read-model-v2", "existing dashboard routes and drilldown spec"],
@@ -2357,6 +2385,40 @@
             "Vincent 2026-07-25 current session: 幫我確定下列兩項"
           ],
           "recorded_at": "2026-07-25"
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "todo",
+          "reason": "Vincent 核准將三階段 TDD 補強寫回 MC-LIVE-SYS-10；加入繁中首頁 IA、五個真實 route、唯一 read-model consumer、degraded rendering 與 fresh-session／多 Agent deterministic 測試契約，不改 UI 或建立第二 read model。",
+          "evidence_refs": [
+            "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-priority-dashboard-surface-v2",
+            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
+            "Vincent 2026-07-26 current session: 可以進行補寫 task"
+          ],
+          "recorded_at": "2026-07-26",
+          "semantic_intake": {
+            "outcome": "amend",
+            "compared_task_refs": [
+              "harness-mc/morrowise-priority-dashboard-surface-v2",
+              "morrowise/action-priority-read-model-v2",
+              "morrowise/mc-dashboard-priority-ia-v2"
+            ],
+            "scope_comparison": {
+              "problem": "仍是 MC-LIVE-SYS-10 的唯一唯讀 priority surface，不是 dashboard governance 或新 read model。",
+              "owner_source_of_truth": "harness-mc task 只擁有 UI；MorroWise tasks 與 priority read model 邊界不變。",
+              "inputs_outputs": "test_contract 將既有首頁／下鑽／degraded／fresh-session acceptance 轉為可重跑的 component、route 與 E2E 行為。",
+              "lifecycle_completion": "task 維持 todo；上游 read model 與自身 Red／Green、build、route E2E evidence 齊全前不得完成。"
+            },
+            "decision_reason": "既有 surface task 完整擁有問題與輸出，故 outcome=amend。",
+            "approval": {
+              "status": "approved",
+              "approved_by": "Vincent",
+              "approved_at": "2026-07-26",
+              "evidence_refs": [
+                "Vincent 2026-07-26 current session: 可以進行補寫 task"
+              ]
+            }
+          }
         }]
       },
       "hc_decision": {

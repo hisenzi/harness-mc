@@ -729,14 +729,19 @@
       "id": "capability-runtime-status-read-model",
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
-        "history": [{
-          "operation": "resume",
-          "from_status": "completed",
-          "to_status": "todo",
-          "reason": "既有完成版本仍以 client-specific probe 裁決全域健康，需依全域中立契約重新開啟。",
-          "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-runtime-status-read-model", "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-registry-v1-coverage"],
-          "recorded_at": "2026-07-18"
-        }]
+        "history": [
+          {
+            "operation": "resume",
+            "from_status": "completed",
+            "to_status": "todo",
+            "reason": "既有完成版本仍以 client-specific probe 裁決全域健康，需依全域中立契約重新開啟。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-runtime-status-read-model",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-registry-v1-coverage"
+            ],
+            "recorded_at": "2026-07-18"
+          }
+        ]
       },
       "title": "整合健康 read model（全域中立＋本機診斷分層）",
       "status": "todo",
@@ -815,8 +820,20 @@
       ],
       "jv32_route": {
         "batch": "JV-32 整合透明度修正批次",
-        "workflows": ["domain-modeling", "to-prd", "task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
-        "decision_input": ["既有 capability registry／observed／verifier", "JV-24 GitHub 唯讀契約", "JV-28 三機快照契約"],
+        "workflows": [
+          "domain-modeling",
+          "to-prd",
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "既有 capability registry／observed／verifier",
+          "JV-24 GitHub 唯讀契約",
+          "JV-28 三機快照契約"
+        ],
         "decision_output": "全域中立 integration health read model 與 client diagnostic 分層契約",
         "execution_boundary": "只可讀安全 metadata；不得登入、讀取憑證、變更 GitHub、提交、推送或部署。"
       },
@@ -1415,21 +1432,38 @@
       "id": "dual-machine-trigger-install",
       "jv32_route": {
         "batch": "JV-32 三機觀測修正批次",
-        "workflows": ["domain-modeling", "to-prd", "task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
-        "decision_input": ["JV-31 baseline sync", "三機安全觀測邊界", "JV-28 machine-scoped observed"],
+        "workflows": [
+          "domain-modeling",
+          "to-prd",
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "JV-31 baseline sync",
+          "三機安全觀測邊界",
+          "JV-28 machine-scoped observed"
+        ],
         "decision_output": "三機對等本機觀測排程啟用契約",
         "execution_boundary": "只處理本機安全 metadata 與 verifier；不得讀認證、commit、push 或覆寫本機工作。"
       },
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
-        "history": [{
-          "operation": "amend",
-          "from_status": "blocked",
-          "to_status": "todo",
-          "reason": "由歷史單機補裝改為以 JV-31 為前提的三機對等觀測 task。",
-          "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#mba2-catch-up-restore", "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-dual-machine-observed"],
-          "recorded_at": "2026-07-18"
-        }]
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "blocked",
+            "to_status": "todo",
+            "reason": "由歷史單機補裝改為以 JV-31 為前提的三機對等觀測 task。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mba2-catch-up-restore",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-dual-machine-observed"
+            ],
+            "recorded_at": "2026-07-18"
+          }
+        ]
       },
       "status": "todo",
       "title": "JV-11 三機觀測排程啟用（baseline sync 後）",
@@ -1451,10 +1485,19 @@
       "summary": "由歷史上的單機補裝 task 改為三機對等的本機觀測排程啟用；實際啟用須在 JV-31 baseline audit 後，以安全 metadata 與 verifier 證明。",
       "hc_decision": {
         "task_scope": "morrowise/dual-machine-trigger-install",
-        "hc_refs": ["#rightProblem", "#systemDynamics", "#sourceBoundary", "#risk"],
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#sourceBoundary",
+          "#risk"
+        ],
         "hc_reasoning": "真正問題是三台同等機器如何以相同安全邊界提供可追溯觀測，不是為某台機器補特例。#systemDynamics 避免把單機排程狀態誤當共享同步；#sourceBoundary 分離本機 evidence 與共用正本；#risk 禁止排程藉由自動 commit 或 push 製造假同步。",
         "hc_confidence": 0.91,
-        "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#mba2-catch-up-restore", "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-dual-machine-observed", "$COLLAB/notyet-harness/schedule/install.sh"],
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mba2-catch-up-restore",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-dual-machine-observed",
+          "$COLLAB/notyet-harness/schedule/install.sh"
+        ],
         "source_boundary": "HC 是思考檢查，不是正本；正本是任務、觀測摘要、驗證器輸出與經核准的遠端同步證據。"
       },
       "order_label": "JV-11",
@@ -1937,21 +1980,37 @@
       "id": "cross-machine-sync-alert",
       "jv32_route": {
         "batch": "JV-32 三機同步資料齡修正批次",
-        "workflows": ["domain-modeling", "to-prd", "task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
-        "decision_input": ["JV-37 maintained repo scope", "JV-28 machine-scoped observed"],
+        "workflows": [
+          "domain-modeling",
+          "to-prd",
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "JV-37 maintained repo scope",
+          "JV-28 machine-scoped observed"
+        ],
         "decision_output": "三機 remote truth 與資料齡唯讀警報契約",
         "execution_boundary": "只報告安全 metadata；不得 pull、commit、push、merge 或覆寫本機資料。"
       },
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
-        "history": [{
-          "operation": "amend",
-          "from_status": "blocked",
-          "to_status": "todo",
-          "reason": "由舊雙機心跳改為消費 JV-37 remote truth 與 JV-28 三機觀測的資料齡警報。",
-          "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate", "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-dual-machine-observed"],
-          "recorded_at": "2026-07-18"
-        }]
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "blocked",
+            "to_status": "todo",
+            "reason": "由舊雙機心跳改為消費 JV-37 remote truth 與 JV-28 三機觀測的資料齡警報。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-dual-machine-observed"
+            ],
+            "recorded_at": "2026-07-18"
+          }
+        ]
       },
       "status": "todo",
       "title": "JV-12 三機共享資料／Repo 同步資料齡警報",
@@ -1960,10 +2019,18 @@
       "done_condition": "以 JV-37 定義的 maintained repo scope 與 remote truth 為正本，對 MBA-1／MBA-2／MBA-3 產生 machine-scoped、read-only 的 repo／portable-data observed 資料齡；任一已註冊機器超過 policy 時間未回報或其 core repo 不同於 remote truth，read model 標 amber／missing-machine 並可進哨兵早報。不得依賴特定 AI 工具、單機排程心跳或 heartbeat commit 當同步前提；此 task 只報告，不執行 pull、commit、push、merge 或覆寫本機資料。",
       "hc_decision": {
         "task_scope": "morrowise/cross-machine-sync-alert",
-        "hc_refs": ["#rightProblem", "#systemDynamics", "#sourceBoundary", "#risk"],
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#sourceBoundary",
+          "#risk"
+        ],
         "hc_reasoning": "真正問題是三機的 repo 與 portable canonical data 是否仍可追溯到 remote truth，而不是任一機器是否具備特定本機工具或排程。#systemDynamics 避免把單機 runtime 健康誤當資料同步；#sourceBoundary 固定 JV-37 repo scope、remote SHA 與 JV-28 machine-scoped observed 為證據；#risk 禁止用 heartbeat commit 或自動 pull 製造假同步。",
         "hc_confidence": 0.88,
-        "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate", "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-dual-machine-observed"],
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-dual-machine-observed"
+        ],
         "source_boundary": "HC is a thinking check only, not source of truth. Canonical status is the maintained repo contract, remote truth, machine-scoped observed snapshot, and verifier output."
       },
       "dependencies": [
@@ -2210,14 +2277,18 @@
       "id": "account-connector-policy",
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
-        "history": [{
-          "operation": "amend",
-          "from_status": "completed",
-          "to_status": "completed",
-          "reason": "補上帳號層 probe 僅為 optional client diagnostic 的全域健康邊界。",
-          "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#account-connector-policy"],
-          "recorded_at": "2026-07-18"
-        }]
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "補上帳號層 probe 僅為 optional client diagnostic 的全域健康邊界。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#account-connector-policy"
+            ],
+            "recorded_at": "2026-07-18"
+          }
+        ]
       },
       "status": "completed",
       "title": "JV-22 帳號層 connector 政策裁決",
@@ -2337,14 +2408,18 @@
       "id": "capability-registry-v1-coverage",
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
-        "history": [{
-          "operation": "amend",
-          "from_status": "todo",
-          "to_status": "todo",
-          "reason": "補齊 GitHub 五面向唯讀契約與全域／三機資料邊界。",
-          "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-registry-v1-coverage"],
-          "recorded_at": "2026-07-18"
-        }]
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "補齊 GitHub 五面向唯讀契約與全域／三機資料邊界。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-registry-v1-coverage"
+            ],
+            "recorded_at": "2026-07-18"
+          }
+        ]
       },
       "status": "todo",
       "title": "JV-24 Capability registry v1 涵蓋率補齊（4 筆→全量）",
@@ -2367,17 +2442,38 @@
       ],
       "jv32_route": {
         "batch": "JV-32 整合透明度修正批次",
-        "workflows": ["domain-modeling", "to-prd", "task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
-        "decision_input": ["JV-19 capability scan", "GitHub 唯讀狀態需求", "既有 capability registry schema"],
+        "workflows": [
+          "domain-modeling",
+          "to-prd",
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "JV-19 capability scan",
+          "GitHub 唯讀狀態需求",
+          "既有 capability registry schema"
+        ],
         "decision_output": "全量 capability registry 與 GitHub 五面向唯讀資料契約",
         "execution_boundary": "只可讀公開或已授權的安全 GitHub metadata；不得登入、寫入、變更 Secrets、commit、push 或部署。"
       },
       "hc_decision": {
         "task_scope": "morrowise/capability-registry-v1-coverage",
-        "hc_refs": ["#rightProblem", "#sourceBoundary", "#systemDynamics", "#risk"],
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#systemDynamics",
+          "#risk"
+        ],
         "hc_reasoning": "整合透明度的正確問題是每個 capability 的 portable contract、machine applicability 與驗證證據，而不是哪個 agent CLI 曾經讀到它。#sourceBoundary 把 registry、observed snapshot 與 verifier 分層；#systemDynamics 要求未安裝的本機能力以通用的 not_applicable 呈現；#risk 防止在 registry 或 read model 寫入 auth、secret 或 runtime-private state。",
         "hc_confidence": 0.89,
-        "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-observed-scan", "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-dual-machine-observed", "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json"],
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-observed-scan",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-dual-machine-observed",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json"
+        ],
         "source_boundary": "HC is a thinking check only, not source of truth. Canonical capability state remains the registry, its schema verifier, machine-scoped observed records, and generated read models."
       },
       "note": "既有 todo playwright-cli-capability-probe 併入本 task 執行，不重開。2026-07-18 operating model：三機同步 portable canonical data／repo；任何未安裝的本機能力以 not_applicable 而非 degraded 呈現，且 registry／probe 不得綁定 Codex 或 Claude Code。GitHub 五面向只有一份 global safe record，不得因三機觀測而複製為三套遠端真相。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。"
@@ -2386,14 +2482,18 @@
       "id": "capability-startup-brief",
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
-        "history": [{
-          "operation": "amend",
-          "from_status": "todo",
-          "to_status": "todo",
-          "reason": "改為摘要全域中立整合健康與三機資料齡，不採 client diagnostic 總結。",
-          "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-startup-brief"],
-          "recorded_at": "2026-07-18"
-        }]
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "改為摘要全域中立整合健康與三機資料齡，不採 client diagnostic 總結。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-startup-brief"
+            ],
+            "recorded_at": "2026-07-18"
+          }
+        ]
       },
       "status": "todo",
       "title": "JV-25 Sentinel 啟動簡報加 capability 摘要行",
@@ -2414,17 +2514,34 @@
       ],
       "jv32_route": {
         "batch": "JV-32 整合透明度修正批次",
-        "workflows": ["task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
-        "decision_input": ["全域 integration health read model", "Sentinel brief 輸出契約"],
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "全域 integration health read model",
+          "Sentinel brief 輸出契約"
+        ],
         "decision_output": "不新增 agent 步驟的唯讀啟動摘要",
         "execution_boundary": "只變更本地 generated summary 與 verifier；不得寫入 GitHub、帳號或憑證系統。"
       },
       "hc_decision": {
         "task_scope": "morrowise/capability-startup-brief",
-        "hc_refs": ["#rightProblem", "#sourceBoundary", "#utility", "#risk"],
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#utility",
+          "#risk"
+        ],
         "hc_reasoning": "#rightProblem 要求啟動摘要指出可採取行動的全域整合異常，而不是堆疊 client 診斷；#sourceBoundary 固定它只讀 generated read model；#utility 維持零新增 agent 步驟；#risk 防止過期、未知或單一 GitHub 面向被總數掩蓋。",
         "hc_confidence": 0.9,
-        "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-runtime-status-read-model", "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-registry-v1-coverage"],
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-runtime-status-read-model",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-registry-v1-coverage"
+        ],
         "source_boundary": "HC 只是思考檢查；摘要的正本是 generated global integration health read model，不能反向成為狀態來源。"
       },
       "note": "與 JV-07（sentinel 送達驗證）同鏈。2026-07-18 更正為消費全域中立 read model；不得把本機 client diagnostic 或 GitHub 單一面向壓成總綠燈。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。"
@@ -2433,14 +2550,18 @@
       "id": "tools-md-capability-pointer",
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
-        "history": [{
-          "operation": "amend",
-          "from_status": "todo",
-          "to_status": "todo",
-          "reason": "收斂為 pointer-only，禁止成為 GitHub 或三機狀態第二正本。",
-          "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#tools-md-capability-pointer"],
-          "recorded_at": "2026-07-18"
-        }]
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "收斂為 pointer-only，禁止成為 GitHub 或三機狀態第二正本。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#tools-md-capability-pointer"
+            ],
+            "recorded_at": "2026-07-18"
+          }
+        ]
       },
       "status": "todo",
       "title": "JV-27 TOOLS.md 加 capability 狀態指標行（自動段 deferred）",
@@ -2459,17 +2580,33 @@
       ],
       "jv32_route": {
         "batch": "JV-32 整合透明度修正批次",
-        "workflows": ["domain-modeling", "to-prd", "task-lifecycle", "code-review", "closeout-commit-routing"],
-        "decision_input": ["global integration health read model", "JV-25／JV-26 surface 契約"],
+        "workflows": [
+          "domain-modeling",
+          "to-prd",
+          "task-lifecycle",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "global integration health read model",
+          "JV-25／JV-26 surface 契約"
+        ],
         "decision_output": "唯一文件入口指標，不新增狀態副本",
         "execution_boundary": "只改文件 pointer；不得建立第二 read model、外部寫入或自動同步。"
       },
       "hc_decision": {
         "task_scope": "morrowise/tools-md-capability-pointer",
-        "hc_refs": ["#sourceBoundary", "#systemDynamics", "#constraints"],
+        "hc_refs": [
+          "#sourceBoundary",
+          "#systemDynamics",
+          "#constraints"
+        ],
         "hc_reasoning": "#sourceBoundary 禁止 TOOLS.md 成為第二份整合狀態；#systemDynamics 將文件、read model、sentinel 與 MC 卡片保持單向引用；#constraints 保留最低成本的固定 pointer，不重啟自動同步系統。",
         "hc_confidence": 0.91,
-        "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-runtime-status-read-model", "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#capability-card-v1"],
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-runtime-status-read-model",
+          "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#capability-card-v1"
+        ],
         "source_boundary": "HC 只是思考檢查；所有 status、時間與證據仍以 generated read model 與 MC surface 為正本。"
       },
       "note": "HC 審 F5：三 surface 邊際效益裁掉最低者。2026-07-18 明定 TOOLS.md 為 pointer-only，禁止作 GitHub 或三機狀態鏡像。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。"
@@ -2478,14 +2615,18 @@
       "id": "capability-dual-machine-observed",
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
-        "history": [{
-          "operation": "amend",
-          "from_status": "todo",
-          "to_status": "todo",
-          "reason": "固定三機快照只引用單一 global GitHub record，不複製遠端真相。",
-          "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-dual-machine-observed"],
-          "recorded_at": "2026-07-18"
-        }]
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "固定三機快照只引用單一 global GitHub record，不複製遠端真相。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-dual-machine-observed"
+            ],
+            "recorded_at": "2026-07-18"
+          }
+        ]
       },
       "status": "todo",
       "title": "JV-28 三機 observed 快照（machine-scoped＋資料齡）",
@@ -2505,17 +2646,37 @@
       ],
       "jv32_route": {
         "batch": "JV-32 整合透明度修正批次",
-        "workflows": ["domain-modeling", "to-prd", "task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
-        "decision_input": ["三機 portable／local boundary", "JV-24 GitHub global record", "既有 observed schema"],
+        "workflows": [
+          "domain-modeling",
+          "to-prd",
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "三機 portable／local boundary",
+          "JV-24 GitHub global record",
+          "既有 observed schema"
+        ],
         "decision_output": "三機快照級觀測與 global record 引用契約",
         "execution_boundary": "只讀安全 metadata；禁自動 commit，禁讀寫憑證、私有 runtime、GitHub 或部署。"
       },
       "hc_decision": {
         "task_scope": "morrowise/capability-dual-machine-observed",
-        "hc_refs": ["#rightProblem", "#sourceBoundary", "#constraints", "#risk"],
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#constraints",
+          "#risk"
+        ],
         "hc_reasoning": "跨機可見性的正確輸出是有資料齡的三機 observed snapshot，不是假裝即時全域狀態或同步本機 app state。#sourceBoundary 分離 portable canonical data 與 machine-local runtime；#constraints 禁自動 commit；#risk 要求缺少回報時標 missing-machine，未安裝能力則以通用的 not_applicable 呈現。",
         "hc_confidence": 0.9,
-        "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-registry-v1-coverage", "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate"],
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-registry-v1-coverage",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate"
+        ],
         "source_boundary": "HC is a thinking check only, not source of truth. Canonical evidence is the safe machine-scoped observed file, its generator/verifier, and remote-backed repo coordination state."
       },
       "note": "HC 審 F1：registries forbidden 清單禁自動 commit，故為快照級。2026-07-18 operating model 更新為三機：portable canonical data 與 repo 要同步；機器私有 runtime 不同步。machine catalog／repo scope 必須消費 JV-37 的 contract，不得另建平行正本；尚未回報的機器只標 missing-machine，不可假定其狀態。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。"
@@ -2663,21 +2824,37 @@
       "id": "mba2-catch-up-restore",
       "jv32_route": {
         "batch": "JV-32 三機 baseline sync 修正批次",
-        "workflows": ["domain-modeling", "to-prd", "task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
-        "decision_input": ["三機 portable canonical data 邊界", "JV-37 repo coordination gate"],
+        "workflows": [
+          "domain-modeling",
+          "to-prd",
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "三機 portable canonical data 邊界",
+          "JV-37 repo coordination gate"
+        ],
         "decision_output": "三機共享資料與 repo baseline sync 契約",
         "execution_boundary": "只在明確核准與 Repo Ready 後處理同步；不得同步秘密、runtime auth、cache 或私人設定。"
       },
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
-        "history": [{
-          "operation": "amend",
-          "from_status": "todo",
-          "to_status": "todo",
-          "reason": "將 MBA-2 視為與其他機器同等的三機 baseline sync 成員，移除例外語意。",
-          "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#mba2-catch-up-restore", "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate"],
-          "recorded_at": "2026-07-18"
-        }]
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "將 MBA-2 視為與其他機器同等的三機 baseline sync 成員，移除例外語意。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mba2-catch-up-restore",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate"
+            ],
+            "recorded_at": "2026-07-18"
+          }
+        ]
       },
       "status": "todo",
       "title": "JV-31 三機共享資料／Repo baseline sync",
@@ -2842,19 +3019,19 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "Vincent 要求第一階段後續工作直接在既有 task 補齊一致 execution contract；本次將 JV-32 的 owner、正本、輸入、輸出、verifier 與停止條件結構化，並為 package.json fingerprint 邊界修正提供同一 owner，不建立第二 catalog 或 tracker。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
+              "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs",
+              "Vincent 2026-07-25 current session: 幫我確定下列兩項"
+            ],
+            "recorded_at": "2026-07-25"
           }
-        , {
-          "operation": "amend",
-          "from_status": "completed",
-          "to_status": "completed",
-          "reason": "Vincent 要求第一階段後續工作直接在既有 task 補齊一致 execution contract；本次將 JV-32 的 owner、正本、輸入、輸出、verifier 與停止條件結構化，並為 package.json fingerprint 邊界修正提供同一 owner，不建立第二 catalog 或 tracker。",
-          "evidence_refs": [
-            "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
-            "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs",
-            "Vincent 2026-07-25 current session: 幫我確定下列兩項"
-          ],
-          "recorded_at": "2026-07-25"
-        }
         ]
       },
       "hc_decision": {
@@ -3390,53 +3567,54 @@
                 ]
               }
             }
-          }
-        , {
-          "operation": "amend",
-          "from_status": "todo",
-          "to_status": "todo",
-          "reason": "Vincent 要求第一階段後續工作直接在既有 task 補齊一致 execution contract；本次只結構化 JV-36 既有 owner、正本、輸入、輸出、verifier 與停止條件，不建立第二份文件 tracker 或啟動實作。",
-          "evidence_refs": [
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
-            "$COLLAB/harness-mc/system-workflow/registries/morrowise-document-sources.json",
-            "Vincent 2026-07-25 current session: 幫我確定下列兩項"
-          ],
-          "recorded_at": "2026-07-25"
-        }, {
-          "operation": "amend",
-          "from_status": "todo",
-          "to_status": "todo",
-          "reason": "Vincent 核准將三階段 TDD 補強寫回既有 JV-36；本次加入 R1–R5 的文件契約、registry／generator／changed-only／cross-repo／runtime behavior cases 與驗證指令，不拆第二份文件 tracker。",
-          "evidence_refs": [
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1",
-            "Vincent 2026-07-26 current session: 可以進行補寫 task"
-          ],
-          "recorded_at": "2026-07-26",
-          "semantic_intake": {
-            "outcome": "amend",
-            "compared_task_refs": [
-              "morrowise/document-source-registry-and-human-sync",
-              "morrowise/trusted-heartbeat-runtime-v1",
-              "morrowise/architecture-subsystem-index-live-sync"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 要求第一階段後續工作直接在既有 task 補齊一致 execution contract；本次只結構化 JV-36 既有 owner、正本、輸入、輸出、verifier 與停止條件，不建立第二份文件 tracker 或啟動實作。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-document-sources.json",
+              "Vincent 2026-07-25 current session: 幫我確定下列兩項"
             ],
-            "scope_comparison": {
-              "problem": "仍是 JV-36 單一文件控制面與 R5 report-only daily health，不是新增文件系統。",
-              "owner_source_of_truth": "文件身份與衍生關係仍由既有 JV-36 registry contract 擁有；Architecture Admission 與 heartbeat 保持各自正本。",
-              "inputs_outputs": "輸入輸出不變；test_contract 只把 R1–R5 的可觀察行為、反向案例與 runtime evidence 要求結構化。",
-              "lifecycle_completion": "JV-36 維持 todo；R1–R4 與依賴 heartbeat 的 R5 證據齊全後才可完成。"
-            },
-            "decision_reason": "這是既有 roadmap-in-anchor task 的測試契約 amendment，不需拆新 task 或 tracker。",
-            "approval": {
-              "status": "approved",
-              "approved_by": "Vincent",
-              "approved_at": "2026-07-26",
-              "evidence_refs": [
-                "Vincent 2026-07-26 current session: 可以進行補寫 task"
-              ]
+            "recorded_at": "2026-07-25"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准將三階段 TDD 補強寫回既有 JV-36；本次加入 R1–R5 的文件契約、registry／generator／changed-only／cross-repo／runtime behavior cases 與驗證指令，不拆第二份文件 tracker。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1",
+              "Vincent 2026-07-26 current session: 可以進行補寫 task"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/document-source-registry-and-human-sync",
+                "morrowise/trusted-heartbeat-runtime-v1",
+                "morrowise/architecture-subsystem-index-live-sync"
+              ],
+              "scope_comparison": {
+                "problem": "仍是 JV-36 單一文件控制面與 R5 report-only daily health，不是新增文件系統。",
+                "owner_source_of_truth": "文件身份與衍生關係仍由既有 JV-36 registry contract 擁有；Architecture Admission 與 heartbeat 保持各自正本。",
+                "inputs_outputs": "輸入輸出不變；test_contract 只把 R1–R5 的可觀察行為、反向案例與 runtime evidence 要求結構化。",
+                "lifecycle_completion": "JV-36 維持 todo；R1–R4 與依賴 heartbeat 的 R5 證據齊全後才可完成。"
+              },
+              "decision_reason": "這是既有 roadmap-in-anchor task 的測試契約 amendment，不需拆新 task 或 tracker。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
             }
-          }
-        },
+          },
           {
             "operation": "amend",
             "from_status": "todo",
@@ -3509,8 +3687,20 @@
       "id": "multi-machine-repo-coordination-gate",
       "jv32_route": {
         "batch": "JV-32 三機 Repo Ready 延伸批次",
-        "workflows": ["domain-modeling", "to-prd", "task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
-        "decision_input": ["JV-32 workflow catalog", "三機 repo coordination requirements", "既有 task-event 與 closeout boundary"],
+        "workflows": [
+          "domain-modeling",
+          "to-prd",
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "JV-32 workflow catalog",
+          "三機 repo coordination requirements",
+          "既有 task-event 與 closeout boundary"
+        ],
         "decision_output": "Repo Ready、Remote Closeout 與三機 portable data coordination gate",
         "execution_boundary": "不授權未核准自動 commit、push、rebase、stash、reset、force push 或外部帳號設定。"
       },
@@ -3522,7 +3712,10 @@
             "from_status": "todo",
             "to_status": "todo",
             "reason": "將 repo coordination 的三機共享資料／remote truth 邊界寫回既有 JV-32 唯一路由。",
-            "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate", "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-catalog.md"],
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate",
+              "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-catalog.md"
+            ],
             "recorded_at": "2026-07-18"
           },
           {
@@ -3719,14 +3912,18 @@
       "id": "credential-lifecycle-governance",
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
-        "history": [{
-          "operation": "create",
-          "from_status": null,
-          "to_status": "todo",
-          "reason": "Vincent 核准建立三機安全憑證生命週期治理 task。",
-          "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#credential-lifecycle-governance"],
-          "recorded_at": "2026-07-18"
-        }]
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准建立三機安全憑證生命週期治理 task。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#credential-lifecycle-governance"
+            ],
+            "recorded_at": "2026-07-18"
+          }
+        ]
       },
       "status": "todo",
       "title": "JV-39 安全憑證生命週期與三機安全啟用治理",
@@ -3752,8 +3949,21 @@
       ],
       "jv32_route": {
         "batch": "JV-32 安全治理延伸批次",
-        "workflows": ["domain-modeling", "to-prd", "task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
-        "decision_input": ["既有 capability registry", "三機 portable／local boundary", "MorroWise approval policy", "官方安全基線文件"],
+        "workflows": [
+          "domain-modeling",
+          "to-prd",
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "既有 capability registry",
+          "三機 portable／local boundary",
+          "MorroWise approval policy",
+          "官方安全基線文件"
+        ],
         "decision_output": "安全憑證生命週期治理合約、sanitized metadata schema 與 verifier 範圍",
         "execution_boundary": "本 task 僅建立 policy／contract／verifier 規格；不得讀取或輸出憑證、登入帳號、變更密碼庫、GitHub Secrets、輪替、撤銷、commit、push 或部署。"
       },
@@ -3945,8 +4155,22 @@
       },
       "jv32_route": {
         "batch": "JV-32 task lifecycle governance batch",
-        "workflows": ["grill-with-docs", "domain-modeling", "to-prd", "task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
-        "decision_input": ["JV-32 catalog", "task write command map", "approval policy", "validator gap evidence"],
+        "workflows": [
+          "grill-with-docs",
+          "domain-modeling",
+          "to-prd",
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "JV-32 catalog",
+          "task write command map",
+          "approval policy",
+          "validator gap evidence"
+        ],
         "decision_output": "單一 task lifecycle route、schema、validator 與 command map",
         "execution_boundary": "只修改本地 canonical task governance、文件、schema、verifier 與 generated data；不得執行外部 tracker 寫入、commit、push、部署或讀取秘密。"
       },
@@ -4256,7 +4480,14 @@
       },
       "hc_decision": {
         "task_scope": "morrowise/task-lifecycle-jv32-gate",
-        "hc_refs": ["#rightProblem", "#sourceBoundary", "#systemDynamics", "#risk", "#constraints", "#evidenceBased"],
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#systemDynamics",
+          "#risk",
+          "#constraints",
+          "#evidenceBased"
+        ],
         "hc_reasoning": "真正問題不是多加一個必填欄位，而是 canonical task mutation 目前只有命令表與核准政策，沒有被 JV-32 workflow、schema 與 verifier 串成閉環。#sourceBoundary 固定 tasks.json／task-events 為正本、外部 tracker 僅 adapter_only；#systemDynamics 將新增、修改、停用、恢復與完成連到相同 evidence chain；#risk 防止模糊 disabled、無理由取消、假完成與 client／chat 直接改寫；#constraints 不另建 workflow catalog、不碰外部服務；#evidenceBased 要求 changed-only 負向 fixture 真的攔下缺 route 的 mutation。",
         "hc_confidence": 0.94,
         "evidence_refs": [
@@ -4515,71 +4746,71 @@
                 ]
               }
             }
-          }
-        , {
-          "operation": "amend",
-          "from_status": "todo",
-          "to_status": "todo",
-          "reason": "Vincent 要求第一階段後續工作直接在既有 task 補齊一致 execution contract；本次只把 MC-DASH-V2 的 owner、正本、輸入、輸出、verifier 與停止條件結構化，維持 governance 與 MC-LIVE-SYS-10 UI identity 分離。",
-          "evidence_refs": [
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mc-dashboard-priority-ia-v2",
-            "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-priority-dashboard-surface-v2",
-            "Vincent 2026-07-25 current session: 幫我確定下列兩項"
-          ],
-          "recorded_at": "2026-07-25"
-        },
-        {
-          "operation": "complete",
-          "from_status": "todo",
-          "to_status": "completed",
-          "reason": "Vincent 核准三階段完成法後，第一階段只完成治理定錨：已將 MC-DASH-V2／MC-LIVE-SYS-10 身份、候選 operation batch、依賴圖與唯一 weekly core/review_date 寫入同一份 task-linked 議題紀錄。JV-36 generated document index 薄連結改由第三階段 R1–R4 承接，不再把未實作文件控制面當作本治理 task 的完成阻塞。",
-          "evidence_refs": [
-            "$COLLAB/harness-mc/milestones/morrowise/notes/mc-dashboard-priority-ia-v2.md#第一階段治理定錨（2026-07-26）",
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1",
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-live-decision-loop-v1",
-            "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-priority-dashboard-surface-v2",
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#skill-candidate-review-gate",
-            "Vincent 2026-07-26 current session: 採用 flowchart 作為最新順序：3 階段完成法；一口氣完成，不要再回馬槍"
-          ],
-          "recorded_at": "2026-07-26",
-          "semantic_intake": {
-            "outcome": "amend",
-            "compared_task_refs": [
-              "morrowise/document-source-registry-and-human-sync",
-              "harness-mc/morrowise-priority-dashboard-surface-v2",
-              "morrowise/action-priority-read-model-v2"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 要求第一階段後續工作直接在既有 task 補齊一致 execution contract；本次只把 MC-DASH-V2 的 owner、正本、輸入、輸出、verifier 與停止條件結構化，維持 governance 與 MC-LIVE-SYS-10 UI identity 分離。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mc-dashboard-priority-ia-v2",
+              "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-priority-dashboard-surface-v2",
+              "Vincent 2026-07-25 current session: 幫我確定下列兩項"
             ],
-            "scope_comparison": {
-              "problem": "既有 MC-DASH-V2 已完成 IA 與身份分離；本次只將其完成邊界改為第一階段治理定錨，而非提前實作文件控制面或 UI。",
-              "owner_source_of_truth": "治理決策仍由 MorroWise tasks.json 與其 task-linked 議題紀錄承接；JV-36 registry、priority read model 與 harness-mc surface 各自保有後續正本。",
-              "inputs_outputs": "輸入為既有 semantic intake、replacement lineage、task dependencies 與 weekly-core evidence；輸出為唯一 operation batch 與依賴圖，不新增 task system、daily loop、scheduler 或 runtime。",
-              "lifecycle_completion": "本 task 的治理決策已完成；JV-36 薄連結、UI、runtime 與 E2E 均屬後續階段 task，不能延長或重開本 task。"
-            },
-            "decision_reason": "三階段計畫將治理定錨、工作包設計與依賴驅動實作分開；故以 amend 完成既有 governance anchor，而非建立第二份 Phase-1 tracker 或把第三階段依賴倒灌。",
-            "approval": {
-              "status": "approved",
-              "approved_by": "Vincent",
-              "approved_at": "2026-07-26",
-              "evidence_refs": [
-                "Vincent 2026-07-26 current session: 採用 flowchart 作為最新順序：3 階段完成法；一口氣完成，不要再回馬槍"
-              ]
+            "recorded_at": "2026-07-25"
+          },
+          {
+            "operation": "complete",
+            "from_status": "todo",
+            "to_status": "completed",
+            "reason": "Vincent 核准三階段完成法後，第一階段只完成治理定錨：已將 MC-DASH-V2／MC-LIVE-SYS-10 身份、候選 operation batch、依賴圖與唯一 weekly core/review_date 寫入同一份 task-linked 議題紀錄。JV-36 generated document index 薄連結改由第三階段 R1–R4 承接，不再把未實作文件控制面當作本治理 task 的完成阻塞。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/mc-dashboard-priority-ia-v2.md#第一階段治理定錨（2026-07-26）",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-live-decision-loop-v1",
+              "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-priority-dashboard-surface-v2",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#skill-candidate-review-gate",
+              "Vincent 2026-07-26 current session: 採用 flowchart 作為最新順序：3 階段完成法；一口氣完成，不要再回馬槍"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/document-source-registry-and-human-sync",
+                "harness-mc/morrowise-priority-dashboard-surface-v2",
+                "morrowise/action-priority-read-model-v2"
+              ],
+              "scope_comparison": {
+                "problem": "既有 MC-DASH-V2 已完成 IA 與身份分離；本次只將其完成邊界改為第一階段治理定錨，而非提前實作文件控制面或 UI。",
+                "owner_source_of_truth": "治理決策仍由 MorroWise tasks.json 與其 task-linked 議題紀錄承接；JV-36 registry、priority read model 與 harness-mc surface 各自保有後續正本。",
+                "inputs_outputs": "輸入為既有 semantic intake、replacement lineage、task dependencies 與 weekly-core evidence；輸出為唯一 operation batch 與依賴圖，不新增 task system、daily loop、scheduler 或 runtime。",
+                "lifecycle_completion": "本 task 的治理決策已完成；JV-36 薄連結、UI、runtime 與 E2E 均屬後續階段 task，不能延長或重開本 task。"
+              },
+              "decision_reason": "三階段計畫將治理定錨、工作包設計與依賴驅動實作分開；故以 amend 完成既有 governance anchor，而非建立第二份 Phase-1 tracker 或把第三階段依賴倒灌。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 採用 flowchart 作為最新順序：3 階段完成法；一口氣完成，不要再回馬槍"
+                ]
+              }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "回填 MC-DASH-V2 第一階段治理定錨 commit 62915d8；此為 completion evidence accounting，沒有改變已完成 task 的 scope、owner、輸出或 status。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc@62915d8",
+              "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+            ],
+            "recorded_at": "2026-07-26"
           }
-        },
-        {
-          "operation": "amend",
-          "from_status": "completed",
-          "to_status": "completed",
-          "reason": "回填 MC-DASH-V2 第一階段治理定錨 commit 62915d8；此為 completion evidence accounting，沒有改變已完成 task 的 scope、owner、輸出或 status。",
-          "evidence_refs": [
-            "$COLLAB/harness-mc@62915d8",
-            "node scripts/validate-tasks.mjs --changed-only --project morrowise"
-          ],
-          "recorded_at": "2026-07-26"
-        }
-      ]
+        ]
       },
       "hc_decision": {
         "task_scope": "morrowise/mc-dashboard-priority-ia-v2",
@@ -4762,53 +4993,54 @@
               "$COLLAB/harness-mc/milestones/morrowise/tasks.json#client-form-onboarding-template"
             ],
             "recorded_at": "2026-07-19"
-          }
-        , {
-          "operation": "amend",
-          "from_status": "todo",
-          "to_status": "todo",
-          "reason": "Vincent 要求第一階段後續工作直接在既有 task 補齊一致 execution contract；本次只把 JV-41 的 owner、正本、輸入、輸出、verifier 與停止條件結構化，維持它只提出 skill candidate 提醒而不建立 skill。",
-          "evidence_refs": [
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#skill-candidate-review-gate",
-            "$COLLAB/notyet-harness/000_Agent/skills/review/SKILL.md",
-            "Vincent 2026-07-25 current session: 幫我確定下列兩項"
-          ],
-          "recorded_at": "2026-07-25"
-        }, {
-          "operation": "amend",
-          "from_status": "todo",
-          "to_status": "todo",
-          "reason": "Vincent 核准將三階段 TDD 補強寫回 JV-41；加入四值提醒、既有 skill 去重、未核准禁止寫檔與 final-admission dependency 的測試契約，維持只提醒、不自動建立或安裝 skill。",
-          "evidence_refs": [
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#skill-candidate-review-gate",
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-phase3-fresh-session-e2e-admission",
-            "Vincent 2026-07-26 current session: 可以進行補寫 task"
-          ],
-          "recorded_at": "2026-07-26",
-          "semantic_intake": {
-            "outcome": "amend",
-            "compared_task_refs": [
-              "morrowise/skill-candidate-review-gate",
-              "morrowise/morrowise-phase3-fresh-session-e2e-admission",
-              "morrowise/task-lifecycle-jv32-gate"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 要求第一階段後續工作直接在既有 task 補齊一致 execution contract；本次只把 JV-41 的 owner、正本、輸入、輸出、verifier 與停止條件結構化，維持它只提出 skill candidate 提醒而不建立 skill。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#skill-candidate-review-gate",
+              "$COLLAB/notyet-harness/000_Agent/skills/review/SKILL.md",
+              "Vincent 2026-07-25 current session: 幫我確定下列兩項"
             ],
-            "scope_comparison": {
-              "problem": "仍是 Review／Closeout 的非阻斷 Skill candidate 提醒，不是 TDD gate 或自動 skill builder。",
-              "owner_source_of_truth": "JV-41 維持提醒 route owner；final admission 只提供開始條件，正式 SKILL.md 仍是 skill 正本。",
-              "inputs_outputs": "新增 test_contract 與 final dependency，不改四值輸出、核准邊界或禁止自動寫入規則。",
-              "lifecycle_completion": "JV-41 維持 todo；只有 final admission 完成後才可實作並驗證提醒。"
-            },
-            "decision_reason": "這是既有 JV-41 的 dependency 與 test contract amendment，沒有產生第二套 skill lifecycle。",
-            "approval": {
-              "status": "approved",
-              "approved_by": "Vincent",
-              "approved_at": "2026-07-26",
-              "evidence_refs": [
-                "Vincent 2026-07-26 current session: 可以進行補寫 task"
-              ]
+            "recorded_at": "2026-07-25"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准將三階段 TDD 補強寫回 JV-41；加入四值提醒、既有 skill 去重、未核准禁止寫檔與 final-admission dependency 的測試契約，維持只提醒、不自動建立或安裝 skill。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#skill-candidate-review-gate",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-phase3-fresh-session-e2e-admission",
+              "Vincent 2026-07-26 current session: 可以進行補寫 task"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/skill-candidate-review-gate",
+                "morrowise/morrowise-phase3-fresh-session-e2e-admission",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "仍是 Review／Closeout 的非阻斷 Skill candidate 提醒，不是 TDD gate 或自動 skill builder。",
+                "owner_source_of_truth": "JV-41 維持提醒 route owner；final admission 只提供開始條件，正式 SKILL.md 仍是 skill 正本。",
+                "inputs_outputs": "新增 test_contract 與 final dependency，不改四值輸出、核准邊界或禁止自動寫入規則。",
+                "lifecycle_completion": "JV-41 維持 todo；只有 final admission 完成後才可實作並驗證提醒。"
+              },
+              "decision_reason": "這是既有 JV-41 的 dependency 與 test contract amendment，沒有產生第二套 skill lifecycle。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
             }
-          }
-        },
+          },
           {
             "operation": "amend",
             "from_status": "todo",
@@ -5363,103 +5595,129 @@
         "evidence_refs": []
       },
       "jv32_route": {
-        "workflows": ["task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
-        "decision_input": ["existing scheduler/runtime evidence", "JV-40 task lifecycle gate", "daily decision and JV-36 R5 prerequisites"],
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "existing scheduler/runtime evidence",
+          "JV-40 task lifecycle gate",
+          "daily decision and JV-36 R5 prerequisites"
+        ],
         "decision_output": "single trusted heartbeat runtime contract and read model",
         "execution_boundary": "只可處理非敏感 runtime metadata、受限 runs evidence 與 generated read model；不得讀取 secret、token、cookie、raw auth、或自動改 task/schedule/外部系統。"
       },
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
-        "history": [{
-          "operation": "create",
-          "from_status": null,
-          "to_status": "todo",
-          "reason": "現有 task 僅有 scheduler 與 health 基礎，尚不存在可作為每日決策與 JV-36 R5 前提的唯一 trusted heartbeat runtime；Vincent 核准建立新 task。",
-          "evidence_refs": [
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#runtime-scheduler-v0",
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#system-pulse-schedule-task",
-            "Vincent 2026-07-21 current session: 核准此 batch，完成後驗證有無缺漏及正確性"
-          ],
-          "recorded_at": "2026-07-21",
-          "semantic_intake": {
-            "outcome": "genuinely_new",
-            "compared_task_refs": ["morrowise/runtime-scheduler-v0", "morrowise/system-pulse-schedule-task", "morrowise/task-lifecycle-jv32-gate"],
-            "scope_comparison": {
-              "problem": "既有 scheduler 解決排程執行，system pulse 解決廣義健康；兩者都未提供可被下游信任的唯一 heartbeat runtime contract。",
-              "owner_source_of_truth": "scheduler task、runs evidence 與新 read model 各維持其正本；本 task 只建立它們之間可驗證的 runtime boundary，不重寫既有 scheduler owner。",
-              "inputs_outputs": "輸入是既有 schedule metadata 和安全 run evidence；輸出是 heartbeat freshness/degraded/read model，非新的排程或通知系統。",
-              "lifecycle_completion": "完成需真實 runtime、fresh-worktree build、負向 fixtures 與下游消費邊界均驗證；目前沒有既有 task 可直接 amend 完成。"
-            },
-            "decision_reason": "需求新增的是可信 runtime 能力，不是既有 scheduler 的文字補充，故建立一個不重疊的 implementation task。",
-            "approval": {"status": "approved", "approved_by": "Vincent", "approved_at": "2026-07-21", "evidence_refs": ["Vincent 2026-07-21 current session: 核准此 batch，完成後驗證有無缺漏及正確性"]}
-          }
-        }, {
-          "operation": "amend",
-          "from_status": "todo",
-          "to_status": "todo",
-          "reason": "Vincent 要求第一階段後續工作直接在既有 task 補齊一致 execution contract；本次只把既有 owner、正本、輸入、輸出、verifier 與停止條件結構化，並依 changed-only 繁中 title gate 校正為「可信心跳 Runtime v1」，不新增 scheduler、通知或平行 runtime。",
-          "evidence_refs": [
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1",
-            "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
-            "Vincent 2026-07-25 current session: 幫我確定下列兩項"
-          ],
-          "recorded_at": "2026-07-25",
-          "semantic_intake": {
-            "outcome": "amend",
-            "compared_task_refs": [
-              "morrowise/runtime-scheduler-v0",
-              "morrowise/system-pulse-schedule-task",
-              "morrowise/morrowise-live-decision-loop-v1"
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "現有 task 僅有 scheduler 與 health 基礎，尚不存在可作為每日決策與 JV-36 R5 前提的唯一 trusted heartbeat runtime；Vincent 核准建立新 task。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#runtime-scheduler-v0",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#system-pulse-schedule-task",
+              "Vincent 2026-07-21 current session: 核准此 batch，完成後驗證有無缺漏及正確性"
             ],
-            "scope_comparison": {
-              "problem": "仍是辨識 declared schedule、loaded runtime 與真實成功 run 的可信 heartbeat 問題，不是新增 scheduler。",
-              "owner_source_of_truth": "既有 scheduler、runs evidence 與 schedule-health 維持各自正本；本 task 仍只擁有 trusted heartbeat contract。",
-              "inputs_outputs": "輸入維持安全 schedule metadata 與 run evidence；輸出維持 heartbeat freshness、degraded reason 與 read model，新增欄位只讓契約可直接執行。",
-              "lifecycle_completion": "完成仍需真實 runtime、fresh build 與正負向 fixtures；本次不改完成邊界。"
-            },
-            "decision_reason": "這是既有 implementation task 的 contract amendment，未產生第二個 runtime 或 task system。",
-            "approval": {
-              "status": "approved",
-              "approved_by": "Vincent",
-              "approved_at": "2026-07-25",
-              "evidence_refs": ["Vincent 2026-07-25 current session: 幫我確定下列兩項"]
+            "recorded_at": "2026-07-21",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/runtime-scheduler-v0",
+                "morrowise/system-pulse-schedule-task",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "既有 scheduler 解決排程執行，system pulse 解決廣義健康；兩者都未提供可被下游信任的唯一 heartbeat runtime contract。",
+                "owner_source_of_truth": "scheduler task、runs evidence 與新 read model 各維持其正本；本 task 只建立它們之間可驗證的 runtime boundary，不重寫既有 scheduler owner。",
+                "inputs_outputs": "輸入是既有 schedule metadata 和安全 run evidence；輸出是 heartbeat freshness/degraded/read model，非新的排程或通知系統。",
+                "lifecycle_completion": "完成需真實 runtime、fresh-worktree build、負向 fixtures 與下游消費邊界均驗證；目前沒有既有 task 可直接 amend 完成。"
+              },
+              "decision_reason": "需求新增的是可信 runtime 能力，不是既有 scheduler 的文字補充，故建立一個不重疊的 implementation task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-21",
+                "evidence_refs": [
+                  "Vincent 2026-07-21 current session: 核准此 batch，完成後驗證有無缺漏及正確性"
+                ]
+              }
             }
-          }
-        }, {
-          "operation": "amend",
-          "from_status": "todo",
-          "to_status": "todo",
-          "reason": "Vincent 核准將三階段 TDD 補強寫回既有 Trusted Heartbeat task；加入 declared／loaded／successful／freshness、safe probe、missing／stale／failed／fixture-only 的 Red／Green 與真實 runtime evidence 契約，不新增 scheduler。",
-          "evidence_refs": [
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1",
-            "$COLLAB/notyet-harness/schedule/dispatch.sh",
-            "Vincent 2026-07-26 current session: 可以進行補寫 task"
-          ],
-          "recorded_at": "2026-07-26",
-          "semantic_intake": {
-            "outcome": "amend",
-            "compared_task_refs": [
-              "morrowise/trusted-heartbeat-runtime-v1",
-              "morrowise/runtime-scheduler-v0",
-              "morrowise/system-pulse-schedule-task"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 要求第一階段後續工作直接在既有 task 補齊一致 execution contract；本次只把既有 owner、正本、輸入、輸出、verifier 與停止條件結構化，並依 changed-only 繁中 title gate 校正為「可信心跳 Runtime v1」，不新增 scheduler、通知或平行 runtime。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1",
+              "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
+              "Vincent 2026-07-25 current session: 幫我確定下列兩項"
             ],
-            "scope_comparison": {
-              "problem": "仍是既有 heartbeat 對真實 runtime evidence 的可信判定，不是第二個 scheduler 或 health loop。",
-              "owner_source_of_truth": "scheduler spec、safe run evidence 與 generated heartbeat read model 邊界不變。",
-              "inputs_outputs": "test_contract 只將原 acceptance 的正向、反向與 runtime evidence 行為轉成可重跑契約。",
-              "lifecycle_completion": "task 維持 todo；fixture 通過但沒有真實 run evidence 時不得完成或宣稱 live。"
-            },
-            "decision_reason": "既有 task 已完整擁有問題與輸出，故 outcome=amend。",
-            "approval": {
-              "status": "approved",
-              "approved_by": "Vincent",
-              "approved_at": "2026-07-26",
-              "evidence_refs": [
-                "Vincent 2026-07-26 current session: 可以進行補寫 task"
-              ]
+            "recorded_at": "2026-07-25",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/runtime-scheduler-v0",
+                "morrowise/system-pulse-schedule-task",
+                "morrowise/morrowise-live-decision-loop-v1"
+              ],
+              "scope_comparison": {
+                "problem": "仍是辨識 declared schedule、loaded runtime 與真實成功 run 的可信 heartbeat 問題，不是新增 scheduler。",
+                "owner_source_of_truth": "既有 scheduler、runs evidence 與 schedule-health 維持各自正本；本 task 仍只擁有 trusted heartbeat contract。",
+                "inputs_outputs": "輸入維持安全 schedule metadata 與 run evidence；輸出維持 heartbeat freshness、degraded reason 與 read model，新增欄位只讓契約可直接執行。",
+                "lifecycle_completion": "完成仍需真實 runtime、fresh build 與正負向 fixtures；本次不改完成邊界。"
+              },
+              "decision_reason": "這是既有 implementation task 的 contract amendment，未產生第二個 runtime 或 task system。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-25",
+                "evidence_refs": [
+                  "Vincent 2026-07-25 current session: 幫我確定下列兩項"
+                ]
+              }
             }
-          }
-        },
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准將三階段 TDD 補強寫回既有 Trusted Heartbeat task；加入 declared／loaded／successful／freshness、safe probe、missing／stale／failed／fixture-only 的 Red／Green 與真實 runtime evidence 契約，不新增 scheduler。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1",
+              "$COLLAB/notyet-harness/schedule/dispatch.sh",
+              "Vincent 2026-07-26 current session: 可以進行補寫 task"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/trusted-heartbeat-runtime-v1",
+                "morrowise/runtime-scheduler-v0",
+                "morrowise/system-pulse-schedule-task"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有 heartbeat 對真實 runtime evidence 的可信判定，不是第二個 scheduler 或 health loop。",
+                "owner_source_of_truth": "scheduler spec、safe run evidence 與 generated heartbeat read model 邊界不變。",
+                "inputs_outputs": "test_contract 只將原 acceptance 的正向、反向與 runtime evidence 行為轉成可重跑契約。",
+                "lifecycle_completion": "task 維持 todo；fixture 通過但沒有真實 run evidence 時不得完成或宣稱 live。"
+              },
+              "decision_reason": "既有 task 已完整擁有問題與輸出，故 outcome=amend。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
+            }
+          },
           {
             "operation": "amend",
             "from_status": "todo",
@@ -5497,13 +5755,26 @@
       },
       "hc_decision": {
         "task_scope": "morrowise/trusted-heartbeat-runtime-v1",
-        "hc_refs": ["#rightProblem", "#sourceBoundary", "#systemDynamics", "#risk", "#evidenceBased"],
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#systemDynamics",
+          "#risk",
+          "#evidenceBased"
+        ],
         "hc_reasoning": "真正問題不是再加一個定時器，而是下游無法辨識 schedule 宣告、機器載入和真實成功 run。此 task 以既有 scheduler 和安全 evidence 為輸入，將可信度、freshness 與故障原因變成可驗證 read model，拒絕 fixture 假綠燈與未載入 runtime。",
         "hc_confidence": 0.9,
-        "evidence_refs": ["$COLLAB/notyet-harness/schedule/dispatch.sh", "$COLLAB/harness-mc/public/data/schedule-health.json"],
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/schedule/dispatch.sh",
+          "$COLLAB/harness-mc/public/data/schedule-health.json"
+        ],
         "source_boundary": "HC 只作思考檢查；schedule spec、run evidence、task state 與 generated read model 仍各自為正本或衍生層。"
       },
-      "architecture_decision": {"decision": "deferred", "evaluated_at": "2026-07-21", "reason": "新 runtime/read-model 邊界可能影響既有 runtime subsystem；待真實 runtime、fresh-build、負向 fixture 與 Admission Review 證據完成後才裁決。"}
+      "architecture_decision": {
+        "decision": "deferred",
+        "evaluated_at": "2026-07-21",
+        "reason": "新 runtime/read-model 邊界可能影響既有 runtime subsystem；待真實 runtime、fresh-build、負向 fixture 與 Admission Review 證據完成後才裁決。"
+      }
     },
     {
       "id": "action-priority-read-model-v2",
@@ -5514,7 +5785,11 @@
       "priority": "high",
       "weekly_core": true,
       "review_date": "2026-07-29",
-      "dependencies": ["morrowise-dev-workflow-catalog", "task-lifecycle-jv32-gate", "morrowise-system-json-generator-v0"],
+      "dependencies": [
+        "morrowise-dev-workflow-catalog",
+        "task-lifecycle-jv32-gate",
+        "morrowise-system-json-generator-v0"
+      ],
       "done_condition": "建立只讀 MorroWise task 正本的 action priority read model v2，統一 priority、依賴、去重、freshness 與 verifier 結果；它是 dashboard surface 與每日決策 loop 的唯一優先級輸入，不得讓 UI、fixture 或第二份 task list 反向決定行動。",
       "acceptance": [
         "輸入只讀 canonical tasks.json 與明確列出的 registry/runtime read model；輸出明確標示 source_of_truth、generated_at、freshness、eligible actions、suppressed duplicates、blocked reason 與 next_action。",
@@ -5606,123 +5881,153 @@
         "evidence_refs": []
       },
       "jv32_route": {
-        "workflows": ["task-lifecycle", "domain-modeling", "implement", "tdd", "code-review", "closeout-commit-routing"],
-        "decision_input": ["canonical MorroWise tasks", "JV-40 lifecycle/semantic intake", "dashboard and daily-decision consumers"],
+        "workflows": [
+          "task-lifecycle",
+          "domain-modeling",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "canonical MorroWise tasks",
+          "JV-40 lifecycle/semantic intake",
+          "dashboard and daily-decision consumers"
+        ],
         "decision_output": "verified single action-priority read model",
         "execution_boundary": "只建立 generator/verifier/read model；不得自動改 task state、選 weekly core、發送通知、修改 UI、commit、push 或部署。"
       },
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
-        "history": [{
-          "operation": "create",
-          "from_status": null,
-          "to_status": "todo",
-          "reason": "Vincent 核准建立正確讀取 MorroWise task 正本的統一優先級 read model，作為 dashboard 與 daily decision 的上游；既有 dashboard/spec 或 lifecycle task 沒有此 generator/verifier contract。",
-          "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json", "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate", "Vincent 2026-07-21 current session: 核准此 batch，完成後驗證有無缺漏及正確性"],
-          "recorded_at": "2026-07-21",
-          "semantic_intake": {
-            "outcome": "genuinely_new",
-            "compared_task_refs": ["morrowise/morrowise-dev-workflow-catalog", "morrowise/task-lifecycle-jv32-gate", "morrowise/morrowise-system-json-generator-v0"],
-            "scope_comparison": {
-              "problem": "既有 workflow catalog 與 lifecycle gate 管理流程與狀態，但沒有一個唯一、驗證過的 action priority read model 可供 consumer 使用。",
-              "owner_source_of_truth": "tasks.json 保持 action state 正本；新 output 僅為生成 read model，不能取代或回寫正本。",
-              "inputs_outputs": "輸入為 canonical task/lifecycle 與明確 runtime evidence；輸出為排序、去重、freshness、verifier 和 next_action，不是 dashboard UI。",
-              "lifecycle_completion": "須經 fresh build、deterministic verifier 和 consumer boundary 驗收；沒有既有 task 能以 amendment 提供這個缺失能力。"
-            },
-            "decision_reason": "這是新增的 shared read-model contract，與既有 task 的 source ownership 不重疊，故以 genuinely_new 建立。",
-            "approval": {"status": "approved", "approved_by": "Vincent", "approved_at": "2026-07-21", "evidence_refs": ["Vincent 2026-07-21 current session: 核准此 batch，完成後驗證有無缺漏及正確性"]}
-          }
-        }, {
-          "operation": "amend",
-          "from_status": "todo",
-          "to_status": "in_progress",
-          "reason": "Vincent 核准將既有 Action Priority Read Model v2 選入唯一 weekly core，並依 changed-only title gate 將 canonical title 校正為繁體中文的「行動優先級唯讀模型 v2」。JV-36.R1–R4 仍是過大的 Roadmap-in-Anchor slice，不能偽裝成獨立 core；本週只完成 priority read-model 的 deterministic contract，保留 UI、daily loop、heartbeat runtime 與 JV-36.R5 的上游／下游邊界。",
-          "evidence_refs": [
-            "$COLLAB/harness-mc/milestones/morrowise/notes/mc-dashboard-priority-ia-v2.md",
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1",
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-live-decision-loop-v1",
-            "Vincent 2026-07-25 current session: 進行「將唯一 weekly core／review date 以 canonical task mutation 定錨。」"
-          ],
-          "recorded_at": "2026-07-25",
-          "semantic_intake": {
-            "outcome": "amend",
-            "compared_task_refs": [
-              "morrowise/document-source-registry-and-human-sync",
-              "morrowise/trusted-heartbeat-runtime-v1",
-              "morrowise/morrowise-live-decision-loop-v1"
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准建立正確讀取 MorroWise task 正本的統一優先級 read model，作為 dashboard 與 daily decision 的上游；既有 dashboard/spec 或 lifecycle task 沒有此 generator/verifier contract。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate",
+              "Vincent 2026-07-21 current session: 核准此 batch，完成後驗證有無缺漏及正確性"
             ],
-            "scope_comparison": {
-              "problem": "既有 priority read-model task 已是唯一解決 canonical action selection 一致性的 owner；本次只把它選入單一 weekly-core slot，不建立第二個 read model 或 daily loop。",
-              "owner_source_of_truth": "task/action state 仍由 MorroWise tasks.json 管理；本 task 的 output 仍是唯讀 generated priority read model，dashboard 與 daily loop 只消費該 output。",
-              "inputs_outputs": "輸入維持 canonical task/lifecycle 與明確 runtime evidence；本週輸出限定為 deterministic priority、dedupe、freshness、verifier 與 next_action contract，不包含 UI、scheduler 或 task state 自動寫入。",
-              "lifecycle_completion": "2026-07-29 必須以 verifier 證據完成、reframe、suspend 或 cancel；不得自動延長。surface、daily loop 與 JV-36.R5 僅在各自上游完成後開始。"
+            "recorded_at": "2026-07-21",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/morrowise-dev-workflow-catalog",
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/morrowise-system-json-generator-v0"
+              ],
+              "scope_comparison": {
+                "problem": "既有 workflow catalog 與 lifecycle gate 管理流程與狀態，但沒有一個唯一、驗證過的 action priority read model 可供 consumer 使用。",
+                "owner_source_of_truth": "tasks.json 保持 action state 正本；新 output 僅為生成 read model，不能取代或回寫正本。",
+                "inputs_outputs": "輸入為 canonical task/lifecycle 與明確 runtime evidence；輸出為排序、去重、freshness、verifier 和 next_action，不是 dashboard UI。",
+                "lifecycle_completion": "須經 fresh build、deterministic verifier 和 consumer boundary 驗收；沒有既有 task 能以 amendment 提供這個缺失能力。"
+              },
+              "decision_reason": "這是新增的 shared read-model contract，與既有 task 的 source ownership 不重疊，故以 genuinely_new 建立。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-21",
+                "evidence_refs": [
+                  "Vincent 2026-07-21 current session: 核准此 batch，完成後驗證有無缺漏及正確性"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准將既有 Action Priority Read Model v2 選入唯一 weekly core，並依 changed-only title gate 將 canonical title 校正為繁體中文的「行動優先級唯讀模型 v2」。JV-36.R1–R4 仍是過大的 Roadmap-in-Anchor slice，不能偽裝成獨立 core；本週只完成 priority read-model 的 deterministic contract，保留 UI、daily loop、heartbeat runtime 與 JV-36.R5 的上游／下游邊界。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/mc-dashboard-priority-ia-v2.md",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-live-decision-loop-v1",
+              "Vincent 2026-07-25 current session: 進行「將唯一 weekly core／review date 以 canonical task mutation 定錨。」"
+            ],
+            "recorded_at": "2026-07-25",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/document-source-registry-and-human-sync",
+                "morrowise/trusted-heartbeat-runtime-v1",
+                "morrowise/morrowise-live-decision-loop-v1"
+              ],
+              "scope_comparison": {
+                "problem": "既有 priority read-model task 已是唯一解決 canonical action selection 一致性的 owner；本次只把它選入單一 weekly-core slot，不建立第二個 read model 或 daily loop。",
+                "owner_source_of_truth": "task/action state 仍由 MorroWise tasks.json 管理；本 task 的 output 仍是唯讀 generated priority read model，dashboard 與 daily loop 只消費該 output。",
+                "inputs_outputs": "輸入維持 canonical task/lifecycle 與明確 runtime evidence；本週輸出限定為 deterministic priority、dedupe、freshness、verifier 與 next_action contract，不包含 UI、scheduler 或 task state 自動寫入。",
+                "lifecycle_completion": "2026-07-29 必須以 verifier 證據完成、reframe、suspend 或 cancel；不得自動延長。surface、daily loop 與 JV-36.R5 僅在各自上游完成後開始。"
+              },
+              "decision_reason": "JV-36.R1–R4 仍包含多個完整 control-plane 交付而不適合作為單一 task 的本週 exit；Action Priority Read Model 已有明確 canonical owner、依賴、consumer 與 verifier，因此以 amend 選入唯一 weekly core。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-25",
+                "evidence_refs": [
+                  "Vincent 2026-07-25 current session: 進行「將唯一 weekly core／review date 以 canonical task mutation 定錨。」"
+                ]
+              }
             },
-            "decision_reason": "JV-36.R1–R4 仍包含多個完整 control-plane 交付而不適合作為單一 task 的本週 exit；Action Priority Read Model 已有明確 canonical owner、依賴、consumer 與 verifier，因此以 amend 選入唯一 weekly core。",
-            "approval": {
-              "status": "approved",
+            "weekly_core_review": {
+              "decision": "admit",
               "approved_by": "Vincent",
               "approved_at": "2026-07-25",
               "evidence_refs": [
                 "Vincent 2026-07-25 current session: 進行「將唯一 weekly core／review date 以 canonical task mutation 定錨。」"
-              ]
+              ],
+              "next_review_date": "2026-07-29"
             }
           },
-          "weekly_core_review": {
-            "decision": "admit",
-            "approved_by": "Vincent",
-            "approved_at": "2026-07-25",
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 要求第一階段後續工作直接在既有 task 補齊一致 execution contract；本次只結構化既有 owner、正本、輸入、輸出、verifier 與停止條件，weekly core 與 2026-07-29 review date 不變。",
             "evidence_refs": [
-              "Vincent 2026-07-25 current session: 進行「將唯一 weekly core／review date 以 canonical task mutation 定錨。」"
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
+              "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
+              "Vincent 2026-07-25 current session: 幫我確定下列兩項"
             ],
-            "next_review_date": "2026-07-29"
-          }
-        }, {
-          "operation": "amend",
-          "from_status": "in_progress",
-          "to_status": "in_progress",
-          "reason": "Vincent 要求第一階段後續工作直接在既有 task 補齊一致 execution contract；本次只結構化既有 owner、正本、輸入、輸出、verifier 與停止條件，weekly core 與 2026-07-29 review date 不變。",
-          "evidence_refs": [
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
-            "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
-            "Vincent 2026-07-25 current session: 幫我確定下列兩項"
-          ],
-          "recorded_at": "2026-07-25"
-        }, {
-          "operation": "amend",
-          "from_status": "in_progress",
-          "to_status": "in_progress",
-          "reason": "Vincent 核准將三階段 TDD 補強寫回既有 Action Priority task；加入 canonical-only input、eligible／suppressed／blocked reason、duplicate／superseded／stale suppression 與 fresh-session／多 Agent deterministic Red／Green 契約，weekly core 與 review_date 不變。",
-          "evidence_refs": [
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
-            "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
-            "Vincent 2026-07-26 current session: 可以進行補寫 task"
-          ],
-          "recorded_at": "2026-07-26",
-          "semantic_intake": {
-            "outcome": "amend",
-            "compared_task_refs": [
-              "morrowise/action-priority-read-model-v2",
-              "morrowise/task-lifecycle-jv32-gate",
-              "harness-mc/morrowise-priority-dashboard-surface-v2"
+            "recorded_at": "2026-07-25"
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准將三階段 TDD 補強寫回既有 Action Priority task；加入 canonical-only input、eligible／suppressed／blocked reason、duplicate／superseded／stale suppression 與 fresh-session／多 Agent deterministic Red／Green 契約，weekly core 與 review_date 不變。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
+              "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
+              "Vincent 2026-07-26 current session: 可以進行補寫 task"
             ],
-            "scope_comparison": {
-              "problem": "仍是 canonical MorroWise action priority 的 deterministic read model，不是 UI 排序或第二份 task list。",
-              "owner_source_of_truth": "tasks.json 仍是 action 正本；priority v2 仍是唯一 generated read model，surface 僅為 consumer。",
-              "inputs_outputs": "test_contract 只把既有 canonical selection、suppression、freshness 與多 Agent 行為轉成可執行契約。",
-              "lifecycle_completion": "task 維持 in_progress 與唯一 weekly core；Red／Green、完整 regression、fresh build 與 deterministic evidence 齊全前不得完成。"
-            },
-            "decision_reason": "既有 task 擁有相同問題、owner、輸入輸出與完成邊界，故 outcome=amend。",
-            "approval": {
-              "status": "approved",
-              "approved_by": "Vincent",
-              "approved_at": "2026-07-26",
-              "evidence_refs": [
-                "Vincent 2026-07-26 current session: 可以進行補寫 task"
-              ]
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/action-priority-read-model-v2",
+                "morrowise/task-lifecycle-jv32-gate",
+                "harness-mc/morrowise-priority-dashboard-surface-v2"
+              ],
+              "scope_comparison": {
+                "problem": "仍是 canonical MorroWise action priority 的 deterministic read model，不是 UI 排序或第二份 task list。",
+                "owner_source_of_truth": "tasks.json 仍是 action 正本；priority v2 仍是唯一 generated read model，surface 僅為 consumer。",
+                "inputs_outputs": "test_contract 只把既有 canonical selection、suppression、freshness 與多 Agent 行為轉成可執行契約。",
+                "lifecycle_completion": "task 維持 in_progress 與唯一 weekly core；Red／Green、完整 regression、fresh build 與 deterministic evidence 齊全前不得完成。"
+              },
+              "decision_reason": "既有 task 擁有相同問題、owner、輸入輸出與完成邊界，故 outcome=amend。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
             }
-          }
-        },
+          },
           {
             "operation": "amend",
             "from_status": "in_progress",
@@ -5760,13 +6065,26 @@
       },
       "hc_decision": {
         "task_scope": "morrowise/action-priority-read-model-v2",
-        "hc_refs": ["#rightProblem", "#sourceBoundary", "#systemDynamics", "#risk", "#evidenceBased"],
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#systemDynamics",
+          "#risk",
+          "#evidenceBased"
+        ],
         "hc_reasoning": "真正問題不是再排一次清單，而是不同 consumer 會從 task 物理順序、dashboard fixture 或過期 mirror 得到不同答案。固定 canonical input、deterministic rule、suppression reason 和 verifier，才能讓 fresh session 與多 Agent 做出同一個可解釋選擇。",
         "hc_confidence": 0.92,
-        "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json", "$COLLAB/harness-mc/scripts/validate-tasks.mjs"],
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
+          "$COLLAB/harness-mc/scripts/validate-tasks.mjs"
+        ],
         "source_boundary": "HC 只是思考檢查，不是正本；tasks.json 是 task/action 正本，priority v2 是 generated read model，dashboard 與 daily loop 都只可消費 read model。"
       },
-      "architecture_decision": {"decision": "deferred", "evaluated_at": "2026-07-21", "reason": "新 generator/verifier/read-model 可能成為既有 MorroWise subsystem 的 version improvement；待 implementation 與 Admission Review 完成後裁決。"}
+      "architecture_decision": {
+        "decision": "deferred",
+        "evaluated_at": "2026-07-21",
+        "reason": "新 generator/verifier/read-model 可能成為既有 MorroWise subsystem 的 version improvement；待 implementation 與 Admission Review 完成後裁決。"
+      }
     },
     {
       "id": "morrowise-live-decision-loop-v1",
@@ -5775,8 +6093,14 @@
       "track": "runtime-delivery",
       "order_label": "MW-DECISION-V1",
       "priority": "high",
-      "dependencies": ["action-priority-read-model-v2", "trusted-heartbeat-runtime-v1", "task-lifecycle-jv32-gate"],
-      "replaces_task_refs": ["reality-tax-daily-review-task"],
+      "dependencies": [
+        "action-priority-read-model-v2",
+        "trusted-heartbeat-runtime-v1",
+        "task-lifecycle-jv32-gate"
+      ],
+      "replaces_task_refs": [
+        "reality-tax-daily-review-task"
+      ],
       "done_condition": "以 action-priority-read-model-v2 與 trusted-heartbeat-runtime-v1 為唯一輸入，建立單一 MorroWise daily decision loop；保留 Reality Tax 30 分鐘／24 小時檢查，輸出可追溯的唯一 focus、blocked/deferred/cancelled 理由與人工 next action，且不留兩套每日決策 loop。",
       "acceptance": [
         "唯一輸入為 verified priority read model、trusted heartbeat runtime 與既有 lifecycle gate；不得直接以 dashboard fixture、舊 Reality Tax task 或第二個 scheduler 判斷。",
@@ -5890,102 +6214,135 @@
         "evidence_refs": []
       },
       "jv32_route": {
-        "workflows": ["task-lifecycle", "implement", "tdd", "code-review", "closeout-commit-routing"],
-        "decision_input": ["verified action priority", "trusted heartbeat", "Reality Tax replacement contract", "JV-40 manual lifecycle gate"],
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "verified action priority",
+          "trusted heartbeat",
+          "Reality Tax replacement contract",
+          "JV-40 manual lifecycle gate"
+        ],
         "decision_output": "one evidence-backed daily decision loop",
         "execution_boundary": "只生成 decision evidence/read model 與 human action prompts；不得自動變更 task lifecycle、週核心、排程、外部通知、commit、push 或部署。"
       },
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
-        "history": [{
-          "operation": "create",
-          "from_status": null,
-          "to_status": "todo",
-          "reason": "Vincent 核准取消原 Reality Tax Daily Review task，並建立唯一 successor 承接擴大的每日決策問題，保留 Reality Tax threshold 但拒絕雙 loop。",
-          "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/tasks.json#reality-tax-daily-review-task", "$COLLAB/harness-mc/milestones/morrowise/notes/reality-tax-daily-review-task.md", "Vincent 2026-07-21 current session: 核准此 batch，完成後驗證有無缺漏及正確性"],
-          "recorded_at": "2026-07-21",
-          "semantic_intake": {
-            "outcome": "replace",
-            "compared_task_refs": ["morrowise/reality-tax-daily-review-task", "morrowise/task-lifecycle-jv32-gate", "morrowise/morrowise-dev-workflow-catalog"],
-            "replaces_task_refs": ["morrowise/reality-tax-daily-review-task"],
-            "scope_comparison": {
-              "problem": "原 task 只處理 Reality Tax 日檢；新 task 統一處理全 MorroWise daily decision，並保留原檢查作為其中一條約束。",
-              "owner_source_of_truth": "舊 task 已取消；新 task 只讀 canonical tasks/read models，成為唯一 daily decision owner，不讓 note 或 dashboard 成為第二正本。",
-              "inputs_outputs": "輸入從原 schedule/delivery contract 擴為 priority read model 與 trusted heartbeat；輸出從單一提醒擴為 evidence-backed decision loop。",
-              "lifecycle_completion": "replacement 必須先完成上游 read model/runtime，再以真實 runtime、fresh-session 與 multi-Agent evidence closeout；原 task 不會再獨立完成。"
-            },
-            "decision_reason": "語意與輸出已超出原 Reality Tax task；以取消＋唯一 replacement 維持可稽核 lineage 並阻止並行 loop。",
-            "approval": {"status": "approved", "approved_by": "Vincent", "approved_at": "2026-07-21", "evidence_refs": ["Vincent 2026-07-21 current session: 核准此 batch，完成後驗證有無缺漏及正確性"]}
-          }
-        }, {
-          "operation": "amend",
-          "from_status": "todo",
-          "to_status": "todo",
-          "reason": "Vincent 要求第一階段後續工作直接在既有 task 補齊一致 execution contract；本次只把既有 owner、正本、輸入、輸出、verifier 與停止條件結構化，並依 changed-only 繁中 title gate 校正為「MorroWise 每日決策迴圈 v1」，不建立第二 daily loop。",
-          "evidence_refs": [
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-live-decision-loop-v1",
-            "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
-            "Vincent 2026-07-25 current session: 幫我確定下列兩項"
-          ],
-          "recorded_at": "2026-07-25",
-          "semantic_intake": {
-            "outcome": "amend",
-            "compared_task_refs": [
-              "morrowise/reality-tax-daily-review-task",
-              "morrowise/action-priority-read-model-v2",
-              "morrowise/trusted-heartbeat-runtime-v1"
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准取消原 Reality Tax Daily Review task，並建立唯一 successor 承接擴大的每日決策問題，保留 Reality Tax threshold 但拒絕雙 loop。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#reality-tax-daily-review-task",
+              "$COLLAB/harness-mc/milestones/morrowise/notes/reality-tax-daily-review-task.md",
+              "Vincent 2026-07-21 current session: 核准此 batch，完成後驗證有無缺漏及正確性"
             ],
-            "scope_comparison": {
-              "problem": "仍是將 Reality Tax 併入唯一 evidence-backed daily decision 的問題，不是新增 daily reminder。",
-              "owner_source_of_truth": "canonical task state、priority read model 與 heartbeat evidence 的正本不變；本 task 仍是唯一 decision loop owner。",
-              "inputs_outputs": "輸入維持 verified priority、trusted heartbeat 與 replacement lineage；輸出維持 focus、理由與人工 next action，新增欄位只讓契約一致可查。",
-              "lifecycle_completion": "完成仍需上游驗證、真實 runtime、fresh-session 與多 Agent evidence；本次不改完成邊界。"
-            },
-            "decision_reason": "這是既有 replacement task 的 contract amendment，維持取消舊 Reality Tax task 與唯一 successor 的 lineage。",
-            "approval": {
-              "status": "approved",
-              "approved_by": "Vincent",
-              "approved_at": "2026-07-25",
-              "evidence_refs": ["Vincent 2026-07-25 current session: 幫我確定下列兩項"]
+            "recorded_at": "2026-07-21",
+            "semantic_intake": {
+              "outcome": "replace",
+              "compared_task_refs": [
+                "morrowise/reality-tax-daily-review-task",
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/morrowise-dev-workflow-catalog"
+              ],
+              "replaces_task_refs": [
+                "morrowise/reality-tax-daily-review-task"
+              ],
+              "scope_comparison": {
+                "problem": "原 task 只處理 Reality Tax 日檢；新 task 統一處理全 MorroWise daily decision，並保留原檢查作為其中一條約束。",
+                "owner_source_of_truth": "舊 task 已取消；新 task 只讀 canonical tasks/read models，成為唯一 daily decision owner，不讓 note 或 dashboard 成為第二正本。",
+                "inputs_outputs": "輸入從原 schedule/delivery contract 擴為 priority read model 與 trusted heartbeat；輸出從單一提醒擴為 evidence-backed decision loop。",
+                "lifecycle_completion": "replacement 必須先完成上游 read model/runtime，再以真實 runtime、fresh-session 與 multi-Agent evidence closeout；原 task 不會再獨立完成。"
+              },
+              "decision_reason": "語意與輸出已超出原 Reality Tax task；以取消＋唯一 replacement 維持可稽核 lineage 並阻止並行 loop。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-21",
+                "evidence_refs": [
+                  "Vincent 2026-07-21 current session: 核准此 batch，完成後驗證有無缺漏及正確性"
+                ]
+              }
             }
-          }
-        }, {
-          "operation": "amend",
-          "from_status": "todo",
-          "to_status": "todo",
-          "reason": "Vincent 核准將三階段 TDD 補強寫回唯一 Daily Decision task；加入 verified priority、trusted heartbeat、replacement lineage、missing／stale upstream 與 fresh-session／多 Agent deterministic Red／Green 契約，不建立第二 daily loop。",
-          "evidence_refs": [
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-live-decision-loop-v1",
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
-            "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1",
-            "Vincent 2026-07-26 current session: 可以進行補寫 task"
-          ],
-          "recorded_at": "2026-07-26",
-          "semantic_intake": {
-            "outcome": "amend",
-            "compared_task_refs": [
-              "morrowise/morrowise-live-decision-loop-v1",
-              "morrowise/reality-tax-daily-review-task",
-              "morrowise/action-priority-read-model-v2",
-              "morrowise/trusted-heartbeat-runtime-v1"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 要求第一階段後續工作直接在既有 task 補齊一致 execution contract；本次只把既有 owner、正本、輸入、輸出、verifier 與停止條件結構化，並依 changed-only 繁中 title gate 校正為「MorroWise 每日決策迴圈 v1」，不建立第二 daily loop。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-live-decision-loop-v1",
+              "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
+              "Vincent 2026-07-25 current session: 幫我確定下列兩項"
             ],
-            "scope_comparison": {
-              "problem": "仍是取代 Reality Tax 後的唯一 evidence-backed daily decision，不是新 reminder 或 scheduler。",
-              "owner_source_of_truth": "canonical tasks、priority read model、heartbeat evidence 與 replacement lineage 邊界不變；本 task 仍是唯一 decision owner。",
-              "inputs_outputs": "test_contract 只把 verified／missing／stale 與 deterministic selection 行為轉成可重跑測試契約。",
-              "lifecycle_completion": "task 維持 todo；上游、真實 runtime、Red／Green、完整 regression 與 fresh-session evidence 齊全前不得完成。"
-            },
-            "decision_reason": "既有 successor 完整擁有問題與完成邊界，故 outcome=amend。",
-            "approval": {
-              "status": "approved",
-              "approved_by": "Vincent",
-              "approved_at": "2026-07-26",
-              "evidence_refs": [
-                "Vincent 2026-07-26 current session: 可以進行補寫 task"
-              ]
+            "recorded_at": "2026-07-25",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/reality-tax-daily-review-task",
+                "morrowise/action-priority-read-model-v2",
+                "morrowise/trusted-heartbeat-runtime-v1"
+              ],
+              "scope_comparison": {
+                "problem": "仍是將 Reality Tax 併入唯一 evidence-backed daily decision 的問題，不是新增 daily reminder。",
+                "owner_source_of_truth": "canonical task state、priority read model 與 heartbeat evidence 的正本不變；本 task 仍是唯一 decision loop owner。",
+                "inputs_outputs": "輸入維持 verified priority、trusted heartbeat 與 replacement lineage；輸出維持 focus、理由與人工 next action，新增欄位只讓契約一致可查。",
+                "lifecycle_completion": "完成仍需上游驗證、真實 runtime、fresh-session 與多 Agent evidence；本次不改完成邊界。"
+              },
+              "decision_reason": "這是既有 replacement task 的 contract amendment，維持取消舊 Reality Tax task 與唯一 successor 的 lineage。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-25",
+                "evidence_refs": [
+                  "Vincent 2026-07-25 current session: 幫我確定下列兩項"
+                ]
+              }
             }
-          }
-        },
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准將三階段 TDD 補強寫回唯一 Daily Decision task；加入 verified priority、trusted heartbeat、replacement lineage、missing／stale upstream 與 fresh-session／多 Agent deterministic Red／Green 契約，不建立第二 daily loop。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-live-decision-loop-v1",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1",
+              "Vincent 2026-07-26 current session: 可以進行補寫 task"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-live-decision-loop-v1",
+                "morrowise/reality-tax-daily-review-task",
+                "morrowise/action-priority-read-model-v2",
+                "morrowise/trusted-heartbeat-runtime-v1"
+              ],
+              "scope_comparison": {
+                "problem": "仍是取代 Reality Tax 後的唯一 evidence-backed daily decision，不是新 reminder 或 scheduler。",
+                "owner_source_of_truth": "canonical tasks、priority read model、heartbeat evidence 與 replacement lineage 邊界不變；本 task 仍是唯一 decision owner。",
+                "inputs_outputs": "test_contract 只把 verified／missing／stale 與 deterministic selection 行為轉成可重跑測試契約。",
+                "lifecycle_completion": "task 維持 todo；上游、真實 runtime、Red／Green、完整 regression 與 fresh-session evidence 齊全前不得完成。"
+              },
+              "decision_reason": "既有 successor 完整擁有問題與完成邊界，故 outcome=amend。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
+            }
+          },
           {
             "operation": "amend",
             "from_status": "todo",
@@ -6023,13 +6380,26 @@
       },
       "hc_decision": {
         "task_scope": "morrowise/morrowise-live-decision-loop-v1",
-        "hc_refs": ["#rightProblem", "#sourceBoundary", "#systemDynamics", "#risk", "#evidenceBased"],
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#systemDynamics",
+          "#risk",
+          "#evidenceBased"
+        ],
         "hc_reasoning": "真正問題不是增加 daily reminder，而是 daily action 選擇分散在舊 Reality Tax、任務列表和 dashboard。以明確 replacement 讓單一 loop 依可信上游作判斷，並把人工決定與自動 evidence 分開。",
         "hc_confidence": 0.93,
-        "evidence_refs": ["$COLLAB/harness-mc/milestones/morrowise/notes/reality-tax-daily-review-task.md", "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate"],
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/notes/reality-tax-daily-review-task.md",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate"
+        ],
         "source_boundary": "HC 只是思考檢查，不是正本；canonical task state 在 tasks.json，priority/heartbeat/decision output 是可重建 read model，人工 lifecycle 決策仍由 Vincent 明確核准。"
       },
-      "architecture_decision": {"decision": "deferred", "evaluated_at": "2026-07-21", "reason": "此 task 取代既有 daily runtime 構想且新增 read-model consumer；待上游、真實 runtime、E2E 與 Admission Review 完成後裁決。"}
+      "architecture_decision": {
+        "decision": "deferred",
+        "evaluated_at": "2026-07-21",
+        "reason": "此 task 取代既有 daily runtime 構想且新增 read-model consumer；待上游、真實 runtime、E2E 與 Admission Review 完成後裁決。"
+      }
     },
     {
       "id": "morrowise-phase3-fresh-session-e2e-admission",
@@ -6553,7 +6923,7 @@
         "evaluated_at": "2026-07-20",
         "reason": "JV-43 已建立 Topology Registry、link manifest、generator、verifier 與 ARCHITECTURE.md Atlas，但其本身目前是既有 Agent Control Plane 內的治理能力，不另建立 runtime／scheduler／adapter subsystem。若未來要將其升格為獨立 active subsystem，必須在兩個 repo 的正式提交整合後，以 Architecture Admission Record 另行審查。"
       },
-  "note": "2026-07-20：Vincent 選定 project/.worktrees/<task>。Safety prerequisite 已以 harness-mc commit f8960a7 與 notyet-harness commit 402d663 加入 /.worktrees/ ignore rule。nested worktree baseline 發現 verifier 假設 repo 為 $COLLAB 直屬目錄；本 task 以 test-first 建立 Git common-dir resolver、43 筆 root inventory、profile/schema/contract、Atlas link manifest 與 generated project directory。JV-36、JV-37 是關聯 owner，不合併、不重複記錄其正本；既有 root-level worktree 維持 blocked，尚未搬移。QA 2026-07-20：work-anchor preflight、task schema、project-local worktree fixture、Topology Registry、Atlas manifest、Atlas drift/self-test、Topology Contract 與既有 subsystem sync 全數通過；inventory 為 canonical_project 15、git_worktree 10、unknown 9、runtime 5、archive 2、generated 2，migrated_or_verified 為空。2026-07-21：Atlas freshness 改為穩定輸出 evidence date 與 warn-after threshold；elapsed age 僅供 stale validation，不再造成每日 marker drift。cross-date self-test 與完整 Notyet QA 均通過；Notyet commit e0411c6 已由 pending task event 記錄。2026-07-21 maintenance-loop QA：A01–A10 均以 fresh verifier 通過；新增 shared startup gate、registry-driven health command、error/action fixture 與 generated Maintenance Inbox。live health 為 attention（errors 0、actions 19）：9 筆已登錄 unknown 與 10 筆 legacy root-level worktree 均保留 owner／next action，未進行任何 Finder 或 Git 實體搬移；未登錄 root、missing／duplicate record 與 stale evidence 的 fixture 均 fail closed。"
+      "note": "2026-07-20：Vincent 選定 project/.worktrees/<task>。Safety prerequisite 已以 harness-mc commit f8960a7 與 notyet-harness commit 402d663 加入 /.worktrees/ ignore rule。nested worktree baseline 發現 verifier 假設 repo 為 $COLLAB 直屬目錄；本 task 以 test-first 建立 Git common-dir resolver、43 筆 root inventory、profile/schema/contract、Atlas link manifest 與 generated project directory。JV-36、JV-37 是關聯 owner，不合併、不重複記錄其正本；既有 root-level worktree 維持 blocked，尚未搬移。QA 2026-07-20：work-anchor preflight、task schema、project-local worktree fixture、Topology Registry、Atlas manifest、Atlas drift/self-test、Topology Contract 與既有 subsystem sync 全數通過；inventory 為 canonical_project 15、git_worktree 10、unknown 9、runtime 5、archive 2、generated 2，migrated_or_verified 為空。2026-07-21：Atlas freshness 改為穩定輸出 evidence date 與 warn-after threshold；elapsed age 僅供 stale validation，不再造成每日 marker drift。cross-date self-test 與完整 Notyet QA 均通過；Notyet commit e0411c6 已由 pending task event 記錄。2026-07-21 maintenance-loop QA：A01–A10 均以 fresh verifier 通過；新增 shared startup gate、registry-driven health command、error/action fixture 與 generated Maintenance Inbox。live health 為 attention（errors 0、actions 19）：9 筆已登錄 unknown 與 10 筆 legacy root-level worktree 均保留 owner／next action，未進行任何 Finder 或 Git 實體搬移；未登錄 root、missing／duplicate record 與 stale evidence 的 fixture 均 fail closed。"
     },
     {
       "id": "morrowise-second-brain-capture-gate",
@@ -6769,6 +7139,139 @@
         "reason": "本 task 先修正既有共享 Skill 與 verifier，尚未新增 runtime、scheduler、adapter、dashboard 或獨立 read model；完成真實案例、負向 fixtures 與雙 repo closeout 後再判斷是否需要 Architecture Admission。"
       },
       "note": "2026-07-26 Vincent 要求一次解決並明確整理 main 歸屬。固定 publication order：① harness-mc/main 發布 in_progress canonical task；② notyet-harness/main 整合只含第二大腦 scope 的內容與 Skill；③ 回 harness-mc/main 完成 task closeout。2026-07-27：前兩步 remote parity 均為 0/0，Harness Pages workflow 30209696771 build／deploy 成功，進入第三步 closeout。"
+    },
+    {
+      "id": "practice-adoption-evidence-read-model-v1",
+      "title": "方法採用與成效證據 Read Model v1",
+      "status": "todo",
+      "track": "governance",
+      "order_label": "MW-PRACTICE-01",
+      "priority": "high",
+      "summary": "待實作：讓有效方法沿用既有 system rule 與 canonical task 身份，在後續專案 task 記錄預期效果、實際結果及 evidence，再產生 public-safe read model 供 notyet.md 回鏈。",
+      "done_condition": "MorroWise 在不建立第二套 task／practice tracker 的前提下，定義 canonical task 內的方法採用與成效證據契約：方法身份沿用既有 practice task ref 與 system rule ref，後續專案在原 canonical task 記錄 expected effect、verified／mixed／failed／not_observed outcome 與 evidence refs；generator 產生 public-safe、可追溯 read model 供 notyet.md 只讀。沒有真實 evidence 時不得輸出已驗證有效或專案更順；後續文章只能形成需 Vincent 核准的候選，不得背景改 task、規則、文章、commit、push 或發布。",
+      "acceptance": [
+        "PRACTICE-EVIDENCE-A01｜唯一正本：方法身份沿用既有 canonical practice task ref 與 system rule ref；採用與結果附著在後續專案原有 canonical task，不建立 practice registry、article tracker、外部 issue 正本或第二套 task lifecycle。",
+        "PRACTICE-EVIDENCE-A02｜不污染 task-events：既有 task-events 只處理 completed、commit_attached、reopened、blocked 等 task state；方法採用／成效不得偽裝成 task state event，也不得由 evidence 自動改 status。",
+        "PRACTICE-EVIDENCE-A03｜採用前契約：後續 task 只有在 Vincent 核准 create／amend 時才能加入 practice application，至少保存 practice_task_ref、rule_ref、adopted_at、expected_effect、outcome=not_observed 與安全 evidence refs；Agent 只能先提案。",
+        "PRACTICE-EVIDENCE-A04｜Closeout 結果固定：outcome vocabulary 為 verified、mixed、failed、not_observed；verified／mixed／failed 必須附可重跑 verifier、commit、run evidence 或其他持久 evidence，not_observed 必須說明缺少什麼與下次觀察條件。",
+        "PRACTICE-EVIDENCE-A05｜禁止假因果：單次 task 通過 verifier 只能證明該次觀察，不能自動推論方法造成整體改善；read model 分開輸出 expected_effect、observed_result、evidence_state 與 limitation，證據不足時保持 observed／not_observed。",
+        "PRACTICE-EVIDENCE-A06｜Public-safe generator：聚合器只讀受控 canonical sources，輸出核准公開或脫敏的 practice task ref、rule ref、origin article、project label、outcome、日期、結果摘要、limitation 與安全 evidence refs；不得輸出私人 task 本文、客戶身份、本機絕對路徑、secret、token、Cookie 或 runtime auth。",
+        "PRACTICE-EVIDENCE-A07｜文章候選只提案：只有出現新應用情境、新證據、mixed／failed 修正或達到預先定義的重複驗證門檻時，才能輸出 successor article candidate；候選不修改文章 Markdown、publication state、task state、commit、push 或 deploy。",
+        "PRACTICE-EVIDENCE-A08｜既有 wiring：需納入 MorroWise wiring gate，可追到 canonical task／rule、schema、generator、generated read model、verifier、degraded state、notyet.md consumer 與 next action；generated JSON 是 mirror，不可手改。",
+        "PRACTICE-EVIDENCE-A09｜TDD／負向驗證：fixtures 至少覆蓋未核准不得加入採用、unknown rule ref、verified 無 evidence、mixed／failed 保留、私人資料拒絕／脫敏、重跑 deterministic、網站反向寫入拒絕及 article candidate 未核准禁止寫檔。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+        "$COLLAB/harness-mc/system-workflow/schemas/morrowise-task-lifecycle.schema.json",
+        "$COLLAB/harness-mc/scripts/task-event-outbox.mjs",
+        "$COLLAB/harness-mc/scripts/apply-task-events.mjs",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-wiring-gate.json",
+        "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#practice-impact-article-lineage-surface-v1",
+        "$COLLAB/notyet-harness/000_Agent/skills/capture-insight/SKILL.md"
+      ],
+      "execution_contract": {
+        "owner": "morrowise/practice-adoption-evidence-read-model-v1",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#practice-adoption-evidence-read-model-v1",
+        "inputs": [
+          "已核准 system rule／skill／policy 與其 canonical practice task ref",
+          "後續專案既有 canonical task 的 practice application／closeout evidence",
+          "核准公開與脫敏政策"
+        ],
+        "outputs": [
+          "Canonical task practice application schema 與 write／approval gate",
+          "可重跑的 public-safe 方法採用／成效 generated read model",
+          "Evidence／causality verifier、degraded state 與 successor article candidate proposal"
+        ],
+        "verifiers": [
+          "node scripts/verify-practice-adoption-evidence-read-model.mjs",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "npm run test:morrowise-wiring",
+          "public-safe／approval／evidence／determinism negative fixtures",
+          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
+        ],
+        "stop_condition": "若找不到既有 practice task／rule 正本、需新增第二 tracker 或 registry、採用未經 Vincent 核准、結果無真實 evidence、public output 無法脫敏、會污染 task-events，或候選會自動改 task／規則／文章／commit／push／發布時停止並保持 todo／degraded。"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ],
+        "decision_input": [
+          "Vincent 定義的完整實踐鏈與 notyet.md 原文／後續文章回鏈需求",
+          "既有 JV-32 canonical task lifecycle、task-events single-writer 與 MorroWise wiring gate",
+          "JV-08 Pulse proposal、JV-41 Skill candidate reminder 與 writing-system article seed 的責任邊界",
+          "HC #rightProblem、#systemDynamics、#sourceBoundary、#evidenceBased、#vincentThinking"
+        ],
+        "decision_output": "一個以既有 system rule 與 canonical task 為正本、以後續 task closeout evidence 為觀察、並產生 public-safe read model 與文章候選提案的方法實證能力。",
+        "execution_boundary": "本次只建立 canonical todo task 與可驗收 contract；不得修改 schema、generator、task-events、wiring registry、generated JSON、網站、文章、外部 tracker、Canvas 或 Heptabase，也不授權 commit、push 或部署。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准把有效方法從系統規則、後續專案採用、真實結果到原文章／後續文章回鏈定為完整流程，並確認 notyet.md 需要接上 MorroWise 正本與證據層。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/notyet-md/project.json",
+              "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#practice-impact-article-lineage-surface-v1",
+              "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+              "Vincent 2026-07-26 current session: 方向可以；看起來要跟 MorroWise 接上線"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/system-pulse-feedback-loop",
+                "morrowise/skill-candidate-review-gate",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "JV-08 將 runtime failure 轉 proposal，JV-41 在 closeout 提醒 Skill candidate，JV-32 管 task mutation；都不擁有『特定方法被哪些後續專案採用、結果與限制為何、如何產生 public-safe article backlink』的證據契約。",
+                "owner_source_of_truth": "方法本身仍由既有 system rule／skill／policy 與 canonical practice task 擁有；後續應用留在原 project task，MorroWise task 只擁有共通 schema、聚合 read model、verifier 與候選提案，不取代既有 owner。",
+                "inputs_outputs": "輸入是既有 rule refs 與後續 canonical task closeout evidence；輸出是 public-safe deterministic read model、evidence／causality gate 及 successor article candidate，不是 pulse proposal、Skill builder 或 task state。",
+                "lifecycle_completion": "只有 schema、approval write gate、generator、negative fixtures、真實跨專案 evidence、wiring gate 與 Architecture Admission 通過才可完成；建立 task 或產生 fixture 不代表已有真實成效。"
+              },
+              "decision_reason": "問題、owner、輸入輸出與完成邊界皆未由既有 task 承接，因此在唯一 MorroWise project 建立 genuinely_new system task；採用資料仍附著原 canonical task，沒有建立第二 tracker。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 方向可以；優化原本的 task"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/practice-adoption-evidence-read-model-v1",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#sourceBoundary",
+          "#risk",
+          "#evidenceBased",
+          "#vincentThinking"
+        ],
+        "hc_reasoning": "真正問題不是缺一份方法清單，而是有效做法進入系統後沒有低重複、可驗證的跨專案 feedback loop。#sourceBoundary 固定方法在原 rule／skill／policy、採用在原 canonical task、聚合在 MorroWise、公開敘事在 notyet.md；#evidenceBased 將 expected effect、observed result、limitation 與驗證層級分開，阻止單次成功與 fixture 假因果；#risk 禁止第二 tracker、私人資料外洩與未核准自動寫入／發布。",
+        "hc_confidence": 0.96,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+          "$COLLAB/harness-mc/system-workflow/schemas/morrowise-task-lifecycle.schema.json",
+          "$COLLAB/harness-mc/scripts/task-event-outbox.mjs",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-wiring-gate.json",
+          "$COLLAB/notyet-harness/300_Obsidian_brain/HC/_index/hc-registry.md"
+        ],
+        "source_boundary": "HC 只用於思考檢查，不是正本；方法內容由既有 rule／skill／policy 管理，task 狀態與採用證據由各 project canonical tasks.json 管理，MorroWise generated read model 是 mirror，notyet.md 只負責公開呈現。"
+      },
+      "architecture_decision": {
+        "decision": "deferred",
+        "evaluated_at": "2026-07-26",
+        "reason": "本 task 計畫新增共通 schema、generator、verifier、public-safe read model 與跨專案 consumer，具 Architecture Admission 候選性；現階段只建立 todo contract，待 TDD fixtures 與 implementation evidence 完成後再決定 promoted／version improvement，禁止先寫 ARCHITECTURE.md managed block。"
+      },
+      "note": "2026-07-26 只建立 MorroWise work anchor 與責任邊界。依唯一 weekly core 規則維持 todo；未被正式 admit 前不得進入 implementation。"
     }
   ]
 }

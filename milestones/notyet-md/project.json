@@ -1,6 +1,6 @@
 {
   "name": "notyet.md",
-  "description": "還沒完成的世界——AI 時代工作系統的公開建造現場（Astro 靜態站，部署 Zeabur）",
+  "description": "AI 時代工作系統的公開建造現場：不只發布單篇文章，而是讓有效方法從發現、寫入系統規則、後續專案採用、真實結果驗證到原文回鏈／後續文章形成可追溯歷程（Astro 靜態站，部署 Zeabur）",
   "type": "standalone",
   "status": "active",
   "priority": "high",
@@ -11,11 +11,14 @@
   "deploy_target": "zeabur",
   "tracks": {
     "p0-ship": "P0｜先上線（極簡 Astro 站）",
+    "p1-lineage": "P1｜方法實證與文章歷程",
     "p1-style": "P1｜de-AI 化 style",
     "p2-hiblocks": "P2｜萃取編輯 block 進 Hiblocks",
     "p3-cms": "P3｜簡易後台 CMS 模組"
   },
   "goals": [
+    "本專案核心：公開呈現有效方法如何被發現、核准寫入系統規則、由後續專案採用並以真實結果驗證，讓原文章能回鏈實際應用與後續文章，而不是停在單次心得或聊天紀錄",
+    "以單向資料鏈接上 MorroWise：MorroWise canonical task／規則／證據是方法採用與成效正本，notyet.md 只讀 public-safe generated read model，絕不反向成為 task、規則或成效 tracker",
     "以「還沒完成但已運作」為命題，公開記錄 AI 時代工作系統的建造過程，作為三站生態系（notyet.md → hisenzi.com → Medium）的唯一主更新站",
     "v0.1 極簡上線：home/archive/post/about 四頁 + draft→wip→shipping 狀態機 + 真實文章，部署 Zeabur",
     "設計層 token 化（theme-notyet，--hi-* 命名與 Hiblocks 相容）：style 可獨立 de-AI 化、未來 block 可低成本萃取進 Hiblocks",
@@ -95,6 +98,13 @@
       "reason": "白板 defer 清單明列『中英雙語：中文先穩，英文 v2』『設計系統：markdown 樸素即身份』，style 屬可延後的 80%；上線前修 style = 完美主義拖延（白板頭號威脅）",
       "alternatives_rejected": "上線前先 de-AI style；v0.1 就做雙語（架構變重、拖慢上線）",
       "hc_used": "#rightProblem #constraints #gapAnalysis"
+    },
+    {
+      "topic": "方法實證回鏈與 MorroWise 責任邊界",
+      "decision": "MorroWise 管理方法規則、後續 canonical task 的採用契約、真實結果 evidence 與 public-safe generated read model；notyet.md 只管理文章本身的 theme lineage 與公開呈現。資料只能由 MorroWise 流向 notyet.md，網站不得反向修改 task、規則、evidence 或 publication state。",
+      "reason": "真正要解決的不是文章缺少版本號，而是有效方法寫入系統後，後續專案是否真的採用、結果是否符合預期，以及這些證據能否回到原文章。把成效狀態放進網站會形成第二正本；讓文章只讀 MorroWise 聚合結果，可同時維持可追溯性、真實證據與發布安全。",
+      "alternatives_rejected": "建立獨立 article/practice tracker（造成第二正本與漂移）；讓網站掃描聊天或專案資料推論成效（不可驗證且可能洩漏私人資訊）；背景自動改文或發布後續文章（越過 Vincent 核准）。",
+      "hc_used": "#rightProblem #systemDynamics #sourceBoundary #evidenceBased #vincentThinking"
     }
   ]
 }

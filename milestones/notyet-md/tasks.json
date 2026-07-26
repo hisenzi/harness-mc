@@ -188,6 +188,129 @@
         "4bc4918",
         "2f507b0"
       ]
+    },
+    {
+      "id": "practice-impact-article-lineage-surface-v1",
+      "title": "方法實證回鏈與文章主題歷程 v1",
+      "status": "todo",
+      "track": "p1-lineage",
+      "priority": "high",
+      "blocked_by": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#practice-adoption-evidence-read-model-v1",
+      "summary": "待實作：讓同一主題的不同標題、不同日期文章形成可讀歷程，並從 MorroWise public-safe read model 顯示方法寫入規則後的後續專案採用與真實結果。",
+      "done_condition": "notyet.md 能以同一 theme 的多篇 dated article 顯示發現、系統規則變更、後續專案採用、結果驗證與後續文章歷程；原文章的後續採用區塊只讀 MorroWise 產生的 public-safe read model，無真實 evidence 時不得宣稱方法有效或專案更順。網站不得持有 task／規則／成效正本，不得背景改寫文章、建立文章、commit、push 或發布。",
+      "acceptance": [
+        "NY-LINEAGE-A01｜核心問題明確：本 task 解決的是『有效方法寫入系統後，後續是否採用、實際結果為何，以及如何回鏈原文章／形成後續文章』，不是文章版本號、CMS、設計風格或另一套專案 tracker。",
+        "NY-LINEAGE-A02｜單向 MorroWise wiring：資料鏈固定為 MorroWise canonical task／rule／evidence → public-safe generated read model → notyet.md；網站不得反向修改 task、規則、evidence、publication state 或外部專案。",
+        "NY-LINEAGE-A03｜文章 lineage 不另建人工 registry：文章 frontmatter 以 stable theme id、lineage stage 與必要 previous/successor reference 表達主題關係；同一主題可有不同標題與日期，排序與前後關係由 content collection／generator 產生，禁止人工維護第二份文章狀態表。",
+        "NY-LINEAGE-A04｜原文回鏈：文章頁可顯示原始發現、system rule ref、後續採用專案的公開安全摘要、outcome 與 evidence state，並連到已核准公開的後續文章；沒有採用或結果時清楚顯示尚未觀察，不得留白假裝完成。",
+        "NY-LINEAGE-A05｜證據與敘事分離：verified、mixed、failed、not_observed 必須依 MorroWise read model 呈現；只有 verified 且 evidence refs 完整時可使用『已驗證有效』等結論，不能從單次成功推論因果或自動升級文章狀態。",
+        "NY-LINEAGE-A06｜隱私與安全：public read model 只含核准公開或脫敏的 project label、task ref、結果摘要、日期與安全 evidence ref；不得輸出客戶姓名、私人 task 內容、絕對本機路徑、secret、token、Cookie 或 runtime auth。",
+        "NY-LINEAGE-A07｜Agent 只提案：達到後續文章門檻時只能輸出 article candidate、理由、來源文章與 evidence refs；未經 Vincent 核准不得新增／修改文章、改 publication state、commit、push 或部署。",
+        "NY-LINEAGE-A08｜驗證可判定：schema／fixtures 至少覆蓋同主題多篇文章、不同主題隔離、無 evidence 不得綠燈、mixed／failed 顯示、私人資料脫敏與未核准禁止寫檔；fresh build 與實際文章 route 必須通過。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/notyet-md/project.json",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#practice-adoption-evidence-read-model-v1",
+        "$COLLAB/notyet_website/notyet-md/src/content.config.ts",
+        "$COLLAB/notyet_website/notyet-md/src/pages/blog/[slug].astro",
+        "$COLLAB/notyet_website/notyet-md/src/content/blog/zh/2026-07-26-ai-worktree-single-developer.md"
+      ],
+      "execution_contract": {
+        "owner": "notyet-md/practice-impact-article-lineage-surface-v1",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#practice-impact-article-lineage-surface-v1",
+        "inputs": [
+          "MorroWise public-safe 方法採用與成效 generated read model",
+          "文章 content collection、theme lineage metadata 與既有 dated filename contract"
+        ],
+        "outputs": [
+          "同主題文章歷程頁／區塊與前後文章導覽",
+          "原文章的後續採用、真實結果、evidence state 與後續文章回鏈",
+          "只提案、不自動寫文或發布的 article candidate 顯示"
+        ],
+        "verifiers": [
+          "npm run build",
+          "lineage schema／同主題排序／不同主題隔離 fixtures",
+          "public-safe read model contract verifier",
+          "未核准禁止寫文章、commit、push 或部署的 negative fixture"
+        ],
+        "stop_condition": "若 MorroWise read model 尚未完成、資料含私人內容或本機絕對路徑、outcome 無 evidence、網站需反向修改 canonical state，或 article candidate 會自動寫檔／發布時停止；不得以 fixture 假綠燈宣稱已有真實後續採用結果。"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ],
+        "decision_input": [
+          "Vincent 定義的完整鏈：發現有效方法 → 寫入系統規則 → 後續專案採用 → 蒐集實際結果 → 回鏈原文章／產生後續文章",
+          "既有 notyet.md content collection、文章狀態機與 2026-07-26 AI／worktree 文章素材",
+          "MorroWise 為唯一活系統、tasks.json 為 canonical task 正本與網站只讀 generated data 的共享邊界"
+        ],
+        "decision_output": "一個只讀 MorroWise public-safe evidence 的文章 lineage surface，讓同主題文章與後續專案結果形成可追溯公開歷程。",
+        "execution_boundary": "本次只優化 project 核心並建立 canonical todo task；不修改 notyet.md 網站、article frontmatter、MorroWise schema／generator、generated JSON、外部 tracker、Canvas 或 Heptabase，也不授權 commit、push 或部署。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准將『發現有效方法 → 寫入系統規則 → 後續專案採用 → 蒐集實際結果 → 回鏈原文章／產生後續文章』定為 notyet.md 核心，並確認需接上 MorroWise 而不建立第二套 tracker。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/notyet-md/project.json",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#practice-adoption-evidence-read-model-v1",
+              "Vincent 2026-07-26 current session: 方向可以；優化原本的 task；寫上要解決什麼、本專案核心；看起來要跟 MorroWise 接上線"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "notyet-md/p3-1",
+                "writing-system/article-seed-morrowise-task-anchor-update"
+              ],
+              "scope_comparison": {
+                "problem": "p3-1 解決 Markdown CMS，writing-system task 只更新單篇文章種子；兩者都不處理方法寫入系統後的跨專案採用證據、原文回鏈與同主題文章歷程。",
+                "owner_source_of_truth": "本 task 只擁有 notyet.md 公開文章 lineage surface；方法規則、採用與結果正本由 MorroWise canonical sources 擁有，文章素材仍由原內容流程管理。",
+                "inputs_outputs": "輸入是 MorroWise public-safe read model 與文章 lineage metadata；輸出是主題歷程、後續採用／結果區塊與文章候選顯示，不是 CMS、system rule 或 task mutation。",
+                "lifecycle_completion": "只有真實 read model wiring、lineage fixtures、fresh build 與安全／核准 negative cases 通過才可完成；單純補文章 frontmatter 或 project 說明不代表功能完成。"
+              },
+              "decision_reason": "這是與 CMS、style、文章種子及 MorroWise system layer 邊界不同的公開 surface，既有 task 無法承接，故在既有 notyet-md project 內建立 genuinely_new task，而非另建專案或 tracker。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 方向可以；優化原本的 task"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "hc_decision": {
+        "task_scope": "notyet-md/practice-impact-article-lineage-surface-v1",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#organization",
+          "#evidenceBased",
+          "#vincentThinking"
+        ],
+        "hc_reasoning": "真正問題不是文章如何標版本，而是方法改進是否進入系統、是否被後續專案採用、結果能否驗證並回到原始敘事。#systemDynamics 將文章放在實踐 feedback loop 的公開 surface；#evidenceBased 阻止單次心得被寫成已證實因果；#vincentThinking 固定 MorroWise 為正本與聚合層、notyet.md 為只讀呈現，避免第二 tracker 與背景自動發布。",
+        "hc_confidence": 0.95,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/notyet-md/project.json",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate",
+          "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+          "$COLLAB/notyet-harness/300_Obsidian_brain/HC/_index/hc-registry.md"
+        ],
+        "source_boundary": "HC 只負責思考檢查，不是正本；notyet-md tasks.json 管公開 surface task，文章 Markdown 管文章內容，方法規則／採用／結果與 public-safe evidence read model 由 MorroWise canonical sources 管理。"
+      },
+      "architecture_decision": {
+        "decision": "not_required",
+        "evaluated_at": "2026-07-26",
+        "reason": "本 task 是 notyet.md 公開網站 surface，不建立新的 system registry、runtime、scheduler 或 canonical evidence source；其上游 MorroWise system task 在 implementation 前需另做 Architecture Admission Review。"
+      },
+      "note": "2026-07-26 只完成核心問題、責任邊界與可驗收 task 定錨。Status 維持 todo；MorroWise public-safe read model 完成前不得實作成真實成效 surface或宣稱已有後續專案驗證。"
     }
   ]
 }

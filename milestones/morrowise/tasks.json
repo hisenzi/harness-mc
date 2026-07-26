@@ -4885,6 +4885,173 @@
         "reason": "JV-43 已建立 Topology Registry、link manifest、generator、verifier 與 ARCHITECTURE.md Atlas，但其本身目前是既有 Agent Control Plane 內的治理能力，不另建立 runtime／scheduler／adapter subsystem。若未來要將其升格為獨立 active subsystem，必須在兩個 repo 的正式提交整合後，以 Architecture Admission Record 另行審查。"
       },
   "note": "2026-07-20：Vincent 選定 project/.worktrees/<task>。Safety prerequisite 已以 harness-mc commit f8960a7 與 notyet-harness commit 402d663 加入 /.worktrees/ ignore rule。nested worktree baseline 發現 verifier 假設 repo 為 $COLLAB 直屬目錄；本 task 以 test-first 建立 Git common-dir resolver、43 筆 root inventory、profile/schema/contract、Atlas link manifest 與 generated project directory。JV-36、JV-37 是關聯 owner，不合併、不重複記錄其正本；既有 root-level worktree 維持 blocked，尚未搬移。QA 2026-07-20：work-anchor preflight、task schema、project-local worktree fixture、Topology Registry、Atlas manifest、Atlas drift/self-test、Topology Contract 與既有 subsystem sync 全數通過；inventory 為 canonical_project 15、git_worktree 10、unknown 9、runtime 5、archive 2、generated 2，migrated_or_verified 為空。2026-07-21：Atlas freshness 改為穩定輸出 evidence date 與 warn-after threshold；elapsed age 僅供 stale validation，不再造成每日 marker drift。cross-date self-test 與完整 Notyet QA 均通過；Notyet commit e0411c6 已由 pending task event 記錄。2026-07-21 maintenance-loop QA：A01–A10 均以 fresh verifier 通過；新增 shared startup gate、registry-driven health command、error/action fixture 與 generated Maintenance Inbox。live health 為 attention（errors 0、actions 19）：9 筆已登錄 unknown 與 10 筆 legacy root-level worktree 均保留 owner／next action，未進行任何 Finder 或 Git 實體搬移；未登錄 root、missing／duplicate record 與 stale evidence 的 fixture 均 fail closed。"
+    },
+    {
+      "id": "morrowise-second-brain-capture-gate",
+      "title": "第二大腦知識庫收錄 Skill 與驗證整合",
+      "status": "in_progress",
+      "track": "governance",
+      "order_label": "JV-44",
+      "priority": "high",
+      "dependencies": [
+        "morrowise-dev-workflow-catalog",
+        "task-lifecycle-jv32-gate"
+      ],
+      "done_condition": "建立唯一共用的 morrowise-second-brain-capture Skill 與可重跑 verifier；驗證器必須實際解析 repo AGENTS.md 共用入口、拒絕偽造或損壞的來源資產、強制實踐卡的 translated-application 證據狀態與證據／回顧／邊界，並以完整負向 fixtures 與既有心智訓練主題證明零斷鏈、可行動、可追溯。canonical task 先到達 harness-mc/main remote truth，再將乾淨的第二大腦內容與 Skill 整合至 notyet-harness/main；不得把其他 Agent 治理 commit 綁入本次知識收錄。",
+      "acceptance": [
+        "A01｜MorroWise tasks.json 是本次共用 Skill／verifier 治理的唯一 work anchor；原始知識仍以 notyet-harness/300_Obsidian_brain/知識庫為正本，既有 self-learning 書頁 task 不被改寫成系統 task。",
+        "A02｜notyet-harness main 整合線只能包含第二大腦知識、共用入口、morrowise-second-brain-capture Skill、verifier、tests 與現有案例 migration；不得帶入前置的 worktree／JV-32／JV-40 治理 commits。",
+        "A03｜verify-capture.mjs 必須讀取實際 repo AGENTS.md，解析並確認它可路由至知識庫 INDEX；只在 99_Agent取用模擬.md 寫入口文字不得通過。",
+        "A04｜本機來源資產必須非空且符合副檔名的基本檔案簽章；文字內容冒充 JPG／PNG／PDF 必須失敗，既有 13 張 JPEG 必須通過。",
+        "A05｜每張 practice-card 必須包含 claim_status=translated-application、derived_from、source_pages，並具備觸發、最小動作、可觀察結果、證據、回顧與來源／使用邊界；缺項 fixture 必須失敗。",
+        "A06｜verifier 負向 fixtures 至少覆蓋缺少實際 AGENTS 路由、偽造來源資產、實踐卡缺 claim_status、實踐卡缺證據／回顧／邊界、斷鏈、硬編本機路徑與偽造 independent fresh Agent。",
+        "A07｜既有《奧運金牌選手的「心靈肌肉」鍛鍊法》主題完成 migration；兩層 INDEX、MOC、概念、三張實踐卡、來源筆記、99 模擬與 13 張圖片全部通過 verifier。",
+        "A08｜提交前通過 verifier tests、真實主題 verifier、SKILLS-INDEX --check、JPEG 解碼抽查、git diff --check、共享路徑檢查與 changed-only MorroWise task validator。",
+        "A09｜Remote publication 固定三步：先將 in_progress canonical task 發布到 harness-mc/main，再將第二大腦內容與 Skill 發布到 notyet-harness/main，最後回 harness-mc/main 完成 task closeout；兩個 remote main SHA、ahead／behind=0/0 與 canonical task commits／summary 一致後才可宣告跨 session／跨機器接上。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/skills/morrowise-second-brain-capture/SKILL.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/morrowise-second-brain-capture/scripts/verify-capture.mjs",
+        "$COLLAB/notyet-harness/000_Agent/skills/morrowise-second-brain-capture/tests/verify-capture.test.mjs",
+        "$COLLAB/notyet-harness/300_Obsidian_brain/知識庫/心智訓練/奧運金牌選手的「心靈肌肉」鍛鍊法/00_MOC.md",
+        "$COLLAB/harness-mc/milestones/self-learning/tasks.json#mind-training-book-capture",
+        "Vincent 2026-07-26 current session: 一次解決，該回到哪個 main 整理清楚"
+      ],
+      "execution_contract": {
+        "owner": "morrowise/morrowise-second-brain-capture-gate",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-second-brain-capture-gate",
+        "inputs": [
+          "既有第二大腦收錄 Skill、規則、筆記模式與 verifier tests",
+          "既有心智訓練主題及其來源資產",
+          "origin/main 與 codex/morrowise-second-brain-capture 的六筆差異"
+        ],
+        "outputs": [
+          "無假陽性的第二大腦收錄 verifier 與負向 tests",
+          "符合規則的既有主題 migration",
+          "只含第二大腦 scope 的 notyet-harness main 整合線",
+          "兩個 repo 的 remote truth 與 canonical task closeout"
+        ],
+        "verifiers": [
+          "node 000_Agent/skills/morrowise-second-brain-capture/tests/verify-capture.test.mjs",
+          "node 000_Agent/skills/morrowise-second-brain-capture/scripts/verify-capture.mjs <topic>",
+          "python3 000_Agent/scripts/update-skills-index.py --check",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "git diff --check"
+        ],
+        "stop_condition": "實際 AGENTS 路由、資產簽章、實踐卡最低欄位、零斷鏈、task validator、clean diff 或 remote parity 任一失敗時停止，不得整合 main 或宣告已接上。",
+        "write_boundary": "可修改本 task、notyet-harness 第二大腦知識、morrowise-second-brain-capture Skill／references／verifier／tests 與 generated SKILLS-INDEX；不得修改其他 task lane、其他主題、外部 tracker、secrets、runtime auth、排程或 dashboard。commit、push 與 main integration 仍須依 worktree-commit／cc-push 取得 Vincent 明確核准。"
+      },
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "沒有實際 repo AGENTS.md 或 AGENTS.md 未連到知識庫 INDEX 時 verifier 必須失敗。",
+          "文字內容冒充 JPG、空資產或錯誤檔案簽章必須失敗。",
+          "實踐卡缺 translated-application、證據、回顧或來源邊界必須失敗。",
+          "完整 fixture 與既有真實主題必須通過且零斷鏈。"
+        ],
+        "test_level": [
+          "unit",
+          "negative_fixture",
+          "real_capture_regression",
+          "cross_repo_integration"
+        ],
+        "red_command": "node --test 000_Agent/skills/morrowise-second-brain-capture/tests/verify-capture.test.mjs",
+        "expected_red_reason": "新增 AGENTS 路由、資產簽章及實踐卡最低完成條件的負向 fixtures 後，舊 verifier 必須先失敗。",
+        "green_command": "node --test 000_Agent/skills/morrowise-second-brain-capture/tests/verify-capture.test.mjs",
+        "full_regression_commands": [
+          "node 000_Agent/skills/morrowise-second-brain-capture/scripts/verify-capture.mjs 300_Obsidian_brain/知識庫/心智訓練/奧運金牌選手的「心靈肌肉」鍛鍊法",
+          "python3 000_Agent/scripts/update-skills-index.py --check",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "git diff --check"
+        ],
+        "fixture_refs": [
+          "$COLLAB/notyet-harness/000_Agent/skills/morrowise-second-brain-capture/tests/verify-capture.test.mjs",
+          "$COLLAB/notyet-harness/300_Obsidian_brain/知識庫/心智訓練/奧運金牌選手的「心靈肌肉」鍛鍊法"
+        ],
+        "runtime_evidence_required": false,
+        "evidence_refs": []
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "六筆 branch audit 的逐筆判定",
+          "舊 verifier tests 8/8 但允許缺 AGENTS、偽造 JPG 與不完整 practice-card 的假陽性證據",
+          "harness-mc 與 notyet-harness remote main 的 source-of-truth 邊界"
+        ],
+        "decision_output": "一條先 canonical task、後知識與 Skill 的雙 repo main 整合路徑，以及可拒絕假陽性的 verifier。",
+        "execution_boundary": "只在隔離 task branches 修改 acceptance 明列的 exact scope；不碰現有 dirty worktree，不將前四筆 Agent 治理 commit 混入第二大腦整合線，不在未核准前 commit、push 或整合 main。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 核准一次解決六筆 branch audit 揭露的 canonical owner、verifier 假陽性與 main 整合問題，要求明確固定先 harness-mc/main、後 notyet-harness/main。",
+            "evidence_refs": [
+              "Vincent 2026-07-26 current session: 一次解決，該回到哪個 main 整理清楚",
+              "$COLLAB/notyet-harness@80b53a69418dc6f76fbad9a89d86f3d9788890eb",
+              "$COLLAB/harness-mc/milestones/self-learning/tasks.json#mind-training-book-capture"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/memory-health-read-model",
+                "morrowise/skill-candidate-review-gate",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "既有 task 分別管理第二大腦健康度、Skill 候選提醒、task lifecycle 與單一本書收錄，沒有 owner 管理正式第二大腦收錄 Skill、假陽性 verifier 與雙 repo main 整合。",
+                "owner_source_of_truth": "新 MorroWise task 只擁有共用收錄 workflow、verifier 與 integration gate；知識內容仍在 Obsidian 知識庫，原書收錄結果仍由 self-learning task 擁有。",
+                "inputs_outputs": "輸入是既有 Skill、rules、patterns、verifier、tests、真實主題與六筆 audit；輸出是補強後 verifier、案例 migration、乾淨 notyet integration line 與兩 repo remote closeout。",
+                "lifecycle_completion": "只有負向 fixtures、真實主題、task validator、clean diff、兩個 main remote parity 與 canonical task closeout 全部通過才可 completed。"
+              },
+              "decision_reason": "相鄰 task 的問題、owner、輸入輸出與完成邊界都不能承接本次共用 workflow 與 integration gate，因此建立單一 genuinely_new MorroWise work anchor。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 一次解決，該回到哪個 main 整理清楚"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/morrowise-second-brain-capture-gate",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#sourceBoundary",
+          "#risk",
+          "#evidenceBased"
+        ],
+        "hc_reasoning": "真正問題不是把六筆 commit 全塞進 main，而是共用第二大腦收錄能力缺少正確 owner、可拒絕假陽性的 verifier 與固定 publication order。#rightProblem 將工作收斂為 canonical task、乾淨 scope 與真實驗證；#systemDynamics 把成功條件寫回 Skill、tests 與 integration gate；#sourceBoundary 分開 MorroWise task、Obsidian 知識、Agent 入口、generated index 與 remote truth；#risk 保留現有 dirty worktree並阻擋偽造證據；#evidenceBased 要求負向 fixtures、真實主題、clean diff 與 remote SHA。",
+        "hc_confidence": 0.96,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/000_Agent/skills/morrowise-second-brain-capture/SKILL.md",
+          "$COLLAB/notyet-harness/000_Agent/skills/morrowise-second-brain-capture/scripts/verify-capture.mjs",
+          "$COLLAB/notyet-harness/000_Agent/skills/morrowise-second-brain-capture/tests/verify-capture.test.mjs",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json"
+        ],
+        "source_boundary": "HC 只負責思考檢查，不是正本；task state 由 MorroWise tasks.json 管理，知識內容由 notyet-harness 第二大腦知識庫管理，Skill／verifier 由其正式檔案管理，remote truth 由兩個 origin/main SHA 證明。"
+      },
+      "architecture_decision": {
+        "decision": "deferred",
+        "evaluated_at": "2026-07-26",
+        "reason": "本 task 先修正既有共享 Skill 與 verifier，尚未新增 runtime、scheduler、adapter、dashboard 或獨立 read model；完成真實案例、負向 fixtures 與雙 repo closeout 後再判斷是否需要 Architecture Admission。"
+      },
+      "note": "2026-07-26 Vincent 要求一次解決並明確整理 main 歸屬。固定 publication order：① harness-mc/main 發布 in_progress canonical task；② notyet-harness/main 整合只含第二大腦 scope 的內容與 Skill；③ 回 harness-mc/main 完成 task closeout。"
     }
   ]
 }

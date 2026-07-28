@@ -2662,7 +2662,8 @@
       "priority": "high",
       "completed_at": "2026-07-26",
       "commits": [
-        "a19b43f"
+        "a19b43f",
+        "25c43d7"
       ],
       "depends_on": [
         "projects-pai-domain-filter-alignment"
@@ -2740,6 +2741,18 @@
             "reason": "依 worktree-commit Step 7 將已驗證的 Future Practice 領域顯示與理財輸出連接關鍵實作 commit 回填至 completed task，保持 Git history 與 canonical task 雙向追溯。",
             "evidence_refs": [
               "git commit a19b43f",
+              "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#future-practice-domain-tracking-v1"
+            ],
+            "recorded_at": "2026-07-28"
+          },
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "Future Practice 關鍵實作已由原 branch commit a19b43f 等值整合為 main commit 25c43d7；保留原 hash 作 lineage，並追加 main hash，避免 branch 清理後 canonical task 失去可達的實作證據。",
+            "evidence_refs": [
+              "git commit a19b43f",
+              "main commit 25c43d7",
               "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#future-practice-domain-tracking-v1"
             ],
             "recorded_at": "2026-07-28"

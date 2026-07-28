@@ -2,8 +2,8 @@
   "registry_id": "morrowise-architecture-subsystems.v0",
   "task_id": "architecture-subsystem-index-live-sync",
   "status": "formal_registry",
-  "updated_at": "2026-07-27",
-  "generated_at": "2026-07-27",
+  "updated_at": "2026-07-28",
+  "generated_at": "2026-07-28",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
   "verifier_ref": "npm run test:architecture-subsystems",
   "sync_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\"",
@@ -232,7 +232,7 @@
           "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
           "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
         ],
-        "contract_fingerprint": "737fd7c14d1d6199",
+        "contract_fingerprint": "4b315bb0cce1f8b1",
         "index_action": "no_index_change",
         "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
         "evidence_refs": [
@@ -241,13 +241,14 @@
           "node scripts/validate-tasks.mjs --changed-only --project morrowise --as-of 2026-07-25",
           "node scripts/verify-morrowise-approval-policy.mjs",
           "node scripts/verify-explicit-git-isolation-approval.mjs --notyet-root <notyet-harness>",
+          "node scripts/verify-direct-main-workflow-policy.mjs",
           "node scripts/verify-sync-notion-course-ids.mjs",
           "node scripts/validate-tasks.mjs --changed-only --project self-learning",
           "node scripts/validate-tasks.mjs --changed-only --project morrowise --as-of 2026-07-26",
           "npm run test:architecture-subsystems",
           "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
         ],
-        "reason": "2026-07-25 將 canonical task title 的繁體中文優先規範、changed-only Han 字元 gate、歷史相容策略與正反 fixtures 納入既有 JV-32 受管 contract，並把 package.json fingerprint 收斂為三個必要 JV-32 prebuild command 的投影，避免無關 script／metadata 造成 Admission Record 假性 stale。2026-07-26 納入 Notion external course mirror 與 MC canonical task 的刪除及生命週期邊界、task ID 唯一性 gate、完整 Notion page ID 同步回歸測試。2026-07-27 再依 MW-GIT-AUTH-01 收緊 approval policy 與 package verifier wiring：建立或切換 branch/worktree 必須有 Vincent 精確核准，且同一核准完成 target-main integration、驗證與清理。各項規則沿用同一 MorroWise 開發工作流 Catalog 子系統，ARCHITECTURE.md 薄索引不增加細節，因此 index_action=no_index_change，但刷新受管 contract fingerprint。"
+        "reason": "2026-07-25 將 canonical task title 的繁體中文優先規範、changed-only Han 字元 gate、歷史相容策略與正反 fixtures 納入既有 JV-32 受管 contract，並把 package.json fingerprint 收斂為三個必要 JV-32 prebuild command 的投影，避免無關 script／metadata 造成 Admission Record 假性 stale。2026-07-26 納入 Notion external course mirror 與 MC canonical task 的刪除及生命週期邊界、task ID 唯一性 gate、完整 Notion page ID 同步回歸測試。2026-07-27 依 MW-GIT-AUTH-01 收緊 branch/worktree 精確核准與完整 closeout。2026-07-28 依 Vincent 更正，將單人循序工作固定為 checked-out main + exact scope，移除任何按 branch 存活時間命名的預設或例外；isolation 只保留具名且經精確核准的外部 PR/review、真正並行 owner scope 或緊急 hotfix。各項規則沿用同一 MorroWise 開發工作流 Catalog 子系統，ARCHITECTURE.md 薄索引不增加細節，因此 index_action=no_index_change，但刷新受管 contract fingerprint。"
       },
       "supersedes": [],
       "superseded_by": null

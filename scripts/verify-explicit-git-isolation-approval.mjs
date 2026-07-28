@@ -64,8 +64,8 @@ assert.match(
 );
 assert.match(
   coordinationSpec,
-  /create -> execute -> integrate target main -> verify -> remove the temporary branch\/worktree/,
-  "one authorization must own the complete temporary isolation lifecycle",
+  /create -> execute -> integrate target main -> verify -> remove the approved isolation branch\/worktree/,
+  "one authorization must own the complete approved isolation lifecycle",
 );
 
 const approvalPolicy = JSON.parse(
@@ -109,6 +109,8 @@ const bannedDefaults = [
   "使用同一工作目錄的一般 branch",
   "temporary clean worktree",
   "改用獨立 worktree",
+  "short-lived branch",
+  "短期 branch",
 ];
 const governedText = [
   coordinationSpec,

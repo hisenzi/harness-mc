@@ -3,7 +3,7 @@
   "contract_id": "MW-GIT-AUTH-01",
   "task_id": "morrowise-approval-policy",
   "order_label": "MC-LIVE-18",
-  "updated_at": "2026-07-27",
+  "updated_at": "2026-07-28",
   "status": "formal_policy",
   "source_of_truth": "$COLLAB/harness-mc/milestones/harness-mc/tasks.json",
   "purpose": "Classify MorroWise action candidates before any runner, sync, browser, commit, memory, schedule, or external side effect can proceed.",
@@ -29,7 +29,8 @@
     "external_effect_rule": "Anything that leaves the machine, writes to an external service, submits a browser form, sends a message/email/post, or changes shared automation requires explicit approval.",
     "commit_boundary_rule": "A runner may produce a commit plan or draft patch only. Actual git commit must go through the worktree-commit confirmation gate. Push and deploy require explicit Vincent approval.",
     "worktree_commit_gate_rule": "worktree-commit is the only approved local commit gate. It requires dirty-tree scan, per-file diff review, logical commit grouping, 4C review, path policy check, explicit Vincent confirmation, commit execution, and task-state/event follow-up.",
-    "git_isolation_rule": "MW-GIT-AUTH-01: creating or switching a Git branch or linked worktree requires exact Vincent approval. Approval owns create, execute, target-main integration, verification, and cleanup."
+    "git_workflow_default": "Single-developer sequential work stays on the checked-out main after the Repo Ready SHA, upstream, ahead/behind, dirty ownership, and exact-scope checks. Known unrelated dirty remains excluded by exact paths; overlapping dirty is BLOCKED.",
+    "git_isolation_rule": "MW-GIT-AUTH-01: there is no temporary or duration-based branch default. Creating or switching a Git branch or linked worktree requires exact Vincent approval for a named external PR/review requirement, genuinely concurrent separately owned scope, or emergency hotfix isolation. Approval owns create, execute, target-main integration, verification, and cleanup."
   },
   "task_lifecycle_contract": {
     "route": "JV-32/task-lifecycle",
@@ -147,8 +148,8 @@
             "target main",
             "cleanup plan"
           ],
-          "runner_limit": "Without the complete MW-GIT-AUTH-01 evidence bundle, the runner remains read-only and returns BLOCKED. Preflight output, dirty files, concurrency, verification, or an implementation plan cannot grant permission.",
-          "reason": "Git isolation changes shared refs or filesystem topology and must not leave an unintegrated branch/worktree tail."
+          "runner_limit": "Without the complete MW-GIT-AUTH-01 evidence bundle and a named exceptional context, the runner remains read-only and returns BLOCKED. Branch duration, preflight output, dirty files, concurrency, verification, or an implementation plan cannot grant permission.",
+          "reason": "Direct checked-out main is the solo sequential default. Git isolation changes shared refs or filesystem topology and must be exceptional, explicitly chosen, integrated, and cleaned."
         },
         {
           "action_class": "visual_layer_overwrite_or_reverse_sync",
@@ -196,8 +197,8 @@
         },
         {
           "action_class": "autonomous_git_isolation",
-          "examples": ["create or switch branch from Agent judgment", "create worktree because the repo is dirty", "treat concurrency or verification as authorization"],
-          "reason": "Only exact Vincent approval can authorize MW-GIT-AUTH-01; Agent reasoning and preflight output are not permission."
+          "examples": ["create or switch branch from Agent judgment", "label a branch temporary to bypass direct main", "create worktree because the repo is dirty", "treat concurrency or verification as authorization"],
+          "reason": "Only exact Vincent approval for a named exceptional context can authorize MW-GIT-AUTH-01; Agent reasoning, branch duration, and preflight output are not permission."
         },
         {
           "action_class": "unreviewed_third_party_execution",

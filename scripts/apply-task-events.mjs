@@ -108,7 +108,7 @@ export function applyTaskEvents(options = {}) {
     }
   }
 
-  if (pendingFiles.length > 0) {
+  if (pendingFiles.length > 0 && options.writeLatestReport !== false) {
     writeJson(path.join(eventsRoot, "latest-report.json"), report);
   }
 
@@ -352,6 +352,8 @@ function parseCliArgs(argv) {
   const manualRejections = new Map();
   const manualRejectionReview = { evidence_refs: [] };
   let hasManualReviewArg = false;
+  let runGenerateData = true;
+  let writeLatestReport = true;
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     if (arg === "--event-id") {
@@ -381,8 +383,12 @@ function parseCliArgs(argv) {
     } else if (arg === "--rejection-evidence-ref") {
       manualRejectionReview.evidence_refs.push(argv[++index] || "");
       hasManualReviewArg = true;
+    } else if (arg === "--no-generate-data") {
+      runGenerateData = false;
+    } else if (arg === "--no-latest-report") {
+      writeLatestReport = false;
     } else if (arg === "--help" || arg === "-h") {
-      console.log("Usage: node scripts/apply-task-events.mjs [--event-id <event_id>]... [--reject-event <event_id>=<reason> --rejection-approved-by Vincent --rejection-approved-at YYYY-MM-DD --rejection-evidence-ref <ref>]...");
+      console.log("Usage: node scripts/apply-task-events.mjs [--event-id <event_id>]... [--no-generate-data] [--no-latest-report] [--reject-event <event_id>=<reason> --rejection-approved-by Vincent --rejection-approved-at YYYY-MM-DD --rejection-evidence-ref <ref>]...");
       process.exit(0);
     } else {
       throw new Error(`Unknown argument: ${arg}`);
@@ -393,6 +399,8 @@ function parseCliArgs(argv) {
   }
   return {
     manualRejections,
+    runGenerateData,
+    writeLatestReport,
     ...(eventIds.size > 0 ? { eventIds } : {}),
     ...(manualRejections.size > 0 ? { manualRejectionReview } : {}),
   };

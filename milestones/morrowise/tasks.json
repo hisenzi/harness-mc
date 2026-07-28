@@ -3789,6 +3789,53 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 要求依官方成熟工程流程補強 worktree-commit 的單一 task post-commit closeout：commit review、target-main delivery、Test contract、canonical apply、C2 remote closeout、最後只讀 residual-zero，並禁止 C2 自我 hash 回填。",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/SKILL.md#post-commit-task-completion-contract",
+              "$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/tests/verify-post-commit-closeout.test.mjs",
+              "$COLLAB/harness-mc/system-workflow/docs/specs/repo-coordination-gate.md#remote-closeout",
+              "$COLLAB/harness-mc/scripts/apply-task-events.mjs",
+              "$COLLAB/harness-mc/scripts/verify-direct-main-workflow-policy.mjs",
+              "$COLLAB/harness-mc/scripts/verify-apply-task-events.mjs",
+              "$COLLAB/harness-mc/scripts/sync-event-queue.mjs",
+              "$COLLAB/harness-mc/scripts/verify-sync-event-queue.mjs",
+              "$COLLAB/harness-mc/task-events/applied/20260728T045038Z-notyet-harness-c4e3b95b8217aaf944c103ecace9f55e4f9b34f2-morrowise-multi-machine-repo-coordination-gate.json",
+              "$COLLAB/harness-mc/task-events/applied/20260728T045526Z-notyet-harness-3df1c43-morrowise-multi-machine-repo-coordination-gate.json",
+              "$COLLAB/harness-mc/sync-events/synced/20260728T045038Z-obsidian_canvas-morrowise-multi-machine-repo-coordination-gate-task.commit_attached-morrowise-multi-machine-repo-coordination-gate-c4e3b95b8217aaf944c103ecace9f55e4f9b34f2-20260728T045038Z-sync_skipped.json",
+              "$COLLAB/harness-mc/sync-events/synced/20260728T045526Z-obsidian_canvas-morrowise-multi-machine-repo-coordination-gate-task.commit_attached-morrowise-multi-machine-repo-coordination-gate-3df1c43-20260728T045526Z-sync_skipped.json",
+              "notyet-harness C1 c4e3b95b8217aaf944c103ecace9f55e4f9b34f2",
+              "notyet-harness C1b 3df1c43",
+              "Vincent 2026-07-28 current session: 查大佬們寫程式工作流；優化 worktree-commit；精準定義 commit 後流程，扎實完成每個 task"
+            ],
+            "recorded_at": "2026-07-28",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/multi-session-commit-race-governance",
+                "morrowise/runtime-closeout-residual-ledger",
+                "morrowise/morrowise-dev-workflow-catalog"
+              ],
+              "scope_comparison": {
+                "problem": "仍是 JV-37 A05 已擁有的 worktree-commit／Remote Closeout 完成邊界；本次只修正 commit 後缺少有限終點與 mutating closeout 尾巴。",
+                "owner_source_of_truth": "owner 仍是 JV-37；Repo Coordination Gate 是 canonical detail，worktree-commit 是執行 skill，JV-32 Catalog 仍是唯一 workflow catalog。",
+                "inputs_outputs": "輸入是官方 GitHub／Google／GitLab／DORA workflow 原則與現有 event pipeline；輸出是 v2.2 skill、RED／GREEN verifier、同步 spec、canonical-path event verifier fix、baseline-safe exact apply 與具 exemption／verifier 的 terminal sync skip。",
+                "lifecycle_completion": "此次證實單一 task post-commit contract 可重跑並收斂；JV-37 完整 claim／runtime／三機 pilot 未完成，status 維持 todo。"
+              },
+              "decision_reason": "既有 A05 直接承擔此範圍，採 amend，不新增 task、tracker、branch／worktree 或 runtime。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-28",
+                "evidence_refs": [
+                  "Vincent 2026-07-28 current session: 扎實地把需求完成就可以休息"
+                ]
+              }
+            }
           }
         ]
       },
@@ -3815,6 +3862,7 @@
         "A03｜repo scope/classification 只由 JV-37 A03 contract 定義，供既有 project/worktree inventory 消費，不在 automation layer 另建第二份清單：repo_class 至少支援 shared_core_multi_writer 與 owner_single_writer，lifecycle=maintained|excluded|retired 管理同步範圍；claim 至少包含 task_id、project_id、repo_class、machine_id、branch、base_sha、claimed_at、state、owner_role、expires_or_handoff。同一 active task 不得由兩台機器同時 claim，claim/release/handoff 必須可被其他機器從 remote truth 看見，不以單機暫存檔作唯一依據。",
         "A04｜固定狀態機：unclaimed -> claimed -> committed_local -> remote_synced -> event_pending -> canonical_applied -> integrated -> released；owner_single_writer 直推 main 時，integrated 可與 remote_synced 由同一四值握手證據成立，但仍不得跳過 event/canonical apply。例外至少包含 dirty_blocked、generated_dirty_warning、detached_blocked、needs_push、needs_reconcile、stale_review、auth_blocked、git_isolation_approval_missing；committed_local、只有本機 task-event、ahead>0、branch-only、worktree-only 或 event_pending 都不得標完成或 release claim。經核准的 recovery branch 必須有 owner、reason、created_at、review_by、target_main、cleanup_plan，完成時必須整合並清理，不得成為永久垃圾分支。",
         "A05｜worktree-commit 由 v1.8 升級並依 repo_class 分流：單人循序預設在目前 checked-out main 操作，不自行 create/switch；已知無關 dirty 只用 exact paths 排除。若 Vincent 已依 MW-GIT-AUTH-01 核准 isolation，同一次核准涵蓋 exact-scope commit、task/event update、正常 push、target-main integration、remote verification 與 clean cleanup；feature worker 角色仍不得越權整合 shared-core main。owner_single_writer 的 task owner 機可在目前 main、HEAD SHA、upstream SHA、ahead/behind 四值握手通過後直接 commit/push main。兩類都必須 push 前 fetch、behind/diverged 熔斷，push 後驗證 target main 含核准 commit、ahead/behind=0/0、無本次 pending event；失敗維持 BLOCKED/needs_push，不得宣稱完成。",
+        "A05.1｜worktree-commit v2.2 post-commit closeout：單一 task 必須依 committed_local -> commit_reviewed -> integrated_main -> delivery_verified -> canonical_applied -> closeout_remote_synced -> residual_zero -> task_completed 前進。C1 implementation 需符合 approved scope 並經 review；target origin/main、Test contract 的 Unit／integration／runtime／E2E 或 exemption、CI／runtime evidence 成立後才能 apply canonical completion。task event、sync request 與所有 mutating generator 必須在 C2 closeout 前完成；不適用的 mirror request 只有具 exemption reason、rerunnable verifier 與 terminal skipped record 才能關閉。C2 不回填自身 hash，push 後只做 closure-scoped read-only checks，要求 origin/main 含 C1／C2、ahead/behind=0/0、本次 task/sync pending zero、baseline exclusions 不變且 scope-owned residuals=0。",
         "A06｜cc-push 由 v1.0 升級為 batch/recovery coordinator，不取代正常 worktree-commit push：每個 repo push 前重新 fetch；預設直接驗證並送出核准的 checked-out main exact ref。shared_core_multi_writer 由指定 integrator 套用 durable exact-scope commits／task events 並更新 main；只有已具 MW-GIT-AUTH-01 核准時才可包含 isolation branches。owner_single_writer 由 task owner 機驗證 main 四值握手。第一個失敗即停止，push_with_exclusions 或 manual/mixed/unknown dirty repo 不得宣稱 fully synced，最後執行 fleet-wide SHA/0-0/pending-event 驗證。",
         "A07｜擴充既有 task-event pipeline，不新建平行機制：在 $COLLAB/harness-mc/scripts/task-event-outbox.mjs、apply-task-events.mjs、既有 pending/applied/rejected 目錄、event_id 去重與 single-writer reducer 上新增 task.claimed、task.remote_synced、task.released event type。Schema 必須改為 type-specific payload：claim 發生在 commit 前，不得用假 commit 滿足現有 commit 必填；commit/base_sha/branch/machine_id/repo_class 的必填性依 event type 決定。feature repo 不直接改 MorroWise task definition；single-writer apply 到既有 state.json overlay、validate、產生 sync queue/可見 evidence，並依核准流程 commit/push；pending event 必須可跨機觀察。",
         "A08｜shared_core_multi_writer repo 的 main integration 仍只由指定 integrator／single-writer 執行，但 repo class 不構成 branch/worktree 建立或切換授權，也不建立 branch-first default。integrator 在 fetch、claim、verifier、task-event、base SHA 與 freshness 全部通過後，將核准的 exact-scope commit 更新至 main 並正常 push；只有已核准 isolation 存在時才在同次整合與清理該 branch/worktree。wrong machine/role 必須被阻擋。owner_single_writer repo 由 task owner 機依 A05 四值握手更新目前 main。",
@@ -3877,8 +3925,8 @@
       },
       "architecture_decision": {
         "decision": "deferred",
-        "evaluated_at": "2026-07-27",
-        "reason": "JV-37 完整 runtime 仍待負向 fixtures、single-writer evidence 與三機 pilot，故本身維持 deferred；本次 MW-GIT-AUTH-01 是已 promoted 的 JV-32 開發工作流 Catalog 之 version improvement，不新增第二個子系統。",
+        "evaluated_at": "2026-07-28",
+        "reason": "JV-37 完整 runtime 仍待負向 fixtures、single-writer evidence 與三機 pilot，故本身維持 deferred；MW-GIT-AUTH-01、direct-main normalization 與 worktree-commit v2.2 post-commit closeout 都是已 promoted 的 JV-32 開發工作流 Catalog 之 version improvement，不新增第二個子系統。",
         "admission_review": {
           "scope": "version_improvement",
           "admission_record_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
@@ -3888,10 +3936,13 @@
             "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
             "$COLLAB/harness-mc/system-workflow/docs/specs/repo-coordination-gate.md",
             "$COLLAB/harness-mc/scripts/verify-explicit-git-isolation-approval.mjs",
+            "$COLLAB/harness-mc/scripts/verify-direct-main-workflow-policy.mjs",
+            "$COLLAB/harness-mc/scripts/verify-apply-task-events.mjs",
+            "$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/tests/verify-post-commit-closeout.test.mjs",
             "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
             "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
           ],
-          "reason": "授權與 closeout 邊界已收緊，但既有薄索引的子系統名稱、owner、role 與 detail pointer 不變；只刷新同一 Admission Record fingerprint，不把 Git isolation 細節複製進 ARCHITECTURE.md。"
+          "reason": "授權與 post-commit closeout 邊界已收緊，但既有薄索引的子系統名稱、owner、role 與 detail pointer 不變；保留同一 Admission Record，不把 Git isolation 或 C1／C2 closeout 細節複製進 ARCHITECTURE.md。"
         }
       },
       "note": "Roadmap-in-Anchor Task：目前只開 JV-37，不提前拆 future JV tasks。2026-07-12 最終整合裁決：真正目標是『不論使用哪台電腦，Agent 在首次修改檔案前都先收尾自己的未 commit／未 push，再同步別人的最新版本；完成時立即送到 remote truth』。使用者只看 READY／BLOCKED，內部治理不得外露成每日操作。跨 Agent discoverability 採薄入口：所有 Agent 必讀的 CORE.md 只放強制 pointer，完整合約只放 $COLLAB/harness-mc/system-workflow/docs/specs/repo-coordination-gate.md，AGENTS.md 與 skills 不複製。JV-32 是唯一 workflow catalog／Router，JV-37 是其 automation layer：新增 Repo Ready 前置語意並延伸既有 closeout-commit-routing 為 Remote Closeout；在 runtime、負向 fixtures、workflow hooks 有證據前，不得把能力標成 accepted。JV-37.R1 contract／lineage：由 JV-37 A03 固定唯一 repo scope/classification contract，供既有 worktree inventory 消費；同時固定 session inventory 與 action-time hard gate 的邊界、maintained/excluded/retired lifecycle、shared_core_multi_writer／owner_single_writer、READY/BLOCKED vocabulary、禁止操作與 JV-32 extended_by lineage。JV-37.R2 first usable release：先以 TDD 落地所有 maintained repo 的非阻斷 session fetch/status inventory，以及只針對 target＋core 的 Repo Ready／Remote Closeout；依 status porcelain v2、fetch、ahead-behind、ff-only、HEAD/upstream/remote SHA 判定，clean behind-only 可 ff-only，已核准且 remote 未變的 needs_push 可重試正常 push，其他 ahead/dirty/diverged/detached/no-upstream/auth failure fail closed。這一 slice 完成後即可先提供日常價值，不等待完整 claim/event/pilot 才開始使用。JV-37.R3 repo-class workflow hooks：單人循序與 owner single-writer 皆以 checked-out main 四值握手＋exact scope 為預設；shared core 由指定 integrator 更新 main，不因 repo class 自動開 branch/worktree。只有 Vincent 為具名外部 PR/review、真正並行且 owner 分離的 scope，或緊急 hotfix 隔離精確核准時，才進入完整 isolation lifecycle；同一次明確核准可涵蓋 exact-scope commit、正常 push、main integration、SHA verification 與 cleanup，batch push 只作 recovery/coordinator。JV-37.R4 durable claim／event extension：不建新 event 系統；在既有 task-event-outbox.mjs、apply-task-events.mjs、pending/applied/rejected、event_id 去重、state.json overlay、sync queue 與 single-writer actor 上擴充 task.claimed/task.remote_synced/task.released，補 duplicate claim、pending visibility、idempotent apply 與 crash recovery。JV-37.R5 hardening／pilot：補 generated/manual/mixed dirty classifier、same-remote multi-worktree、mba3 restore rerun、approved isolation owner/review_by/stale_review、三 clone verifier 與 MBA-1/MBA-2/MBA-3 pilot。FACTLOCK：2026-07-11 實查歷史模擬位於 /private/tmp/multi-machine-repo-sim-1783762204468，含 s1-fast-forward、s2-local-only、s3-branch-race、s4-diverged、s5-dirty、s6-cc-push-fetch-first；該目錄只有暫存 Git repos，沒有 durable runner/report，且 /private/tmp 可被清除，不得當 source of truth。正式 verifier 必須每次以 mkdtemp 重建 fixture；路徑不存在時自動重建，不得假設歷史產物仍在。研究依據：Git porcelain v2 提供可機械解析的 branch/upstream/ahead-behind，fetch 更新 remote-tracking refs，pull --ff-only 在 diverged 時失敗，正常 push 保護 fast-forward；Git worktree／GitHub branch flow 只作精確核准的例外工具，protected branch/merge queue 只在外部流程需要時採用，不是單人循序預設。Split gate：只有某一 slice 的 input/output、owner、寫入邊界、驗收與 Vincent implementation approval 均明確，且單一 anchor 無法維持可審計邊界時才拆下一個 JV task；拆出時回填 origin_anchor=JV-37、origin_slice=JV-37.Rn、origin_task_id=multi-machine-repo-coordination-gate。此 task 不授權 heartbeat commits、全域無關 repo 阻擋、未核准自動 commit、auto merge conflict resolution、rebase、reset、stash、force push、GitHub branch protection 修改或外部帳號設定。"

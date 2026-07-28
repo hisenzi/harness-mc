@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-multi-machine-repo-coordination-gate-3df1c43-20260728T045526Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "3df1c43",
+  "project": "morrowise",
+  "task_id": "multi-machine-repo-coordination-gate",
+  "status": "updated",
+  "summary": "Document baseline-safe exact event apply flags for dirty shared closeout contexts.",
+  "created_at": "2026-07-28T04:55:26.505Z",
+  "actor": "codex",
+  "session_id": "codex-worktree-commit-v2.2-2026-07-28"
+}

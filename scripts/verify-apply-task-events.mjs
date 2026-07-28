@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { applyTaskEvents } from "./apply-task-events.mjs";
 
 const selectiveRoot = fs.mkdtempSync(path.join(os.tmpdir(), "apply-task-events-selective-"));
@@ -45,7 +46,7 @@ writeJson(path.join(selectivePendingDir, "002-preserved.json"), {
 });
 const selectiveResult = spawnSync(
   process.execPath,
-  [new URL("./apply-task-events.mjs", import.meta.url).pathname, "--event-id", "evt-select-one"],
+  [fileURLToPath(new URL("./apply-task-events.mjs", import.meta.url)), "--event-id", "evt-select-one"],
   { cwd: selectiveRoot, encoding: "utf8" },
 );
 assert.equal(selectiveResult.status, 0, selectiveResult.stderr || selectiveResult.stdout);
@@ -54,6 +55,36 @@ assert.deepEqual(fs.readdirSync(path.join(selectiveRoot, "task-events", "applied
 const selectiveState = JSON.parse(fs.readFileSync(path.join(selectiveProjectDir, "state.json"), "utf8"));
 assert.deepEqual(selectiveState.tasks["task-1"].commits, ["sel1111"]);
 assert.equal(Object.hasOwn(selectiveState.tasks, "task-2"), false);
+
+const preservedReportPath = path.join(selectiveRoot, "task-events", "latest-report.json");
+const preservedReport = '{\n  "owner": "another-session"\n}\n';
+fs.writeFileSync(preservedReportPath, preservedReport);
+writeJson(path.join(selectivePendingDir, "003-no-report-overwrite.json"), {
+  event_id: "evt-no-report-overwrite",
+  type: "task.commit_attached",
+  repo: "demo-repo",
+  commit: "sel3333",
+  project: "demo-project",
+  task_id: "task-1",
+  summary: "Exact apply must preserve another session's dirty latest report.",
+  created_at: "2026-07-27T09:02:00+08:00",
+  actor: "codex",
+  session_id: "session-selective",
+});
+const noOverwriteResult = spawnSync(
+  process.execPath,
+  [
+    fileURLToPath(new URL("./apply-task-events.mjs", import.meta.url)),
+    "--event-id",
+    "evt-no-report-overwrite",
+    "--no-generate-data",
+    "--no-latest-report",
+  ],
+  { cwd: selectiveRoot, encoding: "utf8" },
+);
+assert.equal(noOverwriteResult.status, 0, noOverwriteResult.stderr || noOverwriteResult.stdout);
+assert.equal(fs.readFileSync(preservedReportPath, "utf8"), preservedReport);
+assert.deepEqual(fs.readdirSync(selectivePendingDir), ["002-preserved.json"]);
 
 const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "apply-task-events-"));
 const manualRejectionReview = {

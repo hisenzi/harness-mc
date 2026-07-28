@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -20,6 +21,10 @@ const taskFile = JSON.parse(read(root, "milestones/morrowise/tasks.json"));
 const tasks = Array.isArray(taskFile) ? taskFile : taskFile.tasks;
 const task = tasks.find(
   (item) => item.id === "multi-machine-repo-coordination-gate",
+);
+const postCommitCloseoutTestPath = path.join(
+  notyetRoot,
+  "000_Agent/skills/worktree-commit/tests/verify-post-commit-closeout.test.mjs",
 );
 const legacyManifest = JSON.parse(
   read(notyetRoot, "000_Agent/skills/git-worktree/dist/manifest.json"),
@@ -92,6 +97,40 @@ assert.match(
   "CORE must expose the direct-main default",
 );
 assert.match(
+  spec,
+  /committed_local\s*->\s*commit_reviewed\s*->\s*integrated_main\s*->\s*delivery_verified\s*->\s*canonical_applied\s*->\s*closeout_remote_synced\s*->\s*residual_zero\s*->\s*task_completed/,
+  "Repo Coordination Gate must define the finite post-commit task closeout path",
+);
+assert.match(
+  spec,
+  /all mutating closeout work.*before.*C2 closeout commit/is,
+  "Repo Coordination Gate must place all expected mutations before C2",
+);
+assert.match(
+  spec,
+  /C2.*must not.*backfill.*own.*hash/is,
+  "Repo Coordination Gate must terminate without a self-hash backfill",
+);
+assert.match(
+  spec,
+  /after C2.*read-only/is,
+  "Repo Coordination Gate must make the final terminal verification read-only",
+);
+const postCommitAcceptance = task.acceptance.find((item) =>
+  item.startsWith("A05.1｜worktree-commit v2.2 post-commit closeout"),
+);
+assert.ok(postCommitAcceptance, "JV-37 must carry the v2.2 post-commit closeout amendment");
+assert.match(
+  postCommitAcceptance,
+  /committed_local -> commit_reviewed -> integrated_main -> delivery_verified -> canonical_applied -> closeout_remote_synced -> residual_zero -> task_completed/,
+  "JV-37 A05.1 must carry the finite task closeout path",
+);
+assert.match(
+  postCommitAcceptance,
+  /mutating generator.*C2.*C2 不回填自身 hash/is,
+  "JV-37 A05.1 must terminate all mutations before C2 without self-hash backfill",
+);
+assert.match(
   read(notyetRoot, "000_Agent/skills/executing-plans/SKILL.md"),
   /Execute the plan in the checked-out `main` working directory by default/,
   "executing-plans must not force a branch or worktree",
@@ -108,6 +147,17 @@ for (const [relativePath, refusalMessage] of legacyScriptPairs) {
     `${relativePath} must refuse its retired mutation entrypoint`,
   );
 }
+
+const closeoutContractResult = spawnSync(
+  process.execPath,
+  [postCommitCloseoutTestPath],
+  { encoding: "utf8" },
+);
+assert.equal(
+  closeoutContractResult.status,
+  0,
+  closeoutContractResult.stderr || closeoutContractResult.stdout,
+);
 
 for (const pattern of [
   /Use one normal working directory and a short-lived branch/i,

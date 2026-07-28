@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-multi-machine-repo-coordination-gate-c4e3b95b8217aaf944c103ecace9f55e4f9b34f2-20260728T045038Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "c4e3b95b8217aaf944c103ecace9f55e4f9b34f2",
+  "project": "morrowise",
+  "task_id": "multi-machine-repo-coordination-gate",
+  "status": "updated",
+  "summary": "worktree-commit v2.2 finite post-commit closeout contract verified with 7 contract checks and 9 pressure scenarios.",
+  "created_at": "2026-07-28T04:50:38.770Z",
+  "actor": "codex",
+  "session_id": "codex-worktree-commit-v2.2-2026-07-28"
+}

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { writeSyncEvent } from "./sync-event-queue.mjs";
+import { skipSyncRequest, writeSyncEvent } from "./sync-event-queue.mjs";
 
 const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "sync-event-queue-"));
 
@@ -49,6 +49,49 @@ writeSyncEvent({
 });
 
 assert.equal(fs.readdirSync(pendingDir).length, 2);
+
+assert.throws(
+  () => skipSyncRequest({
+    root: tmpRoot,
+    sync_event_id: event.sync_event_id,
+    verifier: "demo verifier",
+  }),
+  /exemption_reason is required/,
+);
+assert.equal(fs.readdirSync(pendingDir).length, 2);
+
+const skipped = skipSyncRequest({
+  root: tmpRoot,
+  sync_event_id: event.sync_event_id,
+  exemption_reason: "Task has no binding to the requested optional mirror.",
+  verifier: "external mirror binding inventory",
+  actor: "codex",
+  session_id: "session-123",
+  resolved_at: "2026-06-15T09:05:00+08:00",
+});
+assert.equal(skipped.type, "sync_skipped");
+assert.equal(skipped.status, "skipped");
+assert.equal(skipped.sync_event_id, event.sync_event_id);
+assert.equal(fs.readdirSync(pendingDir).length, 1);
+const syncedDir = path.join(tmpRoot, "sync-events", "synced");
+const skippedFiles = fs.readdirSync(syncedDir);
+assert.equal(skippedFiles.length, 1);
+assert.match(skippedFiles[0], /sync_skipped\.json$/);
+assert.deepEqual(
+  JSON.parse(fs.readFileSync(path.join(syncedDir, skippedFiles[0]), "utf8")),
+  skipped,
+);
+assert.deepEqual(
+  skipSyncRequest({
+    root: tmpRoot,
+    sync_event_id: event.sync_event_id,
+    exemption_reason: "Task has no binding to the requested optional mirror.",
+    verifier: "external mirror binding inventory",
+    actor: "codex",
+    session_id: "session-123",
+  }),
+  skipped,
+);
 
 assert.throws(
   () => writeSyncEvent({

@@ -44,6 +44,55 @@ export function writeSyncEvent(input) {
   return event;
 }
 
+export function skipSyncRequest(input) {
+  for (const field of [
+    "sync_event_id",
+    "exemption_reason",
+    "verifier",
+    "actor",
+    "session_id",
+  ]) {
+    if (!input?.[field]) throw new Error(`${field} is required`);
+  }
+
+  const root = input.root || process.cwd();
+  const pendingDir = path.join(root, "sync-events", "pending");
+  const syncedDir = path.join(root, "sync-events", "synced");
+  const pendingMatches = findSyncEvents(pendingDir, input.sync_event_id);
+
+  if (pendingMatches.length === 0) {
+    const terminalMatches = findSyncEvents(syncedDir, input.sync_event_id)
+      .filter(({ event }) => event.type === "sync_skipped");
+    if (terminalMatches.length === 1) return terminalMatches[0].event;
+    throw new Error(`pending sync_event_id not found: ${input.sync_event_id}`);
+  }
+  if (pendingMatches.length > 1) {
+    throw new Error(`duplicate pending sync_event_id: ${input.sync_event_id}`);
+  }
+
+  const [{ fileName, filePath, event: request }] = pendingMatches;
+  if (request.type !== "sync_requested" || request.status !== "pending") {
+    throw new Error(`sync_event_id is not a pending request: ${input.sync_event_id}`);
+  }
+
+  const skipped = {
+    ...request,
+    type: "sync_skipped",
+    status: "skipped",
+    exemption_reason: input.exemption_reason,
+    verifier: input.verifier,
+    resolved_at: input.resolved_at || new Date().toISOString(),
+    resolved_by: input.actor,
+    resolution_session_id: input.session_id,
+  };
+  fs.mkdirSync(syncedDir, { recursive: true });
+  const targetName = fileName.replace(/sync_requested\.json$/, "sync_skipped.json");
+  const target = path.join(syncedDir, targetName);
+  fs.writeFileSync(target, `${JSON.stringify(skipped, null, 2)}\n`, { flag: "wx" });
+  fs.unlinkSync(filePath);
+  return skipped;
+}
+
 function validateSyncEventInput(input) {
   for (const field of REQUIRED_FIELDS) {
     if (!input?.[field]) throw new Error(`${field} is required`);
@@ -56,6 +105,22 @@ function validateSyncEventInput(input) {
   if (!SUPPORTED_TARGETS.has(input.target)) {
     throw new Error(`unsupported sync target: ${input.target}`);
   }
+}
+
+function findSyncEvents(dir, syncEventId) {
+  if (!fs.existsSync(dir)) return [];
+  return fs
+    .readdirSync(dir)
+    .filter((fileName) => fileName.endsWith(".json"))
+    .map((fileName) => {
+      const filePath = path.join(dir, fileName);
+      return {
+        fileName,
+        filePath,
+        event: JSON.parse(fs.readFileSync(filePath, "utf8")),
+      };
+    })
+    .filter(({ event }) => event.sync_event_id === syncEventId);
 }
 
 function statusForSyncType(type) {

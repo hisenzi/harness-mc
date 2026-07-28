@@ -2661,6 +2661,9 @@
       "track": "phase-1",
       "priority": "high",
       "completed_at": "2026-07-26",
+      "commits": [
+        "a19b43f"
+      ],
       "depends_on": [
         "projects-pai-domain-filter-alignment"
       ],
@@ -2729,6 +2732,17 @@
               "python3 $COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py --check（2026-07-26 exit 0）"
             ],
             "recorded_at": "2026-07-26"
+          },
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "依 worktree-commit Step 7 將已驗證的 Future Practice 領域顯示與理財輸出連接關鍵實作 commit 回填至 completed task，保持 Git history 與 canonical task 雙向追溯。",
+            "evidence_refs": [
+              "git commit a19b43f",
+              "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#future-practice-domain-tracking-v1"
+            ],
+            "recorded_at": "2026-07-28"
           }
         ]
       },

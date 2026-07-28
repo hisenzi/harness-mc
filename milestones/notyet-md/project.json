@@ -9,12 +9,40 @@
   "repo": "hisenzi/notyet-md",
   "repo_path": "Claude_協作/notyet_website/notyet-md",
   "deploy_target": "zeabur",
+  "core_problem": {
+    "problem": "有效方法被寫成文章或系統規則後，後續專案是否實際採用、結果是否符合預期，以及新證據如何回到原文章，目前沒有一條公開、安全、可驗證的完整路徑。",
+    "project_core": "把『發現有效方法 → 核准寫入系統規則 → 後續專案採用 → 蒐集真實結果 → 回鏈原文章／提出後續文章』呈現為可追溯的公開歷程。",
+    "success_boundary": "讀者能從原文章看見方法進入哪條系統規則、後續有哪些公開安全的採用觀察、結果與限制，以及後續文章；沒有真實 evidence 時明確顯示尚未觀察或資料退化。",
+    "non_goals": [
+      "建立第二套 task、practice 或 article tracker",
+      "由網站推論或持有方法成效正本",
+      "背景自動修改規則、task、文章、commit、push 或發布"
+    ]
+  },
+  "morrowise_integration": {
+    "direction": "one_way",
+    "contract_owner": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#practice-adoption-evidence-read-model-v1",
+    "producer_output": "$COLLAB/harness-mc/public/data/morrowise-practice-impact.json",
+    "consumer_snapshot": "$COLLAB/notyet_website/notyet-md/src/data/generated/morrowise-practice-impact.json",
+    "join_keys": [
+      "practice_task_ref",
+      "origin_article_slug",
+      "theme_id"
+    ],
+    "publication_flow": [
+      "MorroWise 從受控 canonical task／rule／evidence 產生 public-safe read model",
+      "取得 Vincent 明確核准後，notyet.md sync script 才更新 repo 內 committed snapshot",
+      "notyet.md verifier 檢查 schema、source_digest、freshness_state、隱私欄位與 article join",
+      "fresh build 通過後仍需獨立 commit、push、deploy 核准"
+    ],
+    "write_boundary": "notyet.md 只讀 committed public-safe snapshot；不得在 build、runtime 或背景排程反向寫入 MorroWise、canonical task、system rule 或文章。"
+  },
   "tracks": {
     "p0-ship": "P0｜先上線（極簡 Astro 站）",
     "p1-lineage": "P1｜方法實證與文章歷程",
     "p1-style": "P1｜de-AI 化 style",
-    "p2-hiblocks": "P2｜萃取編輯 block 進 Hiblocks",
-    "p3-cms": "P3｜簡易後台 CMS 模組"
+    "p2-hiblocks": "未來候選｜P2 萃取編輯 block 進 Hiblocks",
+    "p3-cms": "未來候選｜P3 簡易後台 CMS 模組"
   },
   "goals": [
     "本專案核心：公開呈現有效方法如何被發現、核准寫入系統規則、由後續專案採用並以真實結果驗證，讓原文章能回鏈實際應用與後續文章，而不是停在單次心得或聊天紀錄",

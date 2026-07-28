@@ -7158,7 +7158,8 @@
         "PRACTICE-EVIDENCE-A06｜Public-safe generator：聚合器只讀受控 canonical sources，輸出核准公開或脫敏的 practice task ref、rule ref、origin article、project label、outcome、日期、結果摘要、limitation 與安全 evidence refs；不得輸出私人 task 本文、客戶身份、本機絕對路徑、secret、token、Cookie 或 runtime auth。",
         "PRACTICE-EVIDENCE-A07｜文章候選只提案：只有出現新應用情境、新證據、mixed／failed 修正或達到預先定義的重複驗證門檻時，才能輸出 successor article candidate；候選不修改文章 Markdown、publication state、task state、commit、push 或 deploy。",
         "PRACTICE-EVIDENCE-A08｜既有 wiring：需納入 MorroWise wiring gate，可追到 canonical task／rule、schema、generator、generated read model、verifier、degraded state、notyet.md consumer 與 next action；generated JSON 是 mirror，不可手改。",
-        "PRACTICE-EVIDENCE-A09｜TDD／負向驗證：fixtures 至少覆蓋未核准不得加入採用、unknown rule ref、verified 無 evidence、mixed／failed 保留、私人資料拒絕／脫敏、重跑 deterministic、網站反向寫入拒絕及 article candidate 未核准禁止寫檔。"
+        "PRACTICE-EVIDENCE-A09｜TDD／負向驗證：fixtures 至少覆蓋未核准不得加入採用、unknown rule ref、verified 無 evidence、mixed／failed 保留、私人資料拒絕／脫敏、重跑 deterministic、網站反向寫入拒絕及 article candidate 未核准禁止寫檔。",
+        "PRACTICE-EVIDENCE-A10｜跨 repo two-phase export：producer 固定輸出 `$COLLAB/harness-mc/public/data/morrowise-practice-impact.json`；record 至少含 schema_version、generated_at、as_of、source_digest、freshness_state、practice_task_ref、origin_article_slug、theme_id、applications、article_candidates。notyet.md 只透過明確核准的 sync 更新 committed snapshot；source／snapshot drift、schema mismatch 或非 fresh 狀態必須由 `--check` 抓出，不得由 scheduler 自動 copy、commit、push 或 deploy。"
       ],
       "source_refs": [
         "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
@@ -7169,6 +7170,56 @@
         "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#practice-impact-article-lineage-surface-v1",
         "$COLLAB/notyet-harness/000_Agent/skills/capture-insight/SKILL.md"
       ],
+      "producer_contract": {
+        "working_directory": "$COLLAB/harness-mc",
+        "command": "node scripts/generate-practice-adoption-evidence-read-model.mjs",
+        "schema_id": "morrowise-practice-impact.v1",
+        "schema_path": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-practice-impact.schema.json",
+        "output": "$COLLAB/harness-mc/public/data/morrowise-practice-impact.json",
+        "canonical_inputs": [
+          "受控 system rule／skill／policy refs 與其 canonical practice task",
+          "各 project canonical task 內經核准的 practice applications",
+          "closeout verifier／commit／run evidence 與公開／脫敏決策"
+        ],
+        "required_output_metadata": [
+          "schema_version",
+          "generated_at",
+          "as_of",
+          "source_digest",
+          "freshness_state"
+        ],
+        "public_record_fields": [
+          "practice_task_ref",
+          "rule_label",
+          "origin_article_slug",
+          "theme_id",
+          "expected_effect",
+          "observed_result",
+          "outcome",
+          "evidence_state",
+          "limitation",
+          "applications",
+          "article_candidates",
+          "public_evidence_urls"
+        ],
+        "internal_only_fields": [
+          "private task body",
+          "customer identity",
+          "internal evidence_refs",
+          "local absolute paths",
+          "secrets／tokens／cookies／runtime auth"
+        ],
+        "consumer": "$COLLAB/notyet_website/notyet-md/src/data/generated/morrowise-practice-impact.json",
+        "sync_mode": "explicit_approved_two_phase",
+        "degraded_states": [
+          "canonical input missing or unapproved",
+          "verified／mixed／failed without durable evidence",
+          "public-safe projection failed",
+          "source_digest or schema mismatch",
+          "freshness_state is unknown／stale／degraded／blocked",
+          "consumer snapshot drift"
+        ]
+      },
       "execution_contract": {
         "owner": "morrowise/practice-adoption-evidence-read-model-v1",
         "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#practice-adoption-evidence-read-model-v1",
@@ -7183,6 +7234,7 @@
           "Evidence／causality verifier、degraded state 與 successor article candidate proposal"
         ],
         "verifiers": [
+          "node scripts/generate-practice-adoption-evidence-read-model.mjs --check",
           "node scripts/verify-practice-adoption-evidence-read-model.mjs",
           "node scripts/validate-tasks.mjs --changed-only --project morrowise",
           "npm run test:morrowise-wiring",
@@ -7242,6 +7294,41 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 要求既有 notyet.md task 具體定義如何與 MorroWise 接上線；本次只補 MorroWise producer schema／command／output、public fields、internal-only boundary、freshness／degraded states 與 explicit approved two-phase consumer contract，不新增 task 或自動同步 runtime。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#practice-adoption-evidence-read-model-v1",
+              "$COLLAB/harness-mc/milestones/notyet-md/project.json#morrowise_integration",
+              "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#practice-impact-article-lineage-surface-v1",
+              "Vincent 2026-07-26 current session: 如何跟 MorroWise 接上線"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/practice-adoption-evidence-read-model-v1",
+                "notyet-md/practice-impact-article-lineage-surface-v1"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有 MorroWise task 所擁有的方法採用／成效 evidence 聚合；缺口是 producer 到 public website consumer 的 export contract 尚未定錨。",
+                "owner_source_of_truth": "方法／採用 evidence owner 不變；MorroWise task 新增 producer contract，notyet.md 只保存 approved committed snapshot 並負責 UI。",
+                "inputs_outputs": "Canonical inputs 不變；輸出由抽象 public-safe read model 收斂成固定 schema、output path、digest／freshness metadata 與 explicit two-phase consumer。",
+                "lifecycle_completion": "Task 維持 todo；script、schema、真實 evidence、wiring gate、consumer sync 與 Architecture Admission 尚未實作，不能宣稱已接上線。"
+              },
+              "decision_reason": "這是既有 system task 的 export／consumer contract amendment，不建立另一個 bridge task、registry 或背景同步系統。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 方向可以；優化原本的 task"
+                ]
+              }
+            }
           }
         ]
       },
@@ -7271,7 +7358,7 @@
         "evaluated_at": "2026-07-26",
         "reason": "本 task 計畫新增共通 schema、generator、verifier、public-safe read model 與跨專案 consumer，具 Architecture Admission 候選性；現階段只建立 todo contract，待 TDD fixtures 與 implementation evidence 完成後再決定 promoted／version improvement，禁止先寫 ARCHITECTURE.md managed block。"
       },
-      "note": "2026-07-26 只建立 MorroWise work anchor 與責任邊界。依唯一 weekly core 規則維持 todo；未被正式 admit 前不得進入 implementation。"
+      "note": "2026-07-26 已建立 MorroWise work anchor 與責任邊界；第二次 amend 已定錨 producer schema／output、public／internal fields、freshness／degraded 與 explicit approved two-phase consumer，但所有 implementation 與 runtime evidence 仍不存在。依唯一 weekly core 規則維持 todo；未被正式 admit 前不得進入 implementation。"
     }
   ]
 }

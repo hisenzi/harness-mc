@@ -99,41 +99,421 @@
     },
     {
       "id": "p0-9",
-      "title": "commit + push + Zeabur 部署 + 綁域名",
+      "title": "正式發布閘門：原始碼 → Zeabur → 網域",
       "status": "todo",
       "track": "p0-ship",
-      "done_condition": "branch commit + push；Zeabur import repo 部署；Cloudflare 關 Proxy 綁 notyet.md；https 200",
-      "note": "待 Vincent 拍板 push；Zeabur/DNS 是 Vincent dashboard 動作"
+      "priority": "high",
+      "progress_scope": "active",
+      "dependencies": [
+        "notyet-md/p0-8"
+      ],
+      "review_date": "2026-07-29",
+      "estimated_hours": 4,
+      "summary": "以三個依序、各自核准的 release gate 完成 source parity、Zeabur production deployment 與 notyet.md DNS／HTTPS admission；不得把 commit、push、deploy 或 DNS 的其中一步自動推定為其餘步驟也完成。",
+      "done_condition": "Gate 1 的 scoped commit 與 remote parity、Gate 2 的 Zeabur production build／deployment evidence、Gate 3 的 public DNS、有效 TLS 與 `https://notyet.md` HTTP 200 全部通過；commit、push、deploy 與 DNS 各自保留 Vincent 明確核准，缺任一 evidence 時 task 維持 todo／blocked。",
+      "acceptance": [
+        "NY-RELEASE-A01｜Gate 1／source：只提交 notyet.md repo 內已驗證範圍；commit 走 worktree-commit，push 走 cc-push，remote branch SHA 與 local delivery SHA 一致。",
+        "NY-RELEASE-A02｜獨立核准：commit、push、deploy 與 DNS 必須逐項取得獨立核准；前一步通過不得授權或自動觸發後一步。",
+        "NY-RELEASE-A03｜Gate 2／deploy：Zeabur 只從已核准 remote SHA 建立 production deployment；保存 build result、deployment URL／revision 與 terminal runtime status，不以 repo README 或 fixture 代替。",
+        "NY-RELEASE-A04｜Gate 3／domain：先讀取現有 public DNS 再精確修改；`notyet.md` 與必要 redirect host 解析到核准 deployment，TLS 有效且 HTTPS 回應 200，Cloudflare／Zeabur 衝突時停止。",
+        "NY-RELEASE-A05｜Fail closed：remote parity、production build、deployment status、DNS、TLS 或 HTTP probe 任一步未知／失敗即維持 todo／blocked，不得宣稱已上線。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/notyet-md/project.json",
+        "$COLLAB/notyet_website/notyet-md/astro.config.mjs",
+        "$COLLAB/notyet_website/notyet-md/package.json"
+      ],
+      "execution_contract": {
+        "owner": "notyet-md/p0-9",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#p0-9",
+        "inputs": [
+          "p0-8 fresh build／visual evidence 與 scoped source diff",
+          "核准 remote branch／delivery SHA 與 Zeabur production project",
+          "notyet.md 現有 public DNS、TLS 與 HTTP 狀態"
+        ],
+        "outputs": [
+          "Local／remote source parity evidence",
+          "Zeabur production deployment evidence",
+          "notyet.md DNS／TLS／HTTP admission evidence"
+        ],
+        "verifiers": [
+          "npm run build",
+          "git status --short --branch",
+          "git ls-remote --heads origin <approved-branch>",
+          "curl --max-time 15 --silent --show-error --head https://notyet.md"
+        ],
+        "stop_condition": "若 scope 未核准、remote SHA 不一致、Zeabur deployment 非 terminal success、DNS target 不明、TLS／HTTP 未通過，或下一 gate 尚未取得 Vincent 核准時停止；禁止背景 commit、push、deploy 或修改 DNS。"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ],
+        "decision_input": [
+          "既有 p0-8 build／visual evidence",
+          "Vincent 的 commit、push、deploy、DNS 分離核准底線",
+          "public DNS／TLS／HTTP 與 Zeabur 真實 deployment evidence"
+        ],
+        "decision_output": "一個 fail-closed 的 production release gate，只有 source、deployment 與 domain 三階段都有真實 evidence 才完成。",
+        "execution_boundary": "本次 normalization 只補 task contract；不授權 commit、push、Zeabur mutation、DNS mutation 或部署。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准小型 task normalization；既有 p0-9 同時綁定 commit、push、deploy、DNS 且沒有 owner、dependency、verifier、review date，故保留同一 task 身份並收斂為三個依序且獨立核准的 production release gate。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#p0-9",
+              "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#p0-8",
+              "Vincent 2026-07-26 current session: 可以進行，只補上述 active／legacy 缺口"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "notyet-md/p0-8",
+                "notyet-md/practice-impact-article-lineage-surface-v1"
+              ],
+              "scope_comparison": {
+                "problem": "問題仍是既有 notyet.md v0.1 production release；缺口是四類 mutation 被寫成無分離核准與 verifier 的單句 task。",
+                "owner_source_of_truth": "Owner 與正本不變，仍由 notyet-md/p0-9 及本 tasks.json 管理；Zeabur、DNS 與 remote 只是外部真實 evidence，不另建 tracker。",
+                "inputs_outputs": "輸入仍是已 build 的 notyet.md source，輸出仍是 production site；新增 source parity、deployment、DNS／TLS／HTTP 三個 gate evidence。",
+                "lifecycle_completion": "Task 維持 todo；三個 gate 全部真實通過前不 complete，本次 contract amendment 不代表已 push、deploy 或綁域名。"
+              },
+              "decision_reason": "同一 release outcome 可在一個 review window 依序驗收，不需建立新 task；以 amend 補足獨立核准與 fail-closed contract。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行，只補上述 active／legacy 缺口"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "note": "2026-07-26 normalization：只完成 release task contract；真實 remote、Zeabur、DNS、TLS 與 HTTP 狀態尚未在本輪執行或驗收。"
     },
     {
       "id": "p1-1",
-      "title": "de-AI 化 style（只改 theme-notyet token）",
+      "title": "notyet.md 讀者視角樣式優化 v1",
       "status": "todo",
       "track": "p1-style",
-      "done_condition": "Vincent 認可視覺不再過 AI 感；只動 theme-notyet.css token，不重建結構",
-      "note": "上線後"
+      "priority": "medium",
+      "progress_scope": "active",
+      "dependencies": [
+        "notyet-md/p0-9",
+        "notyet-md/brand-human-copy-pass-v0"
+      ],
+      "review_date": "2026-08-05",
+      "estimated_hours": 6,
+      "summary": "在不重建 IA、內容 schema 或文章結構的前提下，以 token-first 方式完成 home、archive、post、about 的讀者視角 style pass，將『去 AI 味』改成可對照、可回歸且仍需 Vincent 最終批准的驗收。",
+      "done_condition": "home、archive、post、about 在 desktop／mobile viewport 都通過 typography、spacing、色彩、層級、狀態辨識與閱讀節奏矩陣；fresh build／route smoke 無回歸，before／after evidence 可比對並由 Vincent 核准。優先只改 theme-notyet token；若 token 無法修正具體缺陷，需先列出精確 component scope 再取得核准。",
+      "acceptance": [
+        "NY-STYLE-A01｜頁面矩陣：home、archive、post、about 都需在至少一個 desktop 與一個 mobile viewport 留存 before／after evidence，不以單頁或單一 hero 判定完成。",
+        "NY-STYLE-A02｜可觀察標準：逐頁檢查字體層級、行寬／行高、spacing rhythm、色彩／對比、狀態辨識、CTA／連結層級與閱讀節奏；不得只用『不像 AI』一句話綠燈。",
+        "NY-STYLE-A03｜Token-first 邊界：優先只改 theme-notyet.css token；若具體缺陷必須修改 component／base CSS，先列精確 diff 與原因取得 Vincent 核准，不重建 IA、schema、navigation 或文章內容。",
+        "NY-STYLE-A04｜回歸：fresh build、四頁 route smoke、狀態色與 desktop／mobile overflow 通過；既有文章、metadata、sitemap 與 public route 不得消失。",
+        "NY-STYLE-A05｜Human admission：自動 verifier 只證明技術與可觀察矩陣；最終 reader-facing style 仍需 Vincent 以 before／after evidence 明確核准。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet_website/notyet-md/src/styles/theme-notyet.css",
+        "$COLLAB/notyet_website/notyet-md/src/styles/base.css",
+        "$COLLAB/notyet_website/notyet-md/src/pages"
+      ],
+      "execution_contract": {
+        "owner": "notyet-md/p1-1",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#p1-1",
+        "inputs": [
+          "目前 production／preview 四頁的 desktop／mobile before evidence",
+          "theme-notyet tokens、base CSS 與 reader-facing style acceptance matrix",
+          "Vincent 對具體視覺問題的標註"
+        ],
+        "outputs": [
+          "Scoped theme token／approved CSS improvements",
+          "四頁 desktop／mobile before／after evidence",
+          "fresh build、route smoke 與 Vincent admission result"
+        ],
+        "verifiers": [
+          "npm run build",
+          "git diff --check",
+          "home／archive／post／about desktop＋mobile screenshot matrix",
+          "Vincent before／after admission"
+        ],
+        "stop_condition": "若 p0-9 尚未完成、問題無具體頁面／viewport evidence、需要重建 IA／schema／content、token 外修改未核准，或 fresh build／route smoke／overflow 回歸失敗時停止。"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ],
+        "decision_input": [
+          "既有品牌 human-copy pass 與實際頁面 before evidence",
+          "theme-notyet token／base CSS",
+          "Vincent 對具體頁面與 viewport 的標註"
+        ],
+        "decision_output": "一個 token-first、可觀察且可回歸的 reader-facing style pass，而不是主觀『去 AI 味』標籤。",
+        "execution_boundary": "本次 normalization 只補 task contract；不修改 notyet.md CSS、component、頁面、內容或部署。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准小型 task normalization；既有 p1-1 的完成條件只有主觀『不再過 AI 感』且將解法預鎖為 token，故保留 task 身份並補成頁面／viewport／回歸／human admission 矩陣。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#p1-1",
+              "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#brand-human-copy-pass-v0",
+              "Vincent 2026-07-26 current session: 可以進行，只補上述 active／legacy 缺口"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "notyet-md/brand-human-copy-pass-v0",
+                "notyet-md/p0-3"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有 notyet.md reader-facing style pass；缺口是完成條件主觀且沒有頁面、viewport 與回歸證據。",
+                "owner_source_of_truth": "Owner 與正本不變，仍是 notyet-md/p1-1；品牌 reference 是輸入，不另建 style registry。",
+                "inputs_outputs": "輸入仍是 theme-notyet 與品牌方向，輸出仍是 style 改善；新增 before／after、四頁 viewport matrix、build／route regression 與 human admission。",
+                "lifecycle_completion": "Task 維持 todo；p0-9、fresh evidence、回歸與 Vincent admission 全部通過前不得完成。"
+              },
+              "decision_reason": "問題與 owner 不變，只有 acceptance 與 solution boundary 需補強，因此 outcome=amend。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行，只補上述 active／legacy 缺口"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "note": "2026-07-26 normalization：Task 維持 todo 並依賴 p0-9；本輪未執行任何網站 style 修改。"
     },
     {
       "id": "p2-1",
       "title": "萃取編輯 block 進 Hiblocks（content/editorial 類）",
-      "status": "todo",
+      "status": "deferred",
       "track": "p2-hiblocks",
-      "done_condition": "PostRow/StatusTag/Archive/Reading/Subscribe 等進 hiblocks，新增 content/editorial 類 + theme-notyet，更新 blocks.manifest.json",
-      "note": "你的點 4；上線後"
+      "priority": "low",
+      "progress_scope": "future_candidate",
+      "admission_gate": "p0-9 完成、notyet.md block API 在至少兩個真實頁面穩定，且 HiBlocks p1-block-registry-rules／verifier 已完成後，再由 Vincent 核准 extraction batch。",
+      "dependencies": [
+        "notyet-md/p0-9",
+        "notyet-md/p0-4",
+        "hiblocks/p1-block-registry-rules",
+        "hiblocks/p1-block-registry-verifier"
+      ],
+      "review_date": "2026-08-12",
+      "estimated_hours": 12,
+      "summary": "未來候選：在 notyet.md 已上線且 content/editorial block API 有真實重用證據後，才評估將穩定元件萃取進 HiBlocks；目前不得占用 active delivery path。",
+      "done_condition": "通過 admission 後，只萃取已在 notyet.md 真實使用且 API 穩定的 content/editorial blocks；HiBlocks manifest、分類、theme contract、docs／example 與 verifier 通過，notyet.md consumer adoption fresh build 無回歸。未通過 admission 前維持 deferred。",
+      "acceptance": [
+        "NY-HIBLOCKS-A01｜Admission：p0-9、兩個真實頁面重用證據、HiBlocks registry rules／verifier 與 Vincent extraction batch 核准全部存在，否則維持 deferred。",
+        "NY-HIBLOCKS-A02｜只萃取穩定 API：每個 candidate 需列實際 route、props contract、theme dependency 與不萃取原因；禁止把單站偶發 markup 直接搬成 shared block。",
+        "NY-HIBLOCKS-A03｜HiBlocks 正本：manifest、category、theme contract、docs／example 與 verifier 都寫入既有 HiBlocks 正本，不在 notyet.md 建第二份 block registry。",
+        "NY-HIBLOCKS-A04｜Consumer regression：notyet.md 切換到 shared block 後需 fresh build、route／visual regression；無真實 consumer adoption 不得完成。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/hiblocks/tasks.json#p1-block-registry-rules",
+        "$COLLAB/harness-mc/milestones/hiblocks/tasks.json#p1-block-registry-verifier",
+        "$COLLAB/hiblocks/src/components/blocks/blocks.manifest.json",
+        "$COLLAB/notyet_website/notyet-md/src/components"
+      ],
+      "execution_contract": {
+        "owner": "notyet-md/p2-1",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#p2-1",
+        "inputs": [
+          "notyet.md 真實 route／component reuse evidence",
+          "HiBlocks registry、manifest、theme 與 verifier contract",
+          "Vincent 核准的 extraction candidate batch"
+        ],
+        "outputs": [
+          "HiBlocks content/editorial shared blocks 與 manifest entries",
+          "Docs／examples／theme contract 與 verifier evidence",
+          "notyet.md consumer adoption／regression evidence"
+        ],
+        "verifiers": [
+          "cd \"$COLLAB/hiblocks\" && npm run build",
+          "cd \"$COLLAB/hiblocks\" && npm run validate:registry",
+          "cd \"$COLLAB/notyet_website/notyet-md\" && npm run build",
+          "notyet.md shared block route／visual regression"
+        ],
+        "stop_condition": "Admission 任一 prerequisite 缺失、candidate 只有單一偶發使用、API／theme 未穩定、會建立第二 registry，或 HiBlocks／notyet.md 任一 verifier 失敗時停止並維持 deferred。"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ],
+        "decision_input": [
+          "notyet.md 真實 component reuse evidence",
+          "HiBlocks registry／manifest／theme contract",
+          "Vincent extraction batch approval"
+        ],
+        "decision_output": "一個只有在共享價值與 API 穩定性有證據時才進入 delivery 的 future extraction candidate。",
+        "execution_boundary": "本次只將候選標為 deferred 並補 admission contract；不修改 notyet.md 或 HiBlocks repo。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "suspend",
+            "from_status": "todo",
+            "to_status": "deferred",
+            "reason": "Vincent 核准將未來候選另列；既有 p2-1 只有『上線後』備註且沒有 admission、dependency、verifier，故暫停 active 身份並補齊重新啟動條件。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#p2-1",
+              "$COLLAB/harness-mc/milestones/hiblocks/tasks.json#p1-block-registry-rules",
+              "Vincent 2026-07-26 current session: 可以進行，未來候選另列"
+            ],
+            "recorded_at": "2026-07-26",
+            "reactivation_criteria": "p0-9 完成、至少兩個 notyet.md 真實頁面證明同一 block API 穩定重用、HiBlocks p1-block-registry-rules 與 p1-block-registry-verifier 完成，並取得 Vincent 對 exact extraction batch 的明確核准。",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "notyet-md/p0-4",
+                "hiblocks/p1-block-registry-rules",
+                "hiblocks/p1-block-registry-verifier"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有 content/editorial block extraction；缺口是它被當成 active todo，但尚無共享價值、穩定 API 或上游 registry 完成證據。",
+                "owner_source_of_truth": "候選身份仍在 notyet-md/p2-1；若 admit，shared block 正本在 HiBlocks manifest／tasks，不建立第二 registry。",
+                "inputs_outputs": "輸入仍是 notyet.md components，輸出仍是 HiBlocks blocks；新增真實 reuse、registry readiness、consumer adoption 與 regression evidence。",
+                "lifecycle_completion": "Status 改為 deferred；只有 reactivation criteria 與 Vincent admission 通過後才 resume，單純到達日期不自動延期或啟動。"
+              },
+              "decision_reason": "不是取消 extraction，而是讓尚未具備 evidence 的未來工作退出 active path；保留 task 並以 suspend/amend 補 admission contract。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行，未來候選另列"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "note": "2026-07-26 normalization：標為 future_candidate／deferred；不得因 review date 到期自動 resume。"
     },
     {
       "id": "p3-1",
       "title": "簡易後台做成 Hiblocks CMS 模組",
-      "status": "todo",
+      "status": "deferred",
       "track": "p3-cms",
-      "done_condition": "markdown 薄 CMS（編輯文章 + 觸發部署），做成 Hiblocks 模組，利用 block 的 cms_ready",
-      "note": "你的點 2+3；更後面"
+      "priority": "low",
+      "progress_scope": "future_candidate",
+      "admission_gate": "先證明現行 Git／Markdown 文章流程造成可量測阻力，且 notyet-md/p2-1 與 HiBlocks p2-5 CMS 接入責任邊界完成裁決後，再由 Vincent 核准 CMS spike。",
+      "dependencies": [
+        "notyet-md/p0-9",
+        "notyet-md/p2-1",
+        "hiblocks/p2-5"
+      ],
+      "review_date": "2026-08-19",
+      "estimated_hours": 24,
+      "summary": "未來候選：只有現行 Git／Markdown 流程出現真實、重複且可量測的編輯阻力時，才評估薄 CMS／HiBlocks module；目前不以『可能方便』建立後台或部署觸發器。",
+      "done_condition": "通過 admission 後，以最小 spike 驗證文章編輯、preview、approval 與部署提案；canonical content 仍是 repo Markdown，CMS 不持有第二份文章正本、不直接背景部署。Security、auth、draft／publication state、rollback 與 fresh consumer build 全部通過後才可完成；未通過 admission 前維持 deferred。",
+      "acceptance": [
+        "NY-CMS-A01｜Right problem：至少保存兩次真實 publishing workflow 的時間／錯誤／重工 evidence，證明問題來自編輯流程而非內容尚未準備或核准未完成。",
+        "NY-CMS-A02｜Ownership admission：先裁決 notyet-md、HiBlocks p2-5 與部署 adapter 的 owner／正本／auth／write boundary；不得另建平行 CMS task system 或文章資料庫正本。",
+        "NY-CMS-A03｜Safe write：canonical content 維持 repo Markdown；CMS 只產生可審核 diff／proposal，未經 Vincent 核准不得改 publication state、commit、push 或 deploy。",
+        "NY-CMS-A04｜Spike gate：auth、preview、draft／publication state、rollback、audit trail、negative fixtures 與 fresh build 通過後，才決定 amend／replace／cancel；spike 不等於產品完成。"
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/milestones/hiblocks/tasks.json#p2-5",
+        "$COLLAB/notyet_website/notyet-md/src/content.config.ts",
+        "$COLLAB/notyet_website/notyet-md/src/content/blog"
+      ],
+      "execution_contract": {
+        "owner": "notyet-md/p3-1",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#p3-1",
+        "inputs": [
+          "至少兩次真實 publishing workflow friction evidence",
+          "notyet.md／HiBlocks／deployment adapter owner 與 auth boundary 裁決",
+          "Vincent 核准的最小 CMS spike"
+        ],
+        "outputs": [
+          "CMS applicability／owner decision 與最小 spike",
+          "可審核 Markdown diff／proposal、preview 與 rollback evidence",
+          "Security／auth／publication／deployment negative fixtures 與 fresh build result"
+        ],
+        "verifiers": [
+          "cd \"$COLLAB/hiblocks\" && npm run build",
+          "cd \"$COLLAB/notyet_website/notyet-md\" && npm run build",
+          "CMS auth／write／publication／rollback negative fixtures",
+          "canonical Markdown diff／proposal audit"
+        ],
+        "stop_condition": "無兩次真實 friction evidence、owner／auth 未裁決、會建立第二內容正本、會背景 commit／push／deploy，或 negative fixtures／fresh build 失敗時停止並維持 deferred。"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ],
+        "decision_input": [
+          "真實 publishing workflow friction evidence",
+          "notyet.md／HiBlocks p2-5／deployment adapter ownership boundary",
+          "security、auth、approval、rollback constraints"
+        ],
+        "decision_output": "一個只在真實阻力與安全責任清楚時才啟動的 CMS future candidate，而不是預設一定要做後台。",
+        "execution_boundary": "本次只將候選標為 deferred 並補 admission contract；不建立 CMS、資料庫、auth、部署 adapter 或修改網站。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "suspend",
+            "from_status": "todo",
+            "to_status": "deferred",
+            "reason": "Vincent 核准將未來候選另列；既有 p3-1 只有『更後面』備註，尚無真實 friction、ownership、auth 或 safe-write evidence，故暫停 active 身份並補重新啟動條件。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#p3-1",
+              "$COLLAB/harness-mc/milestones/hiblocks/tasks.json#p2-5",
+              "Vincent 2026-07-26 current session: 可以進行，未來候選另列"
+            ],
+            "recorded_at": "2026-07-26",
+            "reactivation_criteria": "保存至少兩次真實 publishing workflow friction evidence，完成 notyet.md／HiBlocks p2-5／deployment adapter owner、auth 與 write boundary 裁決，並取得 Vincent 對最小 CMS spike 的明確核准。",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "notyet-md/p2-1",
+                "hiblocks/p2-5",
+                "notyet-md/p0-2"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有薄 CMS 候選；缺口是它被當成 active todo，但尚無真實 publishing friction 或 ownership／auth evidence。",
+                "owner_source_of_truth": "候選身份仍在 notyet-md/p3-1；文章 canonical content 維持 repo Markdown，若 admit 需再裁決 HiBlocks module 與 deployment adapter owner。",
+                "inputs_outputs": "輸入由抽象『做後台』收斂成真實 friction、ownership 與安全 evidence；輸出先是 applicability／spike decision，不預設完整 CMS。",
+                "lifecycle_completion": "Status 改為 deferred；只有 reactivation criteria 與 Vincent admission 通過後才 resume，不因 review date 或 candidate 存在自動開發。"
+              },
+              "decision_reason": "不是取消 CMS，而是讓未證明 right problem 與安全責任的未來工作退出 active path；保留 task 並以 suspend/amend 補 admission contract。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行，未來候選另列"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "note": "2026-07-26 normalization：標為 future_candidate／deferred；不得因 review date 到期自動 resume。"
     },
     {
       "id": "open-project",
       "title": "開案：repos 登記 + MC milestone + Obsidian sync 防呆",
       "status": "done",
       "track": "p0-ship",
+      "done_condition": "notyet-md 已以 standalone／Zeabur 身份登記至共享 repo／project source，harness-mc milestone 可生成至 MC，Obsidian sync 在 risks 缺 probability 時不再 crash；提交 73d82da、2e2be4c、9b92040 保存完成 evidence。",
       "completed_at": "2026-06-08",
       "commits": [
         "73d82da",
@@ -141,7 +521,58 @@
         "9b92040"
       ],
       "summary": "notyet-md 登記進 repos.json（standalone/zeabur）、建 MC milestone、修 sync-projects 在 risks 缺 probability 時的 crash（4 專案連帶受惠）",
-      "note": "auto-task：commit 時無對應 task，自動建立"
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ],
+        "decision_input": [
+          "既有 completed_at、commits 與 summary",
+          "task validator 對空 done_condition 的 legacy warning",
+          "Vincent 核准只補 active／legacy 缺口且 closed task 不重開"
+        ],
+        "decision_output": "在不改寫歷史狀態的前提下補齊可驗收 done_condition。",
+        "execution_boundary": "只做歷史 metadata backfill；status 維持 done，不重跑或重開 2026-06-08 開案工作。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "done",
+            "to_status": "done",
+            "reason": "Vincent 核准只補 legacy 缺口；本 task 是 Task-before-work gate 前由 commit 自動補帳的 closed task，僅補空白 done_condition 與 lifecycle boundary，不重開或改寫 completed evidence。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#open-project",
+              "notyet-md commits 73d82da, 2e2be4c, 9b92040",
+              "Vincent 2026-07-26 current session: 可以進行，只補上述 active／legacy 缺口"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "notyet-md/p0-1",
+                "notyet-md/p0-8"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有 2026-06-08 開案補帳；唯一缺口是 done_condition 空白造成 validator legacy warning。",
+                "owner_source_of_truth": "Owner、正本、completed_at 與 commits 全部不變，仍由 notyet-md/open-project 與本 tasks.json 保存。",
+                "inputs_outputs": "既有 commits／summary 是輸入；輸出只增加由既有 evidence 推導的 done_condition 與 lifecycle boundary。",
+                "lifecycle_completion": "Status 維持 done；不 reopen、不新增 completion claim，也不重新執行開案工作。"
+              },
+              "decision_reason": "同一 closed task 的歷史 metadata 缺漏，以 amend backfill 即可；無須建立新 task 或第二 tracker。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行，只補上述 active／legacy 缺口"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "note": "auto-task：commit 時無對應 task，自動建立。2026-07-26 只補歷史 done_condition；closed status 與原 evidence 未變。"
     },
     {
       "id": "brand-reference-library-v0",
@@ -195,18 +626,25 @@
       "status": "todo",
       "track": "p1-lineage",
       "priority": "high",
+      "progress_scope": "active",
+      "dependencies": [
+        "morrowise/practice-adoption-evidence-read-model-v1"
+      ],
+      "review_date": "2026-08-05",
+      "estimated_hours": 16,
       "blocked_by": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#practice-adoption-evidence-read-model-v1",
       "summary": "待實作：讓同一主題的不同標題、不同日期文章形成可讀歷程，並從 MorroWise public-safe read model 顯示方法寫入規則後的後續專案採用與真實結果。",
       "done_condition": "notyet.md 能以同一 theme 的多篇 dated article 顯示發現、系統規則變更、後續專案採用、結果驗證與後續文章歷程；原文章的後續採用區塊只讀 MorroWise 產生的 public-safe read model，無真實 evidence 時不得宣稱方法有效或專案更順。網站不得持有 task／規則／成效正本，不得背景改寫文章、建立文章、commit、push 或發布。",
       "acceptance": [
         "NY-LINEAGE-A01｜核心問題明確：本 task 解決的是『有效方法寫入系統後，後續是否採用、實際結果為何，以及如何回鏈原文章／形成後續文章』，不是文章版本號、CMS、設計風格或另一套專案 tracker。",
         "NY-LINEAGE-A02｜單向 MorroWise wiring：資料鏈固定為 MorroWise canonical task／rule／evidence → public-safe generated read model → notyet.md；網站不得反向修改 task、規則、evidence、publication state 或外部專案。",
-        "NY-LINEAGE-A03｜文章 lineage 不另建人工 registry：文章 frontmatter 以 stable theme id、lineage stage 與必要 previous/successor reference 表達主題關係；同一主題可有不同標題與日期，排序與前後關係由 content collection／generator 產生，禁止人工維護第二份文章狀態表。",
+        "NY-LINEAGE-A03｜文章 lineage 不另建人工 registry：文章 frontmatter 只保存 theme_id、lineage_stage 與 practice_task_refs 等文章自身 metadata；同一主題可有不同標題與日期，排序、previous／successor 與時間線由 content collection／generator 產生，禁止在 frontmatter 或其他檔案平行手維護衍生關係與文章狀態表。",
         "NY-LINEAGE-A04｜原文回鏈：文章頁可顯示原始發現、system rule ref、後續採用專案的公開安全摘要、outcome 與 evidence state，並連到已核准公開的後續文章；沒有採用或結果時清楚顯示尚未觀察，不得留白假裝完成。",
         "NY-LINEAGE-A05｜證據與敘事分離：verified、mixed、failed、not_observed 必須依 MorroWise read model 呈現；只有 verified 且 evidence refs 完整時可使用『已驗證有效』等結論，不能從單次成功推論因果或自動升級文章狀態。",
         "NY-LINEAGE-A06｜隱私與安全：public read model 只含核准公開或脫敏的 project label、task ref、結果摘要、日期與安全 evidence ref；不得輸出客戶姓名、私人 task 內容、絕對本機路徑、secret、token、Cookie 或 runtime auth。",
         "NY-LINEAGE-A07｜Agent 只提案：達到後續文章門檻時只能輸出 article candidate、理由、來源文章與 evidence refs；未經 Vincent 核准不得新增／修改文章、改 publication state、commit、push 或部署。",
-        "NY-LINEAGE-A08｜驗證可判定：schema／fixtures 至少覆蓋同主題多篇文章、不同主題隔離、無 evidence 不得綠燈、mixed／failed 顯示、私人資料脫敏與未核准禁止寫檔；fresh build 與實際文章 route 必須通過。"
+        "NY-LINEAGE-A08｜驗證可判定：schema／fixtures 至少覆蓋同主題多篇文章、不同主題隔離、無 evidence 不得綠燈、mixed／failed 顯示、私人資料脫敏與未核准禁止寫檔；fresh build 與實際文章 route 必須通過。",
+        "NY-LINEAGE-A09｜Two-phase 接線：Phase 1 由 MorroWise producer 產生 schema_version、generated_at、as_of、source_digest、freshness_state 與 public records；Phase 2 只有在 Vincent 核准後才由 notyet.md sync script 更新 committed snapshot。`--check`、consumer verifier 與 fresh build 任一步失敗即 degraded／blocked，不得顯示 verified claim 或背景自動修復／push。"
       ],
       "source_refs": [
         "$COLLAB/harness-mc/milestones/notyet-md/project.json",
@@ -215,6 +653,38 @@
         "$COLLAB/notyet_website/notyet-md/src/pages/blog/[slug].astro",
         "$COLLAB/notyet_website/notyet-md/src/content/blog/zh/2026-07-26-ai-worktree-single-developer.md"
       ],
+      "integration_contract": {
+        "direction": "MorroWise canonical evidence → public-safe producer output → explicit approved sync → notyet.md committed snapshot → article lineage surface",
+        "producer_repo": "$COLLAB/harness-mc",
+        "producer_command": "node scripts/generate-practice-adoption-evidence-read-model.mjs",
+        "producer_output": "$COLLAB/harness-mc/public/data/morrowise-practice-impact.json",
+        "consumer_repo": "$COLLAB/notyet_website/notyet-md",
+        "consumer_sync_command": "node scripts/sync-morrowise-practice-impact.mjs",
+        "consumer_check_command": "node scripts/sync-morrowise-practice-impact.mjs --check",
+        "consumer_snapshot": "$COLLAB/notyet_website/notyet-md/src/data/generated/morrowise-practice-impact.json",
+        "consumer_verifier": "node scripts/verify-morrowise-practice-impact.mjs",
+        "join_contract": {
+          "article_fields": [
+            "theme_id",
+            "lineage_stage",
+            "practice_task_refs"
+          ],
+          "read_model_fields": [
+            "practice_task_ref",
+            "origin_article_slug",
+            "theme_id",
+            "applications",
+            "article_candidates"
+          ],
+          "generated_relations": [
+            "previous_article",
+            "successor_articles",
+            "topic_timeline"
+          ]
+        },
+        "freshness_contract": "網站只接受 schema valid、source_digest valid 且 freshness_state=fresh 的 snapshot 顯示 verified claim；missing、unknown、stale、degraded 或 blocked 時顯示資料待更新／尚未驗證，禁止從文章內容自行補判。",
+        "deployment_boundary": "Zeabur build 只依賴 notyet.md repo 內 committed snapshot，不跨 repo 讀本機 $COLLAB；snapshot 更新、commit、push 與 deploy 都需要各自明確核准。"
+      },
       "execution_contract": {
         "owner": "notyet-md/practice-impact-article-lineage-surface-v1",
         "source_of_truth": "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#practice-impact-article-lineage-surface-v1",
@@ -229,8 +699,9 @@
         ],
         "verifiers": [
           "npm run build",
+          "node scripts/sync-morrowise-practice-impact.mjs --check",
+          "node scripts/verify-morrowise-practice-impact.mjs",
           "lineage schema／同主題排序／不同主題隔離 fixtures",
-          "public-safe read model contract verifier",
           "未核准禁止寫文章、commit、push 或部署的 negative fixture"
         ],
         "stop_condition": "若 MorroWise read model 尚未完成、資料含私人內容或本機絕對路徑、outcome 無 evidence、網站需反向修改 canonical state，或 article candidate 會自動寫檔／發布時停止；不得以 fixture 假綠燈宣稱已有真實後續採用結果。"
@@ -283,6 +754,75 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 再次要求 existing task 清楚回答本專案核心、要解決的問題及如何與 MorroWise 接上線；本次不新增 task，只補 producer output、committed consumer snapshot、join keys、freshness／degraded contract、two-phase sync 與跨 repo verifier。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/notyet-md/project.json#morrowise_integration",
+              "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#practice-impact-article-lineage-surface-v1",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#practice-adoption-evidence-read-model-v1",
+              "Vincent 2026-07-26 current session: 方向可以；優化原本的 task；寫上要解決什麼、本專案核心；如何跟 MorroWise 接上線"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "notyet-md/practice-impact-article-lineage-surface-v1",
+                "morrowise/practice-adoption-evidence-read-model-v1"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有 notyet.md task 所擁有的方法實證回鏈與文章主題歷程；缺口只是接線方式尚未機器可判定。",
+                "owner_source_of_truth": "Owner 不變：MorroWise 擁有方法 evidence producer，notyet.md task 擁有 committed snapshot consumer 與公開 surface；project.json 只保留核心與契約 pointer。",
+                "inputs_outputs": "既有 public-safe read model 與 article metadata 不變；新增 exact producer／consumer paths、join contract、freshness state 與 two-phase checks。",
+                "lifecycle_completion": "Task 維持 todo；只有 producer、approved sync、consumer verifier、fresh build 與真實 article route 通過才可完成，本次 task amendment 不代表接線已上線。"
+              },
+              "decision_reason": "這是同一 task 的 execution contract 補強，不是新問題、registry、tracker 或 runtime，因此 outcome=amend。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 方向可以；優化原本的 task"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准小型 task normalization；補上 MorroWise producer 的 canonical dependency、review date、estimated hours 與 active progress scope，使 dashboard 與 execution gate 不必從 prose 推測 critical dependency。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#practice-impact-article-lineage-surface-v1",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#practice-adoption-evidence-read-model-v1",
+              "Vincent 2026-07-26 current session: 可以進行，只補上述 active／legacy 缺口"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/practice-adoption-evidence-read-model-v1",
+                "notyet-md/p1-1"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有方法實證回鏈 surface；缺口是 MorroWise producer 只存在 blocked_by prose／pointer，沒有 canonical dependency 與 review window。",
+                "owner_source_of_truth": "Owner 與正本不變：MorroWise task 擁有 evidence producer，notyet-md task 擁有 committed snapshot consumer 與文章 surface。",
+                "inputs_outputs": "既有 inputs／outputs 不變；新增 canonical dependency、active progress scope、review date 與估時供 gate／dashboard 使用。",
+                "lifecycle_completion": "Task 維持 todo；dependency 仍未完成，且所有 consumer implementation／fresh build／真實 route evidence 都不存在。"
+              },
+              "decision_reason": "這是同一 task execution metadata 的補強，不是新 surface、bridge task 或 tracker，因此 outcome=amend。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行，只補上述 active／legacy 缺口"
+                ]
+              }
+            }
           }
         ]
       },
@@ -310,7 +850,7 @@
         "evaluated_at": "2026-07-26",
         "reason": "本 task 是 notyet.md 公開網站 surface，不建立新的 system registry、runtime、scheduler 或 canonical evidence source；其上游 MorroWise system task 在 implementation 前需另做 Architecture Admission Review。"
       },
-      "note": "2026-07-26 只完成核心問題、責任邊界與可驗收 task 定錨。Status 維持 todo；MorroWise public-safe read model 完成前不得實作成真實成效 surface或宣稱已有後續專案驗證。"
+      "note": "2026-07-26 已完成核心問題、責任邊界與可驗收 task 定錨；第二次 amend 已定錨 exact producer／consumer snapshot、join keys、freshness／degraded 與 two-phase check；normalization 再補 canonical dependency／review window，但所有 script／JSON／網站仍未實作。Status 維持 todo；MorroWise public-safe read model 完成前不得實作成真實成效 surface 或宣稱已有後續專案驗證。"
     }
   ]
 }

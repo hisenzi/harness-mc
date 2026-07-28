@@ -3937,7 +3937,12 @@
           "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs"
         ],
         "runtime_evidence_required": false,
-        "evidence_refs": []
+        "evidence_refs": [
+          "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+          "TDD RED 2026-07-26: node scripts/verify-validate-tasks.mjs rejected each missing completion-contract behavior before its validator implementation",
+          "TDD GREEN 2026-07-26: node scripts/verify-validate-tasks.mjs -> validate-tasks verification OK",
+          "node scripts/verify-morrowise-dev-workflow-catalog.mjs -> MorroWise dev workflow catalog verification OK"
+        ]
       },
       "jv32_route": {
         "batch": "JV-32 task lifecycle governance batch",
@@ -4247,6 +4252,43 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准依 P2 dependency gates 開始 P3；本次在既有 JV-40/JV-32 閉環實作 completion evidence schema、changed-only completion validator、required/exempt/runtime 負向 fixtures、catalog/policy/command-map wiring 與 Architecture Admission version review。Task 保持 in_progress，待 scoped commit 與完成核准，不新增 task、tracker 或 source-of-truth family。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/system-workflow/schemas/morrowise-task-lifecycle.schema.json",
+              "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+              "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
+              "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
+              "Vincent 2026-07-26 current session: 可以進行『依 P2 dependency gates 開始 P3 執行』"
+            ],
+            "recorded_at": "2026-07-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-dev-workflow-catalog",
+                "morrowise/action-priority-read-model-v2"
+              ],
+              "scope_comparison": {
+                "problem": "仍是 JV-40 已承接的 canonical completion evidence 缺口；不是 Action Priority 選擇或新的 task system。",
+                "owner_source_of_truth": "Owner 維持 task-lifecycle-jv32-gate；正本仍是 MorroWise tasks.json、既有 lifecycle schema/spec、validator 與 JV-32 catalog。",
+                "inputs_outputs": "輸入沿用 P2 test contract、task mutation 與 verifier evidence；輸出是同一 schema/validator/fixtures/Admission Record 的 P3 implementation evidence。",
+                "lifecycle_completion": "Task 維持 in_progress；scoped commit、完整 regression 與 Vincent completion decision 後才可走 complete，不以本次實作自動關閉。"
+              },
+              "decision_reason": "P2 已確認八個既有 task 完整承接工作包；completion gate 唯一正確路徑是 amend JV-40，不新增或取代 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-26",
+                "evidence_refs": [
+                  "Vincent 2026-07-26 current session: 可以進行『依 P2 dependency gates 開始 P3 執行』"
+                ]
+              }
+            }
           }
         ]
       },
@@ -4265,8 +4307,8 @@
       },
       "architecture_decision": {
         "decision": "not_required",
-        "evaluated_at": "2026-07-25",
-        "reason": "JV-40 是已 promoted 的 JV-32 catalog version improvement，不新增平行 subsystem；2026-07-25 將 canonical task title 的繁中優先 spec、changed-only validator、歷史相容策略與 fixtures 納入受管 contract，更新既有 Admission Record 並同步 ARCHITECTURE.md 薄索引。",
+        "evaluated_at": "2026-07-26",
+        "reason": "JV-40 是已 promoted 的 JV-32 catalog version improvement，不新增平行 subsystem；2026-07-26 將 completion evidence schema、changed-only validator、required/exempt/runtime fixtures 與治理 wiring 納入受管 contract，刷新既有 Admission Record，ARCHITECTURE.md 薄索引角色不變。",
         "admission_review": {
           "scope": "version_improvement",
           "admission_record_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
@@ -4284,7 +4326,7 @@
             "npm run test:system-pulse",
             "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
           ],
-          "reason": "本次沿用同一 promoted subsystem，將 canonical task title 的繁體中文優先規範、changed-only Han 字元 gate、歷史相容與正反 fixtures 納入既有 Admission Record contract；更新 fingerprint、最近驗證時間與 ARCHITECTURE.md 薄索引，不建立新子系統。"
+          "reason": "本次沿用同一 promoted subsystem，將 closed transition 的 test_contract、completion_evidence、TDD exemption、fixture/runtime boundary、歷史相容與負向 fixtures 納入既有 Admission Record contract；刷新 fingerprint、最近驗證時間與受控薄索引 marker，不建立新子系統。"
         }
       },
       "note": "2026-07-18 Vincent 核准：新增、修改、停用 task 必須接入 JV-32，並要求一次補齊後做模擬驗證。此 task 是 lifecycle governance 的唯一 work anchor。2026-07-18 已補 Architecture Admission Review 閉環：既有 JV-32 的受管 contract 變更會使 verifier 以 fingerprint 攔截 stale Admission Record，並要求受控 ARCHITECTURE.md sync check。完成證據：8dd92f7、038bae0、task event 與本 task listed verifiers。2026-07-19 version_improvement roadmap／weekly_core review：被選為當週唯一 MorroWise 核心改善項目並轉 in_progress 時，必須同時記錄 weekly_core 與 review_date；到 review_date 仍未完成，只能由 Vincent 明確選擇 amend(reframe)、suspend（defer，to_status=deferred）或 cancel。amend(reframe) 必須記錄新 scope 與原因、重新取得 Vincent 核准；若仍維持 in_progress，必須同時設定新的明確 review_date，否則不得續留 weekly_core。suspend 必須記錄 reactivation criteria；cancel 必須記錄原因與 replacement／no replacement。禁止自動延長 review_date，也不得以未回覆默認續期。2026-07-19 Vincent 核准進行機械強制與 event 套用；JV-40 已以 resume 重開為唯一 weekly_core，review_date=2026-07-26。實作範圍固定為 semantic intake 結構與 outcome mapping、單一 WIP／到期／reframe validator、work-anchor runtime gate、負向 fixture、Admission Record 與受控薄索引；完成驗證前維持 in_progress。"

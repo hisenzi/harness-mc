@@ -33,7 +33,7 @@
     "route": "JV-32/task-lifecycle",
     "canonical_write_boundary": "Canonical task mutation requires explicit Vincent approval, an append-only lifecycle event, and changed-only validator evidence. MorroWise semantic writes also require semantic_intake with canonical task refs and four-boundary scope comparison; reuse is read-only. External trackers remain adapter_only.",
     "suspension_mapping": "Use deferred with reactivation_criteria for reversible pause; cancelled with replacement_task_id or no_replacement_reason for no-longer-needed work; archived for historical/superseded records. Do not use disabled; blocked remains active.",
-    "completion_mapping": "Closed status additionally requires JV-32 closeout-commit-routing and does not bypass worktree-commit, commit, push, or deployment approval.",
+    "completion_mapping": "Closed status additionally requires a complete test_contract, completion_evidence, and JV-32 closeout-commit-routing; runtime claims require safe real runtime evidence, and no completion evidence bypasses worktree-commit, commit, push, or deployment approval.",
     "architecture_version_review": "When a task changes the governed contract of an existing promoted subsystem, it must record an admission_review, refresh the Admission Record version_review, and pass the controlled ARCHITECTURE.md sync check.",
     "weekly_core_review": "At most one MorroWise task may be weekly_core and in_progress. Admission and each exit decision require explicit Vincent approval; admit and reframe also require review_date evidence. Once the date arrives, only reframe, suspend, cancel, or complete is allowed, never automatic extension."
   },
@@ -83,7 +83,7 @@
         {
           "action_class": "task_state_mutation",
           "examples": ["task reorder", "task create", "task update", "task close", "bulk task status change"],
-          "required_evidence": ["task id", "diff preview", "done condition or reason", "verification plan", "JV-32 task-lifecycle route", "append-only lifecycle history", "semantic intake for MorroWise semantic task writes", "weekly core admission or exit decision evidence when applicable", "Architecture Admission Review when a promoted subsystem contract changes"],
+          "required_evidence": ["task id", "diff preview", "done condition or reason", "verification plan", "JV-32 task-lifecycle route", "append-only lifecycle history", "semantic intake for MorroWise semantic task writes", "weekly core admission or exit decision evidence when applicable", "completion test contract and completion evidence when closing task", "Architecture Admission Review when a promoted subsystem contract changes"],
           "reason": "tasks.json is canonical system state."
         },
         {

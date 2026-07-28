@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-task-lifecycle-jv32-gate-2ca1948-20260726T140724Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "2ca1948",
+  "project": "morrowise",
+  "task_id": "task-lifecycle-jv32-gate",
+  "status": "updated",
+  "summary": "同步 JV-40 completion evidence contract 的既有 Architecture thin index、降級條件、驗證日期與 registry fingerprint；未新增 subsystem。",
+  "created_at": "2026-07-26T14:07:24.651Z",
+  "actor": "codex",
+  "session_id": "019f9c30-1be9-7e91-93c8-0398d249d404"
+}

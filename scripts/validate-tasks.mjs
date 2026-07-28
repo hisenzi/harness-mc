@@ -418,11 +418,84 @@ function validateTaskLifecycleEvidence(task, { previousTask = null } = {}) {
   if (task.status === "archived" && last.operation !== "archive") {
     problems.push("archived task lifecycle mutations require operation archive");
   }
-  if (CLOSED_STATUSES.has(task.status) && previousStatus !== task.status && !task.jv32_route.workflows.includes("closeout-commit-routing")) {
+  const isCompletionTransition = CLOSED_STATUSES.has(task.status) && previousStatus !== task.status;
+  if (isCompletionTransition && !task.jv32_route.workflows.includes("closeout-commit-routing")) {
     problems.push("completed task lifecycle mutations require jv32_route.workflows to include closeout-commit-routing");
+  }
+  if (isCompletionTransition) {
+    problems.push(...validateCompletionTestContract(task.test_contract));
+    problems.push(...validateCompletionEvidence(task.completion_evidence, { testContract: task.test_contract }));
   }
 
   return problems;
+}
+
+function validateCompletionTestContract(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return ["completed task lifecycle mutations require test_contract"];
+  }
+
+  const problems = [];
+  if (!["required", "exempt"].includes(value.applicability)) {
+    problems.push("completed task test_contract.applicability must be required or exempt");
+  }
+  for (const field of ["behavior_cases", "test_level", "fixture_refs", "evidence_refs"]) {
+    if (!nonEmptyStringArray(value[field])) {
+      problems.push(`completed task test_contract.${field} must be a non-empty string array`);
+    }
+  }
+  if (typeof value.runtime_evidence_required !== "boolean") {
+    problems.push("completed task test_contract.runtime_evidence_required must be a boolean");
+  }
+  if (value.applicability === "required") {
+    for (const field of ["red_command", "expected_red_reason", "green_command"]) {
+      if (!nonEmptyString(value[field])) {
+        problems.push(`completed task test_contract.${field} must be a non-empty string`);
+      }
+    }
+    if (!nonEmptyStringArray(value.full_regression_commands)) {
+      problems.push("completed task test_contract.full_regression_commands must be a non-empty string array");
+    }
+  }
+  if (value.applicability === "exempt") {
+    if (!nonEmptyString(value.tdd_exemption_reason)) {
+      problems.push("completed exempt task test_contract.tdd_exemption_reason must be a non-empty string");
+    }
+    if (!nonEmptyStringArray(value.alternative_verification_commands)) {
+      problems.push("completed exempt task test_contract.alternative_verification_commands must be a non-empty string array");
+    }
+  }
+  return problems;
+}
+
+function validateCompletionEvidence(value, { testContract = {} } = {}) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return ["completed task lifecycle mutations require completion_evidence"];
+  }
+  const problems = [];
+  if (testContract.applicability === "required") {
+    for (const field of ["red_evidence", "green_evidence"]) {
+      if (!nonEmptyStringArray(value[field])) {
+        problems.push(`completed task completion_evidence.${field} must be a non-empty string array`);
+      }
+    }
+  }
+  for (const field of ["regression_evidence", "verifier_refs"]) {
+    if (!nonEmptyStringArray(value[field])) {
+      problems.push(`completed task completion_evidence.${field} must be a non-empty string array`);
+    }
+  }
+  if (!nonEmptyString(value.fixture_runtime_boundary)) {
+    problems.push("completed task completion_evidence.fixture_runtime_boundary must be a non-empty string");
+  }
+  if (testContract.runtime_evidence_required === true && !nonEmptyStringArray(value.runtime_evidence)) {
+    problems.push("completed runtime task completion_evidence.runtime_evidence must be a non-empty string array");
+  }
+  return problems;
+}
+
+function nonEmptyStringArray(value) {
+  return Array.isArray(value) && value.length > 0 && value.every((entry) => nonEmptyString(entry));
 }
 
 function expectedLifecycleOperation(previousStatus, nextStatus) {

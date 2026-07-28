@@ -247,7 +247,9 @@ const closedWithoutArchitectureDecision = {
             })
           }
         ]
-      }
+      },
+      test_contract: requiredTestContract(),
+      completion_evidence: requiredCompletionEvidence()
     },
     morrowiseSeedTask()
   ]
@@ -453,6 +455,8 @@ if (!invalidArchiveSupersession.output.includes("archived lifecycle event supers
 const completedWithoutCloseout = structuredClone(baseTasks);
 Object.assign(completedWithoutCloseout.tasks[0], {
   status: "completed",
+  test_contract: requiredTestContract(),
+  completion_evidence: requiredCompletionEvidence(),
   jv32_route: { workflows: ["task-lifecycle"] },
   task_lifecycle: {
     route: "JV-32/task-lifecycle",
@@ -473,8 +477,8 @@ if (!missingCloseoutRoute.output.includes("completed task lifecycle mutations re
   throw new Error("Expected completed lifecycle closeout route error.");
 }
 
-const validLifecycleMutation = structuredClone(baseTasks);
-Object.assign(validLifecycleMutation.tasks[0], {
+const completedWithoutTestContract = structuredClone(baseTasks);
+Object.assign(completedWithoutTestContract.tasks[0], {
   status: "completed",
   jv32_route: { workflows: ["task-lifecycle", "closeout-commit-routing"] },
   task_lifecycle: {
@@ -489,11 +493,142 @@ Object.assign(validLifecycleMutation.tasks[0], {
     }]
   }
 });
+writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), completedWithoutTestContract);
+
+const missingTestContract = run(["--changed-only", "--project", "harness-mc"], { expectFailure: true });
+if (!missingTestContract.output.includes("completed task lifecycle mutations require test_contract")) {
+  throw new Error("Expected completed lifecycle mutation without test_contract to fail.");
+}
+
+const completedWithEmptyTestContract = structuredClone(completedWithoutTestContract);
+completedWithEmptyTestContract.tasks[0].test_contract = {};
+writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), completedWithEmptyTestContract);
+
+const incompleteTestContract = run(["--changed-only", "--project", "harness-mc"], { expectFailure: true });
+if (!incompleteTestContract.output.includes("completed task test_contract.applicability must be required or exempt")) {
+  throw new Error("Expected completed lifecycle mutation with an empty test_contract to fail.");
+}
+
+const completedWithIncompleteRequiredContract = structuredClone(completedWithoutTestContract);
+completedWithIncompleteRequiredContract.tasks[0].test_contract = {
+  applicability: "required",
+  behavior_cases: [],
+  test_level: [],
+  red_command: "",
+  expected_red_reason: "",
+  green_command: "",
+  full_regression_commands: [],
+  fixture_refs: [],
+  runtime_evidence_required: "no",
+  evidence_refs: [],
+};
+completedWithIncompleteRequiredContract.tasks[0].completion_evidence = requiredCompletionEvidence();
+writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), completedWithIncompleteRequiredContract);
+
+const incompleteRequiredContract = run(["--changed-only", "--project", "harness-mc"], { expectFailure: true });
+for (const message of [
+  "completed task test_contract.behavior_cases must be a non-empty string array",
+  "completed task test_contract.test_level must be a non-empty string array",
+  "completed task test_contract.red_command must be a non-empty string",
+  "completed task test_contract.expected_red_reason must be a non-empty string",
+  "completed task test_contract.green_command must be a non-empty string",
+  "completed task test_contract.full_regression_commands must be a non-empty string array",
+  "completed task test_contract.fixture_refs must be a non-empty string array",
+  "completed task test_contract.runtime_evidence_required must be a boolean",
+  "completed task test_contract.evidence_refs must be a non-empty string array",
+]) {
+  if (!incompleteRequiredContract.output.includes(message)) {
+    throw new Error(`Expected incomplete required test contract error: ${message}`);
+  }
+}
+
+const validLifecycleMutation = structuredClone(completedWithoutTestContract);
+validLifecycleMutation.tasks[0].test_contract = requiredTestContract();
+validLifecycleMutation.tasks[0].completion_evidence = requiredCompletionEvidence();
+
+const completedWithoutEvidenceManifest = structuredClone(validLifecycleMutation);
+delete completedWithoutEvidenceManifest.tasks[0].completion_evidence;
+writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), completedWithoutEvidenceManifest);
+
+const missingEvidenceManifest = run(["--changed-only", "--project", "harness-mc"], { expectFailure: true });
+if (!missingEvidenceManifest.output.includes("completed task lifecycle mutations require completion_evidence")) {
+  throw new Error("Expected completed lifecycle mutation without completion_evidence to fail.");
+}
+
+const completedWithEmptyEvidenceManifest = structuredClone(validLifecycleMutation);
+completedWithEmptyEvidenceManifest.tasks[0].completion_evidence = {};
+writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), completedWithEmptyEvidenceManifest);
+
+const incompleteEvidenceManifest = run(["--changed-only", "--project", "harness-mc"], { expectFailure: true });
+for (const message of [
+  "completed task completion_evidence.red_evidence must be a non-empty string array",
+  "completed task completion_evidence.green_evidence must be a non-empty string array",
+  "completed task completion_evidence.regression_evidence must be a non-empty string array",
+  "completed task completion_evidence.verifier_refs must be a non-empty string array",
+  "completed task completion_evidence.fixture_runtime_boundary must be a non-empty string",
+]) {
+  if (!incompleteEvidenceManifest.output.includes(message)) {
+    throw new Error(`Expected incomplete completion evidence error: ${message}`);
+  }
+}
+
+const completedRuntimeWithoutRuntimeEvidence = structuredClone(validLifecycleMutation);
+completedRuntimeWithoutRuntimeEvidence.tasks[0].test_contract = requiredTestContract({
+  runtimeEvidenceRequired: true,
+});
+writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), completedRuntimeWithoutRuntimeEvidence);
+
+const missingRuntimeEvidence = run(["--changed-only", "--project", "harness-mc"], { expectFailure: true });
+if (!missingRuntimeEvidence.output.includes("completed runtime task completion_evidence.runtime_evidence must be a non-empty string array")) {
+  throw new Error("Expected runtime completion without real runtime evidence to fail.");
+}
+
+const validRuntimeLifecycleMutation = structuredClone(completedRuntimeWithoutRuntimeEvidence);
+validRuntimeLifecycleMutation.tasks[0].completion_evidence = requiredCompletionEvidence({
+  runtimeEvidence: ["safe-runtime-run-output"],
+});
+writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), validRuntimeLifecycleMutation);
+
+const validRuntimeLifecyclePass = run(["--changed-only", "--project", "harness-mc"]);
+if (!validRuntimeLifecyclePass.output.includes("Task validation OK")) {
+  throw new Error("Expected runtime completion with safe runtime evidence to pass.");
+}
+
+const completedWithIncompleteTddExemption = structuredClone(completedWithoutTestContract);
+completedWithIncompleteTddExemption.tasks[0].test_contract = exemptTestContract({
+  exemptionReason: "",
+  alternativeVerificationCommands: [],
+});
+completedWithIncompleteTddExemption.tasks[0].completion_evidence = exemptCompletionEvidence();
+writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), completedWithIncompleteTddExemption);
+
+const incompleteTddExemption = run(["--changed-only", "--project", "harness-mc"], { expectFailure: true });
+for (const message of [
+  "completed exempt task test_contract.tdd_exemption_reason must be a non-empty string",
+  "completed exempt task test_contract.alternative_verification_commands must be a non-empty string array",
+]) {
+  if (!incompleteTddExemption.output.includes(message)) {
+    throw new Error(`Expected incomplete TDD exemption error: ${message}`);
+  }
+}
+
+const validTddExemption = structuredClone(completedWithIncompleteTddExemption);
+validTddExemption.tasks[0].test_contract = exemptTestContract({
+  exemptionReason: "This fixture represents a pure documentation contract with no executable behavior.",
+  alternativeVerificationCommands: ["node scripts/verify-document-contract.mjs"],
+});
+writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), validTddExemption);
+
+const validTddExemptionPass = run(["--changed-only", "--project", "harness-mc"]);
+if (!validTddExemptionPass.output.includes("Task validation OK")) {
+  throw new Error("Expected a documented TDD exemption with a rerunnable verifier to pass.");
+}
+
 writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), validLifecycleMutation);
 
 const validLifecyclePass = run(["--changed-only", "--project", "harness-mc"]);
 if (!validLifecyclePass.output.includes("Task validation OK")) {
-  throw new Error("Expected valid lifecycle mutation to pass.");
+  throw new Error("Expected valid lifecycle mutation with test_contract to pass.");
 }
 
 const newTaskWithFollowupMutation = structuredClone(baseTasks);
@@ -591,6 +726,56 @@ function weeklyCoreReview(decision, {
   };
 }
 
+function requiredTestContract({ runtimeEvidenceRequired = false } = {}) {
+  return {
+    applicability: "required",
+    behavior_cases: ["Completed behavior is observable and verifier-backed."],
+    test_level: ["validator_contract"],
+    red_command: "node scripts/verify-completion-red.mjs",
+    expected_red_reason: "The completion gate is absent before implementation.",
+    green_command: "node scripts/verify-completion-green.mjs",
+    full_regression_commands: ["node scripts/verify-completion-regression.mjs"],
+    fixture_refs: ["milestones/harness-mc/tasks.json"],
+    runtime_evidence_required: runtimeEvidenceRequired,
+    evidence_refs: ["red-output", "green-output", "regression-output"],
+  };
+}
+
+function requiredCompletionEvidence({ runtimeEvidence = [] } = {}) {
+  return {
+    red_evidence: ["red-output"],
+    green_evidence: ["green-output"],
+    regression_evidence: ["regression-output"],
+    verifier_refs: ["node scripts/verify-completion-regression.mjs"],
+    fixture_runtime_boundary: "Fixture evidence verifies deterministic behavior; runtime evidence is required only when declared by test_contract.",
+    ...(runtimeEvidence.length > 0 ? { runtime_evidence: runtimeEvidence } : {}),
+  };
+}
+
+function exemptTestContract({
+  exemptionReason,
+  alternativeVerificationCommands,
+} = {}) {
+  return {
+    applicability: "exempt",
+    behavior_cases: ["Documentation contract is observable through a rerunnable verifier."],
+    test_level: ["document_contract"],
+    fixture_refs: ["milestones/harness-mc/tasks.json"],
+    runtime_evidence_required: false,
+    evidence_refs: ["document-verifier-output"],
+    tdd_exemption_reason: exemptionReason,
+    alternative_verification_commands: alternativeVerificationCommands,
+  };
+}
+
+function exemptCompletionEvidence() {
+  return {
+    regression_evidence: ["document-verifier-output"],
+    verifier_refs: ["node scripts/verify-document-contract.mjs"],
+    fixture_runtime_boundary: "This is a pure documentation contract; no runtime claim is made.",
+  };
+}
+
 function lifecycleTask(id, status, history, workflows = ["task-lifecycle"]) {
   return {
     id,
@@ -608,7 +793,11 @@ function lifecycleTask(id, status, history, workflows = ["task-lifecycle"]) {
       source_boundary: "HC is a thinking check, not source of truth; tasks.json remains canonical."
     },
     jv32_route: { workflows },
-    task_lifecycle: { route: "JV-32/task-lifecycle", history }
+    task_lifecycle: { route: "JV-32/task-lifecycle", history },
+    ...(["done", "completed", "fixed"].includes(status) ? {
+      test_contract: requiredTestContract(),
+      completion_evidence: requiredCompletionEvidence(),
+    } : {}),
   };
 }
 
@@ -846,6 +1035,8 @@ weeklyCoreCompleteWithoutReviewTask.architecture_decision = {
   evaluated_at: "2026-07-19",
   reason: "Fixture completion does not create or change a reusable architecture subsystem.",
 };
+weeklyCoreCompleteWithoutReviewTask.test_contract = requiredTestContract();
+weeklyCoreCompleteWithoutReviewTask.completion_evidence = requiredCompletionEvidence();
 weeklyCoreCompleteWithoutReviewTask.task_lifecycle.history.push(lifecycleEvent("complete", "in_progress", "completed", {
   semantic_intake: semanticIntake("amend", {
     comparedTaskRefs: ["morrowise/morrowise-seed-task"],

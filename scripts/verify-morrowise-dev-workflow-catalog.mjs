@@ -228,6 +228,8 @@ function verifyRegistry(value) {
   assert.match(taskLifecycle.close_rule, /Admission Record|architecture sync/i, "task-lifecycle must gate promoted-subsystem version reviews");
   assert.match(`${taskLifecycle.process} ${taskLifecycle.outputs}`, /semantic_intake|semantic intake/i, "task-lifecycle must enforce semantic task intake");
   assert.match(`${taskLifecycle.process} ${taskLifecycle.close_rule}`, /weekly_core|weekly core/i, "task-lifecycle must enforce the weekly core review gate");
+  assert.match(`${taskLifecycle.process} ${taskLifecycle.outputs} ${taskLifecycle.close_rule}`, /test_contract/, "task-lifecycle must enforce the completion test contract");
+  assert.match(`${taskLifecycle.process} ${taskLifecycle.outputs} ${taskLifecycle.close_rule}`, /completion_evidence/, "task-lifecycle must enforce completion evidence");
   assert.match(taskLifecycle.verifier_ref, /verify-work-anchor-preflight\.mjs/, "task-lifecycle verifier chain must include the runtime preflight fixture");
 
   const closeoutCommit = value.workflows.find((item) => item.id === "closeout-commit-routing");
@@ -278,6 +280,8 @@ function verifyTaskLifecycleSchema(value) {
   assert.deepEqual(value.required, ["task_lifecycle"]);
   assert.equal(value.properties.weekly_core.type, "boolean");
   assert.match(value.properties.review_date.pattern, /0-9/);
+  assert.equal(value.properties.test_contract.$ref, "#/$defs/test_contract");
+  assert.equal(value.properties.completion_evidence.$ref, "#/$defs/completion_evidence");
   const lifecycle = value.properties.task_lifecycle;
   assert.deepEqual(lifecycle.required, ["route", "history"]);
   assert.equal(lifecycle.properties.route.const, "JV-32/task-lifecycle");
@@ -291,6 +295,16 @@ function verifyTaskLifecycleSchema(value) {
   assert.deepEqual(value.$defs.semantic_intake.properties.outcome.enum, ["reuse", "amend", "replace", "genuinely_new"]);
   for (const field of ["problem", "owner_source_of_truth", "inputs_outputs", "lifecycle_completion"]) {
     assert.ok(value.$defs.semantic_intake.properties.scope_comparison.required.includes(field), `semantic intake schema missing ${field}`);
+  }
+  assert.deepEqual(value.$defs.test_contract.properties.applicability.enum, ["required", "exempt"]);
+  for (const field of ["behavior_cases", "test_level", "fixture_refs", "runtime_evidence_required", "evidence_refs"]) {
+    assert.ok(value.$defs.test_contract.required.includes(field), `test contract schema missing ${field}`);
+  }
+  for (const field of ["regression_evidence", "verifier_refs", "fixture_runtime_boundary"]) {
+    assert.ok(value.$defs.completion_evidence.required.includes(field), `completion evidence schema missing ${field}`);
+  }
+  for (const field of ["red_evidence", "green_evidence", "runtime_evidence"]) {
+    assert.ok(value.$defs.completion_evidence.properties[field], `completion evidence schema missing ${field}`);
   }
   assert.deepEqual(value.$defs.weekly_core_review.properties.decision.enum, ["admit", "reframe", "suspend", "cancel", "complete"]);
   const weeklyCoreRule = value.allOf.find((rule) => rule.if?.properties?.weekly_core?.const === true);
@@ -327,6 +341,15 @@ function verifyDocs(map, detail, lifecycle) {
   assert.match(lifecycle, /Architecture Admission Review/, "task lifecycle doc must define the architecture admission review");
   assert.match(lifecycle, /Semantic Task Intake/, "task lifecycle doc must define semantic task intake");
   assert.match(lifecycle, /Weekly Core/, "task lifecycle doc must define weekly core review");
+  for (const text of [
+    "Completion Evidence Contract",
+    "test_contract",
+    "completion_evidence",
+    "tdd_exemption_reason",
+    "fixture_runtime_boundary",
+  ]) {
+    assert.ok(lifecycle.includes(text), `task lifecycle doc missing ${text}`);
+  }
 
   for (const id of REQUIRED_WORKFLOW_IDS) {
     assert.ok(lowerMap.includes(id.toLowerCase()), `source map missing workflow id: ${id}`);
@@ -352,8 +375,13 @@ function verifyTaskLifecycleGovernance(commandMap, policy) {
   assert.ok(taskMutation.required_evidence.includes("semantic intake for MorroWise semantic task writes"));
   assert.ok(taskMutation.required_evidence.includes("weekly core admission or exit decision evidence when applicable"));
   assert.ok(taskMutation.required_evidence.includes("Architecture Admission Review when a promoted subsystem contract changes"));
+  assert.ok(taskMutation.required_evidence.includes("completion test contract and completion evidence when closing task"));
   assert.match(policy.task_lifecycle_contract?.architecture_version_review || "", /Admission Record/);
   assert.match(policy.task_lifecycle_contract?.weekly_core_review || "", /automatic extension/i);
+  assert.match(policy.task_lifecycle_contract?.completion_mapping || "", /test_contract/);
+  assert.match(policy.task_lifecycle_contract?.completion_mapping || "", /completion_evidence/);
+  assert.match(commandMap, /test_contract/);
+  assert.match(commandMap, /completion_evidence/);
 }
 
 function verifyReadModel(value, sourceRegistry) {

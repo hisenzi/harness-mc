@@ -20,7 +20,7 @@
     },
     {
       "id": "Life-Focus",
-      "label": "Life-Focus",
+      "label": "Future Practice｜未來練習",
       "color": "#14b8a6"
     },
     {
@@ -114,9 +114,22 @@
       "event": "created",
       "reason": "Align MC /projects classification chips with Notion PAI `領域` instead of MC internal project.type.",
       "task": "harness-mc/projects-pai-domain-filter-alignment"
+    },
+    {
+      "date": "2026-07-26",
+      "event": "display_label_updated",
+      "reason": "Use Future Practice｜未來練習 as the single human-facing domain name while retaining Life-Focus as the compatible machine id and existing PAI select value.",
+      "task": "harness-mc/future-practice-domain-tracking-v1"
+    },
+    {
+      "date": "2026-07-26",
+      "event": "provisional_project_domain_added",
+      "reason": "Classify the active in-flight FJSH-116 admissions milestone under the existing FJSH PAI domain; promote it when the milestone is committed.",
+      "task": "fj-116-admissions/FJ116-P0-02"
     }
   ],
   "provisional_project_domains": {
+    "fj-116-admissions": "FJSH",
     "td-morrowise-surface": "Harness"
   }
 }

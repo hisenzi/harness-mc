@@ -2653,6 +2653,87 @@
         "source_boundary": "HC 只作思考檢查；projects.json 是 generated read model，RRREALLL contract 是內容正本，harness-mc task 與 UI source 才是本修正的 canonical scope。"
       },
       "note": "2026-07-22 根因已重現並修正：live rrrealll-ocr 為 active、2/2；原 default all 不顯示它，修正後 all 與領域篩選都保留它。"
+    },
+    {
+      "id": "future-practice-domain-tracking-v1",
+      "title": "Future Practice｜沿用既有 /projects 的領域追蹤顯示",
+      "status": "completed",
+      "track": "phase-1",
+      "priority": "high",
+      "completed_at": "2026-07-26",
+      "depends_on": [
+        "projects-pai-domain-filter-alignment"
+      ],
+      "done_condition": "PAI domain taxonomy 保留 Life-Focus id 並將顯示名稱改為 Future Practice｜未來練習；既有 /projects filter 能以新名稱查看原有七個相關專案及理財試行 task，並顯示 output_ref=wealth-system/b-6；沒有新增 route、dashboard 或寫回能力。",
+      "acceptance": [
+        "A01｜pai-domain-taxonomy.json 的 domain id 仍為 Life-Focus，label 改為 Future Practice｜未來練習，history 記錄正式改名與 legacy key 邊界。",
+        "A02｜既有七個 project_domains mapping 繼續指向 Life-Focus；generated projects.json 對這些專案輸出 domain=Life-Focus、domainLabel=Future Practice｜未來練習。",
+        "A03｜/projects 的領域 filter、專案卡與詳情 modal 顯示 Future Practice｜未來練習，不向使用者顯示另一個 Life Focus 概念。",
+        "A04｜self-learning/future-practice-finance-pilot-v1 出現在既有 self-learning 專案進度；唯一入口與一份學習內容連接完成後狀態為 in_progress，並以可見的「輸出：wealth-system/b-6」標記顯示連接。",
+        "A05｜測試必須先在舊 taxonomy／generator／surface 行為上失敗，再以最小修改通過；另跑 task validator、taxonomy verifier、data generator、project filter tests、production build 與 git diff --check。",
+        "A06｜不得新增 app route、專屬 Future Practice dashboard、第二份 project/task tracker、Notion write-back、自動同步、外部發布或任何私人資料欄位。"
+      ],
+      "hc_decision": {
+        "task_scope": "harness-mc/future-practice-domain-tracking-v1",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#sourceBoundary",
+          "#risk",
+          "#constraints"
+        ],
+        "hc_reasoning": "真正問題不是缺少另一個儀表板，而是既有 Life-Focus 分類名稱與新定位不一致，且學習到理財成果的連接不可見。沿用同一個 domain id、同一條 generated read-model chain 與既有 /projects，只改 label 並顯示 output_ref，可避免 identity migration、第二入口與 UI 自行成為正本。",
+        "hc_confidence": 0.96,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/system-workflow/registries/pai-domain-taxonomy.json",
+          "$COLLAB/harness-mc/scripts/generate-data.mjs",
+          "$COLLAB/harness-mc/app/projects/page.tsx",
+          "$COLLAB/harness-mc/milestones/self-learning/tasks.json#future-practice-finance-pilot-v1",
+          "Vincent 2026-07-26 current session：可以進行"
+        ],
+        "source_boundary": "HC 只是思考檢查，不是正本；tasks.json 與 taxonomy registry 保持 canonical source，projects.json 是 generated read model，/projects 僅為唯讀 surface。"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "verification-before-completion",
+          "closeout-commit-routing"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 核准 Future Practice 作為原 Life Focus 的正式名稱，沿用既有 /projects 作控制 surface，並顯示理財試行到 wealth-system/b-6 的連接；不新增 project、route 或 dashboard。",
+            "evidence_refs": [
+              "Vincent 2026-07-26 current session：可以進行",
+              "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#projects-pai-domain-filter-alignment"
+            ],
+            "recorded_at": "2026-07-26"
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "Notion 課程 mirror 重複 task ID 與 FJSH-116 provisional taxonomy mapping blocker 均已修復；Future Practice 顯示、輸出連接、既有入口限制及完整 production build 全數通過驗收。",
+            "evidence_refs": [
+              "node scripts/verify-sync-notion-course-ids.mjs（2026-07-26 exit 0）",
+              "node scripts/verify-pai-domain-taxonomy.mjs（2026-07-26 exit 0）",
+              "npm run test:future-practice-domain-tracking（2026-07-26 4/4 passed）",
+              "npm run build（2026-07-26 exit 0）",
+              "python3 $COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py --check（2026-07-26 exit 0）"
+            ],
+            "recorded_at": "2026-07-26"
+          }
+        ]
+      },
+      "summary": "Future Practice 沿用 Life-Focus machine id 與既有 /projects／PAI 入口，顯示名稱及 wealth-system/b-6 輸出連接均已完成；兩個既存 build blocker 已修復，完整 npm production build 已通過。",
+      "note": "2026-07-26 completed。taxonomy、generated refs、既有 /projects 顯示、live PAI view、Notion 課程 mirror 穩定 ID 與 FJSH-116 provisional domain mapping 均已驗收。Heptabase 與 Obsidian Canvas 不作進度入口；notyet.md 只接人工核准的脫敏成果。"
     }
   ]
 }

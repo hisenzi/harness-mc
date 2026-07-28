@@ -947,4 +947,65 @@ if (!validPlanningReviewWindowResult.output.includes("Task validation OK")) {
   throw new Error("Expected a valid planning review window to pass without changing weekly-core state.");
 }
 
+const legacyNotionCourseMirror = {
+  tasks: [
+    {
+      id: "notion-aaaaaaaaaaaa",
+      title: "第一門舊課程",
+      status: "deferred",
+      track: "course",
+    },
+    {
+      id: "notion-aaaaaaaaaaaa",
+      title: "第二門舊課程",
+      status: "deferred",
+      track: "course",
+    },
+  ],
+};
+writeJson(path.join(repo, "milestones", "self-learning", "tasks.json"), legacyNotionCourseMirror);
+
+const duplicateNotionCourseMirrorResult = run(["--project", "self-learning"], { expectFailure: true });
+if (!duplicateNotionCourseMirrorResult.output.includes("duplicate task id notion-aaaaaaaaaaaa")) {
+  throw new Error("Expected duplicate Notion mirror task IDs to fail validation explicitly.");
+}
+
+git(["add", "milestones/self-learning/tasks.json"]);
+git(["commit", "-m", "seed legacy Notion course mirror collision"]);
+
+const repairedNotionCourseMirror = {
+  tasks: [
+    {
+      id: "notion-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1",
+      title: "第一門舊課程",
+      status: "deferred",
+      track: "course",
+      done_condition: "依 Notion 課程總表追蹤第一門課程完成。",
+      source_ref: {
+        system: "Notion",
+        page_id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa1",
+      },
+      mirror_note: "Notion remains source of truth; this task is an MC mirror.",
+    },
+    {
+      id: "notion-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa2",
+      title: "第二門舊課程",
+      status: "deferred",
+      track: "course",
+      done_condition: "依 Notion 課程總表追蹤第二門課程完成。",
+      source_ref: {
+        system: "Notion",
+        page_id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa2",
+      },
+      mirror_note: "Notion remains source of truth; this task is an MC mirror.",
+    },
+  ],
+};
+writeJson(path.join(repo, "milestones", "self-learning", "tasks.json"), repairedNotionCourseMirror);
+
+const repairedNotionCourseMirrorResult = run(["--changed-only", "--project", "self-learning"]);
+if (!repairedNotionCourseMirrorResult.output.includes("Task validation OK")) {
+  throw new Error("Expected a Notion course mirror ID repair to bypass canonical task deletion and lifecycle gates.");
+}
+
 console.log("validate-tasks verification OK");

@@ -50,6 +50,8 @@ function normalize(t) {
     completed_at: t.completed_at || null,
     commits: t.commits || [],
     summary: t.summary || "",
+    ...(t.canonical_ref ? { canonical_ref: t.canonical_ref } : {}),
+    ...(t.output_ref ? { output_ref: t.output_ref } : {}),
     external_refs: t.external_refs || {},
   };
 }

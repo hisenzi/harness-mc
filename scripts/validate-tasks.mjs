@@ -35,6 +35,7 @@ const WEEKLY_CORE_REVIEW_DECISIONS = new Set(["admit", "reframe", "suspend", "ca
 const PLANNING_REVIEW_OUTCOMES = new Set(["retain", "reframe", "defer"]);
 const BOOKKEEPING_ONLY_FIELDS = new Set(["commits", "completed_at", "summary", "external_refs", "execution_contract", "jv32_route", "task_lifecycle"]);
 const HAN_SCRIPT_PATTERN = /\p{Script=Han}/u;
+const SELF_LEARNING_MIRROR_TRACKS = new Set(["course", "book", "free", "yt"]);
 
 function parseArgs(argv) {
   const args = {
@@ -168,6 +169,13 @@ function isPortableAgentScope(task, project = "", includeProjectScope = false) {
     || label.startsWith("MC-LIVE-");
 }
 
+function isNotionCourseMirror(task, project = "") {
+  if (project !== "self-learning" || !task || typeof task !== "object") return false;
+  if (!SELF_LEARNING_MIRROR_TRACKS.has(String(task.track || ""))) return false;
+  const legacyNotionId = /^notion-[0-9a-f]{12}$/i.test(String(task.id || ""));
+  return legacyNotionId || String(task.source_ref?.system || "").toLowerCase() === "notion";
+}
+
 function isCurrentWriteScope({ task, changed, changedOnly, project = "" }) {
   return changedOnly && changed && isPortableAgentScope(task, project, true);
 }
@@ -186,10 +194,11 @@ function validateTask(task, {
     return ["task must be an object"];
   }
 
+  const notionCourseMirror = isNotionCourseMirror(task, project);
   if (!nonEmptyString(task.id)) problems.push("id must be a non-empty string");
   if (!nonEmptyString(task.title)) {
     problems.push("title must be a non-empty string");
-  } else if ((!changedOnly || changed) && !HAN_SCRIPT_PATTERN.test(task.title)) {
+  } else if (!notionCourseMirror && (!changedOnly || changed) && !HAN_SCRIPT_PATTERN.test(task.title)) {
     problems.push("title must use Traditional Chinese as the primary language; immutable technical identifiers may remain in the original language");
   }
   if (!nonEmptyString(task.status)) {
@@ -228,7 +237,7 @@ function validateTask(task, {
   if ("execution_contract" in task) {
     problems.push(...validateExecutionContract(task.execution_contract));
   }
-  if (requiresTaskLifecycleRoute({ task, changed, changedOnly })) {
+  if (requiresTaskLifecycleRoute({ task, changed, changedOnly, project })) {
     problems.push(...validateTaskLifecycleRoute(task));
     problems.push(...validateTaskLifecycleEvidence(task, { previousTask }));
     if (project === "morrowise" && isSemanticTaskMutation(task, previousTask)) {
@@ -316,8 +325,8 @@ function requiresHcDecision(task, project = "", includeProjectScope = false) {
   return isPortableAgentScope(task, project, includeProjectScope) && ACTIVE_STATUSES.has(String(task.status || "todo").toLowerCase());
 }
 
-function requiresTaskLifecycleRoute({ task, changed, changedOnly }) {
-  return changedOnly && changed && nonEmptyString(task.id);
+function requiresTaskLifecycleRoute({ task, changed, changedOnly, project = "" }) {
+  return changedOnly && changed && nonEmptyString(task.id) && !isNotionCourseMirror(task, project);
 }
 
 function validateTaskLifecycleRoute(task) {
@@ -822,11 +831,29 @@ export function validateTasks({
     const entries = extractTasks(raw);
     const relFile = path.relative(root, filePath);
     const previous = readHeadTasks(relFile);
+    const taskIdCounts = new Map();
+    for (const { task } of entries) {
+      if (!nonEmptyString(task?.id)) continue;
+      const taskId = String(task.id);
+      taskIdCounts.set(taskId, (taskIdCounts.get(taskId) || 0) + 1);
+    }
+    for (const [taskId, count] of taskIdCounts.entries()) {
+      if (count < 2) continue;
+      diagnostics.push({
+        severity: changedFiles.has(filePath) ? "error" : "warn",
+        project,
+        filePath,
+        taskId,
+        container: "tasks",
+        message: `duplicate task id ${taskId}; found ${count} definitions`,
+      });
+    }
 
     if (changedOnly && changedFiles.has(filePath)) {
       const currentTaskIds = new Set(entries.map(({ task }) => String(task?.id || "")).filter(Boolean));
-      for (const previousTaskId of previous.keys()) {
+      for (const [previousTaskId, previousTask] of previous.entries()) {
         if (!currentTaskIds.has(previousTaskId)) {
+          if (isNotionCourseMirror(previousTask, project)) continue;
           diagnostics.push({
             severity: "error",
             project,
@@ -861,7 +888,7 @@ export function validateTasks({
       const previousTask = taskId ? previous.get(taskId) || null : null;
       const changed = changedFiles.has(filePath)
         && (!taskId || JSON.stringify(previousTask) !== fingerprint);
-      const lifecycleMutation = requiresTaskLifecycleRoute({ task, changed, changedOnly });
+      const lifecycleMutation = requiresTaskLifecycleRoute({ task, changed, changedOnly, project });
       const severity = isCurrentWriteScope({ task, changed, changedOnly, project }) || lifecycleMutation ? "error" : "warn";
 
       for (const problem of validateTask(task, {

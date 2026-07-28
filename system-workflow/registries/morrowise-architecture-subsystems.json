@@ -195,6 +195,8 @@
         "以四維 semantic intake 分流 reuse、amend、replace、genuinely_new",
         "以繁體中文優先 title gate 攔截新增或變更 task 的全英文標題",
         "以單一 weekly core 與 review date gate 阻擋無核准續期",
+        "區分 Notion external mirror 與 MC canonical task 的刪除及生命週期邊界",
+        "以 task ID 唯一性 gate 明確攔截碰撞，不讓 HEAD snapshot 靜默覆蓋",
         "把未完成能力維持 deferred 或 degraded 狀態"
       ],
       "forbidden_actions": [
@@ -205,13 +207,13 @@
         "把 ARCHITECTURE.md 當成 catalog 正本"
       ],
       "safety_boundary": "JV-32 只治理 workflow metadata 與 read-only generated read model；它不得安裝外部 skills、修改 hooks、讀取 credentials 或把 GitHub/GitLab/Notion 等外部 tracker 升格成 MorroWise 正本。",
-      "degraded_state": "catalog registry/schema/verifier/read model 缺失、semantic intake 可繞過、新增或變更 task 的全英文 title 可通過、同時存在多個 weekly core、到期 review 可自動延長、adapter_only 誤標為 accepted、close_rule 缺失或薄索引被手寫細節時，必須維持 deferred/degraded。",
+      "degraded_state": "catalog registry/schema/verifier/read model 缺失、semantic intake 可繞過、新增或變更 task 的全英文 title 可通過、task ID 碰撞未被阻擋、Notion external mirror 被誤當 MC canonical task、同時存在多個 weekly core、到期 review 可自動延長、adapter_only 誤標為 accepted、close_rule 缺失或薄索引被手寫細節時，必須維持 deferred/degraded。",
       "architecture_decision": "promoted",
       "last_promoted_at": "2026-07-08",
-      "last_verified_at": "2026-07-27",
+      "last_verified_at": "2026-07-28",
       "version_review": {
         "scope": "version_improvement",
-        "reviewed_at": "2026-07-27",
+        "reviewed_at": "2026-07-28",
         "contract_refs": [
           "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
           "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json",
@@ -230,7 +232,7 @@
           "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
           "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
         ],
-        "contract_fingerprint": "a8886b4dae7dc25e",
+        "contract_fingerprint": "737fd7c14d1d6199",
         "index_action": "no_index_change",
         "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
         "evidence_refs": [
@@ -239,10 +241,13 @@
           "node scripts/validate-tasks.mjs --changed-only --project morrowise --as-of 2026-07-25",
           "node scripts/verify-morrowise-approval-policy.mjs",
           "node scripts/verify-explicit-git-isolation-approval.mjs --notyet-root <notyet-harness>",
+          "node scripts/verify-sync-notion-course-ids.mjs",
+          "node scripts/validate-tasks.mjs --changed-only --project self-learning",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise --as-of 2026-07-26",
           "npm run test:architecture-subsystems",
           "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
         ],
-        "reason": "2026-07-25 將 canonical task title 的繁體中文優先規範、changed-only Han 字元 gate、歷史相容策略與正反 fixtures 納入既有 JV-32 受管 contract，並把 package.json fingerprint 收斂為三個必要 JV-32 prebuild command 的投影，避免無關 script／metadata 造成 Admission Record 假性 stale。2026-07-27 再依 MW-GIT-AUTH-01 收緊 approval policy 與 package verifier wiring：建立或切換 branch/worktree 必須有 Vincent 精確核准，且同一核准完成 target-main integration、驗證與清理。三項規則沿用同一 MorroWise 開發工作流 Catalog 子系統，ARCHITECTURE.md 薄索引不增加細節，因此 index_action=no_index_change，但刷新受管 contract fingerprint。"
+        "reason": "2026-07-25 將 canonical task title 的繁體中文優先規範、changed-only Han 字元 gate、歷史相容策略與正反 fixtures 納入既有 JV-32 受管 contract，並把 package.json fingerprint 收斂為三個必要 JV-32 prebuild command 的投影，避免無關 script／metadata 造成 Admission Record 假性 stale。2026-07-26 納入 Notion external course mirror 與 MC canonical task 的刪除及生命週期邊界、task ID 唯一性 gate、完整 Notion page ID 同步回歸測試。2026-07-27 再依 MW-GIT-AUTH-01 收緊 approval policy 與 package verifier wiring：建立或切換 branch/worktree 必須有 Vincent 精確核准，且同一核准完成 target-main integration、驗證與清理。各項規則沿用同一 MorroWise 開發工作流 Catalog 子系統，ARCHITECTURE.md 薄索引不增加細節，因此 index_action=no_index_change，但刷新受管 contract fingerprint。"
       },
       "supersedes": [],
       "superseded_by": null

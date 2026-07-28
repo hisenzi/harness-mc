@@ -115,6 +115,7 @@ function pageToTask(page) {
   const triage = formulaVal(prop(page, "Triage總分"));
   const link = urlVal(prop(page, "課程連結"));
   const note = richText(prop(page, "備註"));
+  const outputRef = richText(prop(page, "服務輸出"));
 
   const parts = [];
   if (pillar) parts.push(`柱:${pillar}`);
@@ -124,8 +125,8 @@ function pageToTask(page) {
   if (link) parts.push(link);
   if (note) parts.push(note);
 
-  return {
-    id: `notion-${page.id.replace(/-/g, "").slice(0, 12)}`,
+  const task = {
+    id: `notion-${page.id.replace(/-/g, "").toLowerCase()}`,
     title: name,
     status: STATUS_MAP[status] || "deferred",
     track: TYPE_TRACK[type] || "course",
@@ -133,7 +134,25 @@ function pageToTask(page) {
     commits: [],
     note: parts.join(" | "),
     summary: "",
+    done_condition: `依 Notion 課程總表追蹤「${name}」完成，狀態由 Notion 正本同步為 DONE。`,
+    source_ref: {
+      system: "Notion",
+      page_id: page.id,
+      url: page.url,
+      database_id: DATABASE_ID,
+    },
+    mirror_note: "Notion remains source of truth; this task is an MC mirror.",
   };
+  if (outputRef) task.output_ref = outputRef;
+  return task;
+}
+
+function isNotionCourseMirror(task) {
+  const mirrorTracks = new Set(["course", "book", "free", "yt"]);
+  if (!mirrorTracks.has(String(task?.track || ""))) return false;
+  const sourceIsNotion = String(task?.source_ref?.system || "").toLowerCase() === "notion";
+  const legacyNotionId = /^notion-[0-9a-f]{12}$/i.test(String(task?.id || ""));
+  return sourceIsNotion || legacyNotionId;
 }
 
 async function main() {
@@ -141,22 +160,25 @@ async function main() {
   console.log(`Fetched ${pages.length} courses from Notion`);
 
   const courseTasks = pages.map(pageToTask);
+  const courseTaskIds = courseTasks.map((task) => task.id);
+  if (new Set(courseTaskIds).size !== courseTaskIds.length) {
+    throw new Error("Notion course sync produced duplicate task IDs; tasks.json was not written.");
+  }
 
-  // Preserve existing non-course tasks (setup/triage/process/operation tracks)
-  const SYSTEM_TRACKS = new Set(["setup", "triage", "process", "operation"]);
-  let existingSystemTasks = [];
+  // Only replace Notion-owned course mirrors; preserve every local canonical task.
+  let existingLocalTasks = [];
 
   if (fs.existsSync(tasksPath)) {
     const raw = JSON.parse(fs.readFileSync(tasksPath, "utf-8"));
     const tasks = Array.isArray(raw) ? raw : raw.tasks || [];
-    existingSystemTasks = tasks.filter((t) => SYSTEM_TRACKS.has(t.track));
+    existingLocalTasks = tasks.filter((task) => !isNotionCourseMirror(task));
   }
 
-  const merged = { tasks: [...existingSystemTasks, ...courseTasks] };
+  const merged = { tasks: [...existingLocalTasks, ...courseTasks] };
 
   fs.writeFileSync(tasksPath, JSON.stringify(merged, null, 2));
   console.log(
-    `Written ${merged.tasks.length} tasks (${existingSystemTasks.length} system + ${courseTasks.length} courses)`
+    `Written ${merged.tasks.length} tasks (${existingLocalTasks.length} local + ${courseTasks.length} Notion mirrors)`
   );
 }
 

@@ -91,294 +91,381 @@
       "summary": ""
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c68111aa82ee51a8790e9b",
       "title": "倪海廈-風水、易經",
       "status": "deferred",
       "track": "yt",
       "completed_at": null,
       "commits": [],
       "note": "柱:健康能量 | T:0 | YouTube 頻道",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「倪海廈-風水、易經」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-8111-aa82-ee51a8790e9b"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c6811db846e7bbf40269b7",
       "title": "蔡恩全-CEO的16個私房管理工具",
       "status": "deferred",
       "track": "course",
       "completed_at": null,
       "commits": [],
       "note": "柱:方法論 | T:0 | 3hrs 管理實戰法則",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「蔡恩全-CEO的16個私房管理工具」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-811d-b846-e7bbf40269b7"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c68120a4f1f811ecb00c44",
       "title": "Udemy-創業學習資源",
       "status": "deferred",
       "track": "course",
       "completed_at": null,
       "commits": [],
       "note": "T:0 | https://freelancingfreedom.com/",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「Udemy-創業學習資源」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-8120-a4f1-f811ecb00c44"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c68129be41febbaeea42a7",
       "title": "《極簡工作術》",
       "status": "deferred",
       "track": "book",
       "completed_at": null,
       "commits": [],
       "note": "T:0 | 事先決定規則以不動大腦・減少判斷消耗",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「《極簡工作術》」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-8129-be41-febbaeea42a7"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c6813d9d14e5d9e5578b42",
       "title": "蔡恩全-溝通表達",
       "status": "deferred",
       "track": "course",
       "completed_at": null,
       "commits": [],
       "note": "柱:精通 | T:0 | 2hrs 國際舞台軟實力",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「蔡恩全-溝通表達」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-813d-9d14-e5d9e5578b42"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c681429ef1c53e4acc81f8",
       "title": "《設計你的小習慣》",
       "status": "deferred",
       "track": "book",
       "completed_at": null,
       "commits": [],
       "note": "柱:方法論 | T:0 | B=MAP 行為=動機×行動×提示",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「《設計你的小習慣》」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-8142-9ef1-c53e4acc81f8"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c681518894c7afd8c0330e",
       "title": "蔡順任-西洋藝術欣賞",
       "status": "deferred",
       "track": "course",
       "completed_at": null,
       "commits": [],
       "note": "柱:精通 | T:0 | $3820 跟著修復師重新愛上西洋藝術",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「蔡順任-西洋藝術欣賞」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-8151-8894-c7afd8c0330e"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c681618705ca2af30b8a01",
       "title": "謝哲青-記憶宮殿",
       "status": "deferred",
       "track": "course",
       "completed_at": null,
       "commits": [],
       "note": "柱:方法論 | T:0",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「謝哲青-記憶宮殿」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-8161-8705-ca2af30b8a01"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c68163a69bca1f6b2a68c6",
       "title": "《技能密碼》THE SKILL CODE",
       "status": "deferred",
       "track": "book",
       "completed_at": null,
       "commits": [],
       "note": "柱:方法論 | T:0 | MIT博士・3C: Challenge, Complexity, Connection",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「《技能密碼》THE SKILL CODE」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-8163-a69b-ca1f6b2a68c6"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c68179bee9f33b30c1559c",
       "title": "《命定之書》張修修",
       "status": "deferred",
       "track": "book",
       "completed_at": null,
       "commits": [],
       "note": "柱:方法論 | T:0 | ICE 閱讀法：Images→Curiosity→Explore",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「《命定之書》張修修」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-8179-bee9-f33b30c1559c"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c6817da41eceea9f25c71c",
       "title": "卡片盒筆記思考術（Sönke Ahrens）",
       "status": "deferred",
       "track": "course",
       "completed_at": null,
       "commits": [],
       "note": "柱:方法論 | T:0 | https://sat.cool/course/167 | $3500・原作者版，與瓦基版不同",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「卡片盒筆記思考術（Sönke Ahrens）」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-817d-a41e-ceea9f25c71c"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c68184a914f63289b2f7ba",
       "title": "《創業之國以色列》",
       "status": "deferred",
       "track": "book",
       "completed_at": null,
       "commits": [],
       "note": "T:0 | chutzpath 文化・膽量與自信",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「《創業之國以色列》」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-8184-a914-f63289b2f7ba"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c68190b0cec00d271c7d6d",
       "title": "《西方哲學史》羅素",
       "status": "deferred",
       "track": "book",
       "completed_at": null,
       "commits": [],
       "note": "柱:精通 | T:0 | 1945 伯特蘭·羅素",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「《西方哲學史》羅素」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-8190-b0ce-c00d271c7d6d"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c68190b983c9c36f8a938f",
       "title": "高效原力",
       "status": "deferred",
       "track": "book",
       "completed_at": null,
       "commits": [],
       "note": "柱:時間專注 | T:0",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「高效原力」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-8190-b983-c9c36f8a938f"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c681b5bff7de9a720ce9b3",
       "title": "《三禧思維》",
       "status": "deferred",
       "track": "book",
       "completed_at": null,
       "commits": [],
       "note": "T:0 | 機率思考・不確定性中的行動信心",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「《三禧思維》」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-81b5-bff7-de9a720ce9b3"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c681ce8ba9f9d03ed5dd03",
       "title": "GTD《Getting Things Done》",
       "status": "deferred",
       "track": "book",
       "completed_at": null,
       "commits": [],
       "note": "柱:方法論 | T:0 | 外部系統=第二大腦",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「GTD《Getting Things Done》」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-81ce-8ba9-f9d03ed5dd03"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c681d78a8cfffd2447372b",
       "title": "中小企業網路大學",
       "status": "deferred",
       "track": "free",
       "completed_at": null,
       "commits": [],
       "note": "T:0 | https://www.smelearning.org.tw | 政府免費・AI產業應用、智慧排程等",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「中小企業網路大學」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-81d7-8a8c-fffd2447372b"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c681e7923eef45b7cea372",
       "title": "增加人文素養",
       "status": "deferred",
       "track": "free",
       "completed_at": null,
       "commits": [],
       "note": "T:0 | ChatGPT 自學・批判性思維+閱讀研究",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「增加人文素養」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-81e7-923e-ef45b7cea372"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c681f3a94afa341af51e72",
       "title": "柯文哲：人生十堂課",
       "status": "deferred",
       "track": "course",
       "completed_at": null,
       "commits": [],
       "note": "T:0 | $100",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「柯文哲：人生十堂課」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-81f3-a94a-fa341af51e72"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c681ffb9b6d7f037e2e349",
       "title": "王明嘉｜字卡120",
       "status": "in_progress",
       "track": "course",
       "completed_at": null,
       "commits": [],
       "note": "柱:精通 | T:0 | Typography 字體學習・界線比目標更有彈性",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「王明嘉｜字卡120」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-81ff-b9b6-d7f037e2e349"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c68122b2c8f11574731895",
       "title": "建築設計",
       "status": "deferred",
       "track": "course",
       "completed_at": null,
       "commits": [],
       "note": "T:0",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「建築設計」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-8122-b2c8-f11574731895"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c681238be3f88eebed0450",
       "title": "企業財稅",
       "status": "deferred",
       "track": "course",
       "completed_at": null,
       "commits": [],
       "note": "T:0 | 一人公司財務稅務",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「企業財稅」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-8123-8be3-f88eebed0450"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c6812fbaefdf34bc97dde2",
       "title": "AI SEO",
       "status": "deferred",
       "track": "course",
       "completed_at": null,
       "commits": [],
       "note": "T:0 | 搜尋引擎優化 + AI 工具",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「AI SEO」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-812f-baef-df34bc97dde2"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c681739b06d28ea5fcc096",
       "title": "AI 大紀元（GARYTU）",
       "status": "deferred",
       "track": "course",
       "completed_at": null,
       "commits": [],
       "note": "T:0 | AI 圖像生成、prompt 工程",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「AI 大紀元（GARYTU）」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-8173-9b06-d28ea5fcc096"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c681a5ba17f2f023eb187e",
       "title": "簡報技術",
       "status": "deferred",
       "track": "course",
       "completed_at": null,
       "commits": [],
       "note": "T:0 | 簡報設計與表達",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「簡報技術」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-81a5-ba17-f2f023eb187e"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c681d98c29e4822c3f4545",
       "title": "觀葉植物",
       "status": "deferred",
       "track": "course",
       "completed_at": null,
       "commits": [],
       "note": "T:0 | 植物照護與栽培",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「觀葉植物」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-81d9-8c29-e4822c3f4545"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c681da9c3ef557f2779991",
       "title": "蔬食料理（光之戰士）",
       "status": "deferred",
       "track": "course",
       "completed_at": null,
       "commits": [],
       "note": "T:0 | https://cooking.radiantwarriors.tw/onilinecourse | 全食物蔬食烹飪",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「蔬食料理（光之戰士）」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-81da-9c3e-f557f2779991"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c681dc9129fc3da8a80bd5",
       "title": "卡片盒筆記法",
       "status": "deferred",
       "track": "course",
       "completed_at": null,
       "commits": [],
       "note": "T:0 | Zettelkasten 知識管理",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「卡片盒筆記法」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-81dc-9129-fc3da8a80bd5"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
-      "id": "notion-366714fb14c6",
+      "id": "notion-366714fb14c681e79338caa4f71ba7b8",
       "title": "Vibe Coding",
       "status": "deferred",
       "track": "course",
       "completed_at": null,
       "commits": [],
       "note": "T:0 | AI 輔助程式開發",
-      "summary": ""
+      "summary": "",
+      "done_condition": "依 Notion 課程總表追蹤「Vibe Coding」完成，狀態由 Notion 正本同步為 DONE。",
+      "source_ref": {"system": "Notion", "page_id": "366714fb-14c6-81e7-9338-caa4f71ba7b8"},
+      "mirror_note": "Notion remains source of truth; this task is an MC mirror."
     },
     {
       "id": "mind-training-book-capture",
@@ -441,6 +528,86 @@
           }
         ]
       }
+    },
+    {
+      "id": "future-practice-finance-pilot-v1",
+      "title": "Future Practice｜未來練習：30 天理財試行",
+      "status": "in_progress",
+      "track": "operation",
+      "priority": "high",
+      "canonical_ref": "self-learning/future-practice-finance-pilot-v1",
+      "output_ref": "wealth-system/b-6",
+      "started_at": "2026-07-26",
+      "review_date": "2026-08-25",
+      "depends_on": [
+        "harness-mc/future-practice-domain-tracking-v1"
+      ],
+      "done_condition": "選定一份理財學習內容並以 output_ref 連到 wealth-system/b-6，完成 30 天人工學習與生活實踐，月底留下不含原始財務數字、住址、健康及身分資料的回顧，並記錄 keep／change／stop 決定。",
+      "acceptance": [
+        "A01｜正式名稱只使用「Future Practice｜未來練習」；「Life-Focus」僅保留為既有底層相容 key，不形成第二套概念或入口。",
+        "A02｜主追蹤 task 的 canonical_ref 固定為 self-learning/future-practice-finance-pilot-v1，output_ref 固定指向 wealth-system/b-6；理財成果仍由 wealth-system/b-6 擁有。",
+        "A03｜每日人工紀錄與下一步只在既有 Notion PAI 的「Future Practice｜未來練習」view 操作；MC 僅提供唯讀進度觀察。",
+        "A04｜入口、canonical_ref 與一份理財學習內容連接完成並記錄實際開始日後，才由 todo 改為 in_progress；只有完成 30 天、月底回顧及 keep／change／stop 決定才能改為 completed。",
+        "A05｜共享 task、generated read model、MC 與公開候選內容不得包含原始財務數字、住址、健康、身分資料、secret、token、Cookie 或 runtime auth。",
+        "A06｜本次不建立新 project、Notion database、MC route、專屬 dashboard、自動推薦、雙向同步、自動回寫或 notyet.md 自動發布。"
+      ],
+      "hc_decision": {
+        "task_scope": "self-learning/future-practice-finance-pilot-v1",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#sourceBoundary",
+          "#risk",
+          "#constraints"
+        ],
+        "hc_reasoning": "真正問題是讓一份學習內容能產生可追蹤的生活決策，而不是再建立一套學習或人生管理系統。限制為一份理財內容、一個輸出 task、一個每日操作 view 與一次月底回顧，避免入口、WIP、同步與隱私風險持續擴張。",
+        "hc_confidence": 0.94,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/self-learning/project.json",
+          "$COLLAB/harness-mc/milestones/wealth-system/tasks.json#b-6",
+          "$COLLAB/harness-mc/system-workflow/registries/pai-domain-taxonomy.json",
+          "Vincent 2026-07-26 current session：可以進行"
+        ],
+        "source_boundary": "HC 只是思考檢查，不是正本；self-learning/tasks.json 擁有試行生命週期，wealth-system/tasks.json#b-6 擁有理財成果，Notion PAI 是每日操作入口，MC 只讀顯示。"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "verification-before-completion",
+          "closeout-commit-routing"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准 Future Practice 不另開 project；在唯一入口、canonical_ref 與一份理財學習內容連接完成前，主 task 維持 todo。",
+            "evidence_refs": [
+              "Vincent 2026-07-26 current session：可以進行",
+              "$COLLAB/harness-mc/milestones/wealth-system/tasks.json#b-6"
+            ],
+            "recorded_at": "2026-07-26"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "既有 PAI 已新增唯一的 Future Practice｜未來練習 filtered view，理財實踐列已填入 canonical_ref，且既有財商課已選定為 NOW 並以服務輸出連到 wealth-system/b-6；30 天試行正式開始。",
+            "evidence_refs": [
+              "Notion PAI「所有專案」：Future Practice｜未來練習 view，領域=Life-Focus（2026-07-26 live verified）",
+              "Notion PAI 理財實踐列：canonical_ref=self-learning/future-practice-finance-pilot-v1（2026-07-26 live verified）",
+              "Notion 課程總表：既有財商課狀態=NOW、服務輸出=wealth-system/b-6（2026-07-26 live verified）",
+              "$COLLAB/harness-mc/milestones/wealth-system/tasks.json#b-6"
+            ],
+            "recorded_at": "2026-07-26"
+          }
+        ]
+      },
+      "note": "2026-07-26 由 todo 轉為 in_progress；既有財商課為唯一學習內容，2026-08-25 做月底脫敏回顧與 keep／change／stop 決定。使用者可見名稱不使用 FP-v1 簡稱；技術 task id 只作正本識別。"
     }
   ]
 }

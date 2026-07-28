@@ -24,6 +24,8 @@ interface Task {
   completed_at?: string | null;
   commits?: string[];
   summary?: string;
+  canonical_ref?: string;
+  output_ref?: string;
 }
 
 interface Project {
@@ -386,6 +388,11 @@ export default function ProjectsPage() {
                             {task.capability_domain && task.task_kind && (
                               <span className="text-caption text-[var(--text-muted)]">
                                 {task.capability_domain} · {task.task_kind}
+                              </span>
+                            )}
+                            {task.output_ref && (
+                              <span className="text-caption rounded bg-teal-500/15 px-1.5 py-0.5 text-teal-300">
+                                輸出：{task.output_ref}
                               </span>
                             )}
                             {foundationBadge(task.foundation)}

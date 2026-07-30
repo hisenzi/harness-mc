@@ -20,6 +20,13 @@
       "commits": [
         "02e727b408f7df29c792c8207e9062d1d616a536"
       ]
+    },
+    "p1-block-layout-decision-index": {
+      "status": "completed",
+      "completed_at": "2026-07-30",
+      "commits": [
+        "a87f90ef8e72a06116d1bf2ee3b40d77bf21de11"
+      ]
     }
   }
 }

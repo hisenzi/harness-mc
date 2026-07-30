@@ -259,6 +259,208 @@
         "A05｜以至少一個 Landing Page fixture 跑通「選擇模組 → 排序 → 附參考圖與備註 → Agent 檢查／提案 → 核准 → 同步 Prototype」，並由 verifier 證明輸入、決策與輸出可追溯。",
         "A06｜HiBlocks 通用能力是 schema、runtime 與 Prototype 組合規則的唯一正本；Dashboard 只消費這些能力作為驗證 demo，不複製規則或形成獨立控制台。"
       ],
+      "acceptance_matrix": [
+        {
+          "id": "HB05-A01",
+          "what": "使用者能從對話中的共享索引理解可用模組與 Layout Recipe。",
+          "preconditions": [
+            "HiBlocks Registry 與 Layout Recipe 已提供可讀資料",
+            "至少一組 Landing Page Recipe 具有可選 Block 與預覽"
+          ],
+          "steps": [
+            "Agent 在對話中提供共享索引或其預覽入口",
+            "使用者依索引查看 Recipe 與 Block"
+          ],
+          "pass_condition": "每個可選項目都顯示簡單編號、用途、預覽與適用情境，且資料可追到同一份 HiBlocks Registry／Recipe 正本。",
+          "fail_condition": "任一可選項目缺少編號、用途或預覽，或對話／Dashboard 使用另一份手寫清單。",
+          "verification": [
+            "人工檢查共享索引",
+            "Block Registry 與 Layout Recipe verifier"
+          ]
+        },
+        {
+          "id": "HB05-A02",
+          "what": "使用者能勾選與取消選擇 Landing Page Recipe／Block。",
+          "preconditions": [
+            "HB05-A01 的共享索引可用",
+            "索引中至少有一組可選 Recipe 與 Block"
+          ],
+          "steps": [
+            "使用者依簡單編號勾選 Recipe／Block",
+            "使用者取消至少一個已選項目"
+          ],
+          "pass_condition": "選擇結果精確保存 selected_recipe 與 Block ID，取消後不再出現在目前選擇中。",
+          "fail_condition": "選錯、漏掉、重複保存、無法取消，或把顯示名稱當成不可追溯的識別碼。",
+          "verification": [
+            "Selection 正反 fixture",
+            "Submission schema 驗證"
+          ]
+        },
+        {
+          "id": "HB05-A03",
+          "what": "使用者調整的 Block 順序能完整傳遞到 Prototype。",
+          "preconditions": [
+            "目前選擇至少包含兩個 Block"
+          ],
+          "steps": [
+            "使用者移動至少一個 Block 的順序",
+            "依序核對 Submission、Proposal 與 Prototype"
+          ],
+          "pass_condition": "Submission、Proposal 與核准後 Prototype 的 Block ID 順序完全一致。",
+          "fail_condition": "任一階段遺失 Block、自動改序，或 Prototype 與核准順序不同。",
+          "verification": [
+            "完整流程 fixture",
+            "Block sequence 自動比對"
+          ]
+        },
+        {
+          "id": "HB05-A04",
+          "what": "參考圖與備註能綁定整頁或指定 Block 後交付給 Agent。",
+          "preconditions": [
+            "已有目前選擇結果",
+            "至少提供一張可讀取的參考圖"
+          ],
+          "steps": [
+            "使用者附上參考圖",
+            "使用者指定整頁或目標 Block 並加入備註"
+          ],
+          "pass_condition": "Submission 保存圖片引用、適用目標與備註；未指定 Block 時明確保存為整頁參考。",
+          "fail_condition": "圖片或備註遺失、套用到錯誤目標，或 Agent 根據圖片虛構未提供的內容。",
+          "verification": [
+            "Reference image fixture",
+            "Submission payload 檢查"
+          ]
+        },
+        {
+          "id": "HB05-A05",
+          "what": "購物車式選擇能輸出單一結構化 Submission。",
+          "preconditions": [
+            "已完成 Recipe／Block 選擇、排序、參考圖與備註"
+          ],
+          "steps": [
+            "使用者提交目前選擇",
+            "核對對話與 Decision Index 產出的資料形狀"
+          ],
+          "pass_condition": "Submission 至少包含 selected_recipe、有序 blocks、reference_images 與 notes，且兩個入口輸出相同 schema。",
+          "fail_condition": "任一必要欄位缺失、ID 無法追溯，或對話與 Decision Index 形成兩種不相容 payload。",
+          "verification": [
+            "Submission schema 正反 fixture",
+            "對話與 Decision Index payload snapshot 比對"
+          ]
+        },
+        {
+          "id": "HB05-A06",
+          "what": "Agent 在提案前能辨識無效 ID、缺件與組合衝突。",
+          "preconditions": [
+            "已有一筆結構化 Submission",
+            "Registry 與 Recipe 規則可供驗證"
+          ],
+          "steps": [
+            "執行無效 ID、缺必要內容、重複或衝突 Block 的負向案例",
+            "執行一筆合法 Submission"
+          ],
+          "pass_condition": "每個問題都指出相關 ID、原因、影響、是否阻擋與可行修正方向；合法案例通過。",
+          "fail_condition": "無效或衝突案例通過、合法案例失敗，或 Agent 靜默修改使用者選擇。",
+          "verification": [
+            "Agent validation 正反 fixture",
+            "Block Registry／Layout Recipe verifier"
+          ]
+        },
+        {
+          "id": "HB05-A07",
+          "what": "Agent 能提出附理由且不覆寫原選擇的組合 Proposal。",
+          "preconditions": [
+            "Submission 已完成 Agent validation",
+            "至少有一筆需要調整或可提出更好替代方案的案例"
+          ],
+          "steps": [
+            "Agent 依 Registry、Recipe、參考圖與備註產生 Proposal",
+            "核對 Proposal 與原始 Submission 的差異"
+          ],
+          "pass_condition": "Proposal 清楚列出保留、移動、替代與新增建議及其理由，並保留原始選擇供 Vincent 判斷。",
+          "fail_condition": "只拒絕而沒有替代方案、沒有說明差異與理由，或直接覆寫原始 Submission。",
+          "verification": [
+            "Proposal snapshot",
+            "人工差異核對"
+          ]
+        },
+        {
+          "id": "HB05-A08",
+          "what": "Prototype 更新受到 Vincent 明確核准邊界保護。",
+          "preconditions": [
+            "目前 Proposal 處於 awaiting_approval",
+            "Proposal 具有可唯一辨識的版本"
+          ],
+          "steps": [
+            "先執行未核准更新的負向案例",
+            "Vincent 在對話中明確核准目前 Proposal",
+            "執行核准後更新案例"
+          ],
+          "pass_condition": "核准紀錄唯一綁定 Proposal 版本，狀態依序成為 approved、prototype_updated，且未核准案例不得更新。",
+          "fail_condition": "未核准即更新、核准對象不明、跳過狀態或找不到核准紀錄。",
+          "verification": [
+            "狀態機正反測試",
+            "完整核准流程 fixture"
+          ]
+        },
+        {
+          "id": "HB05-A09",
+          "what": "使用者能看到與核准方案一致的同步 Prototype。",
+          "preconditions": [
+            "Proposal 已經 Vincent 明確核准",
+            "Prototype runtime 可產生預覽"
+          ],
+          "steps": [
+            "依 approved Proposal 更新 Prototype",
+            "在 desktop 與 390px mobile viewport 開啟預覽",
+            "核對 Recipe、Block ID、順序與已說明差異"
+          ],
+          "pass_condition": "提供可開啟預覽；模組與順序符合核准方案，所有差異可追溯，desktop 與 mobile 均無阻斷使用的破版。",
+          "fail_condition": "預覽不可用、順序或模組錯誤、包含未核准變更，或 mobile 無法閱讀／操作。",
+          "verification": [
+            "Conversation-to-Prototype E2E",
+            "DOM sequence 與 desktop／mobile screenshot 比對"
+          ]
+        },
+        {
+          "id": "HB05-A10",
+          "what": "HiBlocks 通用能力維持唯一正本，Dashboard 只作驗證 demo。",
+          "preconditions": [
+            "Registry、Recipe、Submission schema、runtime 與 Dashboard demo 均可檢查"
+          ],
+          "steps": [
+            "追蹤對話與 Dashboard 的資料來源",
+            "掃描 Dashboard 是否複製規則、模組清單或 Prototype 組合邏輯"
+          ],
+          "pass_condition": "對話與 Dashboard 都消費 HiBlocks Registry／Recipe／schema／runtime；Dashboard 不擁有第二份規則或寫回正本。",
+          "fail_condition": "Dashboard 硬編模組、複製 schema／組合規則、形成獨立控制台或反寫 canonical state。",
+          "verification": [
+            "Source dependency scan",
+            "Dashboard boundary verifier"
+          ]
+        },
+        {
+          "id": "HB05-A11",
+          "what": "HB-MVP-05 的完成收尾能追到遠端與 canonical state。",
+          "preconditions": [
+            "HB05-A01 至 HB05-A10 全部通過",
+            "實作與驗證 evidence 已完成"
+          ],
+          "steps": [
+            "執行 task-specific tests、完整 regression 與 build",
+            "驗證 implementation commit 已存在 origin/main 且 local／remote parity 為 0/0",
+            "套用 exact task event 並完成 canonical closeout",
+            "檢查本次 closeout 建立的 pending／sync／residual"
+          ],
+          "pass_condition": "測試與 build 通過、遠端包含交付 commit、canonical task 引用完整 evidence，且本 scope pending／sync／residual 全部為零。",
+          "fail_condition": "任一驗證失敗、交付僅存在本機／branch、canonical task 未更新，或本次 closeout queue／residual 仍有殘留。",
+          "verification": [
+            "Task-specific verifier 與完整 build",
+            "Git remote ancestry／0-0 parity",
+            "Exact task event reducer 與 closeout residual ledger"
+          ]
+        }
+      ],
       "estimate": "8hr",
       "source_refs": [
         "$COLLAB/harness-mc/milestones/hiblocks/tasks.json#p1-block-registry-rules",
@@ -336,6 +538,41 @@
               "Vincent 2026-07-25 current session: task 補上編號好辨識。"
             ],
             "recorded_at": "2026-07-25"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准將使用者結果導向的正式驗收矩陣寫入 canonical HB-MVP-05；保留既有 task ID、title、status、done_condition 與上層 acceptance，只把索引、選擇、排序、參考圖、Submission、Agent validation／Proposal、人工核准、同步 Prototype、正本邊界與 Remote Closeout 拆成可獨立重跑的判定。最小範圍仍為一組 Landing Page，不納入複合 Block、Paper Shader 或獨立控制台。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/hiblocks/tasks.json#conversation-to-prototype-runtime-spike.acceptance_matrix",
+              "Vincent 2026-07-30 current session: 可以進行寫入 canonical task。"
+            ],
+            "recorded_at": "2026-07-30",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "hiblocks/p1-block-registry-rules",
+                "hiblocks/p1-block-registry-verifier",
+                "hiblocks/p1-block-layout-recipes",
+                "hiblocks/p1-block-layout-decision-index"
+              ],
+              "scope_comparison": {
+                "problem": "問題仍是人與 Agent 缺少共用模組選擇、Layout 語言與結構化交付方式；本次只將已核准的使用者結果補成可判定標準。",
+                "owner_source_of_truth": "Owner 仍是 HB-MVP-05；canonical task 仍在 HiBlocks tasks.json，Registry、Recipe、schema、runtime 與 Prototype 保持各自既有正本。",
+                "inputs_outputs": "既有輸入輸出不變；新增 acceptance_matrix 只固定每個流程節點的前置、步驟、通過、失敗與驗證方式。",
+                "lifecycle_completion": "完成邊界仍是一條 Landing Page 對話流程經 Agent 判斷、Vincent 核准、同步 Prototype、遠端與 canonical closeout 全部通過；本次不宣稱已實作或完成。"
+              },
+              "decision_reason": "既有 HB-MVP-05 已完整擁有 Conversation-to-Prototype 問題、owner、輸入輸出與完成生命週期，因此 outcome=amend，不新增 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-30",
+                "evidence_refs": [
+                  "Vincent 2026-07-30 current session: 可以進行寫入 canonical task。"
+                ]
+              }
+            }
           }
         ]
       },

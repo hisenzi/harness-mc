@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "p1-block-registry-rules": {
+      "status": "completed",
+      "completed_at": "2026-07-26",
+      "commits": [
+        "ffff8df"
+      ]
+    }
+  }
+}

@@ -3494,6 +3494,7 @@
           "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync"
         ],
         "runtime_evidence_required": true,
+        "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync.test_contract.evidence_refs",
         "evidence_refs": []
       },
       "jv32_route": {
@@ -3644,6 +3645,39 @@
                 "approved_at": "2026-07-26",
                 "evidence_refs": [
                   "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准窄幅重開 P2，只修正 TDD 合約內既有 verifier 命名矛盾與 planned evidence location；不新增 task、exit gate、tracker、registry、scheduler、daily loop 或 P3 evidence。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/morrowise-phase2-handoff-2026-07-26.md",
+              "Vincent 2026-07-28 current session: 進行『窄幅重開 P2；不應延伸成新 task 或新增 exit gate』"
+            ],
+            "recorded_at": "2026-07-28",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/document-source-registry-and-human-sync",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "仍是同一 P2 工作包；本次只消除 final contract 內已確認的 TDD 執行歧義。",
+                "owner_source_of_truth": "既有 owner、canonical tasks.json 與 implementation/runtime authority 均不變。",
+                "inputs_outputs": "只統一既有 verifier naming，並把預計 evidence 寫回位置指向同一 task 的 test_contract.evidence_refs。",
+                "lifecycle_completion": "Task status 不變；本 amendment 不產生 Red／Green、runtime、build、E2E 或 Architecture Admission evidence。"
+              },
+              "decision_reason": "問題、owner、輸入輸出與完成生命週期均由既有 task 承接，故只做 amend。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-28",
+                "evidence_refs": [
+                  "Vincent 2026-07-28 current session: 進行『窄幅重開 P2；不應延伸成新 task 或新增 exit gate』"
                 ]
               }
             }
@@ -4239,6 +4273,7 @@
           "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs"
         ],
         "runtime_evidence_required": false,
+        "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate.test_contract.evidence_refs",
         "evidence_refs": []
       },
       "jv32_route": {
@@ -4560,6 +4595,39 @@
                 "approved_at": "2026-07-26",
                 "evidence_refs": [
                   "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准窄幅重開 P2，只修正 TDD 合約內既有 verifier 命名矛盾與 planned evidence location；不新增 task、exit gate、tracker、registry、scheduler、daily loop 或 P3 evidence。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/morrowise-phase2-handoff-2026-07-26.md",
+              "Vincent 2026-07-28 current session: 進行『窄幅重開 P2；不應延伸成新 task 或新增 exit gate』"
+            ],
+            "recorded_at": "2026-07-28",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/action-priority-read-model-v2"
+              ],
+              "scope_comparison": {
+                "problem": "仍是同一 P2 工作包；本次只消除 final contract 內已確認的 TDD 執行歧義。",
+                "owner_source_of_truth": "既有 owner、canonical tasks.json 與 implementation/runtime authority 均不變。",
+                "inputs_outputs": "只統一既有 verifier naming，並把預計 evidence 寫回位置指向同一 task 的 test_contract.evidence_refs。",
+                "lifecycle_completion": "Task status 不變；本 amendment 不產生 Red／Green、runtime、build、E2E 或 Architecture Admission evidence。"
+              },
+              "decision_reason": "問題、owner、輸入輸出與完成生命週期均由既有 task 承接，故只做 amend。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-28",
+                "evidence_refs": [
+                  "Vincent 2026-07-28 current session: 進行『窄幅重開 P2；不應延伸成新 task 或新增 exit gate』"
                 ]
               }
             }
@@ -5020,7 +5088,7 @@
           "pass_condition": "只輸出可追溯提醒，沒有自動建立、修改、安裝 skill 或新增排程。",
           "fail_condition": "Final Admission 前啟動，或任何 case 自動修改 skill／scheduler／task state。",
           "verification": [
-            "node scripts/verify-skill-candidate-review-gate.mjs",
+            "node scripts/verify-skill-candidate-review.mjs",
             "node scripts/validate-tasks.mjs --changed-only --project morrowise"
           ]
         }
@@ -5050,6 +5118,7 @@
           "$COLLAB/harness-mc/milestones/morrowise/tasks.json#skill-candidate-review-gate"
         ],
         "runtime_evidence_required": false,
+        "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#skill-candidate-review-gate.test_contract.evidence_refs",
         "evidence_refs": []
       },
       "jv32_route": {
@@ -5158,6 +5227,39 @@
                 "approved_at": "2026-07-26",
                 "evidence_refs": [
                   "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准窄幅重開 P2，只修正 TDD 合約內既有 verifier 命名矛盾與 planned evidence location；不新增 task、exit gate、tracker、registry、scheduler、daily loop 或 P3 evidence。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/morrowise-phase2-handoff-2026-07-26.md",
+              "Vincent 2026-07-28 current session: 進行『窄幅重開 P2；不應延伸成新 task 或新增 exit gate』"
+            ],
+            "recorded_at": "2026-07-28",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/skill-candidate-review-gate",
+                "morrowise/morrowise-phase3-fresh-session-e2e-admission"
+              ],
+              "scope_comparison": {
+                "problem": "仍是同一 P2 工作包；本次只消除 final contract 內已確認的 TDD 執行歧義。",
+                "owner_source_of_truth": "既有 owner、canonical tasks.json 與 implementation/runtime authority 均不變。",
+                "inputs_outputs": "只統一既有 verifier naming，並把預計 evidence 寫回位置指向同一 task 的 test_contract.evidence_refs。",
+                "lifecycle_completion": "Task status 不變；本 amendment 不產生 Red／Green、runtime、build、E2E 或 Architecture Admission evidence。"
+              },
+              "decision_reason": "問題、owner、輸入輸出與完成生命週期均由既有 task 承接，故只做 amend。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-28",
+                "evidence_refs": [
+                  "Vincent 2026-07-28 current session: 進行『窄幅重開 P2；不應延伸成新 task 或新增 exit gate』"
                 ]
               }
             }
@@ -5647,7 +5749,7 @@
           "pass_condition": "只有真實且新鮮 evidence 可標 verified；其他情況固定映射為 degraded／blocked。",
           "fail_condition": "以 plist-only、fixture-only、秘密值或未載入 scheduler 假綠燈。",
           "verification": [
-            "node scripts/verify-trusted-heartbeat-runtime-v1.mjs",
+            "node scripts/verify-trusted-heartbeat-runtime.mjs",
             "node scripts/validate-tasks.mjs --changed-only --project morrowise"
           ]
         }
@@ -5680,6 +5782,7 @@
           "$COLLAB/harness-mc/public/data/schedule-health.json"
         ],
         "runtime_evidence_required": true,
+        "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1.test_contract.evidence_refs",
         "evidence_refs": []
       },
       "jv32_route": {
@@ -5838,6 +5941,39 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准窄幅重開 P2，只修正 TDD 合約內既有 verifier 命名矛盾與 planned evidence location；不新增 task、exit gate、tracker、registry、scheduler、daily loop 或 P3 evidence。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/morrowise-phase2-handoff-2026-07-26.md",
+              "Vincent 2026-07-28 current session: 進行『窄幅重開 P2；不應延伸成新 task 或新增 exit gate』"
+            ],
+            "recorded_at": "2026-07-28",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/trusted-heartbeat-runtime-v1",
+                "morrowise/morrowise-live-decision-loop-v1"
+              ],
+              "scope_comparison": {
+                "problem": "仍是同一 P2 工作包；本次只消除 final contract 內已確認的 TDD 執行歧義。",
+                "owner_source_of_truth": "既有 owner、canonical tasks.json 與 implementation/runtime authority 均不變。",
+                "inputs_outputs": "只統一既有 verifier naming，並把預計 evidence 寫回位置指向同一 task 的 test_contract.evidence_refs。",
+                "lifecycle_completion": "Task status 不變；本 amendment 不產生 Red／Green、runtime、build、E2E 或 Architecture Admission evidence。"
+              },
+              "decision_reason": "問題、owner、輸入輸出與完成生命週期均由既有 task 承接，故只做 amend。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-28",
+                "evidence_refs": [
+                  "Vincent 2026-07-28 current session: 進行『窄幅重開 P2；不應延伸成新 task 或新增 exit gate』"
+                ]
+              }
+            }
           }
         ]
       },
@@ -5872,7 +6008,7 @@
       "order_label": "MW-PRIORITY-V2",
       "priority": "high",
       "weekly_core": true,
-      "review_date": "2026-07-29",
+      "review_date": "2026-07-31",
       "dependencies": [
         "morrowise-dev-workflow-catalog",
         "task-lifecycle-jv32-gate",
@@ -5935,7 +6071,7 @@
           "pass_condition": "相同 input 得到相同結果；不可信 input 明確 blocked／degraded，且輸出維持 read-only。",
           "fail_condition": "結果依 session 改變、fixture 假綠燈、來源不可追溯或輸出反寫 task state。",
           "verification": [
-            "node scripts/verify-action-priority-read-model-v2.mjs",
+            "node scripts/verify-action-priority-read-model.mjs",
             "node scripts/validate-tasks.mjs --changed-only --project morrowise"
           ]
         }
@@ -5966,6 +6102,7 @@
           "$COLLAB/harness-mc/milestones/morrowise/tasks.json"
         ],
         "runtime_evidence_required": false,
+        "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2.test_contract.evidence_refs",
         "evidence_refs": []
       },
       "jv32_route": {
@@ -6148,6 +6285,86 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准窄幅重開 P2，只修正 TDD 合約內既有 verifier 命名矛盾與 planned evidence location；不新增 task、exit gate、tracker、registry、scheduler、daily loop 或 P3 evidence。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/morrowise-phase2-handoff-2026-07-26.md",
+              "Vincent 2026-07-28 current session: 進行『窄幅重開 P2；不應延伸成新 task 或新增 exit gate』"
+            ],
+            "recorded_at": "2026-07-28",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/action-priority-read-model-v2",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "仍是同一 P2 工作包；本次只消除 final contract 內已確認的 TDD 執行歧義。",
+                "owner_source_of_truth": "既有 owner、canonical tasks.json 與 implementation/runtime authority 均不變。",
+                "inputs_outputs": "只統一既有 verifier naming，並把預計 evidence 寫回位置指向同一 task 的 test_contract.evidence_refs。",
+                "lifecycle_completion": "Task status 不變；本 amendment 不產生 Red／Green、runtime、build、E2E 或 Architecture Admission evidence。"
+              },
+              "decision_reason": "問題、owner、輸入輸出與完成生命週期均由既有 task 承接，故只做 amend。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-28",
+                "evidence_refs": [
+                  "Vincent 2026-07-28 current session: 進行『窄幅重開 P2；不應延伸成新 task 或新增 exit gate』"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 已明確確認 reframe 並要求立即進行專案；本次只延續既有 P2 窄幅修正與固定 P2-07 驗證，不進入 P3，不新增 task、exit gate、tracker、registry、scheduler 或 daily loop。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/morrowise-phase2-handoff-2026-07-26.md",
+              "Vincent 2026-07-30 current session: 確認 reframe",
+              "Vincent 2026-07-30 current session: 我要進行專案"
+            ],
+            "recorded_at": "2026-07-30",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/action-priority-read-model-v2",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有 Action Priority weekly core 的 P2 closeout；只完成既有窄幅合約修正與固定 P2-07 驗證。",
+                "owner_source_of_truth": "Owner 與 MorroWise tasks.json 正本不變；review checkpoint 只是治理 metadata，不是第二 tracker。",
+                "inputs_outputs": "沿用八個既有 P2 工作包、目前 verifier naming／planned evidence location 修正與固定驗證命令；不增加 output。",
+                "lifecycle_completion": "Task 維持 in_progress／weekly_core；P2-07 證據交付 Vincent 確認前不 complete、不進 P3。"
+              },
+              "decision_reason": "使用者已明確選擇 reframe 並要求開始；以既有 task 承接同一問題，不新增 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-30",
+                "evidence_refs": [
+                  "Vincent 2026-07-30 current session: 確認 reframe",
+                  "Vincent 2026-07-30 current session: 我要進行專案"
+                ]
+              }
+            },
+            "weekly_core_review": {
+              "decision": "reframe",
+              "approved_by": "Vincent",
+              "approved_at": "2026-07-30",
+              "evidence_refs": [
+                "Vincent 2026-07-30 current session: 確認 reframe",
+                "Vincent 2026-07-30 current session: 我要進行專案"
+              ],
+              "previous_review_date": "2026-07-29",
+              "next_review_date": "2026-07-31",
+              "new_scope": "只完成既有 P2 窄幅修正與固定 P2-07 驗證；不進入 P3，不新增 task、exit gate、tracker、registry、scheduler 或 daily loop。"
+            }
           }
         ]
       },
@@ -6266,7 +6483,7 @@
           "pass_condition": "相同 input 得到相同每日決策；不可信 evidence 明確拒絕，且沒有第二 scheduler 或 task writer。",
           "fail_condition": "自動延期、背景改 task state、建立平行 daily loop，或 missing evidence 仍輸出 accepted。",
           "verification": [
-            "node scripts/verify-morrowise-live-decision-loop-v1.mjs",
+            "node scripts/verify-morrowise-live-decision-loop.mjs",
             "node scripts/validate-tasks.mjs --changed-only --project morrowise"
           ]
         }
@@ -6299,6 +6516,7 @@
           "$COLLAB/harness-mc/milestones/morrowise/notes/reality-tax-daily-review-task.md"
         ],
         "runtime_evidence_required": true,
+        "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-live-decision-loop-v1.test_contract.evidence_refs",
         "evidence_refs": []
       },
       "jv32_route": {
@@ -6460,6 +6678,39 @@
                 "approved_at": "2026-07-26",
                 "evidence_refs": [
                   "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准窄幅重開 P2，只修正 TDD 合約內既有 verifier 命名矛盾與 planned evidence location；不新增 task、exit gate、tracker、registry、scheduler、daily loop 或 P3 evidence。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/morrowise-phase2-handoff-2026-07-26.md",
+              "Vincent 2026-07-28 current session: 進行『窄幅重開 P2；不應延伸成新 task 或新增 exit gate』"
+            ],
+            "recorded_at": "2026-07-28",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-live-decision-loop-v1",
+                "morrowise/trusted-heartbeat-runtime-v1"
+              ],
+              "scope_comparison": {
+                "problem": "仍是同一 P2 工作包；本次只消除 final contract 內已確認的 TDD 執行歧義。",
+                "owner_source_of_truth": "既有 owner、canonical tasks.json 與 implementation/runtime authority 均不變。",
+                "inputs_outputs": "只統一既有 verifier naming，並把預計 evidence 寫回位置指向同一 task 的 test_contract.evidence_refs。",
+                "lifecycle_completion": "Task status 不變；本 amendment 不產生 Red／Green、runtime、build、E2E 或 Architecture Admission evidence。"
+              },
+              "decision_reason": "問題、owner、輸入輸出與完成生命週期均由既有 task 承接，故只做 amend。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-28",
+                "evidence_refs": [
+                  "Vincent 2026-07-28 current session: 進行『窄幅重開 P2；不應延伸成新 task 或新增 exit gate』"
                 ]
               }
             }
@@ -6632,6 +6883,7 @@
           "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-phase3-fresh-session-e2e-admission"
         ],
         "runtime_evidence_required": true,
+        "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-phase3-fresh-session-e2e-admission.test_contract.evidence_refs",
         "evidence_refs": []
       },
       "jv32_route": {
@@ -6716,6 +6968,39 @@
                 "approved_at": "2026-07-26",
                 "evidence_refs": [
                   "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准窄幅重開 P2，只修正 TDD 合約內既有 verifier 命名矛盾與 planned evidence location；不新增 task、exit gate、tracker、registry、scheduler、daily loop 或 P3 evidence。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/morrowise-phase2-handoff-2026-07-26.md",
+              "Vincent 2026-07-28 current session: 進行『窄幅重開 P2；不應延伸成新 task 或新增 exit gate』"
+            ],
+            "recorded_at": "2026-07-28",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-phase3-fresh-session-e2e-admission",
+                "morrowise/morrowise-live-decision-loop-v1"
+              ],
+              "scope_comparison": {
+                "problem": "仍是同一 P2 工作包；本次只消除 final contract 內已確認的 TDD 執行歧義。",
+                "owner_source_of_truth": "既有 owner、canonical tasks.json 與 implementation/runtime authority 均不變。",
+                "inputs_outputs": "只統一既有 verifier naming，並把預計 evidence 寫回位置指向同一 task 的 test_contract.evidence_refs。",
+                "lifecycle_completion": "Task status 不變；本 amendment 不產生 Red／Green、runtime、build、E2E 或 Architecture Admission evidence。"
+              },
+              "decision_reason": "問題、owner、輸入輸出與完成生命週期均由既有 task 承接，故只做 amend。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-28",
+                "evidence_refs": [
+                  "Vincent 2026-07-28 current session: 進行『窄幅重開 P2；不應延伸成新 task 或新增 exit gate』"
                 ]
               }
             }

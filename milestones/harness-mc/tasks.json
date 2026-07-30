@@ -2421,6 +2421,7 @@
           "$COLLAB/harness-mc/public/data/action-priority-read-model-v2.json"
         ],
         "runtime_evidence_required": false,
+        "planned_evidence_location": "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-priority-dashboard-surface-v2.test_contract.evidence_refs",
         "evidence_refs": []
       },
       "jv32_route": {
@@ -2517,6 +2518,39 @@
                 "approved_at": "2026-07-26",
                 "evidence_refs": [
                   "Vincent 2026-07-26 current session: 可以進行補寫 task"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准窄幅重開 P2，只修正 TDD 合約內既有 verifier 命名矛盾與 planned evidence location；不新增 task、exit gate、tracker、registry、scheduler、daily loop 或 P3 evidence。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/notes/morrowise-phase2-handoff-2026-07-26.md",
+              "Vincent 2026-07-28 current session: 進行『窄幅重開 P2；不應延伸成新 task 或新增 exit gate』"
+            ],
+            "recorded_at": "2026-07-28",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "harness-mc/morrowise-priority-dashboard-surface-v2",
+                "morrowise/action-priority-read-model-v2"
+              ],
+              "scope_comparison": {
+                "problem": "仍是同一 P2 Surface 工作包；本次只消除 final contract 內已確認的 TDD 執行歧義。",
+                "owner_source_of_truth": "Surface owner 與 harness-mc tasks.json 不變；MorroWise read model authority 不變。",
+                "inputs_outputs": "只把預計 evidence 寫回位置指向同一 task 的 test_contract.evidence_refs；不建立新 surface 或 read model。",
+                "lifecycle_completion": "Task status 不變；本 amendment 不產生 Red／Green、build、route 或 fresh-session evidence。"
+              },
+              "decision_reason": "問題、owner、輸入輸出與完成生命週期均由既有 Surface task 承接，故只做 amend。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-28",
+                "evidence_refs": [
+                  "Vincent 2026-07-28 current session: 進行『窄幅重開 P2；不應延伸成新 task 或新增 exit gate』"
                 ]
               }
             }

@@ -6,6 +6,13 @@
       "commits": [
         "ffff8df"
       ]
+    },
+    "p1-block-registry-verifier": {
+      "status": "completed",
+      "completed_at": "2026-07-30",
+      "commits": [
+        "9f1fb39c76b32a88745fc38868c290c189dff28a"
+      ]
     }
   }
 }

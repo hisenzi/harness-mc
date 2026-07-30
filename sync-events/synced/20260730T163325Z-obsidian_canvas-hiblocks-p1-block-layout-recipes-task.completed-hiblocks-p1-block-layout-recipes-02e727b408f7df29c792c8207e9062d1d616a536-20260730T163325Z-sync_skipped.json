@@ -1,0 +1,21 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-hiblocks-p1-block-layout-recipes-task.completed-hiblocks-p1-block-layout-recipes-02e727b408f7df29c792c8207e9062d1d616a536-20260730T163325Z-20260730T163325Z",
+  "type": "sync_skipped",
+  "target": "obsidian_canvas",
+  "status": "skipped",
+  "source_event_id": "task.completed-hiblocks-p1-block-layout-recipes-02e727b408f7df29c792c8207e9062d1d616a536-20260730T163325Z",
+  "project": "hiblocks",
+  "task_id": "p1-block-layout-recipes",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-07-30T16:33:25.226Z",
+  "actor": "codex",
+  "session_id": "019f930c-a4c8-74a0-ae3f-7cfe3f5ab507",
+  "exemption_reason": "HB-MVP-03 has no external mirror binding to MC 儀表版; the Canvas generator selects only tasks explicitly bound to that whiteboard.",
+  "verifier": "canonical HB-MVP-03 external_refs assertion plus sync-obsidian-canvas selection predicate",
+  "resolved_at": "2026-07-30T16:33:56.354Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "019f930c-a4c8-74a0-ae3f-7cfe3f5ab507"
+}

@@ -27,6 +27,13 @@
       "commits": [
         "a87f90ef8e72a06116d1bf2ee3b40d77bf21de11"
       ]
+    },
+    "conversation-to-prototype-runtime-spike": {
+      "status": "completed",
+      "completed_at": "2026-07-30",
+      "commits": [
+        "0a0f38fd582bbe293fecb0e715519221e6510b17"
+      ]
     }
   }
 }

@@ -3173,6 +3173,43 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "Vincent 要求先修改 canonical task，再安排『成果驗收通過與確認後才進入 worktree-commit』流程；JV-32 本次只登錄薄路由與 owner lineage，詳細規則與實作驗收均由既有 JV-40 承接，不重開 completed JV-32，也不複製第二份 pre-commit contract。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-phase3-fresh-session-e2e-admission",
+              "Vincent 2026-07-31 current session: 先修改 task；然後安排進行及驗收"
+            ],
+            "recorded_at": "2026-07-31",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-dev-workflow-catalog",
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/morrowise-phase3-fresh-session-e2e-admission"
+              ],
+              "scope_comparison": {
+                "problem": "本次只補 JV-32 對既有 pre-commit acceptance owner 的 routing lineage；詳細缺失分類、修補、重驗與確認 gate 不是新的 workflow catalog 問題。",
+                "owner_source_of_truth": "JV-32 維持唯一 workflow catalog 與 thin router；詳細 pre-commit acceptance contract 唯一 owner 是 JV-40 canonical task，不新增 schema／catalog 正本。",
+                "inputs_outputs": "輸入是 Vincent 確認的執行順序；本 task 輸出僅為 owner lineage 與薄路由登錄，正式實作輸出、receipt 與 verifier 由 JV-40 管理。",
+                "lifecycle_completion": "JV-32 維持 completed 且不宣稱 pre-commit orchestration 已實作；後續實作與成果驗收必須以 in_progress JV-40 為 work anchor。"
+              },
+              "decision_reason": "比對四個 scope 邊界後，JV-32 只需保留薄路由，詳細規範完整屬於既有 JV-40；因此 amend lineage，不 reopen 或建立新 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-31",
+                "evidence_refs": [
+                  "Vincent 2026-07-31 current session: 先修改 task；然後安排進行及驗收"
+                ]
+              }
+            }
           }
         ]
       },
@@ -4014,6 +4051,44 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 要求成果驗收通過並由本人確認後才進行 worktree-commit；本次只補 JV-37 的 handoff precondition 與 blocked return boundary，產品缺失分類、直接補齊、重驗與 receipt 仍由 JV-40 唯一擁有。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate",
+              "$COLLAB/harness-mc/system-workflow/docs/specs/repo-coordination-gate.md#remote-closeout",
+              "$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/SKILL.md",
+              "Vincent 2026-07-31 current session: 流程怪怪的；驗收過才會進行 worktree-commit",
+              "Vincent 2026-07-31 current session: 先修改 task；然後安排進行及驗收"
+            ],
+            "recorded_at": "2026-07-31",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/morrowise-dev-workflow-catalog",
+                "morrowise/morrowise-phase3-fresh-session-e2e-admission"
+              ],
+              "scope_comparison": {
+                "problem": "本次只修正 worktree-commit 何時可進入與 stale confirmation 如何返回成果驗收，仍屬 JV-37 Repo Ready／Remote Closeout handoff。",
+                "owner_source_of_truth": "JV-37 與 Repo Coordination Gate 仍擁有 Git handoff／closeout；詳細成果驗收與 remediation policy 由 JV-40 擁有，不在 skill 或 JV-37 複製。",
+                "inputs_outputs": "輸入新增 JV-40 ACCEPTANCE_VERIFIED receipt 與 Vincent confirmation；輸出是 deterministic BLOCKED／return-to-review boundary，不新增產品修補、task writer、branch 或 worktree。",
+                "lifecycle_completion": "JV-37 維持 todo；本 amendment 只補契約驗收，不能宣稱 worktree runtime、三機 pilot、commit、push 或 remote closeout 完成。"
+              },
+              "decision_reason": "worktree-commit handoff 已由 JV-37 擁有，故 amend 既有 task；將產品 remediation 寫入 JV-37 或 skill 會形成 owner 重疊。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-31",
+                "evidence_refs": [
+                  "Vincent 2026-07-31 current session: 先修改 task；然後安排進行及驗收"
+                ]
+              }
+            }
           }
         ]
       },
@@ -4050,7 +4125,9 @@
         "A12｜generated dirty 不誤擋、真人 dirty 必擋：只有 registry/allowlist 宣告且由 deterministic generator/verifier 證明可重建的 generated-only path 或 managed-block 內純 generated diff 可標 generated_dirty_warning；manual path、managed-block 外變更、同檔 mixed diff、未知 path 或 generator/source fingerprint 不一致都必須 blocking。Fixture 至少涵蓋 generate-data output、tracked public/data generated file、ARCHITECTURE.md generated block、ARCHITECTURE.md manual prose 與同檔 mixed diff。",
         "A13｜detached HEAD、no upstream、同 remote 多 worktree 三邊界都有明確判定：使用 porcelain v2 的 branch.head=(detached) 或等價 plumbing，不得靠會把 HEAD (no branch) 漏判的字串 parser；detached 與 no-upstream 預設 blocking，同 remote/common-dir 的多 worktree 必須列出 path、branch、HEAD、dirty 與 claim owner，若同 branch/同 task/同寫入 scope 衝突即 blocking。Verifier 必須重現目前 *-acp-event-pipeline detached clone 曾被錯標 clean 的 regression。",
         "A14｜完成分級後的三機實機 pilot：負向案例先證明未具 MW-GIT-AUTH-01 時，三台都不能 create/switch branch/worktree；再以 Vincent fixture approval 驗證 shared_core_multi_writer 的隔離生命週期由 single-writer/integrator 更新 main 並清理。另選 owner_single_writer fixture repo 驗證 task owner機在目前 main 直推＋四值握手。三台最後 fetch 後相關 main HEAD 一致、核准 branch/SHA 可追溯且已清理、claims released、ahead/behind=0/0，且無未解 manual/mixed/unknown dirty 或 pending event。",
-        "A15｜完成前至少驗證 skill/frontmatter/version history、repo classification/freshness/claim/event/main-integration fixtures、mba3 restore guard、generated dirty classifier、detached/no-upstream/multi-worktree regression、project-init/worktree-commit/cc-push trigger discoverability、$COLLAB hard-path gate、node scripts/validate-tasks.mjs --changed-only --project morrowise、既有 task-event verifier chain、相關 MorroWise wiring/system-pulse verifier；失敗案例需輸出固定分類、證據與可逆修復步驟。"
+        "A15｜完成前至少驗證 skill/frontmatter/version history、repo classification/freshness/claim/event/main-integration fixtures、mba3 restore guard、generated dirty classifier、detached/no-upstream/multi-worktree regression、project-init/worktree-commit/cc-push trigger discoverability、$COLLAB hard-path gate、node scripts/validate-tasks.mjs --changed-only --project morrowise、既有 task-event verifier chain、相關 MorroWise wiring/system-pulse verifier；失敗案例需輸出固定分類、證據與可逆修復步驟。",
+        "A16｜worktree-commit 的進入條件必須引用同一 source state 的 JV-40 ACCEPTANCE_VERIFIED receipt 與 Vincent 明確 VINCENT_CONFIRMED；receipt 缺失、stale、diff fingerprint／commit grouping／message／verifier 改變時固定 BLOCKED 並返回成果驗收。",
+        "A17｜worktree-commit 只重新審核並提交已驗收的 exact scope，不能代替 Execution／Review 修產品缺失、改 acceptance、補 scope、吸收其他 session commit 或建立 branch／worktree；任何產品修補都必須先返回 JV-40 規範重新驗收。"
       ],
       "source_refs": [
         "$COLLAB/notyet-harness/000_Agent/CORE.md",
@@ -4311,7 +4388,17 @@
         "A14｜validate-tasks changed-only 模式只對新增或本次變更的 canonical task 強制 title 至少包含 Han 字元；全 ASCII／全英文標題必須 fail，未變更的歷史 task 不追溯改寫且 full scan 僅維持 warning。",
         "A15｜verify-validate-tasks 必須包含允許與拒絕 fixtures：對話驅動 Prototype 生成流程可行性驗證、Paper Shader 轉接層與語意預設驗證須 pass；Conversation-to-Prototype Runtime Spike、Paper Shader Integration 須 fail。",
         "A16｜每個 project 的 deadline 只由自己的 project.json 擁有，task review date 只由同 project 的 tasks.json 擁有；MorroWise project／task 日期不得成為其他 project 的隱性時間依賴。",
-        "A17｜本機 --changed-only 只驗證 worktree 內實際變更的 canonical task；clean CI 必須以 --base <git-ref> 驗證 <base>..HEAD，合法 RRREALLL-only commit 須 pass，非法 RRREALLL commit 須 fail，兩者均不得繼承未變更 MorroWise task 的到期錯誤。"
+        "A17｜本機 --changed-only 只驗證 worktree 內實際變更的 canonical task；clean CI 必須以 --base <git-ref> 驗證 <base>..HEAD，合法 RRREALLL-only commit 須 pass，非法 RRREALLL commit 須 fail，兩者均不得繼承未變更 MorroWise task 的到期錯誤。",
+        "A18｜Execution 前必須凍結 work-item manifest：列出工作項目 ID、預期輸出、exact scope、可觀察 pass／fail、verifier 與 explicit non-goals；未取得 Vincent 的開始授權或 work-anchor preflight 非 allow 時不得動工。",
+        "A19｜Acceptance contract 必須在 implementation 前存在；成果驗收只能使用目前 HEAD commit SHA 加 tracked diff fingerprint／tree state 的 fresh evidence，不得沿用舊 diff 或由開發 Agent 自述完成。",
+        "A20｜驗收缺失分類固定為 NORMATIVE_REQUIRED_OMISSION、AMBIGUOUS_REQUIREMENT、SCOPE_CHANGE、EXTERNAL_BLOCK、OTHER_SESSION_OVERLAP；每一失敗 assertion 必須先分類，不能用模糊 fail 直接進入修補。",
+        "A21｜只有 NORMATIVE_REQUIRED_OMISSION 可直接補齊，且必須同時滿足：既有 canonical 規範能唯一決定修正值、位於已核准 exact scope 與同一 owner task、未新增產品決策／權限／依賴／外部效果、未碰觸其他 session owner，並發生在 worktree-commit 前。",
+        "A22｜AMBIGUOUS_REQUIREMENT、SCOPE_CHANGE、EXTERNAL_BLOCK 或 OTHER_SESSION_OVERLAP 一律停止並回報 Vincent；不得以直接補齊、建立 branch／worktree、擴張 task 或修改驗收來繞過。",
+        "A23｜每輪修補後，changed paths 與 changed task IDs 必須仍為 work-item manifest 的子集；若發現意外 task hunk／欄位／檔案，必須先還原該意外變更並在 receipt 記錄，不能混入成果包。",
+        "A24｜規範性補齊後必須使舊 evidence 失效，重新執行受影響 verifier 與完整 regression；每輪最多三次修補，仍未通過時進入 FAILED_RETRY_EXHAUSTED 並交由 Vincent，不得假完成。",
+        "A25｜驗收報告必須產生 remediation／no-expansion receipt：列出原始錯誤、缺失分類、依據規範、exact fields／files、意外變更與還原、驗證命令／結果、changed task IDs、排除項與 remaining warnings。",
+        "A26｜只有所有必要 assertion fresh pass，狀態才可由 REVIEW_REQUIRED 進入 ACCEPTANCE_VERIFIED；接著必須將成果、receipt 與未擴張證據交 Vincent 確認，取得明確確認後才可進入 VINCENT_CONFIRMED 與 closeout-commit-routing。",
+        "A27｜worktree-commit 不得在 ACCEPTANCE_VERIFIED 與 VINCENT_CONFIRMED 之前執行；確認後若 exact diff fingerprint、工作項目、commit grouping、message 或 verifier 結果改變，原確認立即失效並返回 REVIEW_REQUIRED。"
       ],
       "source_refs": [
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
@@ -4337,7 +4424,9 @@
         ],
         "outputs": [
           "Completion evidence schema、changed-only validator 與正反 fixtures",
-          "單一 JV-32 task lifecycle admission／拒絕判定與可追溯 evidence route"
+          "單一 JV-32 task lifecycle admission／拒絕判定與可追溯 evidence route",
+          "提交前成果驗收狀態序列、規範性缺失補齊政策與 fresh evidence gate",
+          "可追溯的 remediation／no-expansion receipt 與 Vincent confirmation handoff"
         ],
         "verifiers": [
           "node scripts/verify-validate-tasks.mjs",
@@ -4389,6 +4478,29 @@
             "node scripts/verify-validate-tasks.mjs",
             "node scripts/verify-morrowise-dev-workflow-catalog.mjs"
           ]
+        },
+        {
+          "id": "JV40-PRECOMMIT-01",
+          "what": "成果必須先驗收、只允許唯一可判定的規範性缺失直接補齊，並在 Vincent 確認後才交給 worktree-commit。",
+          "preconditions": [
+            "work-item manifest、exact scope、non-goals 與 verifier 已在 Execution 前凍結",
+            "work-anchor preflight 為 allow，且目前 target scope 無其他 session overlap"
+          ],
+          "steps": [
+            "執行合法成果、規範性必要缺漏、需求歧義、scope change、external block 與 other-session overlap fixtures",
+            "對規範性必要缺漏直接補齊後，使舊 evidence 失效並重新執行 affected verifier 與完整 regression",
+            "核對 remediation／no-expansion receipt、changed paths／task IDs 子集與最多三輪 retry budget",
+            "驗證未達 ACCEPTANCE_VERIFIED 或未取得 VINCENT_CONFIRMED 時 closeout-commit-routing 必須拒絕",
+            "驗證 Vincent 確認後 diff fingerprint 或 verifier 改變時，原確認失效並返回 REVIEW_REQUIRED"
+          ],
+          "pass_condition": "只有唯一可判定且未擴張的規範性缺漏會被直接補齊；重驗 fresh pass、receipt 完整且 Vincent 明確確認後才能進入 worktree-commit。",
+          "fail_condition": "Agent 自評完成、沿用 stale evidence、修補歧義／scope／overlap、超過 retry budget、changed scope 擴張，或驗收／確認前進入 commit。",
+          "verification": [
+            "node scripts/verify-validate-tasks.mjs",
+            "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+            "node scripts/verify-work-anchor-preflight.mjs",
+            "npm run test:tasks"
+          ]
         }
       ],
       "test_contract": {
@@ -4397,7 +4509,11 @@
           "可執行行為 task 缺 test_contract、Red、Green、完整 regression 或 evidence refs 時，changed-only validator 必須拒絕 completed。",
           "純治理／文件 task 只有在記錄可驗證的 tdd_exemption reason 與替代 verifier 時才可完成。",
           "Red／Green／regression 只作為既有 lifecycle evidence，不新增 task status、tracker 或自動 commit／push。",
-          "runtime task 只有 fixture 而沒有真實 safe run evidence 時，完成 gate 必須保持 degraded／not live。"
+          "runtime task 只有 fixture 而沒有真實 safe run evidence 時，完成 gate 必須保持 degraded／not live。",
+          "NORMATIVE_REQUIRED_OMISSION 只有在 canonical rule 唯一決定修正值且 exact scope／owner 不變時可自動補齊；補齊後舊 evidence 必須失效並重驗。",
+          "AMBIGUOUS_REQUIREMENT、SCOPE_CHANGE、EXTERNAL_BLOCK 與 OTHER_SESSION_OVERLAP 必須停止，不得由 Agent 自行修補或改寫驗收。",
+          "未產生完整 remediation／no-expansion receipt、超過三輪 retry 或 changed task IDs 超出 manifest 時不得 ACCEPTANCE_VERIFIED。",
+          "未取得 Vincent 明確確認，或確認後 diff fingerprint／verifier 改變時，closeout-commit-routing 與 worktree-commit 必須拒絕。"
         ],
         "test_level": [
           "schema",
@@ -4812,6 +4928,45 @@
                 "evidence_refs": [
                   "Vincent 2026-07-31 current session: 各專案期限應該回到各專案，MorroWise 自己也有自己的專案期限",
                   "Vincent 2026-07-31 current session: 可以開始進行修正"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 確認正確順序為『列出工作項目→執行→成果驗收→規範性缺失直接補齊／重驗／報告未擴張→驗收通過→本人確認→才進行 worktree-commit』，並要求先修改 task 再安排實作與驗收；本次將詳細 pre-commit acceptance contract 收編既有 JV-40，不新增 task 或第二套 loop。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-dev-workflow-catalog",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-phase3-fresh-session-e2e-admission",
+              "Vincent 2026-07-31 current session: 流程怪怪的；驗收過才會進行 worktree-commit",
+              "Vincent 2026-07-31 current session: 先修改 task；然後安排進行及驗收"
+            ],
+            "recorded_at": "2026-07-31",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/morrowise-dev-workflow-catalog",
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/morrowise-phase3-fresh-session-e2e-admission"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有 JV-40 對 canonical task mutation、completion evidence 與 closeout admission 的缺口；不是新的 loop、task system 或 Git workflow。",
+                "owner_source_of_truth": "詳細 pre-commit acceptance／remediation／confirmation contract 由 JV-40 canonical task 唯一擁有；JV-32 只路由、JV-37 只接收 commit handoff、P3 只做 E2E。",
+                "inputs_outputs": "輸入新增凍結的 work-item manifest、fresh evidence、缺失分類與 Vincent confirmation；輸出是狀態序列、規範性補齊政策、retry budget、receipt 與 handoff gate。",
+                "lifecycle_completion": "JV-40 維持 in_progress；本 amendment 只完成 task contract，不宣稱 skill／schema／verifier 實作、成果驗收、commit、push 或 remote closeout 完成。"
+              },
+              "decision_reason": "四個 scope 邊界均由既有 JV-40 詳細 owner 承接，其他 tasks 只保留薄關聯；因此 outcome=amend，不新增 task 或平行 schema。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-31",
+                "evidence_refs": [
+                  "Vincent 2026-07-31 current session: 先修改 task；然後安排進行及驗收"
                 ]
               }
             }
@@ -6995,7 +7150,10 @@
         "F-07｜每個 executable task 的 test_contract 都能追到預期 Red、Green、完整 regression 與 task-specific verifier evidence；豁免必須有理由與替代 verifier。",
         "F-08｜fresh single-repo npm build、changed-only task validator 與相關 subsystem regression 全部通過。",
         "F-09｜Architecture Admission Record、受控 ARCHITECTURE.md sync check 與跨 repo two-phase check 通過；不得手改 managed block。",
-        "F-10｜JV-41 只在本 task completed 後開始輸出 not_applicable／observe／create_skill／update_skill 提醒，絕不自動建立、修改或安裝 skill。"
+        "F-10｜JV-41 只在本 task completed 後開始輸出 not_applicable／observe／create_skill／update_skill 提醒，絕不自動建立、修改或安裝 skill。",
+        "F-11｜Fresh-session Agent 必須依序完成 work-item manifest、Execution、成果驗收、規範性缺失補齊／重驗、ACCEPTANCE_VERIFIED、Vincent 確認，再進入 worktree-commit；不得跳步或把 commit 當成驗收。",
+        "F-12｜NORMATIVE_REQUIRED_OMISSION fixture 必須只在 canonical rule 唯一決定且 exact scope／owner 不變時直接補齊，產生 remediation／no-expansion receipt 並 fresh pass；AMBIGUOUS_REQUIREMENT、SCOPE_CHANGE、EXTERNAL_BLOCK、OTHER_SESSION_OVERLAP 必須得到 deterministic BLOCKED。",
+        "F-13｜在 ACCEPTANCE_VERIFIED 或 VINCENT_CONFIRMED 缺失／stale 時模擬 worktree-commit，所有支援 Agent 必須輸出相同 blocked reason；確認後 diff fingerprint 或 verifier 改變時亦須返回 REVIEW_REQUIRED。"
       ],
       "source_refs": [
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
@@ -7088,7 +7246,10 @@
           "缺任一上游 completed／verifier／test evidence 時 integration admission 必須拒絕。",
           "相同 canonical input 在 fresh session、多 Agent 與多次重跑時必須得到相同選擇或拒絕理由。",
           "fixture-only、stale、missing 或 unloaded runtime evidence 必須判定 degraded／blocked。",
-          "所有 component 通過時才能產出 accepted coverage，且結果只引用正本與 evidence，不建立第二份狀態正本。"
+          "所有 component 通過時才能產出 accepted coverage，且結果只引用正本與 evidence，不建立第二份狀態正本。",
+          "Fresh-session 必須在成果驗收與 Vincent 確認之前拒絕 worktree-commit，且所有 Agent 對缺失／stale receipt 得到相同 blocked reason。",
+          "唯一可判定的 NORMATIVE_REQUIRED_OMISSION 可在 exact scope 內補齊並 fresh 重驗；歧義、scope change、external block 與 other-session overlap 不得自動補齊。",
+          "Vincent 確認後若 diff fingerprint 或 verifier 改變，原確認必須失效並返回 REVIEW_REQUIRED。"
         ],
         "test_level": [
           "coverage_contract",
@@ -7230,6 +7391,43 @@
                 "approved_at": "2026-07-28",
                 "evidence_refs": [
                   "Vincent 2026-07-28 current session: 進行『窄幅重開 P2；不應延伸成新 task 或新增 exit gate』"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 要求先補 canonical task 再安排實作與驗收；本次只將 JV-40 pre-commit acceptance／remediation／confirmation contract 加入 P3 fresh-session 正反 E2E coverage，不提前實作 verifier、runtime、commit、push 或 Admission closeout。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-dev-workflow-catalog",
+              "Vincent 2026-07-31 current session: 先修改 task；然後安排進行及驗收"
+            ],
+            "recorded_at": "2026-07-31",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-phase3-fresh-session-e2e-admission",
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/morrowise-dev-workflow-catalog"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有 P3 integration admission 對 fresh-session 全流程的 coverage 缺口，不是新的 pre-commit implementation owner。",
+                "owner_source_of_truth": "P3 task 只擁有 E2E coverage 與 evidence；詳細 acceptance policy 仍在 JV-40，Git handoff 仍在 JV-37，workflow thin route 仍在 JV-32。",
+                "inputs_outputs": "輸入新增 JV-40 狀態序列、receipt 與 Vincent confirmation；輸出只新增 deterministic pass／blocked E2E cases，不新增 read model、schema、scheduler 或 task writer。",
+                "lifecycle_completion": "P3 維持 todo；上游未完成前不得執行或宣稱 fresh-session E2E、runtime、Architecture Admission、commit、push 或 remote closeout 完成。"
+              },
+              "decision_reason": "本次內容是既有 Final Admission coverage amendment；正式 policy 與 implementation owner 已存在，故只 amend P3 task，不新增 gate 或 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-31",
+                "evidence_refs": [
+                  "Vincent 2026-07-31 current session: 先修改 task；然後安排進行及驗收"
                 ]
               }
             }

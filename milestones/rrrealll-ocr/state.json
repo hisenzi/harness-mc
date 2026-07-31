@@ -1,0 +1,12 @@
+{
+  "tasks": {
+    "p3-supabase-canonical-data-and-passport-schema": {
+      "status": "completed",
+      "completed_at": "2026-07-28",
+      "commits": [
+        "4384d7276ce2e10230925dc1c41c6aab0e284eac"
+      ],
+      "summary": "已在 target Neon（Singapore／Postgres 18）實際套用可重跑 migration，並連續匯入 canonical seed 兩次；最終驗證為 150 INCI、400 aliases、80 rules。私有 scan、Judge audit、產品／配方版本與產品護照資料邊界已建立，未匯入任何 user scan。"
+    }
+  }
+}

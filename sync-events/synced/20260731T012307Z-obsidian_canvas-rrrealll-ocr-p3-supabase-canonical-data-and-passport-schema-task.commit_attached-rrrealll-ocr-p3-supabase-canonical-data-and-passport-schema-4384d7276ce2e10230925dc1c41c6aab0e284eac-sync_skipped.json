@@ -1,0 +1,21 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-rrrealll-ocr-p3-supabase-canonical-data-and-passport-schema-task.commit_attached-rrrealll-ocr-p3-supabase-canonical-data-and-passport-schema-4384d7276ce2e10230925dc1c41c6aab0e284eac-20260731T012307Z",
+  "type": "sync_skipped",
+  "target": "obsidian_canvas",
+  "status": "skipped",
+  "source_event_id": "task.commit_attached-rrrealll-ocr-p3-supabase-canonical-data-and-passport-schema-4384d7276ce2e10230925dc1c41c6aab0e284eac",
+  "project": "rrrealll-ocr",
+  "task_id": "p3-supabase-canonical-data-and-passport-schema",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-07-31T01:23:07Z",
+  "actor": "Codex",
+  "session_id": "codex-019f9a02-3061-7222-b930-31ec8ce98d5c-rro04-c2",
+  "exemption_reason": "RRO-04 has no owned Obsidian Canvas mirror; canonical tasks.json and delivered Git commits are the source of truth.",
+  "verifier": "test -f \"$COLLAB/harness-mc/sync-events/synced/20260731T012307Z-obsidian_canvas-rrrealll-ocr-p3-supabase-canonical-data-and-passport-schema-task.commit_attached-rrrealll-ocr-p3-supabase-canonical-data-and-passport-schema-4384d7276ce2e10230925dc1c41c6aab0e284eac-sync_skipped.json\" && test ! -e \"$COLLAB/harness-mc/sync-events/pending/20260731T012307Z-obsidian_canvas-rrrealll-ocr-p3-supabase-canonical-data-and-passport-schema-task.commit_attached-rrrealll-ocr-p3-supabase-canonical-data-and-passport-schema-4384d7276ce2e10230925dc1c41c6aab0e284eac-sync_requested.json\"",
+  "resolved_at": "2026-07-31T01:23:07Z",
+  "resolved_by": "Codex",
+  "resolution_session_id": "codex-019f9a02-3061-7222-b930-31ec8ce98d5c-rro04-c2"
+}

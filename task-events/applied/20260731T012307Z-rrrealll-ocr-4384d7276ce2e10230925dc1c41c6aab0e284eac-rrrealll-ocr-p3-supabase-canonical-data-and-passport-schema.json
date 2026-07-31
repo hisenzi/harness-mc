@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-rrrealll-ocr-p3-supabase-canonical-data-and-passport-schema-4384d7276ce2e10230925dc1c41c6aab0e284eac",
+  "type": "task.commit_attached",
+  "repo": "rrrealll-ocr",
+  "commit": "4384d7276ce2e10230925dc1c41c6aab0e284eac",
+  "project": "rrrealll-ocr",
+  "task_id": "p3-supabase-canonical-data-and-passport-schema",
+  "status": "updated",
+  "summary": "Delivered the RRO-04 Neon canonical schema and seed foundation to rrrealll-ocr/origin/main with target runtime proof.",
+  "created_at": "2026-07-31T01:23:07Z",
+  "actor": "Codex",
+  "session_id": "codex-019f9a02-3061-7222-b930-31ec8ce98d5c-rro04-c2"
+}

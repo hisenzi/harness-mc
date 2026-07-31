@@ -474,10 +474,10 @@
       "track": "book",
       "completed_at": "2026-07-26",
       "commits": [
-        "3dbd8bd"
+        "3b807ea"
       ],
-      "note": "Vincent 2026-07-26：將 13 張來源圖片收錄為 agent-neutral 第二大腦知識，並驗證未來 Agent 不依賴聊天記憶即可發現、追溯與應用。2026-07-26 本機驗收：13 張圖片、11 份知識 Markdown、65 條 wiki links 斷鏈為 0，三種 Agent 情境均能回溯頁碼／圖片；canonical JPEG 在 commit 前由外部程序重新編碼，像素尺寸一致且抽查可讀。notyet-harness 已 commit，push 尚待獨立核准。",
-      "summary": "已將指定書頁收錄為 agent-neutral 第二大腦知識，接上 shared AGENTS 路由，並通過三種可行動、可回溯頁碼與圖片的 Agent 取用模擬。",
+      "note": "Vincent 2026-07-26：將 13 張來源圖片收錄為 agent-neutral 第二大腦知識，並驗證未來 Agent 不依賴聊天記憶即可發現、追溯與應用。canonical 整合 commit 為 notyet-harness@3b807ea，已發布至 origin/main。2026-07-28 fresh verification：verifier tests 11/11、主題 9 份 Markdown、13 個資產、65 條 wiki links、0 斷鏈、0 warning，fresh-agent 證據層級為 simulated。canonical JPEG 曾由外部程序重新編碼，只宣告尺寸與可讀性抽查，不宣告位元組相同。",
+      "summary": "指定書頁已透過 shared AGENTS 路由接入 agent-neutral 第二大腦；canonical main、來源追溯、三種可行動取用模擬與新版 verifier 均已完成，正式整合 commit 為 3b807ea。",
       "done_condition": "建立可追溯的來源筆記、MOC、原子概念筆記與實踐卡，接上 shared Agent 入口，並以 fresh-agent 模擬驗證可發現、可追溯、可應用。",
       "acceptance": [
         "A01｜13 張來源圖片均在來源筆記建立檔名與頁碼／內容對照，且 OCR 不確定處明確標示。",
@@ -493,10 +493,11 @@
         "hc_confidence": 0.9,
         "evidence_refs": [
           "$COLLAB/notyet-harness/AGENTS.md",
-          "$COLLAB/notyet-harness/300_Obsidian_brain/temp/奧運金牌選手的「心靈肌肉」鍛鍊法/",
+          "$COLLAB/notyet-harness/300_Obsidian_brain/知識庫/心智訓練/奧運金牌選手的「心靈肌肉」鍛鍊法/00_MOC.md",
+          "$COLLAB/notyet-harness/000_Agent/skills/morrowise-second-brain-capture/scripts/verify-capture.mjs",
           "$COLLAB/harness-mc/milestones/self-learning/project.json"
         ],
-        "source_boundary": "HC is a thinking check, not source of truth; self-learning tasks.json and the source images remain canonical."
+        "source_boundary": "HC is a thinking check, not source of truth；self-learning tasks.json 是任務狀態正本，notyet-harness 知識庫主題與 source-pages 是正式知識及來源資產正本。"
       },
       "jv32_route": {
         "workflows": ["task-lifecycle", "implement", "closeout-commit-routing"]
@@ -525,6 +526,42 @@
               "$COLLAB/notyet-harness/300_Obsidian_brain/知識庫/心智訓練/奧運金牌選手的「心靈肌肉」鍛鍊法/99_Agent取用模擬.md"
             ],
             "recorded_at": "2026-07-26"
+          },
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "舊 task evidence 指向 branch-only 3dbd8bd，且未反映後續共用 Skill／verifier 補強與 main 整合。現以已發布至 origin/main 的 canonical integration commit 3b807ea 校正 commit、summary、來源正本與 fresh verification；不重開 task，也不把 simulated 誤稱 independent fresh Agent。",
+            "evidence_refs": [
+              "notyet-harness@3b807ea",
+              "$COLLAB/notyet-harness/000_Agent/skills/morrowise-second-brain-capture/tests/verify-capture.test.mjs",
+              "$COLLAB/notyet-harness/300_Obsidian_brain/知識庫/心智訓練/奧運金牌選手的「心靈肌肉」鍛鍊法/99_Agent取用模擬.md",
+              "node --test 000_Agent/skills/morrowise-second-brain-capture/tests/verify-capture.test.mjs（2026-07-28 11/11 pass）",
+              "node 000_Agent/skills/morrowise-second-brain-capture/scripts/verify-capture.mjs <topic>（2026-07-28 RESULT: PASS）"
+            ],
+            "recorded_at": "2026-07-28",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "self-learning/mind-training-book-capture",
+                "morrowise/morrowise-second-brain-capture-gate"
+              ],
+              "scope_comparison": {
+                "problem": "仍是同一本書頁收錄 task；缺口只是 task 尚指向 branch-only 舊 commit，未反映已完成的共用 verifier 與 canonical main integration。",
+                "owner_source_of_truth": "owner 不變：self-learning task 管書頁收錄結果，MorroWise JV-44 管共用 Skill／verifier，知識與來源資產正本仍在 notyet-harness 正式知識庫。",
+                "inputs_outputs": "輸入與知識輸出不變；本 amend 只校正 canonical commit、remote closeout、來源正本與 fresh verifier 證據。",
+                "lifecycle_completion": "task 保持 completed；3b807ea 已在 origin/main、主題 verifier PASS 且 evidence boundary 正確後完成校正。"
+              },
+              "decision_reason": "沒有新書、新來源或新收錄問題，只是既有 task closeout evidence 過期，因此 outcome=amend，不建立或取代 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-28",
+                "evidence_refs": [
+                  "Vincent current session: 逐一完成『不通過』及『部分通過』項目；可以繼續進行"
+                ]
+              }
+            }
           }
         ]
       }
@@ -536,20 +573,23 @@
       "track": "operation",
       "priority": "high",
       "canonical_ref": "self-learning/future-practice-finance-pilot-v1",
+      "input_ref": "notion/3a3714fb-14c6-81b0-ae29-fcf4fbde55f6",
       "output_ref": "wealth-system/b-6",
       "started_at": "2026-07-26",
       "review_date": "2026-08-25",
       "depends_on": [
         "harness-mc/future-practice-domain-tracking-v1"
       ],
-      "done_condition": "選定一份理財學習內容並以 output_ref 連到 wealth-system/b-6，完成 30 天人工學習與生活實踐，月底留下不含原始財務數字、住址、健康及身分資料的回顧，並記錄 keep／change／stop 決定。",
+      "done_condition": "選定一份理財學習內容並以 output_ref 連到 wealth-system/b-6，完成 30 天人工或 AI Agent 協作紀錄的學習與生活實踐；AI Agent 無法觀察的線下行動須經 Vincent 確認。月底留下不含原始財務數字、住址、健康及身分資料的回顧，並記錄 keep／change／stop 決定。",
       "acceptance": [
         "A01｜正式名稱只使用「Future Practice｜未來練習」；「Life-Focus」僅保留為既有底層相容 key，不形成第二套概念或入口。",
-        "A02｜主追蹤 task 的 canonical_ref 固定為 self-learning/future-practice-finance-pilot-v1，output_ref 固定指向 wealth-system/b-6；理財成果仍由 wealth-system/b-6 擁有。",
-        "A03｜每日人工紀錄與下一步只在既有 Notion PAI 的「Future Practice｜未來練習」view 操作；MC 僅提供唯讀進度觀察。",
+        "A02｜主追蹤 task 的 canonical_ref 固定為 self-learning/future-practice-finance-pilot-v1，input_ref 固定指向 Notion NOW 課程「吳淡如財商課」page 3a3714fb-14c6-81b0-ae29-fcf4fbde55f6，output_ref 固定指向 wealth-system/b-6；理財成果仍由 wealth-system/b-6 擁有。",
+        "A03｜每日唯一入口是 Notion 獨立頁「Future Practice｜未來練習」；頁內 linked view 只顯示 canonical_ref=self-learning/future-practice-finance-pilot-v1 的唯一現在練習，私人實踐紀錄與下一步仍保存在既有 PAI「理財｜5% CCD」頁，MC 僅提供唯讀進度觀察。",
         "A04｜入口、canonical_ref 與一份理財學習內容連接完成並記錄實際開始日後，才由 todo 改為 in_progress；只有完成 30 天、月底回顧及 keep／change／stop 決定才能改為 completed。",
         "A05｜共享 task、generated read model、MC 與公開候選內容不得包含原始財務數字、住址、健康、身分資料、secret、token、Cookie 或 runtime auth。",
-        "A06｜本次不建立新 project、Notion database、MC route、專屬 dashboard、自動推薦、雙向同步、自動回寫或 notyet.md 自動發布。"
+        "A06｜本次不建立新 project、Notion database、MC route、專屬 dashboard、自動推薦、雙向同步、自動回寫或 notyet.md 自動發布。",
+        "A07｜AI Agent 只有在可觀察的實際行動、嘗試或明確卡點發生後才能追加五段式紀錄；每筆須區分執行者、可靠來源／證據、待確認事項與下一步負責者，回應上一筆下一步並採追加式更正，不得把推論寫成已完成實踐。寫入後須將新下一步同步到頁首與 PAI「說明」的「今天」行，再 fetch／query 驗證一致。",
+        "A08｜2026-07-31 UX 調整只新增一個 Notion 標準操作頁與一個頁內 linked view；新增 database、週期頁、第二個 Future Practice project／task、MC route、dashboard、Heptabase、Canvas 與自動發布皆為零。原七列 view 僅改名為「Future Practice｜相關專案」並保留 Life-Focus filter。"
       ],
       "hc_decision": {
         "task_scope": "self-learning/future-practice-finance-pilot-v1",
@@ -560,15 +600,18 @@
           "#risk",
           "#constraints"
         ],
-        "hc_reasoning": "真正問題是讓一份學習內容能產生可追蹤的生活決策，而不是再建立一套學習或人生管理系統。限制為一份理財內容、一個輸出 task、一個每日操作 view 與一次月底回顧，避免入口、WIP、同步與隱私風險持續擴張。",
+        "hc_reasoning": "真正問題是讓一份學習內容能產生可追蹤的生活決策，而不是再建立一套學習或人生管理系統。限制為一份理財內容、一個輸出 task、一個使用既有 PAI source 的每日操作頁、一筆唯一現在練習與一次月底回顧；AI Agent 只能依可觀察證據追加紀錄，避免入口、WIP、推論冒充事實、同步與隱私風險持續擴張。",
         "hc_confidence": 0.94,
         "evidence_refs": [
           "$COLLAB/harness-mc/milestones/self-learning/project.json",
           "$COLLAB/harness-mc/milestones/wealth-system/tasks.json#b-6",
           "$COLLAB/harness-mc/system-workflow/registries/pai-domain-taxonomy.json",
+          "Notion course 3a3714fb-14c6-81b0-ae29-fcf4fbde55f6：吳淡如財商課（NOW；服務輸出=wealth-system/b-6）",
+          "$COLLAB/notyet-harness/300_Obsidian_brain/知識庫/Future Practice｜未來練習.md#AI Agent 寫入規則",
+          "Notion page 3ad714fb-14c6-81e0-b800-c30df98df0df：Future Practice｜未來練習",
           "Vincent 2026-07-26 current session：可以進行"
         ],
-        "source_boundary": "HC 只是思考檢查，不是正本；self-learning/tasks.json 擁有試行生命週期，wealth-system/tasks.json#b-6 擁有理財成果，Notion PAI 是每日操作入口，MC 只讀顯示。"
+        "source_boundary": "HC 只是思考檢查，不是正本；self-learning/tasks.json 擁有試行生命週期，wealth-system/tasks.json#b-6 擁有理財成果，既有 Future Practice 知識文件保存方法與 AI Agent 寫入規則，Notion 獨立頁是唯一每日入口、既有 PAI 現在練習頁保存私人紀錄，MC 只讀顯示。"
       },
       "jv32_route": {
         "workflows": [
@@ -604,10 +647,26 @@
               "$COLLAB/harness-mc/milestones/wealth-system/tasks.json#b-6"
             ],
             "recorded_at": "2026-07-26"
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "依 Vincent 核准的 UX 與模擬驗收，建立唯一 Notion 標準操作頁及只顯示目前理財試行的 linked view；原七列分類 view 改名為「Future Practice｜相關專案」。既有「理財｜5% CCD」頁已加入本期命題、唯一 NOW 來源「吳淡如財商課」、今天最小一步、回顧日、五段式實踐 table、AI Agent 寫入規則與月底回顧，30 天試行仍持續進行。",
+            "evidence_refs": [
+              "Notion Future Practice｜未來練習：https://app.notion.com/p/3ad714fb14c681e0b800c30df98df0df",
+              "Notion linked view：view://3ad714fb-14c6-811a-a3eb-000c1eb41f41",
+              "Notion PAI 理財實踐頁：https://app.notion.com/p/371714fb14c68122956ef62d0d681434",
+              "Notion NOW 課程「吳淡如財商課」：https://app.notion.com/p/3a3714fb14c681b0ae29fcf4fbde55f6；服務輸出=wealth-system/b-6",
+              "Notion 相關專案 view：view://3a9714fb-14c6-81fd-8df1-000c1a0709bc",
+              "$COLLAB/notyet-harness/300_Obsidian_brain/知識庫/Future Practice｜未來練習.md#AI Agent 寫入規則",
+              "Vincent 2026-07-31 current session：好的，可以進行；驗收依照驗收條件"
+            ],
+            "recorded_at": "2026-07-31"
           }
         ]
       },
-      "note": "2026-07-26 由 todo 轉為 in_progress；既有財商課為唯一學習內容，2026-08-25 做月底脫敏回顧與 keep／change／stop 決定。使用者可見名稱不使用 FP-v1 簡稱；技術 task id 只作正本識別。"
+      "note": "2026-07-26 由 todo 轉為 in_progress；2026-07-31 已將唯一 NOW 學習內容明確識別為 Notion「吳淡如財商課」page 3a3714fb-14c6-81b0-ae29-fcf4fbde55f6，2026-08-25 做月底脫敏回顧與 keep／change／stop 決定。使用者可見名稱不使用 FP-v1 簡稱；技術 task id 只作正本識別。2026-07-31 唯一每日入口調整為 Notion 獨立頁「Future Practice｜未來練習」，沿用既有 PAI source 與理財實踐頁；AI Agent 依五段式、可觀察證據、人工確認、追加式更正與隱私規則協助紀錄，task 維持 in_progress。"
     }
   ]
 }

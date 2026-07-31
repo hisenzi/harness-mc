@@ -2707,7 +2707,7 @@
         "A01｜pai-domain-taxonomy.json 的 domain id 仍為 Life-Focus，label 改為 Future Practice｜未來練習，history 記錄正式改名與 legacy key 邊界。",
         "A02｜既有七個 project_domains mapping 繼續指向 Life-Focus；generated projects.json 對這些專案輸出 domain=Life-Focus、domainLabel=Future Practice｜未來練習。",
         "A03｜/projects 的領域 filter、專案卡與詳情 modal 顯示 Future Practice｜未來練習，不向使用者顯示另一個 Life Focus 概念。",
-        "A04｜self-learning/future-practice-finance-pilot-v1 出現在既有 self-learning 專案進度；唯一入口與一份學習內容連接完成後狀態為 in_progress，並以可見的「輸出：wealth-system/b-6」標記顯示連接。",
+        "A04｜self-learning/future-practice-finance-pilot-v1 出現在既有 self-learning 專案進度；/projects 只做唯讀觀察，並以可見的「輸出：wealth-system/b-6」標記顯示連接。每日操作入口由 self-learning pilot task 的 current acceptance 擁有。",
         "A05｜測試必須先在舊 taxonomy／generator／surface 行為上失敗，再以最小修改通過；另跑 task validator、taxonomy verifier、data generator、project filter tests、production build 與 git diff --check。",
         "A06｜不得新增 app route、專屬 Future Practice dashboard、第二份 project/task tracker、Notion write-back、自動同步、外部發布或任何私人資料欄位。"
       ],
@@ -2790,11 +2790,24 @@
               "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#future-practice-domain-tracking-v1"
             ],
             "recorded_at": "2026-07-28"
+          },
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "2026-07-31 Future Practice 每日 UX 已由 self-learning pilot task 收斂到唯一 Notion 獨立操作頁；本 completed task 的 /projects 職責不變，只是唯讀領域觀察 surface。原七列 PAI view 已改名為「Future Practice｜相關專案」，不再稱為操作入口。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/self-learning/tasks.json#future-practice-finance-pilot-v1",
+              "Notion Future Practice｜未來練習：https://app.notion.com/p/3ad714fb14c681e0b800c30df98df0df",
+              "Notion Future Practice｜相關專案：view://3a9714fb-14c6-81fd-8df1-000c1a0709bc",
+              "Vincent 2026-07-31 current session：好的，可以進行；驗收依照驗收條件"
+            ],
+            "recorded_at": "2026-07-31"
           }
         ]
       },
-      "summary": "Future Practice 沿用 Life-Focus machine id 與既有 /projects／PAI 入口，顯示名稱及 wealth-system/b-6 輸出連接均已完成；兩個既存 build blocker 已修復，完整 npm production build 已通過。",
-      "note": "2026-07-26 completed。taxonomy、generated refs、既有 /projects 顯示、live PAI view、Notion 課程 mirror 穩定 ID 與 FJSH-116 provisional domain mapping 均已驗收。Heptabase 與 Obsidian Canvas 不作進度入口；notyet.md 只接人工核准的脫敏成果。"
+      "summary": "Future Practice 沿用 Life-Focus machine id；既有 /projects 只作唯讀領域觀察，顯示名稱及 wealth-system/b-6 輸出連接均已完成，沒有新增 route、dashboard 或寫回能力；既有 completion evidence 記錄的完整 npm production build 已通過。",
+      "note": "2026-07-26 completed。taxonomy、generated refs、既有 /projects 唯讀顯示、Notion 課程 mirror 穩定 ID 與 FJSH-116 provisional domain mapping均已驗收。2026-07-31 amendment：每日唯一入口由 self-learning pilot task 指向 Notion 獨立頁「Future Practice｜未來練習」；原七列 view 改名為「Future Practice｜相關專案」。Heptabase 與 Obsidian Canvas 不作進度入口；notyet.md 只接人工核准的脫敏成果。"
     }
   ]
 }

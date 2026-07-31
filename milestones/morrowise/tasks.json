@@ -2907,7 +2907,7 @@
     },
     {
       "id": "morrowise-dev-workflow-catalog",
-      "status": "in_progress",
+      "status": "completed",
       "title": "JV-32 MorroWise 開發工作流 Catalog 與 Router Gate",
       "track": "governance",
       "order_label": "JV-32",
@@ -2999,7 +2999,10 @@
           "Red 2026-07-30: node scripts/verify-morrowise-dev-workflow-catalog.mjs -> schema missing $defs.harness_contract (exit 1)",
           "Green 2026-07-30: node scripts/verify-morrowise-dev-workflow-catalog.mjs -> MorroWise dev workflow catalog verification OK (exit 0)",
           "Regression 2026-07-30: changed-only task validator、MorroWise wiring、architecture subsystem、generated architecture sync check、system pulse 全部 exit 0",
-          "Fresh single-repo build 2026-07-30: current target diff applied to isolated local clone; npm run build compiled、typechecked and generated 8 static pages (exit 0)"
+          "Fresh single-repo build 2026-07-30: current target diff applied to isolated local clone; npm run build compiled、typechecked and generated 8 static pages (exit 0)",
+          "Green 2026-07-31: committed C1 7c48e7b5dbb53c1e5a188f1f57464930be4cce9a in a clean committed clone; catalog verifier and MorroWise changed-only validator both exit 0",
+          "Regression 2026-07-31: clean two-repo workspace wiring、architecture subsystem、generated architecture sync check and system pulse all exit 0",
+          "Fresh GitHub Pages 2026-07-31: run 30603027179 at C1 7c48e7b5dbb53c1e5a188f1f57464930be4cce9a; npm ci、npm run build、artifact upload and deploy jobs all terminal success"
         ]
       },
       "acceptance_matrix": [
@@ -3027,7 +3030,8 @@
       ],
       "jv32_route": {
         "workflows": [
-          "task-lifecycle"
+          "task-lifecycle",
+          "closeout-commit-routing"
         ]
       },
       "task_lifecycle": {
@@ -3132,6 +3136,43 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "正式 Harness／Loop schema version improvement 已在既有 JV-32 owner 閉環：Harness 只提供 mechanism，Loop 擁有治理政策且不得繞過 Harness；負向 fixtures、MorroWise changed-only、wiring、architecture、generated thin-index sync、system pulse、fresh build 與 Pages deploy 全部通過。本次未新增 catalog、task system、daily loop、schema 正本或 runtime，也未宣稱 morrowise-live-decision-loop-v1／P3 E2E 完成。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc@7c48e7b5dbb53c1e5a188f1f57464930be4cce9a",
+              "$COLLAB/notyet-harness@aea541d34d6022d7282b381b47f64cd83acabb2e",
+              "https://github.com/hisenzi/harness-mc/actions/runs/30603027179",
+              "Vincent 2026-07-31 current session: 方案一可以進行，驗收時遵照驗收標準"
+            ],
+            "recorded_at": "2026-07-31",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-dev-workflow-catalog",
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/morrowise-live-decision-loop-v1",
+                "morrowise/model-execution-evidence-contract"
+              ],
+              "scope_comparison": {
+                "problem": "本次完成既有 JV-32 的 Harness mechanism／Loop policy 正式 schema version improvement，不是新的 task、Daily Decision runtime 或模型 evidence 問題。",
+                "owner_source_of_truth": "owner 仍是 JV-32；正式契約仍在同一 workflow catalog registry、schema、verifier、detail doc 與 Architecture Admission Record，沒有新增正本。",
+                "inputs_outputs": "輸入是已核准邊界、C1 delivery、generated thin index 與 fresh Pages evidence；輸出只更新既有 task 的完成狀態、commits、summary 與 evidence receipt。",
+                "lifecycle_completion": "完成邊界是 C1／thin-index 已在各自 origin/main、負向 fixtures與全套 regression 通過、fresh npm build／Pages deploy terminal success；Daily Decision runtime 與 P3 E2E 仍未完成。"
+              },
+              "decision_reason": "既有 JV-32 schema amendment 已滿足原 done condition，故 outcome=amend 並完成同一 task；不建立、取代或重開其他 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-31",
+                "evidence_refs": [
+                  "Vincent 2026-07-31 current session: 方案一可以進行，驗收時遵照驗收標準"
+                ]
+              }
+            }
           }
         ]
       },
@@ -3178,13 +3219,15 @@
           "reason": "本次更新 JV-32 verifier 與 regression fixture，將 external provenance 與 harness-mc-owned canonical ref 分開驗證；要同步既有 generated index 的 registry fingerprint，但不改 ARCHITECTURE.md 薄索引內容或新增子系統。"
         }
       },
-      "completed_at": "2026-07-08",
+      "completed_at": "2026-07-31",
       "commits": [
         "428a951",
         "f741108",
-        "1ef799c"
+        "1ef799c",
+        "7c48e7b5dbb53c1e5a188f1f57464930be4cce9a",
+        "aea541d34d6022d7282b381b47f64cd83acabb2e"
       ],
-      "summary": "Completed JV-32 MorroWise dev workflow catalog gate: durable source map/detail doc, registry/schema, generator, verifier with negative fixtures, read_model_surface_only wiring, live dashboard surface, and promoted Architecture Admission Record.",
+      "summary": "Completed the JV-32 Harness／Loop formal schema amendment in the existing MorroWise workflow catalog: Harness mechanisms and forbidden policy authority, complete Loop governance policy and budgets, terminal-state vocabulary, Harness-bypass invariants, negative fixtures, planned Daily Decision binding, refreshed Architecture Admission fingerprint and generated thin index. Clean changed-only/regression gates and GitHub Pages run 30603027179 passed; no second catalog、task system、daily loop、schema source of truth or runtime was added.",
       "note": "2026-07-08 Vincent 裁決：不另開案，先在 MorroWise 裡寫 task。此 task 來自對 $COLLAB/.tmp/skills-main 的安全掃描與 workflow 評估；scan verdict 為可讀取參考，但外部 repo 不可直接安裝或執行。模擬驗證後補強 v2 條件：.tmp 只能作 intake evidence、需 durable source map/detail doc、需 negative fixtures、需 adapter_only 狀態、第一階段只做 registry/read model/verifier，dashboard/homepage surface 不列為首步必做。2026-07-08 implementation：已新增 source-map/detail doc、catalog registry/schema、generator、verifier、generated read model、read_model_surface_only wiring fixture、live dashboard read model surface，並將 Architecture Admission Record promoted；worktree-commit 已回填 commits/completed_at/summary。2026-07-09 version_improvement：補充 Roadmap-in-Anchor Task 寫法。當系統型/MVP 工作需要保留完整 roadmap，但不宜提前開滿 future tasks 時，使用單一 active anchor task 承接完整思路；future slices 寫入 task note，不提前實體化；待 input/output、安全邊界、驗收方式與 Vincent implementation approval 明確後再拆 task。此補強不新增 runtime、read model、verifier、dashboard 或 source-of-truth family；architecture_decision 維持原 task promoted，不因寫法補強另開架構 task。2026-07-12 version_improvement／extended_by=JV-37：JV-32 繼續作唯一開發 workflow catalog 與 Router，不另建 Repo workflow 系統。JV-37 未實作前，不把 Repo Ready 或 Remote Closeout 寫成 accepted runtime；待 JV-37 deterministic gate、負向 fixtures 與 workflow hooks 有證據後，再由 JV-37 更新 catalog registry/detail doc/verifier：所有會寫 repo 的 workflow 在首次 mutation 前必經 Repo Ready，既有 closeout-commit-routing 則延伸為同一次明確核准涵蓋 exact-scope commit、正常 push 與 remote SHA verification。JV-32 維持 completed，不 reopen；本段只建立 lineage 與 completion boundary，不宣稱 runtime 已存在。2026-07-19 version_improvement roadmap／task-management intake：在任何新增 task 提案前先走 semantic task-intake，比對所有相關 canonical tasks，輸出固定為 reuse、amend、replace、genuinely_new；scope gate 必須比對問題、owner／source of truth、輸入輸出與 lifecycle／completion boundary，僅相關或共享關鍵字不得視為重複。CORE／Fable 保留通用重複判斷，JV-32 只把它特化成 task intake。outcome mapping 固定：reuse 不做 task mutation；amend 必須經 Vincent 核准後走 amend；replace 必須經 Vincent 核准後建立 successor，並將舊 task archive／superseded 或 cancel；genuinely_new 必須經 Vincent 核准後走 create。無法判定或未核准時 hard-fail，不得先建或修改 task。weekly_core admission 同屬 JV-32：每週最多一個 MorroWise 核心改善 task 為 in_progress，選入時必須有 Vincent 明確核准與 review_date；未來 schema 固定 weekly_core 為 boolean、review_date 為 YYYY-MM-DD。fresh-session 驗收需證明 Codex、Claude Code 與共享 Agent 在無人提醒下仍走相同 intake／admission route。本段只有 roadmap 與 completion boundary；JV-32 維持 completed，不宣稱 catalog registry、schema、verifier、negative fixtures 或 runtime 已更新。未來實作必須另經 Vincent 核准，並完成 JV-32 version-improvement Architecture Admission Review、Admission Record 更新與受控 ARCHITECTURE.md sync check。2026-07-21 version improvement：GitHub Pages 單 repo build 證明 verifier 把 external provenance 當 CI 必備檔；修正後只要求正規化後仍屬 harness-mc 的 canonical ref 存在，跨 repo 或本機 intake evidence 可缺席，但仍受安全 $COLLAB 路徑與禁止 path traversal 檢查，並以正反 fixture 防回歸。"
     },
     {

@@ -2907,7 +2907,7 @@
     },
     {
       "id": "morrowise-dev-workflow-catalog",
-      "status": "completed",
+      "status": "in_progress",
       "title": "JV-32 MorroWise 開發工作流 Catalog 與 Router Gate",
       "track": "governance",
       "order_label": "JV-32",
@@ -2916,7 +2916,7 @@
         "morrowise-wiring-gate-verifier",
         "architecture-subsystem-index-live-sync"
       ],
-      "done_condition": "把 $COLLAB/.tmp/skills-main/docs 與 $COLLAB/.tmp/skills-main/skills 的軟體開發 workflow 候選，轉成 MorroWise 可治理的 workflow catalog：先落 durable source-map/detail doc、machine-readable registry/schema、verifier、generator 與 generated read model；安全邊界明確禁止直接安裝、執行 link-skills.sh、修改 hooks、寫外部 tracker 或讀 secrets。完成後以 read_model_surface_only 接線，並透過 Architecture Admission Record 判斷是否 promoted 進 ARCHITECTURE.md generated 子系統索引。",
+      "done_condition": "維持 MorroWise 單一開發 workflow catalog，並將 Harness／Loop 邊界落成同一 registry/schema/verifier 的正式 version improvement：Harness 只能宣告可用機制與能力，不得決定 trigger、goal、retry、verification、budget、escalation 或 terminal policy；Loop 必須宣告這些治理政策，且不得繞過 Harness 的 sandbox、permission、tool 或 context 邊界。Schema、registry、detail doc、負向 fixture 與 Architecture Admission Record 必須使用同一語意，不新增第二個 catalog、task system、daily loop 或 schema 正本。",
       "acceptance": [
         "新增 durable source map：$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-source-map.md，記錄本次 intake 的來源、掃描日期、候選 workflow、排除原因、安全註記；$COLLAB/.tmp/skills-main 只能作為 intake evidence，不得當長期 source of truth。",
         "新增 detail doc：$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-catalog.md，說明 MorroWise 開發工作流生命週期、router 規則、adapter_only 邊界與 closeout 規則；ARCHITECTURE.md 只索引，不複製細節。",
@@ -2930,7 +2930,10 @@
         "第一階段只要求 registry -> generated read model -> verifier；若接 MorroWise live dashboard，wiring fixture 必須先用 read_model_surface_only，不要求 homepage anchor，不把此 task 膨脹成 UI surface task。",
         "更新 $COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json 時，只新增 Architecture Admission Record；ARCHITECTURE.md 必須由 sync-architecture-subsystems.py 生成，不得手寫 catalog 細節。",
         "安全邊界明確禁止執行或建議執行 $COLLAB/.tmp/skills-main/scripts/link-skills.sh、任何 installer、hooks 修改、.env 寫入、GitHub secrets 設定、外部 issue tracker 寫入；若未來需要外部 adapter，必須另走 approval policy。",
-        "驗證包含 node scripts/verify-morrowise-dev-workflow-catalog.mjs、node scripts/generate-morrowise-dev-workflows.mjs、node scripts/validate-tasks.mjs --changed-only --project morrowise、npm run test:morrowise-wiring、npm run test:architecture-subsystems、python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check、npm run test:system-pulse。"
+        "驗證包含 node scripts/verify-morrowise-dev-workflow-catalog.mjs、node scripts/generate-morrowise-dev-workflows.mjs、node scripts/validate-tasks.mjs --changed-only --project morrowise、npm run test:morrowise-wiring、npm run test:architecture-subsystems、python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check、npm run test:system-pulse。",
+        "正式 Harness／Loop contract 必須以 machine-readable schema 表達：Harness capability 只提供 mechanism，Loop policy 負責 trigger、objective、discovery、prioritization、verification、retry、memory writeback、escalation、terminal states 與 resource budget；兩層各自 additionalProperties=false。",
+        "Verifier 必須包含邊界反轉負向 fixture：Harness 宣告 retry decision／terminal decision 應失敗；Loop 宣告可繞過 sandbox／permission 應失敗；缺 verification、retry、budget、escalation 或 terminal states 的 Loop contract 應失敗。",
+        "既有 morrowise-live-decision-loop-v1 必須只以 owner_task 引用同一正式 contract；本次不實作 Daily Decision runtime、不新增 scheduler、read model、通知、task writer、commit、push 或部署。"
       ],
       "source_refs": [
         "$COLLAB/.tmp/skills-main/docs",
@@ -2948,19 +2951,80 @@
         "inputs": [
           "JV-32 registry、schema、detail doc 與 task-lifecycle contract",
           "受管 prebuild 的 JV-32 generator／verifier steps",
-          "Architecture Admission Record 的 version review"
+          "Architecture Admission Record 的 version review",
+          "已確認的 Harness=mechanism／Loop=policy 邊界與既有 morrowise-live-decision-loop-v1 owner"
         ],
         "outputs": [
           "可攜的 workflow catalog verifier 與 generated read model",
-          "只涵蓋 JV-32 prebuild commands 的 Architecture Admission fingerprint"
+          "只涵蓋 JV-32 prebuild commands 的 Architecture Admission fingerprint",
+          "同一 workflow schema 內可機械判定的 Harness capability／Loop policy contract"
         ],
         "verifiers": [
           "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
           "npm run test:architecture-subsystems",
           "fresh single-repo npm run build"
         ],
-        "stop_condition": "若變更新增第二個 catalog／task system、把外部 provenance 重新當成 build dependency，或無法同時保留 path-traversal 防護與 isolated build，就停止並維持既有 JV-32 completed lineage。"
+        "stop_condition": "若變更新增第二個 catalog／task system／daily loop／schema 正本、把 policy authority 放入 Harness、允許 Loop 繞過 Harness 邊界、把外部 provenance 重新當成 build dependency，或無法同時保留 path-traversal 防護與 isolated build，就停止。"
       },
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "Harness contract 只能列出 mechanism 與禁止擁有的 policy authority；加入 retry_decision 或 terminal_state_decision 欄位必須失敗。",
+          "Loop policy contract 必須包含 trigger、objective、verification、retry、memory、escalation、terminal states 與 time／Token／retry／risk budget；缺任一必要治理欄位必須失敗。",
+          "Loop policy 宣告 sandbox、permission、tool 或 context bypass 必須失敗。",
+          "morrowise-live-decision-loop-v1 只以 planned owner_task binding 引用同一 schema，不得因此宣稱 runtime、scheduler、evidence 或 P3 E2E 完成。"
+        ],
+        "test_level": [
+          "schema",
+          "registry_contract",
+          "negative_fixture",
+          "architecture_version_review"
+        ],
+        "red_command": "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+        "expected_red_reason": "Verifier 先要求 $defs.harness_contract、$defs.loop_policy_contract 與 registry control_plane_contract；既有 schema 尚未提供時以 schema missing $defs.harness_contract 失敗。",
+        "green_command": "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+        "full_regression_commands": [
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "npm run test:morrowise-wiring",
+          "npm run test:architecture-subsystems",
+          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+          "npm run test:system-pulse"
+        ],
+        "fixture_refs": [
+          "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
+        ],
+        "runtime_evidence_required": false,
+        "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-dev-workflow-catalog.test_contract.evidence_refs",
+        "evidence_refs": [
+          "Red 2026-07-30: node scripts/verify-morrowise-dev-workflow-catalog.mjs -> schema missing $defs.harness_contract (exit 1)",
+          "Green 2026-07-30: node scripts/verify-morrowise-dev-workflow-catalog.mjs -> MorroWise dev workflow catalog verification OK (exit 0)",
+          "Regression 2026-07-30: changed-only task validator、MorroWise wiring、architecture subsystem、generated architecture sync check、system pulse 全部 exit 0",
+          "Fresh single-repo build 2026-07-30: current target diff applied to isolated local clone; npm run build compiled、typechecked and generated 8 static pages (exit 0)"
+        ]
+      },
+      "acceptance_matrix": [
+        {
+          "id": "JV32-HL-01",
+          "what": "正式 Harness／Loop schema 能機械拒絕權責反轉與缺少治理政策。",
+          "preconditions": [
+            "JV-32 維持唯一 workflow catalog 與 schema owner",
+            "morrowise-live-decision-loop-v1 維持未完成的唯一 Daily Decision owner"
+          ],
+          "steps": [
+            "執行合法 Harness contract 與合法 Loop policy contract fixtures",
+            "執行 Harness policy authority、Loop Harness bypass 與缺 verification／retry／budget／escalation／terminal states fixtures",
+            "核對 registry binding、Architecture Admission fingerprint 與 generated thin index"
+          ],
+          "pass_condition": "合法 fixtures 通過，所有權責反轉或缺欄位 fixtures 以預期理由失敗，且沒有新增 task、catalog、daily loop、schema 正本或 runtime。",
+          "fail_condition": "Harness 可決定政策、Loop 可繞過 Harness、缺治理欄位仍通過，或本次變更宣稱 Daily Decision／P3 E2E 完成。",
+          "verification": [
+            "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+            "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+            "npm run test:architecture-subsystems",
+            "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
+          ]
+        }
+      ],
       "jv32_route": {
         "workflows": [
           "task-lifecycle"
@@ -3031,6 +3095,43 @@
               "Vincent 2026-07-25 current session: 幫我確定下列兩項"
             ],
             "recorded_at": "2026-07-25"
+          },
+          {
+            "operation": "resume",
+            "from_status": "completed",
+            "to_status": "in_progress",
+            "reason": "Vincent 確認 Harness／Loop 邊界分析完成並要求進行正式 schema；本次以既有 promoted JV-32 owner 作 version improvement，只擴充同一 registry/schema/verifier/detail doc 與 Admission Record，不建立第二份 Loop 規格正本或實作 Daily Decision runtime。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json",
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-live-decision-loop-v1",
+              "Vincent 2026-07-30 current session: Harness／Loop 邊界：分析完成，進行正式的 schema"
+            ],
+            "recorded_at": "2026-07-30",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-dev-workflow-catalog",
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/morrowise-live-decision-loop-v1",
+                "morrowise/model-execution-evidence-contract"
+              ],
+              "scope_comparison": {
+                "problem": "本次處理所有受管 workflow 的 Harness mechanism／Loop policy 邊界；JV-40 只治理 task mutation，Daily Decision 只治理每日選擇 runtime，JV-35 只治理模型執行證據，均不是 schema 正本 owner。",
+                "owner_source_of_truth": "正式契約擴充既有 JV-32 registry/schema/verifier/detail doc；Daily Decision 只引用此 owner，不新增平行 schema、catalog 或 task system。",
+                "inputs_outputs": "輸入是已確認的邊界分析與既有 workflow owner；輸出是 machine-readable schema、registry wiring、負向 fixture、文件與同一 Admission Record version review，不包含 runtime、scheduler、通知或 task writer。",
+                "lifecycle_completion": "完成邊界是 Red／Green、catalog／task／architecture／system-pulse regression 與同一 Admission Record fingerprint 刷新；沒有 runtime evidence，不宣稱 Daily Decision 或 P3 E2E 完成。"
+              },
+              "decision_reason": "正式 schema 直接擴充既有 promoted JV-32 契約，故 outcome=amend；新增 task 或新 schema family 都會造成 source-of-truth 擴張。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-30",
+                "evidence_refs": [
+                  "Vincent 2026-07-30 current session: Harness／Loop 邊界：分析完成，進行正式的 schema"
+                ]
+              }
+            }
           }
         ]
       },
@@ -6008,7 +6109,7 @@
       "order_label": "MW-PRIORITY-V2",
       "priority": "high",
       "weekly_core": true,
-      "review_date": "2026-07-31",
+      "review_date": "2026-08-05",
       "dependencies": [
         "morrowise-dev-workflow-catalog",
         "task-lifecycle-jv32-gate",
@@ -6364,6 +6465,51 @@
               "previous_review_date": "2026-07-29",
               "next_review_date": "2026-07-31",
               "new_scope": "只完成既有 P2 窄幅修正與固定 P2-07 驗證；不進入 P3，不新增 task、exit gate、tracker、registry、scheduler 或 daily loop。"
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 明確選擇 reframe 並指定 2026-08-05 為下一個 lifecycle review checkpoint；Action Priority Read Model v2 維持既有 owner、done condition、weekly core 與 implementation／test contract。本決策只解除到期的 lifecycle gate，不把本次 Harness／Loop schema closeout 誤算成 read-model runtime、evidence 或完成狀態。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
+              "Vincent 2026-07-31 current session: reframe，next_review_date=2026-08-05"
+            ],
+            "recorded_at": "2026-07-31",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/action-priority-read-model-v2",
+                "morrowise/morrowise-dev-workflow-catalog",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有 Action Priority Read Model v2 的 deterministic canonical selection 問題；本次只處理 weekly-core lifecycle checkpoint。",
+                "owner_source_of_truth": "Action Priority task 與 MorroWise tasks.json 正本不變；JV-32 Harness／Loop schema 仍由既有 workflow catalog task 擁有。",
+                "inputs_outputs": "既有 read-model inputs、outputs、acceptance 與 test contract 不變；reframe 不新增 runtime、scheduler、通知、task writer 或 evidence。",
+                "lifecycle_completion": "Task 維持 in_progress／weekly_core，直到既有 test contract 與完成證據真正滿足；本次 schema commit 不得將它標為 completed。"
+              },
+              "decision_reason": "review checkpoint 到期但 read-model implementation 尚未完成；Vincent 已明確選擇 reframe，因此只 amend 既有 task 並保留原完成門檻。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-31",
+                "evidence_refs": [
+                  "Vincent 2026-07-31 current session: reframe，next_review_date=2026-08-05"
+                ]
+              }
+            },
+            "weekly_core_review": {
+              "decision": "reframe",
+              "approved_by": "Vincent",
+              "approved_at": "2026-07-31",
+              "evidence_refs": [
+                "Vincent 2026-07-31 current session: reframe，next_review_date=2026-08-05"
+              ],
+              "previous_review_date": "2026-07-31",
+              "next_review_date": "2026-08-05",
+              "new_scope": "維持既有 Action Priority Read Model v2 owner、done condition、implementation 與 test contract；不因 Harness／Loop schema closeout擴張 runtime、scheduler、通知、task writer 或完成證據。"
             }
           }
         ]

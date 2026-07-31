@@ -35,6 +35,79 @@
       "write GitHub Issues, GitLab Issues, Notion, Heptabase, or external trackers"
     ]
   },
+  "control_plane_contract": {
+    "schema_ref": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json#/$defs/control_plane_contract",
+    "schema_version": "harness-loop-control.v1",
+    "owner_task": "morrowise-dev-workflow-catalog",
+    "harness_mechanisms": [
+      "context_management",
+      "tool_execution",
+      "sandbox_enforcement",
+      "permission_enforcement",
+      "state_persistence",
+      "observability",
+      "error_recovery",
+      "retry_mechanism"
+    ],
+    "harness_forbidden_policy_authority": [
+      "trigger_decision",
+      "objective_decision",
+      "discovery_decision",
+      "prioritization_decision",
+      "verification_gate_decision",
+      "retry_decision",
+      "memory_writeback_decision",
+      "escalation_decision",
+      "terminal_state_decision",
+      "resource_budget_decision"
+    ],
+    "loop_policy_required_fields": [
+      "role",
+      "trigger",
+      "objective",
+      "input_state",
+      "discovery_policy",
+      "prioritization_policy",
+      "execution_roles",
+      "context_policy",
+      "verification_policy",
+      "retry_policy",
+      "memory_writeback",
+      "escalation_conditions",
+      "terminal_states",
+      "resource_budget",
+      "forbidden_harness_bypass"
+    ],
+    "loop_terminal_states": [
+      "DONE_VERIFIED",
+      "DONE_WITH_WARNINGS",
+      "BLOCKED_MISSING_INPUT",
+      "BLOCKED_EXTERNAL_DEPENDENCY",
+      "FAILED_RETRY_EXHAUSTED",
+      "ESCALATED_RISK",
+      "ABORTED_SCOPE_DRIFT"
+    ],
+    "loop_forbidden_harness_bypass": [
+      "sandbox_bypass",
+      "permission_bypass",
+      "tool_boundary_bypass",
+      "context_boundary_bypass"
+    ],
+    "invariants": [
+      "harness_provides_mechanisms_only",
+      "loop_owns_policy_decisions",
+      "loop_cannot_bypass_harness",
+      "evidence_required_before_done",
+      "loop_terminal_state_does_not_mutate_task_status"
+    ],
+    "bindings": [
+      {
+        "owner_task": "morrowise-live-decision-loop-v1",
+        "contract_ref": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json#/$defs/loop_policy_contract",
+        "status": "planned"
+      }
+    ]
+  },
   "status_vocabulary": [
     "accepted",
     "prototype",

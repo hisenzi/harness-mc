@@ -21,6 +21,18 @@ The catalog turns useful external software-development workflow patterns into Mo
 
 The Architecture Admission version review records `$COLLAB/harness-mc/package.json#jv32-prebuild-contract`, not the whole manifest. This fragment fingerprints only the required JV-32 prebuild commands—generate the workflow read model, verify the catalog, then generate the live dashboard—in their effective order. Unrelated scripts or package metadata must not make the catalog review stale; removing, renaming, or reordering a required command must still fail the verifier.
 
+## Harness / Loop Control Boundary
+
+The formal boundary lives in `$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json#/$defs/control_plane_contract` and is registered once in `control_plane_contract`. It is an extension of this catalog, not a second loop or task system.
+
+- Harness is a mechanism provider. It may provide context management, tool execution, sandbox and permission enforcement, persistence, observability, error recovery, and a retry mechanism.
+- Harness must not choose the trigger, objective, discovery order, priority, verification gate, retry decision, memory writeback, escalation, terminal state, or resource budget.
+- Loop is the policy controller. Every governed Loop Spec must explicitly declare trigger, objective, input state, discovery and prioritization policies, execution roles, context policy, verification policy, retry policy, memory writeback, escalation conditions, terminal states, and time／Token／retry／risk budgets.
+- Loop policy cannot bypass sandbox, permission, tool, or context boundaries supplied by the Harness.
+- A Loop terminal state is not a canonical task status mutation. `DONE_VERIFIED` still requires fresh evidence, while task completion remains governed by JV-40 lifecycle and Vincent approval.
+
+`morrowise-live-decision-loop-v1` is the first planned binding to `#/$defs/loop_policy_contract`. The binding does not claim its runtime, budget values, verifier evidence, or P3 E2E are complete.
+
 ## Router Rules
 
 - `ask-matt` is a router pattern, not an executor.

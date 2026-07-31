@@ -42,5 +42,333 @@
     },
     "owner_task": { "type": "string" },
     "notes": { "type": "string" }
+  },
+  "$defs": {
+    "harness_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "mechanisms",
+        "forbidden_policy_authority"
+      ],
+      "properties": {
+        "role": {
+          "type": "string",
+          "const": "mechanism_provider"
+        },
+        "mechanisms": {
+          "type": "array",
+          "minItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "context_management",
+              "tool_execution",
+              "sandbox_enforcement",
+              "permission_enforcement",
+              "state_persistence",
+              "observability",
+              "error_recovery",
+              "retry_mechanism"
+            ]
+          }
+        },
+        "forbidden_policy_authority": {
+          "type": "array",
+          "minItems": 10,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "trigger_decision",
+              "objective_decision",
+              "discovery_decision",
+              "prioritization_decision",
+              "verification_gate_decision",
+              "retry_decision",
+              "memory_writeback_decision",
+              "escalation_decision",
+              "terminal_state_decision",
+              "resource_budget_decision"
+            ]
+          }
+        }
+      }
+    },
+    "loop_policy_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "trigger",
+        "objective",
+        "input_state",
+        "discovery_policy",
+        "prioritization_policy",
+        "execution_roles",
+        "context_policy",
+        "verification_policy",
+        "retry_policy",
+        "memory_writeback",
+        "escalation_conditions",
+        "terminal_states",
+        "resource_budget",
+        "forbidden_harness_bypass"
+      ],
+      "properties": {
+        "role": {
+          "type": "string",
+          "const": "policy_controller"
+        },
+        "trigger": { "type": "string", "minLength": 1 },
+        "objective": { "type": "string", "minLength": 1 },
+        "input_state": { "type": "string", "minLength": 1 },
+        "discovery_policy": { "type": "string", "minLength": 1 },
+        "prioritization_policy": { "type": "string", "minLength": 1 },
+        "execution_roles": { "type": "string", "minLength": 1 },
+        "context_policy": { "type": "string", "minLength": 1 },
+        "verification_policy": { "type": "string", "minLength": 1 },
+        "retry_policy": { "type": "string", "minLength": 1 },
+        "memory_writeback": { "type": "string", "minLength": 1 },
+        "escalation_conditions": { "type": "string", "minLength": 1 },
+        "terminal_states": {
+          "type": "array",
+          "minItems": 7,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "DONE_VERIFIED",
+              "DONE_WITH_WARNINGS",
+              "BLOCKED_MISSING_INPUT",
+              "BLOCKED_EXTERNAL_DEPENDENCY",
+              "FAILED_RETRY_EXHAUSTED",
+              "ESCALATED_RISK",
+              "ABORTED_SCOPE_DRIFT"
+            ]
+          }
+        },
+        "resource_budget": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "time_limit_minutes",
+            "token_limit",
+            "retry_limit",
+            "risk_limit"
+          ],
+          "properties": {
+            "time_limit_minutes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "token_limit": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "retry_limit": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "risk_limit": {
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high",
+                "critical"
+              ]
+            }
+          }
+        },
+        "forbidden_harness_bypass": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "sandbox_bypass",
+              "permission_bypass",
+              "tool_boundary_bypass",
+              "context_boundary_bypass"
+            ]
+          }
+        }
+      }
+    },
+    "control_plane_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_ref",
+        "schema_version",
+        "owner_task",
+        "harness_mechanisms",
+        "harness_forbidden_policy_authority",
+        "loop_policy_required_fields",
+        "loop_terminal_states",
+        "loop_forbidden_harness_bypass",
+        "invariants",
+        "bindings"
+      ],
+      "properties": {
+        "schema_ref": {
+          "type": "string",
+          "const": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json#/$defs/control_plane_contract"
+        },
+        "schema_version": {
+          "type": "string",
+          "const": "harness-loop-control.v1"
+        },
+        "owner_task": {
+          "type": "string",
+          "const": "morrowise-dev-workflow-catalog"
+        },
+        "harness_mechanisms": {
+          "type": "array",
+          "minItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "context_management",
+              "tool_execution",
+              "sandbox_enforcement",
+              "permission_enforcement",
+              "state_persistence",
+              "observability",
+              "error_recovery",
+              "retry_mechanism"
+            ]
+          }
+        },
+        "harness_forbidden_policy_authority": {
+          "type": "array",
+          "minItems": 10,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "trigger_decision",
+              "objective_decision",
+              "discovery_decision",
+              "prioritization_decision",
+              "verification_gate_decision",
+              "retry_decision",
+              "memory_writeback_decision",
+              "escalation_decision",
+              "terminal_state_decision",
+              "resource_budget_decision"
+            ]
+          }
+        },
+        "loop_policy_required_fields": {
+          "type": "array",
+          "minItems": 15,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "role",
+              "trigger",
+              "objective",
+              "input_state",
+              "discovery_policy",
+              "prioritization_policy",
+              "execution_roles",
+              "context_policy",
+              "verification_policy",
+              "retry_policy",
+              "memory_writeback",
+              "escalation_conditions",
+              "terminal_states",
+              "resource_budget",
+              "forbidden_harness_bypass"
+            ]
+          }
+        },
+        "loop_terminal_states": {
+          "type": "array",
+          "minItems": 7,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "DONE_VERIFIED",
+              "DONE_WITH_WARNINGS",
+              "BLOCKED_MISSING_INPUT",
+              "BLOCKED_EXTERNAL_DEPENDENCY",
+              "FAILED_RETRY_EXHAUSTED",
+              "ESCALATED_RISK",
+              "ABORTED_SCOPE_DRIFT"
+            ]
+          }
+        },
+        "loop_forbidden_harness_bypass": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "sandbox_bypass",
+              "permission_bypass",
+              "tool_boundary_bypass",
+              "context_boundary_bypass"
+            ]
+          }
+        },
+        "invariants": {
+          "type": "array",
+          "minItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "harness_provides_mechanisms_only",
+              "loop_owns_policy_decisions",
+              "loop_cannot_bypass_harness",
+              "evidence_required_before_done",
+              "loop_terminal_state_does_not_mutate_task_status"
+            ]
+          }
+        },
+        "bindings": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "owner_task",
+              "contract_ref",
+              "status"
+            ],
+            "properties": {
+              "owner_task": {
+                "type": "string",
+                "pattern": "^[a-z0-9-]+$"
+              },
+              "contract_ref": {
+                "type": "string",
+                "const": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json#/$defs/loop_policy_contract"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "planned",
+                  "active",
+                  "degraded",
+                  "retired"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

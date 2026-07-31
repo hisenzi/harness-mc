@@ -213,7 +213,7 @@
       "last_verified_at": "2026-07-28",
       "version_review": {
         "scope": "version_improvement",
-        "reviewed_at": "2026-07-28",
+        "reviewed_at": "2026-07-30",
         "contract_refs": [
           "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
           "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json",
@@ -232,7 +232,7 @@
           "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
           "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
         ],
-        "contract_fingerprint": "4b315bb0cce1f8b1",
+        "contract_fingerprint": "47d7d21a8d71a3de",
         "index_action": "no_index_change",
         "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
         "evidence_refs": [
@@ -247,10 +247,11 @@
           "node scripts/verify-sync-notion-course-ids.mjs",
           "node scripts/validate-tasks.mjs --changed-only --project self-learning",
           "node scripts/validate-tasks.mjs --changed-only --project morrowise --as-of 2026-07-26",
+          "Harness／Loop boundary Red: schema missing $defs.harness_contract",
           "npm run test:architecture-subsystems",
           "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
         ],
-        "reason": "2026-07-25 將 canonical task title 的繁體中文優先規範、changed-only Han 字元 gate、歷史相容策略與正反 fixtures 納入既有 JV-32 受管 contract，並把 package.json fingerprint 收斂為三個必要 JV-32 prebuild command 的投影，避免無關 script／metadata 造成 Admission Record 假性 stale。2026-07-26 納入 Notion external course mirror 與 MC canonical task 的刪除及生命週期邊界、task ID 唯一性 gate、完整 Notion page ID 同步回歸測試。2026-07-27 依 MW-GIT-AUTH-01 收緊 branch/worktree 精確核准與完整 closeout。2026-07-28 依 Vincent 更正，將單人循序工作固定為 checked-out main + exact scope，移除任何按 branch 存活時間命名的預設或例外；isolation 只保留具名且經精確核准的外部 PR/review、真正並行 owner scope 或緊急 hotfix。同日補上 worktree-commit v2.2 單一 task post-commit 有限狀態機：C1 review 與 delivery evidence 成立後才 apply canonical completion，所有 mutating closeout 在 C2 前完成，C2 push 後只做 residual-zero 讀取驗證且不自我回填 hash。各項規則沿用同一 MorroWise 開發工作流 Catalog 子系統，ARCHITECTURE.md 薄索引不增加細節，因此 index_action=no_index_change；JV-32 核心 contract refs 未變。"
+        "reason": "2026-07-25 將 canonical task title 的繁體中文優先規範、changed-only Han 字元 gate、歷史相容策略與正反 fixtures 納入既有 JV-32 受管 contract，並把 package.json fingerprint 收斂為三個必要 JV-32 prebuild command 的投影，避免無關 script／metadata 造成 Admission Record 假性 stale。2026-07-26 納入 Notion external course mirror 與 MC canonical task 的刪除及生命週期邊界、task ID 唯一性 gate、完整 Notion page ID 同步回歸測試。2026-07-27 依 MW-GIT-AUTH-01 收緊 branch/worktree 精確核准與完整 closeout。2026-07-28 依 Vincent 更正，將單人循序工作固定為 checked-out main + exact scope，移除任何按 branch 存活時間命名的預設或例外；isolation 只保留具名且經精確核准的外部 PR/review、真正並行 owner scope 或緊急 hotfix。同日補上 worktree-commit v2.2 單一 task post-commit 有限狀態機。2026-07-30 將 Harness=mechanism provider／Loop=policy controller 的責任邊界、正式 Loop policy required fields、terminal vocabulary、resource budget shape、不可繞過 Harness invariants 與負向 fixtures 納入同一 workflow schema／registry／verifier；morrowise-live-decision-loop-v1 只登錄 planned binding，不宣稱 runtime 或 P3 E2E 完成。各項規則沿用同一 MorroWise 開發工作流 Catalog 子系統，ARCHITECTURE.md 薄索引不增加細節，因此 index_action=no_index_change。"
       },
       "supersedes": [],
       "superseded_by": null

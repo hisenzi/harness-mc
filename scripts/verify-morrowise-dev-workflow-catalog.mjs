@@ -71,6 +71,69 @@ const FORBIDDEN_REF_PATTERNS = [
   /browser[-_\s]?cookies/i,
 ];
 const EXTERNAL_TRACKER_WRITE_PATTERN = /\b(?:github|gitlab)[_\s-]?(?:issues?|tracker)|external\s+(?:issue\s+)?tracker\b/i;
+const CONTROL_CONTRACT_SCHEMA_REF = "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json#/$defs/control_plane_contract";
+const LOOP_POLICY_SCHEMA_REF = "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json#/$defs/loop_policy_contract";
+const HARNESS_MECHANISMS = [
+  "context_management",
+  "tool_execution",
+  "sandbox_enforcement",
+  "permission_enforcement",
+  "state_persistence",
+  "observability",
+  "error_recovery",
+  "retry_mechanism",
+];
+const HARNESS_FORBIDDEN_POLICY_AUTHORITY = [
+  "trigger_decision",
+  "objective_decision",
+  "discovery_decision",
+  "prioritization_decision",
+  "verification_gate_decision",
+  "retry_decision",
+  "memory_writeback_decision",
+  "escalation_decision",
+  "terminal_state_decision",
+  "resource_budget_decision",
+];
+const LOOP_POLICY_FIELDS = [
+  "role",
+  "trigger",
+  "objective",
+  "input_state",
+  "discovery_policy",
+  "prioritization_policy",
+  "execution_roles",
+  "context_policy",
+  "verification_policy",
+  "retry_policy",
+  "memory_writeback",
+  "escalation_conditions",
+  "terminal_states",
+  "resource_budget",
+  "forbidden_harness_bypass",
+];
+const LOOP_TERMINAL_STATES = [
+  "DONE_VERIFIED",
+  "DONE_WITH_WARNINGS",
+  "BLOCKED_MISSING_INPUT",
+  "BLOCKED_EXTERNAL_DEPENDENCY",
+  "FAILED_RETRY_EXHAUSTED",
+  "ESCALATED_RISK",
+  "ABORTED_SCOPE_DRIFT",
+];
+const LOOP_FORBIDDEN_HARNESS_BYPASS = [
+  "sandbox_bypass",
+  "permission_bypass",
+  "tool_boundary_bypass",
+  "context_boundary_bypass",
+];
+const CONTROL_BOUNDARY_INVARIANTS = [
+  "harness_provides_mechanisms_only",
+  "loop_owns_policy_decisions",
+  "loop_cannot_bypass_harness",
+  "evidence_required_before_done",
+  "loop_terminal_state_does_not_mutate_task_status",
+];
 const JV32_PREBUILD_CONTRACT_REF = "$COLLAB/harness-mc/package.json#jv32-prebuild-contract";
 const ARCHITECTURE_VERSION_REVIEW_REFS = [
   "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
@@ -137,6 +200,8 @@ const taskIds = new Set(tasks.map((task) => task.id));
 verifyPortableSourceReferenceFixtures(registry);
 verifyRegistry(registry);
 verifySchema(schema);
+verifyControlPlaneContractSchema(schema);
+verifyControlPlaneContract(registry.control_plane_contract, schema);
 verifyTaskLifecycleSchema(taskLifecycleSchema);
 verifyDocs(sourceMap, detailDoc, taskLifecycleDoc);
 verifyTaskLifecycleGovernance(taskWriteMap, approvalPolicy);
@@ -145,6 +210,7 @@ verifyTaskState(tasks);
 verifyArchitectureAdmission(architectureRegistry);
 verifyWiringFixture(wiringGate);
 verifyNegativeFixtures(registry);
+verifyControlPlaneNegativeFixtures(schema);
 verifyArchitectureFingerprintBoundary();
 
 console.log("MorroWise dev workflow catalog verification OK");
@@ -271,6 +337,146 @@ function verifySchema(value) {
   for (const field of REQUIRED_WORKFLOW_FIELDS) {
     assert.ok(value.required.includes(field), `schema missing required field: ${field}`);
   }
+}
+
+function verifyControlPlaneContractSchema(value) {
+  const harness = value.$defs?.harness_contract;
+  const loop = value.$defs?.loop_policy_contract;
+  const control = value.$defs?.control_plane_contract;
+  assert.ok(harness, "schema missing $defs.harness_contract");
+  assert.ok(loop, "schema missing $defs.loop_policy_contract");
+  assert.ok(control, "schema missing $defs.control_plane_contract");
+  assert.equal(harness.additionalProperties, false, "harness contract must be closed");
+  assert.equal(loop.additionalProperties, false, "loop policy contract must be closed");
+  assert.equal(control.additionalProperties, false, "control plane contract must be closed");
+  assert.deepEqual(harness.properties.mechanisms.items.enum, HARNESS_MECHANISMS);
+  assert.deepEqual(harness.properties.forbidden_policy_authority.items.enum, HARNESS_FORBIDDEN_POLICY_AUTHORITY);
+  assert.deepEqual(loop.required, LOOP_POLICY_FIELDS);
+  assert.deepEqual(loop.properties.terminal_states.items.enum, LOOP_TERMINAL_STATES);
+  assert.deepEqual(loop.properties.forbidden_harness_bypass.items.enum, LOOP_FORBIDDEN_HARNESS_BYPASS);
+  assert.equal(loop.properties.resource_budget.additionalProperties, false, "resource budget must be closed");
+  assert.deepEqual(
+    loop.properties.resource_budget.required,
+    ["time_limit_minutes", "token_limit", "retry_limit", "risk_limit"],
+  );
+}
+
+function verifyControlPlaneContract(contract, schemaValue) {
+  assert.ok(contract, "registry control_plane_contract required");
+  validateSchemaFixture(contract, schemaValue.$defs.control_plane_contract, "control_plane_contract");
+  assert.equal(contract.schema_ref, CONTROL_CONTRACT_SCHEMA_REF);
+  assert.equal(contract.schema_version, "harness-loop-control.v1");
+  assert.equal(contract.owner_task, "morrowise-dev-workflow-catalog");
+  assert.deepEqual(contract.harness_mechanisms, HARNESS_MECHANISMS);
+  assert.deepEqual(contract.harness_forbidden_policy_authority, HARNESS_FORBIDDEN_POLICY_AUTHORITY);
+  assert.deepEqual(contract.loop_policy_required_fields, LOOP_POLICY_FIELDS);
+  assert.deepEqual(contract.loop_terminal_states, LOOP_TERMINAL_STATES);
+  assert.deepEqual(contract.loop_forbidden_harness_bypass, LOOP_FORBIDDEN_HARNESS_BYPASS);
+  assert.deepEqual(contract.invariants, CONTROL_BOUNDARY_INVARIANTS);
+  assert.deepEqual(contract.bindings, [
+    {
+      owner_task: "morrowise-live-decision-loop-v1",
+      contract_ref: LOOP_POLICY_SCHEMA_REF,
+      status: "planned",
+    },
+  ]);
+  assert.ok(taskIds.has(contract.bindings[0].owner_task), "control contract binding owner_task must exist");
+}
+
+function verifyControlPlaneNegativeFixtures(schemaValue) {
+  const harnessSchema = schemaValue.$defs.harness_contract;
+  const loopSchema = schemaValue.$defs.loop_policy_contract;
+  const validHarness = {
+    role: "mechanism_provider",
+    mechanisms: HARNESS_MECHANISMS,
+    forbidden_policy_authority: HARNESS_FORBIDDEN_POLICY_AUTHORITY,
+  };
+  const validLoop = {
+    role: "policy_controller",
+    trigger: "fixture trigger",
+    objective: "fixture objective",
+    input_state: "fixture input",
+    discovery_policy: "fixture discovery",
+    prioritization_policy: "fixture priority",
+    execution_roles: "fixture roles",
+    context_policy: "fixture context",
+    verification_policy: "fixture verification",
+    retry_policy: "fixture retry",
+    memory_writeback: "fixture memory",
+    escalation_conditions: "fixture escalation",
+    terminal_states: LOOP_TERMINAL_STATES,
+    resource_budget: {
+      time_limit_minutes: 60,
+      token_limit: 1000,
+      retry_limit: 1,
+      risk_limit: "medium",
+    },
+    forbidden_harness_bypass: LOOP_FORBIDDEN_HARNESS_BYPASS,
+  };
+
+  assert.doesNotThrow(() => validateSchemaFixture(validHarness, harnessSchema, "harness fixture"));
+  assert.doesNotThrow(() => validateSchemaFixture(validLoop, loopSchema, "loop fixture"));
+  assert.throws(
+    () => validateSchemaFixture({ ...validHarness, retry_decision: "harness decides" }, harnessSchema, "harness fixture"),
+    /additional property retry_decision/,
+  );
+  assert.throws(
+    () => validateSchemaFixture({ ...validHarness, terminal_state_decision: "DONE_VERIFIED" }, harnessSchema, "harness fixture"),
+    /additional property terminal_state_decision/,
+  );
+  assert.throws(
+    () => validateSchemaFixture({
+      ...validLoop,
+      forbidden_harness_bypass: [
+        "sandbox_bypass",
+        "sandbox_override",
+        "tool_boundary_bypass",
+        "context_boundary_bypass",
+      ],
+    }, loopSchema, "loop fixture"),
+    /not in enum/,
+  );
+  for (const field of ["verification_policy", "retry_policy", "resource_budget", "escalation_conditions", "terminal_states"]) {
+    const missing = structuredClone(validLoop);
+    delete missing[field];
+    assert.throws(
+      () => validateSchemaFixture(missing, loopSchema, "loop fixture"),
+      new RegExp(`missing required ${field}`),
+    );
+  }
+}
+
+function validateSchemaFixture(value, schemaNode, label) {
+  assert.ok(schemaNode, `${label} schema missing`);
+  if (schemaNode.type === "object") {
+    assert.equal(typeof value, "object", `${label} must be object`);
+    assert.equal(value === null || Array.isArray(value), false, `${label} must be object`);
+    for (const field of schemaNode.required || []) {
+      assert.ok(Object.hasOwn(value, field), `${label} missing required ${field}`);
+    }
+    if (schemaNode.additionalProperties === false) {
+      for (const field of Object.keys(value)) {
+        assert.ok(Object.hasOwn(schemaNode.properties || {}, field), `${label} additional property ${field}`);
+      }
+    }
+    for (const [field, fieldValue] of Object.entries(value)) {
+      const fieldSchema = schemaNode.properties?.[field];
+      if (fieldSchema) validateSchemaFixture(fieldValue, fieldSchema, `${label}.${field}`);
+    }
+  } else if (schemaNode.type === "array") {
+    assert.ok(Array.isArray(value), `${label} must be array`);
+    if (schemaNode.minItems !== undefined) assert.ok(value.length >= schemaNode.minItems, `${label} below minItems`);
+    if (schemaNode.uniqueItems) assert.equal(new Set(value).size, value.length, `${label} must contain unique items`);
+    for (const [index, item] of value.entries()) validateSchemaFixture(item, schemaNode.items, `${label}[${index}]`);
+  } else if (schemaNode.type === "string") {
+    assert.equal(typeof value, "string", `${label} must be string`);
+    if (schemaNode.minLength !== undefined) assert.ok(value.length >= schemaNode.minLength, `${label} below minLength`);
+  } else if (schemaNode.type === "integer") {
+    assert.equal(Number.isInteger(value), true, `${label} must be integer`);
+    if (schemaNode.minimum !== undefined) assert.ok(value >= schemaNode.minimum, `${label} below minimum`);
+  }
+  if (schemaNode.const !== undefined) assert.deepEqual(value, schemaNode.const, `${label} does not match const`);
+  if (schemaNode.enum) assert.ok(schemaNode.enum.includes(value), `${label} value ${value} not in enum`);
 }
 
 function verifyTaskLifecycleSchema(value) {

@@ -26,6 +26,10 @@ const postCommitCloseoutTestPath = path.join(
   notyetRoot,
   "000_Agent/skills/worktree-commit/tests/verify-post-commit-closeout.test.mjs",
 );
+const safeFastForwardContinuationTestPath = path.join(
+  notyetRoot,
+  "000_Agent/skills/worktree-commit/tests/verify-safe-fast-forward-continuation.test.mjs",
+);
 const legacyManifest = JSON.parse(
   read(notyetRoot, "000_Agent/skills/git-worktree/dist/manifest.json"),
 );
@@ -116,6 +120,23 @@ assert.match(
   /after C2.*read-only/is,
   "Repo Coordination Gate must make the final terminal verification read-only",
 );
+assert.match(
+  spec,
+  /safe_non_overlapping_fast_forward/,
+  "Repo Coordination Gate must define the bounded safe fast-forward continuation",
+);
+assert.match(
+  spec,
+  /Git commit 識別碼（commit SHA）/,
+  "Repo Coordination Gate must introduce commit SHA with the shared user-facing terminology",
+);
+const commitIdentifierIntroduction = "Git commit 識別碼（commit SHA）";
+assert.equal(
+  spec.indexOf("commit SHA"),
+  spec.indexOf(commitIdentifierIntroduction) +
+    commitIdentifierIntroduction.indexOf("commit SHA"),
+  "Repo Coordination Gate must introduce the full term before using commit SHA",
+);
 const postCommitAcceptance = task.acceptance.find((item) =>
   item.startsWith("A05.1｜worktree-commit v2.2 post-commit closeout"),
 );
@@ -157,6 +178,17 @@ assert.equal(
   closeoutContractResult.status,
   0,
   closeoutContractResult.stderr || closeoutContractResult.stdout,
+);
+const safeFastForwardContinuationResult = spawnSync(
+  process.execPath,
+  [safeFastForwardContinuationTestPath],
+  { encoding: "utf8" },
+);
+assert.equal(
+  safeFastForwardContinuationResult.status,
+  0,
+  safeFastForwardContinuationResult.stderr ||
+    safeFastForwardContinuationResult.stdout,
 );
 
 for (const pattern of [

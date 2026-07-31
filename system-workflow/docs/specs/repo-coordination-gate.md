@@ -3,7 +3,7 @@
 > Task: `multi-machine-repo-coordination-gate` (`JV-37`)
 > Contract: `MW-GIT-AUTH-01`
 > Status: contract only; runtime not yet accepted
-> Updated: 2026-07-28
+> Updated: 2026-07-31
 > Read when: any Agent is about to modify a Git repo for the first time in a session, or is closing work that must reach remote truth
 
 ## Purpose
@@ -33,8 +33,8 @@ verify remote truth, then publish the `notyet-harness` CORE/Skill references.
 
 For single-developer sequential work, the workflow does not create an
 intermediate branch: single-developer sequential work stays on the checked-out `main`
-after fetch, upstream, HEAD SHA, ahead/behind, dirty ownership, and exact commit
-scope all pass Repo Ready.
+after fetch, upstream, HEAD 的 Git commit 識別碼（commit SHA）, ahead/behind,
+dirty ownership, and exact commit scope all pass Repo Ready.
 
 There is no duration-based branch category. In particular, a branch does not
 become acceptable because it is described as temporary, brief, clean, routine,
@@ -43,6 +43,31 @@ or easy to delete.
 Known unrelated dirty files stay in place and are excluded with exact path
 scope. Overlapping manual, mixed, or unknown dirty files return `BLOCKED`; they
 do not trigger Git isolation.
+
+### Approved Base Fast-forward Continuation
+
+An already approved direct-main exact plan may classify a changed base as
+`safe_non_overlapping_fast_forward` and continue without renewed approval only
+when every condition below is freshly proven:
+
+1. the actual base is a fast-forward descendant of the approved base;
+2. paths changed from the approved base to the actual base have no intersection
+   with `commit_scope`; touching the same scope file is overlap and returns
+   `BLOCKED` even when the changed hunk differs;
+3. the approved target diff fingerprint is unchanged;
+4. every approved commit message and logical grouping is unchanged;
+5. the relevant verifier is rerun against the actual base and remains `PASS`;
+6. the target scope has no new manual, mixed, or unknown dirty ownership.
+
+Record the approved and actual base commit SHA plus this disposition in the
+receipt. This is a bounded continuation of the same approval, not permission to
+absorb the intervening commits or alter their files.
+
+A non-fast-forward or diverged base, an intersection with `commit_scope`, a
+changed diff fingerprint, message, logical grouping, verifier result, or dirty
+ownership returns `BLOCKED` and requires an updated plan. Path overlap is
+decided at file level; semantic confidence or different hunks cannot override
+it.
 
 ## Explicit Vincent Authorization
 
@@ -72,9 +97,11 @@ create -> execute -> integrate target main -> verify -> remove the approved isol
 ```
 
 No second approval is required for lifecycle steps already listed in the
-approved plan. A conflict, non-fast-forward result, changed remote SHA, changed
-scope, or unmerged work invalidates the automatic continuation and returns
-`BLOCKED`.
+approved plan. A conflict, non-fast-forward result, changed remote commit SHA,
+changed scope, or unmerged work invalidates the automatic continuation and
+returns `BLOCKED`. The direct-main
+`safe_non_overlapping_fast_forward` classification above does not authorize
+changing an approved isolation base.
 
 ## Scope
 
@@ -96,7 +123,7 @@ Before the first file mutation:
 
 1. Inspect uncommitted files and unpushed commits from previous work.
 2. Run `git fetch --prune` for each hard-gated repo.
-3. Read current branch, upstream, HEAD/upstream SHA, ahead/behind, staged,
+3. Read current branch, upstream, HEAD/upstream commit SHA, ahead/behind, staged,
    unstaged, untracked, detached, and worktree state.
 4. Verify the direct-main default; if the task proposes any branch/worktree creation or switching, verify `MW-GIT-AUTH-01`.
 5. Apply the decision table.
@@ -106,7 +133,7 @@ Before the first file mutation:
 | --- | --- | --- |
 | clean, checked-out `main`, ahead `0`, behind `0` | `READY` | Continue without switching refs. |
 | clean, behind-only on checked-out `main` | recoverable | Run fast-forward-only update, verify `0/0`, then continue. |
-| ahead-only with durable exact-scope approval and unchanged remote SHA | recoverable | Retry a normal exact-ref push; never force. |
+| ahead-only with durable exact-scope approval and unchanged remote commit SHA | recoverable | Retry a normal exact-ref push; never force. |
 | generated-only dirty proven by deterministic verifier | warning | Continue only when classifier evidence exists. |
 | classified unrelated manual dirty with approved exclusions | warning | Preserve it and use an exact path scope on the current branch. |
 | target scope overlaps manual, mixed, or unknown dirty | `BLOCKED` | Preserve files and report the owner. |
@@ -161,7 +188,7 @@ local-only, event-pending, or deploy-pending work as complete.
 ## Repo Classes
 
 - `shared_core_multi_writer`: a designated integrator owns exact-scope updates to `main`; the repo class does not make branches/worktrees the default or authorize their creation/switching.
-- `owner_single_writer`: the task owner updates the checked-out `main` after the normal SHA/ahead-behind handshake and exact commit approval.
+- `owner_single_writer`: the task owner updates the checked-out `main` after the normal commit SHA/ahead-behind handshake and exact commit approval.
 
 JV-37 A03 remains the only repo scope/classification contract.
 

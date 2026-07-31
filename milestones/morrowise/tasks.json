@@ -4305,11 +4305,13 @@
         "A08｜將本次尚未 commit 的相關 task 異動補上 lifecycle history，驗證後 generate-data、task validator、JV-32 catalog verifier、dashboard verifier、system pulse 與模擬驗證均通過。",
         "A09｜本 task 完成前必須記錄 Architecture Admission Review：JV-32 是既有 promoted catalog 的 version improvement；Admission Record 的受管合約 fingerprint、最近驗證時間、索引決定與 evidence 必須更新，並通過受控 sync check。ARCHITECTURE.md 維持薄索引，不複製 task-lifecycle 細節。",
         "A10｜MorroWise semantic task mutation 的最新 event 必須記錄 outcome、canonical compared refs、問題／owner-source／輸入輸出／完成邊界、decision reason 與 Vincent approval；reuse 不得寫正本。",
-        "A11｜全域最多一個 weekly_core=true，且必為 in_progress 與未到期 review_date；首次 admission 與 reframe 必須有結構化 Vincent approval，as_of >= review_date 時 validator 與 work-anchor preflight 均 hard-fail。",
+        "A11｜MorroWise 最多一個 weekly_core=true，且必為 in_progress 與未到期 review_date；首次 admission 與 reframe 必須有結構化 Vincent approval。as_of >= review_date 時，MorroWise changed／full validator 與 MorroWise work-anchor preflight 必須 hard-fail，但未變更的 MorroWise task 不得阻塞其他 project。",
         "A12｜review_date 變更必須精確記錄 previous／next date 與 new_scope；仍 in_progress 不得直接清 weekly_core。負向 fixture 必須攔下雙核心、逾期、無核准延長與錯誤 intake outcome。",
         "A13｜Canonical task 的 title 以繁體中文為主要語言；Task ID、產品名稱、套件名稱、API、CLI、schema field、Prototype 等不可變技術識別碼可保留原文，但不得使用全英文作為主要標題。",
         "A14｜validate-tasks changed-only 模式只對新增或本次變更的 canonical task 強制 title 至少包含 Han 字元；全 ASCII／全英文標題必須 fail，未變更的歷史 task 不追溯改寫且 full scan 僅維持 warning。",
-        "A15｜verify-validate-tasks 必須包含允許與拒絕 fixtures：對話驅動 Prototype 生成流程可行性驗證、Paper Shader 轉接層與語意預設驗證須 pass；Conversation-to-Prototype Runtime Spike、Paper Shader Integration 須 fail。"
+        "A15｜verify-validate-tasks 必須包含允許與拒絕 fixtures：對話驅動 Prototype 生成流程可行性驗證、Paper Shader 轉接層與語意預設驗證須 pass；Conversation-to-Prototype Runtime Spike、Paper Shader Integration 須 fail。",
+        "A16｜每個 project 的 deadline 只由自己的 project.json 擁有，task review date 只由同 project 的 tasks.json 擁有；MorroWise project／task 日期不得成為其他 project 的隱性時間依賴。",
+        "A17｜本機 --changed-only 只驗證 worktree 內實際變更的 canonical task；clean CI 必須以 --base <git-ref> 驗證 <base>..HEAD，合法 RRREALLL-only commit 須 pass，非法 RRREALLL commit 須 fail，兩者均不得繼承未變更 MorroWise task 的到期錯誤。"
       ],
       "source_refs": [
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
@@ -4772,6 +4774,44 @@
                 "approved_at": "2026-07-28",
                 "evidence_refs": [
                   "Vincent 2026-07-28 current session: 進行『窄幅重開 P2；不應延伸成新 task 或新增 exit gate』"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 明確要求各 project deadline 回到各自 project，MorroWise 只管理自己的 project／task 日期；本次修正 unchanged MorroWise weekly-core 對其他 project 的隱性 hard-fail，並補上 clean CI base-to-HEAD task validation。MorroWise 自己的 changed／full validation 與 work-anchor 到期 gate 維持不變。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+              "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
+              "Vincent 2026-07-31 current session: 各專案期限應該回到各專案，MorroWise 自己也有自己的專案期限",
+              "Vincent 2026-07-31 current session: 可以開始進行修正"
+            ],
+            "recorded_at": "2026-07-31",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/action-priority-read-model-v2",
+                "morrowise/project-topology-architecture-atlas"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有 JV-40 task lifecycle validator／work-anchor 的 ownership 與 changed-only 邊界問題，不是新的 project、task system 或 deadline service。",
+                "owner_source_of_truth": "Owner 維持 morrowise/task-lifecycle-jv32-gate；project.json、同 project tasks.json、既有 lifecycle spec／validator／Admission Record 仍是唯一正本。",
+                "inputs_outputs": "輸入新增 clean CI base ref 與 owning-project date boundary；輸出只限 changed-only project isolation、base-to-HEAD validation、正反 fixtures 與既有 Admission Record refresh。",
+                "lifecycle_completion": "Task 維持 in_progress；本 amendment 不改 project date、weekly-core slot、runtime、scheduler、通知或其他 project task state，也不宣稱 JV-40 已完整完成。"
+              },
+              "decision_reason": "問題、owner、輸入輸出與 lifecycle 均由既有 JV-40 承接，故只 amend 同一 task；新增 global deadline owner 或平行 verifier 都會擴張 source of truth。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-31",
+                "evidence_refs": [
+                  "Vincent 2026-07-31 current session: 各專案期限應該回到各專案，MorroWise 自己也有自己的專案期限",
+                  "Vincent 2026-07-31 current session: 可以開始進行修正"
                 ]
               }
             }

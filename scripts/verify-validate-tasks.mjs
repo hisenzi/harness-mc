@@ -6,6 +6,11 @@ import { execFileSync } from "child_process";
 const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "validate-tasks-"));
 const repo = path.join(tmpRoot, "repo");
 const script = path.resolve("scripts", "validate-tasks.mjs");
+const deployWorkflow = fs.readFileSync(path.resolve(".github", "workflows", "deploy.yml"), "utf-8");
+
+if (!deployWorkflow.includes("node scripts/validate-tasks.mjs --base \"${{ github.event.before }}\"")) {
+  throw new Error("Expected Pages push workflow to validate committed task changes from github.event.before to HEAD.");
+}
 
 function run(args, { cwd = repo, expectFailure = false } = {}) {
   try {
@@ -1006,6 +1011,104 @@ writeJson(path.join(repo, "milestones", "self-learning", "tasks.json"), repaired
 const repairedNotionCourseMirrorResult = run(["--changed-only", "--project", "self-learning"]);
 if (!repairedNotionCourseMirrorResult.output.includes("Task validation OK")) {
   throw new Error("Expected a Notion course mirror ID repair to bypass canonical task deletion and lifecycle gates.");
+}
+
+const overdueMorrowiseBaseline = structuredClone(weeklyCoreBaseline);
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), overdueMorrowiseBaseline);
+writeJson(path.join(repo, "milestones", "rrrealll-ocr", "tasks.json"), {
+  project: "rrrealll-ocr",
+  tasks: [{
+    id: "rrrealll-valid-baseline",
+    title: "RRREALLL 合格基準任務",
+    status: "todo",
+    track: "product",
+    done_condition: "Fixture establishes a valid RRREALLL task baseline.",
+  }],
+});
+git(["add", "milestones"]);
+git(["commit", "-m", "seed overdue MorroWise and RRREALLL isolation fixture"]);
+
+const rrrealllOnlyChange = {
+  project: "rrrealll-ocr",
+  tasks: [
+    {
+      id: "rrrealll-valid-baseline",
+      title: "RRREALLL 合格基準任務",
+      status: "todo",
+      track: "product",
+      done_condition: "Fixture establishes a valid RRREALLL task baseline.",
+    },
+    {
+      id: "rrrealll-valid-change",
+      title: "RRREALLL 合格變更任務",
+      status: "todo",
+      track: "product",
+      done_condition: "An unrelated project change must not inherit MorroWise lifecycle deadlines.",
+      jv32_route: { workflows: ["task-lifecycle"] },
+      task_lifecycle: {
+        route: "JV-32/task-lifecycle",
+        history: [{
+          operation: "create",
+          from_status: null,
+          to_status: "todo",
+          reason: "Fixture creates a governed RRREALLL task to test cross-project deadline isolation.",
+          evidence_refs: ["milestones/rrrealll-ocr/tasks.json"],
+          recorded_at: "2026-07-25",
+        }],
+      },
+    },
+  ],
+};
+writeJson(path.join(repo, "milestones", "rrrealll-ocr", "tasks.json"), rrrealllOnlyChange);
+
+const unrelatedProjectWithOverdueMorrowise = run(["--changed-only", "--as-of", "2026-07-25"]);
+if (!unrelatedProjectWithOverdueMorrowise.output.includes("Task validation OK")) {
+  throw new Error("Expected a RRREALLL-only change to ignore an unchanged overdue MorroWise weekly core.");
+}
+
+const rrrealllIsolationBase = git(["rev-parse", "HEAD"]).trim();
+git(["add", "milestones/rrrealll-ocr/tasks.json"]);
+git(["commit", "-m", "commit valid RRREALLL-only change"]);
+
+const cleanCommittedRrrealllChange = run([
+  "--changed-only",
+  "--base",
+  rrrealllIsolationBase,
+  "--as-of",
+  "2026-07-25",
+]);
+if (!cleanCommittedRrrealllChange.output.includes("Task validation OK")) {
+  throw new Error("Expected a clean committed RRREALLL-only diff to pass base-to-HEAD validation.");
+}
+
+const invalidCommittedRrrealllChange = structuredClone(rrrealllOnlyChange);
+invalidCommittedRrrealllChange.tasks.push({
+  id: "rrrealll-invalid-committed-change",
+  title: "RRREALLL 無效提交任務",
+  status: "todo",
+  track: "product",
+});
+writeJson(path.join(repo, "milestones", "rrrealll-ocr", "tasks.json"), invalidCommittedRrrealllChange);
+git(["add", "milestones/rrrealll-ocr/tasks.json"]);
+git(["commit", "-m", "commit invalid RRREALLL-only change"]);
+
+const invalidCleanCommittedRrrealllChange = run([
+  "--changed-only",
+  "--base",
+  "HEAD~1",
+  "--as-of",
+  "2026-07-25",
+], { expectFailure: true });
+if (!invalidCleanCommittedRrrealllChange.output.includes("ERROR milestones/rrrealll-ocr/tasks.json task=rrrealll-invalid-committed-change")) {
+  throw new Error("Expected base-to-HEAD validation to catch an invalid committed RRREALLL task.");
+}
+if (invalidCleanCommittedRrrealllChange.output.includes("ERROR milestones/morrowise/tasks.json")) {
+  throw new Error("Committed RRREALLL validation must not inherit unchanged MorroWise lifecycle errors.");
+}
+
+const invalidBaseRef = run(["--base", "missing-validation-base"], { expectFailure: true });
+if (!invalidBaseRef.output.includes("--base must resolve to a commit")) {
+  throw new Error("Expected an invalid validation base ref to fail closed.");
 }
 
 console.log("validate-tasks verification OK");

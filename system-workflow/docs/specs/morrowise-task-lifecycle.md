@@ -101,11 +101,19 @@ MorroWise 的新增或語意修改 task 在寫入正本前，必須把 `semantic
 
 只有 `commits`、`completed_at`、`summary`、`external_refs`、`jv32_route`、`task_lifecycle` 的 bookkeeping-only mutation 可不重跑 semantic intake；status、scope、note、done condition、依賴、weekly core 與 review date 都是語意變更。
 
+## Project Deadline 與 Task Review Date Ownership
+
+- 每個 project 的 `created`、`estimated_completion` 與 `outcome.success_target.due` 只由自己的 `$COLLAB/harness-mc/milestones/<project>/project.json` 擁有。
+- Task 的 `review_date`、checkpoint 與 completion date 只由同一 project 的 `$COLLAB/harness-mc/milestones/<project>/tasks.json` 擁有；`review_date` 是 task lifecycle checkpoint，不是 project deadline。
+- MorroWise 的 project deadline 只由 `$COLLAB/harness-mc/milestones/morrowise/project.json` 擁有；MorroWise weekly-core／review-date gate 不得成為其他 project 的隱性時間依賴。
+- 一個 project 的 deadline 或 task review date 不得阻塞另一個 project；只有 canonical state 中明確宣告的 dependency 可以形成跨 project block。
+- 不得為了解除另一個 project 的 validation、build 或 delivery 阻塞而 reframe MorroWise task。
+
 ## Weekly Core 與 Review Date
 
 MorroWise 每次最多一個 task 可設 `weekly_core: true`。該 task 必須同時是 `in_progress` 且有 `review_date: YYYY-MM-DD`；首次進入 slot 時，最新 lifecycle event 必須帶 `weekly_core_review.decision: admit`、Vincent 核准證據與相同的 `next_review_date`。
 
-當 Asia/Taipei 的 `as_of >= review_date`，validator 與 work-anchor preflight 都會 hard-fail。只能由 Vincent 明確選擇：
+當 validator 正在驗證 MorroWise changed／full scope，或 work-anchor preflight 正在啟動 MorroWise execution，且 Asia/Taipei 的 `as_of >= review_date`，該 MorroWise scope 必須 hard-fail。只能由 Vincent 明確選擇：
 
 - `reframe`：維持 `in_progress`，更新 scope 與 review date；event 必須精確記錄 `previous_review_date`、`next_review_date`、`new_scope` 及重新核准。
 - `suspend`：task 轉 `deferred`，清除 weekly core／review date，保留 `reactivation_criteria`。
@@ -118,7 +126,7 @@ MorroWise 每次最多一個 task 可設 `weekly_core: true`。該 task 必須�
 
 1. 先判斷正本 project 與 active owner task；跨 repo 變更不得直接繞過 task event single-writer 流程。
 2. Vincent 明確核准 task-state mutation 後，追加 lifecycle event 與所需的 `jv32_route`。
-3. 執行 `node scripts/validate-tasks.mjs --changed-only`。新 task、語意修改、停用、恢復與完成若缺 route、history、semantic intake、理由、狀態一致性或 closeout 條件，必須 fail；測試／回放可用 `--as-of YYYY-MM-DD` 固定時鐘。
+3. 本機 worktree 執行 `node scripts/validate-tasks.mjs --changed-only`；clean CI 執行 `node scripts/validate-tasks.mjs --base <base-git-ref>` 驗證 `<base>..HEAD`。兩種 changed-only scope 都只讓實際變更的 project fatal；未變更的 MorroWise weekly-core／review-date 不得阻塞其他 project。新 task、語意修改、停用、恢復與完成若缺 route、history、semantic intake、理由、狀態一致性或 closeout 條件，必須 fail；測試／回放可用 `--as-of YYYY-MM-DD` 固定時鐘。
 4. 進入 MorroWise implementation 前執行 `node scripts/work-anchor-preflight.mjs --project morrowise --task-id <id> --event implementation --scope <path>`；到期 weekly core 必須先處置，不能繼續改檔。
 5. 執行 `node scripts/generate-data.mjs`，確認 generated surface 只反映 canonical state。
 6. 完成 status 額外依 JV-32 `closeout-commit-routing` 走 verification-before-completion、必要的 cc-log、worktree-commit 與 task completion evidence；此 route 不取代 Vincent 的 commit／push 核准。

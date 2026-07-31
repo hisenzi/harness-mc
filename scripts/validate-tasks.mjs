@@ -40,6 +40,7 @@ const SELF_LEARNING_MIRROR_TRACKS = new Set(["course", "book", "free", "yt"]);
 function parseArgs(argv) {
   const args = {
     changedOnly: false,
+    base: null,
     projects: new Set(),
     tracks: new Set(),
     asOf: todayInTaipei(),
@@ -48,6 +49,10 @@ function parseArgs(argv) {
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === "--changed-only") {
+      args.changedOnly = true;
+    } else if (arg === "--base") {
+      args.base = argv[++i];
+      if (!nonEmptyString(args.base)) throw new Error("--base requires a git ref");
       args.changedOnly = true;
     } else if (arg === "--project") {
       args.projects.add(argv[++i]);
@@ -68,9 +73,10 @@ function parseArgs(argv) {
 
 function usage() {
   return [
-    "Usage: node scripts/validate-tasks.mjs [--changed-only] [--project <id>] [--track <id>] [--as-of YYYY-MM-DD]",
+    "Usage: node scripts/validate-tasks.mjs [--changed-only] [--base <git-ref>] [--project <id>] [--track <id>] [--as-of YYYY-MM-DD]",
     "",
     "Validates milestone task schema without making historical legacy data fatal.",
+    "--base implies --changed-only and validates committed changes from <git-ref> to HEAD.",
     "Changed/new control-plane and MorroWise tasks fail; historical issues warn.",
   ].join("\n");
 }
@@ -103,16 +109,26 @@ function listProjectDirs() {
     .filter((name) => fs.existsSync(path.join(milestonesDir, name, "tasks.json")));
 }
 
-function getChangedTaskFiles() {
+function getChangedTaskFiles(base = null) {
   const files = new Set();
-  const tracked = runGit("diff --name-only HEAD -- milestones", { allowFail: true });
-  const untracked = runGit("ls-files --others --exclude-standard -- milestones", { allowFail: true });
+  const tracked = base
+    ? runGit(`diff --name-only ${quoteShell(`${base}..HEAD`)} -- milestones`, { allowFail: true })
+    : runGit("diff --name-only HEAD -- milestones", { allowFail: true });
+  const untracked = base
+    ? ""
+    : runGit("ls-files --others --exclude-standard -- milestones", { allowFail: true });
 
   for (const file of `${tracked}\n${untracked}`.split("\n").filter(Boolean)) {
     if (/^milestones\/[^/]+\/tasks\.json$/.test(file)) files.add(path.resolve(root, file));
   }
 
   return files;
+}
+
+function resolveBaseCommit(base) {
+  const commit = runGit(`rev-parse --verify ${quoteShell(`${base}^{commit}`)}`, { allowFail: true });
+  if (!commit) throw new Error(`--base must resolve to a commit, got: ${base}`);
+  return commit;
 }
 
 function extractTasks(raw) {
@@ -136,8 +152,9 @@ function extractTasks(raw) {
   return [];
 }
 
-function readHeadTasks(relFile) {
-  const content = runGit(`show HEAD:${quoteShell(relFile)}`, { allowFail: true });
+function readPreviousTasks(relFile, base = null) {
+  const ref = base || "HEAD";
+  const content = runGit(`show ${quoteShell(`${ref}:${relFile}`)}`, { allowFail: true });
   if (!content) return new Map();
   try {
     const raw = JSON.parse(content.replace(/^﻿/, ""));
@@ -784,11 +801,13 @@ function validateMorrowiseWeeklyCore(tasks, { asOf }) {
 
 export function validateTasks({
   changedOnly = false,
+  base = null,
   projects = new Set(),
   tracks = new Set(),
   asOf = todayInTaipei(),
 } = {}) {
-  const changedFiles = getChangedTaskFiles();
+  const resolvedBase = base ? resolveBaseCommit(base) : null;
+  const changedFiles = getChangedTaskFiles(resolvedBase);
   const diagnostics = [];
   const canonicalTaskRefs = collectCanonicalTaskRefs();
 
@@ -812,7 +831,7 @@ export function validateTasks({
     if (projects.size > 0 && !projects.has(project)) continue;
 
     const filePath = path.join(milestonesDir, project, "tasks.json");
-    if (changedOnly && !changedFiles.has(filePath) && project !== "morrowise") continue;
+    if (changedOnly && !changedFiles.has(filePath)) continue;
 
     let raw;
     try {
@@ -830,7 +849,7 @@ export function validateTasks({
 
     const entries = extractTasks(raw);
     const relFile = path.relative(root, filePath);
-    const previous = readHeadTasks(relFile);
+    const previous = readPreviousTasks(relFile, resolvedBase);
     const taskIdCounts = new Map();
     for (const { task } of entries) {
       if (!nonEmptyString(task?.id)) continue;
@@ -877,7 +896,6 @@ export function validateTasks({
           message: issue.message,
         });
       }
-      if (changedOnly && !changedFiles.has(filePath)) continue;
     }
 
     for (const { task, container } of entries) {

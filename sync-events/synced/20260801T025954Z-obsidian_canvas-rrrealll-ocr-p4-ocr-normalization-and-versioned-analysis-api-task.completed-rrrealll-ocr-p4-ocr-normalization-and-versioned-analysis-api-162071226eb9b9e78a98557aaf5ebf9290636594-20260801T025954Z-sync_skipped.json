@@ -1,0 +1,21 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-rrrealll-ocr-p4-ocr-normalization-and-versioned-analysis-api-task.completed-rrrealll-ocr-p4-ocr-normalization-and-versioned-analysis-api-162071226eb9b9e78a98557aaf5ebf9290636594-20260801T025954Z-20260801T025954Z",
+  "type": "sync_skipped",
+  "target": "obsidian_canvas",
+  "status": "skipped",
+  "source_event_id": "task.completed-rrrealll-ocr-p4-ocr-normalization-and-versioned-analysis-api-162071226eb9b9e78a98557aaf5ebf9290636594-20260801T025954Z",
+  "project": "rrrealll-ocr",
+  "task_id": "p4-ocr-normalization-and-versioned-analysis-api",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-08-01T02:59:54.000Z",
+  "actor": "Codex",
+  "session_id": "codex-019f9a02-3061-7222-b930-31ec8ce98d5c-rro05-c2",
+  "exemption_reason": "RRO-05 has no owned Obsidian Canvas mirror; canonical tasks.json, the applied task event, and delivered Git commits are the source of truth.",
+  "verifier": "test -f $COLLAB/harness-mc/sync-events/synced/20260801T025954Z-obsidian_canvas-rrrealll-ocr-p4-ocr-normalization-and-versioned-analysis-api-task.completed-rrrealll-ocr-p4-ocr-normalization-and-versioned-analysis-api-162071226eb9b9e78a98557aaf5ebf9290636594-20260801T025954Z-sync_skipped.json && test ! -e $COLLAB/harness-mc/sync-events/pending/20260801T025954Z-obsidian_canvas-rrrealll-ocr-p4-ocr-normalization-and-versioned-analysis-api-task.completed-rrrealll-ocr-p4-ocr-normalization-and-versioned-analysis-api-162071226eb9b9e78a98557aaf5ebf9290636594-20260801T025954Z-sync_requested.json",
+  "resolved_at": "2026-08-01T03:01:17.274Z",
+  "resolved_by": "Codex",
+  "resolution_session_id": "codex-019f9a02-3061-7222-b930-31ec8ce98d5c-rro05-c2"
+}

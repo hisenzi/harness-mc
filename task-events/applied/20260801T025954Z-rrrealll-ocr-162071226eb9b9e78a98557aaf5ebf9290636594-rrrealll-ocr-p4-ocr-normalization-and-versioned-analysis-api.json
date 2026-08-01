@@ -1,0 +1,13 @@
+{
+  "event_id": "task.completed-rrrealll-ocr-p4-ocr-normalization-and-versioned-analysis-api-162071226eb9b9e78a98557aaf5ebf9290636594-20260801T025954Z",
+  "type": "task.completed",
+  "repo": "rrrealll-ocr",
+  "commit": "162071226eb9b9e78a98557aaf5ebf9290636594",
+  "project": "rrrealll-ocr",
+  "task_id": "p4-ocr-normalization-and-versioned-analysis-api",
+  "status": "completed",
+  "summary": "完成可重現的 OCR／貼上文字正規化與 versioned analysis API；保留順序、raw token、canonical match、confidence 與 unresolved reason，unknown／low-confidence 不套安全預設，並以 canonical dataset 與 80 rules 產出完整風險與白話判讀。",
+  "created_at": "2026-08-01T02:59:54.000Z",
+  "actor": "Codex",
+  "session_id": "codex-019f9a02-3061-7222-b930-31ec8ce98d5c-rro05-c2"
+}

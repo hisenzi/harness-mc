@@ -417,7 +417,10 @@
     {
       "id": "p4-ocr-normalization-and-versioned-analysis-api",
       "title": "實作 OCR 正規化、低信心邊界與 versioned analysis API",
-      "status": "todo",
+      "status": "completed",
+      "completed_at": "2026-08-01",
+      "commits": ["162071226eb9b9e78a98557aaf5ebf9290636594"],
+      "summary": "已完成可重現的 OCR／貼上文字正規化與 versioned analysis API；保存 ingredient order、raw token、canonical match、confidence、unresolved reason 與版本證據，unknown／low-confidence 不套安全預設，並以 canonical dataset 與 80 rules 產出完整風險與白話判讀。",
       "track": "product",
       "order_label": "RRO-05",
       "priority": "P0",
@@ -434,7 +437,7 @@
         "A05｜測試覆蓋已匹配、別名命中、未知、低信心與至少一項複合 rule。"
       ],
       "jv32_route": {
-        "workflows": ["task-lifecycle", "implement", "tdd", "code-review"],
+        "workflows": ["task-lifecycle", "implement", "tdd", "code-review", "verification-before-completion", "closeout-commit-routing"],
         "decision_input": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/rrrealll-ocr/or/database/shampoo_rules_rows.csv"],
         "decision_output": "可測試且有版本證據的分析 API。",
         "execution_boundary": "不得把 AI fallback／硬編碼 snapshot 當正式資料或在 server/client 暴露服務密鑰。"
@@ -448,6 +451,23 @@
           "reason": "prototype 的 local scans、硬編碼資料與 simulated fallback 不符合正式的資料來源與安全判讀邊界。",
           "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/rrrealll-ocr/or/成分刺激度比對_Google_AI_Studio/server.ts"],
           "recorded_at": "2026-07-23"
+        }, {
+          "operation": "complete",
+          "from_status": "todo",
+          "to_status": "completed",
+          "reason": "已交付並推送 versioned analysis runtime；正規化、低信心與未知邊界、80-rule evaluator、analysis_run 重現證據及 HTTP API 均有 fresh unit／integration verification。",
+          "evidence_refs": [
+            "$COLLAB/rrrealll-ocr/db/migrations/002_analysis_runtime.sql",
+            "$COLLAB/rrrealll-ocr/src/analysis/normalizer.mjs",
+            "$COLLAB/rrrealll-ocr/src/analysis/analyzer.mjs",
+            "$COLLAB/rrrealll-ocr/src/analysis/rule-engine.mjs",
+            "$COLLAB/rrrealll-ocr/src/application/analysis-service.mjs",
+            "$COLLAB/rrrealll-ocr/src/http/analysis-http-server.mjs",
+            "$COLLAB/rrrealll-ocr/test/analysis/normalizer.test.mjs",
+            "$COLLAB/rrrealll-ocr/test/analysis/analysis-service.test.mjs",
+            "$COLLAB/rrrealll-ocr/test/analysis/http-api.test.mjs"
+          ],
+          "recorded_at": "2026-08-01"
         }]
       },
       "hc_decision": {

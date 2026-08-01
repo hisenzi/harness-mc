@@ -7,6 +7,14 @@
         "4384d7276ce2e10230925dc1c41c6aab0e284eac"
       ],
       "summary": "已在 target Neon（Singapore／Postgres 18）實際套用可重跑 migration，並連續匯入 canonical seed 兩次；最終驗證為 150 INCI、400 aliases、80 rules。私有 scan、Judge audit、產品／配方版本與產品護照資料邊界已建立，未匯入任何 user scan。"
+    },
+    "p4-ocr-normalization-and-versioned-analysis-api": {
+      "status": "completed",
+      "completed_at": "2026-08-01",
+      "commits": [
+        "162071226eb9b9e78a98557aaf5ebf9290636594"
+      ],
+      "summary": "已完成可重現的 OCR／貼上文字正規化與 versioned analysis API；保存 ingredient order、raw token、canonical match、confidence、unresolved reason 與版本證據，unknown／low-confidence 不套安全預設，並以 canonical dataset 與 80 rules 產出完整風險與白話判讀。"
     }
   }
 }

@@ -712,14 +712,17 @@
       ]
     },
     "task-lifecycle-jv32-gate": {
-      "status": "in_progress",
+      "status": "completed",
+      "completed_at": "2026-08-01",
       "commits": [
         "8dd92f7",
         "038bae0",
         "33639b9",
-        "82d1150"
+        "82d1150",
+        "4d996a947417a1e8d25df7cd2a2974d617196227",
+        "85a57e922b4c2ff0040717a11830e286a65d8c93"
       ],
-      "summary": "JV-40 已以 33639b9 實作 semantic task intake、單一 weekly_core、review_date 到期攔截、禁止自動延長與負向 fixture；82d1150 已由 cross-repo event 掛入受控 ARCHITECTURE.md 索引。依 Vincent 核准維持唯一 weekly core 至 2026-07-26；尚未收到 complete 決策，因此 task 仍為 in_progress。"
+      "summary": "JV-40 P3 completion evidence gate 已由 harness target 85a57e922b4c2ff0040717a11830e286a65d8c93 與 notyet target 4d996a947417a1e8d25df7cd2a2974d617196227 完成整合；Acceptance Matrix、TDD、regression、Architecture sync 與 build 均通過。"
     },
     "morrowise-project-init-v1": {
       "status": "completed",

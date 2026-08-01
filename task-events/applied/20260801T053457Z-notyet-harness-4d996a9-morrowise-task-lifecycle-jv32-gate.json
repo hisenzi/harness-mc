@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-task-lifecycle-jv32-gate-4d996a947417a1e8d25df7cd2a2974d617196227-20260801T053457Z",
+  "type": "task.commit_attached",
+  "repo": "notyet-harness",
+  "commit": "4d996a947417a1e8d25df7cd2a2974d617196227",
+  "project": "morrowise",
+  "task_id": "task-lifecycle-jv32-gate",
+  "status": "updated",
+  "summary": "notyet-harness target main 已同步 JV-40 P3 completion evidence Admission Record generated index；source 235c1eb forward-port 為 target 4d996a947417a1e8d25df7cd2a2974d617196227。",
+  "created_at": "2026-08-01T05:34:57Z",
+  "actor": "codex",
+  "session_id": "019fab8f-0d33-78e0-b5a5-fe29499dbde1"
+}

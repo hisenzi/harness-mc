@@ -4352,7 +4352,8 @@
     },
     {
       "id": "task-lifecycle-jv32-gate",
-      "status": "in_progress",
+      "status": "completed",
+      "completed_at": "2026-08-01",
       "weekly_core": false,
       "commits": [
         "8dd92f7",
@@ -4361,9 +4362,11 @@
         "82d1150",
         "bb29e95",
         "5b95f10",
-        "82a4bcc"
+        "82a4bcc",
+        "85a57e922b4c2ff0040717a11830e286a65d8c93",
+        "4d996a947417a1e8d25df7cd2a2974d617196227"
       ],
-      "summary": "82a4bcc 已在 JV-32 專用 branch 完成繁中 title spec、changed-only Han 字元 gate、歷史相容 fixtures 與 Admission Record 的本機 commit；task、catalog、architecture、system-pulse 與薄索引同步驗證通過。Task 維持 in_progress，等待 notyet-harness 薄索引 commit 與明確 push／Remote Closeout 核准。",
+      "summary": "JV-40 P3 completion evidence gate 已整合至兩個 target main：harness 85a57e922b4c2ff0040717a11830e286a65d8c93 提供 schema、validator、負向 fixtures 與 Admission Review；notyet 4d996a947417a1e8d25df7cd2a2974d617196227 同步 generated Architecture index。Acceptance Matrix、完整 regression 與 build 均通過，未新增 task 或 exit gate。",
       "title": "JV-40 任務生命週期接入 JV-32（新增／修改／停用／完成 gate）",
       "track": "governance",
       "order_label": "JV-40",
@@ -4536,7 +4539,41 @@
         ],
         "runtime_evidence_required": false,
         "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate.test_contract.evidence_refs",
-        "evidence_refs": []
+        "evidence_refs": [
+          "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+          "TDD RED 2026-07-26: completion-contract negative fixtures failed before validator implementation",
+          "TDD RED 2026-08-01: catalog verifier rejected missing required_completion_evidence_consistency and runtime_completion_evidence_consistency conditionals",
+          "TDD GREEN 2026-08-01: node scripts/verify-validate-tasks.mjs -> validate-tasks verification OK",
+          "TDD GREEN 2026-08-01: node scripts/verify-morrowise-dev-workflow-catalog.mjs -> MorroWise dev workflow catalog verification OK",
+          "Target delivery: harness-mc 85a57e922b4c2ff0040717a11830e286a65d8c93; notyet-harness 4d996a947417a1e8d25df7cd2a2974d617196227"
+        ]
+      },
+      "completion_evidence": {
+        "red_evidence": [
+          "2026-07-26 completion-contract negative fixtures failed before validator implementation",
+          "2026-08-01 schema verifier rejected missing Red／Green completion evidence conditional",
+          "2026-08-01 schema verifier rejected missing real runtime evidence conditional"
+        ],
+        "green_evidence": [
+          "node scripts/verify-validate-tasks.mjs -> validate-tasks verification OK",
+          "node scripts/verify-morrowise-dev-workflow-catalog.mjs -> MorroWise dev workflow catalog verification OK"
+        ],
+        "regression_evidence": [
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise -> 0 issues, 0 legacy warnings",
+          "node scripts/verify-work-anchor-preflight.mjs -> OK",
+          "npm run test:tasks -> PASS",
+          "npm run test:architecture-subsystems -> PASS",
+          "sync-architecture-subsystems.py --check -> PASS",
+          "npm run build -> PASS; Turbopack compile, TypeScript, static pages 8/8"
+        ],
+        "verifier_refs": [
+          "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs",
+          "$COLLAB/harness-mc/scripts/verify-work-anchor-preflight.mjs",
+          "$COLLAB/harness-mc/scripts/verify-architecture-subsystems.mjs",
+          "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py"
+        ],
+        "fixture_runtime_boundary": "runtime_evidence_required=false；JV-40 P3 本次只發布 canonical lifecycle schema／validator／fixtures 與 generated Architecture index，不宣稱新的 scheduler、notification、external tracker 或其他 runtime capability。"
       },
       "jv32_route": {
         "batch": "JV-32 task lifecycle governance batch",
@@ -4967,6 +5004,46 @@
                 "approved_at": "2026-07-31",
                 "evidence_refs": [
                   "Vincent 2026-07-31 current session: 先修改 task；然後安排進行及驗收"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "JV-40 P3 completion evidence schema、changed-only validator、負向與歷史相容 fixtures、Admission Record 及 generated Architecture index 已整合至兩個 target main；Acceptance Matrix、完整 regression、build 與 Vincent commit confirmation 均已取得，不新增 task 或 exit gate。",
+            "evidence_refs": [
+              "85a57e922b4c2ff0040717a11830e286a65d8c93",
+              "4d996a947417a1e8d25df7cd2a2974d617196227",
+              "node scripts/verify-validate-tasks.mjs",
+              "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+              "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+              "npm run test:tasks",
+              "npm run test:architecture-subsystems",
+              "npm run build"
+            ],
+            "recorded_at": "2026-08-01",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/morrowise-dev-workflow-catalog"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有 JV-40 canonical task completion evidence 缺口的 P3 實作與收尾，不是新 workflow 或新 task system。",
+                "owner_source_of_truth": "Owner 維持 morrowise/task-lifecycle-jv32-gate；正本仍是既有 tasks.json、JV-32 catalog、lifecycle schema／spec、validator 與 Admission Record。",
+                "inputs_outputs": "輸入是既有 P2 test contract、TDD evidence、target delivery SHA 與 Vincent confirmation；輸出只完成同一 JV-40 task、event receipt 與 terminal sync disposition。",
+                "lifecycle_completion": "兩個 target main containment、0/0、目前 event graph residual-zero 與 clean worktree Terminal Gate 成立後發布 JV-40_SCOPE_RELEASED。"
+              },
+              "decision_reason": "問題、owner、正本、輸入輸出與完成邊界均由既有 JV-40 完整承接，因此 outcome=amend 並完成同一 task；不新增 task 或 exit gate。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-01",
+                "evidence_refs": [
+                  "Vincent 2026-08-01 current task: 可以 commit",
+                  "Vincent 2026-08-01 current task: 核准修正版 C2 exact scope，可以 commit"
                 ]
               }
             }

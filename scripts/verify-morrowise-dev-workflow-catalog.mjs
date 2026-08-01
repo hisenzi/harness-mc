@@ -134,6 +134,25 @@ const CONTROL_BOUNDARY_INVARIANTS = [
   "evidence_required_before_done",
   "loop_terminal_state_does_not_mutate_task_status",
 ];
+const FULL_DELIVERY_AUTHORIZATION_SCOPE = [
+  "c1_commit",
+  "c1_normal_push",
+  "c1_remote_verification",
+  "task_event_apply",
+  "closeout_sync",
+  "dashboard_generation",
+  "c2_commit",
+  "c2_normal_push",
+  "terminal_verification",
+];
+const FULL_DELIVERY_ESCALATION_CONDITIONS = [
+  "scope_change",
+  "base_path_overlap",
+  "non_fast_forward",
+  "verifier_change",
+  "ownership_conflict",
+  "human_decision_required",
+];
 const JV32_PREBUILD_CONTRACT_REF = "$COLLAB/harness-mc/package.json#jv32-prebuild-contract";
 const ARCHITECTURE_VERSION_REVIEW_REFS = [
   "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
@@ -306,6 +325,23 @@ function verifyRegistry(value) {
   assert.match(`${closeoutCommit.process} ${closeoutCommit.close_rule}`, /cc-log/);
   assert.match(`${closeoutCommit.process} ${closeoutCommit.close_rule}`, /worktree-commit/);
   assert.match(`${closeoutCommit.outputs} ${closeoutCommit.close_rule}`, /task completion evidence|completed_at|commits|summary/i);
+  const continuation = closeoutCommit.full_delivery_continuation;
+  assert.ok(continuation, "closeout-commit-routing requires full_delivery_continuation");
+  validateSchemaFixture(
+    continuation,
+    schema.$defs.full_delivery_continuation,
+    "closeout-commit-routing.full_delivery_continuation",
+  );
+  assert.equal(continuation.role, "air_traffic_controller");
+  assert.equal(continuation.authorization_trigger, "Vincent 確認完整交付");
+  assert.deepEqual(continuation.authorization_scope, FULL_DELIVERY_AUTHORIZATION_SCOPE);
+  assert.equal(continuation.resume_policy, "resume_from_first_unmet_state");
+  assert.deepEqual(continuation.escalation_conditions, FULL_DELIVERY_ESCALATION_CONDITIONS);
+  assert.equal(
+    continuation.ordering_invariant,
+    "c1_push_before_canonical_apply_and_c2_push_after_dashboard_generation",
+  );
+  assert.equal(continuation.terminal_state, "task_completed");
 }
 
 function validateWorkflow(workflow) {
@@ -339,6 +375,12 @@ function verifySchema(value) {
   for (const field of REQUIRED_WORKFLOW_FIELDS) {
     assert.ok(value.required.includes(field), `schema missing required field: ${field}`);
   }
+  assert.equal(value.properties.full_delivery_continuation.$ref, "#/$defs/full_delivery_continuation");
+  const continuation = value.$defs.full_delivery_continuation;
+  assert.ok(continuation, "schema missing $defs.full_delivery_continuation");
+  assert.equal(continuation.additionalProperties, false, "full delivery continuation contract must be closed");
+  assert.deepEqual(continuation.properties.authorization_scope.items.enum, FULL_DELIVERY_AUTHORIZATION_SCOPE);
+  assert.deepEqual(continuation.properties.escalation_conditions.items.enum, FULL_DELIVERY_ESCALATION_CONDITIONS);
 }
 
 function verifyControlPlaneContractSchema(value) {
@@ -617,7 +659,7 @@ function verifyReadModel(value, sourceRegistry) {
   for (const workflow of sourceRegistry.workflows) {
     const mirrored = byId.get(workflow.id);
     assert.ok(mirrored, `read model missing workflow: ${workflow.id}`);
-    for (const field of ["id", "status", "close_rule", "owner_task", "writes_to", "external_effect", "verifier_ref"]) {
+    for (const field of ["id", "status", "close_rule", "owner_task", "writes_to", "external_effect", "verifier_ref", "full_delivery_continuation"]) {
       assert.deepEqual(mirrored[field], workflow[field], `read model mismatch for ${workflow.id}.${field}`);
     }
   }
@@ -682,6 +724,20 @@ function verifyNegativeFixtures(value) {
   assert.throws(() => validateWorkflow({ ...first, external_effect: "hooks_modify" }), /hooks_modify/);
   assert.throws(() => validateWorkflow({ ...first, source_doc: "$COLLAB/notyet-harness/secrets/token.txt" }), /forbidden source\/auth ref/);
   assert.throws(() => validateWorkflow({ ...first, owner_task: "missing-task" }), /owner_task must exist/);
+
+  const continuationSchema = schema.$defs.full_delivery_continuation;
+  const validContinuation = value.workflows.find((item) => item.id === "closeout-commit-routing")
+    .full_delivery_continuation;
+  const missingAuthorizationScope = structuredClone(validContinuation);
+  delete missingAuthorizationScope.authorization_scope;
+  assert.throws(
+    () => validateSchemaFixture(missingAuthorizationScope, continuationSchema, "full delivery fixture"),
+    /missing required authorization_scope/,
+  );
+  assert.throws(
+    () => validateSchemaFixture({ ...validContinuation, force_push: true }, continuationSchema, "full delivery fixture"),
+    /additional property force_push/,
+  );
 
   const architectureWithoutDetail = {
     records: [

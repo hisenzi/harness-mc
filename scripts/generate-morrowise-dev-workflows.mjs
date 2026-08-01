@@ -58,6 +58,9 @@ const readModel = {
     verifier_ref: workflow.verifier_ref,
     owner_task: workflow.owner_task,
     notes: workflow.notes,
+    ...(workflow.full_delivery_continuation
+      ? { full_delivery_continuation: workflow.full_delivery_continuation }
+      : {}),
   })),
   exclusions: registry.exclusions,
   next_actions: nextActions,

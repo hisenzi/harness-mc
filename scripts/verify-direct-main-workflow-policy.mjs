@@ -30,6 +30,10 @@ const safeFastForwardContinuationTestPath = path.join(
   notyetRoot,
   "000_Agent/skills/worktree-commit/tests/verify-safe-fast-forward-continuation.test.mjs",
 );
+const fullDeliveryContinuationTestPath = path.join(
+  notyetRoot,
+  "000_Agent/skills/worktree-commit/tests/verify-full-delivery-continuation.test.mjs",
+);
 const legacyManifest = JSON.parse(
   read(notyetRoot, "000_Agent/skills/git-worktree/dist/manifest.json"),
 );
@@ -122,6 +126,35 @@ assert.match(
 );
 assert.match(
   spec,
+  /Vincent.*確認完整交付.*一次授權.*C1.*正常 push.*remote.*task event.*single-writer.*MC 儀表板.*C2.*正常 push.*Terminal Gate/is,
+  "Repo Coordination Gate must define one full-delivery authorization across both normal pushes",
+);
+assert.match(
+  spec,
+  /首個未滿足.*state/is,
+  "Repo Coordination Gate must resume at the first unmet state",
+);
+assert.match(
+  spec,
+  /(?:排隊|重試|續跑).*不變量.*(?:unchanged|不變)|不變量.*(?:unchanged|不變).*(?:排隊|重試|續跑)/is,
+  "Repo Coordination Gate must retry only while authorization invariants hold",
+);
+for (const escalationCondition of [
+  /scope.*(?:改變|change)|(?:改變|change).*scope/is,
+  /base path.*overlap|overlap.*base path/is,
+  /non-fast-forward/,
+  /verifier.*(?:改變|change)|(?:改變|change).*verifier/is,
+  /ownership.*(?:衝突|conflict)|(?:衝突|conflict).*ownership/is,
+  /human decision|人工決策/i,
+]) {
+  assert.match(
+    spec,
+    escalationCondition,
+    `Repo Coordination Gate missing full-delivery escalation condition: ${escalationCondition}`,
+  );
+}
+assert.match(
+  spec,
   /safe_non_overlapping_fast_forward/,
   "Repo Coordination Gate must define the bounded safe fast-forward continuation",
 );
@@ -145,6 +178,15 @@ assert.match(
   postCommitAcceptance,
   /committed_local -> commit_reviewed -> integrated_main -> delivery_verified -> canonical_applied -> closeout_remote_synced -> residual_zero -> task_completed/,
   "JV-37 A05.1 must carry the finite task closeout path",
+);
+const fullDeliveryAcceptance = task.acceptance.find((item) =>
+  item.startsWith("A05.2｜Air Traffic Controller full-delivery continuation"),
+);
+assert.ok(fullDeliveryAcceptance, "JV-37 must carry the Air Traffic Controller full-delivery amendment");
+assert.match(
+  fullDeliveryAcceptance,
+  /確認完整交付.*一次授權.*C1.*正常 push.*single-writer.*MC 儀表板.*C2.*正常 push.*首個未滿足.*不變量/is,
+  "JV-37 A05.2 must carry the one-authorization continuation contract",
 );
 assert.match(
   postCommitAcceptance,
@@ -189,6 +231,17 @@ assert.equal(
   0,
   safeFastForwardContinuationResult.stderr ||
     safeFastForwardContinuationResult.stdout,
+);
+const fullDeliveryContinuationResult = spawnSync(
+  process.execPath,
+  [fullDeliveryContinuationTestPath],
+  { encoding: "utf8" },
+);
+assert.equal(
+  fullDeliveryContinuationResult.status,
+  0,
+  fullDeliveryContinuationResult.stderr ||
+    fullDeliveryContinuationResult.stdout,
 );
 
 for (const pattern of [

@@ -36,6 +36,9 @@
     "morrowise_stage": { "type": "string" },
     "close_rule": { "type": "string" },
     "verifier_ref": { "type": "string" },
+    "full_delivery_continuation": {
+      "$ref": "#/$defs/full_delivery_continuation"
+    },
     "status": {
       "type": "string",
       "enum": ["accepted", "prototype", "blocked", "deferred", "adapter_only"]
@@ -44,6 +47,81 @@
     "notes": { "type": "string" }
   },
   "$defs": {
+    "full_delivery_continuation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "authorization_trigger",
+        "authorization_scope",
+        "resume_policy",
+        "retry_policy",
+        "escalation_conditions",
+        "ordering_invariant",
+        "terminal_state"
+      ],
+      "properties": {
+        "role": {
+          "type": "string",
+          "const": "air_traffic_controller"
+        },
+        "authorization_trigger": {
+          "type": "string",
+          "const": "Vincent 確認完整交付"
+        },
+        "authorization_scope": {
+          "type": "array",
+          "minItems": 9,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "c1_commit",
+              "c1_normal_push",
+              "c1_remote_verification",
+              "task_event_apply",
+              "closeout_sync",
+              "dashboard_generation",
+              "c2_commit",
+              "c2_normal_push",
+              "terminal_verification"
+            ]
+          }
+        },
+        "resume_policy": {
+          "type": "string",
+          "const": "resume_from_first_unmet_state"
+        },
+        "retry_policy": {
+          "type": "string",
+          "const": "automatic_retry_while_authorization_invariants_unchanged"
+        },
+        "escalation_conditions": {
+          "type": "array",
+          "minItems": 6,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "scope_change",
+              "base_path_overlap",
+              "non_fast_forward",
+              "verifier_change",
+              "ownership_conflict",
+              "human_decision_required"
+            ]
+          }
+        },
+        "ordering_invariant": {
+          "type": "string",
+          "const": "c1_push_before_canonical_apply_and_c2_push_after_dashboard_generation"
+        },
+        "terminal_state": {
+          "type": "string",
+          "const": "task_completed"
+        }
+      }
+    },
     "harness_contract": {
       "type": "object",
       "additionalProperties": false,

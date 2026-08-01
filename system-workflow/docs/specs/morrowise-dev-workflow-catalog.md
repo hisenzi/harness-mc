@@ -42,7 +42,7 @@ The formal boundary lives in `$COLLAB/harness-mc/system-workflow/schemas/morrowi
 - `task-lifecycle` 是新增、語意修改、暫緩、恢復、完成、取消與封存 canonical task 的內建 route；它用 semantic intake 固定 `reuse|amend|replace|genuinely_new`，並機械限制單一 weekly core 與 review date，不建立第二套 task system。
 - `prototype` remains prototype status until its answer is captured into a durable MorroWise artifact.
 - `resolving-merge-conflicts` is deferred until MorroWise has a merge-operation owner and verification boundary.
-- `closeout-commit-routing` is the closeout route: verified work goes through `verification-before-completion`, optional `cc-log`, then `worktree-commit`, then task completion evidence.
+- `closeout-commit-routing` is the closeout route: verified work goes through `verification-before-completion`, optional `cc-log`, then one full-delivery authorization carries C1, canonical closeout, MC dashboard refresh, C2, and the read-only Terminal Gate.
 
 ### Roadmap Placeholder Rules
 
@@ -90,11 +90,17 @@ When implementation, review, or documentation work is done, JV-32 routes the clo
 implementation done
 -> verification-before-completion
 -> cc-log if the session creates durable judgment or handoff context
--> worktree-commit
--> task completion evidence: completed_at, summary, commits
+-> Vincent 確認完整交付
+-> C1 commit -> normal product push -> remote delivery verification
+-> task event -> authorized single-writer canonical apply -> closeout sync
+-> necessary generators -> MC dashboard read model
+-> C2 commit -> normal Harness push
+-> read-only Terminal Gate -> residual_zero -> task_completed
 ```
 
-`worktree-commit` remains the commit authority. JV-32 does not replace commit scope, 4C review, explicit Vincent approval, push approval, or repo-specific task-state rules. The value of this route is to make "done" mean verified, logged when needed, committed with evidence, and reflected back into canonical task state.
+`worktree-commit` remains the commit authority. 「確認完整交付」是一份具名、有限的 exact closeout plan 授權：它涵蓋 C1／C2 兩次正常 push，但不授權 force push、scope 擴張、吸收 baseline dirty、部署或新的人工產品決策。空管從首個未滿足 state 續跑，且只在 scope、base path overlap、non-fast-forward、verifier、ownership 與 human-decision 等授權不變量都未改變時排隊／重試；任一改變就升級給 Vincent，而不是沿用舊授權。
+
+兩次 push 的物理順序不可省略：C1 必須先到產品 `origin/main` 才能成為真實 delivery evidence；task event／single-writer apply／sync／generator／MC 儀表板接著在 C2 前完成；C2 最後才正常 push 到 `harness-mc/origin/main`。最後驗證是只讀，雙端 `0/0` 與本次 residual zero 成立才是 `task_completed`。Air Traffic Controller 是既有 closeout route 的角色，不是第二套 task system，也不宣稱有獨立 daemon runtime。
 
 ## Architecture Boundary
 

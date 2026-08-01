@@ -3,7 +3,7 @@
 > Task: `multi-machine-repo-coordination-gate` (`JV-37`)
 > Contract: `MW-GIT-AUTH-01`
 > Status: contract only; runtime not yet accepted
-> Updated: 2026-07-31
+> Updated: 2026-08-01
 > Read when: any Agent is about to modify a Git repo for the first time in a session, or is closing work that must reach remote truth
 
 ## Purpose
@@ -145,6 +145,30 @@ Before the first file mutation:
 Work is not complete at `committed_local`, on an approved isolation branch, or with a
 pending governance event.
 
+### Air Traffic Controller Full-delivery Continuation
+
+When Vincent says 「確認完整交付」 for the displayed exact C1/C2 plan, the
+Air Traffic Controller carries one finite authorization（一次授權）through
+`C1 commit -> C1 正常 push -> remote delivery verification -> task event ->
+authorized single-writer canonical apply -> closeout sync -> necessary generator
+-> MC 儀表板 -> C2 commit -> C2 正常 push -> read-only Terminal Gate`.
+These are two normal pushes in physical delivery order: product C1 reaches remote
+truth before canonical closeout begins, and Harness C2 is pushed only after every
+required mutation and dashboard refresh is complete. This authorization does not
+include force push, deployment, scope expansion, or absorption of baseline dirty.
+
+After a session interruption, temporary Repo Ready block, or queued closeout, the
+controller rereads immutable evidence and continues from the 首個未滿足 state.
+It may 排隊／重試／續跑 only while every authorization 不變量 remains unchanged:
+exact scope, no base path overlap, fast-forward safety, diff/message/grouping,
+verifier, ownership, and existing human decision. A scope change, base path
+overlap, non-fast-forward, verifier change, ownership conflict, or new human
+decision（人工決策）returns `BLOCKED` and escalates to Vincent instead of reusing
+the old authorization.
+
+This is a role in the existing `closeout-commit-routing` path. It is not a second
+task system and does not claim that an independent JV-37 daemon runtime is accepted.
+
 The finite task-completion path is:
 
 ```text
@@ -152,7 +176,7 @@ committed_local -> commit_reviewed -> integrated_main -> delivery_verified -> ca
 ```
 
 1. Run fresh verification and use `worktree-commit` with an exact path scope,
-   destination `main`, and Vincent approval.
+   destination `main`, and Vincent approval or the full-delivery confirmation above.
 2. Create C1 implementation, then verify its committed diff, message, paths,
    tests and review evidence against the approved plan.
 3. Fetch immediately before normal push or integration. Verify destination

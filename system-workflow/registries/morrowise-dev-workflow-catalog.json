@@ -444,19 +444,46 @@
       "phase": "closeout",
       "source_doc": "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-catalog.md#closeout-commit-routing",
       "source_skill": "$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/SKILL.md",
-      "trigger": "Implementation, review, or documentation work has passed verification and needs durable closeout.",
-      "inputs": "Completed diff, owner task, verification output, cc-log need, dirty worktree scope, and Vincent commit approval.",
-      "process": "Run verification-before-completion for fresh evidence, write cc-log when the session creates durable judgment or handoff context, then use worktree-commit with explicit path scope, 4C review, and Vincent approval.",
-      "outputs": "Git commit hash, task completion evidence, completed_at, summary, commits metadata, and any remaining dirty-scope risks.",
-      "writes_to": "git commit under active work anchor plus MorroWise tasks.json completion metadata when commit repo is harness-mc",
-      "external_effect": "local_git_commit_after_vincent_approval",
-      "approval_policy": "Git commit requires explicit Vincent approval; push remains a separate approval gate.",
+      "trigger": "Implementation, review, or documentation work has passed verification and Vincent confirms the exact plan as a complete delivery.",
+      "inputs": "Completed diff, owner task, verification output, cc-log need, dirty worktree scope, exact C1/C2 plan, destination remotes, baseline exclusions, and Vincent full-delivery confirmation.",
+      "process": "Run verification-before-completion for fresh evidence, write cc-log when needed, then let worktree-commit and the Air Traffic Controller continue the same exact plan through C1 commit, normal C1 push, remote verification, authorized single-writer task-event apply, closeout sync, necessary generators including the MC dashboard, C2 commit, normal C2 push, and the read-only Terminal Gate. Resume from the first unmet state and retry only while authorization invariants remain unchanged.",
+      "outputs": "C1 and C2 commit hashes, remote delivery evidence, canonical task completion evidence, refreshed MC dashboard read model, completed_at, summary, commits metadata, terminal residual-zero evidence, and any unchanged baseline exclusions.",
+      "writes_to": "exact approved Git paths and normal destination main pushes; append-only task event, authorized canonical tasks.json closeout, closeout sync disposition, and task-owned generated MC dashboard read model",
+      "external_effect": "normal_git_pushes_after_vincent_full_delivery_confirmation",
+      "approval_policy": "When Vincent says 確認完整交付 for the exact closeout plan, one authorization covers C1 commit and normal push, remote verification, authorized single-writer closeout, dashboard generation, C2 commit and normal push, and terminal verification. Do not request a second approval while scope, base paths, fast-forward safety, verifier, ownership, and human-decision requirements remain unchanged.",
       "morrowise_stage": "workflow_closeout",
-      "close_rule": "Close when verification-before-completion evidence is cited, cc-log is written if needed, worktree-commit creates the commit, and task completion evidence includes completed_at, summary, and commits metadata or an approved task-event handoff.",
+      "close_rule": "Close only after verification-before-completion evidence, optional cc-log, reviewed C1, C1 remote delivery verification, authorized task-event and canonical apply, terminal closeout sync, necessary MC dashboard generation before C2, normal C2 push, double-remote 0/0 parity, and read-only residual zero. completed_at, summary, commits metadata, and delivery evidence must be canonical; a pending handoff is not completion.",
       "verifier_ref": "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
       "status": "accepted",
       "owner_task": "morrowise-dev-workflow-catalog",
-      "notes": "This route turns implementation done into auditable closeout; it does not bypass commit scope, approval, push, or task-state rules."
+      "notes": "Air Traffic Controller is a role inside the existing closeout route, not a second task system or autonomous force-push daemon. It carries one exact authorization across two normal pushes, preserves unrelated dirty as baseline exclusions, and escalates any invariant change.",
+      "full_delivery_continuation": {
+        "role": "air_traffic_controller",
+        "authorization_trigger": "Vincent 確認完整交付",
+        "authorization_scope": [
+          "c1_commit",
+          "c1_normal_push",
+          "c1_remote_verification",
+          "task_event_apply",
+          "closeout_sync",
+          "dashboard_generation",
+          "c2_commit",
+          "c2_normal_push",
+          "terminal_verification"
+        ],
+        "resume_policy": "resume_from_first_unmet_state",
+        "retry_policy": "automatic_retry_while_authorization_invariants_unchanged",
+        "escalation_conditions": [
+          "scope_change",
+          "base_path_overlap",
+          "non_fast_forward",
+          "verifier_change",
+          "ownership_conflict",
+          "human_decision_required"
+        ],
+        "ordering_invariant": "c1_push_before_canonical_apply_and_c2_push_after_dashboard_generation",
+        "terminal_state": "task_completed"
+      }
     }
   ],
   "exclusions": [

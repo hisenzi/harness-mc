@@ -1,14 +1,17 @@
 {
-  "generated_at": "2026-07-26T17:13:16.935Z",
-  "applied": [
+  "generated_at": "2026-08-01T10:59:39Z",
+  "applied": [],
+  "rejected": [
     {
-      "file": "20260726T171302Z-notyet-harness-45216fa7a1fde443ac6941f2a837472bb24f942a-morrowise-multi-machine-repo-coordination-gate.json",
-      "event_id": "task.commit_attached-morrowise-multi-machine-repo-coordination-gate-45216fa7a1fde443ac6941f2a837472bb24f942a-20260726T171302Z",
-      "project": "morrowise",
-      "task_id": "multi-machine-repo-coordination-gate",
-      "type": "task.commit_attached"
+      "file": "20260725T152111Z-notyet-harness-4fd9c8e-morrowise-morrowise-dev-workflow-catalog.json",
+      "event_id": "task.commit_attached-morrowise-morrowise-dev-workflow-catalog-4fd9c8e-20260725T152111Z",
+      "reason": "source_commit_not_contained_in_target_main"
+    },
+    {
+      "file": "20260725T153404Z-notyet-harness-71f3c3d-morrowise-task-lifecycle-jv32-gate.json",
+      "event_id": "task.commit_attached-morrowise-task-lifecycle-jv32-gate-71f3c3d-20260725T153404Z",
+      "reason": "source_commit_not_contained_in_target_main"
     }
   ],
-  "rejected": [],
   "duplicates": []
 }

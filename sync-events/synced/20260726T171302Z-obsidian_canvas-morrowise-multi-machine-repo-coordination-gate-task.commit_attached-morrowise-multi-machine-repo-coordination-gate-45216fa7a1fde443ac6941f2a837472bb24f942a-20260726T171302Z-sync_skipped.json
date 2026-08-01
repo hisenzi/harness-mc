@@ -1,8 +1,8 @@
 {
   "sync_event_id": "sync_requested-obsidian_canvas-morrowise-multi-machine-repo-coordination-gate-task.commit_attached-morrowise-multi-machine-repo-coordination-gate-45216fa7a1fde443ac6941f2a837472bb24f942a-20260726T171302Z-20260726T171302Z",
-  "type": "sync_requested",
+  "type": "sync_skipped",
   "target": "obsidian_canvas",
-  "status": "pending",
+  "status": "skipped",
   "source_event_id": "task.commit_attached-morrowise-multi-machine-repo-coordination-gate-45216fa7a1fde443ac6941f2a837472bb24f942a-20260726T171302Z",
   "project": "morrowise",
   "task_id": "multi-machine-repo-coordination-gate",
@@ -12,5 +12,10 @@
   },
   "created_at": "2026-07-27T01:13:02+08:00",
   "actor": "codex",
-  "session_id": "019f9d4d-a4a4-7ec1-a9db-a22c24774df0"
+  "session_id": "019f9d4d-a4a4-7ec1-a9db-a22c24774df0",
+  "exemption_reason": "JV-37 has no external mirror binding to MC 儀表版; the Canvas generator selects only tasks explicitly bound to that whiteboard.",
+  "verifier": "canonical JV-37 external_refs and visual_layer binding assertion plus sync-obsidian-canvas selection predicate",
+  "resolved_at": "2026-08-01T11:01:29.945Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-air-traffic-reconciliation-20260801"
 }

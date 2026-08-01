@@ -1,6 +1,15 @@
 {
   "rejected_at": "2026-08-01T05:30:18Z",
   "reason": "source_commit_not_contained_in_target_main",
+  "manual_review": {
+    "approved_by": "Vincent",
+    "approved_at": "2026-08-01",
+    "evidence_refs": [
+      "current-session: Vincent approved Air Traffic Controller recommendations and exact residual reconciliation on 2026-08-01",
+      "notyet-harness/origin/main ancestry check: 71f3c3d not contained; commit exists only on codex/jv32-traditional-task-title and codex/morrowise-p3-jv40-architecture lineages",
+      "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate"
+    ]
+  },
   "event": {
     "event_id": "task.commit_attached-morrowise-task-lifecycle-jv32-gate-71f3c3d-20260725T153404Z",
     "type": "task.commit_attached",

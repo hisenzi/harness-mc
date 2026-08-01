@@ -1,0 +1,17 @@
+{
+  "rejected_at": "2026-08-01T05:30:18Z",
+  "reason": "source_commit_not_contained_in_target_main",
+  "event": {
+    "event_id": "task.commit_attached-morrowise-task-lifecycle-jv32-gate-71f3c3d-20260725T153404Z",
+    "type": "task.commit_attached",
+    "repo": "notyet-harness",
+    "commit": "71f3c3d",
+    "project": "morrowise",
+    "task_id": "task-lifecycle-jv32-gate",
+    "status": "updated",
+    "summary": "worktree-commit v2.0 已修正 same-repo 進行中 task 的 self-hash 回填循環；追溯充分時不再新增 hash-only post-commit bookkeeping，JV-40 維持 in_progress。",
+    "created_at": "2026-07-25T15:34:04.519Z",
+    "actor": "codex",
+    "session_id": "paper-design-shader-ai-agent-dashboard-20260725"
+  }
+}

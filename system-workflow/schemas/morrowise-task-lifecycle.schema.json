@@ -18,6 +18,12 @@
       "type": "string",
       "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
     },
+    "test_contract": {
+      "$ref": "#/$defs/test_contract"
+    },
+    "completion_evidence": {
+      "$ref": "#/$defs/completion_evidence"
+    },
     "task_lifecycle": {
       "type": "object",
       "additionalProperties": false,
@@ -189,9 +195,216 @@
           }
         }
       }
+    },
+    {
+      "$comment": "required_completion_evidence_consistency",
+      "if": {
+        "required": [
+          "status",
+          "test_contract",
+          "completion_evidence"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "done",
+              "completed",
+              "fixed"
+            ]
+          },
+          "test_contract": {
+            "required": [
+              "applicability"
+            ],
+            "properties": {
+              "applicability": {
+                "const": "required"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "completion_evidence": {
+            "required": [
+              "red_evidence",
+              "green_evidence"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "$comment": "runtime_completion_evidence_consistency",
+      "if": {
+        "required": [
+          "status",
+          "test_contract",
+          "completion_evidence"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "done",
+              "completed",
+              "fixed"
+            ]
+          },
+          "test_contract": {
+            "required": [
+              "runtime_evidence_required"
+            ],
+            "properties": {
+              "runtime_evidence_required": {
+                "const": true
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "completion_evidence": {
+            "required": [
+              "runtime_evidence"
+            ]
+          }
+        }
+      }
     }
   ],
   "$defs": {
+    "non_empty_string_array": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "test_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "applicability",
+        "behavior_cases",
+        "test_level",
+        "fixture_refs",
+        "runtime_evidence_required",
+        "evidence_refs"
+      ],
+      "properties": {
+        "applicability": {
+          "type": "string",
+          "enum": [
+            "required",
+            "exempt"
+          ]
+        },
+        "behavior_cases": {
+          "$ref": "#/$defs/non_empty_string_array"
+        },
+        "test_level": {
+          "$ref": "#/$defs/non_empty_string_array"
+        },
+        "red_command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected_red_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "green_command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "full_regression_commands": {
+          "$ref": "#/$defs/non_empty_string_array"
+        },
+        "fixture_refs": {
+          "$ref": "#/$defs/non_empty_string_array"
+        },
+        "runtime_evidence_required": {
+          "type": "boolean"
+        },
+        "evidence_refs": {
+          "$ref": "#/$defs/non_empty_string_array"
+        },
+        "tdd_exemption_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "alternative_verification_commands": {
+          "$ref": "#/$defs/non_empty_string_array"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "applicability": {
+                "const": "required"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "red_command",
+              "expected_red_reason",
+              "green_command",
+              "full_regression_commands"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "applicability": {
+                "const": "exempt"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "tdd_exemption_reason",
+              "alternative_verification_commands"
+            ]
+          }
+        }
+      ]
+    },
+    "completion_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "regression_evidence",
+        "verifier_refs",
+        "fixture_runtime_boundary"
+      ],
+      "properties": {
+        "red_evidence": {
+          "$ref": "#/$defs/non_empty_string_array"
+        },
+        "green_evidence": {
+          "$ref": "#/$defs/non_empty_string_array"
+        },
+        "regression_evidence": {
+          "$ref": "#/$defs/non_empty_string_array"
+        },
+        "verifier_refs": {
+          "$ref": "#/$defs/non_empty_string_array"
+        },
+        "fixture_runtime_boundary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runtime_evidence": {
+          "$ref": "#/$defs/non_empty_string_array"
+        }
+      }
+    },
     "approval_evidence": {
       "type": "object",
       "additionalProperties": false,

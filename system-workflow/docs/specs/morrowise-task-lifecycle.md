@@ -122,6 +122,21 @@ MorroWise 每次最多一個 task 可設 `weekly_core: true`。該 task 必須�
 
 禁止在 task 仍為 `in_progress` 時直接清掉 weekly core，也禁止只改日期、以未回覆或排程默認延長。
 
+## Completion Evidence Contract
+
+只有本次 mutation 從 active status 轉入 `done`、`completed` 或 `fixed` 時，changed-only validator 才強制執行 completion evidence gate；既有 closed task 的歷史內容不追溯改寫，closed-to-closed amendment 仍依原 lifecycle 與 Architecture Admission 規則處理。
+
+可執行行為使用 `test_contract.applicability: required`，必須定義 observable `behavior_cases`、`test_level`、Red command／預期失敗、Green command、完整 regression commands、fixture refs、runtime evidence flag 與 evidence refs。實際驗收結果放在 `completion_evidence`，至少包含：
+
+- `red_evidence` 與 `green_evidence`。
+- `regression_evidence` 與可重跑的 `verifier_refs`。
+- 說明 fixture 與真實 runtime claim 界線的 `fixture_runtime_boundary`。
+- 當 `runtime_evidence_required: true` 時，另附安全 metadata 的 `runtime_evidence`；fixture、plist 存在或未載入 scheduler 均不可取代真實 runtime evidence。
+
+純文件或純治理 task 可使用 `test_contract.applicability: exempt`，不假造 Red／Green，但必須記錄非空的 `tdd_exemption_reason`、`alternative_verification_commands`、evidence refs，以及 `completion_evidence` 內可重跑的 regression evidence、verifier 與 fixture/runtime boundary。
+
+`completion_evidence` 只保存安全 evidence reference 或重跑指令，不保存 token、Cookie、帳密、秘密、runtime auth 或私人設定，也不授權 commit、push、部署或外部 tracker 寫入。
+
 ## Gate 與驗證
 
 1. 先判斷正本 project 與 active owner task；跨 repo 變更不得直接繞過 task event single-writer 流程。

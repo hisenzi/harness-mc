@@ -482,27 +482,155 @@
     {
       "id": "p5-consumer-three-input-result-flow",
       "title": "建立獨立消費者三輸入與白話判讀介面",
-      "status": "todo",
+      "status": "completed",
+      "started_at": "2026-08-01",
+      "completed_at": "2026-08-01",
+      "summary": "已在 or/ prototype 外建立正式 consumer web，以相機、照片與貼上三入口只消費 RRO-05 API；結果呈現方向清楚的五指標、server-side A–E、unknown、初步判讀／待人工審核、private evidence 告知與預設關閉的白話教學，正式 surface 不載入 prototype-only 功能。",
       "track": "product",
       "order_label": "RRO-06",
       "priority": "P0",
       "capability_domain": "consumer-experience",
       "task_kind": "build",
-      "dependencies": ["p2-architecture-product-passport-contract"],
-      "depends_on": ["p2-architecture-product-passport-contract"],
-      "done_condition": "獨立 app 提供相機掃描、圖片上傳、複製貼上三種入口；每次輸入先建立 private scan record，並呈現雷達指標、爭議／不確定提示、完整成分風險、資料保存告知與可關閉的白話教學。",
+      "dependencies": ["p2-architecture-product-passport-contract", "p4-ocr-normalization-and-versioned-analysis-api"],
+      "depends_on": ["p2-architecture-product-passport-contract", "p4-ocr-normalization-and-versioned-analysis-api"],
+      "done_condition": "在 or/ prototype 外建立獨立 consumer app，保留其三輸入與消費者結果骨架但只消費 RRO-05 API；每次輸入先建立 private scan record，並呈現方向清楚的雷達指標、C／D／E 與不確定提示、資料保存告知及預設關閉的白話教學。prototype-only 功能保留於 or/ 並由正式文件標註，但不得載入 MVP surface。",
       "acceptance": [
         "A01｜三種入口在手機情境可開始輸入；相機權限拒絕、無檔案與 OCR 失敗有可理解處理。",
         "A02｜結果頁同時呈現清潔度、溫和度、敏感友善度、爭議成分；雷達方向與標籤不混淆正向與風險。",
-        "A03｜完整成分列表含 C／D／E 風險與未確定狀態；白話教學預設關閉且可自行展開。",
+        "A03｜完整成分列表的 A–E 個別成分風險等級只由 server-side canonical irritation score 產生；C／D／E 與 unknown／低信心狀態清楚可見，白話教學預設關閉且可自行展開。",
         "A04｜前台不顯示可回溯 scan history，但每次輸入都建立 private scan record；成功分析進 pending_review，介面清楚告知 private evidence 的保存與用途。",
-        "A05｜介面僅消費已驗證 API contract；Neon、Object Storage 與 OCR credential 只存在 server-side，不得進 browser bundle、repo 或 log。"
+        "A05｜介面僅消費已驗證 API contract；image evidence object key 由 server-side 產生，Neon、Object Storage、OCR credential 與分析算法不得進 browser bundle、repo 或 log。",
+        "A06｜or/ Google AI Studio prototype 原檔不修改；掃描歷史、刪除、常用品牌、研發頁與產品比較保留為 prototype-only 並在正式 repo 文件標註，正式 MVP 不載入。"
       ],
+      "acceptance_matrix": [
+        {
+          "id": "A01",
+          "verify": "手機三輸入與失敗處理",
+          "precondition": "390px viewport；相機權限拒絕、空檔案與 OCR error fixtures",
+          "steps": "依序切換 camera、upload、paste 並觸發各失敗 fixture",
+          "pass": "三入口可開始；失敗顯示可理解繁中訊息且不生成模擬結果",
+          "fail": "入口不可用、靜默失敗或出現 sample／random fallback",
+          "evidence": "component tests、browser mobile smoke 與 screenshot"
+        },
+        {
+          "id": "A02",
+          "verify": "consumer result 與雷達方向",
+          "precondition": "RRO-05 verified response fixture",
+          "steps": "提交 paste fixture 並檢查五指標、爭議清單及雷達標籤",
+          "pass": "正向分數與風險數量不混向，結果只取自 API response",
+          "fail": "缺欄位、標籤反向或 browser 自行重算",
+          "evidence": "API integration tests 與 browser DOM assertions"
+        },
+        {
+          "id": "A03",
+          "verify": "個別成分風險與按需白話教學",
+          "precondition": "含 irritation score 3／4／5、unknown 與 low-confidence fixture",
+          "steps": "載入結果並展開一次白話說明",
+          "pass": "C／D／E 由 API 回傳；未確定不被判安全；教學預設關閉且可展開",
+          "fail": "前端生成等級、unknown 被指派安全等級或教學無法關閉",
+          "evidence": "analyzer tests 與 component tests"
+        },
+        {
+          "id": "A04",
+          "verify": "private scan 狀態與告知",
+          "precondition": "成功 analysis response",
+          "steps": "完成一次輸入並檢查結果狀態與前台 navigation",
+          "pass": "顯示初步判讀／待人工審核及保存用途；無 scan history 入口",
+          "fail": "冒充已審核、缺保存告知或可回溯歷史",
+          "evidence": "service/API tests、component tests 與 browser DOM assertions"
+        },
+        {
+          "id": "A05",
+          "verify": "same-origin API 與 server-only 邊界",
+          "precondition": "camera／upload request fixture 與 production build",
+          "steps": "送出 image request，檢查 request body、server record 與 browser bundle",
+          "pass": "server 產生 evidence object key；bundle 無分析算法與 credential",
+          "fail": "browser 傳 object key、載入 scoring dataset 或洩漏 runtime secret",
+          "evidence": "HTTP tests、bundle grep 與 secret scan"
+        },
+        {
+          "id": "A06",
+          "verify": "prototype 保存與正式 surface 隔離",
+          "precondition": "implementation 前後 or/ status inventory",
+          "steps": "比對 or/ dirty inventory、正式 routes 與 prototype boundary 文件",
+          "pass": "or/ 無新增變更；prototype-only 功能有文件但未進正式 app",
+          "fail": "修改 or/、遺失 prototype 功能或正式 app 暴露非 MVP surface",
+          "evidence": "git status path comparison、route/component grep 與 boundary doc"
+        }
+      ],
+      "commits": ["39e8597628d4c915741fc070b1edaee02a9e08ba"],
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "390px 手機寬度下，相機、上傳照片與複製貼上三入口可開始輸入；拒絕權限、空檔案與 OCR failure 不得產生模擬結果。",
+          "consumer result 只呈現 RRO-05 verified response；五指標方向、server-side A–E、unknown／low-confidence、初步判讀／待人工審核與按需白話教學不得由 browser 自行推算。",
+          "camera／upload request 不得包含 browser-generated evidence object key；credential、canonical dataset、rules 與分析算法不得進 browser bundle。",
+          "or/ prototype 原檔與 prototype-only 功能不得進正式 web surface；完整成分表只能在自身容器內捲動，不得造成 outer viewport overflow。"
+        ],
+        "test_level": [
+          "analysis_unit",
+          "service_http_integration",
+          "consumer_component",
+          "production_build",
+          "controlled_mobile_browser_smoke"
+        ],
+        "red_command": "npm run build:web && SMOKE_PORT=4174 node test/support/web-smoke-server.mjs",
+        "expected_red_reason": "首次 390px controlled browser smoke 在 result grid 測到 outer horizontal overflow；修正 grid min-content 邊界前，documentElement／body scrollWidth 不等於 viewport width。",
+        "green_command": "npm run build:web && SMOKE_PORT=4174 node test/support/web-smoke-server.mjs",
+        "full_regression_commands": [
+          "npm test",
+          "npm run test:web",
+          "npm run test:seed",
+          "npm run build:web",
+          "npm audit --omit=dev"
+        ],
+        "fixture_refs": [
+          "$COLLAB/rrrealll-ocr/test/support/web-smoke-server.mjs",
+          "$COLLAB/rrrealll-ocr/web/src/App.test.jsx",
+          "$COLLAB/rrrealll-ocr/test/analysis/analyzer.test.mjs",
+          "$COLLAB/rrrealll-ocr/test/analysis/analysis-service.test.mjs",
+          "$COLLAB/rrrealll-ocr/test/analysis/http-api.test.mjs"
+        ],
+        "runtime_evidence_required": false,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p5-consumer-three-input-result-flow.task_lifecycle.history",
+          "$COLLAB/rrrealll-ocr/web/src/styles.css",
+          "$COLLAB/rrrealll-ocr/docs/rro-06-prototype-boundary.md",
+          "Product C1 39e8597628d4c915741fc070b1edaee02a9e08ba is on rrrealll-ocr/origin/main; verified 2026-08-01 with local/upstream 0/0 and ancestor check PASS"
+        ]
+      },
+      "completion_evidence": {
+        "red_evidence": [
+          "2026-08-01 first 390px controlled browser smoke found outer horizontal overflow from result grid min-content; canonical in-progress lifecycle event kept RRO-06 open pending a fresh post-fix measurement."
+        ],
+        "green_evidence": [
+          "npm test -> 33/33 PASS",
+          "npm run test:web -> 9/9 PASS",
+          "2026-08-01 post-fix 390px browser smoke -> html/body scrollWidth 390; result content 360/360; outer overflow 0; ingredient table internal scroll 326/420; C/D/E, unknown, pending review and teaching disclosure verified"
+        ],
+        "regression_evidence": [
+          "npm run test:seed -> PASS",
+          "npm run build:web -> PASS",
+          "npm audit --omit=dev -> 0 vulnerabilities",
+          "browser bundle scan -> no canonical scoring dataset, analysis rules or runtime credential",
+          "git ancestor check 39e8597628d4c915741fc070b1edaee02a9e08ba against rrrealll-ocr/origin/main -> PASS; local/upstream parity 0/0"
+        ],
+        "verifier_refs": [
+          "$COLLAB/rrrealll-ocr/package.json#scripts",
+          "$COLLAB/rrrealll-ocr/web/src/App.test.jsx",
+          "$COLLAB/rrrealll-ocr/test/analysis/analyzer.test.mjs",
+          "$COLLAB/rrrealll-ocr/test/analysis/analysis-service.test.mjs",
+          "$COLLAB/rrrealll-ocr/test/analysis/http-api.test.mjs",
+          "$COLLAB/rrrealll-ocr/scripts/verify-seed.mjs",
+          "$COLLAB/rrrealll-ocr/test/support/web-smoke-server.mjs"
+        ],
+        "fixture_runtime_boundary": "自動測試與 controlled browser smoke 使用 deterministic RRO-05 response fixture，證明 RRO-06 consumer UI、server-only request boundary、production build 與 390px layout；不宣稱 Zeabur deployment、production Neon／Google Vision／Object Storage runtime 或 live OCR，這些 runtime 能力仍依 README 邊界屬後續 RRO-08，因此 runtime_evidence_required=false。"
+      },
       "jv32_route": {
-        "workflows": ["task-lifecycle", "implement", "tdd", "code-review"],
+        "workflows": ["task-lifecycle", "implement", "tdd", "code-review", "verification-before-completion", "closeout-commit-routing"],
         "decision_input": ["$COLLAB/rrrealll-ocr/or/meeting-260722.md", "$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
         "decision_output": "可部署的 consumer web surface 與三種輸入流程。",
-        "execution_boundary": "可參考 prototype 互動意圖，但不得延用其掃描歷史、假資料 fallback 或未保護的管理端 API。"
+        "execution_boundary": "or/ prototype 完整保留並以正式文件註明 prototype-only 功能；正式 app 可參考其互動與視覺骨架，但不得載入掃描歷史、假資料 fallback、browser-side scoring 或未保護的管理端 API。"
       },
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
@@ -523,6 +651,48 @@
             "$COLLAB/rrrealll-ocr/MVP_RELEASE_GOVERNANCE.md"
           ],
           "recorded_at": "2026-07-30"
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "in_progress",
+          "reason": "Vincent 核准開始 RRO-06；正式 app 移至 or/ 外實作，prototype 原檔與非 MVP 功能保留並註明，consumer surface 只接 RRO-05 verified API，補強 server-generated evidence key 與個別成分 A–E 等級邊界。",
+          "evidence_refs": [
+            "$COLLAB/rrrealll-ocr/ARCHITECTURE.md",
+            "$COLLAB/rrrealll-ocr/or/meeting-260722.md",
+            "$COLLAB/rrrealll-ocr/or/成分刺激度比對_Google_AI_Studio/src/App.tsx",
+            "$COLLAB/rrrealll-ocr/src/http/analysis-http-server.mjs"
+          ],
+          "recorded_at": "2026-08-01"
+        }, {
+          "operation": "amend",
+          "from_status": "in_progress",
+          "to_status": "in_progress",
+          "reason": "RRO-06 正式 consumer app、server-generated evidence key、server-side C／D／E、prototype 隔離與自動驗收已實作；後端 33／33、前端 9／9、seed 與 production build 通過。手機 smoke 曾找到 390px 水平溢位並修正 grid min-content，但修正後瀏覽器工具連續兩次 timeout；依 browser skill 停止重試，尚需一次新鮮 390px scrollWidth 與 screenshot 證據，本 task 不得改為 done。",
+          "evidence_refs": [
+            "$COLLAB/rrrealll-ocr/web/src/App.jsx",
+            "$COLLAB/rrrealll-ocr/web/src/styles.css",
+            "$COLLAB/rrrealll-ocr/src/application/analysis-service.mjs",
+            "$COLLAB/rrrealll-ocr/src/http/analysis-http-server.mjs",
+            "$COLLAB/rrrealll-ocr/docs/rro-06-prototype-boundary.md"
+          ],
+          "recorded_at": "2026-08-01"
+        }, {
+          "operation": "complete",
+          "from_status": "in_progress",
+          "to_status": "completed",
+          "reason": "RRO-06 A01–A06 全數通過：後端 33／33、前端 9／9、seed／production build／npm audit／bundle scan 通過；390px browser smoke 實測 html 與 body scrollWidth 皆為 390、result content 360，outer overflow 0，完整成分表只在 326px 容器內捲動，並證明 C／D／E、unknown、待人工審核與白話教學。",
+          "evidence_refs": [
+            "$COLLAB/rrrealll-ocr/web/src/App.jsx",
+            "$COLLAB/rrrealll-ocr/web/src/App.test.jsx",
+            "$COLLAB/rrrealll-ocr/web/src/styles.css",
+            "$COLLAB/rrrealll-ocr/test/analysis/analyzer.test.mjs",
+            "$COLLAB/rrrealll-ocr/test/analysis/analysis-service.test.mjs",
+            "$COLLAB/rrrealll-ocr/test/analysis/http-api.test.mjs",
+            "$COLLAB/rrrealll-ocr/docs/rro-06-prototype-boundary.md",
+            "Product C1 39e8597628d4c915741fc070b1edaee02a9e08ba on rrrealll-ocr/origin/main; remote ancestry and local/upstream 0/0 verified 2026-08-01",
+            "browser smoke 2026-08-01: 390px outer overflow 0; result content 360/360; ingredient table internal scroll 326/420; screenshot reviewed in Codex task"
+          ],
+          "recorded_at": "2026-08-01"
         }]
       },
       "hc_decision": {

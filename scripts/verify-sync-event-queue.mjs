@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { skipSyncRequest, writeSyncEvent } from "./sync-event-queue.mjs";
+import * as syncEventQueue from "./sync-event-queue.mjs";
+
+const { skipSyncRequest, writeSyncEvent } = syncEventQueue;
 
 const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "sync-event-queue-"));
 
@@ -91,6 +93,54 @@ assert.deepEqual(
     session_id: "session-123",
   }),
   skipped,
+);
+
+assert.equal(
+  typeof syncEventQueue.resolveSyncRequest,
+  "function",
+  "a successful delivery needs a terminal resolver",
+);
+
+const deliveredRequest = writeSyncEvent({
+  root: tmpRoot,
+  type: "sync_requested",
+  target: "heptabase_append",
+  source_event_id: "evt-complete-task-3",
+  project: "demo-project",
+  task_id: "task-2",
+  reason: "task_state_changed",
+  payload: {
+    card_id: "card-123",
+  },
+  actor: "codex",
+  session_id: "session-123",
+  created_at: "2026-06-15T09:10:00+08:00",
+});
+
+const delivered = syncEventQueue.resolveSyncRequest({
+  root: tmpRoot,
+  sync_event_id: deliveredRequest.sync_event_id,
+  delivery_evidence: "Heptabase card card-123 read-back matched canonical task state.",
+  verifier: "heptabase card read-back",
+  actor: "codex",
+  session_id: "session-123",
+  resolved_at: "2026-06-15T09:15:00+08:00",
+});
+assert.equal(delivered.type, "synced");
+assert.equal(delivered.status, "synced");
+assert.equal(delivered.sync_event_id, deliveredRequest.sync_event_id);
+assert.equal(delivered.delivery_evidence, "Heptabase card card-123 read-back matched canonical task state.");
+assert.equal(fs.readdirSync(pendingDir).length, 1);
+assert.deepEqual(
+  syncEventQueue.resolveSyncRequest({
+    root: tmpRoot,
+    sync_event_id: deliveredRequest.sync_event_id,
+    delivery_evidence: "Heptabase card card-123 read-back matched canonical task state.",
+    verifier: "heptabase card read-back",
+    actor: "codex",
+    session_id: "session-123",
+  }),
+  delivered,
 );
 
 assert.throws(

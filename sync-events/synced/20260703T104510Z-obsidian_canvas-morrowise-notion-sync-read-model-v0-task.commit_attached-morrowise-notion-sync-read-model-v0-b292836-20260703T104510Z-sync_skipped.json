@@ -1,0 +1,21 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-morrowise-notion-sync-read-model-v0-task.commit_attached-morrowise-notion-sync-read-model-v0-b292836-20260703T104510Z-20260703T104510Z",
+  "type": "sync_skipped",
+  "target": "obsidian_canvas",
+  "status": "skipped",
+  "source_event_id": "task.commit_attached-morrowise-notion-sync-read-model-v0-b292836-20260703T104510Z",
+  "project": "morrowise",
+  "task_id": "notion-sync-read-model-v0",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-07-03T10:45:10.766Z",
+  "actor": "codex",
+  "session_id": "codex-20260703-mw-notion-closeout",
+  "exemption_reason": "Task has no exact current visual binding represented by a registered current-state Canvas; historical request is exempt from delivery.",
+  "verifier": "clean snapshot task/external_refs binding inventory",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

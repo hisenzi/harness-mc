@@ -1,0 +1,21 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-hiblocks-p1-s-typography-task.commit_attached-hiblocks-p1-s-typography-b121810-20260624T004500Z-20260624T004500Z",
+  "type": "sync_skipped",
+  "target": "obsidian_canvas",
+  "status": "skipped",
+  "source_event_id": "task.commit_attached-hiblocks-p1-s-typography-b121810-20260624T004500Z",
+  "project": "hiblocks",
+  "task_id": "p1-s-typography",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-06-24T08:45:00+08:00",
+  "actor": "codex",
+  "session_id": "codex-20260624-hiblocks-mobile-typography",
+  "exemption_reason": "Task has no exact current visual binding represented by a registered current-state Canvas; historical request is exempt from delivery.",
+  "verifier": "clean snapshot task/external_refs binding inventory",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

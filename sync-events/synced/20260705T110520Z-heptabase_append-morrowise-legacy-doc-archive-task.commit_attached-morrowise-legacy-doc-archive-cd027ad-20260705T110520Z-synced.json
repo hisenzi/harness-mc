@@ -1,0 +1,25 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-morrowise-legacy-doc-archive-task.commit_attached-morrowise-legacy-doc-archive-cd027ad-20260705T110520Z-20260705T110520Z",
+  "type": "synced",
+  "target": "heptabase_append",
+  "status": "synced",
+  "source_event_id": "task.commit_attached-morrowise-legacy-doc-archive-cd027ad-20260705T110520Z",
+  "project": "morrowise",
+  "task_id": "legacy-doc-archive",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "4388e8f4-e4ea-48c5-955b-bb3374bd2a8d",
+    "whiteboard": "MorroWise",
+    "status": "completed",
+    "summary": "JV-03：dual-blade 五檔改為 historical/superseded tombstone，新增 archive index 與 legacy archive map。",
+    "commit": "cd027ad"
+  },
+  "created_at": "2026-07-05T11:05:20.401Z",
+  "actor": "codex",
+  "session_id": "codex-jv03-legacy-doc-archive-20260705",
+  "delivery_evidence": "2026-08-01 current-state refresh and note read-back matched canonical card 4388e8f4-e4ea-48c5-955b-bb3374bd2a8d on MorroWise; current canonical state subsumes this historical delta.",
+  "verifier": "heptabase-task-cards refresh-existing plus heptabase note read",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

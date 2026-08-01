@@ -1,0 +1,25 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-morrowise-notification-first-delivery-task.commit_attached-morrowise-notification-first-delivery-4ac9a5e-20260705T144103Z-20260705T144103Z",
+  "type": "synced",
+  "target": "heptabase_append",
+  "status": "synced",
+  "source_event_id": "task.commit_attached-morrowise-notification-first-delivery-4ac9a5e-20260705T144103Z",
+  "project": "morrowise",
+  "task_id": "notification-first-delivery",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "6093b946-82f5-45d4-9488-56db48231a0b",
+    "whiteboard": "MorroWise",
+    "status": "in_progress",
+    "summary": "JV-04 notify.sh v2 落地：osascript fallback + notify-delivery.jsonl 送達帳；launchd 情境被 TCC 擋，task 續 in_progress",
+    "commit": "4ac9a5e"
+  },
+  "created_at": "2026-07-05T14:41:03.511Z",
+  "actor": "cc",
+  "session_id": "58abfcea-jv-run",
+  "delivery_evidence": "2026-08-01 current-state refresh and note read-back matched canonical card 6093b946-82f5-45d4-9488-56db48231a0b on MorroWise; current canonical state subsumes this historical delta.",
+  "verifier": "heptabase-task-cards refresh-existing plus heptabase note read",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

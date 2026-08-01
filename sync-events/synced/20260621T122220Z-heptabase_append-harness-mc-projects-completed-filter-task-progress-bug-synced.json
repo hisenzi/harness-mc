@@ -1,0 +1,25 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-harness-mc-projects-completed-filter-task-progress-bug-task.commit_attached-harness-mc-projects-completed-filter-task-progress-bug-7fa71dd-20260621T122220Z-20260621T122220Z",
+  "type": "synced",
+  "target": "heptabase_append",
+  "status": "synced",
+  "source_event_id": "task.commit_attached-harness-mc-projects-completed-filter-task-progress-bug-7fa71dd-20260621T122220Z",
+  "project": "harness-mc",
+  "task_id": "projects-completed-filter-task-progress-bug",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "95c7d3a1-2e5a-46ce-9dc4-f2a2503cf8ce",
+    "whiteboard": "MC 儀表版",
+    "status": "completed",
+    "summary": "notyet-harness daily log and MC Canvas mirror recorded the /projects completed filter fix session.",
+    "commit": "7fa71dd"
+  },
+  "created_at": "2026-06-21T12:22:20.787Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-21-mc-project-filter-session",
+  "delivery_evidence": "2026-08-01 current-state refresh and note read-back matched canonical card 95c7d3a1-2e5a-46ce-9dc4-f2a2503cf8ce on MC 儀表版; current canonical state subsumes this historical delta.",
+  "verifier": "heptabase-task-cards refresh-existing plus heptabase note read",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

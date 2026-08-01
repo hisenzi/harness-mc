@@ -1,0 +1,25 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-notyet-md-brand-reference-library-v0-task.completed-notyet-md-brand-reference-library-v0-4bc4918-20260620T071737Z-20260620T071737Z",
+  "type": "synced",
+  "target": "heptabase_append",
+  "status": "synced",
+  "source_event_id": "task.completed-notyet-md-brand-reference-library-v0-4bc4918-20260620T071737Z",
+  "project": "notyet-md",
+  "task_id": "brand-reference-library-v0",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "da242b3a-4c00-40c6-b667-0e8aeecc4457",
+    "whiteboard": "MC 儀表版",
+    "status": "completed",
+    "summary": "Created MorroWise and notyet brand reference docs for reusable brand language and ecosystem positioning.",
+    "commit": "4bc4918"
+  },
+  "created_at": "2026-06-20T07:17:37Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-20-morrowise",
+  "delivery_evidence": "2026-08-01 current-state refresh and note read-back matched canonical card da242b3a-4c00-40c6-b667-0e8aeecc4457 on MC 儀表版; current canonical state subsumes this historical delta.",
+  "verifier": "heptabase-task-cards refresh-existing plus heptabase note read",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

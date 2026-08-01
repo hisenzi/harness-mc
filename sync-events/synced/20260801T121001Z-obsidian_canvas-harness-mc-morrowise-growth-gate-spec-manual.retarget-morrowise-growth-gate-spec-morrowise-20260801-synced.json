@@ -1,0 +1,22 @@
+{
+  "sync_event_id": "sync_requested-retarget-20260801-morrowise-growth-gate-spec-canvas",
+  "type": "synced",
+  "target": "obsidian_canvas",
+  "status": "synced",
+  "source_event_id": "manual.retarget-morrowise-growth-gate-spec-morrowise-20260801",
+  "project": "harness-mc",
+  "task_id": "morrowise-growth-gate-spec",
+  "reason": "user_authorized_historical_retarget",
+  "payload": {
+    "whiteboard": "MorroWise",
+    "canvas": "300_Obsidian_brain/ACP/canvas/MorroWise.canvas"
+  },
+  "created_at": "2026-08-01T12:10:01Z",
+  "actor": "codex",
+  "session_id": "codex-2026-08-01-historical-sync-closeout",
+  "delivery_evidence": "Retargeted task morrowise-growth-gate-spec is present in 300_Obsidian_brain/ACP/canvas/MorroWise.canvas; SHA-256 823ef6245cbcdd741c8f3eeda33d703a98f448f9a7d314ebbd78ccbcbf3225ac; JSON and task/status read-back verified.",
+  "verifier": "clean HEAD Canvas generation, JSON parse, task/status read-back, and SHA-256 comparison",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

@@ -1,0 +1,21 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-yutianlaw-yt-c5-task.commit_attached-yutianlaw-yt-c5-fa69339-20260630T233752Z-20260630T233752Z",
+  "type": "synced",
+  "target": "obsidian_canvas",
+  "status": "synced",
+  "source_event_id": "task.commit_attached-yutianlaw-yt-c5-fa69339-20260630T233752Z",
+  "project": "yutianlaw",
+  "task_id": "yt-c5",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "雨田律師事務所網站"
+  },
+  "created_at": "2026-06-30T23:37:52.438Z",
+  "actor": "codex",
+  "session_id": "codex-yutianlaw-lawyer-team-20260701",
+  "delivery_evidence": "Current-state Canvas 300_Obsidian_brain/ACP/canvas/雨田律師事務所網站.canvas contains task yt-c5 with rendered status blocked (canonical blocked); SHA-256 0b68a8d50f98156ed0f86dcd0bf9ea139386b5ee9649c3f6d3f4e723c54d1ce3; current canonical state subsumes this historical delta.",
+  "verifier": "clean HEAD Canvas generation, JSON parse, task/status read-back, and SHA-256 comparison",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

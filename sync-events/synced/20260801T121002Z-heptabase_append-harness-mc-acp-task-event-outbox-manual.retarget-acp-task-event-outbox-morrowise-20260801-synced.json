@@ -1,0 +1,26 @@
+{
+  "sync_event_id": "sync_requested-retarget-20260801-acp-task-event-outbox-heptabase",
+  "type": "synced",
+  "target": "heptabase_append",
+  "status": "synced",
+  "source_event_id": "manual.retarget-acp-task-event-outbox-morrowise-20260801",
+  "project": "harness-mc",
+  "task_id": "acp-task-event-outbox",
+  "reason": "user_authorized_historical_retarget",
+  "payload": {
+    "card_id": "7d301abd-8bbc-4610-b70b-8ce01d4b036a",
+    "whiteboard": "MorroWise",
+    "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+    "status": "completed",
+    "summary": "新增 append-only task event writer 與驗證，讓跨 repo commit 能產生 task event 而不是直接寫 MC canonical tasks。",
+    "commit": "ac10c35"
+  },
+  "created_at": "2026-08-01T12:10:02Z",
+  "actor": "codex",
+  "session_id": "codex-2026-08-01-historical-sync-closeout",
+  "delivery_evidence": "Retargeted canonical card 7d301abd-8bbc-4610-b70b-8ce01d4b036a refreshed and read back on MorroWise whiteboard f5812fcd-5cee-4184-b3c4-03b9313e4ff7; card membership verified.",
+  "verifier": "heptabase note read plus MorroWise whiteboard cards membership read-back",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

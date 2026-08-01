@@ -1,0 +1,25 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-yutianlaw-yt-c4-task.completed-yutianlaw-yt-c4-bc6643b-20260622T014400Z-20260622T014400Z",
+  "type": "synced",
+  "target": "heptabase_append",
+  "status": "synced",
+  "source_event_id": "task.completed-yutianlaw-yt-c4-bc6643b-20260622T014400Z",
+  "project": "yutianlaw",
+  "task_id": "yt-c4",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "cae598d1-4f49-40ab-8d80-129f52e5b2ae",
+    "whiteboard": "雨田律師事務所網站",
+    "status": "completed",
+    "summary": "手機版新增固定浮動撥號鈕，左下常駐且不與右下回到頂部鈕衝突；附 mockup 與 verifier 驗收。",
+    "commit": "bc6643b"
+  },
+  "created_at": "2026-06-22T01:44:00.440Z",
+  "actor": "codex",
+  "session_id": "codex-yutianlaw-yt-c4-mobile-call",
+  "delivery_evidence": "2026-08-01 current-state refresh and note read-back matched canonical card cae598d1-4f49-40ab-8d80-129f52e5b2ae on 雨田律師事務所網站; current canonical state subsumes this historical delta.",
+  "verifier": "heptabase-task-cards refresh-existing plus heptabase note read",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

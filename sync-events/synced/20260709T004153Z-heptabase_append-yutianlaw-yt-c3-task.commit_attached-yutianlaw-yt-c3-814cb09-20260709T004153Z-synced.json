@@ -1,0 +1,25 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-yutianlaw-yt-c3-task.commit_attached-yutianlaw-yt-c3-814cb09-20260709T004153Z-20260709T004153Z",
+  "type": "synced",
+  "target": "heptabase_append",
+  "status": "synced",
+  "source_event_id": "task.commit_attached-yutianlaw-yt-c3-814cb09-20260709T004153Z",
+  "project": "yutianlaw",
+  "task_id": "yt-c3",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "c2e92ae1-9ee9-40e6-9e1f-45ccd1b59f27",
+    "whiteboard": "雨田律師事務所網站",
+    "status": "completed",
+    "summary": "Attached form UX polish commit: branded thank-you page, wider contact form, and HTML submitter autoresponder contract published in n8n.",
+    "commit": "814cb09"
+  },
+  "created_at": "2026-07-09T00:41:53.258Z",
+  "actor": "codex",
+  "session_id": "codex-yutianlaw-20260709",
+  "delivery_evidence": "2026-08-01 current-state refresh and note read-back matched canonical card c2e92ae1-9ee9-40e6-9e1f-45ccd1b59f27 on 雨田律師事務所網站; current canonical state subsumes this historical delta.",
+  "verifier": "heptabase-task-cards refresh-existing plus heptabase note read",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

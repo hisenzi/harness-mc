@@ -1,0 +1,21 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-rrrealll-v2-transition-w1-verify-task.commit_attached-rrrealll-v2-transition-w1-verify-be5316d-20260628T032152Z-20260628T032152Z",
+  "type": "synced",
+  "target": "obsidian_canvas",
+  "status": "synced",
+  "source_event_id": "task.commit_attached-rrrealll-v2-transition-w1-verify-be5316d-20260628T032152Z",
+  "project": "rrrealll-v2-transition",
+  "task_id": "w1-verify",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "RRREALLL 過渡期網站"
+  },
+  "created_at": "2026-06-28T03:21:52.332Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-28-rrrealll-playwright",
+  "delivery_evidence": "Current-state Canvas 300_Obsidian_brain/ACP/canvas/RRREALLL 過渡期網站.canvas contains task w1-verify with rendered status done (canonical completed); SHA-256 38ca9ff12ab8ac904ee7dc345af97fceacc91895f7853d52f1d02e11656d8842; current canonical state subsumes this historical delta.",
+  "verifier": "clean HEAD Canvas generation, JSON parse, task/status read-back, and SHA-256 comparison",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

@@ -1,0 +1,25 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-dual-blade-acp-skill-creation-system-task.commit_attached-dual-blade-acp-skill-creation-system-4fc1f83-20260627T093216Z-20260627T093216Z",
+  "type": "synced",
+  "target": "heptabase_append",
+  "status": "synced",
+  "source_event_id": "task.commit_attached-dual-blade-acp-skill-creation-system-4fc1f83-20260627T093216Z",
+  "project": "dual-blade",
+  "task_id": "acp-skill-creation-system",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "f4f72ec0-3c68-4593-8021-2db0ba1d7470",
+    "whiteboard": "MC 儀表版",
+    "status": "todo",
+    "summary": "Added the jpmodel-case-page shared skill with generation references and scripts for JPmodel case pages and success-list insertion.",
+    "commit": "4fc1f83"
+  },
+  "created_at": "2026-06-27T09:32:16.170Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-notyet-harness-cleanup",
+  "delivery_evidence": "2026-08-01 current-state refresh and note read-back matched canonical card f4f72ec0-3c68-4593-8021-2db0ba1d7470 on MC 儀表版; current canonical state subsumes this historical delta.",
+  "verifier": "heptabase-task-cards refresh-existing plus heptabase note read",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

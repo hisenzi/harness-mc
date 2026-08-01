@@ -1,0 +1,25 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-morrowise-auditor-manual-architecture-report-task.commit_attached-morrowise-auditor-manual-architecture-report-f304f65-20260627T120312Z-20260627T120312Z",
+  "type": "synced",
+  "target": "heptabase_append",
+  "status": "synced",
+  "source_event_id": "task.commit_attached-morrowise-auditor-manual-architecture-report-f304f65-20260627T120312Z",
+  "project": "morrowise",
+  "task_id": "auditor-manual-architecture-report",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "758608cc-4b90-4554-b37b-a7e76a2a855c",
+    "whiteboard": "MorroWise",
+    "status": "completed",
+    "summary": "Committed the read-only Architecture Pulse report for ARCHITECTURE.md, with eight findings and a JSON read model candidate for the MorroWise auditor pipeline.",
+    "commit": "f304f65"
+  },
+  "created_at": "2026-06-27T12:03:12.299Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-auditor-manual-architecture-report",
+  "delivery_evidence": "2026-08-01 current-state refresh and note read-back matched canonical card 758608cc-4b90-4554-b37b-a7e76a2a855c on MorroWise; current canonical state subsumes this historical delta.",
+  "verifier": "heptabase-task-cards refresh-existing plus heptabase note read",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

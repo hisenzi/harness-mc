@@ -1,0 +1,21 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-morrowise-task-lifecycle-jv32-gate-task.commit_attached-morrowise-task-lifecycle-jv32-gate-038bae0-20260718T151806Z-20260718T151806Z",
+  "type": "sync_skipped",
+  "target": "obsidian_canvas",
+  "status": "skipped",
+  "source_event_id": "task.commit_attached-morrowise-task-lifecycle-jv32-gate-038bae0-20260718T151806Z",
+  "project": "morrowise",
+  "task_id": "task-lifecycle-jv32-gate",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-07-18T15:18:06.594Z",
+  "actor": "codex",
+  "session_id": "codex-20260718-jv40-governance",
+  "exemption_reason": "Task has no exact current visual binding represented by a registered current-state Canvas; historical request is exempt from delivery.",
+  "verifier": "clean snapshot task/external_refs binding inventory",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

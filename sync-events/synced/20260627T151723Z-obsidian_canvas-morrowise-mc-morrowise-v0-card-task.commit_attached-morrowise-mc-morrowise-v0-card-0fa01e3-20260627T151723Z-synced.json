@@ -1,0 +1,21 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-morrowise-mc-morrowise-v0-card-task.commit_attached-morrowise-mc-morrowise-v0-card-0fa01e3-20260627T151723Z-20260627T151723Z",
+  "type": "synced",
+  "target": "obsidian_canvas",
+  "status": "synced",
+  "source_event_id": "task.commit_attached-morrowise-mc-morrowise-v0-card-0fa01e3-20260627T151723Z",
+  "project": "morrowise",
+  "task_id": "mc-morrowise-v0-card",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MorroWise"
+  },
+  "created_at": "2026-06-27T15:17:23.363Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-morrowise-cc-log",
+  "delivery_evidence": "Current-state Canvas 300_Obsidian_brain/ACP/canvas/MorroWise.canvas contains task mc-morrowise-v0-card with rendered status done (canonical done); SHA-256 823ef6245cbcdd741c8f3eeda33d703a98f448f9a7d314ebbd78ccbcbf3225ac; current canonical state subsumes this historical delta.",
+  "verifier": "clean HEAD Canvas generation, JSON parse, task/status read-back, and SHA-256 comparison",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

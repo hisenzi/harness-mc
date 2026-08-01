@@ -1,0 +1,25 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-rrrealll-v2-transition-w1-3-task.completed-rrrealll-v2-transition-w1-3-80c92e9-20260626T034933Z-20260626T034933Z",
+  "type": "synced",
+  "target": "heptabase_append",
+  "status": "synced",
+  "source_event_id": "task.completed-rrrealll-v2-transition-w1-3-80c92e9-20260626T034933Z",
+  "project": "rrrealll-v2-transition",
+  "task_id": "w1-3",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "f00c2f2b-f6f3-472a-8521-745259a7288f",
+    "whiteboard": "RRREALLL 過渡期網站",
+    "status": "completed",
+    "summary": "正式通知入口、首頁 meta、服務條款與隱私權政策文案已收斂為正式 RRREALLL 品牌語氣，前台 src 已無「過渡」字樣。",
+    "commit": "80c92e9"
+  },
+  "created_at": "2026-06-26T03:49:33.090Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-26-rrrealll-copy-cleanup",
+  "delivery_evidence": "2026-08-01 current-state refresh and note read-back matched canonical card f00c2f2b-f6f3-472a-8521-745259a7288f on RRREALLL 過渡期網站; current canonical state subsumes this historical delta.",
+  "verifier": "heptabase-task-cards refresh-existing plus heptabase note read",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

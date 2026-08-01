@@ -1,0 +1,25 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-rrrealll-v2-transition-w1-2-task.commit_attached-rrrealll-v2-transition-w1-2-26940b7-20260622T044328Z-20260622T044328Z",
+  "type": "synced",
+  "target": "heptabase_append",
+  "status": "synced",
+  "source_event_id": "task.commit_attached-rrrealll-v2-transition-w1-2-26940b7-20260622T044328Z",
+  "project": "rrrealll-v2-transition",
+  "task_id": "w1-2",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "68167809-6219-4f3a-9c36-76c3c79ff591",
+    "whiteboard": "RRREALLL 過渡期網站",
+    "status": "completed",
+    "summary": "把已完成的 RRREALLL HiBlocks/Astro 過渡網站同步到 notyet-harness mirror/log surfaces，對應 feature repo commit 0d685bf。",
+    "commit": "26940b7"
+  },
+  "created_at": "2026-06-22T04:43:28.455Z",
+  "actor": "codex",
+  "session_id": "rrrealll-transition-site-20260622",
+  "delivery_evidence": "2026-08-01 current-state refresh and note read-back matched canonical card 68167809-6219-4f3a-9c36-76c3c79ff591 on RRREALLL 過渡期網站; current canonical state subsumes this historical delta.",
+  "verifier": "heptabase-task-cards refresh-existing plus heptabase note read",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

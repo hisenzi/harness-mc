@@ -1,0 +1,21 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-harness-mc-acp-work-anchor-preflight-flow-task.commit_attached-harness-mc-acp-work-anchor-preflight-flow-8c13f68-20260621T154234Z-20260621T154234Z",
+  "type": "synced",
+  "target": "obsidian_canvas",
+  "status": "synced",
+  "source_event_id": "task.commit_attached-harness-mc-acp-work-anchor-preflight-flow-8c13f68-20260621T154234Z",
+  "project": "harness-mc",
+  "task_id": "acp-work-anchor-preflight-flow",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-06-21T15:42:34.579Z",
+  "actor": "codex",
+  "session_id": "codex-20260621-acp-mc-gate-03",
+  "delivery_evidence": "Current-state Canvas 300_Obsidian_brain/ACP/canvas/MC 儀表版.canvas contains task acp-work-anchor-preflight-flow with rendered status done (canonical completed); SHA-256 a93235091b0a22b4cb51e4c5c2bc2c40862bd8fcda5bb557fed840b9c7e258e0; current canonical state subsumes this historical delta.",
+  "verifier": "clean HEAD Canvas generation, JSON parse, task/status read-back, and SHA-256 comparison",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

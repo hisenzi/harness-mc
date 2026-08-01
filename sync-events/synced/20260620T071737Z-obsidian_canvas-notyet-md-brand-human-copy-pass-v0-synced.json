@@ -1,0 +1,21 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-notyet-md-brand-human-copy-pass-v0-task.completed-notyet-md-brand-human-copy-pass-v0-4bc4918-20260620T071737Z-20260620T071737Z",
+  "type": "synced",
+  "target": "obsidian_canvas",
+  "status": "synced",
+  "source_event_id": "task.completed-notyet-md-brand-human-copy-pass-v0-4bc4918-20260620T071737Z",
+  "project": "notyet-md",
+  "task_id": "brand-human-copy-pass-v0",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-06-20T07:17:37Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-20-morrowise",
+  "delivery_evidence": "Current-state Canvas 300_Obsidian_brain/ACP/canvas/MC 儀表版.canvas contains task brand-human-copy-pass-v0 with rendered status done (canonical completed); SHA-256 a93235091b0a22b4cb51e4c5c2bc2c40862bd8fcda5bb557fed840b9c7e258e0; current canonical state subsumes this historical delta.",
+  "verifier": "clean HEAD Canvas generation, JSON parse, task/status read-back, and SHA-256 comparison",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

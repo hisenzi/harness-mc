@@ -1,0 +1,25 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-morrowise-v0-live-loop-verify-task.commit_attached-morrowise-v0-live-loop-verify-8aa7c60-20260703T043408Z-20260703T043408Z",
+  "type": "synced",
+  "target": "heptabase_append",
+  "status": "synced",
+  "source_event_id": "task.commit_attached-morrowise-v0-live-loop-verify-8aa7c60-20260703T043408Z",
+  "project": "morrowise",
+  "task_id": "v0-live-loop-verify",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "0d1d6c47-251e-4b09-be40-66ab821939ca",
+    "whiteboard": "MorroWise",
+    "status": "deferred",
+    "summary": "MANUAL.md 生成區依 2026-07-03 健檢後的 morrowise-system.json 重同步（sync-morrowise-manual.py 輸出，--check 綠）。",
+    "commit": "8aa7c60"
+  },
+  "created_at": "2026-07-03T04:34:08.369Z",
+  "actor": "cc",
+  "session_id": "cb4549cc-9fbb-4736-a626-78eaba7e5c7c",
+  "delivery_evidence": "2026-08-01 current-state refresh and note read-back matched canonical card 0d1d6c47-251e-4b09-be40-66ab821939ca on MorroWise; current canonical state subsumes this historical delta.",
+  "verifier": "heptabase-task-cards refresh-existing plus heptabase note read",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

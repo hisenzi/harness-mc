@@ -1,0 +1,25 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-rrrealll-v2-transition-w1-3-task.completed-rrrealll-v2-transition-w1-3-6e75de3-20260623T000743Z-20260623T000743Z",
+  "type": "synced",
+  "target": "heptabase_append",
+  "status": "synced",
+  "source_event_id": "task.completed-rrrealll-v2-transition-w1-3-6e75de3-20260623T000743Z",
+  "project": "rrrealll-v2-transition",
+  "task_id": "w1-3",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "f00c2f2b-f6f3-472a-8521-745259a7288f",
+    "whiteboard": "RRREALLL 過渡期網站",
+    "status": "completed",
+    "summary": "已移除 RRREALLL 過渡頁 LINE/粉專待更新 placeholder，改以 service@rrrealll.com 作為可用試用通知入口，並新增 /privacy/ 與 /terms/ 法規頁；build、astro check 與 dist 字串檢查通過。",
+    "commit": "6e75de3"
+  },
+  "created_at": "2026-06-23T00:07:43.433Z",
+  "actor": "codex",
+  "session_id": "codex-rrrealll-w1-3-20260623",
+  "delivery_evidence": "2026-08-01 current-state refresh and note read-back matched canonical card f00c2f2b-f6f3-472a-8521-745259a7288f on RRREALLL 過渡期網站; current canonical state subsumes this historical delta.",
+  "verifier": "heptabase-task-cards refresh-existing plus heptabase note read",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

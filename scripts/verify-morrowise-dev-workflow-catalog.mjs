@@ -171,6 +171,8 @@ const ARCHITECTURE_VERSION_REVIEW_REFS = [
   JV32_PREBUILD_CONTRACT_REF,
   "$COLLAB/harness-mc/scripts/generate-morrowise-dev-workflows.mjs",
   "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs",
+  "$COLLAB/harness-mc/scripts/sync-event-queue.mjs",
+  "$COLLAB/harness-mc/scripts/verify-sync-event-queue.mjs",
 ];
 
 const packageJson = readJson(packageJsonPath);
@@ -700,6 +702,7 @@ function verifyArchitectureAdmission(value) {
   assert.ok(["updated", "no_index_change"].includes(review.index_action), "version_review.index_action must record index decision");
   assert.equal(review.sync_check_ref, "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check");
   assert.ok(review.evidence_refs?.includes("node scripts/verify-morrowise-dev-workflow-catalog.mjs"));
+  assert.ok(review.evidence_refs?.includes("node scripts/verify-sync-event-queue.mjs"));
   assert.ok(review.reason, "version_review requires a reason");
 }
 

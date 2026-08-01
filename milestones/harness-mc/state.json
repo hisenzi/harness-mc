@@ -61,11 +61,11 @@
       "summary": "產出 MorroWise Growth Gate 正式規格：把活系統啟動條件定義成 trigger→source→process→output→surface→close-rule 路由，涵蓋使用者語句、weekly review、stale/blocked task、new project、task completion、commit boundary、external sync、docs drift 與 approval wait。",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "MorroWise / system-ops",
-          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
           "card_id": "3d22653b-5d9b-4c1c-9cb3-f465be4e1d5e",
-          "synced_at": "2026-06-16",
-          "sync_mode": "created"
+          "synced_at": "2026-08-01",
+          "sync_mode": "refreshed"
         }
       }
     },
@@ -113,11 +113,11 @@
       "summary": "新增 append-only task event writer 與驗證，讓跨 repo commit 能產生 task event 而不是直接寫 MC canonical tasks。",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "MorroWise / system-ops",
-          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
           "card_id": "7d301abd-8bbc-4610-b70b-8ce01d4b036a",
-          "synced_at": "2026-06-16",
-          "sync_mode": "renamed"
+          "synced_at": "2026-08-01",
+          "sync_mode": "refreshed"
         }
       }
     },

@@ -1,0 +1,25 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-harness-mc-acp-control-plane-operating-loop-task.commit_attached-harness-mc-acp-control-plane-operating-loop-7a0a2c8-20260621T083305Z-20260621T083305Z",
+  "type": "synced",
+  "target": "heptabase_append",
+  "status": "synced",
+  "source_event_id": "task.commit_attached-harness-mc-acp-control-plane-operating-loop-7a0a2c8-20260621T083305Z",
+  "project": "harness-mc",
+  "task_id": "acp-control-plane-operating-loop",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "4daedcbb-2aa0-4e6f-9618-d07f7c88047b",
+    "whiteboard": "MC 儀表版",
+    "status": "completed",
+    "summary": "Extracted review into a standalone skill and added acceptance-matrix gates to planning/execution/review workflow.",
+    "commit": "7a0a2c8"
+  },
+  "created_at": "2026-06-21T08:33:05.367Z",
+  "actor": "codex",
+  "session_id": "codex-20260621-review-skill",
+  "delivery_evidence": "2026-08-01 current-state refresh and note read-back matched canonical card 4daedcbb-2aa0-4e6f-9618-d07f7c88047b on MC 儀表版; current canonical state subsumes this historical delta.",
+  "verifier": "heptabase-task-cards refresh-existing plus heptabase note read",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

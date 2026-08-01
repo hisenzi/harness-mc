@@ -1,0 +1,26 @@
+{
+  "sync_event_id": "sync_requested-retarget-20260801-morrowise-growth-gate-spec-heptabase",
+  "type": "synced",
+  "target": "heptabase_append",
+  "status": "synced",
+  "source_event_id": "manual.retarget-morrowise-growth-gate-spec-morrowise-20260801",
+  "project": "harness-mc",
+  "task_id": "morrowise-growth-gate-spec",
+  "reason": "user_authorized_historical_retarget",
+  "payload": {
+    "card_id": "3d22653b-5d9b-4c1c-9cb3-f465be4e1d5e",
+    "whiteboard": "MorroWise",
+    "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
+    "status": "completed",
+    "summary": "產出 MorroWise Growth Gate 正式規格：把活系統啟動條件定義成 trigger→source→process→output→surface→close-rule 路由，涵蓋使用者語句、weekly review、stale/blocked task、new project、task completion、commit boundary、external sync、docs drift 與 approval wait。",
+    "commit": "3155e48"
+  },
+  "created_at": "2026-08-01T12:10:00Z",
+  "actor": "codex",
+  "session_id": "codex-2026-08-01-historical-sync-closeout",
+  "delivery_evidence": "Retargeted canonical card 3d22653b-5d9b-4c1c-9cb3-f465be4e1d5e refreshed and read back on MorroWise whiteboard f5812fcd-5cee-4184-b3c4-03b9313e4ff7; card membership verified.",
+  "verifier": "heptabase note read plus MorroWise whiteboard cards membership read-back",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

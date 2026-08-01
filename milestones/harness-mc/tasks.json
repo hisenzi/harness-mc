@@ -108,13 +108,43 @@
       "commits": [
         "3155e48"
       ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "Vincent 2026-08-01：核准將兩張 current pending 卡從不存在的 MorroWise / system-ops 改投 MorroWise",
+          "Heptabase card 與 MorroWise whiteboard membership 回讀",
+          "MorroWise current-state Canvas 回讀"
+        ],
+        "decision_output": "既有卡片與 external_refs 精準 retarget 至 MorroWise，保留 task identity 與 lineage",
+        "execution_boundary": "只修改本 task 在 tasks.json／state.json 的既有 Heptabase binding 與衍生視圖；不得改其他歷史 system-ops refs、吸收 shared dirty、commit、push 或部署。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "Vincent 核准把 current pending 的既有卡從不存在的 MorroWise / system-ops 精準改投 MorroWise；task 狀態與 identity 不變。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-growth-gate-spec",
+              "$COLLAB/notyet-harness/300_Obsidian_brain/ACP/canvas/MorroWise.canvas",
+              "heptabase:whiteboard:f5812fcd-5cee-4184-b3c4-03b9313e4ff7#card:3d22653b-5d9b-4c1c-9cb3-f465be4e1d5e"
+            ],
+            "recorded_at": "2026-08-01"
+          }
+        ]
+      },
       "external_refs": {
         "heptabase": {
-          "whiteboard": "MorroWise / system-ops",
-          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
           "card_id": "3d22653b-5d9b-4c1c-9cb3-f465be4e1d5e",
-          "synced_at": "2026-06-16",
-          "sync_mode": "created"
+          "synced_at": "2026-08-01",
+          "sync_mode": "refreshed"
         }
       }
     },
@@ -194,16 +224,46 @@
         "acp-task-write-command-map",
         "acp-task-schema-validator"
       ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "Vincent 2026-08-01：核准將兩張 current pending 卡從不存在的 MorroWise / system-ops 改投 MorroWise",
+          "Heptabase card 與 MorroWise whiteboard membership 回讀",
+          "MorroWise current-state Canvas 回讀"
+        ],
+        "decision_output": "既有卡片與 external_refs 精準 retarget 至 MorroWise，保留 task identity 與 lineage",
+        "execution_boundary": "只修改本 task 在 tasks.json／state.json 的既有 Heptabase binding 與衍生視圖；不得改其他歷史 system-ops refs、吸收 shared dirty、commit、push 或部署。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "Vincent 核准把 current pending 的既有卡從不存在的 MorroWise / system-ops 精準改投 MorroWise；task 狀態與 identity 不變。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#acp-task-event-outbox",
+              "$COLLAB/notyet-harness/300_Obsidian_brain/ACP/canvas/MorroWise.canvas",
+              "heptabase:whiteboard:f5812fcd-5cee-4184-b3c4-03b9313e4ff7#card:7d301abd-8bbc-4610-b70b-8ce01d4b036a"
+            ],
+            "recorded_at": "2026-08-01"
+          }
+        ]
+      },
       "done_condition": "改造 worktree-commit：commit repo 非 harness-mc 時，不直接修改 harness-mc tasks.json；改為寫入 append-only task event（含 event_id/repo/commit/project/task_id/type/summary/created_at/actor/session_id）。同 repo harness-mc 仍可走直接回填。",
       "note": "已新增 task-event-outbox writer + verification script，並更新 worktree-commit skill v1.6：跨 repo commit 改寫 append-only task event，不直接改 harness-mc tasks.json。待 commit/驗收後標 completed。",
       "batch": "control-console",
       "external_refs": {
         "heptabase": {
-          "whiteboard": "MorroWise / system-ops",
-          "whiteboard_id": "6a35eb25-08a2-4604-b289-807374db3e7d",
+          "whiteboard": "MorroWise",
+          "whiteboard_id": "f5812fcd-5cee-4184-b3c4-03b9313e4ff7",
           "card_id": "7d301abd-8bbc-4610-b70b-8ce01d4b036a",
-          "synced_at": "2026-06-16",
-          "sync_mode": "renamed"
+          "synced_at": "2026-08-01",
+          "sync_mode": "refreshed"
         }
       }
     },

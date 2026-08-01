@@ -1,0 +1,21 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-harness-mc-acp-obsidian-canvas-sync-hook-task.commit_attached-harness-mc-acp-obsidian-canvas-sync-hook-bd89778-20260627T092643Z-20260627T092643Z",
+  "type": "synced",
+  "target": "obsidian_canvas",
+  "status": "synced",
+  "source_event_id": "task.commit_attached-harness-mc-acp-obsidian-canvas-sync-hook-bd89778-20260627T092643Z",
+  "project": "harness-mc",
+  "task_id": "acp-obsidian-canvas-sync-hook",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-06-27T09:26:43.487Z",
+  "actor": "codex",
+  "session_id": "codex-20260627-notyet-cleanup",
+  "delivery_evidence": "Current-state Canvas 300_Obsidian_brain/ACP/canvas/MC 儀表版.canvas contains task acp-obsidian-canvas-sync-hook with rendered status done (canonical done); SHA-256 a93235091b0a22b4cb51e4c5c2bc2c40862bd8fcda5bb557fed840b9c7e258e0; current canonical state subsumes this historical delta.",
+  "verifier": "clean HEAD Canvas generation, JSON parse, task/status read-back, and SHA-256 comparison",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

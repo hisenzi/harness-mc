@@ -1,0 +1,21 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-harness-mc-projects-completed-filter-task-progress-bug-task.commit_attached-harness-mc-projects-completed-filter-task-progress-bug-7fa71dd-20260621T122220Z-20260621T122220Z",
+  "type": "synced",
+  "target": "obsidian_canvas",
+  "status": "synced",
+  "source_event_id": "task.commit_attached-harness-mc-projects-completed-filter-task-progress-bug-7fa71dd-20260621T122220Z",
+  "project": "harness-mc",
+  "task_id": "projects-completed-filter-task-progress-bug",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-06-21T12:22:20.787Z",
+  "actor": "codex",
+  "session_id": "codex-2026-06-21-mc-project-filter-session",
+  "delivery_evidence": "Current-state Canvas 300_Obsidian_brain/ACP/canvas/MC 儀表版.canvas contains task projects-completed-filter-task-progress-bug with rendered status done (canonical completed); SHA-256 a93235091b0a22b4cb51e4c5c2bc2c40862bd8fcda5bb557fed840b9c7e258e0; current canonical state subsumes this historical delta.",
+  "verifier": "clean HEAD Canvas generation, JSON parse, task/status read-back, and SHA-256 comparison",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

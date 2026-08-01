@@ -1,0 +1,25 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-yutianlaw-yt-c5-task.commit_attached-yutianlaw-yt-c5-fa69339-20260630T233752Z-20260630T233752Z",
+  "type": "synced",
+  "target": "heptabase_append",
+  "status": "synced",
+  "source_event_id": "task.commit_attached-yutianlaw-yt-c5-fa69339-20260630T233752Z",
+  "project": "yutianlaw",
+  "task_id": "yt-c5",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "aa826e3a-1280-4b71-b22e-3943f7c6e8c8",
+    "whiteboard": "雨田律師事務所網站",
+    "status": "blocked",
+    "summary": "補齊蔡承翰、陳建廷、簡凱葳律師團隊照片與翻卡資料，並依指示移除林根億；build 與首頁輸出檢查通過。",
+    "commit": "fa69339"
+  },
+  "created_at": "2026-06-30T23:37:52.438Z",
+  "actor": "codex",
+  "session_id": "codex-yutianlaw-lawyer-team-20260701",
+  "delivery_evidence": "2026-08-01 current-state refresh and note read-back matched canonical card aa826e3a-1280-4b71-b22e-3943f7c6e8c8 on 雨田律師事務所網站; current canonical state subsumes this historical delta.",
+  "verifier": "heptabase-task-cards refresh-existing plus heptabase note read",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

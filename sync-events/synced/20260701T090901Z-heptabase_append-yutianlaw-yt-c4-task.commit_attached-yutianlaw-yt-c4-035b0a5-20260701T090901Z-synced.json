@@ -1,0 +1,25 @@
+{
+  "sync_event_id": "sync_requested-heptabase_append-yutianlaw-yt-c4-task.commit_attached-yutianlaw-yt-c4-035b0a5-20260701T090901Z-20260701T090901Z",
+  "type": "synced",
+  "target": "heptabase_append",
+  "status": "synced",
+  "source_event_id": "task.commit_attached-yutianlaw-yt-c4-035b0a5-20260701T090901Z",
+  "project": "yutianlaw",
+  "task_id": "yt-c4",
+  "reason": "task_state_changed",
+  "payload": {
+    "card_id": "cae598d1-4f49-40ab-8d80-129f52e5b2ae",
+    "whiteboard": "雨田律師事務所網站",
+    "status": "todo",
+    "summary": "手機選單 CTA 點擊後會關閉選單，footer 手機版保留浮動撥號與回頂端按鈕安全距離，並補 verifier 檢查；build 通過。",
+    "commit": "035b0a5"
+  },
+  "created_at": "2026-07-01T09:09:01.850Z",
+  "actor": "codex",
+  "session_id": "codex-yutianlaw-mobile-call-hardening-20260701",
+  "delivery_evidence": "2026-08-01 current-state refresh and note read-back matched canonical card cae598d1-4f49-40ab-8d80-129f52e5b2ae on 雨田律師事務所網站; current canonical state subsumes this historical delta.",
+  "verifier": "heptabase-task-cards refresh-existing plus heptabase note read",
+  "resolved_at": "2026-08-01T12:20:00Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-01-historical-sync-closeout"
+}

@@ -65,6 +65,67 @@ const mediumSummary = runMorrowiseActionRunner(
 assert.equal(mediumSummary.outputs[0].output_type, "approval_request");
 assert.equal(mediumSummary.outputs[0].applied, false);
 
+const targetTaskSource = "$COLLAB/harness-mc/milestones/self-learning/tasks.json";
+const targetTaskPath = path.join(tmpRoot, "milestones", "self-learning", "tasks.json");
+fs.mkdirSync(path.dirname(targetTaskPath), { recursive: true });
+fs.writeFileSync(targetTaskPath, `${JSON.stringify({ tasks: [{ id: "existing", status: "todo" }] }, null, 2)}\n`);
+const targetBefore = fs.readFileSync(targetTaskPath, "utf8");
+const governanceCandidate = {
+  ...candidate("rec.governance.next-task", "propose_next_task", "medium", true, "proposed-task"),
+  candidate_type: "propose_next_task",
+  target_project: "self-learning",
+  target_task_source: targetTaskSource,
+  goal_ref: "$COLLAB/harness-mc/milestones/self-learning/project.json#/goals",
+  source_task_refs: ["self-learning/existing"],
+  observed_gap: "Fresh practice evidence shows an unowned capability gap.",
+  proposed_operation: "create",
+  proposed_done_condition: "The gap has one evidence-backed task with a measurable completion boundary.",
+  limitations: ["Proposal only; Vincent has not approved a canonical write."],
+};
+const governanceResult = runMorrowiseActionRunner(
+  { candidates: [governanceCandidate] },
+  { root: tmpRoot, writeSyncEvents: true },
+);
+assert.equal(governanceResult.applied_actions, 0);
+assert.equal(governanceResult.approval_requests, 1);
+assert.equal(governanceResult.outputs[0].output_type, "approval_request");
+assert.equal(governanceResult.outputs[0].applied, false);
+assert.equal(governanceResult.outputs[0].action_class, "task_state_mutation");
+assert.deepEqual(governanceResult.outputs[0].approval_request.task_governance_handoff, {
+  target_project: "self-learning",
+  target_task_source: targetTaskSource,
+  goal_ref: "$COLLAB/harness-mc/milestones/self-learning/project.json#/goals",
+  proposed_operation: "create",
+  write_route: "JV-32/JV-40-after-Vincent-approval",
+});
+assert.equal(fs.readFileSync(targetTaskPath, "utf8"), targetBefore);
+
+const sensitiveGovernanceCandidate = {
+  ...governanceCandidate,
+  private_financial_value: "fixture-redacted",
+  payload: { runtime_auth: "fixture-redacted" },
+};
+assert.throws(
+  () => runMorrowiseActionRunner({ candidates: [sensitiveGovernanceCandidate] }, { root: tmpRoot }),
+  /task governance candidate contains forbidden sensitive field/,
+);
+
+const malformedGovernanceCandidate = { ...governanceCandidate };
+delete malformedGovernanceCandidate.target_task_source;
+assert.throws(
+  () => runMorrowiseActionRunner({ candidates: [malformedGovernanceCandidate] }, { root: tmpRoot }),
+  /task governance candidate\.target_task_source is required/,
+);
+
+const mismatchedGovernanceCandidate = {
+  ...governanceCandidate,
+  target_task_source: "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
+};
+assert.throws(
+  () => runMorrowiseActionRunner({ candidates: [mismatchedGovernanceCandidate] }, { root: tmpRoot }),
+  /task governance candidate\.target_task_source must match target_project/,
+);
+
 console.log("MorroWise action runner verification OK");
 
 function candidate(recommendationId, suggestedAction, riskLevel, requiresApproval, suggestedTaskId, payload = {}) {

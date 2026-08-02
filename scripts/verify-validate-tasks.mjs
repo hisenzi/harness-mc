@@ -1,6 +1,7 @@
 import fs from "fs";
 import os from "os";
 import path from "path";
+import crypto from "crypto";
 import { execFileSync } from "child_process";
 
 const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "validate-tasks-"));
@@ -39,6 +40,22 @@ function writeJson(filePath, value) {
   fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`);
 }
 
+function goalFingerprint(goals) {
+  return `sha256:${crypto.createHash("sha256").update(JSON.stringify(goals)).digest("hex")}`;
+}
+
+function goalAlignment(project, goals, extras = {}) {
+  return {
+    project_id: project,
+    goal_ref: `$COLLAB/harness-mc/milestones/${project}/project.json#/goals`,
+    goal_fingerprint: goalFingerprint(goals),
+    contribution: "Fixture task contributes directly to the owning project goal.",
+    evidence_plan: ["node scripts/verify-validate-tasks.mjs"],
+    reviewed_at: "2026-08-01",
+    ...extras,
+  };
+}
+
 function git(args) {
   return execFileSync("git", args, {
     cwd: repo,
@@ -51,6 +68,9 @@ fs.mkdirSync(repo, { recursive: true });
 git(["init"]);
 git(["config", "user.email", "verify@example.test"]);
 git(["config", "user.name", "Task Validator Verify"]);
+
+const harnessGoals = ["讓 shared control-plane task 可被安全執行與驗證"];
+const morrowiseGoals = ["讓 MorroWise feedback loop 可被觀測、治理與驗證"];
 
 const baseTasks = {
   tasks: [
@@ -71,6 +91,7 @@ const baseTasks = {
       },
       depends_on: [],
       external_refs: {},
+      goal_alignment: goalAlignment("harness-mc", harnessGoals),
     },
     {
       id: "legacy-missing-fields",
@@ -129,11 +150,15 @@ const baseTasks = {
 };
 
 writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), baseTasks);
+writeJson(path.join(repo, "milestones", "harness-mc", "project.json"), { name: "Harness 驗證專案", goals: harnessGoals });
 writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), {
   tasks: [morrowiseSeedTask()]
 });
+writeJson(path.join(repo, "milestones", "morrowise", "project.json"), { name: "MorroWise 驗證專案", goals: morrowiseGoals });
 git(["add", "milestones/harness-mc/tasks.json"]);
+git(["add", "milestones/harness-mc/project.json"]);
 git(["add", "milestones/morrowise/tasks.json"]);
+git(["add", "milestones/morrowise/project.json"]);
 git(["commit", "-m", "seed tasks"]);
 
 const clean = run(["--changed-only"]);
@@ -246,6 +271,7 @@ const closedWithoutArchitectureDecision = {
       track: "governance",
       order_label: "JV-VERIFY-01",
       done_condition: "Closed MorroWise governance tasks must record architecture promotion judgment.",
+      goal_alignment: goalAlignment("morrowise", morrowiseGoals),
       hc_decision: {
         task_scope: "morrowise/closed-without-arch",
         hc_refs: ["#rightProblem"],
@@ -682,6 +708,7 @@ newTaskWithFollowupMutation.tasks.push({
   track: "control-plane",
   order_label: "ACP-VERIFY-05",
   done_condition: "A newly created task may record a later in-progress amendment before its first commit.",
+  goal_alignment: goalAlignment("harness-mc", harnessGoals),
   hc_decision: {
     task_scope: "harness-mc/acp-new-task-with-followup",
     hc_refs: ["#rightProblem"],
@@ -837,6 +864,7 @@ function lifecycleTask(id, status, history, workflows = ["task-lifecycle"]) {
     },
     jv32_route: { workflows },
     task_lifecycle: { route: "JV-32/task-lifecycle", history },
+    goal_alignment: goalAlignment("harness-mc", harnessGoals),
     ...(["done", "completed", "fixed"].includes(status) ? {
       test_contract: requiredTestContract(),
       completion_evidence: requiredCompletionEvidence(),
@@ -849,6 +877,7 @@ function morrowiseTask(id, status, history, extras = {}) {
     ...lifecycleTask(id, status, history),
     track: "governance",
     order_label: `JV-${id.toUpperCase()}`,
+    goal_alignment: goalAlignment("morrowise", morrowiseGoals),
     ...extras,
   };
 }
@@ -868,7 +897,8 @@ function morrowiseSeedTask() {
       hc_confidence: 0.7,
       evidence_refs: ["milestones/morrowise/tasks.json"],
       source_boundary: "HC is a thinking check, not source of truth; tasks.json remains canonical."
-    }
+    },
+    goal_alignment: goalAlignment("morrowise", morrowiseGoals),
   };
 }
 
@@ -1244,6 +1274,8 @@ if (!repairedNotionCourseMirrorResult.output.includes("Task validation OK")) {
 
 const overdueMorrowiseBaseline = structuredClone(weeklyCoreBaseline);
 writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), overdueMorrowiseBaseline);
+const rrrealllGoals = ["讓 RRREALLL 產品能力安全且可驗證"];
+writeJson(path.join(repo, "milestones", "rrrealll-ocr", "project.json"), { name: "RRREALLL 驗證專案", goals: rrrealllGoals });
 writeJson(path.join(repo, "milestones", "rrrealll-ocr", "tasks.json"), {
   project: "rrrealll-ocr",
   tasks: [{
@@ -1273,6 +1305,7 @@ const rrrealllOnlyChange = {
       status: "todo",
       track: "product",
       done_condition: "An unrelated project change must not inherit MorroWise lifecycle deadlines.",
+      goal_alignment: goalAlignment("rrrealll-ocr", rrrealllGoals),
       jv32_route: { workflows: ["task-lifecycle"] },
       task_lifecycle: {
         route: "JV-32/task-lifecycle",
@@ -1338,6 +1371,104 @@ if (invalidCleanCommittedRrrealllChange.output.includes("ERROR milestones/morrow
 const invalidBaseRef = run(["--base", "missing-validation-base"], { expectFailure: true });
 if (!invalidBaseRef.output.includes("--base must resolve to a commit")) {
   throw new Error("Expected an invalid validation base ref to fail closed.");
+}
+
+const governedProject = "goal-governed";
+const governedGoals = ["讓 task 持續累積對未來選擇有用的能力"];
+writeJson(path.join(repo, "milestones", governedProject, "project.json"), {
+  name: "目標治理驗證專案",
+  goals: governedGoals,
+});
+writeJson(path.join(repo, "milestones", governedProject, "tasks.json"), {
+  tasks: [{
+    id: "legacy-goal-task",
+    title: "歷史目標任務",
+    status: "todo",
+    track: "product",
+    done_condition: "Untouched legacy task remains valid without retroactive goal alignment.",
+  }],
+});
+git(["add", `milestones/${governedProject}/project.json`, `milestones/${governedProject}/tasks.json`]);
+git(["commit", "-m", "seed goal-governed project"]);
+
+const validGoalGovernedTasks = {
+  tasks: [
+    {
+      id: "legacy-goal-task",
+      title: "歷史目標任務",
+      status: "todo",
+      track: "product",
+      done_condition: "Untouched legacy task remains valid without retroactive goal alignment.",
+    },
+    {
+      id: "goal-aligned-new-task",
+      title: "新增目標對齊任務",
+      status: "todo",
+      track: "product",
+      done_condition: "New task records how it contributes to the current owning-project goal.",
+      goal_alignment: goalAlignment(governedProject, governedGoals),
+      jv32_route: { workflows: ["task-lifecycle"] },
+      task_lifecycle: {
+        route: "JV-32/task-lifecycle",
+        history: [lifecycleEvent("create", null, "todo")],
+      },
+    },
+  ],
+};
+writeJson(path.join(repo, "milestones", governedProject, "tasks.json"), validGoalGovernedTasks);
+const validGoalAlignment = run(["--changed-only", "--project", governedProject]);
+if (!validGoalAlignment.output.includes("Task validation OK")) {
+  throw new Error("Expected valid new-task goal alignment to pass.");
+}
+
+const missingGoalAlignmentTasks = structuredClone(validGoalGovernedTasks);
+delete missingGoalAlignmentTasks.tasks[1].goal_alignment;
+writeJson(path.join(repo, "milestones", governedProject, "tasks.json"), missingGoalAlignmentTasks);
+const missingGoalAlignment = run(["--changed-only", "--project", governedProject], { expectFailure: true });
+if (!missingGoalAlignment.output.includes("goal_alignment is required for new or semantically changed canonical tasks")) {
+  throw new Error("Expected missing goal alignment to fail.");
+}
+
+const staleGoalAlignmentTasks = structuredClone(validGoalGovernedTasks);
+staleGoalAlignmentTasks.tasks[1].goal_alignment.goal_fingerprint = "sha256:stale";
+writeJson(path.join(repo, "milestones", governedProject, "tasks.json"), staleGoalAlignmentTasks);
+const staleGoalAlignment = run(["--changed-only", "--project", governedProject], { expectFailure: true });
+if (!staleGoalAlignment.output.includes("goal_alignment.goal_fingerprint must match the current owning-project goals")) {
+  throw new Error("Expected stale goal alignment fingerprint to fail.");
+}
+
+const revisionProject = "revision-governed";
+const revisionGoals = ["讓 task revision 保留可稽核的 append-only 歷史"];
+const revisionBaselineTask = lifecycleTask("revision-task", "completed", [
+  lifecycleEvent("create", null, "todo"),
+  lifecycleEvent("complete", "todo", "completed"),
+], ["task-lifecycle", "closeout-commit-routing"]);
+revisionBaselineTask.track = "product";
+revisionBaselineTask.order_label = "REV-01";
+delete revisionBaselineTask.goal_alignment;
+writeJson(path.join(repo, "milestones", revisionProject, "project.json"), { name: "Revision 驗證專案", goals: revisionGoals });
+writeJson(path.join(repo, "milestones", revisionProject, "tasks.json"), { tasks: [revisionBaselineTask] });
+git(["add", `milestones/${revisionProject}/project.json`, `milestones/${revisionProject}/tasks.json`]);
+git(["commit", "-m", "seed revision-governed task"]);
+
+const validRevisionTask = structuredClone(revisionBaselineTask);
+validRevisionTask.status = "in_progress";
+validRevisionTask.revision = "R3";
+validRevisionTask.previous_revision = "R2";
+validRevisionTask.goal_alignment = goalAlignment(revisionProject, revisionGoals);
+validRevisionTask.task_lifecycle.history.push(lifecycleEvent("resume", "completed", "in_progress"));
+writeJson(path.join(repo, "milestones", revisionProject, "tasks.json"), { tasks: [validRevisionTask] });
+const validRevision = run(["--changed-only", "--project", revisionProject]);
+if (!validRevision.output.includes("Task validation OK")) {
+  throw new Error("Expected monotonic revision adoption to pass.");
+}
+
+const skippedRevisionTask = structuredClone(validRevisionTask);
+skippedRevisionTask.revision = "R4";
+writeJson(path.join(repo, "milestones", revisionProject, "tasks.json"), { tasks: [skippedRevisionTask] });
+const skippedRevision = run(["--changed-only", "--project", revisionProject], { expectFailure: true });
+if (!skippedRevision.output.includes("revision must increment exactly once from the previous lifecycle history revision")) {
+  throw new Error("Expected skipped revision to fail.");
 }
 
 console.log("validate-tasks verification OK");

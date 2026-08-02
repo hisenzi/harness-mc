@@ -1,10 +1,38 @@
 import assert from "node:assert/strict";
+import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { formatMarkdown, runPreflight } from "./work-anchor-preflight.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
+const executionSkill = fs.readFileSync(
+  path.resolve(root, "..", "notyet-harness", "000_Agent", "skills", "vincent-superpowers", "03-execution", "SKILL.md"),
+  "utf8",
+);
+const reviewSkill = fs.readFileSync(
+  path.resolve(root, "..", "notyet-harness", "000_Agent", "skills", "review", "SKILL.md"),
+  "utf8",
+);
+
+for (const phrase of [
+  "version: 1.5",
+  "--event acceptance",
+  "--matrix-fingerprint",
+  "--acceptance-result",
+  "acceptance_receipt",
+]) {
+  assert.ok(executionSkill.includes(phrase), `execution skill missing acceptance contract phrase: ${phrase}`);
+}
+for (const phrase of [
+  'version: "1.1"',
+  "version: 1.1",
+  "--event acceptance",
+  "task.acceptance_matrix",
+  "acceptance_receipt",
+]) {
+  assert.ok(reviewSkill.includes(phrase), `review skill missing acceptance contract phrase: ${phrase}`);
+}
 
 const allowResult = runPreflight({
   project: "house123-buy",
@@ -195,6 +223,70 @@ assert.deepEqual(
   implMissingScope.event_gate.checklist.filter((item) => !item.ok).map((item) => item.id),
   ["write_boundary"],
 );
+
+const acceptanceMatrix = [
+  { id: "MX-01", what: "first", pass_condition: "passes", verification: ["fixture"] },
+  { id: "MX-02", what: "second", pass_condition: "passes", verification: ["fixture"] },
+];
+const acceptanceFixturePath = path.join(tmpDir, "acceptance-gate-tasks.json");
+fs.writeFileSync(
+  acceptanceFixturePath,
+  JSON.stringify({
+    tasks: [{
+      id: "acceptance-matrix-task",
+      title: "Acceptance matrix fixture",
+      status: "in_progress",
+      track: "product",
+      done_condition: "Acceptance event resolves the canonical matrix and fresh results.",
+      acceptance_matrix: acceptanceMatrix,
+    }],
+  }, null, 2),
+  "utf8",
+);
+const matrixFingerprint = `sha256:${crypto.createHash("sha256").update(JSON.stringify(acceptanceMatrix)).digest("hex")}`;
+const acceptanceReady = runPreflight({
+  project: "fixture",
+  tasks: acceptanceFixturePath,
+  taskId: "acceptance-matrix-task",
+  intent: "驗收 fixture",
+  event: "acceptance",
+  scope: ["read-only acceptance evidence"],
+  matrixFingerprint,
+  acceptanceResults: ["MX-01=pass", "MX-02=pass"],
+  proposedAcceptance: [],
+});
+assert.equal(acceptanceReady.decision, "allow");
+assert.ok(acceptanceReady.event_gate.acceptance_receipt, "acceptance receipt missing");
+assert.deepEqual(acceptanceReady.event_gate.acceptance_receipt.required_ids, ["MX-01", "MX-02"]);
+assert.equal(acceptanceReady.event_gate.acceptance_receipt.matrix_fingerprint, matrixFingerprint);
+assert.equal(acceptanceReady.event_gate.acceptance_receipt.all_passed, true);
+assert.match(acceptanceReady.event_gate.acceptance_receipt.matrix_ref, /acceptance-gate-tasks\.json#acceptance-matrix-task\.acceptance_matrix$/);
+
+const acceptanceMissingResult = runPreflight({
+  project: "fixture",
+  tasks: acceptanceFixturePath,
+  taskId: "acceptance-matrix-task",
+  event: "acceptance",
+  scope: ["read-only acceptance evidence"],
+  matrixFingerprint,
+  acceptanceResults: ["MX-01=pass"],
+  proposedAcceptance: [],
+});
+assert.equal(acceptanceMissingResult.decision, "blocked");
+assert.ok(acceptanceMissingResult.event_gate.checklist.some((item) => item.id === "matrix_results_exact" && !item.ok));
+
+const acceptanceStaleFingerprint = runPreflight({
+  project: "fixture",
+  tasks: acceptanceFixturePath,
+  taskId: "acceptance-matrix-task",
+  event: "acceptance",
+  scope: ["read-only acceptance evidence"],
+  matrixFingerprint: "sha256:stale",
+  acceptanceResults: ["MX-01=pass", "MX-02=pass"],
+  proposedAcceptance: [],
+});
+assert.equal(acceptanceStaleFingerprint.decision, "blocked");
+assert.ok(acceptanceStaleFingerprint.event_gate.checklist.some((item) => item.id === "matrix_fingerprint" && !item.ok));
 
 const weeklyCoreFixturePath = path.join(tmpDir, "weekly-core-tasks.json");
 fs.writeFileSync(

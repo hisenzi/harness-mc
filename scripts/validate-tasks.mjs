@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import crypto from "crypto";
 import { execSync } from "child_process";
 import { fileURLToPath } from "url";
 
@@ -100,6 +101,26 @@ function quoteShell(value) {
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf-8").replace(/^﻿/, ""));
+}
+
+function readProjectGoalAnchor(project) {
+  const projectPath = path.join(milestonesDir, project, "project.json");
+  if (!fs.existsSync(projectPath)) return null;
+  try {
+    const raw = readJson(projectPath);
+    const goals = raw?.goals;
+    const hasGoals = nonEmptyString(goals)
+      || (Array.isArray(goals) && goals.length > 0)
+      || (goals && typeof goals === "object" && !Array.isArray(goals) && Object.keys(goals).length > 0);
+    if (!hasGoals) return null;
+    const fingerprint = crypto.createHash("sha256").update(JSON.stringify(goals)).digest("hex");
+    return {
+      ref: `$COLLAB/harness-mc/milestones/${project}/project.json#/goals`,
+      fingerprint: `sha256:${fingerprint}`,
+    };
+  } catch {
+    return null;
+  }
 }
 
 function listProjectDirs() {
@@ -203,6 +224,7 @@ function validateTask(task, {
   changedOnly = false,
   previousTask = null,
   canonicalTaskRefs = new Map(),
+  projectGoalAnchor = null,
 } = {}) {
   const problems = [];
   const includeProjectScope = !changedOnly || changed;
@@ -257,6 +279,10 @@ function validateTask(task, {
   if (requiresTaskLifecycleRoute({ task, changed, changedOnly, project })) {
     problems.push(...validateTaskLifecycleRoute(task));
     problems.push(...validateTaskLifecycleEvidence(task, { previousTask }));
+    problems.push(...validateTaskRevision(task, { previousTask }));
+    if (isSemanticTaskMutation(task, previousTask)) {
+      problems.push(...validateGoalAlignment(task.goal_alignment, { project, projectGoalAnchor }));
+    }
     if (project === "morrowise" && isSemanticTaskMutation(task, previousTask)) {
       problems.push(...validateSemanticTaskIntake(task, { previousTask, canonicalTaskRefs }));
     }
@@ -272,6 +298,80 @@ function validateTask(task, {
   }
 
   return problems;
+}
+
+function validateGoalAlignment(value, { project, projectGoalAnchor }) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return ["goal_alignment is required for new or semantically changed canonical tasks"];
+  }
+
+  const problems = [];
+  if (!projectGoalAnchor) {
+    problems.push("owning project project.json must contain a non-empty goals anchor before new or semantic task changes");
+    return problems;
+  }
+  if (value.project_id !== project) {
+    problems.push("goal_alignment.project_id must match the owning project id");
+  }
+  if (value.goal_ref !== projectGoalAnchor.ref) {
+    problems.push("goal_alignment.goal_ref must point to the current owning-project project.json#/goals");
+  }
+  if (value.goal_fingerprint !== projectGoalAnchor.fingerprint) {
+    problems.push("goal_alignment.goal_fingerprint must match the current owning-project goals");
+  }
+  if (!nonEmptyString(value.contribution)) {
+    problems.push("goal_alignment.contribution must be a non-empty string");
+  }
+  if (!Array.isArray(value.evidence_plan) || value.evidence_plan.length === 0 || value.evidence_plan.some((entry) => !nonEmptyString(entry))) {
+    problems.push("goal_alignment.evidence_plan must be a non-empty string array");
+  }
+  if (!isDateOnly(value.reviewed_at)) {
+    problems.push("goal_alignment.reviewed_at must be YYYY-MM-DD");
+  }
+  return problems;
+}
+
+function validateTaskRevision(task, { previousTask }) {
+  const hasRevision = "revision" in task || "previous_revision" in task || previousTask?.revision;
+  if (!hasRevision) return [];
+
+  const problems = [];
+  const revisionNumber = parseRevisionNumber(task.revision);
+  const previousRevisionNumber = parseRevisionNumber(task.previous_revision);
+  if (revisionNumber === null) {
+    problems.push("revision must use R followed by a positive integer");
+  }
+  if (previousRevisionNumber === null) {
+    problems.push("previous_revision must use R followed by a positive integer");
+  }
+  if (revisionNumber === null || previousRevisionNumber === null) return problems;
+
+  const recordedPreviousRevision = parseRevisionNumber(previousTask?.revision);
+  if (recordedPreviousRevision !== null) {
+    if (revisionNumber !== recordedPreviousRevision && revisionNumber !== recordedPreviousRevision + 1) {
+      problems.push("revision must remain current or increment exactly once from the previous revision");
+    }
+    if (revisionNumber === recordedPreviousRevision + 1 && previousRevisionNumber !== recordedPreviousRevision) {
+      problems.push("previous_revision must match the previous task revision");
+    }
+    return problems;
+  }
+
+  const previousHistoryLength = previousTask?.task_lifecycle?.history?.length;
+  if (Number.isInteger(previousHistoryLength) && previousHistoryLength > 0) {
+    if (previousRevisionNumber !== previousHistoryLength) {
+      problems.push("previous_revision must match the previous lifecycle history revision");
+    }
+    if (revisionNumber !== previousHistoryLength + 1) {
+      problems.push("revision must increment exactly once from the previous lifecycle history revision");
+    }
+  }
+  return problems;
+}
+
+function parseRevisionNumber(value) {
+  const match = /^R([1-9]\d*)$/.exec(String(value || ""));
+  return match ? Number(match[1]) : null;
 }
 
 function nonEmptyString(value) {
@@ -923,6 +1023,7 @@ export function validateTasks({
     const entries = extractTasks(raw);
     const relFile = path.relative(root, filePath);
     const previous = readPreviousTasks(relFile, resolvedBase);
+    const projectGoalAnchor = readProjectGoalAnchor(project);
     const taskIdCounts = new Map();
     for (const { task } of entries) {
       if (!nonEmptyString(task?.id)) continue;
@@ -988,6 +1089,7 @@ export function validateTasks({
         changedOnly,
         previousTask,
         canonicalTaskRefs,
+        projectGoalAnchor,
       })) {
         diagnostics.push({
           severity,

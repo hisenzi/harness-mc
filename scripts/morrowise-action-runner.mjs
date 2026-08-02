@@ -25,6 +25,8 @@ const ACTION_CLASS_BY_ACTION = {
   dry_run_external_sync: "dry_run_or_preview",
   create_task_event: "task_state_mutation",
   wait_for_approval: "task_state_mutation",
+  propose_next_task: "task_state_mutation",
+  propose_task_reorganization: "task_state_mutation",
 };
 
 export function runMorrowiseActionRunner(input = {}, options = {}) {
@@ -134,6 +136,15 @@ function queueSyncRequested(candidate, actionClass, policyDecision, context) {
 }
 
 function approvalRequest(candidate, actionClass, policyDecision, reason) {
+  const taskGovernanceHandoff = actionClass === "task_state_mutation" && candidate.target_project
+    ? {
+        target_project: candidate.target_project,
+        target_task_source: candidate.target_task_source,
+        goal_ref: candidate.goal_ref,
+        proposed_operation: candidate.proposed_operation,
+        write_route: "JV-32/JV-40-after-Vincent-approval",
+      }
+    : null;
   return baseOutput(candidate, actionClass, policyDecision, {
     output_type: "approval_request",
     applied: false,
@@ -146,6 +157,7 @@ function approvalRequest(candidate, actionClass, policyDecision, reason) {
       evidence_refs: candidate.evidence_refs,
       policy: policyDecision.policy,
       policy_reason: policyDecision.reason,
+      ...(taskGovernanceHandoff ? { task_governance_handoff: taskGovernanceHandoff } : {}),
     },
   });
 }
@@ -182,12 +194,85 @@ function classifyPolicy(actionClass, policy) {
 }
 
 function assertCandidate(candidate) {
+  const taskGovernance = candidate?.candidate_type === "propose_next_task"
+    || candidate?.candidate_type === "propose_task_reorganization"
+    || candidate?.suggested_action === "propose_next_task"
+    || candidate?.suggested_action === "propose_task_reorganization";
+  if (taskGovernance) {
+    const sensitiveField = findForbiddenSensitiveField(candidate);
+    if (sensitiveField) {
+      throw new Error(`task governance candidate contains forbidden sensitive field: ${sensitiveField}`);
+    }
+    assertTaskGovernanceCandidate(candidate);
+  }
   for (const field of ["recommendation_id", "suggested_action", "suggested_task_id", "risk_level", "requires_approval", "evidence_refs"]) {
     if (candidate?.[field] === undefined || candidate?.[field] === null) throw new Error(`candidate.${field} is required`);
   }
   if (!["low", "medium", "high"].includes(candidate.risk_level)) throw new Error(`invalid risk_level: ${candidate.risk_level}`);
   if (typeof candidate.requires_approval !== "boolean") throw new Error("candidate.requires_approval must be boolean");
   if (!Array.isArray(candidate.evidence_refs) || candidate.evidence_refs.length === 0) throw new Error("candidate.evidence_refs must be non-empty");
+}
+
+function assertTaskGovernanceCandidate(candidate) {
+  const requiredFields = [
+    "target_project",
+    "target_task_source",
+    "goal_ref",
+    "source_task_refs",
+    "evidence_refs",
+    "observed_gap",
+    "proposed_operation",
+    "proposed_done_condition",
+    "limitations",
+    "requires_approval",
+  ];
+  for (const field of requiredFields) {
+    const value = candidate?.[field];
+    if (value === undefined || value === null || (typeof value === "string" && value.trim() === "")) {
+      throw new Error(`task governance candidate.${field} is required`);
+    }
+  }
+
+  const expectedTaskSource = `$COLLAB/harness-mc/milestones/${candidate.target_project}/tasks.json`;
+  if (candidate.target_task_source !== expectedTaskSource) {
+    throw new Error("task governance candidate.target_task_source must match target_project");
+  }
+  const expectedGoalRef = `$COLLAB/harness-mc/milestones/${candidate.target_project}/project.json#/goals`;
+  if (candidate.goal_ref !== expectedGoalRef) {
+    throw new Error("task governance candidate.goal_ref must match target_project");
+  }
+  if (!Array.isArray(candidate.source_task_refs) || candidate.source_task_refs.length === 0) {
+    throw new Error("task governance candidate.source_task_refs must be non-empty");
+  }
+  if (!Array.isArray(candidate.limitations) || candidate.limitations.length === 0) {
+    throw new Error("task governance candidate.limitations must be non-empty");
+  }
+  if (!["create", "retain", "amend", "defer", "cancel", "replace", "blocked"].includes(candidate.proposed_operation)) {
+    throw new Error(`task governance candidate.proposed_operation is invalid: ${candidate.proposed_operation}`);
+  }
+  if (candidate.requires_approval !== true) {
+    throw new Error("task governance candidate.requires_approval must be true");
+  }
+}
+
+function findForbiddenSensitiveField(value, currentPath = "candidate") {
+  if (!value || typeof value !== "object") return null;
+  if (Array.isArray(value)) {
+    for (let index = 0; index < value.length; index += 1) {
+      const nested = findForbiddenSensitiveField(value[index], `${currentPath}[${index}]`);
+      if (nested) return nested;
+    }
+    return null;
+  }
+
+  const forbiddenKey = /(token|cookie|secret|credential|password|private[_-]?key|runtime[_-]?auth|private[_-]?financial|account[_-]?number|bank[_-]?account|personal[_-]?life[_-]?detail)/i;
+  for (const [key, nestedValue] of Object.entries(value)) {
+    const nestedPath = `${currentPath}.${key}`;
+    if (forbiddenKey.test(key)) return nestedPath;
+    const nested = findForbiddenSensitiveField(nestedValue, nestedPath);
+    if (nested) return nested;
+  }
+  return null;
 }
 
 function withoutRoot(eventInput) {

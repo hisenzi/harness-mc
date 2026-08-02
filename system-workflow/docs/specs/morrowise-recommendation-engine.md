@@ -2,7 +2,7 @@
 
 > Task: `morrowise-recommendation-engine-v0` (`MC-LIVE-17`)
 > Status: formal registry
-> Updated: 2026-06-20
+> Updated: 2026-08-01
 > Machine-readable registry: `$COLLAB/harness-mc/system-workflow/registries/morrowise-recommendation-engine.json`
 > Upstream: `morrowise-trigger-rules-registry`, `morrowise-anatomy-read-model`, `acp-control-plane-read-model-v0`
 
@@ -27,6 +27,21 @@ The recommendation engine may not:
 - commit, push, sync, delete, rewrite history, or edit external systems;
 - close tasks from HC reasoning alone;
 - bypass Vincent approval when approval policy is required.
+
+## Task Governance R17 Contract
+
+MorroWise may propose; Vincent approves; an Agent writes through JV-32/JV-40.
+
+No task-governance candidate may mutate a canonical `tasks.json`, delete a task, or bypass the named human approval. A candidate enters the approval queue only after it identifies the target project's canonical task source and goal source, the evidence behind the observed gap, the proposed operation, a measurable done condition, and known limitations.
+
+The two candidate types are:
+
+- `propose_next_task`: proposes a new evidence-backed task when a goal-aligned capability gap is not already owned;
+- `propose_task_reorganization`: reviews every open task after goal drift and proposes `retain`, `amend`, `defer`, `cancel`, `replace`, or `blocked` for each one.
+
+Every task-governance candidate includes `target_project`, `target_task_source`, `goal_ref`, `source_task_refs`, `evidence_refs`, `observed_gap`, `proposed_operation`, `proposed_done_condition`, `limitations`, and `requires_approval=true`. When the current canonical goal or sufficient evidence is missing, the operation is `blocked`; MorroWise must not infer the missing decision.
+
+Only new tasks and semantically amended tasks adopt current goal-alignment metadata. Untouched legacy tasks are not mass-retrofitted. Candidate content must exclude secrets, runtime authentication material, private financial values, and personal-life detail.
 
 ## Candidate Contract
 

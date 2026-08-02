@@ -581,6 +581,48 @@
         "hc_confidence": { "type": "number", "minimum": 0, "maximum": 1 }
       }
     },
+    "taskGovernanceRecommendationCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_project",
+        "target_task_source",
+        "goal_ref",
+        "source_task_refs",
+        "evidence_refs",
+        "observed_gap",
+        "proposed_operation",
+        "proposed_done_condition",
+        "limitations",
+        "requires_approval"
+      ],
+      "properties": {
+        "candidate_type": { "enum": ["propose_next_task", "propose_task_reorganization"] },
+        "recommendation_id": { "type": "string" },
+        "target_project": { "type": "string" },
+        "target_task_source": { "type": "string" },
+        "goal_ref": { "type": "string" },
+        "source_task_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/sourceRef" }
+        },
+        "observed_gap": { "type": "string", "minLength": 1 },
+        "proposed_operation": { "enum": ["create", "retain", "amend", "defer", "cancel", "replace", "blocked"] },
+        "proposed_done_condition": { "type": "string", "minLength": 1 },
+        "limitations": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "requires_approval": { "const": true }
+      }
+    },
     "approvalWait": {
       "type": "object",
       "additionalProperties": false,

@@ -2,7 +2,7 @@
   "engine_id": "morrowise-recommendation-engine.v0",
   "task_id": "morrowise-recommendation-engine-v0",
   "order_label": "MC-LIVE-17",
-  "updated_at": "2026-06-20",
+  "updated_at": "2026-08-01",
   "status": "formal_registry",
   "source_of_truth": "$COLLAB/harness-mc/milestones/harness-mc/tasks.json",
   "consumes": [
@@ -38,6 +38,41 @@
     "risk_levels": ["low", "medium", "high"],
     "approval_rule": "High-risk candidates always require approval. Medium-risk candidates require approval when they mutate canonical task state, version history, external systems, or user-facing visual layers.",
     "evidence_rule": "Evidence must point back to tasks.json, generated read models, trigger events, verifier output, or specs. HC refs can explain thinking, but cannot replace evidence."
+  },
+  "task_governance_contract": {
+    "revision": "JV-40-R17",
+    "may_propose_only": true,
+    "may_mutate_canonical_tasks": false,
+    "write_route": "JV-32/JV-40-after-Vincent-approval",
+    "candidate_types": [
+      "propose_next_task",
+      "propose_task_reorganization"
+    ],
+    "required_fields": [
+      "target_project",
+      "target_task_source",
+      "goal_ref",
+      "source_task_refs",
+      "evidence_refs",
+      "observed_gap",
+      "proposed_operation",
+      "proposed_done_condition",
+      "limitations",
+      "requires_approval"
+    ],
+    "proposed_operations": [
+      "create",
+      "retain",
+      "amend",
+      "defer",
+      "cancel",
+      "replace",
+      "blocked"
+    ],
+    "approval_rule": "Every task-governance candidate requires Vincent approval. Approval authorizes only a named handoff; Agent must still pass JV-32/JV-40 changed-only gates before writing the exact target canonical tasks.json.",
+    "goal_drift_rule": "A changed goal fingerprint requires a read-only proposal covering every open task with retain, amend, defer, cancel, replace, or blocked. Missing evidence becomes blocked; no task is deleted or mutated automatically.",
+    "legacy_rule": "Goal alignment is enforced for new tasks and semantic task changes only. Untouched legacy tasks are not mass-retrofitted.",
+    "privacy_rule": "Candidates keep sanitized references and safe summaries only; no secrets, runtime auth, private financial values, or unapproved personal-life details."
   },
   "hc_router": {
     "status": "connected_as_method_selector",
@@ -201,6 +236,65 @@
       "hc_refs": ["#risk", "#utility", "#confirmationBias"],
       "hc_reasoning": "High-risk side effects must stop at approval; utility is only positive if the visual mirror follows tasks.json.",
       "hc_confidence": 0.72
+    }
+  ],
+  "task_governance_sample_candidates": [
+    {
+      "candidate_type": "propose_next_task",
+      "recommendation_id": "rec.task-governance.self-learning.goal-anchor-gap.001",
+      "target_project": "self-learning",
+      "target_task_source": "$COLLAB/harness-mc/milestones/self-learning/tasks.json",
+      "goal_ref": "$COLLAB/harness-mc/milestones/self-learning/project.json#/goals",
+      "source_task_refs": [
+        "self-learning/project.json#/goals",
+        "morrowise/task-lifecycle-jv32-gate"
+      ],
+      "evidence_refs": [
+        {
+          "type": "canonical_project",
+          "ref": "$COLLAB/harness-mc/milestones/self-learning/project.json"
+        },
+        {
+          "type": "canonical_task",
+          "ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate"
+        }
+      ],
+      "observed_gap": "Current self-learning goals do not yet contain the approved twenty-year anchor; item 1 must canonicalize that goal before task reorganization can be proposed safely.",
+      "proposed_operation": "blocked",
+      "proposed_done_condition": "After Vincent approves item 1, the canonical self-learning goal anchor exists and can be fingerprinted before any task reorganization proposal.",
+      "limitations": [
+        "Read-only sample; it does not create or amend a self-learning task.",
+        "The twenty-year anchor is conversation-approved but not yet canonical in self-learning/project.json."
+      ],
+      "requires_approval": true
+    },
+    {
+      "candidate_type": "propose_task_reorganization",
+      "recommendation_id": "rec.task-governance.morrowise.retain-jv40.001",
+      "target_project": "morrowise",
+      "target_task_source": "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
+      "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+      "source_task_refs": [
+        "morrowise/task-lifecycle-jv32-gate"
+      ],
+      "evidence_refs": [
+        {
+          "type": "canonical_project",
+          "ref": "$COLLAB/harness-mc/milestones/morrowise/project.json"
+        },
+        {
+          "type": "acceptance_matrix",
+          "ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate.acceptance_matrix"
+        }
+      ],
+      "observed_gap": "The current goal remains aligned with R17; retain the active task until fresh matrix evidence is complete.",
+      "proposed_operation": "retain",
+      "proposed_done_condition": "JV40-RG-01..JV40-RG-11 have fresh passing evidence and Vincent confirms the no-expansion receipt.",
+      "limitations": [
+        "Sample explains a proposal contract; it is not an approval or canonical mutation.",
+        "R16 completion evidence is historical and stale for R17 acceptance."
+      ],
+      "requires_approval": true
     }
   ]
 }

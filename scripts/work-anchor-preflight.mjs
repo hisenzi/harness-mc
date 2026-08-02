@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import fs from "node:fs";
+import crypto from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -28,6 +29,8 @@ function parseArgs(argv) {
     reportFormat: null,
     modelTier: null,
     verifyPlan: null,
+    matrixFingerprint: null,
+    acceptanceResults: [],
     asOf: todayInTaipei(),
     json: false,
   };
@@ -50,6 +53,8 @@ function parseArgs(argv) {
     else if (arg === "--report-format") args.reportFormat = argv[++i];
     else if (arg === "--model-tier") args.modelTier = argv[++i];
     else if (arg === "--verify-plan") args.verifyPlan = argv[++i];
+    else if (arg === "--matrix-fingerprint") args.matrixFingerprint = argv[++i];
+    else if (arg === "--acceptance-result") args.acceptanceResults.push(argv[++i]);
     else if (arg === "--as-of") {
       args.asOf = argv[++i];
       if (!isDateOnly(args.asOf)) throw new Error(`--as-of must be YYYY-MM-DD, got: ${args.asOf}`);
@@ -59,8 +64,8 @@ function parseArgs(argv) {
     else throw new Error(`Unknown argument: ${arg}`);
   }
 
-  if (args.event && !["dispatch", "implementation"].includes(args.event)) {
-    throw new Error(`--event must be dispatch or implementation, got: ${args.event}`);
+  if (args.event && !["dispatch", "implementation", "acceptance"].includes(args.event)) {
+    throw new Error(`--event must be dispatch, implementation, or acceptance, got: ${args.event}`);
   }
 
   return args;
@@ -79,13 +84,15 @@ function usage() {
     "  --proposed-track <track>               Required when no active task exists",
     "  --proposed-done-condition <text>       Required when no active task exists",
     "  --proposed-acceptance <text>           Repeat for proposed acceptance rows",
-    "  --event <dispatch|implementation>      JV-17 事件點 gate：派工前/實作前 checklist（不帶則行為不變）",
+    "  --event <dispatch|implementation|acceptance> 事件點 gate：派工前／實作前／驗收 checklist（不帶則行為不變）",
     "  --scope <path>                         事件點必填（可重複）：本次可寫範圍（C 契約 §2 邊界 / D3）",
     "  --context-ref <text>                   派工 Context 包補充參照（可重複）",
     "  --template <name>                      派工模板 id（subagent-delegation-templates）",
     "  --report-format <text>                 回報格式（無模板時必填其一）",
     "  --model-tier <tier>                    派工模型分級（C 契約 §3）",
     "  --verify-plan <text>                   驗證路徑（C 契約 §7：實作者不得自我驗證）",
+    "  --matrix-fingerprint <sha256:...>      acceptance 必填：凍結時的 canonical matrix fingerprint",
+    "  --acceptance-result <ID=pass|fail>     acceptance 必填（可重複）：exact matrix result",
     "  --as-of <YYYY-MM-DD>                  Weekly core deadline clock（default: Asia/Taipei today）",
     "  --json                                Output machine-readable JSON",
   ].join("\n");
@@ -119,6 +126,7 @@ function summarizeTask(task) {
     hc_decision: task.hc_decision || null,
     weekly_core: task.weekly_core === true,
     review_date: task.review_date || null,
+    acceptance_matrix: Array.isArray(task.acceptance_matrix) ? task.acceptance_matrix : null,
   };
 }
 
@@ -181,7 +189,7 @@ export function runPreflight(args) {
     ? activeTasks.find((task) => task.id === args.taskId) || null
     : activeTasks[0] || null;
   const hcGate = targetTask ? evaluateHcGate(targetTask, project) : null;
-  const eventGate = args.event ? evaluateEventGate(args, targetTask, hcGate) : null;
+  const eventGate = args.event ? evaluateEventGate({ ...args, taskSource }, targetTask, hcGate) : null;
   const weeklyCoreGate = project === "morrowise"
     ? evaluateWeeklyCoreGate(tasks, targetTask, args.asOf || todayInTaipei())
     : null;
@@ -316,7 +324,7 @@ const HARNESS_REFS = {
 };
 
 function evaluateEventGate(rawArgs, targetTask, hcGate) {
-  const args = { scope: [], contextRefs: [], ...rawArgs };
+  const args = { scope: [], contextRefs: [], acceptanceResults: [], ...rawArgs };
   const checklist = [];
   const add = (id, ok, requirement, evidence, ref) => checklist.push({ id, ok, requirement, evidence, ref });
 
@@ -373,14 +381,50 @@ function evaluateEventGate(rawArgs, targetTask, hcGate) {
     );
   }
 
+  let acceptanceReceipt = null;
+  if (args.event === "acceptance") {
+    const matrix = targetTask?.acceptance_matrix;
+    const matrixPresent = Array.isArray(matrix) && matrix.length > 0
+      && matrix.every((row) => typeof row?.id === "string" && row.id.length > 0);
+    const requiredIds = matrixPresent ? matrix.map((row) => row.id) : [];
+    const computedFingerprint = matrixPresent
+      ? `sha256:${crypto.createHash("sha256").update(JSON.stringify(matrix)).digest("hex")}`
+      : null;
+    const results = parseAcceptanceResults(args.acceptanceResults);
+    const resultIds = results.map((item) => item.id);
+    const exactResults = matrixPresent
+      && results.every((item) => item.valid)
+      && new Set(resultIds).size === resultIds.length
+      && resultIds.length === requiredIds.length
+      && requiredIds.every((id) => resultIds.includes(id));
+    const allPassed = exactResults && results.every((item) => item.status === "pass");
+
+    add("matrix_present", matrixPresent, "active task 有 canonical acceptance_matrix 與唯一 IDs", matrixPresent ? requiredIds.join(", ") : "缺", "$COLLAB/harness-mc/milestones/<project>/tasks.json#<task-id>.acceptance_matrix");
+    add("matrix_fingerprint", computedFingerprint !== null && args.matrixFingerprint === computedFingerprint, "caller fingerprint 與 current canonical matrix 完全相同", `expected=${args.matrixFingerprint || "缺"}; current=${computedFingerprint || "缺"}`, "JV40-RG-10");
+    add("matrix_results_exact", exactResults, "每個 canonical matrix ID 恰有一筆 pass/fail result，無缺漏、重複或額外 ID", results.map((item) => `${item.id}=${item.status}`).join(", ") || "缺", "JV40-RG-10");
+    add("matrix_all_pass", allPassed, "全部 acceptance results 為 pass", allPassed ? "all pass" : "尚有 fail 或缺漏", "JV40-RG-10");
+
+    acceptanceReceipt = {
+      matrix_ref: `${path.relative(root, args.taskSource)}#${targetTask?.id || "unknown"}.acceptance_matrix`,
+      matrix_fingerprint: computedFingerprint,
+      caller_matrix_fingerprint: args.matrixFingerprint || null,
+      required_ids: requiredIds,
+      results: results.map(({ id, status }) => ({ id, status })),
+      exact_id_coverage: exactResults,
+      all_passed: allPassed,
+    };
+  }
+
   const failing = checklist.filter((item) => !item.ok);
-  return {
+  const gate = {
     event: args.event,
     decision: failing.length === 0 ? "allow" : "blocked",
     reason:
       failing.length === 0
         ? `${args.event} 事件點 checklist 全過`
-        : `${args.event} 事件點缺件：${failing.map((item) => item.id).join(", ")}（不給三件套就派工 = 違規）`,
+        : args.event === "acceptance"
+          ? `${args.event} 事件點缺件：${failing.map((item) => item.id).join(", ")}（matrix／fingerprint／results 必須 fresh 且 exact）`
+          : `${args.event} 事件點缺件：${failing.map((item) => item.id).join(", ")}（不給三件套就派工 = 違規）`,
     next_required_step:
       failing.length === 0
         ? null
@@ -392,6 +436,17 @@ function evaluateEventGate(rawArgs, targetTask, hcGate) {
       escalate_signals: `${HARNESS_REFS.d_matrix}#第三類（E1-E5 熔斷提問四件套）`,
     },
   };
+  if (acceptanceReceipt) gate.acceptance_receipt = acceptanceReceipt;
+  return gate;
+}
+
+function parseAcceptanceResults(entries) {
+  return entries.map((entry) => {
+    const match = /^([^=]+)=(pass|fail)$/.exec(String(entry || ""));
+    return match
+      ? { id: match[1], status: match[2], valid: true }
+      : { id: String(entry || ""), status: "invalid", valid: false };
+  });
 }
 
 export function formatMarkdown(result) {
@@ -414,6 +469,13 @@ export function formatMarkdown(result) {
       lines.push(`- [${item.ok ? "x" : " "}] ${item.id}: ${item.requirement}｜${item.evidence}`);
     }
     lines.push(`- watch signals: ${result.event_gate.watch_signals.stop_signals}`);
+    if (result.event_gate.acceptance_receipt) {
+      const receipt = result.event_gate.acceptance_receipt;
+      lines.push(`- acceptance matrix: ${receipt.matrix_ref}`);
+      lines.push(`- matrix fingerprint: ${receipt.matrix_fingerprint || "missing"}`);
+      lines.push(`- required IDs: ${receipt.required_ids.join(", ") || "missing"}`);
+      lines.push(`- results: ${receipt.results.map((item) => `${item.id}=${item.status}`).join(", ") || "missing"}`);
+    }
   }
 
   if (result.decision === "blocked") {

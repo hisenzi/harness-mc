@@ -4579,6 +4579,7 @@
             "remote_parity": "0/0"
           },
           "acceptance_receipt": {
+            "matrix_ref": "milestones/morrowise/tasks.json#task-lifecycle-jv32-gate.acceptance_matrix",
             "matrix_fingerprint": "sha256:6c8ca5c56967b49ac4148a8191bd21a65eb65b901004e034d17e71565b8a225c",
             "required_ids": [
               "JV40-P2-01",
@@ -4594,6 +4595,21 @@
               "JV40-RG-09",
               "JV40-RG-10",
               "JV40-RG-11"
+            ],
+            "results": [
+              {"id": "JV40-P2-01", "status": "pass"},
+              {"id": "JV40-PRECOMMIT-01", "status": "pass"},
+              {"id": "JV40-RG-01", "status": "pass"},
+              {"id": "JV40-RG-02", "status": "pass"},
+              {"id": "JV40-RG-03", "status": "pass"},
+              {"id": "JV40-RG-04", "status": "pass"},
+              {"id": "JV40-RG-05", "status": "pass"},
+              {"id": "JV40-RG-06", "status": "pass"},
+              {"id": "JV40-RG-07", "status": "pass"},
+              {"id": "JV40-RG-08", "status": "pass"},
+              {"id": "JV40-RG-09", "status": "pass"},
+              {"id": "JV40-RG-10", "status": "pass"},
+              {"id": "JV40-RG-11", "status": "pass"}
             ],
             "exact_id_coverage": true,
             "all_passed": true,
@@ -5535,6 +5551,40 @@
                 "approved_at": "2026-08-02",
                 "evidence_refs": [
                   "Vincent current task: 可以進行完整 closeout，完成後依照驗收標準驗收，不要留尾巴"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "JV-40 R17 closeout 驗證確認 Acceptance Matrix 與結果均已通過，但 canonical acceptance receipt 漏存 matrix_ref 與逐項 results；本 amendment 僅補回既有 formal gate receipt，不改驗收結果、產品功能或 scope。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate.acceptance_matrix",
+              "sha256:6c8ca5c56967b49ac4148a8191bd21a65eb65b901004e034d17e71565b8a225c",
+              "node scripts/verify-work-anchor-preflight.mjs"
+            ],
+            "recorded_at": "2026-08-02",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/morrowise-dev-workflow-catalog"
+              ],
+              "scope_comparison": {
+                "problem": "只修正既有 JV-40 R17 canonical acceptance receipt 的欄位遺漏，不是新 task、workflow 或驗收標準。",
+                "owner_source_of_truth": "Owner 與正本維持 morrowise/task-lifecycle-jv32-gate 及其 canonical acceptance_matrix。",
+                "inputs_outputs": "輸入是已通過的 formal acceptance gate；輸出只補 matrix_ref 與 13 筆既有 pass results。",
+                "lifecycle_completion": "Task 維持 completed；不修改 R1–R16 history、R17 驗收結果、產品功能、Architecture、dashboard 或其他 task。"
+              },
+              "decision_reason": "缺口與修正值均由 JV40-RG-10 唯一決定，因此只 amend 同一 completed task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-02",
+                "evidence_refs": [
+                  "Vincent current task: 完成；唯一實際缺口是 JV40-RG-10：canonical receipt 缺 matrix_ref 與13筆逐項 results。"
                 ]
               }
             }

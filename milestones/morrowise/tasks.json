@@ -4129,6 +4129,41 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 明定 repo 建立必須有精準 project-bound receipt，並要求 project-init 的 standalone／milestone 不得自行推論或建立 repo；本次在既有 JV-37 授權與 project-init coordination 邊界新增 A18–A19。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/scripts/new-project.py",
+              "$COLLAB/harness-mc/scripts/verify-project-init-admission.mjs",
+              "$COLLAB/notyet-harness/000_Agent/skills/project-init/SKILL.md",
+              "Vincent 2026-08-02 current session: 依 JV37-A18、JV37-A19 驗收標準一口氣完成"
+            ],
+            "recorded_at": "2026-08-02",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/project-topology-architecture-atlas"
+              ],
+              "scope_comparison": {
+                "problem": "缺口是 JV-37 既有 Git 授權契約尚未把 repo provisioning 綁定 Vincent 的精準 receipt，而不是新的 repo manager 或 project workflow。",
+                "owner_source_of_truth": "repo 建立授權仍由 JV-37 與 MorroWise canonical task 管理；JV-43 只提供 destination／project-home admission，不取代 Git 授權。",
+                "inputs_outputs": "輸入是 missing、wrong-project、ambiguous、valid receipt；輸出是 create_repo 判定、零 invocation 負向 fixture及 project-init 精準 project ID 接線。",
+                "lifecycle_completion": "本 amendment 只完成 A18–A19 的契約、接線與 fake-gh fixture；JV-37 其他 runtime、claim 與三機 pilot 範圍不變，status 維持 todo。"
+              },
+              "decision_reason": "repo 建立授權與 project-init Git handoff 已由 JV-37 擁有，故 amend 既有 task，不新增 task、repo、registry 或外部 tracker。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-02",
+                "evidence_refs": [
+                  "Vincent 2026-08-02 current session: 依 JV37-A18、JV37-A19 驗收標準一口氣完成"
+                ]
+              }
+            }
           }
         ]
       },
@@ -4168,8 +4203,21 @@
         "A14｜完成分級後的三機實機 pilot：負向案例先證明未具 MW-GIT-AUTH-01 時，三台都不能 create/switch branch/worktree；再以 Vincent fixture approval 驗證 shared_core_multi_writer 的隔離生命週期由 single-writer/integrator 更新 main 並清理。另選 owner_single_writer fixture repo 驗證 task owner機在目前 main 直推＋四值握手。三台最後 fetch 後相關 main HEAD 一致、核准 branch/SHA 可追溯且已清理、claims released、ahead/behind=0/0，且無未解 manual/mixed/unknown dirty 或 pending event。",
         "A15｜完成前至少驗證 skill/frontmatter/version history、repo classification/freshness/claim/event/main-integration fixtures、mba3 restore guard、generated dirty classifier、detached/no-upstream/multi-worktree regression、project-init/worktree-commit/cc-push trigger discoverability、$COLLAB hard-path gate、node scripts/validate-tasks.mjs --changed-only --project morrowise、既有 task-event verifier chain、相關 MorroWise wiring/system-pulse verifier；失敗案例需輸出固定分類、證據與可逆修復步驟。",
         "A16｜worktree-commit 的進入條件必須引用同一 source state 的 JV-40 ACCEPTANCE_VERIFIED receipt 與 Vincent 明確 VINCENT_CONFIRMED；receipt 缺失、stale、diff fingerprint／commit grouping／message／verifier 改變時固定 BLOCKED 並返回成果驗收。",
-        "A17｜worktree-commit 只重新審核並提交已驗收的 exact scope，不能代替 Execution／Review 修產品缺失、改 acceptance、補 scope、吸收其他 session commit 或建立 branch／worktree；任何產品修補都必須先返回 JV-40 規範重新驗收。"
+        "A17｜worktree-commit 只重新審核並提交已驗收的 exact scope，不能代替 Execution／Review 修產品缺失、改 acceptance、補 scope、吸收其他 session commit 或建立 branch／worktree；任何產品修補都必須先返回 JV-40 規範重新驗收。",
+        "A18｜Repo 建立授權：missing、wrong-project、ambiguous 與 valid Vincent receipt fixtures 中，只有 schema、action=create_repo、project_id、approved_by=Vincent、decision=approved 與 receipt_id 全部精準符合時可產生 create_repo=true；其他情況 command invocation 必須為零，對話推論、type 或 milestone 都不能代替授權。",
+        "A19｜project-init 接線：standalone 無 receipt 時只建立 MC milestone，repo_ref 為空且 gh／git invocation 為零；有效 receipt 才呼叫 repo provisioning，並精準綁定 project ID。驗證必須使用 fake gh、fake git 與暫存目錄，不得建立真實 repo；--type standalone 單獨不得觸發 gh repo create。"
       ],
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "把 MorroWise 的安全、project 與 Git source boundary 接到 repo provisioning，確保 milestone 或 type 不會繞過 Vincent 的精準授權。",
+        "evidence_plan": [
+          "npm run test:project-init-admission",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate.acceptance"
+        ],
+        "reviewed_at": "2026-08-02"
+      },
       "source_refs": [
         "$COLLAB/notyet-harness/000_Agent/CORE.md",
         "$COLLAB/harness-mc/system-workflow/docs/specs/repo-coordination-gate.md",
@@ -4181,6 +4229,8 @@
         "$COLLAB/harness-mc/scripts/generate-worktree-status.mjs",
         "$COLLAB/harness-mc/scripts/task-event-outbox.mjs",
         "$COLLAB/harness-mc/scripts/apply-task-events.mjs",
+        "$COLLAB/harness-mc/scripts/new-project.py",
+        "$COLLAB/harness-mc/scripts/verify-project-init-admission.mjs",
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-session-commit-race-governance",
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#cc-push-skill-batch-push-coordinator",
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-dev-workflow-catalog",
@@ -4191,7 +4241,8 @@
         "https://git-scm.com/docs/git-pull",
         "https://git-scm.com/docs/git-push",
         "https://git-scm.com/docs/git-worktree",
-        "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches"
+        "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches",
+        "$COLLAB/notyet-harness/000_Agent/skills/project-init/SKILL.md"
       ],
       "hc_decision": {
         "task_scope": "morrowise/multi-machine-repo-coordination-gate",
@@ -8102,8 +8153,23 @@
         "A07｜Git worktree 遷移前，逐筆確認 branch、HEAD、dirty state 與 worktree registration；只可用 git worktree move 或在收尾後 remove，不得以 Finder 直接移動。每個非 Git 專案遷移也必須先有 approved migration record 與可回復驗證。",
         "A08｜完成前通過 task schema、work-anchor preflight、nested-worktree fixture、Topology Registry schema／verifier、Atlas sync --check 與 relevant existing architecture subsystem verifier；不得讀取 secrets、runtime auth、browser cookies 或私有帳號資料。",
         "A09｜版本化 `$COLLAB/notyet-harness/000_Agent/CORE.md` 的 Project Topology Operation Gate，以及 `$COLLAB/AGENTS.md`／notyet-harness direct entry，必須要求觸及 project folder／worktree 前執行 `npm run health:project-topology` 並讀 generated Maintenance Inbox；`blocked` 停止本 scope mutation，`attention` 可見但不阻擋無關 scope。",
-        "A10｜Maintenance health scanner 必須以 Topology Registry policy 區分 integrity error 與既知 action：未登錄 root、missing／duplicate record 或 stale evidence 必須非零退出；已登錄 unknown 與 legacy blocked worktree 必須保留 owner／next action 但可零退出。ARCHITECTURE.md Inbox marker 必須可由 generator 重建且不可序列化動態 elapsed-day 資料。"
+        "A10｜Maintenance health scanner 必須以 Topology Registry policy 區分 integrity error 與既知 action：未登錄 root、missing／duplicate record 或 stale evidence 必須非零退出；已登錄 unknown 與 legacy blocked worktree 必須保留 owner／next action 但可零退出。ARCHITECTURE.md Inbox marker 必須可由 generator 重建且不可序列化動態 elapsed-day 資料。",
+        "A11｜project-init 寫入前檢核：以 ready、attention、blocked topology fixtures 執行非 dry-run project-init；必須先取得 target-specific admission。blocked 在 mkdir／同步前停止且 digest 不變；無關 attention 不阻塞 canonical target。驗證須為整合 verifier 加既有 topology regression，只有文件規則不得通過。",
+        "A12｜apply_patch 目的地：canonical、unknown、未登錄與 path escape fixtures 必須透過實際 apply_patch adapter／PreToolUse hook 嘗試寫入；canonical path 放行，其餘在寫入前拒絕且 before／after digest 相同。validator 單獨通過但 apply_patch 可繞過時不得通過。",
+        "A13｜milestone 與 repo 分離：建立無 repo receipt 的 HMC milestone 時，只新增 milestones/<id>/project.json 與 tasks.json，repo_ref 為空且 Git／GitHub invocation 為零；不得由 milestone 或 standalone 推論 repo 已存在。"
       ],
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "把 MorroWise 的 project source boundary 接到實際寫入前 admission，讓 canonical home、hook、verifier 與 Architecture 薄索引形成可重跑閉環。",
+        "evidence_plan": [
+          "npm run test:project-write-admission",
+          "npm run test:project-init-admission",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#project-topology-architecture-atlas.acceptance"
+        ],
+        "reviewed_at": "2026-08-02"
+      },
       "source_refs": [
         "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
         "$COLLAB/notyet-harness/000_Agent/docs/morrowise/folder-contract-v0.md",
@@ -8118,6 +8184,11 @@
         "$COLLAB/AGENTS.md",
         "$COLLAB/harness-mc/scripts/project-topology-health.mjs",
         "$COLLAB/harness-mc/scripts/verify-project-topology-maintenance.mjs",
+        "$COLLAB/harness-mc/scripts/project-write-admission.mjs",
+        "$COLLAB/harness-mc/scripts/project-write-hook.mjs",
+        "$COLLAB/harness-mc/scripts/verify-project-write-admission.mjs",
+        "$COLLAB/.codex/hooks.json",
+        "$COLLAB/.claude/settings.json",
         "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-atlas.py"
       ],
       "jv32_route": {
@@ -8316,6 +8387,42 @@
                 "approved_at": "2026-07-25",
                 "evidence_refs": [
                   "Vincent 2026-07-25 current session: 好的，先處理 JV-43 的登錄錯誤"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 要求把 project-init pre-write admission、apply_patch destination hook 及 milestone／repo 分離補入既有 JV-43，新增 A11–A13，且不得另建 task 或吸收其他 dirty。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/scripts/project-write-admission.mjs",
+              "$COLLAB/harness-mc/scripts/project-write-hook.mjs",
+              "$COLLAB/harness-mc/scripts/verify-project-write-admission.mjs",
+              "$COLLAB/harness-mc/scripts/verify-project-init-admission.mjs",
+              "Vincent 2026-08-02 current session: 依 JV43-A11、JV43-A12、JV43-A13 驗收標準一口氣完成"
+            ],
+            "recorded_at": "2026-08-02",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/project-topology-architecture-atlas",
+                "morrowise/multi-machine-repo-coordination-gate"
+              ],
+              "scope_comparison": {
+                "problem": "缺口是 JV-43 書面 topology contract 未接到 project-init 與 apply_patch 的 pre-write destination enforcement，不是新的 topology registry 或 write system。",
+                "owner_source_of_truth": "Project Topology Registry 繼續是 canonical home／classification 正本；JV-37 繼續擁有 repo 建立授權，兩者不互相取代。",
+                "inputs_outputs": "輸入是 ready／attention／blocked、canonical／unknown／unregistered／escape 與 no-repo-receipt fixtures；輸出是 target admission CLI、PreToolUse hook、project-init wiring 與 digest-safe integration verifier。",
+                "lifecycle_completion": "本 amendment 完成 A11–A13 的接線與 fixtures；JV-43 其他既有 migration records 尚未全數核准／執行，status 維持 in_progress。"
+              },
+              "decision_reason": "destination admission 與 canonical home enforcement 已由 JV-43 擁有，故 amend 既有 task，不新增 task、第二 registry 或獨立 subsystem。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-02",
+                "evidence_refs": [
+                  "Vincent 2026-08-02 current session: 依 JV43-A11、JV43-A12、JV43-A13 驗收標準一口氣完成"
                 ]
               }
             }

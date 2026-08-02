@@ -4,7 +4,7 @@ new-project.py — 開案自動化（MC 版）
 自動建立 Mission Control 專案目錄（harness-mc/milestones/{id}/），
 產生 project.json + tasks.json（含 done_condition + phase-verify），
 同步到 Obsidian，並 rebuild MC 儀表板。
-standalone 類型自動建 GitHub repo + 更新 repos.json + ARCHITECTURE.md。
+standalone 只描述預計的專案型態；只有精準 Vincent repo receipt 才建立 GitHub repo。
 
 用法：
   python3 scripts/new-project.py --id "my-project" --name "我的專案" --desc "一句話說明" --type internal \\
@@ -13,7 +13,7 @@ standalone 類型自動建 GitHub repo + 更新 repos.json + ARCHITECTURE.md。
   python3 scripts/new-project.py --id "my-app" --name "我的應用" --desc "說明" --type standalone \\
     --problem "要解決的問題" --impact "不解決的影響" --metric "衡量指標" \\
     --baseline "目前基準" --target "量化目標" --due "2026-08-31" --measurement-source "資料來源或驗證指令"
-  python3 scripts/new-project.py promote --id "my-project"
+  python3 scripts/new-project.py promote --id "my-project" --repo-create-receipt /path/to/receipt.json
 """
 
 import argparse
@@ -32,6 +32,8 @@ REPOS_JSON   = AGENT_DIR / "config" / "repos.json"
 ARCH_MD      = AGENT_DIR / "ARCHITECTURE.md"
 STANDALONE_DIR = COLLAB_DIR
 GEN_DATA     = MC_DIR / "scripts" / "generate-data.mjs"
+WRITE_ADMISSION = MC_DIR / "scripts" / "project-write-admission.mjs"
+DEFAULT_TOPOLOGY_REGISTRY = MC_DIR / "system-workflow" / "registries" / "morrowise-project-topology.json"
 
 PRIORITY_ALIASES = {
     "P0": "P0",
@@ -81,6 +83,63 @@ def validate_outcome_contract(parser, args):
     args.priority = PRIORITY_ALIASES[args.priority]
 
 
+def load_repo_create_receipt(receipt_path: str, project_id: str):
+    """讀取精準綁定 project ID 的 Vincent repo 建立 receipt。"""
+    if not receipt_path:
+        return None
+    try:
+        with open(receipt_path, encoding="utf-8") as f:
+            receipt = json.load(f)
+    except (OSError, json.JSONDecodeError) as error:
+        print(f"❌ repo receipt 無法讀取：{error}", file=sys.stderr)
+        sys.exit(2)
+
+    expected = {
+        "schema_version": "morrowise.repo-create-approval.v1",
+        "action": "create_repo",
+        "project_id": project_id,
+        "approved_by": "Vincent",
+        "decision": "approved",
+    }
+    invalid = [field for field, value in expected.items() if receipt.get(field) != value]
+    receipt_id = receipt.get("receipt_id")
+    if invalid or not isinstance(receipt_id, str) or not receipt_id.strip():
+        details = ", ".join(invalid or ["receipt_id"])
+        print(f"❌ repo receipt 未精準授權 project '{project_id}'：{details}", file=sys.stderr)
+        sys.exit(2)
+    return receipt
+
+
+def require_write_admission(destination: Path, topology_registry: str = None):
+    """在任何 project-init mkdir／同步前取得 target-specific topology admission。"""
+    registry = Path(topology_registry) if topology_registry else DEFAULT_TOPOLOGY_REGISTRY
+    result = subprocess.run(
+        [
+            "node",
+            str(WRITE_ADMISSION),
+            "--collab-root",
+            str(COLLAB_DIR),
+            "--registry",
+            str(registry),
+            "--destination",
+            str(destination),
+            "--format",
+            "json",
+        ],
+        capture_output=True,
+        text=True,
+        cwd=str(MC_DIR),
+    )
+    if result.returncode != 0:
+        try:
+            report = json.loads(result.stdout)
+            reason = f"{report.get('code')}: {report.get('reason', '')}".strip()
+        except json.JSONDecodeError:
+            reason = result.stderr.strip() or "write admission failed"
+        print(f"❌ project-init topology BLOCKED：{reason}", file=sys.stderr)
+        sys.exit(2)
+
+
 def make_project_json(args) -> dict:
     proj_type = args.type
     outcome = {
@@ -103,6 +162,11 @@ def make_project_json(args) -> dict:
         "priority":    args.priority,
         "created":     datetime.now().strftime("%Y-%m-%d"),
         "estimated_completion": args.due,
+        "repo_ref": None,
+        "repo_creation": {
+            "create_repo": args.repo_create_receipt is not None,
+            "approval_ref": args.repo_create_receipt.get("receipt_id") if args.repo_create_receipt else None,
+        },
         "tracks": {
             "phase-1": "Phase 1",
         },
@@ -324,6 +388,8 @@ def promote(args):
         print(f"⏭️ '{args.id}' 已經是 standalone")
         return
 
+    require_write_admission(proj_path, args.topology_registry)
+
     print(f"🔄 升級 {args.id}: internal → standalone")
 
     deploy_target = None
@@ -339,6 +405,11 @@ def promote(args):
 
     if success:
         proj["type"] = "standalone"
+        proj["repo_ref"] = f"hisenzi/{args.id}"
+        proj["repo_creation"] = {
+            "create_repo": True,
+            "approval_ref": args.repo_create_receipt["receipt_id"],
+        }
         with open(proj_path, "w") as f:
             json.dump(proj, f, ensure_ascii=False, indent=2)
             f.write("\n")
@@ -388,6 +459,8 @@ def create(args):
         print(json.dumps({"project": project, "tasks": tasks}, ensure_ascii=False, indent=2))
         return
 
+    require_write_admission(project_dir, args.topology_registry)
+
     if project_dir.exists():
         print(f"❌ 專案 '{args.id}' 已存在：{project_dir}")
         sys.exit(1)
@@ -407,9 +480,15 @@ def create(args):
     )
     print(f"✅ 建立：{ms_path.name}")
 
-    if args.type == "standalone":
+    repo_created = False
+    if args.repo_create_receipt:
         deploy_target = getattr(args, "deploy", None)
-        setup_standalone_repo(args.id, args.name, args.desc, deploy_target)
+        repo_created = setup_standalone_repo(args.id, args.name, args.desc, deploy_target)
+        if repo_created:
+            project["repo_ref"] = f"hisenzi/{args.id}"
+            proj_path.write_text(
+                json.dumps(project, ensure_ascii=False, indent=2) + "\n"
+            )
 
     if not args.no_sync:
         print("\n🔄 同步到 Obsidian...")
@@ -429,7 +508,7 @@ def create(args):
     print(f"\n🎉 開案完成：{args.name}（{args.id}）— type: {args.type}")
     print(f"   MC 目錄：{project_dir}")
     print(f"   Obsidian：Projects/{args.id}.md")
-    if args.type == "standalone":
+    if repo_created:
         print(f"   Repo: https://github.com/hisenzi/{args.id}")
         print(f"   本地: Claude_協作/{args.id}/")
     print("   ✅ 成果契約與 starter task taxonomy 已建立；下一步依 task lifecycle 執行。")
@@ -442,6 +521,8 @@ def main():
     promote_parser = subparsers.add_parser("promote", help="升級 internal → standalone")
     promote_parser.add_argument("--id", required=True, help="專案 ID")
     promote_parser.add_argument("--deploy", default=None, help="部署目標 (zeabur/vps/none)")
+    promote_parser.add_argument("--repo-create-receipt", required=True, help="Vincent 精準 repo 建立 receipt JSON")
+    promote_parser.add_argument("--topology-registry", default=None, help=argparse.SUPPRESS)
 
     parser.add_argument("--id",       help="專案 ID（英文、連字號）")
     parser.add_argument("--name",     help="專案名稱")
@@ -458,12 +539,15 @@ def main():
     parser.add_argument("--deploy",   default=None, help="部署目標 (zeabur/vps)")
     parser.add_argument("--no-sync",  action="store_true", help="只建檔，不同步 Obsidian")
     parser.add_argument("--dry-run", action="store_true", help="只輸出 project/tasks contract，不建立檔案或同步")
+    parser.add_argument("--repo-create-receipt", default=None, help="Vincent 精準 repo 建立 receipt JSON")
+    parser.add_argument("--topology-registry", default=None, help=argparse.SUPPRESS)
     parser.add_argument("--template", default=None, help="（已棄用，請用 --type）")
-    parser.add_argument("--repo-path", default=None, help="（已棄用，standalone 自動建）")
+    parser.add_argument("--repo-path", default=None, help="（已棄用）")
 
     args = parser.parse_args()
 
     if args.command == "promote":
+        args.repo_create_receipt = load_repo_create_receipt(args.repo_create_receipt, args.id)
         promote(args)
         return
 
@@ -476,6 +560,7 @@ def main():
         parser.error("需要 --type (internal 或 standalone)")
 
     validate_outcome_contract(parser, args)
+    args.repo_create_receipt = load_repo_create_receipt(args.repo_create_receipt, args.id)
 
     create(args)
 

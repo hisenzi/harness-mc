@@ -2,7 +2,7 @@
   "registry_id": "morrowise-architecture-atlas-manifest.v1",
   "kind": "link_manifest",
   "task_id": "project-topology-architecture-atlas",
-  "updated_at": "2026-07-21",
+  "updated_at": "2026-08-02",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-atlas-manifest.json",
   "verifier_ref": "npm run test:architecture-atlas",
   "write_boundary": {
@@ -61,7 +61,7 @@
     {
       "id": "project-topology-registry",
       "name": "Project Topology Registry",
-      "summary": "正式專案 home、profile、文件／repo 連結與遷移狀態的唯一拓撲正本。",
+      "summary": "正式專案 home、profile、文件／repo 連結、遷移狀態與寫入前 destination admission 的唯一拓撲正本。",
       "source_of_truth_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json",
       "source_refs": [
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json"
@@ -72,12 +72,14 @@
       "verifier_refs": [
         "npm run test:project-topology",
         "npm run test:project-topology-maintenance",
+        "npm run test:project-write-admission",
+        "npm run test:project-init-admission",
         "python3 $COLLAB/notyet-harness/000_Agent/scripts/verify-project-topology-contract.py"
       ],
       "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#project-topology-architecture-atlas",
       "status_source": { "kind": "task", "field": "status" },
       "freshness_source": { "kind": "registry", "field": "inventory_as_of" },
-      "last_verified_at": "2026-07-21",
+      "last_verified_at": "2026-08-02",
       "freshness_warn_after_days": 30
     },
     {
@@ -103,7 +105,7 @@
     {
       "id": "repo-coordination-contract",
       "name": "JV-37 Repo Coordination Contract",
-      "summary": "repo class、worktree、remote truth 與收尾責任邊界；尚待任務落地。",
+      "summary": "repo class、worktree、remote truth、收尾及 project-bound repo 建立 receipt 的責任邊界。",
       "source_of_truth_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate",
       "source_refs": [
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate"
@@ -112,12 +114,13 @@
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate"
       ],
       "verifier_refs": [
-        "npm run test:tasks"
+        "npm run test:tasks",
+        "npm run test:project-init-admission"
       ],
       "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate",
       "status_source": { "kind": "task", "field": "status" },
       "freshness_source": { "kind": "static", "field": "last_verified_at" },
-      "last_verified_at": "2026-07-20",
+      "last_verified_at": "2026-08-02",
       "freshness_warn_after_days": 30
     }
   ]

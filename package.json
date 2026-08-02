@@ -57,6 +57,8 @@
     "test:project-local-worktree": "node scripts/verify-project-local-worktree.mjs",
     "test:project-topology": "node scripts/verify-morrowise-project-topology.mjs",
     "test:project-topology-maintenance": "node scripts/verify-project-topology-maintenance.mjs",
+    "test:project-write-admission": "node scripts/verify-project-write-admission.mjs",
+    "test:project-init-admission": "node scripts/verify-project-init-admission.mjs",
     "test:architecture-atlas": "node scripts/verify-morrowise-architecture-atlas.mjs",
     "health:project-topology": "node scripts/project-topology-health.mjs --summary",
     "test:morrowise-product-promotions": "node scripts/verify-morrowise-product-promotions.mjs",

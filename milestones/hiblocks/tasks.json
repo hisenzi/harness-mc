@@ -298,19 +298,23 @@
         },
         {
           "id": "HB05-A03",
-          "what": "使用者調整的 Block 順序能完整傳遞到 Prototype。",
+          "what": "使用者調整的 Block 順序不會被靜默還原；Agent 建議改序與核准結果可完整追溯。",
           "preconditions": [
-            "目前選擇至少包含兩個 Block"
+            "目前選擇至少包含兩個 Block",
+            "選用 Recipe 的建議順序可由 HiBlocks 正本取得"
           ],
           "steps": [
-            "使用者移動至少一個 Block 的順序",
-            "依序核對 Submission、Proposal 與 Prototype"
+            "使用者把 HBL-BLOCK-008 從第 3 位移到第 4 位",
+            "核對 Selection、Submission 與 Proposal.original_selection",
+            "執行 Agent validation 並檢查 Proposal 的改序差異與理由",
+            "先嘗試未核准更新，再核准該版 Proposal 並核對 Prototype"
           ],
-          "pass_condition": "Submission、Proposal 與核准後 Prototype 的 Block ID 順序完全一致。",
-          "fail_condition": "任一階段遺失 Block、自動改序，或 Prototype 與核准順序不同。",
+          "pass_condition": "Selection、Submission 與 Proposal.original_selection 都保留使用者移動後順序；Agent 若依 Recipe 建議改序，validation 必須回報 ORDER_CONFLICT，Proposal 必須逐項列出 HBL-BLOCK-008 由 4→3、HBL-BLOCK-006 由 3→4 及理由；未核准不得更新，核准後 Prototype 順序必須精確等於該版 Proposal.proposed_blocks。",
+          "fail_condition": "提交前被舊 order 靜默還原、Submission 與 Selection 不同、Proposal 覆寫 original_selection、Agent 改序卻沒有差異或理由、未核准即可更新，或 Prototype 與核准 Proposal 不同。",
           "verification": [
-            "完整流程 fixture",
-            "Block sequence 自動比對"
+            "同一筆 moved Submission 的完整流程 fixture",
+            "Selection／Submission／original_selection／Proposal／Prototype exact sequence 自動比對",
+            "ORDER_CONFLICT、逐項 move reason 與核准狀態機正反測試"
           ]
         },
         {
@@ -469,6 +473,19 @@
         "$COLLAB/hiblocks/src/components/blocks/blocks.manifest.json",
         "$COLLAB/hiblocks/docs/site-prefill.md"
       ],
+      "goal_alignment": {
+        "project_id": "hiblocks",
+        "goal_ref": "$COLLAB/harness-mc/milestones/hiblocks/project.json#/goals",
+        "goal_fingerprint": "sha256:d19b24244f6f38b0545cd37a17e083970cee4d9bc501fdd4dd85ec81bd37db40",
+        "contribution": "收緊 HB05-A03 的順序追溯與核准證據，支援 HiBlocks 以 Agent 可執行的驗證機制可靠組合 Prototype。",
+        "evidence_plan": [
+          "$COLLAB/hiblocks/tests/conversation-to-prototype-runtime.test.mjs#HB05-A03",
+          "$COLLAB/hiblocks/tests/conversation-to-prototype-verifier.test.mjs",
+          "$COLLAB/hiblocks/scripts/verify-conversation-to-prototype.mjs#HB05-A03",
+          "node scripts/validate-tasks.mjs --changed-only --project hiblocks"
+        ],
+        "reviewed_at": "2026-08-02"
+      },
       "jv32_route": {
         "batch": "HiBlocks Conversation-to-Prototype MVP",
         "workflows": [
@@ -573,6 +590,19 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准補正 HB05-A03 的驗收語意：使用者順序不得被靜默還原；Agent 可依 Recipe 提議改序，但必須保留 original_selection、逐項說明差異與理由，且 Prototype 只能等於 Vincent 核准的 Proposal。本次只收緊既有 acceptance、runtime test 與 task verifier，不新增 task、不重開已完成 scope，也不改變 runtime 功能。",
+            "evidence_refs": [
+              "$COLLAB/hiblocks/tests/conversation-to-prototype-runtime.test.mjs#HB05-A03",
+              "$COLLAB/hiblocks/tests/conversation-to-prototype-verifier.test.mjs",
+              "$COLLAB/hiblocks/scripts/verify-conversation-to-prototype.mjs#HB05-A03",
+              "Vincent 2026-07-31 current session: 可以進行修正；有明確驗收標準？"
+            ],
+            "recorded_at": "2026-07-31"
           }
         ]
       },

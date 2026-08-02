@@ -1,0 +1,21 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-hiblocks-conversation-to-prototype-runtime-spike-task.completed-hiblocks-conversation-to-prototype-runtime-spike-3cbe98fa9297fbdc78c0a37857a933a79bc80414-20260802T163433Z-20260802T163433Z",
+  "type": "sync_skipped",
+  "target": "obsidian_canvas",
+  "status": "skipped",
+  "source_event_id": "task.completed-hiblocks-conversation-to-prototype-runtime-spike-3cbe98fa9297fbdc78c0a37857a933a79bc80414-20260802T163433Z",
+  "project": "hiblocks",
+  "task_id": "conversation-to-prototype-runtime-spike",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-08-02T16:34:33.313Z",
+  "actor": "codex",
+  "session_id": "019fbc17-62de-7a51-98ac-e6c9a80c515b",
+  "exemption_reason": "HB-MVP-05 has no explicit external mirror binding; MC dashboard remains the generated read model for canonical task state.",
+  "verifier": "canonical task external_refs inspection plus sync-event-queue terminal skip verifier",
+  "resolved_at": "2026-08-02T16:35:25.505Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "019fbc17-62de-7a51-98ac-e6c9a80c515b"
+}

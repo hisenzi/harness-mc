@@ -30,10 +30,12 @@
     },
     "conversation-to-prototype-runtime-spike": {
       "status": "completed",
-      "completed_at": "2026-07-30",
+      "completed_at": "2026-08-03",
       "commits": [
-        "0a0f38fd582bbe293fecb0e715519221e6510b17"
-      ]
+        "0a0f38fd582bbe293fecb0e715519221e6510b17",
+        "3cbe98fa9297fbdc78c0a37857a933a79bc80414"
+      ],
+      "summary": "HB-MVP-05 已完成可重跑的 Conversation-to-Prototype spike；目前驗收矩陣 A01–A11 全數通過，使用者移動後順序、Agent 明示改序、Vincent 核准與 Prototype 輸出可完整追溯，Dashboard 維持唯讀 consumer。"
     }
   }
 }

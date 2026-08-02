@@ -223,7 +223,13 @@
     {
       "id": "conversation-to-prototype-runtime-spike",
       "title": "對話驅動 Prototype 生成流程可行性驗證",
-      "status": "todo",
+      "status": "completed",
+      "completed_at": "2026-08-03",
+      "summary": "HB-MVP-05 已完成可重跑的 Conversation-to-Prototype spike；目前驗收矩陣 A01–A11 全數通過，使用者移動後順序、Agent 明示改序、Vincent 核准與 Prototype 輸出可完整追溯，Dashboard 維持唯讀 consumer。",
+      "commits": [
+        "0a0f38fd582bbe293fecb0e715519221e6510b17",
+        "3cbe98fa9297fbdc78c0a37857a933a79bc80414"
+      ],
       "track": "phase-1",
       "order_label": "HB-MVP-05",
       "priority": "high",
@@ -486,6 +492,148 @@
         ],
         "reviewed_at": "2026-08-02"
       },
+      "delivery_evidence": {
+        "implementation_repo": "$COLLAB/hiblocks",
+        "c1": "3cbe98fa9297fbdc78c0a37857a933a79bc80414",
+        "baseline_delivery": "0a0f38fd582bbe293fecb0e715519221e6510b17",
+        "target_ref": "hiblocks/origin/main",
+        "remote_ancestry": "3cbe98fa9297fbdc78c0a37857a933a79bc80414 is an ancestor of hiblocks/origin/main; verified 2026-08-03",
+        "remote_parity": "0/0",
+        "acceptance_contract_commit": "fe5605f620bbe0ecc7b665ee5c6d8bb62fe68ff8",
+        "ci_boundary": "HiBlocks 沒有對應 C1 workflow；以 clean commit snapshot 的 task verifier、31/31 regression、production build 與 controlled desktop/mobile browser evidence作為交付證據。"
+      },
+      "acceptance_receipt": {
+        "matrix_ref": "milestones/hiblocks/tasks.json#conversation-to-prototype-runtime-spike.acceptance_matrix",
+        "matrix_fingerprint": "sha256:e11bb328982d5bb1a8a8165b4b60fbf239bfdf6ed43ea097dd1c03df0c210b47",
+        "caller_matrix_fingerprint": "sha256:e11bb328982d5bb1a8a8165b4b60fbf239bfdf6ed43ea097dd1c03df0c210b47",
+        "required_ids": [
+          "HB05-A01",
+          "HB05-A02",
+          "HB05-A03",
+          "HB05-A04",
+          "HB05-A05",
+          "HB05-A06",
+          "HB05-A07",
+          "HB05-A08",
+          "HB05-A09",
+          "HB05-A10",
+          "HB05-A11"
+        ],
+        "results": [
+          {
+            "id": "HB05-A01",
+            "status": "pass"
+          },
+          {
+            "id": "HB05-A02",
+            "status": "pass"
+          },
+          {
+            "id": "HB05-A03",
+            "status": "pass"
+          },
+          {
+            "id": "HB05-A04",
+            "status": "pass"
+          },
+          {
+            "id": "HB05-A05",
+            "status": "pass"
+          },
+          {
+            "id": "HB05-A06",
+            "status": "pass"
+          },
+          {
+            "id": "HB05-A07",
+            "status": "pass"
+          },
+          {
+            "id": "HB05-A08",
+            "status": "pass"
+          },
+          {
+            "id": "HB05-A09",
+            "status": "pass"
+          },
+          {
+            "id": "HB05-A10",
+            "status": "pass"
+          },
+          {
+            "id": "HB05-A11",
+            "status": "pass"
+          }
+        ],
+        "exact_id_coverage": true,
+        "all_passed": true,
+        "verified_at": "2026-08-03"
+      },
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "共享索引、Recipe 與 Block 選擇只消費 HiBlocks canonical Registry／Recipe，並輸出單一 Submission contract。",
+          "使用者移動 HBL-BLOCK-008 後，Submission 與 Proposal.original_selection 保留 moved sequence；Agent 改序必須回報 ORDER_CONFLICT 並逐項列出 move 與理由。",
+          "awaiting_approval 的 Proposal 不得更新 Prototype；Vincent 精準核准 Proposal ID／version 後，Prototype sequence 必須等於 approved proposed_blocks。",
+          "desktop 與 390px mobile Prototype 可開啟且無阻斷 overflow；Dashboard 只作唯讀 consumer，不複製 canonical rules。"
+        ],
+        "test_level": [
+          "runtime_unit",
+          "task_verifier_integration",
+          "controlled_browser_e2e",
+          "production_build",
+          "remote_delivery"
+        ],
+        "red_command": "node --test tests/conversation-to-prototype-runtime.test.mjs tests/conversation-to-prototype-verifier.test.mjs",
+        "expected_red_reason": "把目前 A03 tests 套到 pre-fix 0a0f38f snapshot 時，task verifier 的 HB05-A03 evidence 為 undefined，無法證明 moved Submission、ORDER_CONFLICT、逐項 move reason、approval gate 與 Prototype sequence。",
+        "green_command": "node --test tests/conversation-to-prototype-runtime.test.mjs tests/conversation-to-prototype-verifier.test.mjs",
+        "full_regression_commands": [
+          "node --test tests/*.test.mjs",
+          "npm run build",
+          "npm run verify:block-registry",
+          "node scripts/verify-block-layout-decision-index.mjs",
+          "npm run validate:typography"
+        ],
+        "fixture_refs": [
+          "$COLLAB/hiblocks/tests/fixtures/conversation-to-prototype/approval.v1.json",
+          "$COLLAB/hiblocks/tests/conversation-to-prototype-runtime.test.mjs",
+          "$COLLAB/hiblocks/tests/conversation-to-prototype-verifier.test.mjs",
+          "$COLLAB/hiblocks/scripts/verify-conversation-to-prototype.mjs"
+        ],
+        "runtime_evidence_required": false,
+        "evidence_refs": [
+          "$COLLAB/hiblocks/scripts/verify-conversation-to-prototype.mjs#HB05-A01..HB05-A10",
+          "$COLLAB/hiblocks/tests/conversation-to-prototype-verifier.test.mjs",
+          "Product C1 3cbe98fa9297fbdc78c0a37857a933a79bc80414 is on hiblocks/origin/main; remote ancestry and local/upstream 0/0 verified 2026-08-03"
+        ]
+      },
+      "completion_evidence": {
+        "red_evidence": [
+          "2026-08-03 pre-fix 0a0f38f snapshot with current A03 tests -> 12 tests, 11 pass, 1 fail; task verifier evidence was undefined."
+        ],
+        "green_evidence": [
+          "Product C1 task verifier -> HB05-A01 through HB05-A10 passed, including exact moved/proposed/prototype sequences, ORDER_CONFLICT, two explicit moves with reasons and unapproved_update_blocked=true.",
+          "node --test tests/*.test.mjs from C1 snapshot -> 31/31 PASS.",
+          "controlled browser evidence -> desktop 1440x2186 and mobile 390x1503; approved sequence opened without blocking overflow."
+        ],
+        "regression_evidence": [
+          "npm run build from C1 snapshot -> PASS; 5 static pages built.",
+          "npm run verify:block-registry -> PASS; 15 blocks, 4 recipes, 85 baselined raw typography declarations.",
+          "node scripts/verify-block-layout-decision-index.mjs -> PASS; 7 ordered blocks.",
+          "npm run validate:typography -> PASS.",
+          "git ancestor check for 3cbe98fa9297fbdc78c0a37857a933a79bc80414 on hiblocks/origin/main -> PASS; local/upstream parity 0/0.",
+          "Exact task event applied and its Obsidian Canvas request resolved terminal sync_skipped; current closeout graph pending=0."
+        ],
+        "verifier_refs": [
+          "$COLLAB/hiblocks/scripts/verify-conversation-to-prototype.mjs",
+          "$COLLAB/hiblocks/tests/conversation-to-prototype-runtime.test.mjs",
+          "$COLLAB/hiblocks/tests/conversation-to-prototype-verifier.test.mjs",
+          "$COLLAB/harness-mc/scripts/apply-task-events.mjs",
+          "$COLLAB/harness-mc/scripts/sync-event-queue.mjs",
+          "$COLLAB/harness-mc/scripts/generate-closeout-residual-ledger.mjs"
+        ],
+        "fixture_runtime_boundary": "驗收使用 deterministic Landing Page fixture、精準 Vincent approval fixture、clean C1 snapshot 與 controlled local browser，證明 HB-MVP-05 runtime spike、approval boundary、responsive Prototype 與 Dashboard consumer 邊界；done_condition 不宣稱 hosted production deployment 或外部服務 runtime，因此 runtime_evidence_required=false。"
+      },
       "jv32_route": {
         "batch": "HiBlocks Conversation-to-Prototype MVP",
         "workflows": [
@@ -495,6 +643,7 @@
           "implement",
           "tdd",
           "code-review",
+          "verification-before-completion",
           "closeout-commit-routing"
         ],
         "decision_input": [
@@ -603,6 +752,19 @@
               "Vincent 2026-07-31 current session: 可以進行修正；有明確驗收標準？"
             ],
             "recorded_at": "2026-07-31"
+          },
+          {
+            "operation": "complete",
+            "from_status": "todo",
+            "to_status": "completed",
+            "reason": "HB-MVP-05 current A01–A11 全數通過；C1 3cbe98f 已在 hiblocks/origin/main 且 0/0，clean snapshot verifier、31/31 regression、production build 與 desktop/mobile browser evidence 完整；exact task event 已 apply，無外部 mirror binding 的 Canvas request 已 terminal skip。",
+            "evidence_refs": [
+              "$COLLAB/hiblocks/scripts/verify-conversation-to-prototype.mjs#HB05-A01..HB05-A10",
+              "$COLLAB/harness-mc/task-events/applied/20260802T163433Z-hiblocks-3cbe98fa9297fbdc78c0a37857a933a79bc80414-hiblocks-conversation-to-prototype-runtime-spike.json",
+              "$COLLAB/harness-mc/sync-events/synced/20260802T163433Z-obsidian_canvas-hiblocks-conversation-to-prototype-runtime-spike-task.completed-hiblocks-conversation-to-prototype-runtime-spike-3cbe98fa9297fbdc78c0a37857a933a79bc80414-20260802T163433Z-sync_skipped.json",
+              "Product C1 3cbe98fa9297fbdc78c0a37857a933a79bc80414 on hiblocks/origin/main; remote ancestry and local/upstream 0/0 verified 2026-08-03"
+            ],
+            "recorded_at": "2026-08-03"
           }
         ]
       },

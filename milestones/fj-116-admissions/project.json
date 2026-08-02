@@ -1,0 +1,154 @@
+{
+  "name": "FJSH-116 招生",
+  "description": "116 招生的網站、活動、分工與漏斗追蹤系統",
+  "type": "internal",
+  "status": "active",
+  "priority": "P0",
+  "created": "2026-07-23",
+  "estimated_completion": "2026-10-31",
+  "repo": null,
+  "repo_ref": null,
+  "repo_path": null,
+  "source_boundary": "MC 的 project.json 與 tasks.json 是專案目標與任務狀態正本；Notion 是協作操作介面。此 milestone 不代表已有獨立 repo 或 project home；只有 Vincent 明確要求後才可建立。",
+  "tracks": {
+    "direction": "方向與時程",
+    "operations": "營運管理",
+    "web": "網站與導流",
+    "content": "內容與素材",
+    "activity": "活動與轉換"
+  },
+  "outcome": {
+    "problem_statement": "116 招生沒有統一工作正本、分工與數據回饋迴路，無法可靠完成十月網站與後續招生活動。",
+    "impact": "網站與素材可能延遲、活動報名路徑可能斷裂，且團隊無法從招生掉點產生可追蹤的改善行動。",
+    "success_target": {
+      "metric": "P0 招生工作具主責、期限、下一步與完成定義；招生網站、QA、連結入口與報名路徑可用；首輪活動前啟用週漏斗檢查。",
+      "baseline": "116 招生尚無 MC 專案正本與可持續維護的 task 結構。",
+      "target": "100% P0 task 有驗收條件；2026-10-31 前完成可公開驗收的網站上線；第一個招生週報能關聯到下一步行動。",
+      "due": "2026-10-31"
+    },
+    "measurement_source": "MC tasks.json、Notion 招生行動與週漏斗視圖，以及正式網站、QA、連結與表單實測。"
+  },
+  "task_taxonomy": {
+    "version": "v1",
+    "sort_rule": "dependencies_then_priority_then_id",
+    "capability_domains": [
+      "direction-governance",
+      "source-memory",
+      "sensing-events",
+      "judgment-priority",
+      "approval-safety",
+      "action-delivery",
+      "feedback-learning",
+      "heartbeat-scheduling",
+      "dashboard-surface",
+      "knowledge-capture",
+      "verification-immunity"
+    ],
+    "task_kinds": [
+      "discover",
+      "decide",
+      "design",
+      "implement",
+      "verify",
+      "operate",
+      "closeout"
+    ],
+    "priority_order": ["P0", "P1", "P2"]
+  },
+  "goals": [
+    "確認 116 國中／高中招生對象、名額或人數目標口徑、活動時程與決策人。",
+    "以 115 卡片為參考，建立經取捨的 116 招生工作卡，而非逐張複製歷史白板。",
+    "建立 Notion 的日常分工、10 月網站關鍵路徑與每週招生漏斗三個操作視圖。",
+    "在 2026-10-31 前完成招生網站、QA、連結入口與報名路徑的公開驗收。",
+    "讓活動成效從接觸、留資、報名、到場到就讀意願形成可行動的每週回饋。"
+  ],
+  "risks": [
+    {
+      "risk": "名額、人數目標、活動日期或決策權未定。",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "FJ116-P0-01 先確認決策表與校曆，再進入網站製作。"
+    },
+    {
+      "risk": "網頁內容、照片或招生資訊未被及時確認。",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "FJ116-P0-05 建立素材清單、內容主責與審核期限。"
+    },
+    {
+      "risk": "Notion 只記狀態、沒有下一步與本週執行者。",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "FJ116-P0-02 以單一行動資料庫與固定更新規則處理。"
+    },
+    {
+      "risk": "漏斗口徑不一致或混入個資。",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "FJ116-P1-03 定義各管道分母與彙總規則；個資保留在校方授權系統。"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "116 招生核心卡已完成來源對照、排除理由、主責、期限與完成定義。",
+      "verify_cmd": "檢查 MC tasks.json 的 FJ116-P0-01 至 FJ116-P0-03 與 Notion 招生行動資料庫。",
+      "expected": "P0 工作卡皆有可驗收欄位。"
+    },
+    {
+      "criterion": "日常分工與週漏斗分別以正確的 Notion 資料模型運作。",
+      "verify_cmd": "檢查 FJ116-P0-02 的資料庫、視圖與週報樣本。",
+      "expected": "日常分工是視圖；週報粒度為週別 × 招生線 × 管道／活動。"
+    },
+    {
+      "criterion": "招生網站在 2026-10-31 前公開上線。",
+      "verify_cmd": "實測正式網址、國中頁、高中頁、QA、連結樹及報名入口。",
+      "expected": "主要路徑在手機與桌機皆可完成。"
+    },
+    {
+      "criterion": "網站上線前完成資訊與報名路徑驗證。",
+      "verify_cmd": "執行 FJ116-P0-07 的網站、QR、表單、QA 與校方資訊核對清單。",
+      "expected": "沒有未處理的 P0 阻塞。"
+    },
+    {
+      "criterion": "每週招生檢查會產生有主責與期限的改善行動。",
+      "verify_cmd": "連續兩週檢查 FJ116-P1-03 的週報與關聯行動。",
+      "expected": "每週最大掉點均有後續任務及下週驗證。"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "問題界定",
+      "decision": "先建立招生營運系統，不把建立更多管理卡當作解法。",
+      "reason": "#rightProblem 顯示症狀是看不到分工與漏斗，根因是缺少單一行動正本與回饋迴路。",
+      "alternatives_rejected": "排除把日常分工與週檢查各自做成一張管理卡。",
+      "hc_used": ["#rightProblem", "#breakItDown"]
+    },
+    {
+      "topic": "資料模型",
+      "decision": "行動與漏斗數據分成兩個 Notion 資料庫，再以關聯欄位連回。",
+      "reason": "工作產出與活動轉換是不同變數；混在一張卡會失去可比較性。",
+      "alternatives_rejected": "排除用單一狀態欄同時處理工作、活動人數與招生結果。",
+      "hc_used": ["#variables", "#systemDynamics"]
+    },
+    {
+      "topic": "專案範圍",
+      "decision": "116 招生與雙語班轉制分案。",
+      "reason": "兩者的成果、決策人、時程與驗收不同；混案會讓招生被師資與系統轉制阻塞。",
+      "alternatives_rejected": "排除沿用雙語班的 M1／M2／M6 作為招生主線。",
+      "hc_used": ["#breakItDown", "#levelsOfAnalysis"]
+    },
+    {
+      "topic": "資料正本",
+      "decision": "MC 維護目標與 task 狀態；Notion 用於團隊操作。尚未取得 Vincent 建立 repo／project home 的明確要求。",
+      "reason": "milestone 與 repo／project home 分離，避免從 HMC task 或 standalone 類型自行推論並寫入未核准路徑。",
+      "alternatives_rejected": "排除把 Notion 視圖當 canonical，也排除在未核准的本機資料夾建立第二份專案正本。",
+      "hc_used": ["#vincentThinking", "#systemDynamics"]
+    }
+  ],
+  "system_growth": {
+    "trigger": "每週固定檢查，或任一招生管道／活動開始導流時。",
+    "data_flow": "招生行動 → 網站／活動執行 → 彙總漏斗數據 → 週報判讀 → 新增或更新下一步行動。",
+    "surface": "Notion 的日常分工、10 月網站關鍵路徑、每週招生漏斗；MC 顯示專案與 task 狀態。",
+    "feedback_loop": "每週挑最大掉點，建立一至三張有主責與期限的行動，並於下週用相同管道口徑驗證。"
+  }
+}

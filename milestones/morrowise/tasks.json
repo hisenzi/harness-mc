@@ -4395,8 +4395,11 @@
     {
       "id": "task-lifecycle-jv32-gate",
       "status": "completed",
-      "completed_at": "2026-08-01",
+      "completed_at": "2026-08-02",
       "weekly_core": false,
+      "revision": "R17",
+      "previous_revision": "R16",
+      "acceptance_state": "VINCENT_CONFIRMED",
       "commits": [
         "8dd92f7",
         "038bae0",
@@ -4406,16 +4409,18 @@
         "5b95f10",
         "82a4bcc",
         "85a57e922b4c2ff0040717a11830e286a65d8c93",
-        "4d996a947417a1e8d25df7cd2a2974d617196227"
+        "4d996a947417a1e8d25df7cd2a2974d617196227",
+        "e5ce130f75e6662dae225de8b0bd5b6cb917ed82",
+        "298b761a653951288d179cc81adb3eb9003dc5b2"
       ],
-      "summary": "JV-40 P3 completion evidence gate 已整合至兩個 target main：harness 85a57e922b4c2ff0040717a11830e286a65d8c93 提供 schema、validator、負向 fixtures 與 Admission Review；notyet 4d996a947417a1e8d25df7cd2a2974d617196227 同步 generated Architecture index。Acceptance Matrix、完整 regression 與 build 均通過，未新增 task 或 exit gate。",
+      "summary": "JV-40 R17 滾動治理已完成交付：新／語意修改 task 受 owning-project goal fingerprint 約束，下一輪 task 與 goal-drift 重整只能依 fresh evidence 提案，未經 Vincent 具名核准 applied action 維持為零；self-learning dogfood 保持唯讀。Harness C1 e5ce130 與 Notyet C1 298b761 已送達各自 origin/main，13 項 canonical Acceptance Matrix、Admission Record 與 ARCHITECTURE controlled sync 均 fresh pass。",
       "title": "JV-40 任務生命週期接入 JV-32（新增／修改／停用／完成 gate）",
       "track": "governance",
       "order_label": "JV-40",
       "dependencies": [
         "morrowise-dev-workflow-catalog"
       ],
-      "done_condition": "將新增、語意修改、暫緩、恢復、完成、取消與封存 task 的 canonical state mutation 納入既有 JV-32：semantic intake 固定 reuse／amend／replace／genuinely_new 並檢查四個 scope 邊界；MorroWise 每次最多一個 weekly_core in_progress，必有 review_date，到期只能經 Vincent 明確 reframe／suspend／cancel／complete，禁止自動延長。Canonical task 的 title 必須以繁體中文為主要語言，不可變技術識別碼可保留原文；changed-only validator、正反 fixtures 與歷史相容策略必須驗證通過。catalog、schema、command map、approval policy、validator、work-anchor runtime、負向 fixture 與 Architecture Admission Review 必須使用同一套語意；不得新增第二套 task system或外部寫入。",
+      "done_condition": "在既有 JV-32／JV-40 task lifecycle 閉環內完成 R17 滾動治理：新 task 與既有 task 的語意修改必須引用 owning project 的 current goal fingerprint、說明 contribution 與 evidence plan；MorroWise 只能依 fresh evidence 產生下一輪 task 或 retain／amend／defer／cancel／replace 重整候選，不能自行寫入。只有 Vincent 核准後，Agent 才能經 JV-32／JV-40 寫入候選指定的 target project canonical tasks.json。Goal drift 必須覆蓋全部 open task、保留 append-only revision history、拒絕 stale evidence，且 self-learning dogfood 全程 read-only。R16 以前的完成紀錄與證據完整保留但不得冒充 R17 fresh evidence；不得新增第二套 task system、tracker、database、dashboard、scheduler 或外部寫入。",
       "acceptance": [
         "A01｜JV-32 catalog 增加 task-lifecycle workflow，定義 create、amend、suspend、resume、complete、cancel、archive 的輸入、輸出、writes_to、external_effect、verifier_ref 與 close_rule；它是 JV-32 的內建 route，不是平行 task 系統。",
         "A02｜task lifecycle schema 固定 jv32_route 與 task_lifecycle.history 的最小欄位：operation、from_status、to_status、reason、evidence_refs、recorded_at；history 為 append-only，不儲存秘密、帳號、token、Cookie 或 runtime auth。",
@@ -4443,7 +4448,15 @@
         "A24｜規範性補齊後必須使舊 evidence 失效，重新執行受影響 verifier 與完整 regression；每輪最多三次修補，仍未通過時進入 FAILED_RETRY_EXHAUSTED 並交由 Vincent，不得假完成。",
         "A25｜驗收報告必須產生 remediation／no-expansion receipt：列出原始錯誤、缺失分類、依據規範、exact fields／files、意外變更與還原、驗證命令／結果、changed task IDs、排除項與 remaining warnings。",
         "A26｜只有所有必要 assertion fresh pass，狀態才可由 REVIEW_REQUIRED 進入 ACCEPTANCE_VERIFIED；接著必須將成果、receipt 與未擴張證據交 Vincent 確認，取得明確確認後才可進入 VINCENT_CONFIRMED 與 closeout-commit-routing。",
-        "A27｜worktree-commit 不得在 ACCEPTANCE_VERIFIED 與 VINCENT_CONFIRMED 之前執行；確認後若 exact diff fingerprint、工作項目、commit grouping、message 或 verifier 結果改變，原確認立即失效並返回 REVIEW_REQUIRED。"
+        "A27｜worktree-commit 不得在 ACCEPTANCE_VERIFIED 與 VINCENT_CONFIRMED 之前執行；確認後若 exact diff fingerprint、工作項目、commit grouping、message 或 verifier 結果改變，原確認立即失效並返回 REVIEW_REQUIRED。",
+        "A28｜R17 goal alignment contract 固定 project_id、goal_ref、goal_fingerprint、contribution、evidence_plan、reviewed_at；只對新 task 與語意修改 task changed-only 強制，未變 legacy task 不追溯補填。",
+        "A29｜MorroWise task governance candidate 固定 target_project、target_task_source、goal_ref、source_task_refs、evidence_refs、observed_gap、proposed_operation、proposed_done_condition、limitations、requires_approval=true；缺 fresh evidence 不得提出可寫入候選。",
+        "A30｜Goal fingerprint 改變時必須檢視 owning project 全部 open task，逐一只提出 retain／amend／defer／cancel／replace 建議；證據不足時標 blocked，不得自動刪除、改狀態或改排序。",
+        "A31｜未取得 Vincent 對具名候選的明確核准時，runner applied action 必須為零且 target tasks.json fingerprint 不變；核准後也只能經既有 JV-32／JV-40 route 寫入候選指定正本。",
+        "A32｜self-learning 作為第一個 read-only dogfood target；R17 不得新增或修改 self-learning task，也不得提前執行『鋪好路：整理 task』。",
+        "A33｜私人財務、生活資料、秘密、token、Cookie、runtime auth 與未核准公開內容不得進入共同或公開 candidate／receipt／read model。",
+        "A34｜work-anchor acceptance event 必須自動解析本 task acceptance_matrix exact IDs、拒絕 stale matrix fingerprint，並在 receipt 記錄 matrix ref、fingerprint 與逐項結果。",
+        "A35｜R17 是既有 promoted JV-32／JV-40 subsystem 的 version improvement；Admission Record fingerprint 與 generated ARCHITECTURE.md 薄索引必須同步且通過 controlled check。"
       ],
       "source_refs": [
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
@@ -4456,8 +4469,18 @@
         "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
         "$COLLAB/harness-mc/scripts/work-anchor-preflight.mjs",
         "$COLLAB/harness-mc/scripts/verify-work-anchor-preflight.mjs",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-recommendation-engine.json",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-recommendation-engine.md",
+        "$COLLAB/harness-mc/system-workflow/schemas/morrowise-system.schema.json",
+        "$COLLAB/harness-mc/scripts/verify-morrowise-recommendations.mjs",
+        "$COLLAB/harness-mc/scripts/morrowise-action-runner.mjs",
+        "$COLLAB/harness-mc/scripts/verify-morrowise-action-runner.mjs",
+        "$COLLAB/harness-mc/scripts/generate-morrowise-proactive-loop.mjs",
+        "$COLLAB/harness-mc/scripts/verify-morrowise-proactive-loop.mjs",
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
-        "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py"
+        "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py",
+        "$COLLAB/notyet-harness/000_Agent/skills/vincent-superpowers/03-execution/SKILL.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/review/SKILL.md"
       ],
       "execution_contract": {
         "owner": "morrowise/task-lifecycle-jv32-gate",
@@ -4466,19 +4489,24 @@
           "Canonical task 的 mutation 前後狀態、operation 與 semantic intake",
           "JV-32 catalog、task lifecycle spec/schema、approval policy 與 verifier evidence",
           "Test contract、runtime boundary、commit accounting 與 Vincent 明確核准"
+          ,"Owning project goal fingerprint、全部 open task、fresh practice evidence 與具名 governance candidate"
         ],
         "outputs": [
           "Completion evidence schema、changed-only validator 與正反 fixtures",
           "單一 JV-32 task lifecycle admission／拒絕判定與可追溯 evidence route",
           "提交前成果驗收狀態序列、規範性缺失補齊政策與 fresh evidence gate",
-          "可追溯的 remediation／no-expansion receipt 與 Vincent confirmation handoff"
+          "可追溯的 remediation／no-expansion receipt 與 Vincent confirmation handoff",
+          "只讀的 next-task／task-reorganization candidate、goal-drift coverage 與 JV-32／JV-40 approval handoff"
         ],
         "verifiers": [
           "node scripts/verify-validate-tasks.mjs",
           "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
           "node scripts/verify-work-anchor-preflight.mjs"
+          ,"node scripts/verify-morrowise-recommendations.mjs"
+          ,"node scripts/verify-morrowise-action-runner.mjs"
+          ,"node scripts/verify-morrowise-proactive-loop.mjs"
         ],
-        "stop_condition": "任一 lifecycle route、semantic intake、test contract、runtime boundary、approval 或 completion evidence 不完整時停止；不得建立第二套 task system、背景修改 canonical state、自動 commit、push 或延長 review_date。",
+        "stop_condition": "任一 goal ref／fingerprint、fresh evidence、open-task coverage、candidate target/source、approval、JV-32／JV-40 route、privacy boundary 或 acceptance receipt 不完整時停止；MorroWise 只能提出建議，不得建立第二套 task system、背景修改 canonical state、自動 commit、push、公開或延長 review_date。",
         "dependency_gates": {
           "start_requires": [
             "morrowise-dev-workflow-catalog"
@@ -4503,6 +4531,189 @@
           "does_not_change_weekly_core": true,
           "basis": "依 critical path、start/completion dependencies 與 estimated_hours 安排下一個人工規劃檢查點。"
         }
+      },
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "把 MorroWise 的 source-boundary、feedback loop 與 next-action 能力延伸到 task governance，使 project goal 能約束 task，且下一輪只由 fresh evidence 與 Vincent 核准驅動。",
+        "evidence_plan": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate.acceptance_matrix",
+          "JV40-RG-01..JV40-RG-11",
+          "recommendation／runner／proactive-loop／work-anchor／architecture fresh verifier receipts"
+        ],
+        "reviewed_at": "2026-08-01"
+      },
+      "revision_evidence": {
+        "R16": {
+          "status": "completed",
+          "completion_evidence_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate.revision_evidence.R16.completion_evidence",
+          "completion_evidence": {
+            "red_evidence": [
+              "2026-07-26 completion-contract negative fixtures failed before validator implementation",
+              "2026-08-01 schema verifier rejected missing Red／Green completion evidence conditional",
+              "2026-08-01 schema verifier rejected missing real runtime evidence conditional"
+            ],
+            "green_evidence": [
+              "node scripts/verify-validate-tasks.mjs -> validate-tasks verification OK",
+              "node scripts/verify-morrowise-dev-workflow-catalog.mjs -> MorroWise dev workflow catalog verification OK"
+            ],
+            "regression_evidence": [
+              "node scripts/validate-tasks.mjs --changed-only --project morrowise -> 0 issues, 0 legacy warnings",
+              "node scripts/verify-work-anchor-preflight.mjs -> OK",
+              "npm run test:tasks -> PASS",
+              "npm run test:architecture-subsystems -> PASS",
+              "sync-architecture-subsystems.py --check -> PASS",
+              "npm run build -> PASS; Turbopack compile, TypeScript, static pages 8/8"
+            ]
+          }
+        },
+        "R17": {
+          "status": "completed",
+          "completed_at": "2026-08-02",
+          "acceptance_matrix_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate.acceptance_matrix",
+          "fresh_evidence_status": "accepted",
+          "c1_delivery": {
+            "harness_mc": "e5ce130f75e6662dae225de8b0bd5b6cb917ed82",
+            "notyet_harness": "298b761a653951288d179cc81adb3eb9003dc5b2",
+            "remote_parity": "0/0"
+          },
+          "acceptance_receipt": {
+            "matrix_fingerprint": "sha256:6c8ca5c56967b49ac4148a8191bd21a65eb65b901004e034d17e71565b8a225c",
+            "required_ids": [
+              "JV40-P2-01",
+              "JV40-PRECOMMIT-01",
+              "JV40-RG-01",
+              "JV40-RG-02",
+              "JV40-RG-03",
+              "JV40-RG-04",
+              "JV40-RG-05",
+              "JV40-RG-06",
+              "JV40-RG-07",
+              "JV40-RG-08",
+              "JV40-RG-09",
+              "JV40-RG-10",
+              "JV40-RG-11"
+            ],
+            "exact_id_coverage": true,
+            "all_passed": true,
+            "verified_at": "2026-08-02"
+          },
+          "note": "R17 使用本 revision 的 fresh verifier 與 exact Acceptance Matrix receipt；R16 evidence 僅保留為歷史。"
+        }
+      },
+      "work_item_manifest": {
+        "revision": "R17",
+        "approved_by": "Vincent",
+        "approval_ref": "Vincent 2026-08-01 current session: 核准重開 JV-40 R17",
+        "items": [
+          {"id": "R17-WI-01", "output": "goal alignment changed-only contract", "pass_fail": "new／semantic task valid alignment passes; missing／stale alignment fails", "verifier": "node scripts/verify-validate-tasks.mjs"},
+          {"id": "R17-WI-02", "output": "evidence-backed next-task candidate contract", "pass_fail": "complete candidate passes; missing fresh evidence／target source fails", "verifier": "node scripts/verify-morrowise-recommendations.mjs"},
+          {"id": "R17-WI-03", "output": "goal-drift open-task reorganization proposal", "pass_fail": "all open tasks covered; missing coverage／automatic mutation fails", "verifier": "node scripts/verify-morrowise-proactive-loop.mjs"},
+          {"id": "R17-WI-04", "output": "Vincent approval and JV-32／JV-40 write gate", "pass_fail": "without approval zero actions and unchanged digest; approved target route only", "verifier": "node scripts/verify-morrowise-action-runner.mjs"},
+          {"id": "R17-WI-05", "output": "self-learning read-only dogfood and privacy boundary", "pass_fail": "candidate generated with limitations; self-learning canonical digest unchanged and private data absent", "verifier": "node scripts/verify-morrowise-proactive-loop.mjs"},
+          {"id": "R17-WI-06", "output": "acceptance matrix auto pointer／receipt and Architecture sync", "pass_fail": "exact matrix IDs and fresh fingerprint pass; stale pointer／fingerprint fails", "verifier": "node scripts/verify-work-anchor-preflight.mjs && npm run test:architecture-subsystems"}
+        ],
+        "exact_scope": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
+          "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
+          "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-recommendation-engine.json",
+          "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-recommendation-engine.md",
+          "$COLLAB/harness-mc/system-workflow/schemas/morrowise-system.schema.json",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-recommendations.mjs",
+          "$COLLAB/harness-mc/scripts/morrowise-action-runner.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-action-runner.mjs",
+          "$COLLAB/harness-mc/scripts/generate-morrowise-proactive-loop.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-proactive-loop.mjs",
+          "$COLLAB/harness-mc/public/data/morrowise-proactive-loop.json",
+          "$COLLAB/harness-mc/scripts/work-anchor-preflight.mjs",
+          "$COLLAB/harness-mc/scripts/verify-work-anchor-preflight.mjs",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
+          "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+          "$COLLAB/notyet-harness/000_Agent/skills/vincent-superpowers/03-execution/SKILL.md",
+          "$COLLAB/notyet-harness/000_Agent/skills/review/SKILL.md"
+        ],
+        "non_goals": [
+          "不執行或引用 Taiwan.md",
+          "不新增 project、task、tracker、database、dashboard、read model、scheduler、deadline、weekly-core 或 Daily Decision",
+          "不修改 self-learning canonical task；不提前執行『鋪好路：整理 task』",
+          "不寫 Heptabase／Canvas／Notion／公開文章；不處理私人財務資料、秘密或 runtime auth",
+          "不自動 commit、push、deploy、publish 或依 MorroWise candidate 直接寫 canonical task"
+        ],
+        "remediation_receipts": [
+          {
+            "id": "R17-REM-01",
+            "classification": "NORMATIVE_REQUIRED_OMISSION",
+            "original_error": "R17-WI-06 與 JV40-RG-10 已明列 acceptance event，但 exact_scope 漏列既有 work-anchor preflight implementation／verifier。",
+            "normative_basis": ["A21", "A23", "JV40-RG-10"],
+            "exact_fields": ["work_item_manifest.exact_scope"],
+            "exact_files_added": [
+              "$COLLAB/harness-mc/scripts/work-anchor-preflight.mjs",
+              "$COLLAB/harness-mc/scripts/verify-work-anchor-preflight.mjs"
+            ],
+            "unexpected_changes": [],
+            "verification": ["node scripts/verify-work-anchor-preflight.mjs", "changed-path subset check before acceptance"],
+            "changed_task_ids": ["morrowise/task-lifecycle-jv32-gate"],
+            "exclusions_preserved": true,
+            "remaining_warnings": []
+          },
+          {
+            "id": "R17-REM-02",
+            "classification": "SCOPE_CHANGE",
+            "original_error": "R17 resume patch 曾意外把 lifecycle event 插入非目標 task reality-tax-daily-review-task。",
+            "normative_basis": ["A22", "A23", "A25"],
+            "exact_fields": [],
+            "exact_files_added": [],
+            "unexpected_changes": [
+              {
+                "path": "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
+                "task_id": "reality-tax-daily-review-task",
+                "unexpected_hunk": "accidental R17 resume lifecycle event",
+                "disposition": "rejected and restored byte-equivalent task object before implementation continued",
+                "proof": "current task object sha256 equals HEAD task object sha256 acc492c0115793f86e11665e1b84d005c678fabae7992f7d6aa3e22436a1e4da"
+              }
+            ],
+            "verification": ["HEAD/current task-object sha256 equality", "changed task ID subset check before acceptance"],
+            "changed_task_ids": ["morrowise/task-lifecycle-jv32-gate"],
+            "exclusions_preserved": true,
+            "remaining_warnings": []
+          },
+          {
+            "id": "R17-REM-03",
+            "classification": "NORMATIVE_REQUIRED_OMISSION",
+            "original_error": "R17 canonical patch 對 Git 基線的淨狀態為 completed→completed；changed-only validator 要求最後一筆 lifecycle event 為 amend 並附 semantic_intake。",
+            "normative_basis": ["A21", "A23", "A25", "JV40-RG-02"],
+            "exact_fields": ["task_lifecycle.history"],
+            "exact_files_added": [],
+            "unexpected_changes": [],
+            "verification": ["node scripts/validate-tasks.mjs --changed-only --project morrowise", "changed task ID subset check"],
+            "changed_task_ids": ["morrowise/task-lifecycle-jv32-gate"],
+            "exclusions_preserved": true,
+            "remaining_warnings": []
+          },
+          {
+            "id": "R17-REM-04",
+            "classification": "SCOPE_CHANGE",
+            "original_error": "塔台 closeout patch 的第一個 status hunk context 不唯一，曾暫時命中非目標 task local-nongit-data-backup-spec。",
+            "normative_basis": ["A22", "A23", "A25"],
+            "exact_fields": [],
+            "exact_files_added": [],
+            "unexpected_changes": [
+              {
+                "path": "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
+                "task_id": "local-nongit-data-backup-spec",
+                "unexpected_hunk": "temporary status／completed_at mutation",
+                "disposition": "rejected and restored byte-equivalent before staging",
+                "proof": "HEAD/current task-object sha256 both equal 34755603ac188ae7324064af015b4eb813fd5f2464ea1659a7010cff0b7e3073"
+              }
+            ],
+            "verification": ["HEAD/current task-object sha256 equality", "changed task ID subset exact match"],
+            "changed_task_ids": ["morrowise/task-lifecycle-jv32-gate"],
+            "exclusions_preserved": true,
+            "remaining_warnings": []
+          }
+        ]
       },
       "estimated_hours": 8,
       "acceptance_matrix": [
@@ -4546,6 +4757,105 @@
             "node scripts/verify-work-anchor-preflight.mjs",
             "npm run test:tasks"
           ]
+        },
+        {
+          "id": "JV40-RG-01",
+          "what": "新 task 與語意修改 task 必須有可驗證的 owning-project goal alignment；未變 legacy task 不追溯補填。",
+          "preconditions": ["project.json 有 current goals", "changed-only 能取得 previous task snapshot"],
+          "steps": ["執行合法 goal alignment fixture", "執行缺欄位、錯 project、stale fingerprint 與 untouched legacy fixtures"],
+          "pass_condition": "合法新／語意修改 task 通過；缺失或 stale alignment 失敗；untouched legacy 不新增 error。",
+          "fail_condition": "無 alignment 的新／語意修改 task 通過，或 legacy task 被 mass retrofit。",
+          "verification": ["node scripts/verify-validate-tasks.mjs"]
+        },
+        {
+          "id": "JV40-RG-02",
+          "what": "JV-40 revision 與 lifecycle history 維持單調、append-only，R17 不重寫 R1–R16。",
+          "preconditions": ["R16 history length=16", "Vincent 核准重開 R17"],
+          "steps": ["核對 revision=R17 與 previous_revision=R16", "執行 rewrite、skip revision 與 valid append fixtures"],
+          "pass_condition": "R17 只追加 resume event；舊 events byte-equivalent；非單調 revision 被拒絕。",
+          "fail_condition": "任一舊 event 被改寫、revision 跳號，或 R16 evidence 被當成 R17 fresh evidence。",
+          "verification": ["node scripts/verify-validate-tasks.mjs", "git diff --check -- milestones/morrowise/tasks.json"]
+        },
+        {
+          "id": "JV40-RG-03",
+          "what": "下一輪 task／重整候選必須由 fresh evidence 產生。",
+          "preconditions": ["Recommendation Engine 保持 proposal-only", "candidate 可引用 canonical／generated／verifier evidence"],
+          "steps": ["執行完整 evidence candidate", "執行 evidence 空白、missing、stale 與 HC-only candidates"],
+          "pass_condition": "只有含 fresh evidence refs 的候選通過；HC 不可替代 evidence。",
+          "fail_condition": "無 evidence、stale evidence 或只靠 HC reasoning 的候選通過。",
+          "verification": ["node scripts/verify-morrowise-recommendations.mjs"]
+        },
+        {
+          "id": "JV40-RG-04",
+          "what": "Governance candidate 必須精確指向 target project、canonical task source、goal 與 source evidence。",
+          "preconditions": ["candidate operation 是 propose_next_task 或 propose_task_reorganization"],
+          "steps": ["核對全部 required governance fields", "執行錯 target_task_source、空 source_task_refs 與模糊 done condition fixtures"],
+          "pass_condition": "完整候選通過；目標、來源、證據或 done condition 不精確時拒絕。",
+          "fail_condition": "候選不能唯一決定 target canonical source 或 proposed done boundary。",
+          "verification": ["node scripts/verify-morrowise-recommendations.mjs"]
+        },
+        {
+          "id": "JV40-RG-05",
+          "what": "Goal drift 建議必須覆蓋 target project 的全部 open task。",
+          "preconditions": ["current goal fingerprint 與 reviewed fingerprint 不同", "target tasks.json 可 read-only 解析"],
+          "steps": ["列出全部 open task ids", "逐一產生 retain／amend／defer／cancel／replace 或 blocked 建議", "執行漏 task fixture"],
+          "pass_condition": "coverage exact match 全部 open ids；證據不足使用 blocked，不執行 mutation。",
+          "fail_condition": "漏掉 open task、包含 closed task 為 mutation target，或自動刪除／改狀態。",
+          "verification": ["node scripts/verify-morrowise-proactive-loop.mjs"]
+        },
+        {
+          "id": "JV40-RG-06",
+          "what": "沒有 Vincent 核准時 applied action 為零且 target canonical digest 不變。",
+          "preconditions": ["governance candidate requires_approval=true", "runner 為 plan-only"],
+          "steps": ["記錄 target tasks.json before digest", "送入未核准 candidate", "核對 runner output 與 after digest"],
+          "pass_condition": "output_type=approval_request、applied=false、applied_actions=0、digest unchanged。",
+          "fail_condition": "產生 task event、寫檔、改 digest 或 applied action 非零。",
+          "verification": ["node scripts/verify-morrowise-action-runner.mjs", "node scripts/verify-morrowise-proactive-loop.mjs"]
+        },
+        {
+          "id": "JV40-RG-07",
+          "what": "核准候選只能 handoff 到指定 target canonical source 的 JV-32／JV-40 route。",
+          "preconditions": ["Vincent 核准具名 candidate", "target task source 與 proposed operation 完整"],
+          "steps": ["驗證 handoff receipt 包含 approval ref、JV-32／JV-40 route 與 exact target", "執行錯 target 與 bypass route fixtures"],
+          "pass_condition": "只有 exact approved target route 可進入 canonical mutation preflight；Recommendation Engine 本身仍不寫入。",
+          "fail_condition": "candidate 直接寫入、改錯 project，或繞過 task-lifecycle route。",
+          "verification": ["node scripts/verify-morrowise-recommendations.mjs", "node scripts/verify-morrowise-action-runner.mjs", "node scripts/verify-validate-tasks.mjs"]
+        },
+        {
+          "id": "JV40-RG-08",
+          "what": "Candidate、receipt 與 read model 不得包含私人財務／生活內容或 secrets。",
+          "preconditions": ["只允許 sanitized refs 與摘要", "不讀 runtime auth files"],
+          "steps": ["執行 secret-like key／private payload fixtures", "掃描 generated dogfood output"],
+          "pass_condition": "敏感 payload 被拒絕或省略；輸出只保存 refs、gap、operation、limitations 與安全摘要。",
+          "fail_condition": "輸出 token、Cookie、credential、帳號、私人金額或未核准生活細節。",
+          "verification": ["node scripts/verify-morrowise-recommendations.mjs", "node scripts/verify-morrowise-proactive-loop.mjs"]
+        },
+        {
+          "id": "JV40-RG-09",
+          "what": "self-learning dogfood 全程 read-only，且不提前修改 item 1 task。",
+          "preconditions": ["target_project=self-learning", "二十年定錨目標尚未由 item 1 寫入 canonical source"],
+          "steps": ["記錄 self-learning project／tasks before digest", "產生帶 limitations 的治理候選", "核對 after digest 與 changed paths"],
+          "pass_condition": "候選標明 goal-anchor gap／blocked limitation；project.json 與 tasks.json digest unchanged。",
+          "fail_condition": "新增／修改 self-learning task、填入假 goal，或執行『鋪好路：整理 task』。",
+          "verification": ["node scripts/verify-morrowise-proactive-loop.mjs", "git status --short -- milestones/self-learning"]
+        },
+        {
+          "id": "JV40-RG-10",
+          "what": "Acceptance preflight 自動指向 canonical matrix、exact IDs 與 fresh fingerprint。",
+          "preconditions": ["task 有 acceptance_matrix", "event=acceptance"],
+          "steps": ["執行 acceptance event valid fixture", "執行 missing ID、stale fingerprint 與錯 matrix ref fixtures", "核對 receipt"],
+          "pass_condition": "preflight／receipt 自動包含 canonical ref、全部 required IDs、fresh matrix fingerprint 與逐項結果；stale case hard-fail。",
+          "fail_condition": "需人工另找 matrix、漏 ID、接受 stale fingerprint 或 receipt 無結果。",
+          "verification": ["node scripts/verify-work-anchor-preflight.mjs"]
+        },
+        {
+          "id": "JV40-RG-11",
+          "what": "R17 version improvement 必須更新既有 Admission Record fingerprint 並同步 ARCHITECTURE.md 薄索引。",
+          "preconditions": ["JV-32／JV-40 governed contract fingerprint 改變", "Admission Record 已存在"],
+          "steps": ["更新受管 contract fingerprint 與 reviewed_at／evidence", "執行 architecture verifier 與 controlled sync check"],
+          "pass_condition": "Admission Record fingerprint fresh、索引只保留摘要、sync check pass。",
+          "fail_condition": "stale fingerprint、複製詳細 task contract到 Architecture，或 sync drift。",
+          "verification": ["npm run test:architecture-subsystems", "python3 $COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py --check"]
         }
       ],
       "test_contract": {
@@ -4558,7 +4868,13 @@
           "NORMATIVE_REQUIRED_OMISSION 只有在 canonical rule 唯一決定修正值且 exact scope／owner 不變時可自動補齊；補齊後舊 evidence 必須失效並重驗。",
           "AMBIGUOUS_REQUIREMENT、SCOPE_CHANGE、EXTERNAL_BLOCK 與 OTHER_SESSION_OVERLAP 必須停止，不得由 Agent 自行修補或改寫驗收。",
           "未產生完整 remediation／no-expansion receipt、超過三輪 retry 或 changed task IDs 超出 manifest 時不得 ACCEPTANCE_VERIFIED。",
-          "未取得 Vincent 明確確認，或確認後 diff fingerprint／verifier 改變時，closeout-commit-routing 與 worktree-commit 必須拒絕。"
+          "未取得 Vincent 明確確認，或確認後 diff fingerprint／verifier 改變時，closeout-commit-routing 與 worktree-commit 必須拒絕。",
+          "R17 新／語意修改 task 缺 owning-project goal alignment 或 goal fingerprint stale 時，changed-only validator 必須拒絕；untouched legacy task 不追溯補填。",
+          "R17 next-task／reorganization candidate 缺 target canonical source、fresh evidence、goal ref、source task refs、limitations 或 requires_approval=true 時必須拒絕。",
+          "Goal drift 必須覆蓋全部 open task 並只提出 retain／amend／defer／cancel／replace 或 blocked；不得自動 mutation。",
+          "未核准 governance candidate 送入 runner時，applied_actions 必須為零且 target canonical digest 不變。",
+          "self-learning dogfood 必須明列二十年 goal anchor 尚未 canonicalize 的 limitation，且 project.json／tasks.json digest 不變。",
+          "Acceptance event 必須解析 canonical matrix exact IDs 與 fresh fingerprint；missing／stale fixture 必須 hard-fail。"
         ],
         "test_level": [
           "schema",
@@ -4566,18 +4882,25 @@
           "negative_fixture",
           "historical_compatibility"
         ],
-        "red_command": "node scripts/verify-validate-tasks.mjs",
-        "expected_red_reason": "加入缺 test_contract、缺 Red／Green／regression evidence、無理由 exemption 與 fixture-only runtime fixtures 後，既有 validator 尚未實作對應 completion gate。",
-        "green_command": "node scripts/verify-validate-tasks.mjs",
+        "red_command": "node scripts/verify-morrowise-recommendations.mjs",
+        "expected_red_reason": "加入 R17 governance candidate、goal alignment、goal drift、zero-write approval 與 acceptance matrix freshness fixtures 後，既有 Recommendation Engine／validator／preflight 尚未實作這些 contract。",
+        "green_command": "node scripts/verify-morrowise-recommendations.mjs",
         "full_regression_commands": [
           "node scripts/validate-tasks.mjs --changed-only --project morrowise",
           "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
           "node scripts/verify-work-anchor-preflight.mjs",
           "npm run test:tasks",
-          "npm run test:architecture-subsystems"
+          "npm run test:architecture-subsystems",
+          "node scripts/verify-morrowise-recommendations.mjs",
+          "node scripts/verify-morrowise-action-runner.mjs",
+          "node scripts/verify-morrowise-proactive-loop.mjs"
         ],
         "fixture_refs": [
-          "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs"
+          "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-recommendations.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-action-runner.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-proactive-loop.mjs",
+          "$COLLAB/harness-mc/scripts/verify-work-anchor-preflight.mjs"
         ],
         "runtime_evidence_required": false,
         "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate.test_contract.evidence_refs",
@@ -4587,35 +4910,43 @@
           "TDD RED 2026-08-01: catalog verifier rejected missing required_completion_evidence_consistency and runtime_completion_evidence_consistency conditionals",
           "TDD GREEN 2026-08-01: node scripts/verify-validate-tasks.mjs -> validate-tasks verification OK",
           "TDD GREEN 2026-08-01: node scripts/verify-morrowise-dev-workflow-catalog.mjs -> MorroWise dev workflow catalog verification OK",
-          "Target delivery: harness-mc 85a57e922b4c2ff0040717a11830e286a65d8c93; notyet-harness 4d996a947417a1e8d25df7cd2a2974d617196227"
+          "Target delivery: harness-mc 85a57e922b4c2ff0040717a11830e286a65d8c93; notyet-harness 4d996a947417a1e8d25df7cd2a2974d617196227",
+          "R17 C1 delivery 2026-08-02: harness-mc e5ce130f75e6662dae225de8b0bd5b6cb917ed82; notyet-harness 298b761a653951288d179cc81adb3eb9003dc5b2; both origin/main parity 0/0",
+          "R17 acceptance 2026-08-02: 13 canonical matrix IDs exact-covered and passed at sha256:6c8ca5c56967b49ac4148a8191bd21a65eb65b901004e034d17e71565b8a225c"
         ]
       },
       "completion_evidence": {
+        "valid_for_revision": "R17",
         "red_evidence": [
-          "2026-07-26 completion-contract negative fixtures failed before validator implementation",
-          "2026-08-01 schema verifier rejected missing Red／Green completion evidence conditional",
-          "2026-08-01 schema verifier rejected missing real runtime evidence conditional"
+          "R17 negative fixtures reject missing／stale goal alignment, incomplete governance candidates, uncovered goal drift, unauthorized canonical writes and stale Acceptance Matrix fingerprints"
         ],
         "green_evidence": [
           "node scripts/verify-validate-tasks.mjs -> validate-tasks verification OK",
-          "node scripts/verify-morrowise-dev-workflow-catalog.mjs -> MorroWise dev workflow catalog verification OK"
+          "node scripts/verify-morrowise-dev-workflow-catalog.mjs -> MorroWise dev workflow catalog verification OK",
+          "node scripts/verify-morrowise-recommendations.mjs -> MorroWise recommendation engine verification OK",
+          "node scripts/verify-morrowise-action-runner.mjs -> MorroWise action runner verification OK",
+          "node scripts/verify-work-anchor-preflight.mjs -> Work-anchor preflight verification OK",
+          "node scripts/verify-morrowise-proactive-loop.mjs -> MorroWise proactive loop verification OK in isolated archive"
         ],
         "regression_evidence": [
           "node scripts/validate-tasks.mjs --changed-only --project morrowise -> 0 issues, 0 legacy warnings",
-          "node scripts/verify-work-anchor-preflight.mjs -> OK",
-          "npm run test:tasks -> PASS",
           "npm run test:architecture-subsystems -> PASS",
           "sync-architecture-subsystems.py --check -> PASS",
-          "npm run build -> PASS; Turbopack compile, TypeScript, static pages 8/8"
+          "self-learning project／tasks digest and scoped git status remained unchanged",
+          "Acceptance event -> 13 required IDs exact-covered, all pass, fingerprint sha256:6c8ca5c56967b49ac4148a8191bd21a65eb65b901004e034d17e71565b8a225c",
+          "Shared-checkout npm run test:tasks baseline audit -> JV-40 clean; 13 errors and 1 warning belong exclusively to excluded FJ-116／HiBlocks／Notyet dirty. Rerunnable task-equivalent checks are verify-validate-tasks plus changed-only --project morrowise; committed C2 is revalidated with --base <C2 parent>."
         ],
         "verifier_refs": [
           "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
           "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-recommendations.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-action-runner.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-proactive-loop.mjs",
           "$COLLAB/harness-mc/scripts/verify-work-anchor-preflight.mjs",
           "$COLLAB/harness-mc/scripts/verify-architecture-subsystems.mjs",
           "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py"
         ],
-        "fixture_runtime_boundary": "runtime_evidence_required=false；JV-40 P3 本次只發布 canonical lifecycle schema／validator／fixtures 與 generated Architecture index，不宣稱新的 scheduler、notification、external tracker 或其他 runtime capability。"
+        "fixture_runtime_boundary": "runtime_evidence_required=false；JV-40 R17 發布 goal-aligned、proposal-only task governance contract 與 read-only self-learning dogfood，不宣稱新的 scheduler、notification、external tracker 或自動 canonical writer。"
       },
       "jv32_route": {
         "batch": "JV-32 task lifecycle governance batch",
@@ -5089,6 +5420,124 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "resume",
+            "from_status": "completed",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准重開同一 JV-40 為 R17；本 revision 只在既有 JV-32／JV-40、Recommendation Engine、Approval Policy、Action Runner、Proactive Loop 與 Acceptance Matrix 閉環內新增目標約束 task、依 fresh evidence 提出下一輪 task／重整候選及 goal-drift 建議。MorroWise proposal-only；未經 Vincent 具名核准不得寫 target canonical task。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate",
+              "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-recommendation-engine.json",
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
+              "$COLLAB/harness-mc/scripts/morrowise-action-runner.mjs",
+              "$COLLAB/harness-mc/scripts/generate-morrowise-proactive-loop.mjs",
+              "$COLLAB/harness-mc/scripts/work-anchor-preflight.mjs",
+              "$COLLAB/harness-mc/scripts/verify-work-anchor-preflight.mjs",
+              "Vincent 2026-08-01 current session: 核准重開 JV-40 R17"
+            ],
+            "recorded_at": "2026-08-01",
+            "revision": {
+              "revision": "R17",
+              "previous_revision": "R16",
+              "history_policy": "append_only",
+              "prior_evidence_policy": "R16 evidence remains historical and is stale for R17 acceptance"
+            },
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/task-lifecycle-jv32-gate",
+                "harness-mc/morrowise-recommendation-engine-v0",
+                "harness-mc/morrowise-approval-policy",
+                "harness-mc/morrowise-proactive-loop-dashboard"
+              ],
+              "scope_comparison": {
+                "problem": "仍是既有 JV-40 對 canonical task mutation 的 admission／evidence／approval 缺口；R17 把 project goal、下一輪 evidence 與 goal drift 納入同一 lifecycle gate，不是新的 task system。",
+                "owner_source_of_truth": "Owning project project.json goals 與 tasks.json 繼續是 canonical；JV-40 擁有 changed-only enforcement，既有 Recommendation Engine 只產候選、Approval Policy／Runner 只 gate／handoff。",
+                "inputs_outputs": "輸入是 current goal fingerprint、全部 open task 與 fresh evidence；輸出是 proposal-only next-task／reorganization candidate、approval receipt 與指定 JV-32／JV-40 canonical handoff。",
+                "lifecycle_completion": "R17 只有在 JV40-RG-01..RG-11 fresh pass、self-learning read-only digest unchanged、Admission Record／Architecture sync、Vincent 成果確認後才可再次 complete。"
+              },
+              "decision_reason": "問題、owner、輸入輸出與完成邊界都延伸既有 JV-40；因此重開同一 task 並 outcome=amend，不新增 project、task、tracker、database、dashboard 或 scheduler。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-01",
+                "evidence_refs": [
+                  "Vincent 2026-08-01 current session: 核准重開 JV-40 R17"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "JV-40 R17 滾動治理已由兩筆 C1 送達 remote main；13 項 canonical Acceptance Matrix、Admission Record／ARCHITECTURE controlled sync、self-learning read-only dogfood 與 zero-write approval boundary 均以 fresh evidence 通過，未新增 task system、tracker、database、dashboard、scheduler 或外部寫入。",
+            "evidence_refs": [
+              "e5ce130f75e6662dae225de8b0bd5b6cb917ed82",
+              "298b761a653951288d179cc81adb3eb9003dc5b2",
+              "sha256:6c8ca5c56967b49ac4148a8191bd21a65eb65b901004e034d17e71565b8a225c",
+              "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+              "node scripts/verify-validate-tasks.mjs",
+              "node scripts/verify-morrowise-recommendations.mjs",
+              "node scripts/verify-morrowise-action-runner.mjs",
+              "node scripts/verify-morrowise-proactive-loop.mjs (isolated archive)",
+              "node scripts/verify-work-anchor-preflight.mjs",
+              "npm run test:architecture-subsystems",
+              "sync-architecture-subsystems.py --check"
+            ],
+            "recorded_at": "2026-08-02",
+            "revision": {
+              "revision": "R17",
+              "previous_revision": "R16",
+              "history_policy": "append_only"
+            },
+            "approval": {
+              "status": "approved",
+              "approved_by": "Vincent",
+              "approved_at": "2026-08-02",
+              "evidence_refs": [
+                "Vincent current task: 可以進行完整 closeout，完成後依照驗收標準驗收，不要留尾巴"
+              ]
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "R17 在同一 canonical version-improvement patch 內完成 resume→complete；相對 R16 Git 基線的淨狀態仍為 completed，因此依 changed-only contract 追加本 amendment，記錄 fresh acceptance、兩筆 C1 remote delivery 與 canonical closeout evidence。",
+            "evidence_refs": [
+              "e5ce130f75e6662dae225de8b0bd5b6cb917ed82",
+              "298b761a653951288d179cc81adb3eb9003dc5b2",
+              "sha256:6c8ca5c56967b49ac4148a8191bd21a65eb65b901004e034d17e71565b8a225c",
+              "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+            ],
+            "recorded_at": "2026-08-02",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/morrowise-dev-workflow-catalog",
+                "harness-mc/morrowise-recommendation-engine-v0",
+                "harness-mc/morrowise-proactive-loop-dashboard"
+              ],
+              "scope_comparison": {
+                "problem": "本 amendment 只收斂既有 JV-40 R17 的 canonical completion evidence；不是新的 workflow、task system、dashboard 或 runtime。",
+                "owner_source_of_truth": "Owner 維持 morrowise/task-lifecycle-jv32-gate；project goals、tasks.json、既有 registries、verifiers 與 controlled Architecture index 各自保持原正本。",
+                "inputs_outputs": "輸入是已送達的 Harness／Notyet C1、fresh Acceptance Matrix receipt 與 Admission／Architecture check；輸出僅為同一 JV-40 canonical completion record。",
+                "lifecycle_completion": "C2 到 harness-mc/origin/main、雙 repo 0/0、本次 pending／residual zero 且 baseline exclusions 不變後，R17 才進入 task_completed。"
+              },
+              "decision_reason": "問題、owner、輸入輸出與 completion boundary 完整延續 JV-40 R17，故只 amend 同一 task，不新增或改寫其他 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-02",
+                "evidence_refs": [
+                  "Vincent current task: 可以進行完整 closeout，完成後依照驗收標準驗收，不要留尾巴"
+                ]
+              }
+            }
           }
         ]
       },
@@ -5102,15 +5551,19 @@
           "#constraints",
           "#evidenceBased"
         ],
-        "hc_reasoning": "真正問題不是多加一個必填欄位，而是 canonical task mutation 目前只有命令表與核准政策，沒有被 JV-32 workflow、schema 與 verifier 串成閉環。#sourceBoundary 固定 tasks.json／task-events 為正本、外部 tracker 僅 adapter_only；#systemDynamics 將新增、修改、停用、恢復與完成連到相同 evidence chain；#risk 防止模糊 disabled、無理由取消、假完成與 client／chat 直接改寫；#constraints 不另建 workflow catalog、不碰外部服務；#evidenceBased 要求 changed-only 負向 fixture 真的攔下缺 route 的 mutation。",
-        "hc_confidence": 0.94,
+        "hc_reasoning": "R17 的真正問題不是自動產生更多 task，而是讓長期 goal、當期 task、實踐 evidence 與下一輪 task 形成受控 feedback loop。#sourceBoundary 固定 owning project project.json goals／tasks.json 為 canonical，Recommendation Engine／read model 只提案；#systemDynamics 要求 goal fingerprint 改變時檢視全部 open task，而非局部修補；#risk 與 #confirmationBias 強制 fresh evidence、limitations、privacy、zero-write digest 與 Vincent 核准；#constraints 排除新 tracker、database、dashboard、scheduler 與 self-learning item 1 mutation；#evidenceBased 以 JV40-RG-01..RG-11 判定，不用筆記數量或 Agent 自述代替成果。",
+        "hc_confidence": 0.96,
         "evidence_refs": [
           "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
           "$COLLAB/harness-mc/system-workflow/docs/task-write-command-map.md",
           "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
-          "$COLLAB/harness-mc/scripts/validate-tasks.mjs"
+          "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-recommendation-engine.json",
+          "$COLLAB/harness-mc/scripts/morrowise-action-runner.mjs",
+          "$COLLAB/harness-mc/scripts/generate-morrowise-proactive-loop.mjs",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate.acceptance_matrix"
         ],
-        "source_boundary": "HC 只是思考檢查，不是正本；canonical task state 仍在 tasks.json 與受控 task events，lifecycle route 的正本在 JV-32 registry／schema／verifier。"
+        "source_boundary": "HC 只是思考檢查，不是正本；goal 的正本在 owning project project.json，task state 在 owning project tasks.json 與受控 task events，Recommendation Engine／Proactive Loop 只輸出 proposal，canonical mutation 仍必須經 JV-32／JV-40 與 Vincent 核准。"
       },
       "architecture_decision": {
         "decision": "not_required",

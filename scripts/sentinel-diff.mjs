@@ -6,10 +6,10 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { execSync, spawnSync } from "child_process";
+import { discoverMilestoneProjects } from "./lib/milestone-projects.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
-const milestonesDir = path.join(root, "milestones");
 const outPath = path.join(root, "public", "data", "changes.json");
 // notyet-harness 是 $COLLAB 下的兄弟 repo；runs/ 被 gitignore，作 push 防重標記用
 const scheduleRunsDir = path.join(root, "..", "notyet-harness", "schedule", "runs");
@@ -47,15 +47,15 @@ function readJSON(text) {
   try { return JSON.parse(text.replace(/^﻿/, "")); } catch { return null; }
 }
 
-function projectName(dir) {
-  const p = path.join(milestonesDir, dir, "project.json");
-  if (!fs.existsSync(p)) return dir;
+function projectName(project) {
+  const p = project.projectPath;
+  if (!fs.existsSync(p)) return project.projectId;
   const meta = readJSON(fs.readFileSync(p, "utf-8"));
-  return meta?.name || dir;
+  return meta?.name || project.projectId;
 }
 
-function projectArchived(dir) {
-  const p = path.join(milestonesDir, dir, "project.json");
+function projectArchived(project) {
+  const p = project.projectPath;
   if (!fs.existsSync(p)) return false;
   const meta = readJSON(fs.readFileSync(p, "utf-8"));
   return meta?.status === "archived";
@@ -79,19 +79,19 @@ try {
   result.baseline.rev = baseRev.slice(0, 7);
   result.baseline.time = git(`show -s --format=%cI ${baseRev}`);
 
-  const dirs = fs.readdirSync(milestonesDir)
-    .filter((d) => fs.existsSync(path.join(milestonesDir, d, "tasks.json")))
-    .filter((d) => !projectArchived(d)); // archived projects: 不掃、不報 stale/blocked（JV-01 lifecycle sweep）
+  const projects = discoverMilestoneProjects({ repoRoot: root })
+    .filter((project) => !projectArchived(project)); // archived projects: 不掃、不報 stale/blocked（JV-01 lifecycle sweep）
 
-  for (const dir of dirs) {
-    const name = projectName(dir);
-    const curRaw = readJSON(fs.readFileSync(path.join(milestonesDir, dir, "tasks.json"), "utf-8"));
+  for (const project of projects) {
+    const dir = project.projectId;
+    const name = projectName(project);
+    const curRaw = readJSON(fs.readFileSync(project.tasksPath, "utf-8"));
     if (!curRaw) continue;
     const cur = parseTasks(curRaw);
 
     let base = new Map();
     try {
-      base = parseTasks(readJSON(git(`show ${baseRev}:milestones/${dir}/tasks.json`)) || {});
+      base = parseTasks(readJSON(git(`show ${baseRev}:${project.relativeDir}/tasks.json`)) || {});
     } catch { /* 基線時專案不存在 → 全部視為新 */ }
 
     for (const [id, t] of cur) {
@@ -114,10 +114,10 @@ try {
     }
 
     // 衰老掃描（專案級近似）：未 commit 變更 = 今天有動
-    const dirty = git(`status --porcelain -- milestones/${dir}`) !== "";
+    const dirty = git(`status --porcelain -- ${project.relativeDir}`) !== "";
     let lastTouch = result.generated_at;
     if (!dirty) {
-      const t = git(`log -1 --format=%cI -- milestones/${dir}`);
+      const t = git(`log -1 --format=%cI -- ${project.relativeDir}`);
       if (t) lastTouch = t;
     }
     const daysSince = Math.floor((Date.now() - new Date(lastTouch).getTime()) / 86400000);

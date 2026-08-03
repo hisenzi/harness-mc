@@ -28,6 +28,19 @@ withFixture(({ collabRoot, registryPath, initScript, commandLog, env }) => {
   assert.equal(readLog(commandLog), "", "standalone type alone must not invoke gh or git");
 });
 
+withFixture(({ collabRoot, registryPath, initScript, commandLog, env }) => {
+  const id = "kj-mascot";
+  const result = runInit({ initScript, id, registryPath, env, group: "kj", folderDate: "260803" });
+  assert.equal(result.status, 0, result.stderr || result.stdout);
+  const groupedDir = path.join(collabRoot, "harness-mc", "milestones", "kj", "260803-kj-mascot");
+  assert.deepEqual(fs.readdirSync(groupedDir).sort(), ["project.json", "tasks.json"]);
+  assert.equal(fs.existsSync(path.join(collabRoot, "harness-mc", "milestones", id)), false);
+  const project = readJson(path.join(groupedDir, "project.json"));
+  assert.equal(project.milestone.project_id, id);
+  assert.equal(project.milestone.relative_ref, "milestones/kj/260803-kj-mascot");
+  assert.equal(readLog(commandLog), "", "grouped internal milestone must not invoke gh or git");
+});
+
 withFixture(({ collabRoot, registryPath, records, initScript, env }) => {
   fs.mkdirSync(path.join(collabRoot, "needs-review"));
   records.push(record("needs-review", { classification: "unknown", migration_state: "not_assessed", project_home_ref: null, topology_profile: null, repo_ref: null }));
@@ -102,11 +115,21 @@ function withFixture(callback) {
   fs.mkdirSync(path.join(mcRoot, "system-workflow", "registries"), { recursive: true });
   fs.mkdirSync(path.join(notyetRoot, "000_Agent", "config"), { recursive: true });
   copy("scripts/new-project.py", path.join(scriptsRoot, "new-project.py"));
+  copy("scripts/milestone-project-index.mjs", path.join(scriptsRoot, "milestone-project-index.mjs"));
+  copy("scripts/lib/milestone-projects.mjs", path.join(scriptsRoot, "lib", "milestone-projects.mjs"));
   copy("scripts/project-write-admission.mjs", path.join(scriptsRoot, "project-write-admission.mjs"));
   copy("scripts/project-topology-health.mjs", path.join(scriptsRoot, "project-topology-health.mjs"));
   copy("scripts/lib/collab-root.mjs", path.join(scriptsRoot, "lib", "collab-root.mjs"));
   fs.writeFileSync(path.join(notyetRoot, "000_Agent", "config", "repos.json"), "{\"repos\":[]}\n");
   fs.writeFileSync(path.join(notyetRoot, "000_Agent", "ARCHITECTURE.md"), "| hisenzi/how-i-work | marker | marker |\n");
+  fs.mkdirSync(path.join(mcRoot, "milestones", "kj"), { recursive: true });
+  fs.writeFileSync(path.join(mcRoot, "milestones", "kj", "group.json"), `${JSON.stringify({
+    schema_version: "morrowise.milestone-group.v1",
+    id: "kj",
+    name: "KJ",
+    layout: "grouped-yymmdd-project-v1",
+    max_project_depth: 1,
+  })}\n`);
 
   const registryPath = path.join(mcRoot, "system-workflow", "registries", "morrowise-project-topology.json");
   const records = [record("harness-mc", { topology_profile: "morrowise-control-plane" }), record("notyet-harness", { topology_profile: "agent-control-plane" })];
@@ -126,7 +149,7 @@ function withFixture(callback) {
   }
 }
 
-function runInit({ initScript, id, registryPath, receiptPath, env }) {
+function runInit({ initScript, id, registryPath, receiptPath, env, group = null, folderDate = null }) {
   const args = [
     initScript,
     "--id", id,
@@ -143,6 +166,8 @@ function runInit({ initScript, id, registryPath, receiptPath, env }) {
     "--no-sync",
     "--topology-registry", registryPath,
   ];
+  if (group) args.push("--group", group);
+  if (folderDate) args.push("--folder-date", folderDate);
   if (receiptPath) args.push("--repo-create-receipt", receiptPath);
   return spawnSync("python3", args, { cwd: path.dirname(path.dirname(initScript)), encoding: "utf8", env });
 }

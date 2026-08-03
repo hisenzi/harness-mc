@@ -22,6 +22,7 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 MC_DIR       = Path(__file__).resolve().parent.parent
 COLLAB_DIR   = MC_DIR.parent
@@ -33,6 +34,7 @@ ARCH_MD      = AGENT_DIR / "ARCHITECTURE.md"
 STANDALONE_DIR = COLLAB_DIR
 GEN_DATA     = MC_DIR / "scripts" / "generate-data.mjs"
 WRITE_ADMISSION = MC_DIR / "scripts" / "project-write-admission.mjs"
+MILESTONE_INDEX = MC_DIR / "scripts" / "milestone-project-index.mjs"
 DEFAULT_TOPOLOGY_REGISTRY = MC_DIR / "system-workflow" / "registries" / "morrowise-project-topology.json"
 
 PRIORITY_ALIASES = {
@@ -54,7 +56,6 @@ PLACEHOLDER_MARKERS = (
     "<",
     ">",
 )
-
 
 def is_placeholder(value: str) -> bool:
     normalized = (value or "").strip().lower()
@@ -81,6 +82,37 @@ def validate_outcome_contract(parser, args):
         parser.error("--due 必須是 YYYY-MM-DD")
 
     args.priority = PRIORITY_ALIASES[args.priority]
+
+
+def resolve_milestone_destination(parser, args):
+    """Resolve a flat or one-level grouped milestone destination without writing."""
+    if args.group and not args.folder_date:
+        args.folder_date = datetime.now(ZoneInfo("Asia/Taipei")).strftime("%y%m%d")
+
+    command = [
+        "node", str(MILESTONE_INDEX), "candidate",
+        "--root", str(MC_DIR),
+        "--id", args.id,
+    ]
+    if args.group:
+        command.extend(["--group", args.group])
+    if args.folder_date:
+        command.extend(["--folder-date", args.folder_date])
+    result = subprocess.run(command, capture_output=True, text=True, cwd=str(MC_DIR))
+    if result.returncode != 0:
+        parser.error(result.stderr.strip() or "milestone candidate validation failed")
+    candidate = json.loads(result.stdout)
+    project_dir = MC_DIR.joinpath(*candidate["relativeDir"].split("/"))
+    if candidate["layout"] == "flat-v1":
+        return project_dir, None
+    milestone = {
+        "layout": "grouped-v1",
+        "project_id": candidate["projectId"],
+        "group": candidate["group"],
+        "folder_date": candidate["folderDate"],
+        "relative_ref": candidate["relativeDir"],
+    }
+    return project_dir, milestone
 
 
 def load_repo_create_receipt(receipt_path: str, project_id: str):
@@ -211,6 +243,8 @@ def make_project_json(args) -> dict:
         ],
         "decisions": [],
     }
+    if getattr(args, "milestone", None):
+        base["milestone"] = args.milestone
 
     if proj_type == "standalone":
         base["tracks"]["deploy"] = "部署"
@@ -451,7 +485,7 @@ def rebuild_mc():
 
 def create(args):
     """新建專案"""
-    project_dir = PROJECTS_DIR / args.id
+    project_dir = args.project_dir
     project = make_project_json(args)
     tasks = make_tasks_json(args)
 
@@ -539,6 +573,8 @@ def main():
     parser.add_argument("--deploy",   default=None, help="部署目標 (zeabur/vps)")
     parser.add_argument("--no-sync",  action="store_true", help="只建檔，不同步 Obsidian")
     parser.add_argument("--dry-run", action="store_true", help="只輸出 project/tasks contract，不建立檔案或同步")
+    parser.add_argument("--group", default=None, help="milestone group slug；搭配後使用 milestones/<group>/<yymmdd-id>")
+    parser.add_argument("--folder-date", default=None, help="grouped milestone 目錄日期 yymmdd；未提供則用 Asia/Taipei 今日")
     parser.add_argument("--repo-create-receipt", default=None, help="Vincent 精準 repo 建立 receipt JSON")
     parser.add_argument("--topology-registry", default=None, help=argparse.SUPPRESS)
     parser.add_argument("--template", default=None, help="（已棄用，請用 --type）")
@@ -560,6 +596,7 @@ def main():
         parser.error("需要 --type (internal 或 standalone)")
 
     validate_outcome_contract(parser, args)
+    args.project_dir, args.milestone = resolve_milestone_destination(parser, args)
     args.repo_create_receipt = load_repo_create_receipt(args.repo_create_receipt, args.id)
 
     create(args)

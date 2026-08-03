@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { generateWorktreeStatus } from "./generate-worktree-status.mjs";
+import { discoverMilestoneProjects } from "./lib/milestone-projects.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -54,19 +55,14 @@ export function generateCommitAttention(options = {}) {
 }
 
 function readTaskIndex(repoRoot) {
-  const milestonesDir = path.join(repoRoot, "milestones");
   const projects = new Map();
-  if (!fs.existsSync(milestonesDir)) return projects;
-
-  for (const entry of fs.readdirSync(milestonesDir, { withFileTypes: true })) {
-    if (!entry.isDirectory()) continue;
-    const tasksPath = path.join(milestonesDir, entry.name, "tasks.json");
-    if (!fs.existsSync(tasksPath)) continue;
-    const data = readJson(tasksPath);
+  for (const descriptor of discoverMilestoneProjects({ repoRoot })) {
+    const data = readJson(descriptor.tasksPath);
     const tasks = Array.isArray(data?.tasks) ? data.tasks : [];
-    projects.set(entry.name, {
-      project: entry.name,
-      task_source: `$COLLAB/harness-mc/milestones/${entry.name}/tasks.json`,
+    projects.set(descriptor.projectId, {
+      project: descriptor.projectId,
+      milestone_ref: descriptor.relativeDir,
+      task_source: `$COLLAB/harness-mc/${descriptor.relativeDir}/tasks.json`,
       active_tasks: tasks
         .filter((task) => ["todo", "in_progress", "blocked"].includes(task.status))
         .map((task) => ({
@@ -105,12 +101,10 @@ function inferProjects(repo, taskIndex) {
   if (taskIndex.has(repo.repo)) candidates.add(repo.repo);
 
   for (const file of repo.files || []) {
-    const milestoneMatch = file.path.match(/^milestones\/([^/]+)\//);
-    if (repo.repo === "harness-mc" && milestoneMatch && taskIndex.has(milestoneMatch[1])) {
-      candidates.add(milestoneMatch[1]);
-    }
-
-    for (const project of taskIndex.keys()) {
+    for (const [project, taskMeta] of taskIndex.entries()) {
+      if (repo.repo === "harness-mc" && file.path.startsWith(`${taskMeta.milestone_ref}/`)) {
+        candidates.add(project);
+      }
       if (file.path.toLowerCase().includes(project.toLowerCase())) {
         candidates.add(project);
       }

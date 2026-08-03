@@ -1,0 +1,7 @@
+{
+  "schema_version": "morrowise.milestone-group.v1",
+  "id": "kj",
+  "name": "KJ",
+  "layout": "grouped-yymmdd-project-v1",
+  "max_project_depth": 1
+}

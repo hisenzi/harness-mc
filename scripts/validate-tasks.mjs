@@ -3,6 +3,7 @@ import path from "path";
 import crypto from "crypto";
 import { execSync } from "child_process";
 import { fileURLToPath } from "url";
+import { discoverMilestoneProjects, resolveMilestoneProject } from "./lib/milestone-projects.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = process.env.HARNESS_MC_ROOT
@@ -104,7 +105,9 @@ function readJson(filePath) {
 }
 
 function readProjectGoalAnchor(project) {
-  const projectPath = path.join(milestonesDir, project, "project.json");
+  const descriptor = resolveMilestoneProject({ repoRoot: root, projectId: project });
+  if (!descriptor) return null;
+  const projectPath = descriptor.projectPath;
   if (!fs.existsSync(projectPath)) return null;
   try {
     const raw = readJson(projectPath);
@@ -115,7 +118,7 @@ function readProjectGoalAnchor(project) {
     if (!hasGoals) return null;
     const fingerprint = crypto.createHash("sha256").update(JSON.stringify(goals)).digest("hex");
     return {
-      ref: `$COLLAB/harness-mc/milestones/${project}/project.json#/goals`,
+      ref: `$COLLAB/harness-mc/${descriptor.relativeDir}/project.json#/goals`,
       fingerprint: `sha256:${fingerprint}`,
     };
   } catch {
@@ -124,10 +127,18 @@ function readProjectGoalAnchor(project) {
 }
 
 function listProjectDirs() {
-  if (!fs.existsSync(milestonesDir)) return [];
-  return fs.readdirSync(milestonesDir)
-    .sort()
-    .filter((name) => fs.existsSync(path.join(milestonesDir, name, "tasks.json")));
+  return discoverMilestoneProjects({ repoRoot: root }).map((descriptor) => descriptor.projectId);
+}
+
+function tasksPathForProject(project) {
+  return resolveMilestoneProject({ repoRoot: root, projectId: project })?.tasksPath || null;
+}
+
+function projectIdFromTasksPath(filePath) {
+  const relative = path.relative(milestonesDir, filePath).split(path.sep);
+  if (relative.length === 2) return relative[0];
+  if (relative.length === 3) return relative[1].replace(/^\d{6}-/, "");
+  return path.basename(path.dirname(filePath));
 }
 
 function getChangedTaskFiles(base = null) {
@@ -140,7 +151,7 @@ function getChangedTaskFiles(base = null) {
     : runGit("ls-files --others --exclude-standard -- milestones", { allowFail: true });
 
   for (const file of `${tracked}\n${untracked}`.split("\n").filter(Boolean)) {
-    if (/^milestones\/[^/]+\/tasks\.json$/.test(file)) files.add(path.resolve(root, file));
+    if (/^milestones\/(?:[^/]+\/)?[^/]+\/tasks\.json$/.test(file)) files.add(path.resolve(root, file));
   }
 
   return files;
@@ -922,7 +933,7 @@ function validateArchitectureAdmissionReview(review) {
 function collectCanonicalTaskRefs() {
   const refs = new Map();
   for (const project of listProjectDirs()) {
-    const filePath = path.join(milestonesDir, project, "tasks.json");
+    const filePath = tasksPathForProject(project);
     try {
       const raw = readJson(filePath);
       for (const { task } of extractTasks(raw)) {
@@ -987,7 +998,7 @@ export function validateTasks({
   if (changedOnly) {
     for (const filePath of changedFiles) {
       if (fs.existsSync(filePath)) continue;
-      const project = path.basename(path.dirname(filePath));
+      const project = projectIdFromTasksPath(filePath);
       if (projects.size > 0 && !projects.has(project)) continue;
       diagnostics.push({
         severity: "error",
@@ -1003,7 +1014,7 @@ export function validateTasks({
   for (const project of listProjectDirs()) {
     if (projects.size > 0 && !projects.has(project)) continue;
 
-    const filePath = path.join(milestonesDir, project, "tasks.json");
+    const filePath = tasksPathForProject(project);
     if (changedOnly && !changedFiles.has(filePath)) continue;
 
     let raw;

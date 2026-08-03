@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { mergeTaskDefinitionsWithState } from "./task-state.mjs";
+import { discoverMilestoneProjects } from "./lib/milestone-projects.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const defaultRoot = path.resolve(__dirname, "..");
@@ -64,28 +65,20 @@ export function generateVisualSyncCoverage(options = {}) {
 }
 
 function readProjects(root) {
-  const milestonesDir = path.join(root, "milestones");
-  if (!fs.existsSync(milestonesDir)) return [];
-
-  return fs
-    .readdirSync(milestonesDir)
-    .sort()
-    .flatMap((projectId) => {
-      const tasksPath = path.join(milestonesDir, projectId, "tasks.json");
-      if (!fs.existsSync(tasksPath)) return [];
-      const projectPath = path.join(milestonesDir, projectId, "project.json");
-      const statePath = path.join(milestonesDir, projectId, "state.json");
-      const raw = readJson(tasksPath);
-      const projectMeta = fs.existsSync(projectPath) ? readJson(projectPath) : {};
-      const state = fs.existsSync(statePath) ? readJson(statePath) : {};
+  return discoverMilestoneProjects({ repoRoot: root })
+    .map((descriptor) => {
+      const projectId = descriptor.projectId;
+      const raw = readJson(descriptor.tasksPath);
+      const projectMeta = fs.existsSync(descriptor.projectPath) ? readJson(descriptor.projectPath) : {};
+      const state = fs.existsSync(descriptor.statePath) ? readJson(descriptor.statePath) : {};
       const tasks = extractTasks(raw);
       const merged = mergeTaskDefinitionsWithState(tasks, state);
 
-      return [{
+      return {
         project: projectId,
         name: projectMeta.name || projectId,
         tasks: merged.map((task) => normalizeTask(task, projectId, projectMeta.name || projectId)),
-      }];
+      };
     });
 }
 

@@ -9084,6 +9084,422 @@
         "reason": "本 task 計畫新增共通 schema、generator、verifier、public-safe read model 與跨專案 consumer，具 Architecture Admission 候選性；現階段只建立 todo contract，待 TDD fixtures 與 implementation evidence 完成後再決定 promoted／version improvement，禁止先寫 ARCHITECTURE.md managed block。"
       },
       "note": "2026-07-26 已建立 MorroWise work anchor 與責任邊界；第二次 amend 已定錨 producer schema／output、public／internal fields、freshness／degraded 與 explicit approved two-phase consumer，但所有 implementation 與 runtime evidence 仍不存在。依唯一 weekly core 規則維持 todo；未被正式 admit 前不得進入 implementation。"
+    },
+    {
+      "id": "grouped-nested-milestone-support-v1",
+      "title": "JV-48 Harness 分組巢狀專案正式支援",
+      "status": "in_progress",
+      "track": "governance",
+      "order_label": "JV-48",
+      "priority": "P0",
+      "summary": "本地實作完成：Harness 已以單一 discovery contract 支援一層 group／yymmdd-project-id canonical milestone；KJ fixture、平面相容、非法路徑 fail-closed 與原資料不搬均已驗證，正式 remote closeout 尚待精準 commit／push 核准。",
+      "dependencies": [
+        "task-lifecycle-jv32-gate",
+        "morrowise-project-init-v1",
+        "morrowise-dev-workflow-catalog"
+      ],
+      "done_condition": "Harness 具備通用的一層分組 milestone contract：project-init 可建立 milestones/<group>/<yymmdd>-<project-id>/project.json 與 tasks.json，MC generator、validator、work-anchor、task lifecycle 及 task event apply 能一致找到並操作巢狀正本；project ID 維持全域唯一，非法日期、深度、group、路徑逸出與重複 ID 在寫入前失敗。第一個 KJ fixture 必須使用 milestones/kj/260803-kj-mascot；既有 milestones/<id> 平面專案、kj-bilingual 與 $COLLAB/CC本機協作_無Git/KJ 原資料的內容及位置完全不變。",
+      "acceptance": [
+        "JV48-A01｜project-init 新增明確 group 與 Asia/Taipei yymmdd folder contract，可建立 milestones/kj/260803-kj-mascot；dry-run 不寫檔，非 dry-run 在 topology admission 後才 mkdir，且 milestone 不推論 repo。",
+        "JV48-A02｜唯一 discovery contract 遞迴一層讀取 project.json／tasks.json；generate-data 與 MC /projects 將巢狀專案顯示為單一 project，並保存 group、project ID 與可重跑的相對 milestone ref。",
+        "JV48-A03｜validate-tasks、work-anchor-preflight、task lifecycle 與 apply-task-events 可依 project ID 精確找到巢狀正本；所有 mutation 仍走 JV-40，不建立第二 task state。",
+        "JV48-A04｜既有 milestones/<id> 平面專案完整回歸；平面／巢狀重複 project ID、錯誤 yymmdd、第二層以上巢狀、未知 group、絕對路徑及 path escape 必須在寫入或 mutation 前失敗。",
+        "JV48-A05｜原資料不搬：fixtures 以 before／after digest 證明 kj-bilingual 與 $COLLAB/CC本機協作_無Git/KJ 原資料未被移動、改名、複製、刪除或改寫；巢狀 milestone 只保存 canonical JSON 與 $COLLAB source_refs。",
+        "JV48-A06｜完成前通過 RED／GREEN、巢狀與平面 regression、changed-only MorroWise task validation、production build、clean archive／single-repo build及 Remote Closeout；只有 remote main、required CI、canonical receipt 與 residual zero 全部成立才可宣稱正式支援。"
+      ],
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "把 MorroWise 的 source boundary、project-init 與 task lifecycle 接到可分組的 canonical milestone layout，讓 KJ 等專案集中管理而不搬動原資料，並由 verifier、read model 與 closeout 形成可重跑閉環。",
+        "evidence_plan": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#grouped-nested-milestone-support-v1.acceptance_matrix",
+          "node scripts/verify-grouped-nested-milestones.mjs",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+        ],
+        "reviewed_at": "2026-08-03"
+      },
+      "acceptance_matrix": [
+        {
+          "id": "JV48-A01",
+          "what": "project-init 能依正式 contract 建立 KJ 一層巢狀 milestone。",
+          "preconditions": [
+            "target-specific topology admission 對 harness-mc canonical destination 回傳 allow",
+            "project ID=kj-mascot、group=kj、folder date=260803",
+            "未提供 repo create receipt"
+          ],
+          "steps": [
+            "執行 grouped project-init dry-run並確認零寫入",
+            "在隔離 fixture 執行非 dry-run create",
+            "核對建立位置、project.json、tasks.json、Obsidian／MC rebuild boundary 與 GitHub invocation count"
+          ],
+          "pass_condition": "只在 topology admission 後建立 milestones/kj/260803-kj-mascot/project.json 與 tasks.json；dry-run digest 不變，repo invocation 為零。",
+          "fail_condition": "仍建立 flat milestone、提前 mkdir、日期或 group 不正確、dry-run 寫檔，或未有 receipt 卻建立 repo。",
+          "verification": [
+            "node scripts/verify-grouped-nested-milestones.mjs --case project-init",
+            "npm run test:project-init-admission"
+          ]
+        },
+        {
+          "id": "JV48-A02",
+          "what": "巢狀 milestone 可由單一 discovery contract 進入 generated MC read model。",
+          "preconditions": [
+            "fixture 同時包含既有 flat project 與 kj/260803-kj-mascot",
+            "兩個 project ID 全域唯一"
+          ],
+          "steps": [
+            "執行 milestone discovery verifier",
+            "重建 projects read model",
+            "核對巢狀 project 只出現一次且 group／relative milestone ref 正確"
+          ],
+          "pass_condition": "flat 與巢狀 project 都被 deterministic 發現；kj-mascot 只出現一次並可由 /projects 使用。",
+          "fail_condition": "巢狀 project 被略過、重複顯示、依物理遍歷順序漂移，或 generated output 成為第二正本。",
+          "verification": [
+            "node scripts/verify-grouped-nested-milestones.mjs --case discovery",
+            "node scripts/generate-data.mjs",
+            "npm run build"
+          ]
+        },
+        {
+          "id": "JV48-A03",
+          "what": "canonical task 操作可依 project ID 精確路由至巢狀 tasks.json。",
+          "preconditions": [
+            "kj-mascot 巢狀 project 含至少一個 active task",
+            "JV-40 task lifecycle 與 task event fixtures 可用"
+          ],
+          "steps": [
+            "對 kj-mascot 執行 changed-only validation 與 work-anchor implementation preflight",
+            "在 fixture 建立並套用一筆 task lifecycle event",
+            "核對只修改預期巢狀 tasks.json且 history append-only"
+          ],
+          "pass_condition": "validator、preflight 與 event apply 指向同一巢狀正本，未修改 flat project或建立第二 task state。",
+          "fail_condition": "project not found、誤改另一個 tasks.json、繞過 JV-40、覆寫 lifecycle history或直接從 mirror 反寫。",
+          "verification": [
+            "node scripts/verify-grouped-nested-milestones.mjs --case lifecycle",
+            "node scripts/verify-work-anchor-preflight.mjs",
+            "node scripts/verify-apply-task-events.mjs"
+          ]
+        },
+        {
+          "id": "JV48-A04",
+          "what": "舊平面結構保持相容，非法巢狀 identity 與路徑 fail-closed。",
+          "preconditions": [
+            "flat regression fixtures 可用",
+            "duplicate ID、bad date、unknown group、too-deep、absolute path 與 path escape negative fixtures 可用"
+          ],
+          "steps": [
+            "執行全部 flat regression",
+            "逐一執行 identity／date／depth／group／path negative fixtures",
+            "核對每個失敗 fixture 的 before／after digest"
+          ],
+          "pass_condition": "既有 flat project 結果不變；所有非法 fixture 非零退出且 digest 不變。",
+          "fail_condition": "任一舊 project 消失或 identity 改變、非法 fixture 被接受，或失敗前已留下 partial write。",
+          "verification": [
+            "node scripts/verify-grouped-nested-milestones.mjs --case compatibility",
+            "node scripts/verify-project-init-v1.mjs",
+            "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+          ]
+        },
+        {
+          "id": "JV48-A05",
+          "what": "KJ 原資料與既有 milestone 保持位置及內容不變。",
+          "preconditions": [
+            "$COLLAB/CC本機協作_無Git/KJ 與 milestones/kj-bilingual 可讀",
+            "測試只讀 non-secret metadata且不讀取 credentials"
+          ],
+          "steps": [
+            "記錄原資料與 kj-bilingual 的安全 path inventory／digest",
+            "執行 grouped project-init及完整 regression fixture",
+            "比對 before／after inventory／digest及 source_refs"
+          ],
+          "pass_condition": "原資料與 kj-bilingual 零移動、零改名、零複製、零刪除、零內容變更；新 milestone 只保存 canonical JSON 與 $COLLAB refs。",
+          "fail_condition": "原資料或 kj-bilingual 的 path、數量或 digest 改變，或 generated／canonical JSON 保存本機絕對路徑。",
+          "verification": [
+            "node scripts/verify-grouped-nested-milestones.mjs --case source-immutability",
+            "git diff --check"
+          ]
+        },
+        {
+          "id": "JV48-A06",
+          "what": "正式交付具備 clean-build、remote truth、canonical closeout及 residual-zero 證據。",
+          "preconditions": [
+            "JV48-A01 至 JV48-A05 全部通過",
+            "精準 commit／push／closeout scope 已另經 Vincent 核准"
+          ],
+          "steps": [
+            "從 git archive 或 clean single-repo checkout 執行 task verifier、task regression與 production build",
+            "核對 required CI／Pages terminal success及 origin/main containment",
+            "完成 JV-40 acceptance／closeout後核對 canonical receipt、0/0 parity與 scope-owned residual zero"
+          ],
+          "pass_condition": "clean build、required remote workflow、origin/main containment、acceptance receipt、canonical state、0/0 parity與 residual zero 全部成立。",
+          "fail_condition": "只有 dirty workspace green、local-only commit、pending CI／event／sync、remote 未包含交付，或仍有 scope-owned residual。",
+          "verification": [
+            "node scripts/verify-grouped-nested-milestones.mjs",
+            "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+            "npm run build",
+            "git rev-list --left-right --count HEAD...@{upstream}"
+          ]
+        }
+      ],
+      "source_refs": [
+        "$COLLAB/harness-mc/scripts/new-project.py",
+        "$COLLAB/harness-mc/scripts/generate-data.mjs",
+        "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
+        "$COLLAB/harness-mc/scripts/work-anchor-preflight.mjs",
+        "$COLLAB/harness-mc/scripts/apply-task-events.mjs",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-project-init-v1",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#project-topology-architecture-atlas",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate",
+        "$COLLAB/notyet-harness/000_Agent/skills/project-init/SKILL.md",
+        "$COLLAB/CC本機協作_無Git/KJ/260623_KJ_光榮獅_吉祥物"
+      ],
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "合法 group／yymmdd／project ID 在 topology admission 後建立一層巢狀 canonical milestone，dry-run 零寫入且不建立 repo。",
+          "巢狀 project 可被 generator、validator、work-anchor、task lifecycle 與 task event apply 一致找到。",
+          "既有 flat milestones 保持 deterministic 相容，project ID 在 flat／nested 全域唯一。",
+          "錯誤日期、未知 group、第二層以上巢狀、絕對路徑、path escape與 duplicate ID 在任何寫入前失敗。",
+          "KJ 原資料與 kj-bilingual 的 path／inventory／digest 在完整流程前後不變。"
+        ],
+        "test_level": [
+          "unit",
+          "negative_fixture",
+          "integration",
+          "flat_regression",
+          "clean_build"
+        ],
+        "red_command": "node scripts/verify-grouped-nested-milestones.mjs",
+        "expected_red_reason": "現行 new-project.py 不支援 group／folder-date，generate-data 只掃描 milestones 第一層；模擬 dry-run 以 exit code 2 失敗且 nested project 不會進入 read model。",
+        "green_command": "node scripts/verify-grouped-nested-milestones.mjs",
+        "full_regression_commands": [
+          "node scripts/verify-project-init-v1.mjs",
+          "npm run test:project-init-admission",
+          "node scripts/verify-work-anchor-preflight.mjs",
+          "node scripts/verify-apply-task-events.mjs",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "npm run build",
+          "git diff --check"
+        ],
+        "fixture_refs": [
+          "$COLLAB/harness-mc/scripts/verify-grouped-nested-milestones.mjs",
+          "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot",
+          "$COLLAB/harness-mc/milestones/kj-bilingual"
+        ],
+        "runtime_evidence_required": false,
+        "evidence_refs": [
+          "current-session RED: python3 scripts/new-project.py ... --group kj --folder-date 260803 --dry-run => exit code 2",
+          "$COLLAB/harness-mc/scripts/new-project.py",
+          "$COLLAB/harness-mc/scripts/generate-data.mjs"
+        ]
+      },
+      "execution_contract": {
+        "owner": "morrowise/grouped-nested-milestone-support-v1",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#grouped-nested-milestone-support-v1",
+        "inputs": [
+          "Vincent 核准的 KJ 新開案集中規則與 yymmdd-project-id 命名",
+          "現有 flat milestone、project-init、generated read model、validator、work-anchor與 task lifecycle contract",
+          "JV-43 target-specific topology admission與原資料不搬邊界"
+        ],
+        "outputs": [
+          "通用一層 grouped milestone layout／identity／discovery contract",
+          "project-init、generator、validator、work-anchor及 task event lifecycle 的相容讀寫實作",
+          "KJ first-use fixture、negative fixtures、flat regression及 clean-build／closeout evidence"
+        ],
+        "verifiers": [
+          "node scripts/verify-grouped-nested-milestones.mjs",
+          "node scripts/verify-project-init-v1.mjs",
+          "npm run test:project-init-admission",
+          "node scripts/verify-work-anchor-preflight.mjs",
+          "node scripts/verify-apply-task-events.mjs",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "npm run build"
+        ],
+        "stop_condition": "若需移動、改名、複製、刪除或改寫既有 KJ／kj-bilingual 資料；需建立第二 task state、改變全域 project identity、允許兩層以上巢狀、繞過 topology admission／JV-40／Vincent commit-push 核准，或 clean archive 無法重跑全部讀依賴時，立即停止並保持 task active。"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "domain-modeling",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "Vincent 2026-08-03 確認 Harness 正式支援 kj/yymmdd-project-id 巢狀專案且原資料不搬",
+          "現行 new-project.py grouped dry-run exit code 2 的 RED 證據",
+          "generate-data.mjs 只掃描 milestones 第一層的程式證據",
+          "MW-PI-01 project-init contract、JV-43 topology admission與 JV-40 canonical task lifecycle邊界"
+        ],
+        "decision_output": "一個不硬編 KJ、只允許一層 group、保留 flat 相容與全域 project identity的 canonical milestone layout／discovery／mutation contract。",
+        "execution_boundary": "本 task 可在另經核准的實作計畫內修改 harness-mc 的 milestone discovery、project-init、validator、work-anchor、task lifecycle adapter、tests、spec、package scripts及必要 generated read model；不得移動或修改原 KJ 資料、建立 repo、外部 tracker、branch／worktree、commit、push、部署，除非 Vincent 對對應精準 scope 另有核准。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准修改 Harness 正式支援 kj/yymmdd-project-id 巢狀專案，要求開始實作前先完成相關巢狀功能 canonical task 撰寫，並確認原資料不搬。",
+            "evidence_refs": [
+              "Vincent 2026-08-03 current session: 要修改 Harness，使其正式支援 kj/yymmdd-專案名稱 巢狀專案；原資料確定不搬",
+              "Vincent 2026-08-03 current session: 巢狀功能可以開始實作；開始前先完成相關『巢狀功能』task 撰寫",
+              "$COLLAB/harness-mc/scripts/new-project.py",
+              "$COLLAB/harness-mc/scripts/generate-data.mjs",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-project-init-v1",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#project-topology-architecture-atlas",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate"
+            ],
+            "recorded_at": "2026-08-03",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/morrowise-project-init-v1",
+                "morrowise/project-topology-architecture-atlas",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "MW-PI-01 解決開案成果契約／taxonomy／Map，JV-43 解決 project home／topology admission／migration，JV-40 解決 canonical task mutation；三者都沒有 owner 管理 flat namespace造成的 milestone 分組、巢狀 discovery與跨工具相容讀寫。",
+                "owner_source_of_truth": "新 task 只擁有 Harness milestone layout／identity／discovery／mutation contract；MW-PI-01 保留 outcome contract owner，JV-43 保留 topology registry／destination admission owner，JV-40 保留 task lifecycle owner，canonical task state仍只有各 tasks.json。",
+                "inputs_outputs": "輸入是 flat milestones、group／date／ID與既有 project-init／generator／validator／lifecycle；輸出是一層 grouped layout、recursive discovery、相容 mutation與 fixtures。既有 tasks 只提供成果契約、寫入 admission或 mutation gate，不提供這個組合輸出。",
+                "lifecycle_completion": "只有 project-init create、read model discovery、validator／work-anchor／event apply、flat regression、非法路徑 fail-closed、原資料 digest、clean build與 remote closeout全部通過才可完成；建立空目錄或單一 script green 不構成完成。"
+              },
+              "decision_reason": "問題、owner、輸入輸出與完成邊界均未由既有 task 承接，因此建立單一 genuinely_new MorroWise system task；不硬編 KJ、不建立平行 project或第二 task state。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-03",
+                "evidence_refs": [
+                  "Vincent 2026-08-03 current session: 巢狀功能可以開始實作",
+                  "Vincent 2026-08-03 current session: 開始前先完成相關『巢狀功能』task 撰寫"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 已核准 JV-48 精確實作計畫，允許依 TDD 與逐項驗收順序開始實作 grouped nested milestone 正式支援。",
+            "evidence_refs": [
+              "Vincent 2026-08-03 current session: 核准 JV-48 計畫，開始執行",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#grouped-nested-milestone-support-v1.acceptance_matrix",
+              "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+              "work-anchor-preflight implementation event: allow"
+            ],
+            "recorded_at": "2026-08-03",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/morrowise-project-init-v1",
+                "morrowise/project-topology-architecture-atlas",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "MW-PI-01 解決開案成果契約／taxonomy／Map，JV-43 解決 project home／topology admission／migration，JV-40 解決 canonical task mutation；三者都沒有 owner 管理 flat namespace造成的 milestone 分組、巢狀 discovery與跨工具相容讀寫。",
+                "owner_source_of_truth": "JV-48 只擁有 Harness milestone layout／identity／discovery／mutation contract；MW-PI-01 保留 outcome contract owner，JV-43 保留 topology registry／destination admission owner，JV-40 保留 task lifecycle owner，canonical task state仍只有各 tasks.json。",
+                "inputs_outputs": "輸入是 flat milestones、group／date／ID與既有 project-init／generator／validator／lifecycle；輸出是一層 grouped layout、recursive discovery、相容 mutation與 fixtures。既有 tasks 只提供成果契約、寫入 admission或 mutation gate，不提供這個組合輸出。",
+                "lifecycle_completion": "只有 project-init create、read model discovery、validator／work-anchor／event apply、flat regression、非法路徑 fail-closed、原資料 digest、clean build與 remote closeout全部通過才可完成；建立空目錄或單一 script green 不構成完成。"
+              },
+              "decision_reason": "Task 仍是相對 HEAD 的 genuinely_new canonical work；本 amend 只記錄 Vincent 核准計畫並啟動同一 task，不另開 scope或平行 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-03",
+                "evidence_refs": [
+                  "Vincent 2026-08-03 current session: 核准 JV-48 計畫，開始執行"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "JV-48 本地實作、TDD、A01 至 A05、flat regression、Architecture Admission 與 clean single-repo production build 已完成；A06 因精準 commit／push／closeout scope 尚未另經 Vincent 核准而維持 fail，task 保持 active 且未宣稱正式 remote 支援。",
+            "evidence_refs": [
+              "node scripts/verify-grouped-nested-milestones.mjs --case project-init => JV48-A01..A05 pass",
+              "node scripts/verify-project-init-v1.mjs => pass",
+              "npm run test:project-init-admission => pass",
+              "node scripts/verify-work-anchor-preflight.mjs => pass",
+              "node scripts/verify-apply-task-events.mjs => pass",
+              "node scripts/validate-tasks.mjs --changed-only --project morrowise => 0 issues",
+              "/private/tmp/harness-mc-jv48-acceptance npm run build => exit 0",
+              "work-anchor-preflight acceptance receipt sha256:a1fec4aea9816e56fd19b92d4e931acc0833a162bed8a3ba22c1e3da7d1fbf4c => A01-A05 pass, A06 fail",
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
+              "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check => pass"
+            ],
+            "recorded_at": "2026-08-03",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/morrowise-project-init-v1",
+                "morrowise/project-topology-architecture-atlas",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "MW-PI-01、JV-43 與 JV-40 分別管理 outcome、topology admission 與 task mutation；它們仍未擁有 grouped milestone identity、discovery 與跨 consumer 相容支援。",
+                "owner_source_of_truth": "JV-48 只擁有 Harness grouped milestone layout／identity／discovery／routing contract；各 project tasks.json 仍是唯一 task state，既有 owner 邊界未改變。",
+                "inputs_outputs": "輸入是 flat milestones、group marker、yymmdd、project ID 與既有 consumers；輸出是共用 discovery helper、grouped project-init、相容讀寫、formal schema/spec 與可重跑 fixtures。",
+                "lifecycle_completion": "A01-A05 與 clean build已成立；只有另經核准的 commit／push、remote main／CI、fresh acceptance receipt、0/0 parity 與 scope residual zero 完成後，A06 才可 pass並關閉 task。"
+              },
+              "decision_reason": "這是同一 genuinely_new task 的實作與驗收狀態回寫，不新增 scope或第二 task truth；remote closeout仍遵守 Vincent 分離授權。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-03",
+                "evidence_refs": [
+                  "Vincent 2026-08-03 current session: 核准 JV-48 計畫，開始執行",
+                  "Vincent 2026-08-03 current session: 這又不是什麼大專案，一口氣完成然後依照驗收標準驗收"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/grouped-nested-milestone-support-v1",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#sourceBoundary",
+          "#risk",
+          "#evidenceBased"
+        ],
+        "hc_reasoning": "真正問題不是替 KJ 多建一個子資料夾，而是 Harness 將 project identity、filesystem layout與 discovery綁死在單層 namespace，導致集中管理需求只能產生系統看不到的孤兒目錄。#rightProblem 將工作固定為通用 grouped milestone contract而非 KJ 特例；#systemDynamics要求 project-init、generator、validator、work-anchor與 lifecycle 共用同一規則；#sourceBoundary保持 canonical JSON、generated read model與原素材分離；#risk 阻擋資料搬移、duplicate ID、path escape與 partial write；#evidenceBased要求 RED／GREEN、digest、flat regression、clean build及 remote truth。",
+        "hc_confidence": 0.95,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/scripts/new-project.py",
+          "$COLLAB/harness-mc/scripts/generate-data.mjs",
+          "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-project-init-v1",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#project-topology-architecture-atlas"
+        ],
+        "source_boundary": "HC 只用於思考檢查，不是正本；task state由 MorroWise tasks.json 管理，milestone identity由 project.json／tasks.json與正式 layout contract管理，topology admission由 JV-43 registry／verifier管理，generated MC JSON只是 read model，KJ 原資料保持原位。"
+      },
+      "architecture_decision": {
+        "decision": "not_required",
+        "evaluated_at": "2026-08-03",
+        "reason": "JV-48 是既有 morrowise-dev-workflow-catalog 受管 project-init／validator／routing contract 的 version improvement；既有薄索引名稱、owner、角色與 detail pointer 均不變，不建立新架構子系統。",
+        "admission_review": {
+          "scope": "version_improvement",
+          "admission_record_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
+          "index_action": "no_index_change",
+          "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+          "evidence_refs": [
+            "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+            "npm run test:architecture-subsystems",
+            "npm run test:grouped-nested-milestones",
+            "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+            "/private/tmp/harness-mc-jv48-acceptance npm run build"
+          ],
+          "reason": "共用 grouped discovery只擴充既有 workflow catalog 的 project-init、validator與task routing能力；Admission Record fingerprint已刷新，受控 marker同步後 verifier與sync check皆通過，索引角色無需改寫。"
+        }
+      },
+      "note": "2026-08-03 本地實作與驗收完成：A01-A05=pass；共用 discovery、grouped project-init、generator、validator、work-anchor、task event與下游 read/closeout consumers在 clean clone回歸通過，production build exit 0。KJ 原素材與kj-bilingual before／after metadata digest一致，live milestones/kj/260803-kj-mascot仍不存在，原資料未搬。Acceptance gate以 canonical matrix fingerprint sha256:a1fec4aea9816e56fd19b92d4e931acc0833a162bed8a3ba22c1e3da7d1fbf4c精確覆蓋：A01-A05 pass、A06 fail；原因僅為commit／push／remote CI／canonical closeout尚未另經精準核准，task保持in_progress。"
     }
   ]
 }

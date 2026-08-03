@@ -4,6 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { mergeTaskDefinitionsWithState, stateFromTask } from "./task-state.mjs";
 import { writeSyncEvent } from "./sync-event-queue.mjs";
+import { resolveMilestoneProject } from "./lib/milestone-projects.mjs";
 
 const SUPPORTED_TYPES = new Set([
   "task.completed",
@@ -193,16 +194,16 @@ function loadProjectTasks(root, project, tasksCache) {
   if (!project) return null;
   if (tasksCache.has(project)) return tasksCache.get(project);
 
-  const tasksPath = path.join(root, "milestones", project, "tasks.json");
-  if (!fs.existsSync(tasksPath)) {
+  const descriptor = resolveMilestoneProject({ repoRoot: root, projectId: project });
+  if (!descriptor) {
     tasksCache.set(project, null);
     return null;
   }
 
   const projectTasks = {
-    path: tasksPath,
-    statePath: path.join(root, "milestones", project, "state.json"),
-    definitions: readJson(tasksPath),
+    path: descriptor.tasksPath,
+    statePath: descriptor.statePath,
+    definitions: readJson(descriptor.tasksPath),
     state: {},
     data: null,
     dirty: false,

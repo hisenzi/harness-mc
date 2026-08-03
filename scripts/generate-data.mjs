@@ -3,11 +3,11 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
 import { mergeTaskDefinitionsWithState } from "./task-state.mjs";
+import { discoverMilestoneProjects } from "./lib/milestone-projects.mjs";
 import { sortTasksByPlan } from "../lib/taskOrdering.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
-const milestonesDir = path.join(root, "milestones");
 const outPath = path.join(root, "public", "data", "projects.json");
 const domainTaxonomyPath = path.join(root, "system-workflow", "registries", "pai-domain-taxonomy.json");
 const domainTaxonomy = loadDomainTaxonomy(domainTaxonomyPath);
@@ -58,9 +58,9 @@ function normalize(t) {
 
 const results = [];
 
-for (const dir of fs.readdirSync(milestonesDir)) {
-  const tasksPath = path.join(milestonesDir, dir, "tasks.json");
-  if (!fs.existsSync(tasksPath)) continue;
+for (const descriptor of discoverMilestoneProjects({ repoRoot: root })) {
+  const projectId = descriptor.projectId;
+  const tasksPath = descriptor.tasksPath;
 
   try {
     const raw = JSON.parse(fs.readFileSync(tasksPath, "utf-8").replace(/^﻿/, ""));
@@ -82,7 +82,7 @@ for (const dir of fs.readdirSync(milestonesDir)) {
 
     if (tasks.length === 0) continue;
 
-    const statePath = path.join(milestonesDir, dir, "state.json");
+    const statePath = descriptor.statePath;
     if (fs.existsSync(statePath)) {
       const state = JSON.parse(fs.readFileSync(statePath, "utf-8").replace(/^﻿/, ""));
       const mergedTasks = mergeTaskDefinitionsWithState(tasks, state);
@@ -91,7 +91,7 @@ for (const dir of fs.readdirSync(milestonesDir)) {
     }
 
     let meta = {};
-    const projectPath = path.join(milestonesDir, dir, "project.json");
+    const projectPath = descriptor.projectPath;
     if (fs.existsSync(projectPath)) {
       meta = JSON.parse(fs.readFileSync(projectPath, "utf-8").replace(/^﻿/, ""));
     }
@@ -102,11 +102,11 @@ for (const dir of fs.readdirSync(milestonesDir)) {
 
     const projectStatus = meta.status || "active";
     if (projectStatus === "archived") continue;
-    const domain = resolveProjectDomain(dir, meta, domainTaxonomy);
+    const domain = resolveProjectDomain(projectId, meta, domainTaxonomy);
 
     results.push({
-      project: dir,
-      name: meta.name || dir,
+      project: projectId,
+      name: meta.name || projectId,
       description: meta.description || "",
       status: projectStatus,
       type: meta.type || "other",
@@ -115,12 +115,13 @@ for (const dir of fs.readdirSync(milestonesDir)) {
       domainColor: domain?.color || "#71717a",
       priority: meta.priority || "medium",
       tasks: orderedTasks,
-      lastModified: gitTime(path.join(milestonesDir, dir), stat.mtime.toISOString()),
+      lastModified: gitTime(descriptor.absoluteDir, stat.mtime.toISOString()),
       done,
       total: tasks.length,
       tracks: meta.tracks || {},
       decision_refs: meta.decision_refs || [],
       project_map: meta.project_map || null,
+      ...(descriptor.group ? { group: descriptor.group, milestone_ref: descriptor.relativeDir } : {}),
     });
   } catch {
     // skip malformed

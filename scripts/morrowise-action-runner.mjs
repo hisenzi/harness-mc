@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { writeSyncEvent } from "./sync-event-queue.mjs";
+import { resolveMilestoneProject } from "./lib/milestone-projects.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const defaultRoot = path.resolve(__dirname, "..");
@@ -48,7 +49,7 @@ export function runMorrowiseActionRunner(input = {}, options = {}) {
 }
 
 function runCandidate(candidate, context) {
-  assertCandidate(candidate);
+  assertCandidate(candidate, context.root);
 
   const actionClass = candidate.action_class || ACTION_CLASS_BY_ACTION[candidate.suggested_action] || "unknown";
   const policyDecision = classifyPolicy(actionClass, context.policy);
@@ -193,7 +194,7 @@ function classifyPolicy(actionClass, policy) {
   };
 }
 
-function assertCandidate(candidate) {
+function assertCandidate(candidate, root) {
   const taskGovernance = candidate?.candidate_type === "propose_next_task"
     || candidate?.candidate_type === "propose_task_reorganization"
     || candidate?.suggested_action === "propose_next_task"
@@ -203,7 +204,7 @@ function assertCandidate(candidate) {
     if (sensitiveField) {
       throw new Error(`task governance candidate contains forbidden sensitive field: ${sensitiveField}`);
     }
-    assertTaskGovernanceCandidate(candidate);
+    assertTaskGovernanceCandidate(candidate, root);
   }
   for (const field of ["recommendation_id", "suggested_action", "suggested_task_id", "risk_level", "requires_approval", "evidence_refs"]) {
     if (candidate?.[field] === undefined || candidate?.[field] === null) throw new Error(`candidate.${field} is required`);
@@ -213,7 +214,7 @@ function assertCandidate(candidate) {
   if (!Array.isArray(candidate.evidence_refs) || candidate.evidence_refs.length === 0) throw new Error("candidate.evidence_refs must be non-empty");
 }
 
-function assertTaskGovernanceCandidate(candidate) {
+function assertTaskGovernanceCandidate(candidate, root) {
   const requiredFields = [
     "target_project",
     "target_task_source",
@@ -233,11 +234,13 @@ function assertTaskGovernanceCandidate(candidate) {
     }
   }
 
-  const expectedTaskSource = `$COLLAB/harness-mc/milestones/${candidate.target_project}/tasks.json`;
+  const descriptor = resolveMilestoneProject({ repoRoot: root, projectId: candidate.target_project });
+  if (!descriptor) throw new Error("task governance candidate.target_project must resolve to a canonical milestone");
+  const expectedTaskSource = `$COLLAB/harness-mc/${descriptor.relativeDir}/tasks.json`;
   if (candidate.target_task_source !== expectedTaskSource) {
     throw new Error("task governance candidate.target_task_source must match target_project");
   }
-  const expectedGoalRef = `$COLLAB/harness-mc/milestones/${candidate.target_project}/project.json#/goals`;
+  const expectedGoalRef = `$COLLAB/harness-mc/${descriptor.relativeDir}/project.json#/goals`;
   if (candidate.goal_ref !== expectedGoalRef) {
     throw new Error("task governance candidate.goal_ref must match target_project");
   }

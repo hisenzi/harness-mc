@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { discoverMilestoneProjects } from "./lib/milestone-projects.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -303,23 +304,18 @@ function readPendingTaskEvents(repoRoot) {
 }
 
 function findCompletedWithoutCommitEvidence(repoRoot) {
-  const milestonesDir = path.join(repoRoot, "milestones");
-  if (!fs.existsSync(milestonesDir)) return [];
   const items = [];
-  for (const entry of fs.readdirSync(milestonesDir, { withFileTypes: true })) {
-    if (!entry.isDirectory()) continue;
-    const tasksPath = path.join(milestonesDir, entry.name, "tasks.json");
-    if (!fs.existsSync(tasksPath)) continue;
-    const data = readJsonOrNull(tasksPath);
+  for (const descriptor of discoverMilestoneProjects({ repoRoot })) {
+    const data = readJsonOrNull(descriptor.tasksPath);
     for (const task of data?.tasks || []) {
       if (!["completed", "done", "fixed"].includes(task.status)) continue;
       if (Array.isArray(task.commits) && task.commits.length > 0) continue;
       items.push({
-        project: entry.name,
+        project: descriptor.projectId,
         task_id: task.id,
         status: task.status,
         title: task.title || "",
-        task_source: `$COLLAB/harness-mc/milestones/${entry.name}/tasks.json`,
+        task_source: `$COLLAB/harness-mc/${descriptor.relativeDir}/tasks.json`,
       });
     }
   }

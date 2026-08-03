@@ -1,11 +1,11 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { discoverMilestoneProjects } from "./lib/milestone-projects.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const collabRoot = path.resolve(root, "..");
-const milestonesDir = path.join(root, "milestones");
 const decisionsDir = path.join(collabRoot, "notyet-harness", "000_Agent", "decisions");
 
 function readJSON(file) {
@@ -49,12 +49,16 @@ function parseAdrs() {
 
 function parseProjects() {
   const map = new Map();
-  for (const dir of fs.readdirSync(milestonesDir)) {
-    const projectPath = path.join(milestonesDir, dir, "project.json");
-    if (!fs.existsSync(projectPath)) continue;
-    const meta = readJSON(projectPath);
+  for (const descriptor of discoverMilestoneProjects({ repoRoot: root })) {
+    if (!fs.existsSync(descriptor.projectPath)) continue;
+    const meta = readJSON(descriptor.projectPath);
     const refs = Array.isArray(meta.decision_refs) ? meta.decision_refs : [];
-    map.set(dir, { id: dir, projectPath, refs });
+    map.set(descriptor.projectId, {
+      id: descriptor.projectId,
+      relativeDir: descriptor.relativeDir,
+      projectPath: descriptor.projectPath,
+      refs,
+    });
   }
   return map;
 }
@@ -77,7 +81,7 @@ for (const adr of adrs.values()) {
     }
     const hasBacklink = project.refs.some((ref) => String(ref.adr || "").toUpperCase() === adr.adr);
     if (!hasBacklink) {
-      errors.push(`${adr.adr} declares project "${projectId}", but milestones/${projectId}/project.json lacks decision_refs entry.`);
+      errors.push(`${adr.adr} declares project "${projectId}", but ${project.relativeDir}/project.json lacks decision_refs entry.`);
     }
   }
 }
@@ -86,16 +90,16 @@ for (const project of projects.values()) {
   for (const ref of project.refs) {
     const adr = String(ref.adr || "").toUpperCase();
     if (!adr) {
-      errors.push(`milestones/${project.id}/project.json has decision_refs entry without adr.`);
+      errors.push(`${project.relativeDir}/project.json has decision_refs entry without adr.`);
       continue;
     }
     const adrMeta = adrs.get(adr);
     if (!adrMeta) {
-      errors.push(`milestones/${project.id}/project.json references ${adr}, but no matching ADR file exists.`);
+      errors.push(`${project.relativeDir}/project.json references ${adr}, but no matching ADR file exists.`);
       continue;
     }
     if (adrMeta.projects.length > 0 && !adrMeta.projects.includes(project.id)) {
-      errors.push(`milestones/${project.id}/project.json references ${adr}, but ${adr} Projects metadata does not include "${project.id}".`);
+      errors.push(`${project.relativeDir}/project.json references ${adr}, but ${adr} Projects metadata does not include "${project.id}".`);
     }
   }
 }

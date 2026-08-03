@@ -4,9 +4,12 @@ import fs from "node:fs";
 import crypto from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveMilestoneProject } from "./lib/milestone-projects.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const root = path.resolve(__dirname, "..");
+const root = process.env.HARNESS_MC_ROOT
+  ? path.resolve(process.env.HARNESS_MC_ROOT)
+  : path.resolve(__dirname, "..");
 
 const ACTIVE_STATUSES = new Set(["todo", "in_progress", "doing", "blocked"]);
 const DONE_STATUSES = new Set(["done", "completed", "cancelled", "canceled"]);
@@ -101,7 +104,9 @@ function usage() {
 function resolveTaskSource(args) {
   if (args.tasks) return path.resolve(args.tasks);
   if (!args.project) throw new Error("--project is required when --tasks is not provided");
-  return path.join(root, "milestones", args.project, "tasks.json");
+  const descriptor = resolveMilestoneProject({ repoRoot: root, projectId: args.project });
+  if (!descriptor) throw new Error(`unknown milestone project ID: ${args.project}`);
+  return descriptor.tasksPath;
 }
 
 function readTasks(taskSource) {

@@ -22,6 +22,7 @@ const expectedProjectIds = [
   "house123-buy",
   "market-watchtower",
   "notion-finance",
+  "organizing-photos",
   "self-learning",
   "travel-finance-dashboard",
   "wealth-system",

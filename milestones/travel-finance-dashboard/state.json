@@ -370,11 +370,13 @@
       }
     },
     "p3-live-dashboard-and-fund-cashflow": {
-      "status": "in_progress",
+      "status": "completed",
+      "completed_at": "2026-08-03",
       "commits": [
         "909f963",
         "8ebf787",
-        "5af3c94ebb29a0e82836340798159f9fe10eb75e"
+        "5af3c94ebb29a0e82836340798159f9fe10eb75e",
+        "b4d01bc634f3b26bfb99ae8473acc8168cd5aceb"
       ]
     }
   }

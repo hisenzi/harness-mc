@@ -590,7 +590,8 @@
     {
       "id": "p3-live-dashboard-and-fund-cashflow",
       "title": "建立可重用的即時旅遊基金金流與支出比例儀表板",
-      "status": "in_progress",
+      "status": "completed",
+      "completed_at": "2026-08-03",
       "track": "dashboard",
       "depends_on": [
         "p2-standalone-dashboard-build",
@@ -876,6 +877,35 @@
           "evidence": "verify-fukuoka-a01-a30.py 與 work-anchor-preflight acceptance receipt"
         }
       ],
+      "completion_evidence": {
+        "red_evidence": [
+          "舊版 dashboard verifier 未覆蓋 settlement_status、已結清排除應付款、首屏結算摘要、單幣別切換與友善 blockers；本次 A01-A30 verifier 對應補齊。"
+        ],
+        "green_evidence": [
+          "python3 $COLLAB/travel-finance-dashboard/scripts/verify-fukuoka-a01-a30.py -> A01-A30 30/30",
+          "python3 scripts/verify-notion-to-ledger-importer.py -> PASS",
+          "python3 scripts/verify-travel-ledger.py --fixture data/fukuoka-live-ledger.json -> PASS",
+          "python3 scripts/verify-live-dashboard-read-model.py -> PASS",
+          "python3 scripts/verify-fukuoka-dashboard.py -> PASS"
+        ],
+        "regression_evidence": [
+          "travel-finance-dashboard C1 5af3c94 is on origin/main with parity 0/0",
+          "harness-mc C2 b4d01bc is on origin/main with parity 0/0",
+          "node scripts/validate-tasks.mjs --changed-only --project travel-finance-dashboard -> 0 issue(s)",
+          "node scripts/verify-sync-event-queue.mjs and node scripts/verify-apply-task-events.mjs -> PASS"
+        ],
+        "verifier_refs": [
+          "$COLLAB/travel-finance-dashboard/scripts/verify-fukuoka-a01-a30.py",
+          "$COLLAB/travel-finance-dashboard/scripts/verify-live-dashboard-read-model.py",
+          "$COLLAB/travel-finance-dashboard/scripts/verify-fukuoka-dashboard.py",
+          "$COLLAB/harness-mc/milestones/travel-finance-dashboard/tasks.json"
+        ],
+        "runtime_evidence": [
+          "verify-fukuoka-dashboard.py controlled runtime -> TWD/JPY button switching, settled row, hidden empty surfaces and collapsed advanced checks pass",
+          "static boundary scan -> no fetch/localStorage/notion_request/transfer execution"
+        ],
+        "fixture_runtime_boundary": "本次完成範圍是福岡 live ledger/read-model 與 static read-only dashboard；不宣稱 Notion 手機快記、外幣換算、大阪歷史驗證、Excel／報告輸出 SOP 或任何轉帳執行。"
+      },
       "test_contract": {
         "applicability": "required",
         "behavior_cases": [
@@ -907,7 +937,12 @@
         ],
         "runtime_evidence_required": true,
         "planned_evidence_location": "$COLLAB/harness-mc/milestones/travel-finance-dashboard/tasks.json#p3-live-dashboard-and-fund-cashflow.test_contract.evidence_refs",
-        "evidence_refs": []
+        "evidence_refs": [
+          "$COLLAB/travel-finance-dashboard/scripts/verify-fukuoka-a01-a30.py",
+          "$COLLAB/travel-finance-dashboard/data/fukuoka-dashboard-read-model.json",
+          "Product C1 5af3c94 on travel-finance-dashboard/origin/main",
+          "C2 b4d01bc on harness-mc/origin/main"
+        ]
       },
       "goal_alignment": {
         "project_id": "travel-finance-dashboard",
@@ -1024,9 +1059,21 @@
               }
             }
           }
+          ,{
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "Vincent clarified that Notion 手機 10 秒快記、外幣換算、大阪歷史驗證、Excel／報告輸出與 SOP are explicit non-goals, not unmet acceptance criteria. The in-scope dashboard correction is delivered and A01–A30 pass.",
+            "evidence_refs": [
+              "$COLLAB/travel-finance-dashboard/scripts/verify-fukuoka-a01-a30.py",
+              "$COLLAB/harness-mc/milestones/travel-finance-dashboard/tasks.json#p3-live-dashboard-and-fund-cashflow.completion_evidence",
+              "Vincent 2026-08-03: 排除項目不阻擋 task completion"
+            ],
+            "recorded_at": "2026-08-03"
+          }
         ]
       },
-      "note": "2026-07-19: Vincent confirmed the reusable scope and task id. Initial live correction covers two JPY fund receipts; FX remains out of scope until explicitly confirmed."
+      "note": "完成範圍：已結清條件、福岡 live ledger/read-model、基金淨額與消費統計、A01–A30、static read-only dashboard。非本 task 目標：Notion 手機 10 秒快記、外幣換算、大阪歷史驗證、Excel／報告輸出與 SOP、任何轉帳執行。"
     }
   ]
 }

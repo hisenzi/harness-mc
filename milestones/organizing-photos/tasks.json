@@ -1,0 +1,268 @@
+{
+  "project": "organizing-photos",
+  "source_policy": "MC project.json and root tasks.json are canonical. Work-package subdirectories hold execution evidence only. Original photos remain in the external source workspace and never enter Git.",
+  "tasks": [
+    {
+      "id": "fukuoka-travel-photo-organize-v1",
+      "order_label": "PHOTO-01",
+      "title": "整理福岡旅遊照片並建立社群與攝影作品精選",
+      "status": "in_progress",
+      "track": "organize",
+      "priority": "P1",
+      "task_kind": "organize",
+      "depends_on": [],
+      "work_package_ref": "$COLLAB/harness-mc/milestones/organizing-photos/260712_16_福岡旅遊",
+      "source_ref": "$COLLAB/CC本機協作_無Git/01_照片整理區/260712_16_福岡旅遊",
+      "open_stage_boundary": "開案只建立 project、task 與工作包文件；不移動、不改名、不複製原照片。照片異動必須在來源 manifest 與 dry-run 對照通過後，於外部來源工作區內執行。",
+      "done_condition": "582 個來源照片依日期／行程完成分類與可追溯改名，FB 精選與攝影作品精選完成，淘汰候選只移入 _審核後刪除，A01 至 A10 全部通過，整理完成報告列出各類數量、例外與 residual。",
+      "acceptance": [
+        "582 個來源檔案都有唯一歸檔決策、可追溯名稱及內容完整性證據。",
+        "FB 精選為 40–60 張；攝影作品精選為 12–18 張且每張評分至少 82。",
+        "淘汰候選只移入 _審核後刪除，永久刪除數為 0。",
+        "organizing-photos 維持唯一 task truth，照片原檔不進 Git。"
+      ],
+      "acceptance_matrix": [
+        {
+          "id": "A01",
+          "what": "凍結整理前的來源基準。",
+          "preconditions": [
+            "來源工作區可讀",
+            "開案期間沒有其他 session 異動來源"
+          ],
+          "steps": [
+            "掃描來源工作區並排除 .DS_Store",
+            "記錄每個來源的相對路徑、格式、位元組與 SHA-256",
+            "聚合各格式數量"
+          ],
+          "pass_condition": "manifest 恰有 582 個唯一來源；JPG 574、MOV 2、PNG 6。",
+          "fail_condition": "來源總數、格式數量或唯一性與基準不符。",
+          "verification": [
+            "來源檔案 manifest 唯一性檢查",
+            "manifest 格式聚合計數"
+          ]
+        },
+        {
+          "id": "A02",
+          "what": "全部來源均完成視覺審閱與一個歸檔決策。",
+          "preconditions": [
+            "A01 manifest 已凍結",
+            "全部來源可產生縮圖或可讀預覽"
+          ],
+          "steps": [
+            "逐批審閱全部來源",
+            "對精選、淘汰與不明候選開啟較大尺寸複核",
+            "記錄日期、行程、保留狀態與精選判斷"
+          ],
+          "pass_condition": "582 個來源皆有一筆審閱紀錄與唯一歸檔決策。",
+          "fail_condition": "任一來源缺少審閱紀錄、具有重複決策或無法追到 manifest。",
+          "verification": [
+            "manifest 與照片審閱結果 CSV 一對一比對",
+            "候選照片視覺複核"
+          ]
+        },
+        {
+          "id": "A03",
+          "what": "來源依日期與行程可靠分類，不猜測不明場景。",
+          "preconditions": [
+            "A02 審閱結果存在",
+            "日期、時間、行程或畫面至少提供一項可靠證據"
+          ],
+          "steps": [
+            "依日期、時間、行程與畫面判斷目的地",
+            "可靠來源分入五日行程資料夾",
+            "無法可靠判斷者分入 90_待辨識"
+          ],
+          "pass_condition": "可判斷來源進入正確五日行程；不可靠來源只進 90_待辨識。",
+          "fail_condition": "缺乏證據仍猜測日期／場景，或同一來源分入多個歸檔目的地。",
+          "verification": [
+            "審閱結果與 dry-run 目的地規則檢查",
+            "人工抽查與不明來源全量複核"
+          ]
+        },
+        {
+          "id": "A04",
+          "what": "新檔名唯一且可回溯原始來源。",
+          "preconditions": [
+            "A03 的唯一目的地已確定",
+            "來源拍攝順序可用"
+          ],
+          "steps": [
+            "依 YYMMDD_Dn_場景_流水號_IMG原編號.ext 產生名稱",
+            "建立舊路徑與新路徑對照",
+            "執行名稱碰撞與覆寫檢查"
+          ],
+          "pass_condition": "582 筆新檔名皆唯一、保留原始 IMG 編號且目的地不覆寫既有檔案。",
+          "fail_condition": "名稱碰撞、覆寫、缺少對照或任一新名稱無法回溯。",
+          "verification": [
+            "dry-run 對照唯一性檢查",
+            "目的地存在性與覆寫檢查"
+          ]
+        },
+        {
+          "id": "A05",
+          "what": "移動與改名不改變來源內容。",
+          "preconditions": [
+            "A01 已保存來源 SHA-256",
+            "A04 dry-run 已通過"
+          ],
+          "steps": [
+            "套用已驗證的路徑對照",
+            "重新計算整理後來源 SHA-256",
+            "逐筆比對整理前後雜湊與檔案大小"
+          ],
+          "pass_condition": "582 個來源雜湊一對一完全相同，且零位元檔案為 0。",
+          "fail_condition": "任一雜湊遺失、不符、檔案損壞或出現零位元檔案。",
+          "verification": [
+            "整理前後 hash manifest 全量比對",
+            "零位元檔案掃描"
+          ]
+        },
+        {
+          "id": "A06",
+          "what": "淘汰候選維持可回復的安全邊界。",
+          "preconditions": [
+            "A02 已記錄淘汰原因",
+            "既有 _審核後刪除 目錄可用"
+          ],
+          "steps": [
+            "把淘汰候選移入 _審核後刪除",
+            "核對每個淘汰來源的原因與對照",
+            "審查執行命令未包含永久刪除"
+          ],
+          "pass_condition": "淘汰候選全部只移入 _審核後刪除、每張有原因，永久刪除數為 0。",
+          "fail_condition": "使用永久刪除、淘汰來源無紀錄或來源內容無法回溯。",
+          "verification": [
+            "_審核後刪除 目錄計數",
+            "審閱結果 CSV 與命令審查"
+          ]
+        },
+        {
+          "id": "A07",
+          "what": "FB 精選能以五日旅程敘事直接發布。",
+          "preconditions": [
+            "A02 已標記 FB 候選",
+            "入選來源是保留來源"
+          ],
+          "steps": [
+            "依五日故事順序選取人物、食物、景點、細節、移動與收尾",
+            "近似場景通常只保留最強一張",
+            "複製並以 FB_001 起連號"
+          ],
+          "pass_condition": "80_FB精選 有 40–60 張、連號、來源可追溯且沒有過量近似重複。",
+          "fail_condition": "數量越界、連號中斷、來源不存在或近似重複明顯破壞敘事。",
+          "verification": [
+            "FB 精選 manifest 與連號檢查",
+            "全量視覺複核"
+          ]
+        },
+        {
+          "id": "A08",
+          "what": "攝影作品精選符合一致的作品評選規範。",
+          "preconditions": [
+            "A02 已標記攝影候選",
+            "評分欄位含構圖、光線色彩、瞬間故事、個人觀點與技術品質"
+          ],
+          "steps": [
+            "依 25、20、20、20、15 權重評分",
+            "候選至少 75 分並以 82 分作正式入選門檻",
+            "選出 12–18 張並記錄簡短理由"
+          ],
+          "pass_condition": "81_攝影作品精選 有 12–18 張；每張總分至少 82、理由完整且來源可追溯。",
+          "fail_condition": "低於門檻、缺少理由、加總錯誤或來源不存在。",
+          "verification": [
+            "評分欄位重算",
+            "全量作品視覺複核"
+          ]
+        },
+        {
+          "id": "A09",
+          "what": "來源總帳無遺漏、重複或根目錄殘留。",
+          "preconditions": [
+            "A05 與 A06 已完成",
+            "所有來源歸檔目的地可讀"
+          ],
+          "steps": [
+            "掃描五日行程、90_待辨識與 _審核後刪除",
+            "核對每個 manifest 來源只有一個歸檔路徑",
+            "掃描根目錄舊來源殘留"
+          ],
+          "pass_condition": "五日行程加待辨識加淘汰合計恰為 582，且根目錄舊來源殘留為 0。",
+          "fail_condition": "來源遺漏、重複歸檔、未列入對照或根目錄仍有舊來源。",
+          "verification": [
+            "全量路徑盤點",
+            "manifest 與新舊路徑對照集合比對"
+          ]
+        },
+        {
+          "id": "A10",
+          "what": "統一專案邊界、工作包命名與結案證據可讀。",
+          "preconditions": [
+            "organizing-photos project 與根層 tasks.json 存在",
+            "本次工作包與整理完成報告存在"
+          ],
+          "steps": [
+            "讀取 project、task、工作包與完成報告",
+            "檢查工作包名稱與根層單一 task truth",
+            "檢查 Git 範圍不含照片／影片二進位原檔"
+          ],
+          "pass_condition": "organizing-photos 是唯一 MC project；工作包精確為 260712_16_福岡旅遊；報告列出各類數量、例外與 residual，且照片不進 Git。",
+          "fail_condition": "工作包形成第二 task truth、照片進 Git、命名不合規、報告缺數或 task 過早 completed。",
+          "verification": [
+            "project、task、工作包與報告 read-back",
+            "task validator 與隔離環境 MC data build",
+            "Git 檔案類型與範圍檢查"
+          ]
+        }
+      ],
+      "goal_alignment": {
+        "project_id": "organizing-photos",
+        "goal_ref": "$COLLAB/harness-mc/milestones/organizing-photos/project.json#/goals",
+        "goal_fingerprint": "sha256:4d5ff5748ae5a6809391299deddfa8a27424ce8e07c84e1c081a214744a8bd43",
+        "contribution": "以第一個福岡工作包驗證單一照片整理 project、統一命名、外部照片所有權與可追溯驗收流程。",
+        "evidence_plan": [
+          "$COLLAB/harness-mc/milestones/organizing-photos/260712_16_福岡旅遊/執行計畫.md",
+          "來源檔案manifest.csv、照片審閱結果.csv 與新舊檔名對照.csv",
+          "整理完成報告.md 與 A01 至 A10 exact results"
+        ],
+        "reviewed_at": "2026-08-03"
+      },
+      "hc_decision": {
+        "task_scope": "organizing-photos/fukuoka-travel-photo-organize-v1",
+        "hc_refs": [
+          "#rightProblem"
+        ],
+        "hc_reasoning": "真正要解的是照片整理專案散落，而不是改變照片存放所有權；因此採單一 organizing-photos task truth，各次旅程只建立工作包，原照片仍由外部照片工作區持有。",
+        "hc_confidence": 0.96,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/organizing-photos/project.json",
+          "$COLLAB/harness-mc/milestones/organizing-photos/tasks.json#fukuoka-travel-photo-organize-v1",
+          "$COLLAB/harness-mc/milestones/organizing-photos/260712_16_福岡旅遊/執行計畫.md"
+        ],
+        "source_boundary": "HC 只作思考檢查，不是狀態正本；project.json、根層 tasks.json、工作包與後續 manifest 才是 source of truth。"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 於 2026-08-03 核准修訂計畫並要求先開案；本事件只建立 project、task 與工作包，不異動原照片。",
+            "evidence_refs": [
+              "user approval 2026-08-03: 計畫核准，先開案",
+              "$COLLAB/harness-mc/milestones/organizing-photos/project.json",
+              "$COLLAB/harness-mc/milestones/organizing-photos/260712_16_福岡旅遊/執行計畫.md"
+            ],
+            "recorded_at": "2026-08-03"
+          }
+        ]
+      },
+      "note": "無固定 due。開案完成後 task 保持 in_progress；只有 A01 至 A10 全部通過並產生整理完成報告，才可進入 completed。"
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "name": "整理照片",
+  "description": "統一管理照片整理工作包、任務、選片規則與可追溯紀錄；原照片由外部照片工作區持有，不進 Git。",
+  "type": "internal",
+  "status": "active",
+  "priority": "medium",
+  "created": "2026-08-03",
+  "estimated_completion": null,
+  "tracks": {
+    "intake": "來源盤點與工作包定義",
+    "organize": "日期／行程分類、可追溯改名與安全淘汰",
+    "select": "社群分享與攝影作品精選",
+    "verify": "完整性、來源追溯與結案報告"
+  },
+  "goals": [
+    "所有整理照片工作統一掛在 organizing-photos，避免 milestones 根目錄持續新增照片整理專案。",
+    "多日工作包使用 YYMMDD_DD_location，第二個 DD 是旅程結束日；單日工作包使用 YYMMDD_location。",
+    "原照片不進 Git；工作包只保存計畫、manifest、審閱、路徑對照與完成報告。",
+    "每次照片整理都有唯一 task、可機械驗證的驗收矩陣與可追溯完成證據。"
+  ],
+  "risks": [
+    {
+      "risk": "原照片或精選複本誤放進 harness-mc",
+      "impact": "high",
+      "probability": "low",
+      "mitigation": "專案只保存文字與表格紀錄；照片異動限定在 task 指定的外部來源工作區。"
+    },
+    {
+      "risk": "工作包子目錄形成第二份 task truth",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "所有 task 狀態只寫入專案根層 tasks.json；工作包只保存該次執行證據。"
+    },
+    {
+      "risk": "共享 dirty repo 的其他 session 狀態被納入本案",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "本案可寫範圍固定為 milestones/organizing-photos/**，不 stage、reset、stash 或改寫其他路徑。"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "單一專案正本",
+      "verification": "MC 可由專案根層 project.json 與 tasks.json 讀取 organizing-photos；工作包不含另一份 tasks.json。"
+    },
+    {
+      "criterion": "一致工作包命名",
+      "verification": "多日符合 YYMMDD_DD_location；單日符合 YYMMDD_location。"
+    },
+    {
+      "criterion": "來源所有權邊界",
+      "verification": "Git 專案內沒有 JPG、PNG、MOV 或其他照片／影片原檔；task 以 source_ref 指向外部工作區。"
+    },
+    {
+      "criterion": "每案可追溯結案",
+      "verification": "每張 task 有 done_condition、acceptance_matrix、生命週期紀錄及對應工作包完成報告。"
+    }
+  ],
+  "decisions": [
+    {
+      "date": "2026-08-03",
+      "decision": "以 organizing-photos 作為所有照片整理工作的唯一 milestone project。",
+      "reason": "避免每次整理都在 milestones 根目錄新增專案；根層 tasks.json 維持單一狀態正本。",
+      "alternatives_rejected": [
+        "每次旅程各開一個 milestone project",
+        "把任務狀態分散到各工作包子目錄"
+      ]
+    },
+    {
+      "date": "2026-08-03",
+      "decision": "多日工作包命名為 YYMMDD_DD_location，單日省略第二個 DD。",
+      "reason": "第二個 DD 明確表示旅程結束日，同時避免單日名稱冗餘。"
+    },
+    {
+      "date": "2026-08-03",
+      "decision": "原照片由外部照片工作區持有，開案不移動、不改名、不複製照片。",
+      "reason": "本專案負責流程與證據，不把大量二進位照片納入 Git 或在尚未完成 dry-run 前異動來源。"
+    },
+    {
+      "date": "2026-08-03",
+      "decision": "專案與 task 不設定固定期限。",
+      "reason": "Vincent 明確表示無 due 需求，因此不建立日期 placeholder。"
+    }
+  ]
+}

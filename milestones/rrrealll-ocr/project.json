@@ -46,10 +46,10 @@
         "mitigation": "本週僅驗收洗髮精；食品與個人化權重列為後續，不納入本期交付。"
       },
       {
-        "risk": "Zeabur runtime、Neon 連線與 Zeabur Object Storage private bucket 尚未完成整體 production probe，且 signed URL、purge 與密鑰邊界未經 live 驗證。",
+        "risk": "Zeabur runtime、Neon 連線與 Cloudflare R2 private bucket 尚未完成整體 production probe，且 signed URL、purge 與密鑰邊界未經 live 驗證。",
         "impact": "high",
         "probability": "medium",
-        "mitigation": "固定 MVP 為 Zeabur web + API service、Neon PostgreSQL 與 Zeabur Object Storage private bucket；發布前驗證匿名存取拒絕、5 分鐘 signed URL、rate limit、各狀態 purge 與 secret isolation。"
+        "mitigation": "固定 MVP 為 Zeabur web + API service、Neon PostgreSQL 與 Cloudflare R2 private bucket；發布前驗證匿名存取拒絕、5 分鐘 signed URL、rate limit、各狀態 purge 與 secret isolation。"
       }
     ],
     "success_criteria": [
@@ -114,10 +114,11 @@
       },
       {
         "topic": "MVP runtime 與影像儲存",
-        "decision": "Zeabur／Linode Tokyo 承載單一 consumer web + API service 與 server-side OCR；Neon PostgreSQL 是唯一 canonical database，Zeabur Object Storage private bucket 保存全部 image evidence；不用 Zeabur Volume 或公開 URL 作資料層。",
+        "decision": "Zeabur／Linode Tokyo 承載單一 consumer web + API service 與 server-side OCR；Neon PostgreSQL 是唯一 canonical database，Cloudflare R2 private bucket 保存全部 image evidence；不用 Zeabur Volume、R2.dev 公開 URL 或其他公開 URL 作資料層。",
         "reason": "把運算、canonical data 與 private evidence 分成單一明確責任，並以 server boundary、短期 signed URL 與 retention worker 保持可部署及可稽核。",
         "alternatives_rejected": [
           "Zeabur Volume 存使用者影像：不適合作為私有證據與保留治理資料庫。",
+          "Zeabur Object Storage：目前正式服務未提供可用的原生模板，本期 private evidence provider 已由 Vincent 選定 Cloudflare R2。",
           "自架 PostgreSQL：增加維運與資料持久性風險。",
           "公開 object URL：違反 private evidence 契約。"
         ],

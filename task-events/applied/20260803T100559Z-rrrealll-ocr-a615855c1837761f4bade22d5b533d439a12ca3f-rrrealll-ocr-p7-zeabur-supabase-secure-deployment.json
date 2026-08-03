@@ -1,0 +1,13 @@
+{
+  "event_id": "rro-08-formal-mvp-accepted",
+  "type": "task.completed",
+  "repo": "rrrealll-ocr",
+  "commit": "a615855c1837761f4bade22d5b533d439a12ca3f",
+  "project": "rrrealll-ocr",
+  "task_id": "p7-zeabur-supabase-secure-deployment",
+  "status": "completed",
+  "summary": "RRO-08 formal MVP acceptance A01-A05 passed with live Zeabur, Neon, private R2, signed URL, purge, rate-limit and rollback receipts.",
+  "created_at": "2026-08-03T10:05:59.045Z",
+  "actor": "codex",
+  "session_id": "019fc2df-994f-7983-81b8-7bfa044fcedb"
+}

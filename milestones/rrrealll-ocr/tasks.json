@@ -277,7 +277,7 @@
       "title": "確立正式產品架構、全量 private scan 與產品護照契約",
       "status": "completed",
       "completed_at": "2026-07-23",
-      "summary": "MVP 已固定為 Zeabur／Linode Tokyo 單一 web + API service、Neon PostgreSQL、Zeabur Object Storage private bucket 與 Google Cloud Vision server-side OCR；每次輸入建立 private scan record，成功分析進 Judge queue，只有 approved 資料可提升為產品護照。",
+      "summary": "MVP 已固定為 Zeabur／Linode Tokyo 單一 web + API service、Neon PostgreSQL、Cloudflare R2 private bucket 與 Google Cloud Vision server-side OCR；每次輸入建立 private scan record，成功分析進 Judge queue，只有 approved 資料可提升為產品護照。",
       "track": "product",
       "order_label": "RRO-03",
       "priority": "P0",
@@ -290,8 +290,20 @@
         "A01｜相機、上傳與貼上每次輸入都先建立 private scan record；前台不提供 scan history，成功分析一律進 pending_review。",
         "A02｜架構圖將 inci_core、inci_alias、shampoo_rules 定義為 canonical；OCR／alias 未知項只能進 candidate／judge queue，不能直接回寫。",
         "A03｜產品護照包含 market_product、formula version、formula ingredient、private scan evidence、analysis version 與 Judge decision，且 product identity 僅為 brand_name + product_name。",
-        "A04｜部署與資料決策明列 Zeabur／Linode Tokyo、Neon PostgreSQL、Zeabur Object Storage private bucket 與 Google Cloud Vision server-side OCR；不使用 Zeabur Volume、自架資料庫或公開 evidence URL。"
+        "A04｜部署與資料決策明列 Zeabur／Linode Tokyo、Neon PostgreSQL、Cloudflare R2 private bucket 與 Google Cloud Vision server-side OCR；不使用 Zeabur Volume、自架資料庫、R2.dev 或公開 evidence URL。"
       ],
+      "goal_alignment": {
+        "project_id": "rrrealll-ocr",
+        "goal_ref": "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json#/goals",
+        "goal_fingerprint": "sha256:8fb101771c64a805aa9db57d9b269b568f3822d7bb30fdb8de9587cb2d700953",
+        "contribution": "將正式 MVP 的運算、canonical database、private evidence 與 Judge gate 固定為可部署、可稽核且不暴露使用者影像的單一架構契約；本次 amend 只替換 private evidence provider 為 Cloudflare R2。",
+        "evidence_plan": [
+          "$COLLAB/rrrealll-ocr/ARCHITECTURE.md",
+          "$COLLAB/rrrealll-ocr/MVP_RELEASE_GOVERNANCE.md",
+          "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json#/definition_of_done"
+        ],
+        "reviewed_at": "2026-08-03"
+      },
       "jv32_route": {
         "workflows": ["task-lifecycle", "implement", "code-review", "closeout-commit-routing"],
         "decision_input": [
@@ -338,6 +350,18 @@
               "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p3-supabase-canonical-data-and-passport-schema"
             ],
             "recorded_at": "2026-07-30"
+          },
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "Vincent 正式選定 Cloudflare R2 作為 private image evidence provider；Zeabur 仍承載 consumer web + API runtime，Neon 仍為唯一 canonical database，且 R2.dev／公開 URL 維持禁用。",
+            "evidence_refs": [
+              "$COLLAB/rrrealll-ocr/ARCHITECTURE.md",
+              "$COLLAB/rrrealll-ocr/MVP_RELEASE_GOVERNANCE.md",
+              "Vincent 2026-08-03 current Codex task: 正式 storage 改用 Cloudflare R2"
+            ],
+            "recorded_at": "2026-08-03"
           }
         ]
       },
@@ -707,7 +731,9 @@
     {
       "id": "p6-opt-in-product-passport-and-judge-queue",
       "title": "建立 Judge queue、產品護照 promotion 與審核後台",
-      "status": "todo",
+      "status": "completed",
+      "completed_at": "2026-08-03",
+      "summary": "正式 MVP 已建立全量 private scan、pending_review Judge queue、四種可追溯 decision、approved-only promotion 與只發布 approved current formula 的產品護照。",
       "track": "data",
       "order_label": "RRO-07",
       "priority": "P0",
@@ -718,13 +744,147 @@
       "done_condition": "所有成功分析都進 pending_review；審核者可作出指定 Judge decision、建立或合併產品護照、選擇 formula version、處理 candidate 並保留 provenance，只有 approved 可 promotion。",
       "acceptance": [
         "A01｜每次輸入都建立 private scan record；成功分析自動進 pending_review，consumer 前台不提供 scan history 或是否提交的選項。",
-        "A02｜全部 image evidence 存 Zeabur Object Storage private bucket，不使用公開 URL；只有 approved transaction 可將必要標準化配方提升至 market product passport。",
+        "A02｜RRO-07 只驗證 server-side evidence storage contract 與 approved-only promotion；Cloudflare R2 private bucket、匿名拒絕與 signed URL 的 live evidence 一律由 RRO-08 驗收，不得以 mock 宣告完成。",
         "A03｜審核者只能作出 approved／rejected／duplicate／unresolved；每次決策含 actor、時間、reason、rule／seed version 與來源 scan。",
         "A04｜同品牌＋產品名以 formula_fingerprint 判斷相同或新配方版本；不以容量、條碼、銷售地區拆分身份。",
         "A05｜前台可見 formula version 僅由已審核、指定 current 的產品護照資料提供。"
       ],
+      "acceptance_matrix": [
+        {
+          "id": "A01",
+          "verify": "成功分析的 Judge queue 入口",
+          "precondition": "可重跑的成功 paste、upload、camera analysis fixtures 與 consumer route inventory",
+          "steps": "依序提交三種 fixture，讀取 server-side scan 與 analysis 狀態，再檢查 consumer navigation",
+          "pass": "三次皆建立 private scan record 並進 pending_review；consumer 沒有 history 或提交選項",
+          "fail": "任一次未建 record、未進 pending_review，或 consumer 可回看／選擇不提交",
+          "evidence": "integration tests、database query、consumer route/component assertions"
+        },
+        {
+          "id": "A02",
+          "verify": "evidence storage contract 與 approved-only promotion 邊界",
+          "precondition": "server-side storage port、未審核 scan、approved Judge transaction 與 product-passport fixtures",
+          "steps": "確認 browser payload 不含 object key／URL；分別以未審核與 approved transaction 嘗試 promotion",
+          "pass": "evidence key 只由 server 產生；未審核 promotion 被拒；approved transaction 才能建立或更新 passport；private bucket live probe 明確留給 RRO-08",
+          "fail": "browser 指定 evidence 位置、未審核可 promotion，或以 mock bucket 宣稱 RRO-08 runtime 已完成",
+          "evidence": "HTTP/integration tests、promotion transaction tests、server-side contract scan；RRO-08 live probe reference"
+        },
+        {
+          "id": "A03",
+          "verify": "Judge decision 與 provenance",
+          "precondition": "pending_review scan fixture 與受控 reviewer identity fixture",
+          "steps": "分別提交 approved、rejected、duplicate、unresolved decision，讀取 audit record",
+          "pass": "只接受四種 decision，且每筆都有 actor、timestamp、reason、rule/seed version 與 source scan",
+          "fail": "接受其他 decision 或缺少任一 provenance 欄位",
+          "evidence": "schema constraints、service tests、database audit query"
+        },
+        {
+          "id": "A04",
+          "verify": "產品 identity 與 formula version",
+          "precondition": "同品牌同產品的相同／不同 formula_fingerprint fixtures，且容量、條碼、銷售地區不同",
+          "steps": "執行 promotion 與 merge，讀取 product 與 formula records",
+          "pass": "brand_name + product_name 定義產品 identity；formula_fingerprint 決定同一或新版本；容量、條碼、銷售地區不建立新 identity",
+          "fail": "以容量、條碼或銷售地區拆分 identity，或覆寫既有 formula provenance",
+          "evidence": "promotion service tests、unique constraint/query assertions"
+        },
+        {
+          "id": "A05",
+          "verify": "consumer product passport 發布範圍",
+          "precondition": "approved current、approved non-current 與未審核 passport fixtures",
+          "steps": "讀取 consumer-facing passport API/route 回應",
+          "pass": "僅回傳 approved 且 current 的 formula version；未審核或非 current 資料不會曝光",
+          "fail": "consumer 可讀到未審核、非 current 或 raw scan 資料",
+          "evidence": "API authorization tests、route assertions、response schema checks"
+        }
+      ],
+      "goal_alignment": {
+        "project_id": "rrrealll-ocr",
+        "goal_ref": "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json#/goals",
+        "goal_fingerprint": "sha256:8fb101771c64a805aa9db57d9b269b568f3822d7bb30fdb8de9587cb2d700953",
+        "contribution": "把 private scan、Judge provenance、approved-only promotion 與產品身份的正式 MVP 邊界，轉成可重跑且不得由 mock 取代的 RRO-07 驗收契約。",
+        "evidence_plan": [
+          "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p6-opt-in-product-passport-and-judge-queue.acceptance_matrix",
+          "RRO-07 integration tests、promotion transaction tests 與 server-side storage contract scan"
+        ],
+        "reviewed_at": "2026-08-02"
+      },
+      "commits": [
+        "4f103dffd7fbc3fc27c5e256975e9be3005491fc",
+        "31d3a49a6a912401503ab551adb55f46f2af5902",
+        "e67aa1bbbf8ee9f4ac36d0122ebb3ba8a2f8f882",
+        "a615855c1837761f4bade22d5b533d439a12ca3f"
+      ],
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "paste、upload、camera 成功分析都建立 private scan 並進 pending_review，consumer 不提供 scan history。",
+          "Judge 只接受 approved、rejected、duplicate、unresolved，且每筆決策保留 actor、timestamp、reason、rule/seed version 與 source scan。",
+          "未審核或仍有 unresolved token 的 scan 不得 promotion；只有 approved transaction 可建立 current product passport。",
+          "產品 identity 只由 brand_name + product_name 定義，formula_fingerprint 與 canonical 成分順序決定配方版本。"
+        ],
+        "test_level": [
+          "service_http_integration",
+          "postgres_transaction",
+          "production_database_receipt",
+          "public_passport_api"
+        ],
+        "red_command": "npm test",
+        "expected_red_reason": "promotion gate 的 RED cases 會拒絕未審核、未知或缺少 provenance 的決策，不允許污染產品護照。",
+        "green_command": "npm test",
+        "full_regression_commands": [
+          "npm test",
+          "npm run build:web",
+          "npm run verify:neon"
+        ],
+        "fixture_refs": [
+          "$COLLAB/rrrealll-ocr/test/analysis/judge-service.test.mjs",
+          "$COLLAB/rrrealll-ocr/test/analysis/postgres-repository.test.mjs",
+          "$COLLAB/rrrealll-ocr/test/analysis/http-api.test.mjs"
+        ],
+        "runtime_evidence_required": false,
+        "evidence_refs": [
+          "Product C1 4f103dffd7fbc3fc27c5e256975e9be3005491fc through a615855c1837761f4bade22d5b533d439a12ca3f on rrrealll-ocr/origin/main; parity 0/0 verified 2026-08-03",
+          "Approved passport 13fa0cf0-bd2a-4e36-93f5-8758fe287743 and formula fingerprint formula-sha256:ddc5482c9ab2630d410a08c9aadd4b0fa16da2c4a5a5552d19a712c8871a668f",
+          "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p6-opt-in-product-passport-and-judge-queue.acceptance_matrix"
+        ]
+      },
+      "completion_evidence": {
+        "red_evidence": [
+          "Automated RED cases reject promotion before approval, promotion with unresolved unknown tokens, invalid Judge decisions and duplicate decisions without provenance."
+        ],
+        "green_evidence": [
+          "npm test -> 69/69 PASS on product commit a615855c1837761f4bade22d5b533d439a12ca3f",
+          "Live approved Judge decision published passport 13fa0cf0-bd2a-4e36-93f5-8758fe287743; public GET returned HTTP 200 with approved/current formula and four canonical ingredients in order."
+        ],
+        "regression_evidence": [
+          "Three live success scans were pending_review: paste 9c48efdb-b9cf-42c2-8544-11e5fd714710, upload a8b8e27c-c542-4ba3-b655-f77607725370, camera df388ad9-7872-4e91-97b2-6706913b21bf.",
+          "Anonymous Judge request returned HTTP 401; authorized approved and rejected decisions were persisted with provenance.",
+          "Public passport API returned only reviewState=approved and formulaVersion.isCurrent=true; raw scans are not exposed."
+        ],
+        "verifier_refs": [
+          "$COLLAB/rrrealll-ocr/test/analysis/judge-service.test.mjs",
+          "$COLLAB/rrrealll-ocr/test/analysis/postgres-repository.test.mjs",
+          "$COLLAB/rrrealll-ocr/test/analysis/http-api.test.mjs",
+          "GET https://rrrealll-ocr-mvp.zeabur.app/api/v1/passports/13fa0cf0-bd2a-4e36-93f5-8758fe287743"
+        ],
+        "fixture_runtime_boundary": "Automated fixtures prove all four decisions, provenance constraints, identity and publication guards; live production receipts additionally prove three pending_review scans, authorized promotion and the approved/current public passport. Private R2 and signed-URL runtime truth is owned by RRO-08."
+      },
+      "acceptance_receipt": {
+        "matrix_ref": "milestones/rrrealll-ocr/tasks.json#p6-opt-in-product-passport-and-judge-queue.acceptance_matrix",
+        "matrix_fingerprint": "sha256:57ae5826ca716a7380994d5b99ffd4e6a4ce66c2405903883bec6ad2c6ef5b1a",
+        "required_ids": ["A01", "A02", "A03", "A04", "A05"],
+        "results": [
+          {"id": "A01", "status": "pass"},
+          {"id": "A02", "status": "pass"},
+          {"id": "A03", "status": "pass"},
+          {"id": "A04", "status": "pass"},
+          {"id": "A05", "status": "pass"}
+        ],
+        "exact_id_coverage": true,
+        "all_passed": true,
+        "verified_at": "2026-08-03"
+      },
       "jv32_route": {
-        "workflows": ["task-lifecycle", "implement", "tdd", "code-review"],
+        "workflows": ["task-lifecycle", "implement", "tdd", "code-review", "verification-before-completion", "closeout-commit-routing"],
         "decision_input": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/rrrealll-ocr/or/meeting-260722.md"],
         "decision_output": "受全量 private scan、Judge queue 與 approved-only promotion 保護的市場配方研究資料流程。",
         "execution_boundary": "不得把 evidence image 變成公開資產、不得讓 raw scan／未核准 candidate 回寫 canonical 或產品護照、不得省略 Judge provenance。"
@@ -749,6 +909,39 @@
             "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p3-supabase-canonical-data-and-passport-schema"
           ],
           "recorded_at": "2026-07-30"
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "todo",
+          "reason": "正式 MVP 驗收改為可指紋化矩陣；RRO-07 僅驗證 Judge、promotion 與 server-side storage contract，private bucket、匿名拒絕與 signed URL 的 live runtime proof 明確由 RRO-08 負責，禁止用 mock 宣稱完成。",
+          "evidence_refs": [
+            "$COLLAB/rrrealll-ocr/ARCHITECTURE.md",
+            "$COLLAB/rrrealll-ocr/MVP_RELEASE_GOVERNANCE.md",
+            "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p7-zeabur-supabase-secure-deployment"
+          ],
+          "recorded_at": "2026-08-02"
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "todo",
+          "reason": "private evidence provider 依 Vincent 正式決策由 Zeabur Object Storage 改為 Cloudflare R2；RRO-07 仍只驗證 server-side storage contract 與 approved-only promotion，R2 live boundary 由 RRO-08 驗收。",
+          "evidence_refs": [
+            "$COLLAB/rrrealll-ocr/ARCHITECTURE.md",
+            "$COLLAB/rrrealll-ocr/MVP_RELEASE_GOVERNANCE.md",
+            "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json"
+          ],
+          "recorded_at": "2026-08-03"
+        }, {
+          "operation": "complete",
+          "from_status": "todo",
+          "to_status": "completed",
+          "reason": "RRO-07 A01-A05 exact acceptance gate 全數通過：三輸入皆建立 pending_review private scan；四種 Judge decision、完整 provenance、approved-only promotion、brand+product identity 與 approved current passport 均由 69 tests 與 production receipts 證明。",
+          "evidence_refs": [
+            "Product C1 a615855c1837761f4bade22d5b533d439a12ca3f on rrrealll-ocr/origin/main; 69/69 tests and 0/0 remote parity verified 2026-08-03",
+            "Acceptance receipt sha256:57ae5826ca716a7380994d5b99ffd4e6a4ce66c2405903883bec6ad2c6ef5b1a with A01-A05=pass",
+            "Public passport 13fa0cf0-bd2a-4e36-93f5-8758fe287743 returned approved current formula"
+          ],
+          "recorded_at": "2026-08-03"
         }]
       },
       "hc_decision": {
@@ -762,8 +955,10 @@
     },
     {
       "id": "p7-zeabur-supabase-secure-deployment",
-      "title": "部署 Zeabur runtime、Neon 與 private Object Storage",
-      "status": "todo",
+      "title": "部署 Zeabur runtime、Neon 與 Cloudflare R2 private storage",
+      "status": "completed",
+      "completed_at": "2026-08-03",
+      "summary": "正式 Zeabur service 已連線 Neon、Google Cloud Vision 與 private Cloudflare R2；server-only secret、5 分鐘 Judge signed URL、七狀態 retention/purge、失敗告警、rate limit、health 與 rollback/restore 均有 live evidence。",
       "track": "quality",
       "order_label": "RRO-08",
       "priority": "P0",
@@ -771,7 +966,7 @@
       "task_kind": "operate",
       "dependencies": ["p4-ocr-normalization-and-versioned-analysis-api", "p5-consumer-three-input-result-flow", "p6-opt-in-product-passport-and-judge-queue"],
       "depends_on": ["p4-ocr-normalization-and-versioned-analysis-api", "p5-consumer-three-input-result-flow", "p6-opt-in-product-passport-and-judge-queue"],
-      "done_condition": "Zeabur 上的獨立 consumer web + API service 已連到 Neon 與 Zeabur Object Storage private bucket，server-side secrets、signed URL、各狀態 retention／purge、rate limit 與 runtime health 均可驗證。",
+      "done_condition": "Zeabur 上的獨立 consumer web + API service 已連到 Neon 與 Cloudflare R2 private bucket，server-side secrets、signed URL、各狀態 retention／purge、rate limit 與 runtime health 均可驗證。",
       "acceptance": [
         "A01｜Zeabur runtime 只持有 server-side 環境變數；browser bundle、repo 與 log 不含 Neon、Object Storage 或 OCR provider secret。",
         "A02｜Neon canonical tables 只能由受控 server／migration 存取；private evidence bucket 的匿名 GET／list 被拒，Judge signed GET 僅限指定 object、5 分鐘有效且到期拒絕。",
@@ -779,6 +974,157 @@
         "A04｜processing、pending_review、approved、rejected、duplicate、unresolved、failed evidence 都有可重跑 purge job 與失敗告警；不使用 Zeabur Volume 當影像資料庫。",
         "A05｜production health probe、error handling、rate limit 與 rollback 方式已記錄並實測。"
       ],
+      "acceptance_matrix": [
+        {
+          "id": "A01",
+          "verify": "server-only secret boundary",
+          "precondition": "production deployment config 的安全 metadata、production browser bundle、repo secret scan 與 redacted runtime log sample",
+          "steps": "掃描 bundle/repo/log，並核對 runtime variables 僅由 server service 使用",
+          "pass": "browser bundle、repo、log 均無 Neon、Object Storage、OCR provider credential 或 destination value；服務可在 server-only variables 下啟動",
+          "fail": "任何 client bundle、tracked file 或 log 出現 secret／credential 值，或 browser 直接取得 runtime credential",
+          "evidence": "secret scan、bundle grep、deployment config review、health probe"
+        },
+        {
+          "id": "A02",
+          "verify": "Neon 與 private evidence bucket live boundary",
+          "precondition": "target Neon、Cloudflare R2 private bucket、指定 evidence object 與 Judge authorization fixture",
+          "steps": "驗證匿名 GET/list、非受控 table access、指定 object signed GET 與五分鐘後重試",
+          "pass": "匿名 GET/list 與非受控 access 被拒；Judge 僅能取得指定 object 的 signed URL；URL 在五分鐘後被拒",
+          "fail": "bucket 可匿名讀／列、canonical tables 直接對外開放、signed URL 不限 object 或不會到期",
+          "evidence": "live HTTP/storage probes、Neon role query、timestamped command output"
+        },
+        {
+          "id": "A03",
+          "verify": "scan artifact retention mapping",
+          "precondition": "image、text、OCR、normalization、analysis artifacts 各一筆，涵蓋所有 scan status",
+          "steps": "建立 fixture 後讀取 retention metadata、前台 routes 與 purge selection",
+          "pass": "每項 artifact 都依 status 納入 retention/purge；consumer 沒有 history route 或資料列出功能",
+          "fail": "artifact 缺少治理、consumer 可回看歷史，或以不受控 local volume 保存證據",
+          "evidence": "integration tests、database/storage metadata query、route scan"
+        },
+        {
+          "id": "A04",
+          "verify": "七狀態 purge 與失敗告警",
+          "precondition": "processing、pending_review、approved、rejected、duplicate、unresolved、failed fixtures 與可觀測告警 sink",
+          "steps": "重跑 purge job；再注入一筆受控刪除失敗並讀取告警",
+          "pass": "七種狀態皆依 policy 被正確選取／保留；job 可安全重跑；失敗有告警；證據未存於 Zeabur Volume",
+          "fail": "任一狀態漏管、重跑造成錯誤刪除、失敗無告警，或 Volume 被當影像資料庫",
+          "evidence": "purge job report、storage probe、alert record、idempotency test"
+        },
+        {
+          "id": "A05",
+          "verify": "production operability",
+          "precondition": "公開 runtime、health endpoint、受控 success/failure traffic 與已記錄 rollback procedure",
+          "steps": "執行 health probe、觸發可預期 error、驗證 rate limit，並演練可回復 rollback",
+          "pass": "health/error/rate-limit 結果可觀察；rollback 有實測紀錄且不破壞 canonical data 或 private evidence",
+          "fail": "health 無法判斷、error 洩漏內部資訊、rate limit 無效，或 rollback 無可重跑證據",
+          "evidence": "timestamped live probes、deployment log metadata、rollback receipt"
+        }
+      ],
+      "goal_alignment": {
+        "project_id": "rrrealll-ocr",
+        "goal_ref": "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json#/goals",
+        "goal_fingerprint": "sha256:8fb101771c64a805aa9db57d9b269b568f3822d7bb30fdb8de9587cb2d700953",
+        "contribution": "把 private evidence、server-only secret、七狀態 retention/purge 與公開 runtime 安全性轉成必須以 Zeabur、Neon 與 Object Storage live evidence 驗證的 RRO-08 契約。",
+        "evidence_plan": [
+          "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p7-zeabur-supabase-secure-deployment.acceptance_matrix",
+          "private bucket probes、target Neon role query、purge report、health/rate-limit/rollback receipt"
+        ],
+        "reviewed_at": "2026-08-02"
+      },
+      "commits": [
+        "4f103dffd7fbc3fc27c5e256975e9be3005491fc",
+        "31d3a49a6a912401503ab551adb55f46f2af5902",
+        "e67aa1bbbf8ee9f4ac36d0122ebb3ba8a2f8f882",
+        "c88b9d891cbd3a4036054481c4c6656bb52d7b8c",
+        "a615855c1837761f4bade22d5b533d439a12ca3f"
+      ],
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "browser bundle、tracked repo 與 runtime logs 不得包含 Neon、R2、Google Vision 或 Judge credential／destination value。",
+          "R2 匿名 GET/list 必須拒絕；授權 Judge signed GET 只限指定 object、可立即讀取且五分鐘後拒絕。",
+          "image/text、OCR、normalization、analysis artifacts 依七種 scan status 受 retention/purge 治理；consumer 無 history route。",
+          "health、generic error、rate limit、purge failure alert、rollback 與 restore 都必須在公開正式 runtime 可觀察。"
+        ],
+        "test_level": [
+          "security_boundary_scan",
+          "storage_live_probe",
+          "postgres_live_verifier",
+          "production_http_probe",
+          "rollback_rehearsal"
+        ],
+        "red_command": "npm test",
+        "expected_red_reason": "安全 RED cases 拒絕無效圖片、匿名 Judge、prefix 外 evidence key、錯誤 decision 與 provider failure；受控 purge delete failure 必須產生 PURGE_DELETE_FAILED 並以非零退出。",
+        "green_command": "npm test && npm run build:web",
+        "full_regression_commands": [
+          "npm test",
+          "npm run build:web",
+          "npm run verify:neon",
+          "npm run purge"
+        ],
+        "fixture_refs": [
+          "$COLLAB/rrrealll-ocr/test/analysis/http-api.test.mjs",
+          "$COLLAB/rrrealll-ocr/test/analysis/r2-evidence-store.test.mjs",
+          "$COLLAB/rrrealll-ocr/test/analysis/postgres-repository.test.mjs",
+          "$COLLAB/rrrealll-ocr/test/analysis/release-governance-migration.test.mjs"
+        ],
+        "runtime_evidence_required": true,
+        "evidence_refs": [
+          "Zeabur project 69ad17bebf3e464c4125ff23, service 6a701338fefeb46a883497aa, environment 69ad17bea2c1609bd1effd64",
+          "Restore deployment 6a7065aa9cd65e28a343b3cc on a615855c1837761f4bade22d5b533d439a12ca3f reached RUNNING 2026-08-03",
+          "Cloudflare R2 bucket rrrealll-ocr-evidence-prod with public access disabled",
+          "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p7-zeabur-supabase-secure-deployment.acceptance_matrix"
+        ]
+      },
+      "completion_evidence": {
+        "red_evidence": [
+          "Initial public upload returned HTTP 502 and direct Google provider probe returned HTTP 403 while Cloud Vision API was disabled; no sample or success fallback was emitted.",
+          "Controlled purge failure scan 00000000-0000-4000-8000-000000000809 produced PURGE_DELETE_FAILED, purge_failed alert, failed=1 and expected process exit 1 before safe recovery."
+        ],
+        "green_evidence": [
+          "After enabling Cloud Vision API on project 987515189707, direct provider probe returned HTTP 200 and live upload/camera analyses returned HTTP 200.",
+          "Public health returned HTTP 200 with database=ok and evidenceStore=ok on restore deployment 6a7065aa9cd65e28a343b3cc.",
+          "npm test -> 69/69 PASS; production browser build completed and bundle/repo scans found no runtime credential or destination values."
+        ],
+        "regression_evidence": [
+          "R2 anonymous object GET and list probes were rejected; production Neon invalid identity probe was rejected with PostgreSQL 28P01.",
+          "Judge signed GET for scan 1311e3e5-1010-4b72-bb67-4bb9bf4585d1 returned HTTP 200 image/jpeg immediately at 2026-08-03T09:32:36.618Z and HTTP 403 after expiry at 2026-08-03T09:37:41.672Z.",
+          "Live purge selected=1/purged=1/failed=0, second run selected=0; post-purge Judge access returned JUDGE_EVIDENCE_NOT_FOUND and DB tombstones cleared evidence/input/OCR/normalization/analysis artifacts.",
+          "Controlled purge failure was recovered safely; recovery run purged=1/failed=0 and the next idempotent run selected=0.",
+          "Controlled rate limit accepted four requests and returned HTTP 429 RATE_LIMITED on the fifth; formal service value was restored and container readback returned 30.",
+          "Rollback deployment 6a7064a59cd65e28a343b391 reached RUNNING with health and Neon governance intact; restore deployment 6a7065aa9cd65e28a343b3cc then reached RUNNING with the same data/evidence health."
+        ],
+        "verifier_refs": [
+          "$COLLAB/rrrealll-ocr/scripts/verify-neon.mjs",
+          "$COLLAB/rrrealll-ocr/scripts/purge-evidence.mjs",
+          "$COLLAB/rrrealll-ocr/test/analysis/r2-evidence-store.test.mjs",
+          "$COLLAB/rrrealll-ocr/test/analysis/http-api.test.mjs",
+          "GET https://rrrealll-ocr-mvp.zeabur.app/health"
+        ],
+        "fixture_runtime_boundary": "Automated tests prove all seven retention statuses, prefix/object scoping, failure alerts and generic error behavior. Production live probes prove the actual Zeabur/Neon/Google Vision/private R2 runtime, signed URL expiry, purge/tombstone/idempotency, rate limit and rollback/restore; no mock is used as production evidence.",
+        "runtime_evidence": [
+          "Zeabur restore deployment 6a7065aa9cd65e28a343b3cc status RUNNING; public health HTTP 200 with database=ok and evidenceStore=ok.",
+          "Target Neon verifier on the running container returned ingredients=150, aliases=400, rules=80, purge_governance=true, tombstone_fingerprint=true, current_formula=true, release_health=true.",
+          "Private R2 anonymous probes rejected; object-scoped five-minute Judge signed GET changed from HTTP 200 to HTTP 403 after expiry.",
+          "Production purge, controlled failure alert/recovery, rate-limit HTTP 429 and rollback/restore receipts were captured on 2026-08-03."
+        ]
+      },
+      "acceptance_receipt": {
+        "matrix_ref": "milestones/rrrealll-ocr/tasks.json#p7-zeabur-supabase-secure-deployment.acceptance_matrix",
+        "matrix_fingerprint": "sha256:4fc7ceb0b9539332ba86a71c4fa26ad5b320f03e9c5beaa119b922b48b2bd8d1",
+        "required_ids": ["A01", "A02", "A03", "A04", "A05"],
+        "results": [
+          {"id": "A01", "status": "pass"},
+          {"id": "A02", "status": "pass"},
+          {"id": "A03", "status": "pass"},
+          {"id": "A04", "status": "pass"},
+          {"id": "A05", "status": "pass"}
+        ],
+        "exact_id_coverage": true,
+        "all_passed": true,
+        "verified_at": "2026-08-03"
+      },
       "jv32_route": {
         "workflows": ["task-lifecycle", "implement", "verification-before-completion", "closeout-commit-routing", "cc-push"],
         "decision_input": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/rrrealll-ocr/MVP_RELEASE_GOVERNANCE.md"],
@@ -804,6 +1150,38 @@
             "$COLLAB/rrrealll-ocr/MVP_RELEASE_GOVERNANCE.md"
           ],
           "recorded_at": "2026-07-30"
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "todo",
+          "reason": "正式 MVP runtime 驗收補為可指紋化 live matrix：secret、Neon/private bucket、七狀態 retention/purge、rate limit、health 與 rollback 必須有真實環境證據；fixture 或 mock 只可輔助，不可取代。",
+          "evidence_refs": [
+            "$COLLAB/rrrealll-ocr/ARCHITECTURE.md",
+            "$COLLAB/rrrealll-ocr/MVP_RELEASE_GOVERNANCE.md"
+          ],
+          "recorded_at": "2026-08-02"
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "todo",
+          "reason": "正式 private evidence provider 改為 Cloudflare R2；匿名 GET/list、指定 object 的 5 分鐘 Judge signed GET、delete/purge 與 R2.dev 關閉都必須以 live evidence 驗收。",
+          "evidence_refs": [
+            "$COLLAB/rrrealll-ocr/ARCHITECTURE.md",
+            "$COLLAB/rrrealll-ocr/MVP_RELEASE_GOVERNANCE.md",
+            "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json"
+          ],
+          "recorded_at": "2026-08-03"
+        }, {
+          "operation": "complete",
+          "from_status": "todo",
+          "to_status": "completed",
+          "reason": "RRO-08 A01-A05 exact acceptance gate 全數通過：server-only secret、target Neon/private R2、5 分鐘 object-scoped signed GET、七狀態 purge/alert/idempotency、health/error/rate limit 與實際 rollback/restore 都有 production evidence。",
+          "evidence_refs": [
+            "Restore deployment 6a7065aa9cd65e28a343b3cc on product C1 a615855c1837761f4bade22d5b533d439a12ca3f reached RUNNING with health HTTP 200",
+            "Acceptance receipt sha256:4fc7ceb0b9539332ba86a71c4fa26ad5b320f03e9c5beaa119b922b48b2bd8d1 with A01-A05=pass",
+            "Live signed URL 200-to-403 expiry, purge success/failure/recovery, HTTP 429 and rollback/restore receipts captured 2026-08-03"
+          ],
+          "recorded_at": "2026-08-03"
         }]
       },
       "hc_decision": {
@@ -818,7 +1196,9 @@
     {
       "id": "p8-end-to-end-release-acceptance",
       "title": "以真實資料邊界完成三輸入端到端發布驗收",
-      "status": "todo",
+      "status": "completed",
+      "completed_at": "2026-08-03",
+      "summary": "公開正式網址已完成 paste、upload、camera 三輸入與明確 failure 驗收；target Neon 150/400/80、server-side A-E／unknown safety、private scan/Judge gate 及 approved current passport 均有 production receipts。",
       "track": "quality",
       "order_label": "RRO-09",
       "priority": "P0",
@@ -834,6 +1214,153 @@
         "A04｜三種 fixture 每次都建立 private scan record，成功分析進 pending_review；consumer 前台查無可回看 history，只有 approved 可 promotion 為產品護照。",
         "A05｜已審核產品護照能顯示 brand＋product、formula version、成分順序、analysis version 與 review state，且沒有容量／條碼／銷售地區身份欄位。"
       ],
+      "acceptance_matrix": [
+        {
+          "id": "A01",
+          "verify": "target Neon canonical seed counts",
+          "precondition": "公開 runtime 指向的 target Neon 與部署版本對應的 seed verifier",
+          "steps": "執行 deterministic seed verifier，並以受控 count query 讀取三張 canonical tables",
+          "pass": "INCI 150/150、alias 400/400、rule 80/80，且 query 目標為 production runtime 使用的 Neon database",
+          "fail": "任一 count 不符、query 指向非 target Neon，或以 local fixture 冒充 target evidence",
+          "evidence": "verifier output、redacted target query receipt、deployment identifier"
+        },
+        {
+          "id": "A02",
+          "verify": "公開 runtime 三輸入成功與失敗可見性",
+          "precondition": "公開 HTTPS URL、paste fixture、可上傳圖片 fixture、已授權 camera fixture 與各一筆 failure fixture",
+          "steps": "在公開 runtime 分別完成 paste/upload/camera，並觸發 OCR/provider 或 input failure",
+          "pass": "三條成功 flow 均顯示可讀結果；失敗明確可見且沒有 sample/random/success fallback",
+          "fail": "任一入口不可用、成功結果不可讀，或失敗被靜默／偽裝為成功",
+          "evidence": "timestamped browser E2E trace、screenshots、network/API records"
+        },
+        {
+          "id": "A03",
+          "verify": "判讀安全與規則覆蓋",
+          "precondition": "alias、C/D/E、unknown/low-confidence、compound-rule fixtures，及對應 expected result",
+          "steps": "經公開三輸入 flows 送出 fixture，逐項比對 result payload 與 UI",
+          "pass": "alias 正確命中；C/D/E 由 canonical score 顯示；unknown/low-confidence 明示不確定且未判安全；compound rule 命中可追溯",
+          "fail": "誤配、前端自行生成風險等級、unknown 判安全或缺少複合規則證據",
+          "evidence": "E2E assertions、analysis/version evidence、screenshot"
+        },
+        {
+          "id": "A04",
+          "verify": "全量 private scan 與 Judge gate",
+          "precondition": "三種公開成功 fixture、production database/storage read-only verifier 與 consumer route inventory",
+          "steps": "每條 flow 後查詢 scan record、analysis status、Judge queue 與 consumer navigation；再以未審核資料嘗試 promotion",
+          "pass": "三次皆有 private scan record 並為 pending_review；consumer 無 history；未審核 promotion 被拒，僅 approved 可 promotion",
+          "fail": "任一 scan 缺失、狀態錯誤、consumer 可回看，或未審核資料可 promotion",
+          "evidence": "read-only production query receipt、E2E trace、promotion authorization test"
+        },
+        {
+          "id": "A05",
+          "verify": "approved product passport presentation 與 identity boundary",
+          "precondition": "approved current formula passport 與含容量、條碼、銷售地區差異的 fixture",
+          "steps": "透過公開 consumer-facing passport surface 讀取 approved record 與 response schema",
+          "pass": "顯示 brand+product、formula version、成分順序、analysis version、review state；identity／response 不以容量、條碼、銷售地區拆分",
+          "fail": "展示未審核資料、缺少 provenance，或以被排除欄位建立不同產品 identity",
+          "evidence": "public API/UI E2E evidence、response schema assertion、database identity query"
+        }
+      ],
+      "goal_alignment": {
+        "project_id": "rrrealll-ocr",
+        "goal_ref": "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json#/goals",
+        "goal_fingerprint": "sha256:8fb101771c64a805aa9db57d9b269b568f3822d7bb30fdb8de9587cb2d700953",
+        "contribution": "把三種消費者輸入、150/400/80 資料契約、unknown safety、private scan、Judge gate 與 approved passport 收斂為公開 runtime 的完整 MVP release acceptance。",
+        "evidence_plan": [
+          "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p8-end-to-end-release-acceptance.acceptance_matrix",
+          "target Neon verifier、公開 browser E2E trace、read-only production query receipt、approved passport response assertion"
+        ],
+        "reviewed_at": "2026-08-02"
+      },
+      "commits": [
+        "4f103dffd7fbc3fc27c5e256975e9be3005491fc",
+        "31d3a49a6a912401503ab551adb55f46f2af5902",
+        "e67aa1bbbf8ee9f4ac36d0122ebb3ba8a2f8f882",
+        "a615855c1837761f4bade22d5b533d439a12ca3f"
+      ],
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "公開 HTTPS runtime 的 paste、upload、camera 均產生可讀分析；invalid image/provider failure 顯示明確 error 且不得 fallback 成假成功。",
+          "公開 runtime 使用的 target Neon 必須維持 150 INCI、400 aliases、80 rules 與 release governance。",
+          "個別等級只由 canonical server response 產生；alias、C/D/E、unknown/low-confidence 與 compound rules 受安全測試保護。",
+          "三輸入均建立 pending_review private scan；consumer 無 history；只有 approved current passport 可公開。"
+        ],
+        "test_level": [
+          "analysis_unit",
+          "service_http_integration",
+          "public_api_e2e",
+          "production_browser_e2e",
+          "production_database_receipt"
+        ],
+        "red_command": "npm test",
+        "expected_red_reason": "RED cases 拒絕 unsupported/invalid image、provider error fallback、unknown 判安全、browser-side grading、未審核 promotion 與未批准 passport 發布。",
+        "green_command": "npm test && npm run build:web",
+        "full_regression_commands": [
+          "npm test",
+          "npm run build:web",
+          "npm run verify:neon"
+        ],
+        "fixture_refs": [
+          "$COLLAB/rrrealll-ocr/test/analysis/analyzer.test.mjs",
+          "$COLLAB/rrrealll-ocr/test/analysis/http-api.test.mjs",
+          "$COLLAB/rrrealll-ocr/test/analysis/normalizer.test.mjs",
+          "$COLLAB/rrrealll-ocr/web/src/App.test.jsx"
+        ],
+        "runtime_evidence_required": true,
+        "evidence_refs": [
+          "Public runtime https://rrrealll-ocr-mvp.zeabur.app on restore deployment 6a7065aa9cd65e28a343b3cc",
+          "Production paste/upload/camera scans 9c48efdb-b9cf-42c2-8544-11e5fd714710, a8b8e27c-c542-4ba3-b655-f77607725370, df388ad9-7872-4e91-97b2-6706913b21bf",
+          "Production browser screenshot rrrealll-ocr-production-paste-e2e.png captured 2026-08-03",
+          "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p8-end-to-end-release-acceptance.acceptance_matrix"
+        ]
+      },
+      "completion_evidence": {
+        "red_evidence": [
+          "Before Cloud Vision API activation, public image analysis visibly returned HTTP 502 OCR_PROVIDER_REJECTED while the scan was marked failed; there was no sample/random/success fallback.",
+          "Live invalid image request returned HTTP 400 INVALID_IMAGE with correlation c7a97c4a-0afc-43d4-9eb9-5e20a363507f."
+        ],
+        "green_evidence": [
+          "Public paste returned HTTP 200 scan 9c48efdb-b9cf-42c2-8544-11e5fd714710; upload returned HTTP 200 scan a8b8e27c-c542-4ba3-b655-f77607725370; camera returned HTTP 200 scan df388ad9-7872-4e91-97b2-6706913b21bf.",
+          "Production browser paste E2E rendered five directional metrics, canonical D/E grades, pending-review state, full ingredient table and an unknown ingredient as unconfirmed/not safe.",
+          "Running-container Neon verifier returned ingredients=150, aliases=400, rules=80 and all release governance flags true."
+        ],
+        "regression_evidence": [
+          "npm test -> 69/69 PASS, covering unique/ambiguous aliases, OCR fuzzy candidates, canonical C/D/E grading, unknown/low-confidence fail-closed behavior and compound rule evaluation.",
+          "Three production success scans were pending_review with private evidence/analysis records; consumer route inventory contains no history/list endpoint.",
+          "Public passport 13fa0cf0-bd2a-4e36-93f5-8758fe287743 returned HTTP 200 with RRREALLL Release Probe + Canonical Paste Formula, formula fingerprint/order, analysis version and approved review state; excluded identity fields are absent.",
+          "Product repository a615855c1837761f4bade22d5b533d439a12ca3f is clean and origin/main parity is 0/0; Zeabur deployment 6a7065aa9cd65e28a343b3cc is RUNNING."
+        ],
+        "verifier_refs": [
+          "$COLLAB/rrrealll-ocr/scripts/verify-neon.mjs",
+          "$COLLAB/rrrealll-ocr/test/analysis/analyzer.test.mjs",
+          "$COLLAB/rrrealll-ocr/test/analysis/http-api.test.mjs",
+          "$COLLAB/rrrealll-ocr/web/src/App.test.jsx",
+          "GET https://rrrealll-ocr-mvp.zeabur.app/api/v1/passports/13fa0cf0-bd2a-4e36-93f5-8758fe287743"
+        ],
+        "fixture_runtime_boundary": "Automated fixtures provide deterministic alias, C/D/E, low-confidence, unknown and compound-rule assertions. The release claim additionally uses the actual public Zeabur URL, production Neon, Google Vision and private R2 for three live success inputs, a live failure, a browser-rendered result and an approved/current public passport.",
+        "runtime_evidence": [
+          "Public restore runtime health HTTP 200; paste/upload/camera each returned HTTP 200 with production scan UUIDs, and invalid image returned HTTP 400 without fallback.",
+          "Production browser screenshot rrrealll-ocr-production-paste-e2e.png shows server-generated metrics/grades, unknown safety and pending-review UI.",
+          "Target Neon verifier returned 150/400/80 plus governance/current-formula/release-health=true on deployment 6a7065aa9cd65e28a343b3cc.",
+          "Approved/current passport HTTP 200 receipt proves the consumer-facing publication and identity boundary."
+        ]
+      },
+      "acceptance_receipt": {
+        "matrix_ref": "milestones/rrrealll-ocr/tasks.json#p8-end-to-end-release-acceptance.acceptance_matrix",
+        "matrix_fingerprint": "sha256:6db38abd1cb0855c2ba0fd02561c196931c1798a48cf93bf881d497d182362c8",
+        "required_ids": ["A01", "A02", "A03", "A04", "A05"],
+        "results": [
+          {"id": "A01", "status": "pass"},
+          {"id": "A02", "status": "pass"},
+          {"id": "A03", "status": "pass"},
+          {"id": "A04", "status": "pass"},
+          {"id": "A05", "status": "pass"}
+        ],
+        "exact_id_coverage": true,
+        "all_passed": true,
+        "verified_at": "2026-08-03"
+      },
       "jv32_route": {
         "workflows": ["task-lifecycle", "verification-before-completion", "code-review", "closeout-commit-routing", "cc-push"],
         "decision_input": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md", "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json"],
@@ -860,6 +1387,39 @@
             "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p3-supabase-canonical-data-and-passport-schema"
           ],
           "recorded_at": "2026-07-30"
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "todo",
+          "reason": "正式 MVP release acceptance 補為可指紋化 matrix；全部項目要求 target Neon、公開 runtime、private scan、Judge gate 與 approved passport 的真實可重跑證據，禁止以模擬驗證結案。",
+          "evidence_refs": [
+            "$COLLAB/rrrealll-ocr/ARCHITECTURE.md",
+            "$COLLAB/rrrealll-ocr/MVP_RELEASE_GOVERNANCE.md",
+            "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p7-zeabur-supabase-secure-deployment"
+          ],
+          "recorded_at": "2026-08-02"
+        }, {
+          "operation": "amend",
+          "from_status": "todo",
+          "to_status": "todo",
+          "reason": "正式 release acceptance 的 production storage boundary 改以 Cloudflare R2 private bucket 驗證；公開三輸入、target Neon、Judge gate 與 approved passport 的其餘完成標準不變。",
+          "evidence_refs": [
+            "$COLLAB/rrrealll-ocr/ARCHITECTURE.md",
+            "$COLLAB/rrrealll-ocr/MVP_RELEASE_GOVERNANCE.md",
+            "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p7-zeabur-supabase-secure-deployment"
+          ],
+          "recorded_at": "2026-08-03"
+        }, {
+          "operation": "complete",
+          "from_status": "todo",
+          "to_status": "completed",
+          "reason": "RRO-09 A01-A05 exact acceptance gate 全數通過：target Neon 150/400/80、公開 paste/upload/camera、明確 failure、canonical grades/unknown safety、全量 pending_review private scans、Judge gate 與 approved current passport 已由 production E2E 證明。",
+          "evidence_refs": [
+            "Public runtime https://rrrealll-ocr-mvp.zeabur.app on restore deployment 6a7065aa9cd65e28a343b3cc; product C1 a615855c1837761f4bade22d5b533d439a12ca3f",
+            "Acceptance receipt sha256:6db38abd1cb0855c2ba0fd02561c196931c1798a48cf93bf881d497d182362c8 with A01-A05=pass",
+            "Three live production scan receipts, browser screenshot rrrealll-ocr-production-paste-e2e.png and public passport 13fa0cf0-bd2a-4e36-93f5-8758fe287743 captured 2026-08-03"
+          ],
+          "recorded_at": "2026-08-03"
         }]
       },
       "hc_decision": {

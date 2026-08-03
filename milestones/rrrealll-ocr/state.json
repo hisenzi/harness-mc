@@ -15,6 +15,40 @@
         "162071226eb9b9e78a98557aaf5ebf9290636594"
       ],
       "summary": "已完成可重現的 OCR／貼上文字正規化與 versioned analysis API；保存 ingredient order、raw token、canonical match、confidence、unresolved reason 與版本證據，unknown／low-confidence 不套安全預設，並以 canonical dataset 與 80 rules 產出完整風險與白話判讀。"
+    },
+    "p6-opt-in-product-passport-and-judge-queue": {
+      "status": "completed",
+      "completed_at": "2026-08-03",
+      "commits": [
+        "4f103dffd7fbc3fc27c5e256975e9be3005491fc",
+        "31d3a49a6a912401503ab551adb55f46f2af5902",
+        "e67aa1bbbf8ee9f4ac36d0122ebb3ba8a2f8f882",
+        "a615855c1837761f4bade22d5b533d439a12ca3f"
+      ],
+      "summary": "正式 MVP 已建立全量 private scan、pending_review Judge queue、四種可追溯 decision、approved-only promotion 與只發布 approved current formula 的產品護照。"
+    },
+    "p7-zeabur-supabase-secure-deployment": {
+      "status": "completed",
+      "completed_at": "2026-08-03",
+      "commits": [
+        "4f103dffd7fbc3fc27c5e256975e9be3005491fc",
+        "31d3a49a6a912401503ab551adb55f46f2af5902",
+        "e67aa1bbbf8ee9f4ac36d0122ebb3ba8a2f8f882",
+        "c88b9d891cbd3a4036054481c4c6656bb52d7b8c",
+        "a615855c1837761f4bade22d5b533d439a12ca3f"
+      ],
+      "summary": "正式 Zeabur service 已連線 Neon、Google Cloud Vision 與 private Cloudflare R2；server-only secret、5 分鐘 Judge signed URL、七狀態 retention/purge、失敗告警、rate limit、health 與 rollback/restore 均有 live evidence。"
+    },
+    "p8-end-to-end-release-acceptance": {
+      "status": "completed",
+      "completed_at": "2026-08-03",
+      "commits": [
+        "4f103dffd7fbc3fc27c5e256975e9be3005491fc",
+        "31d3a49a6a912401503ab551adb55f46f2af5902",
+        "e67aa1bbbf8ee9f4ac36d0122ebb3ba8a2f8f882",
+        "a615855c1837761f4bade22d5b533d439a12ca3f"
+      ],
+      "summary": "公開正式網址已完成 paste、upload、camera 三輸入與明確 failure 驗收；target Neon 150/400/80、server-side A-E／unknown safety、private scan/Judge gate 及 approved current passport 均有 production receipts。"
     }
   }
 }

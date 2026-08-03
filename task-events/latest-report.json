@@ -1,11 +1,25 @@
 {
-  "generated_at": "2026-08-03T07:55:46.794Z",
+  "generated_at": "2026-08-03T10:05:59.134Z",
   "applied": [
     {
-      "file": "20260803T075459Z-codex-3618404-morrowise-grouped-nested-milestone-support-v1.json",
-      "event_id": "task.completed-morrowise-grouped-nested-milestone-support-v1-3618404-20260803T075459Z",
-      "project": "morrowise",
-      "task_id": "grouped-nested-milestone-support-v1",
+      "file": "20260803T100559Z-rrrealll-ocr-a615855c1837761f4bade22d5b533d439a12ca3f-rrrealll-ocr-p6-opt-in-product-passport-and-judge-queue.json",
+      "event_id": "rro-07-formal-mvp-accepted",
+      "project": "rrrealll-ocr",
+      "task_id": "p6-opt-in-product-passport-and-judge-queue",
+      "type": "task.completed"
+    },
+    {
+      "file": "20260803T100559Z-rrrealll-ocr-a615855c1837761f4bade22d5b533d439a12ca3f-rrrealll-ocr-p7-zeabur-supabase-secure-deployment.json",
+      "event_id": "rro-08-formal-mvp-accepted",
+      "project": "rrrealll-ocr",
+      "task_id": "p7-zeabur-supabase-secure-deployment",
+      "type": "task.completed"
+    },
+    {
+      "file": "20260803T100559Z-rrrealll-ocr-a615855c1837761f4bade22d5b533d439a12ca3f-rrrealll-ocr-p8-end-to-end-release-acceptance.json",
+      "event_id": "rro-09-formal-mvp-accepted",
+      "project": "rrrealll-ocr",
+      "task_id": "p8-end-to-end-release-acceptance",
       "type": "task.completed"
     }
   ],

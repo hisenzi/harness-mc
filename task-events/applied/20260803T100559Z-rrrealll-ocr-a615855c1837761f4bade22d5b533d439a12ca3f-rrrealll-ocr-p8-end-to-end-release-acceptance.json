@@ -1,0 +1,13 @@
+{
+  "event_id": "rro-09-formal-mvp-accepted",
+  "type": "task.completed",
+  "repo": "rrrealll-ocr",
+  "commit": "a615855c1837761f4bade22d5b533d439a12ca3f",
+  "project": "rrrealll-ocr",
+  "task_id": "p8-end-to-end-release-acceptance",
+  "status": "completed",
+  "summary": "RRO-09 formal MVP acceptance A01-A05 passed with public three-input E2E, failure, safety, private scan and approved passport receipts.",
+  "created_at": "2026-08-03T10:05:59.045Z",
+  "actor": "codex",
+  "session_id": "019fc2df-994f-7983-81b8-7bfa044fcedb"
+}

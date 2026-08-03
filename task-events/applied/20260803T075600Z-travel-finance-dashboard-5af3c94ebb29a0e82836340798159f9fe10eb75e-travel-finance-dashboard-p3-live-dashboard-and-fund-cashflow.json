@@ -1,0 +1,13 @@
+{
+  "event_id": "task.reopened-travel-finance-dashboard-p3-live-dashboard-and-fund-cashflow-5af3c94ebb29a0e82836340798159f9fe10eb75e-20260803T075600Z",
+  "type": "task.reopened",
+  "repo": "travel-finance-dashboard",
+  "commit": "5af3c94ebb29a0e82836340798159f9fe10eb75e",
+  "project": "travel-finance-dashboard",
+  "task_id": "p3-live-dashboard-and-fund-cashflow",
+  "status": "in_progress",
+  "summary": "依 canonical amend 與 Vincent 核准，將 travel-finance-dashboard task 的 derived state 對齊為 in_progress；A01-A30 與 C1 delivery evidence 已保留，尚未宣稱 task completed。",
+  "created_at": "2026-08-03T07:56:00.000Z",
+  "actor": "codex",
+  "session_id": "codex-travel-finance-dashboard-c2-20260803"
+}

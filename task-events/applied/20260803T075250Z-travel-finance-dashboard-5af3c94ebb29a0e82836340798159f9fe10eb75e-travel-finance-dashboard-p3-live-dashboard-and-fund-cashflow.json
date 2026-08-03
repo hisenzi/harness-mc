@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-travel-finance-dashboard-p3-live-dashboard-and-fund-cashflow-5af3c94ebb29a0e82836340798159f9fe10eb75e-20260803T075250Z",
+  "type": "task.commit_attached",
+  "repo": "travel-finance-dashboard",
+  "commit": "5af3c94ebb29a0e82836340798159f9fe10eb75e",
+  "project": "travel-finance-dashboard",
+  "task_id": "p3-live-dashboard-and-fund-cashflow",
+  "status": "updated",
+  "summary": "C1 已推送至 travel-finance-dashboard/origin/main；A01-A30 30/30，四個產品 verifier 通過，canonical validator 0 issue，dashboard 維持 static read-only 且不執行轉帳。C2 只更新 delivery evidence，task 維持 in_progress。",
+  "created_at": "2026-08-03T07:52:50.000Z",
+  "actor": "codex",
+  "session_id": "codex-travel-finance-dashboard-c2-20260803"
+}

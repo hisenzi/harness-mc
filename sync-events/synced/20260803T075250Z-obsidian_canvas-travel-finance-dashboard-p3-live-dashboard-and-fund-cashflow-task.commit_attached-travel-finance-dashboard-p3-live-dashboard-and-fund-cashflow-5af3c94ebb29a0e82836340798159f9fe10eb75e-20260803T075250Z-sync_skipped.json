@@ -1,0 +1,21 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-travel-finance-dashboard-p3-live-dashboard-and-fund-cashflow-task.commit_attached-travel-finance-dashboard-p3-live-dashboard-and-fund-cashflow-5af3c94ebb29a0e82836340798159f9fe10eb75e-20260803T075250Z-20260803T075250Z",
+  "type": "sync_skipped",
+  "target": "obsidian_canvas",
+  "status": "skipped",
+  "source_event_id": "task.commit_attached-travel-finance-dashboard-p3-live-dashboard-and-fund-cashflow-5af3c94ebb29a0e82836340798159f9fe10eb75e-20260803T075250Z",
+  "project": "travel-finance-dashboard",
+  "task_id": "p3-live-dashboard-and-fund-cashflow",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-08-03T07:52:50.000Z",
+  "actor": "codex",
+  "session_id": "codex-travel-finance-dashboard-c2-20260803",
+  "exemption_reason": "本次 C2 只收斂 travel-finance-dashboard 的 canonical task 與驗收證據；未核准對 Obsidian Canvas 執行外部寫入，保留 sync request 的 terminal skipped evidence。",
+  "verifier": "node scripts/verify-sync-event-queue.mjs",
+  "resolved_at": "2026-08-03T07:54:30.000Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-travel-finance-dashboard-c2-20260803"
+}

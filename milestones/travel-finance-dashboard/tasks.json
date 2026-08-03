@@ -604,6 +604,323 @@
         "dashboard 只讀 trip-scoped travel ledger／generated read model，不直接以 Notion 畫面或日常 finance-dashboard records 作計算來源",
         "提供可重跑的 fixture／verifier，覆蓋負數基金入金、金流淨額與四類消費比例"
       ],
+      "acceptance_matrix": [
+        {
+          "id": "A01",
+          "verify": "Notion 結清狀態進入 ledger",
+          "precondition": "同時準備結清狀態為「已結清」與非已結清的唯讀 Notion row fixture",
+          "steps": "執行 importer 並檢查 transaction.settlement_status",
+          "pass": "已結清映射為 settled，其餘映射為 open；既有缺欄位 review routing 不變",
+          "fail": "已結清仍為 open、非已結清誤標 settled 或 importer 需反寫 Notion",
+          "evidence": "verify-notion-to-ledger-importer.py"
+        },
+        {
+          "id": "A02",
+          "verify": "已結清共用墊款不再列入基金尚應支付",
+          "precondition": "ledger 含一筆已確認且 settlement_status=settled 的共用墊款",
+          "steps": "生成 read model，核對 fund_payables、payment_method_totals 與 category_statistics",
+          "pass": "該筆從 fund_payables 排除，但原始消費仍保留於付款方式與消費分類統計",
+          "fail": "仍要求基金支付，或為排除應付款而刪除真實消費",
+          "evidence": "verify-live-dashboard-read-model.py"
+        },
+        {
+          "id": "A03",
+          "verify": "已結清項目可見且資料正確",
+          "precondition": "最新福岡 live ledger 已匯入「2026 福岡機票 + eSIM」",
+          "steps": "開啟 TWD dashboard 並檢查已結清區",
+          "pass": "顯示項目名稱、2026-05-09、TWD 56,036、CUBE PayPay 與已結清",
+          "fail": "項目消失、仍在尚應支付，或任一核心欄位錯誤",
+          "evidence": "verify-fukuoka-dashboard.py controlled runtime"
+        },
+        {
+          "id": "A04",
+          "verify": "已結清項目身分可追溯",
+          "precondition": "A03 項目已渲染",
+          "steps": "檢查 transaction id 與 source ref",
+          "pass": "可從 dashboard 追溯至 txn_fukuoka_2026_3a2714fb_14c6_80f8_b739_ddc5ed66331a 與 Notion source ref",
+          "fail": "只剩聚合金額而無法定位原始交易",
+          "evidence": "read model settled_items 與 runtime DOM assertions"
+        },
+        {
+          "id": "A05",
+          "verify": "TWD 付款方式總額保留真實消費",
+          "precondition": "最新 live read model",
+          "steps": "核對 Vincent CUBE PayPay 付款方式支出",
+          "pass": "顯示 TWD 82,168，包含已結清消費但不把轉帳當消費",
+          "fail": "因結清而刪除消費，或混入基金轉帳",
+          "evidence": "currency_views.TWD.payment_method_expenses"
+        },
+        {
+          "id": "A06",
+          "verify": "TWD 消費分類統計正確",
+          "precondition": "最新 live read model",
+          "steps": "核對交通與已分類消費合計",
+          "pass": "交通為 TWD 57,829，已分類消費合計為 TWD 88,749；資金移動不混入",
+          "fail": "金額不符、未知分類被硬塞入，或轉帳污染比例",
+          "evidence": "currency_views.TWD.category_statistics"
+        },
+        {
+          "id": "A07",
+          "verify": "TWD 基金尚應支付為最新未結清淨額",
+          "precondition": "已結清機票已排除",
+          "steps": "核對 TWD fund_payables 卡片與總額",
+          "pass": "Baby 信用卡 945、Vincent 現金 1,750、CUBE PayPay 17,333、HSBC 11,475，總額 31,503",
+          "fail": "仍顯示舊 CUBE 73,369／總額 87,539，或遺漏其他未結清款",
+          "evidence": "currency_views.TWD.fund_payables"
+        },
+        {
+          "id": "A08",
+          "verify": "JPY 基金尚應支付獨立正確",
+          "precondition": "最新 live read model",
+          "steps": "切換 JPY 並核對卡片與總額",
+          "pass": "現金 10,895、CUBE PayPay 965、信用卡 2,000，總額 13,860；不混入 TWD",
+          "fail": "幣別混算、切換後仍顯示 TWD 或金額不符",
+          "evidence": "currency_views.JPY.fund_payables 與 currency tab runtime"
+        },
+        {
+          "id": "A09",
+          "verify": "待確認只列 canonical blocking reviews",
+          "precondition": "最新 live import 含 review_queue 與 source_review_queue",
+          "steps": "生成 read model 並渲染待確認區",
+          "pass": "模型與介面皆恰為 14 筆且 IDs 不重複、不因多處附件／原始證據而膨脹",
+          "fail": "同一問題重複顯示、漏列 blocker 或顯示非阻擋附件清單",
+          "evidence": "blocking_reviews 與 review-items DOM assertions"
+        },
+        {
+          "id": "A10",
+          "verify": "未結清交易摘要與應付款明細一致",
+          "precondition": "最新 live read model",
+          "steps": "加總 fund_payables.detail transaction 數並核對摘要",
+          "pass": "open_payable_transaction_count 為 33，且完全由目前尚應支付明細推導",
+          "fail": "硬編數字、已結清交易仍計入或摘要與明細不一致",
+          "evidence": "dashboard_status.open_payable_transaction_count"
+        },
+        {
+          "id": "A11",
+          "verify": "已結清交易摘要與明細一致",
+          "precondition": "最新 live read model",
+          "steps": "計數各幣別 settled_items 並核對摘要",
+          "pass": "settled_transaction_count 為 1，且對應唯一可見的機票 + eSIM 明細",
+          "fail": "計數與明細不同或把 direct settlement 混為已結清消費",
+          "evidence": "dashboard_status.settled_transaction_count"
+        },
+        {
+          "id": "A12",
+          "verify": "舊 ledger 相容性",
+          "precondition": "transaction 未提供 settlement_status",
+          "steps": "用既有 fixture 執行 ledger 與 read-model verifier",
+          "pass": "缺省安全視為 open，schema／verifier 接受舊資料且原有金額不變",
+          "fail": "舊 fixture 無法讀取、KeyError 或默認成 settled",
+          "evidence": "verify-travel-ledger.py 與 legacy fixtures"
+        },
+        {
+          "id": "A13",
+          "verify": "付款人、付款方式與負擔對象不混欄",
+          "precondition": "共用、個人與代買交易皆存在",
+          "steps": "檢查 transaction_evidence 與已結清列",
+          "pass": "payer、payment_method、allocation_kind、split participants 分欄呈現",
+          "fail": "用付款方式推定負擔者、隱藏付款人或把共用誤標個人",
+          "evidence": "transaction_evidence read model 與 runtime table"
+        },
+        {
+          "id": "A14",
+          "verify": "機票共用拆分可核對",
+          "precondition": "機票 + eSIM 為 vincent、baby、julie、licca 四人均分",
+          "steps": "檢查已結清明細的 split 與 per-participant amount",
+          "pass": "顯示四位負擔者與每人 TWD 14,009，四人合計等於 56,036",
+          "fail": "人數、名單、均分金額或合計不符",
+          "evidence": "settled_items.allocation"
+        },
+        {
+          "id": "A15",
+          "verify": "直接結清與基金應付款分離",
+          "precondition": "ledger 含 direct settlements",
+          "steps": "核對 direct_settlements 與 fund_payables",
+          "pass": "直接結清只在進階核對區顯示，不增減基金尚應支付與消費分類",
+          "fail": "直接結清重複計入基金應付款或消費",
+          "evidence": "direct_settlements model verifier"
+        },
+        {
+          "id": "A16",
+          "verify": "基金已付款只在明確對應時抵扣",
+          "precondition": "準備完全對應與無法完全對應的基金付款 fixtures",
+          "steps": "依收款人、原墊付付款方式、同單或原墊付 reference 執行 matching",
+          "pass": "只有完全對應者抵扣；advance_match_required 不抵扣",
+          "fail": "只因金額相近或同一收款人就自動抵扣",
+          "evidence": "verify-live-dashboard-read-model.py advance matching cases"
+        },
+        {
+          "id": "A17",
+          "verify": "未配對基金付款保持可見",
+          "precondition": "最新資料含「旅遊基金支出｜Baby刷卡」TWD 2,506",
+          "steps": "核對 fund payouts 與 current balance",
+          "pass": "顯示 advance_match_required、TWD 2,506，且 current fund balance 為 -2,506，不抵扣應付款",
+          "fail": "付款消失、被誤抵扣，或 current balance 未反映實際出金",
+          "evidence": "fund_cashflow.unmatched_fund_payouts"
+        },
+        {
+          "id": "A18",
+          "verify": "收據同單核對不守恆時拒絕",
+          "precondition": "同 receipt group 的共用、個人與代買拆分合計不等於總額",
+          "steps": "執行 read-model verifier",
+          "pass": "相關共用墊款移至待確認且不進正式基金應付款",
+          "fail": "金額不守恆仍產生可支付淨額",
+          "evidence": "receipt reconciliation verifier cases"
+        },
+        {
+          "id": "A19",
+          "verify": "草稿／正式狀態由 blockers 決定",
+          "precondition": "最新 live read model 有 14 筆 blocking reviews",
+          "steps": "核對 dashboard_status 與首頁摘要",
+          "pass": "state=draft、blocking_review_count=14，介面明確顯示草稿而不冒充最終結算",
+          "fail": "有 blocker 仍顯示 final／可正式結算",
+          "evidence": "dashboard_status 與 settlement-summary"
+        },
+        {
+          "id": "A20",
+          "verify": "無 blockers 時可成為正式 read model",
+          "precondition": "review-free synthetic ledger",
+          "steps": "生成 read model 並核對既有應付款",
+          "pass": "state=final、blocking_review_count=0，原本可確認應付款維持正確",
+          "fail": "清除 blockers 後仍為 draft，或為轉 final 而改變應付款",
+          "evidence": "verify-live-dashboard-read-model.py cleared fixture"
+        },
+        {
+          "id": "A21",
+          "verify": "首屏先回答結算狀態",
+          "precondition": "dashboard 載入完成",
+          "steps": "在預設 TWD 首屏檢查摘要",
+          "pass": "首屏顯示草稿／正式、未結清筆數、已結清筆數與待確認筆數",
+          "fail": "需翻閱多個附件區才能判斷狀態，或摘要與模型不同",
+          "evidence": "settlement-summary runtime DOM assertions"
+        },
+        {
+          "id": "A22",
+          "verify": "幣別切換一次只顯示一個 view",
+          "precondition": "TWD 與 JPY currency views 都存在",
+          "steps": "預設載入後按 JPY，再切回 TWD",
+          "pass": "使用真實 button event 切換，任何時刻只渲染選定幣別且金額不混算",
+          "fail": "同頁堆疊所有幣別、錨點假切換或切換後保留前幣別資料",
+          "evidence": "verify-fukuoka-dashboard.py controlled runtime"
+        },
+        {
+          "id": "A23",
+          "verify": "空的進階區塊不製造噪音",
+          "precondition": "選定幣別無 provisional、payout、receipt 或 direct settlement rows",
+          "steps": "渲染並檢查各進階 surface 的 hidden state",
+          "pass": "空 surface 隱藏；非空 surface 才顯示內容",
+          "fail": "畫面堆滿「目前沒有」附件卡而干擾結算主線",
+          "evidence": "runtime hidden assertions"
+        },
+        {
+          "id": "A24",
+          "verify": "進階核對預設收合",
+          "precondition": "dashboard 有進階核對資料",
+          "steps": "首次載入檢查 details state，再手動展開",
+          "pass": "advanced-checks 使用預設未開啟的 details；使用者可按需查看證據",
+          "fail": "所有技術附件預設展開或無法查看",
+          "evidence": "HTML contract 與 runtime assertions"
+        },
+        {
+          "id": "A25",
+          "verify": "待確認以人可處理語言呈現",
+          "precondition": "blocking_reviews 含已知 reason codes",
+          "steps": "檢查每一列待確認項目",
+          "pass": "每列顯示缺少欄位、影響的結算輸出與可定位 ID，不只顯示內部 reason code",
+          "fail": "只顯示 payment_method_unknown 等工程字串或缺處理線索",
+          "evidence": "blocking_review_rows metadata 與 review DOM"
+        },
+        {
+          "id": "A26",
+          "verify": "主要金額皆可逐筆追溯",
+          "precondition": "payables、settled items 與 transaction evidence 已生成",
+          "steps": "抽查每個主要卡片的 detail rows",
+          "pass": "至少保留 transaction id；有 Notion 來源者同時保留 source ref",
+          "fail": "只有總額或無法由 read model 找回來源交易",
+          "evidence": "read-model ID assertions 與 runtime DOM"
+        },
+        {
+          "id": "A27",
+          "verify": "dashboard 計算 source-of-truth 邊界",
+          "precondition": "generated read model 與靜態 dashboard assets",
+          "steps": "檢查 importer、generator 與 browser app 資料流",
+          "pass": "Notion 只讀匯入 trip-scoped ledger；dashboard 只讀 generated read model，不讀日常 finance-dashboard records",
+          "fail": "browser 直接查 Notion、混讀其他財務資料或以畫面文字當計算來源",
+          "evidence": "source grep 與 source_of_truth model field"
+        },
+        {
+          "id": "A28",
+          "verify": "dashboard runtime 維持靜態唯讀",
+          "precondition": "production fukuoka.html、app、style 與 generated data",
+          "steps": "掃描 runtime API、storage 與 mutation capabilities",
+          "pass": "無 fetch／Notion request／localStorage 寫入／ledger mutation；只渲染 bundled model",
+          "fail": "開頁即連線外部服務、寫入資料或可修改正本",
+          "evidence": "verify-fukuoka-a01-a30.py static boundary scan"
+        },
+        {
+          "id": "A29",
+          "verify": "專案不執行轉帳",
+          "precondition": "所有 dashboard 與 generator source",
+          "steps": "檢查按鈕、事件、API 與命令邊界",
+          "pass": "只顯示可核對金額與證據；不存在執行、送出、確認或排程轉帳能力",
+          "fail": "dashboard 可觸發真實金流或文案暗示已代為付款",
+          "evidence": "runtime capability scan 與 UI assertions"
+        },
+        {
+          "id": "A30",
+          "verify": "A01–A30 可重跑且 canonical exact",
+          "precondition": "canonical task 已凍結完整 acceptance_matrix 與 test_contract",
+          "steps": "執行 aggregate verifier，再以 current matrix fingerprint 提交 acceptance event preflight",
+          "pass": "A01–A30 恰為 30 個唯一 IDs、aggregate 30/30 pass，fingerprint 與逐項結果 fresh 且 exact",
+          "fail": "缺 ID、重複、只憑畫面宣告、使用舊 fingerprint 或任一項非 pass",
+          "evidence": "verify-fukuoka-a01-a30.py 與 work-anchor-preflight acceptance receipt"
+        }
+      ],
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "Notion 的「已結清」必須映射至 ledger settlement_status=settled；已結清共用墊款不再列入基金尚應支付，但仍保留於真實消費與付款方式統計。",
+          "預設 TWD 首屏必須顯示草稿／正式、未結清、已結清與待確認摘要；幣別以真實 button event 單一切換，不得混算 TWD 與 JPY。",
+          "付款人、付款方式、負擔對象、拆分、transaction id 與 source ref 必須可逐筆核對；待確認只列 canonical blockers 並顯示缺少欄位與影響輸出。",
+          "dashboard 維持 static read-only，不直接查寫 Notion、不讀日常 finance-dashboard、不執行轉帳；進階證據預設收合且空 surface 隱藏。"
+        ],
+        "test_level": [
+          "importer_unit",
+          "ledger_contract",
+          "read_model_integration",
+          "controlled_runtime_surface",
+          "live_notion_read_only"
+        ],
+        "red_command": "python3 $COLLAB/travel-finance-dashboard/scripts/verify-fukuoka-a01-a30.py",
+        "expected_red_reason": "先加入已結清語意、read-model 與 controlled runtime tests；舊 importer 未產生 settlement_status、舊 payables 未排除 settled item、舊 UI 無結清摘要／單幣別切換／友善 blockers，因此應按層失敗；產品修正後 canonical A30 在 matrix 尚未凍結時單獨維持 RED。",
+        "green_command": "python3 $COLLAB/travel-finance-dashboard/scripts/verify-fukuoka-a01-a30.py",
+        "full_regression_commands": [
+          "python3 scripts/verify-notion-to-ledger-importer.py",
+          "python3 scripts/verify-travel-ledger.py --fixture data/fukuoka-live-ledger.json",
+          "python3 scripts/verify-live-dashboard-read-model.py",
+          "python3 scripts/verify-fukuoka-dashboard.py"
+        ],
+        "fixture_refs": [
+          "$COLLAB/travel-finance-dashboard/data/fukuoka-live-ledger.json",
+          "$COLLAB/travel-finance-dashboard/data/fukuoka-dashboard-read-model.json",
+          "$COLLAB/travel-finance-dashboard/scripts/verify-fukuoka-a01-a30.py"
+        ],
+        "runtime_evidence_required": true,
+        "planned_evidence_location": "$COLLAB/harness-mc/milestones/travel-finance-dashboard/tasks.json#p3-live-dashboard-and-fund-cashflow.test_contract.evidence_refs",
+        "evidence_refs": []
+      },
+      "goal_alignment": {
+        "project_id": "travel-finance-dashboard",
+        "goal_ref": "$COLLAB/harness-mc/milestones/travel-finance-dashboard/project.json#/goals",
+        "goal_fingerprint": "sha256:c4f2cb22c16a1f5d4803432b865edc93dc0a6a314025019cb40b295e00a5e79a",
+        "contribution": "把付款人、付款方式、負擔對象、結清狀態與待確認 blocker 拆成可追溯的 ledger/read-model 證據，直接支援旅行事件專用、與日常帳分離且不替使用者假設的可信清帳系統。",
+        "evidence_plan": [
+          "$COLLAB/travel-finance-dashboard/scripts/verify-fukuoka-a01-a30.py",
+          "$COLLAB/travel-finance-dashboard/data/fukuoka-dashboard-read-model.json",
+          "node scripts/validate-tasks.mjs --changed-only --project travel-finance-dashboard"
+        ],
+        "reviewed_at": "2026-08-02"
+      },
       "hc_decision": {
         "task_scope": "travel-finance-dashboard/p3-live-dashboard-and-fund-cashflow",
         "hc_refs": [
@@ -670,6 +987,39 @@
                 "approved_at": "2026-07-19",
                 "evidence_refs": [
                   "$COLLAB/harness-mc/milestones/travel-finance-dashboard/tasks.json#p3-live-dashboard-and-fund-cashflow"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 要求依專案目標修正現行福岡 dashboard：Notion「已結清」成為明確判斷條件，已結清共用墊款從基金尚應支付排除但保留真實消費；首屏改為結算摘要與單幣別 view，待確認只列 canonical blockers，進階證據預設收合。此次凍結 A01–A30 與 test_contract，保留 task 為 in_progress，不擴張至手機快記、外幣換算、大阪歷史驗證、Excel／報告 SOP 或轉帳執行。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/travel-finance-dashboard/tasks.json#p3-live-dashboard-and-fund-cashflow.acceptance_matrix",
+              "$COLLAB/travel-finance-dashboard/scripts/verify-fukuoka-a01-a30.py",
+              "Vincent 2026-08-02 current session: 修正部分通過 2、不通過 11、受阻 1；更新儀表板"
+            ],
+            "recorded_at": "2026-08-02",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "travel-finance-dashboard/p3-live-dashboard-and-fund-cashflow"
+              ],
+              "scope_comparison": {
+                "problem": "既有 task 已擁有基金淨金流與消費結構問題；本次只補足結清條件、可見結算狀態、阻擋原因與可重跑驗收。",
+                "owner_source_of_truth": "canonical owner 與 task id 不變；Notion 維持原始證據，trip-scoped ledger/read model 維持 dashboard 計算正本。",
+                "inputs_outputs": "輸入仍為唯讀 Notion 證據與 travel ledger；輸出仍為唯讀 dashboard，本次增加 settlement_status、settled_items、dashboard_status 與 blocking_reviews。",
+                "lifecycle_completion": "完成邊界仍由原 done_condition 與 A01–A30 判定；本次只修正並驗證 dashboard，不宣稱 task closeout、commit、push、部署或真實轉帳。"
+              },
+              "decision_reason": "問題、owner、上下游與完成生命週期皆由既有 p3 task 擁有，因此 outcome=amend，不建立新 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-02",
+                "evidence_refs": [
+                  "Vincent 2026-08-02 current session: 更新儀表板，我看看正不正確；修正驗收結果"
                 ]
               }
             }

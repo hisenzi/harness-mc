@@ -9088,11 +9088,11 @@
     {
       "id": "grouped-nested-milestone-support-v1",
       "title": "JV-48 Harness 分組巢狀專案正式支援",
-      "status": "in_progress",
+      "status": "completed",
       "track": "governance",
       "order_label": "JV-48",
       "priority": "P0",
-      "summary": "本地實作完成：Harness 已以單一 discovery contract 支援一層 group／yymmdd-project-id canonical milestone；KJ fixture、平面相容、非法路徑 fail-closed 與原資料不搬均已驗證，正式 remote closeout 尚待精準 commit／push 核准。",
+      "summary": "JV-48 正式交付完成：Harness 已以單一 discovery contract 支援一層 group／yymmdd-project-id canonical milestone；A01-A06、C1 remote CI、canonical closeout、sync terminal skip、C2 remote parity 與 scope residual gate 均有證據。",
       "dependencies": [
         "task-lifecycle-jv32-gate",
         "morrowise-project-init-v1",
@@ -9457,6 +9457,49 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "JV-48 C2 closeout 完成：A01-A06 全部通過；C1 3618404 已到 harness-mc/main 並通過 required GitHub Pages CI；canonical task.completed event 已 apply，closeout sync request 已以具體 exemption 終結；generated MC read models 已重建，雙 repo remote parity 0/0，baseline exclusion 未吸收，scope-owned residual zero 通過。",
+            "evidence_refs": [
+              "node scripts/verify-grouped-nested-milestones.mjs => JV48-A01..A05 pass",
+              "node scripts/validate-tasks.mjs --changed-only --project morrowise => 0 issues, 0 legacy warnings",
+              "npm run test:architecture-subsystems => pass",
+              "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check => pass",
+              "clean clone 3618404 npm run build => exit 0; TypeScript and static pages 8/8",
+              "GitHub Actions Deploy to GitHub Pages run 30794860787 => success",
+              "task-events/applied/20260803T075459Z-codex-3618404-morrowise-grouped-nested-milestone-support-v1.json",
+              "sync-events/synced/*grouped-nested-milestone-support-v1*sync_skipped.json => terminal skipped with exemption_reason",
+              "public/data/projects.json, task-events.json, visual-sync-coverage.json, morrowise-live-dashboard.json, closeout-residual-ledger.json regenerated",
+              "harness-mc origin/main=3618404a0d5acd7eb57c2e98b757b64961eab084; notyet-harness origin/main=d465ecbabe93d9106bc877f69040334e268625ad; both 0/0",
+              "work-anchor-preflight acceptance receipt sha256:a1fec4aea9816e56fd19b92d4e931acc0833a162bed8a3ba22c1e3da7d1fbf4c => JV48-A01..A06 pass"
+            ],
+            "recorded_at": "2026-08-03",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-project-init-v1",
+                "morrowise/project-topology-architecture-atlas",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "JV-48 的 grouped milestone layout、identity、discovery 與 remote closeout 已由本次 exact delivery 完成，未改變既有 outcome、topology admission 或 task mutation owner。",
+                "owner_source_of_truth": "JV-48 仍只擁有 Harness grouped milestone contract；canonical task state、topology admission、原 KJ 素材與 generated read model 的 owner 邊界不變。",
+                "inputs_outputs": "輸入是已交付 C1、required CI、canonical task event、sync terminal record 與 generated read models；輸出是完成狀態、acceptance receipt 與 C2 remote evidence。",
+                "lifecycle_completion": "A01-A06、remote containment、canonical apply、sync terminal、C2 remote parity 與 residual-zero 全部成立後，JV-48 進入 completed；不新增第二 task state。"
+              },
+              "decision_reason": "完成同一 JV-48 task 的 remote closeout，不新增 scope、project 或 task state。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-03",
+                "evidence_refs": [
+                  "Vincent 2026-08-03 current session: C2"
+                ]
+              }
+            }
           }
         ]
       },
@@ -9499,7 +9542,52 @@
           "reason": "共用 grouped discovery只擴充既有 workflow catalog 的 project-init、validator與task routing能力；Admission Record fingerprint已刷新，受控 marker同步後 verifier與sync check皆通過，索引角色無需改寫。"
         }
       },
-      "note": "2026-08-03 本地實作與驗收完成：A01-A05=pass；共用 discovery、grouped project-init、generator、validator、work-anchor、task event與下游 read/closeout consumers在 clean clone回歸通過，production build exit 0。KJ 原素材與kj-bilingual before／after metadata digest一致，live milestones/kj/260803-kj-mascot仍不存在，原資料未搬。Acceptance gate以 canonical matrix fingerprint sha256:a1fec4aea9816e56fd19b92d4e931acc0833a162bed8a3ba22c1e3da7d1fbf4c精確覆蓋：A01-A05 pass、A06 fail；原因僅為commit／push／remote CI／canonical closeout尚未另經精準核准，task保持in_progress。"
+      "completion_evidence": {
+        "red_evidence": [
+          "current-session RED: grouped project-init dry-run rejected before implementation with exit code 2"
+        ],
+        "green_evidence": [
+          "node scripts/verify-grouped-nested-milestones.mjs => JV48-A01..A05 pass",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise => 0 issues, 0 legacy warnings",
+          "npm run test:architecture-subsystems => pass",
+          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check => pass",
+          "clean clone at 3618404 npm run build => exit 0; TypeScript and static pages 8/8",
+          "GitHub Actions Deploy to GitHub Pages run 30794860787 => success"
+        ],
+        "regression_evidence": [
+          "task-events/applied/20260803T075459Z-codex-3618404-morrowise-grouped-nested-milestone-support-v1.json",
+          "sync-events/synced/*grouped-nested-milestone-support-v1*sync_skipped.json => terminal skipped with exemption_reason",
+          "public/data/projects.json, task-events.json, visual-sync-coverage.json, morrowise-live-dashboard.json, closeout-residual-ledger.json regenerated",
+          "harness-mc origin/main=3618404a0d5acd7eb57c2e98b757b64961eab084; notyet-harness origin/main=d465ecbabe93d9106bc877f69040334e268625ad; both 0/0",
+          "KJ source and kj-bilingual metadata inventory/digest unchanged; live milestones/kj/260803-kj-mascot remains absent"
+        ],
+        "verifier_refs": [
+          "node scripts/verify-grouped-nested-milestones.mjs",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "npm run test:architecture-subsystems",
+          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+          "npm run build",
+          "git rev-list --left-right --count HEAD...@{upstream}"
+        ],
+        "fixture_runtime_boundary": "JV-48 does not require a live runtime; clean clone build and required GitHub Pages CI are the applicable delivery evidence."
+      },
+      "acceptance_receipt": {
+        "matrix_ref": "milestones/morrowise/tasks.json#grouped-nested-milestone-support-v1.acceptance_matrix",
+        "matrix_fingerprint": "sha256:a1fec4aea9816e56fd19b92d4e931acc0833a162bed8a3ba22c1e3da7d1fbf4c",
+        "required_ids": ["JV48-A01", "JV48-A02", "JV48-A03", "JV48-A04", "JV48-A05", "JV48-A06"],
+        "results": [
+          {"id": "JV48-A01", "status": "pass"},
+          {"id": "JV48-A02", "status": "pass"},
+          {"id": "JV48-A03", "status": "pass"},
+          {"id": "JV48-A04", "status": "pass"},
+          {"id": "JV48-A05", "status": "pass"},
+          {"id": "JV48-A06", "status": "pass"}
+        ],
+        "exact_id_coverage": true,
+        "all_passed": true,
+        "verified_at": "2026-08-03"
+      },
+      "note": "2026-08-03 JV-48 正式完成：A01-A06 全部 pass；共用 discovery、grouped project-init、generator、validator、work-anchor、task event與下游 read/closeout consumers在 clean clone回歸通過，production build exit 0。C1 3618404 已推送並通過 required GitHub Pages CI；canonical task.completed event 已 apply，closeout sync request 已以具體 exemption 終結；C2 generated read models 已重建，雙 repo 0/0 parity 成立，baseline exclusions 未吸收，scope-owned residual zero 成立。KJ 原素材與 kj-bilingual before／after metadata digest一致，live milestones/kj/260803-kj-mascot仍不存在，原資料未搬。"
     }
   ]
 }

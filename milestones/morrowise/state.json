@@ -735,6 +735,14 @@
         "5e1bc66"
       ],
       "summary": "開案 v1 已將問題、影響、量化目標與量測來源設為必填成果契約；starter tasks 具 taxonomy 與 deterministic 順序，MC `/projects` 可進入唯讀 Operating Loop Map，對應正負向 verifier 均已通過。"
+    },
+    "grouped-nested-milestone-support-v1": {
+      "status": "completed",
+      "completed_at": "2026-08-03",
+      "commits": [
+        "3618404a0d5acd7eb57c2e98b757b64961eab084"
+      ],
+      "summary": "本地實作完成：Harness 已以單一 discovery contract 支援一層 group／yymmdd-project-id canonical milestone；KJ fixture、平面相容、非法路徑 fail-closed 與原資料不搬均已驗證，正式 remote closeout 尚待精準 commit／push 核准。"
     }
   }
 }

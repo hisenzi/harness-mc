@@ -1,0 +1,13 @@
+{
+  "event_id": "task.completed-morrowise-grouped-nested-milestone-support-v1-3618404-20260803T075459Z",
+  "type": "task.completed",
+  "repo": "harness-mc",
+  "commit": "3618404a0d5acd7eb57c2e98b757b64961eab084",
+  "project": "morrowise",
+  "task_id": "grouped-nested-milestone-support-v1",
+  "status": "completed",
+  "summary": "JV-48 grouped nested milestone support delivered: A01-A05 verifier pass, clean clone production build pass, C1 remote CI success, canonical closeout ready for C2.",
+  "created_at": "2026-08-03T07:54:59.000Z",
+  "actor": "codex",
+  "session_id": "019fc527-977a-7620-bc2e-1817231fd365"
+}

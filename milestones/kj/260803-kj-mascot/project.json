@@ -1,0 +1,151 @@
+{
+  "name": "KJ 光榮獅角色與量產基準設定",
+  "description": "建立光仁中學光榮獅永久官方角色的跨媒材造型與量產適配基準。",
+  "type": "internal",
+  "status": "active",
+  "priority": "P1",
+  "created": "2026-08-03",
+  "estimated_completion": "2026-08-31",
+  "repo_ref": null,
+  "repo_creation": {
+    "create_repo": false,
+    "approval_ref": null
+  },
+  "tracks": {
+    "phase-1": "Phase 1"
+  },
+  "outcome": {
+    "problem_statement": "現有光榮獅造型細節與應用元素尚未形成永久、可跨 2D、絨毛及 PVC／軟膠公仔使用的統一角色基準。",
+    "impact": "若未統一，未來視覺延伸與周邊製作會反覆重新詮釋，造成角色辨識、比例、材質與胸章呈現不一致。",
+    "success_target": {
+      "metric": "完成一份可驗收的永久角色設定規格，包含三視圖、四項細節規格、色彩材質轉換及可用／不可用規則。",
+      "baseline": "0 份完整跨媒材角色規格",
+      "target": "1 份正式通過驗收的角色與量產基準規格",
+      "due": "2026-08-31"
+    },
+    "measurement_source": "角色設定規格文件與 acceptance.md 逐項檢查三視圖、鬃毛／披風／尾飾／胸章細節、色彩材質轉換及可用／不可用規則。"
+  },
+  "task_taxonomy": {
+    "version": "v1",
+    "sort_rule": "dependencies_then_priority_then_id",
+    "capability_domains": [
+      "direction-governance",
+      "source-memory",
+      "sensing-events",
+      "judgment-priority",
+      "approval-safety",
+      "action-delivery",
+      "feedback-learning",
+      "heartbeat-scheduling",
+      "dashboard-surface",
+      "knowledge-capture",
+      "verification-immunity"
+    ],
+    "task_kinds": [
+      "discover",
+      "decide",
+      "design",
+      "implement",
+      "verify",
+      "operate",
+      "closeout"
+    ],
+    "priority_order": [
+      "P0",
+      "P1",
+      "P2"
+    ]
+  },
+  "goals": [
+    "建立光榮獅作為光仁中學永久官方角色的核心造型基準。",
+    "完成正、側、背三視圖，以及鬃毛、披風、尾飾與胸章的細節規格。",
+    "定義 2D、絨毛玩偶、PVC／軟膠公仔之間的色彩、材質與工藝轉換原則。",
+    "建立可供未來視覺延伸與周邊開發引用的可用／不可用造型規則。"
+  ],
+  "risks": [
+    {
+      "risk": "鬃毛、披風或尾飾簡化後削弱幼獅的遠距辨識度。",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "以正面輪廓與三視圖檢查大型金色／深藍色塊是否保留原角色識別特徵。"
+    },
+    {
+      "risk": "60 週年應用元素被誤寫入永久角色本體。",
+      "impact": "high",
+      "probability": "low",
+      "mitigation": "在規格中將 60 週年標示為應用層，永久角色只保留固定胸章與核心造型。"
+    },
+    {
+      "risk": "材質轉換造成胸章比例、顏色或細節不一致。",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "明定絨毛版平面繡章／布章與 PVC 版一體成形浮雕的共同造型邊界。"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "正、側、背三視圖完成，且三視圖的比例、胸章正面標準與固定元素一致。",
+      "verify_cmd": "依 acceptance.md 的三視圖檢查項逐項核對。",
+      "expected": "三視圖全數通過。"
+    },
+    {
+      "criterion": "鬃毛、披風、尾飾與胸章均有可執行的造型及材質細節規格。",
+      "verify_cmd": "依 acceptance.md 的四項細節與胸章檢查項逐項核對。",
+      "expected": "五項細節全數通過。"
+    },
+    {
+      "criterion": "2D、絨毛玩偶、PVC／軟膠公仔的色彩與材質轉換原則完成。",
+      "verify_cmd": "依 acceptance.md 的媒材適配表核對。",
+      "expected": "三種媒材均有明確適配規則。"
+    },
+    {
+      "criterion": "可用／不可用造型規則完成，且 60 週年資訊明確留在應用層。",
+      "verify_cmd": "依 acceptance.md 的使用邊界檢查項核對。",
+      "expected": "永久角色與應用層邊界清楚。"
+    },
+    {
+      "criterion": "成果在 MC task、Obsidian 專案頁與 KJ-光榮獅視覺層可追溯。",
+      "verify_cmd": "檢查 tasks.json、Projects/kj-mascot.md、Heptabase card 與 Obsidian Canvas mirror。",
+      "expected": "四個來源均可回查同一 task。"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "永久角色與應用層邊界",
+      "decision": "金黃色幼獅、金藍鬃毛、深藍短披風、親和比例與正面胸章為永久角色本體；60 週年資訊只放在應用層。",
+      "reason": "永久角色必須跨年度使用，週年資訊不應成為本體識別負擔。",
+      "alternatives_rejected": ["把 60 週年標誌整合進永久胸章", "為週年活動另造一個全新角色"],
+      "hc_used": ["#rightProblem", "#levelsOfAnalysis"]
+    },
+    {
+      "topic": "跨媒材簡化策略",
+      "decision": "細碎鬃毛合併為大型金色／深藍色塊；披風改為單層短披風；尾飾改為封閉金藍雙色毛束；胸章保留同一正面造型並按媒材轉換。",
+      "reason": "遠距辨識與製作可行性優先於無法穩定複製的細碎裝飾。",
+      "alternatives_rejected": ["保留原圖所有細碎毛束與多層披風皺褶", "移除胸章以降低製作複雜度"],
+      "hc_used": ["#breakItDown", "#risk"]
+    },
+    {
+      "topic": "資料來源與後續回饋",
+      "decision": "原始照片與設計資料留在既有 KJ 資料夾；本案只在 harness-mc 建立 canonical project/task 與規格交付物。未來新增媒材時，先引用本規格，再把新適配差異回寫為版本修訂。",
+      "reason": "保留原始資料所有權與路徑穩定性，讓角色規格成為可追溯的單一引用基準。",
+      "alternatives_rejected": ["搬移或重命名原始資料夾", "為每種媒材另開一套互不相容的角色設定"],
+      "hc_used": ["#sourceOfTruth", "#feedbackLoop"]
+    }
+  ],
+  "system_growth": {
+    "trigger": "KJ 提出新的角色視覺、活動或周邊媒材需求時。",
+    "data_flow": "既有 KJ 原始資料與已確認設計摘要 → 本案角色設定規格 → 新媒材適配與使用審查。",
+    "surface": "MC canonical task、Obsidian Projects/kj-mascot.md、Heptabase 白板 KJ-光榮獅與同名 Canvas mirror。",
+    "feedback_loop": "每次新媒材使用後記錄與基準規格的差異；需要永久化的差異進入版本修訂，僅屬活動的差異留在應用層。"
+  },
+  "hc_decision": {
+    "not_required_reason": "本案是角色與設計規格，不修改 MorroWise、workflow、verifier、同步流程或共享 agent 行為。"
+  },
+  "milestone": {
+    "layout": "grouped-v1",
+    "project_id": "kj-mascot",
+    "group": "kj",
+    "folder_date": "260803",
+    "relative_ref": "milestones/kj/260803-kj-mascot"
+  }
+}

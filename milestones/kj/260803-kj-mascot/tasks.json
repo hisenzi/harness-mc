@@ -1,0 +1,73 @@
+{
+  "project": "kj-mascot",
+  "tasks": [
+    {
+      "id": "kj-glory-lion-character-production-standard-v1",
+      "title": "KJ 光榮獅角色與量產基準設定",
+      "status": "todo",
+      "track": "phase-1",
+      "order_label": "KJ-01",
+      "priority": "P1",
+      "capability_domain": "direction-governance",
+      "task_kind": "design",
+      "dependencies": [],
+      "done_condition": "完成並驗收永久角色設定規格：正／側／背三視圖、鬃毛／披風／尾飾／胸章細節、標準色與材質轉換、絨毛及 PVC／軟膠適配、可用／不可用規則；60 週年只留在應用層，原始 KJ 資料檔案不搬移。",
+      "acceptance": [
+        "正／側／背三視圖的比例與固定元素一致，胸章以正面造型為標準。",
+        "鬃毛保留頂部上揚特徵，細碎毛束合併為大型金色／深藍色塊。",
+        "披風為單層短披風且只保留一條金邊。",
+        "尾飾為厚實、封閉的金藍雙色毛束，不含十字或火焰。",
+        "絨毛版胸章採平面繡章／布章，PVC／軟膠版採一體成形浮雕。",
+        "標準色、材質轉換與可用／不可用規則可供後續 2D、絨毛及 PVC／軟膠延伸引用。",
+        "工廠打版、3D 建模、開模、樣品打樣與正式量產明確列為不包含。"
+      ],
+      "goal_alignment": {
+        "project_id": "kj-mascot",
+        "goal_ref": "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/project.json#/goals",
+        "goal_fingerprint": "sha256:9a90beeabf84e125b5be64663c4968d572a5a9fd124caa2acfeced358ceebf3a",
+        "contribution": "把已確認的光榮獅設計摘要轉成可跨媒材引用的永久角色設定與量產適配基準。",
+        "evidence_plan": [
+          "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/acceptance.md",
+          "正／側／背三視圖與細節規格",
+          "本 task acceptance 結果"
+        ],
+        "reviewed_at": "2026-08-03"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 於 2026-08-03 確認設計摘要並要求開案；本 task 只建立永久角色設定與量產適配基準，不搬動原始 KJ 資料。",
+            "evidence_refs": [
+              "Vincent 2026-08-03：開案",
+              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/project.json",
+              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/acceptance.md"
+            ],
+            "recorded_at": "2026-08-03"
+          }
+        ]
+      },
+      "source_refs": [
+        "$COLLAB/CC本機協作_無Git/KJ/260623_KJ_光榮獅_吉祥物",
+        "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/acceptance.md"
+      ],
+      "external_refs": {
+        "heptabase": {
+          "whiteboard": "KJ-光榮獅",
+          "whiteboard_id": "0734eefa-422c-4a89-baeb-f9a0dadc930f",
+          "card_id": "5e419e45-018a-4f69-afea-8e0847e8589b",
+          "synced_at": "2026-08-03",
+          "sync_mode": "created"
+        }
+      }
+    }
+  ]
+}

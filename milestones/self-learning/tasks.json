@@ -667,6 +667,481 @@
         ]
       },
       "note": "2026-07-26 由 todo 轉為 in_progress；2026-07-31 已將唯一 NOW 學習內容明確識別為 Notion「吳淡如財商課」page 3a3714fb-14c6-81b0-ae29-fcf4fbde55f6，2026-08-25 做月底脫敏回顧與 keep／change／stop 決定。使用者可見名稱不使用 FP-v1 簡稱；技術 task id 只作正本識別。2026-07-31 唯一每日入口調整為 Notion 獨立頁「Future Practice｜未來練習」，沿用既有 PAI source 與理財實踐頁；AI Agent 依五段式、可觀察證據、人工確認、追加式更正與隱私規則協助紀錄，task 維持 in_progress。"
+    },
+    {
+      "id": "future-practice-roadmap",
+      "order_label": "FP-01",
+      "title": "鋪好路：整理 task",
+      "status": "todo",
+      "track": "operation",
+      "priority": "high",
+      "canonical_ref": "self-learning/future-practice-roadmap",
+      "created_at": "2026-08-02",
+      "depends_on": [
+        "morrowise/task-lifecycle-jv32-gate",
+        "morrowise/morrowise-second-brain-capture-gate",
+        "morrowise/notification-first-delivery"
+      ],
+      "goal_alignment": {
+        "project_id": "self-learning",
+        "goal_ref": "$COLLAB/harness-mc/milestones/self-learning/project.json#/goals",
+        "goal_fingerprint": "sha256:64ba481c1f3253c745431e033897d8b5e25725487d8a70bd6af705da04e19176",
+        "contribution": "把同時發生的學習、實踐與證據連回二十年定錨目標，並以 Vincent 的真實實踐閉環和 MorroWise 的助理／工作系統演化閉環，持續增加未來生活選擇能力。",
+        "evidence_plan": [
+          "完成一筆可追溯的 Vincent 真實實踐閉環及前後改變證據",
+          "完成一筆從原始事件到 fresh runtime 自動承襲的 MorroWise 演化閉環",
+          "完成整套流程的實際通知、提醒、去重與關閉後停止證據",
+          "完成一筆同源公開安全候選，並在另行核准後驗證 notyet.md 的實際呈現"
+        ],
+        "reviewed_at": "2026-08-02"
+      },
+      "roadmap": {
+        "anchor_outcome": "讓未來的我有能力選擇怎麼老、在哪裡住、如何生活。",
+        "preparation_horizon": "二十年",
+        "current_stage": "MVP",
+        "scope_topics": [
+          "理財",
+          "飲食",
+          "旅遊",
+          "語言溝通",
+          "植物",
+          "生活空間及適居換屋",
+          "無痛運動",
+          "興趣及賺取經濟能力（名稱待 Vincent 核准）"
+        ],
+        "stages": [
+          {
+            "label": "MVP",
+            "outcome": "先以最小真實案例跑通兩條閉環、共同來源的三層紀錄、通知／提醒及人類核准邊界，留下可驗收 receipt。"
+          },
+          {
+            "label": "第一階段完整版",
+            "outcome": "在 MVP receipt 之後繼續補齊所有涵蓋主題、每日最低節奏、自由探索、每月排序及正式公開投影，不把 MVP 誤當 task 完成。"
+          },
+          {
+            "label": "滾動優化",
+            "outcome": "依 fresh evidence 提出下一輪 task；目標 fingerprint 改變時逐一提出保留、修改、延後、取消或新增建議，均待 Vincent 核准後才經 JV-32／JV-40 寫入各專案 task 正本。"
+          }
+        ],
+        "constraints": [
+          "優先延伸既有知識庫、task 與 MorroWise，不新增平行 tracker、database 或 dashboard",
+          "brainstorming、實踐證據、共同知識摘要及公開安全候選共用來源參照，避免重複維護",
+          "私人財務、住址、健康、身分、secret、token、Cookie 及 runtime auth 不得進入共同或公開內容",
+          "公開候選、canonical task 變更、commit、push、deploy 及 publish 各自需要明確的人類核准"
+        ]
+      },
+      "done_condition": "完成並驗收一筆 Vincent 真實實踐閉環與一筆 MorroWise 助理／工作系統演化閉環，接通私人生活證據、共同知識摘要、公開安全投影、通知／提醒、依 fresh evidence 提出下一輪 task 及 goal-drift 重整建議；保存 MVP receipt 後繼續完成第一階段完整版，只有 16 項第一階段驗收全部通過並經 Vincent 確認才可 completed。",
+      "acceptance_matrix": [
+        {
+          "id": "MVP-01",
+          "task_labels": ["FP-01"],
+          "what": "二十年定錨目標位於 self-learning 專案 goals 的上層，現有學習運作目標保留在其下，所有新 task 使用目前的目標 fingerprint。",
+          "preconditions": [
+            "self-learning/project.json 已存在且為專案正本",
+            "定錨文字已由 Vincent 核准"
+          ],
+          "steps": [
+            "讀取 project.json#/goals",
+            "核對二十年定錨目標及現有三項運作目標",
+            "計算 JSON.stringify(goals) 的 SHA-256 並與 FP-01 goal_alignment 比對"
+          ],
+          "pass_condition": "定錨目標精確為「讓未來的我有能力選擇怎麼老、在哪裡住、如何生活。」；現有三項目標零遺失，且 task fingerprint 與目前 goals 相同。",
+          "fail_condition": "定錨目標被改名、版本化、放在 task 之下、舊目標遺失，或 fingerprint 過期。",
+          "verification": [
+            "node scripts/work-anchor-preflight.mjs --project self-learning --task-id future-practice-roadmap --intent '開始'",
+            "node scripts/validate-tasks.mjs --changed-only --project self-learning"
+          ]
+        },
+        {
+          "id": "MVP-02",
+          "task_labels": ["FP-01"],
+          "what": "FP-01 正本完整記錄 MVP、第一階段完整版、滾動優化、goal alignment、done condition 及完整驗收矩陣。",
+          "preconditions": [
+            "Vincent 已核准 id=future-practice-roadmap",
+            "Vincent 已核准 order_label=FP-01"
+          ],
+          "steps": [
+            "從 milestones/self-learning/tasks.json 依 id 讀取唯一 task",
+            "核對 order_label、roadmap 三階段、goal_alignment、done_condition 與 acceptance_matrix",
+            "核對 MVP receipt 不會直接把 task 改為 completed"
+          ],
+          "pass_condition": "正本只有一筆 future-practice-roadmap，order_label 精確為 FP-01，三階段與 16 項驗收均可機械讀取，且完成邊界在第一階段完整版全部通過之後。",
+          "fail_condition": "缺少穩定 id、簡短 order_label、任一階段、goal alignment、done condition、驗收項目，或 MVP 被誤當完整收尾。",
+          "verification": [
+            "node scripts/validate-tasks.mjs --changed-only --project self-learning",
+            "node -e 'const t=require(\"./milestones/self-learning/tasks.json\").tasks.filter(x=>x.id===\"future-practice-roadmap\"); if(t.length!==1||t[0].order_label!==\"FP-01\"||t[0].acceptance_matrix.length!==16) process.exit(1)'"
+          ]
+        },
+        {
+          "id": "MVP-03",
+          "task_labels": ["FP-01"],
+          "what": "同時發生的學習可立即收錄及排序；每日只要求各主題當期最小行動，並正式保留自由探索空間。",
+          "preconditions": [
+            "至少有兩個不同學習主題同時發生",
+            "至少有一筆未預排的自由探索"
+          ],
+          "steps": [
+            "分別收錄兩個主題的來源、當期最小行動與長期選擇關聯",
+            "記錄自由探索但不強迫轉成 task",
+            "依生活現況、收入、證據與定錨目標排出當期順序"
+          ],
+          "pass_condition": "兩個主題均可同時存在且各有一個清楚最小行動；自由探索有正式位置但不會自動新增 task。",
+          "fail_condition": "單一試行阻塞其他主題、每個探索都被強迫 task 化，或只增加筆記而沒有可執行的當期行動。",
+          "verification": [
+            "人工檢視兩個不同主題的同一期紀錄",
+            "人工檢視一筆自由探索沒有 canonical task mutation"
+          ]
+        },
+        {
+          "id": "MVP-04",
+          "task_labels": ["FP-01"],
+          "what": "真實實踐紀錄具備來源、原始判斷、執行者、行動、可觀察證據及下一步，不把推論寫成已完成。",
+          "preconditions": [
+            "Vincent 已實際行動、嘗試或明確遇到卡點",
+            "存在可追溯來源或明確標示的個人判斷"
+          ],
+          "steps": [
+            "追加記錄來源與原始判斷",
+            "區分 Vincent、Agent 或其他執行者",
+            "附上可觀察證據、待確認事項及下一步負責者"
+          ],
+          "pass_condition": "六個必要欄位齊全，所有完成敘述均有可觀察證據，無法觀察的線下行動由 Vincent 明確確認。",
+          "fail_condition": "Agent 推論冒充 Vincent 已行動、缺執行者或證據，或以整理筆記冒充生活實踐。",
+          "verification": [
+            "人工逐欄核對一筆 Vincent 真實實踐紀錄",
+            "人工反例測試：沒有行動或 blocker 時不得追加實踐"
+          ]
+        },
+        {
+          "id": "MVP-04B",
+          "task_labels": ["FP-01"],
+          "what": "實踐能證明 Vincent 發生前後改變，並以 keep／change／stop 更新下一步及未來選擇。",
+          "preconditions": [
+            "MVP-04 已有一筆合格真實實踐",
+            "已到達可回顧的時間或證據門檻"
+          ],
+          "steps": [
+            "比較實踐前後的判斷、能力或行動",
+            "記錄 keep、change 或 stop 決定及理由",
+            "把決定反映到下一步與對應的未來生活選擇"
+          ],
+          "pass_condition": "至少一項可觀察改變及一項 keep／change／stop 決定可追溯到實踐證據，下一步已隨之更新。",
+          "fail_condition": "只有心得或筆記數量，沒有前後差異、決定或行動更新。",
+          "verification": [
+            "人工核對實踐前後證據與 keep／change／stop",
+            "人工核對更新後下一步仍連回定錨目標"
+          ]
+        },
+        {
+          "id": "MVP-07",
+          "task_labels": ["FP-01", "JV-44"],
+          "what": "同一來源同時產生私人生活證據、共同知識摘要及公開安全候選，三者以來源參照連接而非重複維護。",
+          "preconditions": [
+            "MVP-04 已有合格來源與實踐證據",
+            "共同知識庫及公開候選位置沿用既有系統"
+          ],
+          "steps": [
+            "保存私人證據參照但不複製敏感原文到共同層",
+            "從同一來源產生可共用知識摘要",
+            "從同一來源產生去識別公開安全候選並標示待核准"
+          ],
+          "pass_condition": "三層可回溯同一 source ref；共同與公開層均不含私人敏感資料，且修正可由來源參照追蹤。",
+          "fail_condition": "三份內容互相失聯、需要手動重複維護，或私人財務、住址、健康、身分及憑證資訊進入共同或公開層。",
+          "verification": [
+            "執行 JV-44 現行 capture verifier",
+            "人工比對同一 source ref 的三層輸出與隱私遮罩"
+          ]
+        },
+        {
+          "id": "MVP-05A",
+          "task_labels": ["MW-GOV-FABLE-01"],
+          "what": "一筆助理失敗或 Vincent 修正以六個必要欄位保存，教訓候選可回溯原始事件。",
+          "preconditions": [
+            "已發生一筆真實助理誤判、漏接、失敗或 Vincent 修正",
+            "原始對話或執行事件有不可變參照"
+          ],
+          "steps": [
+            "記錄事件、原判斷、Vincent 修正、造成影響、建議教訓及證據參照",
+            "建立 lesson candidate 並連回原始事件",
+            "確認尚未修改 canonical 或工具"
+          ],
+          "pass_condition": "六個欄位齊全，candidate 能回溯 raw event，且候選階段 canonical mutation 為零。",
+          "fail_condition": "只寫抽象心得、找不到原始事件、缺少 Vincent 修正，或尚未核准就改規則。",
+          "verification": [
+            "人工逐欄核對一筆 MorroWise 原始事件及 lesson candidate",
+            "核對候選階段 applied_actions=0"
+          ]
+        },
+        {
+          "id": "MVP-05B",
+          "task_labels": ["MW-GOV-FABLE-01"],
+          "what": "教訓先以候選存在，只有 named Vincent approval 後才可升級 canonical，並保留候選、核准及 canonical 差異。",
+          "preconditions": [
+            "MVP-05A 已有合格 lesson candidate",
+            "核准人必須明確識別為 Vincent"
+          ],
+          "steps": [
+            "在核准前嘗試 promotion 並確認被拒絕",
+            "記錄 Vincent 對指定 candidate 的核准",
+            "升級 canonical 並保存 candidate、approval、canonical diff"
+          ],
+          "pass_condition": "未核准 promotion 必定失敗；核准後只有指定候選被升級，三段證據完整。",
+          "fail_condition": "使用模糊的人類核准、核准前可升級、核准一筆卻修改其他規則，或缺少差異記錄。",
+          "verification": [
+            "執行 MW-GOV-FABLE-01 現行 promotion verifier",
+            "人工核對 named approval 與 canonical diff"
+          ]
+        },
+        {
+          "id": "MVP-05C",
+          "task_labels": ["MW-GOV-FABLE-01"],
+          "what": "已核准教訓依序進入原則、規則、工具、實際 Pipeline 呼叫點及 verifier 五層，經驗會改變下一次運作。",
+          "preconditions": [
+            "MVP-05B 已完成 named approval",
+            "已有明確可自動化的行為改變"
+          ],
+          "steps": [
+            "更新原則或 canonical 說明",
+            "更新可判定規則",
+            "實作工具或 Hook 並接入實際 Pipeline 呼叫點",
+            "加入正例與反例 verifier"
+          ],
+          "pass_condition": "五層均有實際檔案或執行證據，Pipeline 真的呼叫新工具，verifier 能拒絕舊錯誤行為。",
+          "fail_condition": "任一層缺失、工具從未被 Pipeline 呼叫、只有文字規則，或 verifier 無法阻斷反例。",
+          "verification": [
+            "執行 MW-GOV-FABLE-01 現行五層 promotion verifier",
+            "執行一個正例及一個舊錯誤行為反例"
+          ]
+        },
+        {
+          "id": "MVP-06",
+          "task_labels": ["MW-GOV-FABLE-01", "MW-PHASE3-ADMISSION"],
+          "what": "下一個 fresh runtime 在新情境且無人工提示下，會經實際工具、Hook 或 Pipeline 自動承襲已核准規則。",
+          "preconditions": [
+            "MVP-05C 五層已完成",
+            "使用與原始事件不同但同規則適用的新情境",
+            "fresh runtime 不讀取本 session 的聊天提示"
+          ],
+          "steps": [
+            "啟動 fresh runtime 並給予新情境",
+            "觀察實際工具、Hook 或 Pipeline 執行 trace",
+            "核對結果符合新規則且不需要 Vincent 再次提醒"
+          ],
+          "pass_condition": "fresh runtime 由實際執行路徑自動產生合規結果，並留下 runtime、tool call 及 verifier trace。",
+          "fail_condition": "只會口頭重述規則、依賴本 session 記憶或 Vincent 提醒、沒有工具執行 trace，或仍重犯舊錯誤。",
+          "verification": [
+            "執行 MW-PHASE3-ADMISSION fresh-session E2E verifier",
+            "人工核對新情境、零提示與實際 execution trace"
+          ]
+        },
+        {
+          "id": "MVP-08",
+          "task_labels": ["JV-04"],
+          "what": "需要 Vincent 決定的真實等待狀態會自動進入安全通知 outbox 並實際送達。",
+          "preconditions": [
+            "存在一筆真實待核准狀態而非 mock fixture",
+            "通知內容已通過隱私與安全投影"
+          ],
+          "steps": [
+            "建立或觀察真實等待核准狀態轉換",
+            "確認系統自動排入 approval queue 及 safe outbox",
+            "觀察 notifier 實際送達並回寫 receipt"
+          ],
+          "pass_condition": "狀態轉換後無人工補送即可出現唯一安全 outbox item、實際 delivery receipt 及可回溯來源。",
+          "fail_condition": "只用 mock、手動偽造通知、沒有實際送達、重複投遞，或通知洩漏私人內容。",
+          "verification": [
+            "/private/tmp/MorroWiseNotifier --poll-once",
+            "執行 JV-04 現行 notification outbox verifier",
+            "人工核對真實 delivery receipt"
+          ]
+        },
+        {
+          "id": "MVP-09",
+          "task_labels": ["MW-PRIORITY-V2", "MW-HEARTBEAT-V1", "MW-DECISION-V1", "JV-04"],
+          "what": "整套流程依 open state 提醒內容待確認、實踐下一步、證據待補、知識庫待收錄、公開候選待核准及下一輪 task 待核准，且去重、關閉後停止。",
+          "preconditions": [
+            "至少一種真實 open state 已超過其提醒條件",
+            "現有 MorroWise heartbeat 是唯一排程 owner"
+          ],
+          "steps": [
+            "讓 open state 達到提醒門檻並執行唯一 heartbeat",
+            "再次執行 heartbeat 驗證同一狀態去重",
+            "關閉狀態後再執行 heartbeat"
+          ],
+          "pass_condition": "逾期 open state 只提醒一次；重跑不重複；關閉後停止；六種流程狀態均有明確通知或提醒政策，且沒有第二個 scheduler。",
+          "fail_condition": "漏提醒、重複提醒、狀態關閉後仍提醒、所有事件都變通知噪音，或另建 scheduler／cron。",
+          "verification": [
+            "執行 MW-PRIORITY-V2 priority read-model verifier",
+            "執行 MW-HEARTBEAT-V1 及 MW-DECISION-V1 現行 heartbeat／decision verifier",
+            "執行 JV-04 通知去重與關閉後停止測試"
+          ]
+        },
+        {
+          "id": "MVP-10",
+          "task_labels": ["JV-40"],
+          "what": "MorroWise 只依 fresh evidence 提出格式完整的下一輪 task candidate，不自動寫入 canonical task。",
+          "preconditions": [
+            "本輪已有新的實踐或系統證據",
+            "證據指出現有 task 無法覆蓋的具體 gap"
+          ],
+          "steps": [
+            "以 fresh evidence 產生下一輪 candidate",
+            "核對 target、source、evidence、gap、done condition、limitations 及 requires_approval=true",
+            "在 Vincent 尚未核准時檢查 canonical tasks"
+          ],
+          "pass_condition": "candidate 欄位完整、可回溯 fresh evidence、requires_approval=true、applied_actions=0，canonical tasks 零變更。",
+          "fail_condition": "由目標文字憑空產生 task、缺來源或驗收邊界、使用過期證據，或尚未核准就寫入正本。",
+          "verification": [
+            "執行 JV-40 現行 next-task proposal verifier",
+            "比對 proposal 前後 canonical task fingerprint"
+          ]
+        },
+        {
+          "id": "MVP-11",
+          "task_labels": ["JV-40"],
+          "what": "目標 fingerprint 改變時，MorroWise 對每一筆 open task 提出重整操作建議，但不自動修改或刪除。",
+          "preconditions": [
+            "已建立變更前 goals fingerprint",
+            "Vincent 明確變更專案 goals 並形成新 fingerprint",
+            "存在至少兩筆不同狀態的 open task"
+          ],
+          "steps": [
+            "比較新舊 fingerprint",
+            "逐一對所有 open task 產生保留、修改、延後、取消或新增建議及理由",
+            "在核准前比對 canonical tasks"
+          ],
+          "pass_condition": "每一筆 open task 恰有一項可解釋的建議，涵蓋數量與 open task 數相同，且 applied_actions=0、無 task 被自動刪除或改寫。",
+          "fail_condition": "漏掉任何 open task、直接批次改寫、物理刪除 task、沒有 fingerprint 證據，或把建議冒充已套用。",
+          "verification": [
+            "執行 JV-40 現行 goal-drift proposal verifier",
+            "核對 covered_open_task_ids 與 canonical open task 集合完全相等",
+            "比對 proposal 前後 canonical task fingerprint"
+          ]
+        },
+        {
+          "id": "MVP-12",
+          "task_labels": ["FP-01"],
+          "what": "從一開始保留同源公開安全候選，但在人工核准前不發生任何網站、Git 或部署發布動作。",
+          "preconditions": [
+            "MVP-07 已產生一筆去識別公開安全候選",
+            "候選狀態明確為待 Vincent 核准"
+          ],
+          "steps": [
+            "核對候選的 source ref、隱私遮罩及待核准狀態",
+            "在未核准狀態檢查 notyet_website、Git 與部署紀錄",
+            "確認公開候選可修正但不會自動 publish"
+          ],
+          "pass_condition": "候選存在且可追溯同一來源；未核准時 website mutation、commit、push、deploy 及 publish 全部為零。",
+          "fail_condition": "沒有從一開始準備候選、候選洩漏私人內容，或任一未核准發布動作發生。",
+          "verification": [
+            "人工核對公開安全候選與 source ref",
+            "核對 $COLLAB/notyet_website 的網站、Git 與部署紀錄零未核准變更"
+          ]
+        },
+        {
+          "id": "MVP-12B",
+          "task_labels": ["FP-01"],
+          "what": "一筆公開安全候選在 Vincent 分別核准內容與發布動作後，實際出現在 notyet.md 路徑且讀回內容精確、安全。",
+          "preconditions": [
+            "MVP-12 候選已通過 Vincent 內容核准",
+            "commit、push、deploy 或 publish 已取得各自需要的明確核准",
+            "存在可驗證的實際 notyet.md route"
+          ],
+          "steps": [
+            "只對已核准候選執行另行核准的 Git 與部署動作",
+            "等待實際 route 可讀取",
+            "讀回 route 並比對標題、主要內容、source-safe 邊界及隱私掃描"
+          ],
+          "pass_condition": "實際 notyet.md route 可讀，內容與核准版本精確相符且隱私安全；commit、push、deploy、publish 均有對應核准及 receipt。",
+          "fail_condition": "只驗證本機草稿、route 不存在或內容不一致、發布範圍超出核准、缺 receipt，或讀回含私人敏感資料。",
+          "verification": [
+            "以實際 notyet.md route 執行 HTTP readback",
+            "人工比對核准版本與 live content",
+            "執行公開內容隱私掃描並核對發布 receipt"
+          ]
+        }
+      ],
+      "hc_decision": {
+        "task_scope": "self-learning/future-practice-roadmap",
+        "hc_refs": [
+          "#sift",
+          "#rightProblem",
+          "#systemDynamics",
+          "#sourceBoundary",
+          "#risk",
+          "#constraints",
+          "#vincentThinking"
+        ],
+        "hc_reasoning": "真正要鋪的不是另一套筆記或人生 dashboard，而是讓多個同時發生的學習從真實實踐與證據連回長期選擇，並讓助理失敗能經人類核准後變成下一個 runtime 會自動執行的結構。最小落地必須同時驗證 Vincent 變強、MorroWise 變強、三層同源紀錄、通知／提醒及 proposal-only 治理，否則只是規劃文件。",
+        "hc_confidence": 0.97,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/self-learning/project.json#/goals",
+          "$COLLAB/harness-mc/milestones/self-learning/tasks.json#future-practice-finance-pilot-v1",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#fable-harness-judgment-transfer",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-second-brain-capture-gate",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#notification-first-delivery",
+          "$COLLAB/notyet-harness/300_Obsidian_brain/知識庫"
+        ],
+        "source_boundary": "HC 只是思考檢查，不是正本；self-learning project.json 擁有目標，self-learning tasks.json#future-practice-roadmap 擁有本路線與生命週期，各專案 task 正本擁有自己的實作狀態，私人證據留在既有私人來源，共同知識留在 notyet-harness 知識庫，notyet.md 只作經核准的公開安全輸出表面。"
+      },
+      "architecture_decision": {
+        "decision": "not_required",
+        "evaluated_at": "2026-08-02",
+        "reason": "本次只建立 self-learning 的 canonical work anchor、目標對齊與驗收契約，重用既有 MorroWise task、通知、知識收錄、heartbeat、decision loop 及 fresh-session admission；不新增 subsystem、registry、read model、scheduler、adapter、dashboard、tracker 或 database。"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "verification-before-completion",
+          "closeout-commit-routing"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准建立 FP-01 作為 Future Practice｜未來練習的完整路線 task，先以 MVP 跑通後繼續第一階段完整版，再依證據滾動優化；本次只建立 canonical work anchor，不宣稱實作已完成。",
+            "evidence_refs": [
+              "Vincent current session：設計確認",
+              "Vincent current session：id=future-practice-roadmap；order_label=FP-01",
+              "Vincent current session：可以寫入",
+              "$COLLAB/harness-mc/milestones/self-learning/project.json#/goals",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate"
+            ],
+            "recorded_at": "2026-08-02",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "self-learning/future-practice-finance-pilot-v1",
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/fable-harness-judgment-transfer"
+              ],
+              "scope_comparison": {
+                "problem": "既有 30 天理財 task 只驗證單一實踐，JV-40 只治理 task proposal／canonical mutation，MW-GOV-FABLE-01 只治理助理判斷轉移；尚無一筆 self-learning task 把長期定錨、跨主題實踐、三層紀錄、通知／提醒及兩條演化閉環放進同一完整驗收路線。",
+                "owner_source_of_truth": "self-learning/FP-01 擁有 Future Practice 路線、階段及整體驗收；現有 MorroWise tasks 繼續擁有 task governance、判斷轉移、通知與 runtime 能力，不複製其正本。",
+                "inputs_outputs": "輸入是 Vincent 的學習、實踐、證據、修正與既有系統事件；輸出是私人證據參照、共同知識摘要、公開安全候選、驗收 receipt 及 proposal-only 的下一輪 task／goal-drift 建議。",
+                "lifecycle_completion": "MVP receipt 只允許進入第一階段完整版；只有 16 項第一階段驗收全部通過並經 Vincent 確認，FP-01 才可 completed，後續優化由 fresh evidence 產生 proposal。"
+              },
+              "decision_reason": "這是跨既有單點能力的新整合與驗收問題，不能由理財試行或任一 MorroWise 能力 task 單獨取代，因此建立一筆新的 self-learning roadmap task，但不新增平行系統。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-02",
+                "evidence_refs": [
+                  "Vincent current session：可以『id: future-practice-roadmap；order_label: FP-01』",
+                  "Vincent current session：可以寫入"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "note": "FP-01 是完整路線及驗收 task，不是第二套 tracker。MVP 目的在加速取得真實運行證據；保存 MVP receipt 後 task 仍需繼續第一階段完整版。MorroWise 只能提出下一輪 task 或目標改變後的重整建議；經 Vincent 核准後，才透過 JV-32／JV-40 寫入該專案 task 正本。"
     }
   ]
 }

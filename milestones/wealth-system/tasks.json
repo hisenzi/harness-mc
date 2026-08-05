@@ -97,6 +97,101 @@
       "done_condition": "三曲線儀表板（資產/收入/支出 vs 目標）+ 年度資產負債快照",
       "depends_on": ["b-5"],
       "note": "觸發條件：資產 > 500 萬，配置開始影響結果"
+    },
+    {
+      "id": "e-4",
+      "title": "擴充：黃金價格觀察台架構定義（不含通知）",
+      "status": "completed",
+      "track": "expand",
+      "done_condition": "$COLLAB/wealth-system/ARCHITECTURE.md 建立，明確記載五層掛接、模組責任、資料與決策邊界，以及 MVP 不含通知；不宣稱黃金模組已啟動",
+      "est_hours": 1,
+      "depends_on": [],
+      "note": "這是架構提案與邊界定義，不等於產品實作；待投資配置擴充條件成立後，再評估 wireframe、資料管線與正式啟動",
+      "completed_at": "2026-08-05",
+      "commits": ["6a717b8a0d1a07eb95df127b0c3cedd93ebad2f8"],
+      "summary": "建立 wealth-system 活動架構正本，記錄五層掛接、黃金觀察台責任邊界與不含通知的 MVP；黃金模組仍為延後實作提案。",
+      "goal_alignment": {
+        "project_id": "wealth-system",
+        "goal_ref": "$COLLAB/harness-mc/milestones/wealth-system/project.json#/goals",
+        "goal_fingerprint": "sha256:c6f8bd0017cc6357968c2ee5fd0abf413fbca3c268ade3d4c5676f77630d2f4c",
+        "contribution": "把投資觀察能力放回終態、財務門檻、路徑設計與今日行動的共同架構，先固定黃金觀察台的責任邊界，避免價格工具變成第二套資產配置正本。",
+        "evidence_plan": [
+          "活動架構文件明確記錄五層掛接與黃金觀察台的上游、下游及不負責範圍",
+          "MVP 邊界明確排除通知、自動交易、預測與估算資料冒充實際牌價",
+          "文件狀態明確標示黃金模組為提案／延後實作，未宣稱產品或 runtime 已啟動"
+        ],
+        "reviewed_at": "2026-08-05"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "verification-before-completion",
+          "closeout-commit-routing"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 核准建立 wealth-system 活動架構文件，先以 e-4 固定五層掛接、黃金觀察台責任邊界與 MVP 不含通知的範圍；本 task 不宣稱黃金模組已啟動。",
+            "evidence_refs": [
+              "Vincent 2026-08-05：可以進行 wealth-system 的活動架構文件",
+              "$COLLAB/wealth-system/ARCHITECTURE.md",
+              "$COLLAB/harness-mc/milestones/wealth-system/project.json#/goals"
+            ],
+            "recorded_at": "2026-08-05"
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "C1 architecture document 已送達 wealth-system origin/main；文件內容、exact scope 與本次文件型驗收均完成，正式產品建置仍維持延後。",
+            "evidence_refs": [
+              "6a717b8a0d1a07eb95df127b0c3cedd93ebad2f8",
+              "$COLLAB/wealth-system/ARCHITECTURE.md",
+              "node scripts/validate-tasks.mjs --changed-only --project wealth-system"
+            ],
+            "recorded_at": "2026-08-05"
+          }
+        ]
+      },
+      "test_contract": {
+        "applicability": "exempt",
+        "behavior_cases": [
+          "ARCHITECTURE.md contains the five-layer map and the proposed/deferred gold observer boundary",
+          "e-4 records module ownership, decision boundary, and MVP exclusion of notifications"
+        ],
+        "test_level": ["documentation", "canonical-task"],
+        "fixture_refs": ["$COLLAB/wealth-system/ARCHITECTURE.md"],
+        "evidence_refs": [
+          "6a717b8a0d1a07eb95df127b0c3cedd93ebad2f8",
+          "$COLLAB/harness-mc/milestones/wealth-system/tasks.json#e-4"
+        ],
+        "runtime_evidence_required": false,
+        "tdd_exemption_reason": "本 task 只新增活動架構文件與 canonical task closeout，不改 executable code、runtime、資料管線或通知行為。",
+        "alternative_verification_commands": [
+          "node scripts/validate-tasks.mjs --changed-only --project wealth-system",
+          "node scripts/generate-data.mjs",
+          "git diff --check -- milestones/wealth-system/tasks.json"
+        ]
+      },
+      "completion_evidence": {
+        "regression_evidence": [
+          "node scripts/validate-tasks.mjs --changed-only --project wealth-system -> PASS",
+          "node scripts/generate-data.mjs -> projects.json generated with e-4",
+          "git diff --check -- milestones/wealth-system/tasks.json -> PASS"
+        ],
+        "verifier_refs": [
+          "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
+          "$COLLAB/harness-mc/scripts/generate-data.mjs",
+          "6a717b8a0d1a07eb95df127b0c3cedd93ebad2f8"
+        ],
+        "fixture_runtime_boundary": "Documentation-only closeout；不宣稱 fixture、live runtime、通知或黃金資料接入已完成。"
+      }
     }
   ]
 }

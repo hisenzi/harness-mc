@@ -9589,5 +9589,275 @@
       },
       "note": "2026-08-03 JV-48 正式完成：A01-A06 全部 pass；共用 discovery、grouped project-init、generator、validator、work-anchor、task event與下游 read/closeout consumers在 clean clone回歸通過，production build exit 0。C1 3618404 已推送並通過 required GitHub Pages CI；canonical task.completed event 已 apply，closeout sync request 已以具體 exemption 終結；C2 generated read models 已重建，雙 repo 0/0 parity 成立，baseline exclusions 未吸收，scope-owned residual zero 成立。KJ 原素材與 kj-bilingual before／after metadata digest一致，live milestones/kj/260803-kj-mascot仍不存在，原資料未搬。"
     }
+  ,
+    {
+      "id": "account-login-sync-start-v1",
+      "order_label": "JV-45",
+      "title": "JV-45 換任何硬體後登入必備帳號即可同步最新資料並開始工作",
+      "status": "in_progress",
+      "track": "governance",
+      "priority": "medium",
+      "weekly_core": false,
+      "depends_on": [
+        "task-lifecycle-jv32-gate"
+      ],
+      "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#account-login-sync-start-v1；Git remote 與各 repo 的 canonical tracked files 維持各自正本",
+      "inputs": [
+        "Vincent 核准、僅含安全 metadata 的必備帳號／能力清單",
+        "受支援工作環境中的 Git remote、branch、dirty／ahead／behind 與本機 capability metadata",
+        "受 Git 管理的 canonical tasks、registries、documents、sources 與既有 generated-data contract"
+      ],
+      "outputs": [
+        "登入後同步與開始工作的可重跑、安全 bootstrap contract",
+        "remote truth、本機差異、必要能力與 freshness 的 read-only 判定及 next action",
+        "不可信、缺帳號、缺能力或衝突時的明確 blocked reason"
+      ],
+      "done_condition": "在任一受支援的全新工作環境中，Vincent 登入核准的必備帳號後，系統可在不讀取、輸出或複製秘密的前提下，安全取得受 Git 管理的最新 canonical 資料、辨識 remote truth 與本機差異、重建必要 read model，並給出可開始工作的 work anchor 或明確 blocked next action。兩個獨立 fresh-session／硬體環境對相同 remote truth 必須得到一致的判定；不得覆寫本機 work、假裝同步成功、要求固定硬體數量，或把 runtime auth、Cookie、token、cache 寫入共享正本。",
+      "stop_condition": "必備帳號／安全 capability metadata 未經 Vincent 核准、remote truth 不可讀、本機存在未分類差異、所需工具不可用、或 evidence 只有 fixture 時，停止在 blocked／degraded 並說明下一個人工動作；不得自動登入、讀取 secrets、覆寫本機資料、修改 task state、commit 或 push。",
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "缺任一必備帳號能力或 remote 不可讀時，bootstrap 判定必須是 blocked，且不得回報 healthy。",
+          "存在 dirty、ahead、behind 或 diverged 本機 repo 時，必須保留本機差異並輸出安全 next action，不得自動覆寫。",
+          "兩個 fresh-session 環境對相同 sanitized input 與 remote truth 必須得到相同判定。",
+          "任何 secret、Cookie、token、runtime auth、cache 或私人設定出現在輸入、輸出或 evidence 時 verifier 必須失敗。"
+        ],
+        "test_level": [
+          "unit",
+          "negative_fixture",
+          "fresh_session_integration",
+          "safe_runtime_probe"
+        ],
+        "red_command": "node scripts/verify-account-login-sync-start.mjs",
+        "expected_red_reason": "在 bootstrap contract、safe probe 與 negative fixtures 尚未實作前，缺帳號、dirty repo、fixture-only 與秘密邊界案例不可被正確判定。",
+        "green_command": "node scripts/verify-account-login-sync-start.mjs",
+        "full_regression_commands": [
+          "node scripts/verify-account-login-sync-start.mjs",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "node scripts/generate-data.mjs",
+          "git diff --check"
+        ],
+        "fixture_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#account-login-sync-start-v1"
+        ],
+        "runtime_evidence_required": true,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#credential-lifecycle-governance"
+        ]
+      },
+      "execution_contract": {
+        "owner": "morrowise/account-login-sync-start-v1",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json；Git remote／canonical tracked files；Vincent 核准的外部帳號能力 metadata",
+        "inputs": [
+          "核准的帳號能力需求（不含秘密值）",
+          "safe Git／capability probes 與現有 canonical repository state",
+          "既有 task lifecycle、repo coordination 與 credential governance contracts"
+        ],
+        "outputs": [
+          "單一 bootstrap decision、freshness、blocked reason 與 next action contract",
+          "可重跑的安全 probe／fixture verifier 與 fresh-session evidence"
+        ],
+        "verifiers": [
+          "node scripts/verify-account-login-sync-start.mjs",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "fresh-session multi-environment regression"
+        ],
+        "stop_condition": "帳號能力未核准、runtime evidence 不安全或不新鮮、remote／本機差異無法安全分類時，僅回報 blocked／degraded；禁止背景寫入、秘密讀取、固定硬體假設與自動覆寫。"
+      },
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "把 Agent 共用資料的取得、remote truth 與安全啟動收斂為可驗證 contract，使任何受支援工作環境可由同一 canonical source 重新開始工作，而不把 dashboard、機器私有狀態或 secrets 變成第二正本。",
+        "evidence_plan": [
+          "safe bootstrap verifier 的正負向 fixtures",
+          "兩個 fresh-session 環境對相同 remote truth 的一致性證據",
+          "canonical task validator、generated-data check 與必要 fresh build"
+        ],
+        "reviewed_at": "2026-08-03"
+      },
+      "acceptance_matrix": [
+        {
+          "id": "JV45-A01",
+          "what": "必備帳號與能力邊界由安全 metadata 表達，不把秘密值納入任一正本或 evidence。",
+          "preconditions": [
+            "Vincent 核准必備帳號能力範圍"
+          ],
+          "steps": [
+            "以缺帳號、缺能力與含秘密值的負向 fixtures 執行 verifier"
+          ],
+          "pass_condition": "缺失明確 blocked；秘密值一律被拒絕。",
+          "fail_condition": "讀取或輸出秘密，或缺帳號仍宣稱 ready。",
+          "verification": [
+            "node scripts/verify-account-login-sync-start.mjs"
+          ]
+        },
+        {
+          "id": "JV45-A02",
+          "what": "登入後可辨識 remote truth 與本機 repo 差異，且不覆寫使用者工作。",
+          "preconditions": [
+            "Git remote 與受管理 repo 可安全探測"
+          ],
+          "steps": [
+            "執行 clean、dirty、ahead、behind 與 diverged cases"
+          ],
+          "pass_condition": "每種狀態都有 deterministic 判定與安全 next action。",
+          "fail_condition": "自動 reset、checkout、pull 覆寫本機差異，或將 local 當 remote truth。",
+          "verification": [
+            "node scripts/verify-account-login-sync-start.mjs"
+          ]
+        },
+        {
+          "id": "JV45-A03",
+          "what": "受 Git 管理的 canonical 資料與必要 read model 可由同一正本重新取得。",
+          "preconditions": [
+            "remote truth 已安全確認"
+          ],
+          "steps": [
+            "在 fresh session 取得 canonical sources 並重建必要 generated data"
+          ],
+          "pass_condition": "輸出可追溯至 canonical source，沒有第二份手寫狀態。",
+          "fail_condition": "以 cache、fixture 或 dashboard 資料取代正本。",
+          "verification": [
+            "node scripts/generate-data.mjs",
+            "node scripts/verify-account-login-sync-start.mjs"
+          ]
+        },
+        {
+          "id": "JV45-A04",
+          "what": "兩個獨立 fresh-session／硬體環境在相同 remote truth 下得到一致的 work-anchor 判定。",
+          "preconditions": [
+            "兩環境均符合受支援工具與帳號能力需求"
+          ],
+          "steps": [
+            "重跑相同安全 probe、bootstrap 與 work-anchor cases"
+          ],
+          "pass_condition": "結果、freshness、blocked reason 與 next action 一致。",
+          "fail_condition": "結果依硬體名稱、舊 cache 或前一段 chat 改變。",
+          "verification": [
+            "node scripts/verify-account-login-sync-start.mjs"
+          ]
+        },
+        {
+          "id": "JV45-A05",
+          "what": "任何缺資料、fixture-only 或不安全 runtime evidence 都不會被假裝為 healthy。",
+          "preconditions": [
+            "負向 fixtures 與真實 safe runtime evidence 可分辨"
+          ],
+          "steps": [
+            "執行 missing、stale、fixture-only 與 unsafe evidence cases"
+          ],
+          "pass_condition": "只輸出 blocked／degraded 與可行下一步。",
+          "fail_condition": "fixture 或 scheduler 宣告被當作真實同步證據。",
+          "verification": [
+            "node scripts/verify-account-login-sync-start.mjs"
+          ]
+        }
+      ],
+      "hc_decision": {
+        "task_scope": "morrowise/account-login-sync-start-v1",
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#risk",
+          "#evidenceBased"
+        ],
+        "hc_reasoning": "真正問題不是複製某台電腦或建立另一套同步器，而是讓人登入核准帳號後，能以同一 remote canonical truth 在受支援工作環境安全恢復工作。#rightProblem 將範圍限制為 bootstrap decision 與 work anchor；#sourceBoundary 分開 canonical repo、generated read model、機器私有狀態與外部帳號；#risk 禁止秘密讀取與本機覆寫；#evidenceBased 要求真實 safe probe、負向 fixtures 與 fresh-session 一致性，而非硬體名稱或 fixture 假綠燈。",
+        "hc_confidence": 0.92,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mba2-catch-up-restore",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#credential-lifecycle-governance",
+          "$COLLAB/harness-mc/system-workflow/docs/specs/repo-coordination-gate.md"
+        ],
+        "source_boundary": "HC 只用於思考檢查，不是正本；task state 由 MorroWise tasks.json 管理，canonical files 與 remote truth 由各 repo 管理，帳號能力只保存安全 metadata，秘密值維持在 Vincent 管理的外部安全儲存與本機安全儲存。"
+      },
+      "architecture_decision": {
+        "decision": "deferred",
+        "evaluated_at": "2026-08-03",
+        "reason": "本 task 先建立跨環境安全 bootstrap 的治理與驗收邊界；待 safe probe、fresh-session evidence 與既有 runtime／credential contract 的實作關係完成後，再判定是否需要既有 Architecture Admission Record 的版本調整。"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准建立 JV-45，將『換任何硬體後登入必備帳號即可同步最新資料並開始工作』固定為一個可驗證的 MorroWise work anchor；本次只建立 task，不執行同步、登入、runtime 修改、commit 或 push。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#mba2-catch-up-restore",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#credential-lifecycle-governance",
+              "Vincent 2026-08-03 current session: 我們先進行新增 JV-45"
+            ],
+            "recorded_at": "2026-08-03",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/mba2-catch-up-restore",
+                "morrowise/credential-lifecycle-governance",
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "JV-31 是既有具名三機 baseline sync，JV-39 是安全憑證生命週期，JV-37 是 repo coordination，JV-40 是 mutation gate；均未擁有登入核准帳號後，跨受支援工作環境以同一 remote canonical truth 開始工作的完整判定。",
+                "owner_source_of_truth": "JV-45 只擁有 bootstrap decision、fresh-session evidence 與安全 work-anchor contract；tasks、repos、credential values、runtime status 與 generated read models 仍由原本的正本 owner 管理。",
+                "inputs_outputs": "輸入是安全帳號能力 metadata、Git／capability probe 與 canonical sources；輸出是 read-only 同步準備判定、blocked reason、next action 與 verifier，不建立第二 scheduler、task writer、secret store 或 dashboard 正本。",
+                "lifecycle_completion": "完成必須有安全帳號邊界、remote／local safe classification、canonical rebuild、兩個 fresh-session 一致性、負向 fixtures 與真實 safe runtime evidence；本次僅建立 todo task，不宣稱任何同步或舊 task disposition 已完成。"
+              },
+              "decision_reason": "此需求的跨環境登入後 bootstrap／工作起點仍沒有單一 canonical owner；因本次未核准取消或 archive 舊三機 task，採 genuinely_new 建立新的 work anchor，不把 legacy task 靜默改寫或誤標取代。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-03",
+                "evidence_refs": [
+                  "Vincent 2026-08-03 current session: 我們先進行新增 JV-45"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 授權依 JV-45 的 TDD contract 一口氣實作 safe bootstrap evaluator、negative fixtures、current safe probe 與驗收；任何需要第二台 fresh session 或實際帳號登入的證據仍不得以 fixture 取代。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#account-login-sync-start-v1.acceptance_matrix",
+              "Vincent 2026-08-03 current session: 這是小案子，可以一口氣完成？ 完成後依照驗收標準驗收"
+            ],
+            "recorded_at": "2026-08-03",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/mba2-catch-up-restore",
+                "morrowise/credential-lifecycle-governance",
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "仍是 JV-45 的登入後安全 bootstrap 與跨環境 work-anchor 問題；本次把既有 acceptance 轉成 TDD implementation，不回到具名三機觀測或新 scheduler。",
+                "owner_source_of_truth": "JV-45 繼續只擁有 bootstrap contract／verifier；tasks、Git remote、credential values、runtime evidence 與 generated read models 維持原本正本 owner。",
+                "inputs_outputs": "輸入仍是 sanitized account-capability metadata、read-only Git probe 與 canonical files；輸出是 deterministic decision、blocked reason、next action 與 fixtures，不讀取 secrets 或寫入 repo state。",
+                "lifecycle_completion": "本次可完成 local evaluator、fixtures 與 current safe probe；task 是否 completed 仍只能由兩個獨立 fresh-session 的真實登入後 evidence 與所有 A01-A05 結果裁決。"
+              },
+              "decision_reason": "JV-45 相對目前 Git base 仍是 pending canonical creation；Vincent 已明確授權它的實作與驗收，故本 event 維持 genuinely_new 以符合新 task lifecycle validator，不新增 task、registry、scheduler 或 secret store。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-03",
+                "evidence_refs": [
+                  "Vincent 2026-08-03 current session: 這是小案子，可以一口氣完成？ 完成後依照驗收標準驗收"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
   ]
 }

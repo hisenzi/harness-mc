@@ -1,0 +1,13 @@
+{
+  "event_id": "task.completed-wealth-system-e-5-0aef69dbf3c8acf53bd2376f256b613ab2f425a9-20260809T084123Z",
+  "type": "task.completed",
+  "repo": "wealth-system",
+  "commit": "0aef69dbf3c8acf53bd2376f256b613ab2f425a9",
+  "project": "wealth-system",
+  "task_id": "e-5",
+  "status": "completed",
+  "summary": "Gold observer MVP completed with 49/49 tests, 12/12 acceptance, portable daily runtime, and live fail-closed evidence.",
+  "created_at": "2026-08-09T08:41:23Z",
+  "actor": "codex",
+  "session_id": "codex-2026-08-09-gold-observer-e5-closeout"
+}

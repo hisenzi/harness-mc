@@ -192,6 +192,576 @@
         ],
         "fixture_runtime_boundary": "Documentation-only closeout；不宣稱 fixture、live runtime、通知或黃金資料接入已完成。"
       }
+    },
+    {
+      "id": "e-5",
+      "title": "實作：黃金價格觀察台 MVP（自動抓取與買／等待決策）",
+      "status": "completed",
+      "started_at": "2026-08-09",
+      "implementation_completed_at": "2026-08-09",
+      "completed_at": "2026-08-09",
+      "commits": [
+        "0aef69dbf3c8acf53bd2376f256b613ab2f425a9"
+      ],
+      "summary": "完成每日 9999 黃金賣出價 collector、fail-closed BUY／WAIT 引擎、今日／每週／每月決策 surface、可移植 macOS 排程與 replay／live evidence；MVP 不含通知或自動交易。",
+      "track": "expand",
+      "done_condition": "每日自動抓取台灣 9999 銀樓賣出價／每錢，保存來源與資料品質，依 wealth-system 預算／配置限制及使用者買入門檻產生可解釋的買／等待建議，完成今日觀察、每週決策閘門、月度回顧與 replay／live 驗證；不含通知、不自動交易、不以估算值觸發買入",
+      "est_hours": 24,
+      "depends_on": [],
+      "note": "Vincent 2026-08-05 已確認 MVP 要自動抓資料並產生買／等待建議。e-4 只負責架構正本；本 task 承接實作，但仍遵守 wealth-system 擁有預算、配置與風險政策，觀察台不得建立第二套政策正本。2026-08-09 單一 e-5 的四階段已連續完成：GOLD-READY-01 至 GOLD-READY-05 與 GOLD-MVP-01 至 GOLD-MVP-07 全部通過；live 取得 16,800 TWD／錢 fresh actual，個人政策未設定時安全回傳 WAIT／POLICY_INCOMPLETE。C1 0aef69dbf3c8acf53bd2376f256b613ab2f425a9 已送達 wealth-system origin/main 且遠端 0/0；canonical completion event 已套用，未綁定的 Canvas sync 以正式 skip receipt 收口。",
+      "closeout_state": "canonical_applied",
+      "acceptance_receipt": {
+        "matrix_ref": "milestones/wealth-system/tasks.json#e-5.acceptance_matrix",
+        "matrix_fingerprint": "sha256:76d5b182b55e541474766d87fd88b4c0010ff69ac5e658983896db64175309e0",
+        "required_ids": [
+          "GOLD-READY-01",
+          "GOLD-READY-02",
+          "GOLD-READY-03",
+          "GOLD-READY-04",
+          "GOLD-READY-05",
+          "GOLD-MVP-01",
+          "GOLD-MVP-02",
+          "GOLD-MVP-03",
+          "GOLD-MVP-04",
+          "GOLD-MVP-05",
+          "GOLD-MVP-06",
+          "GOLD-MVP-07"
+        ],
+        "results": [
+          { "id": "GOLD-READY-01", "status": "pass" },
+          { "id": "GOLD-READY-02", "status": "pass" },
+          { "id": "GOLD-READY-03", "status": "pass" },
+          { "id": "GOLD-READY-04", "status": "pass" },
+          { "id": "GOLD-READY-05", "status": "pass" },
+          { "id": "GOLD-MVP-01", "status": "pass" },
+          { "id": "GOLD-MVP-02", "status": "pass" },
+          { "id": "GOLD-MVP-03", "status": "pass" },
+          { "id": "GOLD-MVP-04", "status": "pass" },
+          { "id": "GOLD-MVP-05", "status": "pass" },
+          { "id": "GOLD-MVP-06", "status": "pass" },
+          { "id": "GOLD-MVP-07", "status": "pass" }
+        ],
+        "exact_id_coverage": true,
+        "all_passed": true,
+        "evidence_ref": "$COLLAB/wealth-system/evidence/gold-observer/acceptance/acceptance-receipt.json"
+      },
+      "acceptance": [
+        "自動 collector 每日取得 9999 銀樓賣出價／每錢，記錄 source、source_url、observed_at、captured_at、quality、is_estimate 與 raw reference；重跑同一天不產生重複快照。",
+        "資料過期、來源失敗、欄位不完整或只取得估算值時，系統顯示不可用／等待原因，不把舊資料靜默當成今日牌價。",
+        "買／等待規則是 deterministic、可重播且可解釋：只有有效實際牌價、低於使用者門檻、仍有預算且未達配置上限時才產生買；其他狀況產生等待與原因。",
+        "今日頁顯示價格證據、政策輸入、建議與原因；每週決策閘門與月度回顧能保留使用者最後決策，但不自動下單。",
+        "完成 replay、domain、integration、UI 與至少一次 live collector evidence；通知、AI 預測、多銀樓比較與自動交易均未被接入。",
+        "GOLD-READY-01 至 GOLD-READY-05 的來源、資料／排程、唯讀政策、證據與架構啟動契約均有具體路徑、數值規則與可重播案例，且全部通過後才可開始正式實作。"
+      ],
+      "source_refs": [
+        "$COLLAB/wealth-system/ARCHITECTURE.md",
+        "$COLLAB/harness-mc/milestones/wealth-system/project.json#/goals",
+        "$COLLAB/harness-mc/milestones/wealth-system/tasks.json#e-5"
+      ],
+      "execution_contract": {
+        "owner": "wealth-system/e-5",
+        "source_of_truth": "$COLLAB/wealth-system implementation and e-5 acceptance matrix; ARCHITECTURE.md remains the module-boundary authority",
+        "inputs": [
+          "已驗證的單一台灣 9999 銀樓賣出價資料來源與來源條款",
+          "wealth-system 的預算、黃金配置上限與風險／流動性限制",
+          "使用者設定的買入門檻，以及 wealth-system 預設投入金額（若有；僅供唯讀顯示）",
+          "e-5 acceptance matrix 與資料品質契約"
+        ],
+        "outputs": [
+          "每日去重價格快照與 provenance／quality 欄位",
+          "可解釋的買／等待決策結果與 reason codes",
+          "今日觀察頁、每週決策閘門、月度回顧與使用者決策紀錄",
+          "replay、domain、integration、UI 與 live collector 驗收證據"
+        ],
+        "continuous_execution_route": {
+          "authorized_at": "2026-08-09",
+          "authorization_ref": "Vincent 2026-08-09：可以進行；維持單一 e-5，依 readiness → core implementation → UX → replay/live acceptance 與 closeout 連續執行。",
+          "phase_confirmation": "四階段間不需逐段重新取得 Vincent 確認；每階段仍須依 canonical acceptance matrix 驗證並回報證據。",
+          "phases": [
+            {
+              "phase": 1,
+              "name": "implementation-readiness",
+              "acceptance_ids": [
+                "GOLD-READY-01",
+                "GOLD-READY-02",
+                "GOLD-READY-03",
+                "GOLD-READY-04",
+                "GOLD-READY-05"
+              ],
+              "exit_gate": "五項 readiness 全部有可重跑證據且通過後，才可將 e-5 由 todo 轉為 in_progress。"
+            },
+            {
+              "phase": 2,
+              "name": "core-implementation",
+              "scope": "以 TDD 建立應用程式骨架、collector、canonical storage、wealth-system 唯讀 policy adapter 與 deterministic BUY／WAIT engine。",
+              "exit_gate": "domain、integration 與 runtime cases 通過；estimate、stale、來源失敗或 policy 缺失均不得產生 BUY。"
+            },
+            {
+              "phase": 3,
+              "name": "decision-surfaces",
+              "scope": "完成今日觀察、每週決策閘門、月度回顧與使用者最後決策紀錄；三者讀取相同 canonical observation／decision records。",
+              "exit_gate": "UI verifier 與人工可讀 evidence 通過，且沒有通知、自動交易、AI 預測或多銀樓比較。"
+            },
+            {
+              "phase": 4,
+              "name": "replay-live-acceptance-closeout",
+              "scope": "執行 replay 與至少一次 live collector evidence，依當前矩陣指紋逐項驗收 12 個 acceptance IDs，取得 acceptance receipt，準備 exact-scope commit plan。",
+              "exit_gate": "12 項全部通過且 evidence_refs 完整；未取得 Vincent 的 commit／push 明確授權前，停在 commit 前，不提前完成 canonical closeout。"
+            }
+          ],
+          "pause_only_when": [
+            "canonical price source 不可合法或穩定存取，且沒有符合單一來源契約的替代方案",
+            "需要讀取 secrets、登入狀態、外部帳號或不可逆的外部操作",
+            "必要的個人財務政策無法以 policy missing → WAIT 安全狀態表達，而必須由 Vincent 作出實質財務決策",
+            "同檔 ownership 衝突、base 非 fast-forward、驗收失敗要求擴大 scope，或出現計畫未涵蓋的不可回復變更"
+          ]
+        },
+        "verifiers": [
+          "node scripts/verify-gold-observer-mvp.mjs",
+          "node scripts/validate-tasks.mjs --changed-only --project wealth-system",
+          "node scripts/generate-data.mjs"
+        ],
+        "stop_condition": "GOLD-READY-01 至 GOLD-READY-05 未全部通過時不得由 todo 轉為 in_progress；資料來源不穩定、資料品質無法判定、wealth-system 政策輸入缺失或任一驗收案例失敗時停止；不得用 fixture 冒充 live evidence，不得加入通知、自動交易、投入金額計算或第二套預算／配置正本。"
+      },
+      "acceptance_matrix": [
+        {
+          "id": "GOLD-READY-01",
+          "what": "單一 canonical price source 契約已具體化且可重播，不以未定來源開始實作。",
+          "preconditions": [
+            "e-5 維持 todo",
+            "$COLLAB/wealth-system/docs/gold-observer-mvp.md 是本 MVP 的 planned implementation spec"
+          ],
+          "steps": [
+            "在 implementation spec 鎖定 source_id、provider、URL、擷取欄位與來源條款",
+            "確認價格語意為台灣銀樓 9999 黃金、賣出價、每錢，並定義來源失敗行為與禁止混用第二來源",
+            "以保存的實際來源樣本執行 parser replay"
+          ],
+          "pass_condition": "spec 明列 source_id、provider、URL、欄位、9999／sell／qian 語意、來源條款、失敗行為與單一來源邊界；實際來源樣本可重播且沒有 placeholder。",
+          "fail_condition": "來源未指定、來源條款未知、價格純度／買賣方向／單位任一有歧義、混用第二來源，或只有人工描述而無可重播樣本。",
+          "verification": [
+            "node scripts/verify-gold-observer-mvp.mjs --case readiness-source",
+            "$COLLAB/wealth-system/docs/gold-observer-mvp.md#canonical-source-contract",
+            "$COLLAB/wealth-system/fixtures/gold-observer/source-actual.json"
+          ]
+        },
+        {
+          "id": "GOLD-READY-02",
+          "what": "資料 schema、每日排程、freshness、idempotency 與失敗復原規則已量化。",
+          "preconditions": [
+            "GOLD-READY-01 通過",
+            "collector 尚未被當成正式 runtime 啟用"
+          ],
+          "steps": [
+            "在 implementation spec 定義 Asia/Taipei 執行時間或時間窗與 stale threshold",
+            "鎖定 observation_key、同日重跑去重、多次更新取值、missed run、retry 與 recovery 規則",
+            "建立準時、重跑、timeout、欄位缺失、跨 freshness 邊界與漏跑補抓案例"
+          ],
+          "pass_condition": "排程時間／時間窗與 freshness 均有明確數值；observation_key 與 duplicate rule 可判定；missed-run、retry、multi-update selection 與 recovery 行為皆有預期輸出案例。",
+          "fail_condition": "只寫每日／過期等模糊文字而無數值、同一輸入可能產生重複快照、漏跑無狀態，或舊價格可被靜默當成今日價格。",
+          "verification": [
+            "node scripts/verify-gold-observer-mvp.mjs --case readiness-data-runtime",
+            "$COLLAB/wealth-system/docs/gold-observer-mvp.md#data-and-runtime-contract",
+            "$COLLAB/wealth-system/fixtures/gold-observer/collector-timeout.json"
+          ]
+        },
+        {
+          "id": "GOLD-READY-03",
+          "what": "wealth-system 唯讀政策介面與 BUY／WAIT 公式已鎖定，觀察台不擁有投入金額決策。",
+          "preconditions": [
+            "GOLD-READY-01 與 GOLD-READY-02 通過",
+            "wealth-system 是預算、配置與風險政策的唯一 owner"
+          ],
+          "steps": [
+            "指定 policy source 的具體路徑或介面、欄位、owner、version 與 effective_at",
+            "定義 valid actual price、freshness、門檻比較運算子、可用預算與配置上限如何得到 BUY 或 WAIT",
+            "重播 price 等於門檻、預算不足、配置達上限、policy 缺失與相同輸入重跑案例",
+            "確認預設投入金額若存在只從 wealth-system 唯讀顯示，不由觀察台計算或推薦"
+          ],
+          "pass_condition": "相同 observation 與 policy snapshot 必得相同 BUY／WAIT 及 reason codes；門檻等值邊界唯一；policy 可追溯版本且觀察台無寫入能力；輸出不含自行計算或推薦的投入金額。",
+          "fail_condition": "政策來源或版本不明、相同輸入結果不一致、觀察台複製／寫回政策，或新增任何由觀察台自行決定投入金額的欄位。",
+          "verification": [
+            "node scripts/verify-gold-observer-mvp.mjs --case readiness-policy",
+            "$COLLAB/wealth-system/docs/gold-observer-mvp.md#read-only-policy-and-decision-formula",
+            "$COLLAB/wealth-system/fixtures/gold-observer/policy-valid.json"
+          ]
+        },
+        {
+          "id": "GOLD-READY-04",
+          "what": "snapshot、raw source、collector receipt、policy snapshot 與 decision 的 canonical evidence 路徑已固定。",
+          "preconditions": [
+            "GOLD-READY-01 至 GOLD-READY-03 通過"
+          ],
+          "steps": [
+            "定義 observation、policy snapshot、decision 與 collector run receipt schema 和 owner",
+            "定義 raw payload 或不可變 raw reference 的保存與 retention 規則",
+            "以單一觀察日模擬寫入並從 canonical storage read back"
+          ],
+          "pass_condition": "每次 live run 均可在 evidence/gold-observer/YYYY-MM-DD/ 讀回 collector-run.json、source-response.json、observation.json、policy-snapshot.json 與 decision.json；schema、owner、retention 與關聯鍵完整。",
+          "fail_condition": "證據只存在 chat／截圖、沒有 raw payload 或 reference、無法 read back、檔案彼此不可關聯，或 fixture 被當成 live evidence。",
+          "verification": [
+            "node scripts/verify-gold-observer-mvp.mjs --case readiness-evidence",
+            "$COLLAB/wealth-system/docs/gold-observer-mvp.md#persistence-and-evidence-contract",
+            "$COLLAB/wealth-system/evidence/gold-observer/<YYYY-MM-DD>/collector-run.json"
+          ]
+        },
+        {
+          "id": "GOLD-READY-05",
+          "what": "e-4 架構邊界、e-5 task 與 implementation spec 在啟動正式開發前一致。",
+          "preconditions": [
+            "GOLD-READY-01 至 GOLD-READY-04 通過",
+            "e-5 尚未由 todo 轉為 in_progress"
+          ],
+          "steps": [
+            "比對 ARCHITECTURE.md、e-5 acceptance matrix 與 implementation spec 的 owner、輸入、輸出與 exclusions",
+            "在 ARCHITECTURE.md 記錄 e-5 已通過 readiness 並獲准開始實作，但不得提前宣稱 live runtime",
+            "重新執行 task validator 與 readiness verifier 後才提交 todo 到 in_progress 的 lifecycle 事件"
+          ],
+          "pass_condition": "三份正本／契約對來源、唯讀政策、BUY／WAIT、證據與 exclusions 無衝突；架構不再把已啟動實作描述為純延後提案，也未在 live acceptance 前宣稱正式運行。",
+          "fail_condition": "e-5 已 in_progress 但架構仍寫延後實作、架構提前宣稱 live，或 task、spec、architecture 任一責任邊界不一致。",
+          "verification": [
+            "node scripts/verify-gold-observer-mvp.mjs --case readiness-architecture",
+            "$COLLAB/wealth-system/ARCHITECTURE.md",
+            "$COLLAB/wealth-system/docs/gold-observer-mvp.md",
+            "$COLLAB/harness-mc/milestones/wealth-system/tasks.json#e-5"
+          ]
+        },
+        {
+          "id": "GOLD-MVP-01",
+          "what": "自動來源與價格資料契約可取得可追溯的 9999 銀樓賣出價／每錢。",
+          "preconditions": [
+            "單一 canonical source 已確認可讀取且來源條款允許",
+            "資料 schema 已鎖定 actual／estimate、quality 與 provenance 欄位"
+          ],
+          "steps": [
+            "執行 collector 取得最新資料",
+            "檢查 purity、market_side、unit、price、source、source_url、observed_at、captured_at、quality、is_estimate 與 raw reference"
+          ],
+          "pass_condition": "每筆決策可用資料均能回溯來源、時間、單位與品質；actual 與 estimate 明確分離。",
+          "fail_condition": "來源、單位、賣出／買入方向或品質缺失，或估算值被標成實際牌價。",
+          "verification": [
+            "node scripts/verify-gold-observer-mvp.mjs --case data-contract",
+            "$COLLAB/wealth-system/evidence/gold-observer/<YYYY-MM-DD>/source-response.json",
+            "$COLLAB/wealth-system/evidence/gold-observer/<YYYY-MM-DD>/observation.json"
+          ]
+        },
+        {
+          "id": "GOLD-MVP-02",
+          "what": "每日自動抓取具有排程、去重與可見失敗狀態。",
+          "preconditions": [
+            "GOLD-MVP-01 通過",
+            "daily collector runtime 與 snapshot storage 已建立"
+          ],
+          "steps": [
+            "執行同一觀察日的 collector 兩次",
+            "模擬來源 timeout、欄位缺失與 stale response",
+            "檢查 snapshot 與錯誤狀態"
+          ],
+          "pass_condition": "同一 source／觀察日不重複；失敗會顯示 unavailable／stale；不靜默沿用舊價當今日價。",
+          "fail_condition": "重複快照、錯誤被吞掉、舊價假冒今日價或排程未留下可驗證 receipt。",
+          "verification": [
+            "node scripts/verify-gold-observer-mvp.mjs --case daily-ingest",
+            "$COLLAB/wealth-system/evidence/gold-observer/<YYYY-MM-DD>/collector-run.json"
+          ]
+        },
+        {
+          "id": "GOLD-MVP-03",
+          "what": "觀察台讀取 wealth-system 政策，不建立第二套預算／配置正本。",
+          "preconditions": [
+            "wealth-system policy input contract 已存在",
+            "買入門檻、可用預算、配置上限與預設投入金額（若有）的 owner 已標示"
+          ],
+          "steps": [
+            "設定或載入政策輸入",
+            "檢查今日建議使用的 policy snapshot、版本與來源",
+            "確認預設投入金額若顯示，值完全來自 wealth-system 且觀察台沒有寫入或計算路徑"
+          ],
+          "pass_condition": "建議可指出使用的政策版本／時間；預算、配置上限與風險限制仍由 wealth-system 擁有。",
+          "fail_condition": "觀察台自行複製或覆寫總預算、配置政策或風險限制。",
+          "verification": [
+            "node scripts/verify-gold-observer-mvp.mjs --case policy-boundary",
+            "$COLLAB/wealth-system/evidence/gold-observer/<YYYY-MM-DD>/policy-snapshot.json"
+          ]
+        },
+        {
+          "id": "GOLD-MVP-04",
+          "what": "買／等待引擎 deterministic、可解釋，且只提供建議。",
+          "preconditions": [
+            "GOLD-MVP-01 至 GOLD-MVP-03 通過",
+            "使用者買入門檻、預算與配置上限已可讀取"
+          ],
+          "steps": [
+            "重播有效且低於門檻、有效但高於門檻、預算不足、配置達上限、資料過期與 estimate-only cases",
+            "比較 recommendation 與 reason codes；若 wealth-system 有預設投入金額，僅核對其唯讀顯示值"
+          ],
+          "pass_condition": "只有有效實際牌價、符合已鎖定的門檻比較、有預算且未達上限才為 BUY；其餘為 WAIT 並顯示原因；不計算或推薦投入金額，也不產生交易副作用。",
+          "fail_condition": "相同輸入產生不同結果、estimate 觸發 BUY、缺資料仍 BUY、自行計算／推薦投入金額，或呼叫自動交易／通知。",
+          "verification": [
+            "node scripts/verify-gold-observer-mvp.mjs --case decision-engine",
+            "$COLLAB/wealth-system/evidence/gold-observer/<YYYY-MM-DD>/decision.json"
+          ]
+        },
+        {
+          "id": "GOLD-MVP-05",
+          "what": "今日觀察、每週決策閘門與月度回顧呈現同一份可追溯證據。",
+          "preconditions": [
+            "GOLD-MVP-04 通過",
+            "至少有七日觀察資料或明確 missing-day state"
+          ],
+          "steps": [
+            "開啟今日觀察頁、每週閘門與月度回顧",
+            "檢查價格、來源、品質、政策、建議、理由與使用者最後決策"
+          ],
+          "pass_condition": "三個 surface 使用相同 canonical observation／decision data；缺日、過期與不可用狀態可見；使用者可記錄採用或不採用。",
+          "fail_condition": "頁面各自計算不同結果、缺資料假綠燈、只顯示 BUY／WAIT 而沒有證據或無法留下最後決策。",
+          "verification": [
+            "node scripts/verify-gold-observer-mvp.mjs --case surfaces",
+            "$COLLAB/wealth-system/evidence/gold-observer/ui/"
+          ]
+        },
+        {
+          "id": "GOLD-MVP-06",
+          "what": "replay 與 live evidence 能區分 fixture 驗證和正式資料接入。",
+          "preconditions": [
+            "GOLD-MVP-01 至 GOLD-MVP-05 通過"
+          ],
+          "steps": [
+            "執行固定案例 replay",
+            "執行至少一次 live collector 與完整資料流",
+            "核對兩者的 evidence boundary"
+          ],
+          "pass_condition": "replay 可重現預期輸出；live evidence 證明真實來源、時間與資料流；兩者沒有互相冒充。",
+          "fail_condition": "只用 fixture 宣稱 live 完成，或沒有可重跑的決策輸入／輸出紀錄。",
+          "verification": [
+            "node scripts/verify-gold-observer-mvp.mjs --case replay-and-live",
+            "$COLLAB/wealth-system/evidence/gold-observer/<YYYY-MM-DD>/"
+          ]
+        },
+        {
+          "id": "GOLD-MVP-07",
+          "what": "MVP 排除邊界保持有效。",
+          "preconditions": [
+            "完整 MVP verifier 可執行"
+          ],
+          "steps": [
+            "檢查 runtime、route、source adapter 與 package dependencies",
+            "搜尋 notification、auto-trade、AI forecast、多銀樓比較的接入點"
+          ],
+          "pass_condition": "沒有通知／推播、自動交易、AI 預測或多銀樓比較；BUY 只有建議語意。",
+          "fail_condition": "任何排除能力被隱性接入，或 UI／文件把建議描述成自動執行。",
+          "verification": [
+            "node scripts/verify-gold-observer-mvp.mjs --case exclusions",
+            "$COLLAB/wealth-system/docs/gold-observer-mvp.md#exclusions"
+          ]
+        }
+      ],
+      "goal_alignment": {
+        "project_id": "wealth-system",
+        "goal_ref": "$COLLAB/harness-mc/milestones/wealth-system/project.json#/goals",
+        "goal_fingerprint": "sha256:c6f8bd0017cc6357968c2ee5fd0abf413fbca3c268ade3d4c5676f77630d2f4c",
+        "contribution": "把黃金觀察納入終態驅動的財務系統，將價格資料、投入限制與每週決策形成可重複的最小迴路；觀察台只提供證據與建議，不取代 wealth-system 的預算與配置正本。",
+        "evidence_plan": [
+          "單一來源的每日實際牌價快照、provenance 與 quality evidence",
+          "買／等待 deterministic replay 與政策邊界驗證",
+          "今日觀察、每週閘門、月度回顧與至少一次 live collector evidence"
+        ],
+        "reviewed_at": "2026-08-05"
+      },
+      "hc_decision": {
+        "task_scope": "wealth-system/e-5",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#risk",
+          "#confirmationBias",
+          "#sourceBoundary",
+          "#evidenceBased"
+        ],
+        "hc_reasoning": "真正問題不是再做一張金價圖，而是把每日價格證據、財務限制與使用者最終決策接成可重播的迴路。資料品質失效時必須停止 BUY；政策仍由 wealth-system 擁有；建議必須顯示理由並保持人工決策，避免追高、假精確與自動化越界。",
+        "hc_confidence": 0.93,
+        "evidence_refs": [
+          "$COLLAB/wealth-system/ARCHITECTURE.md",
+          "$COLLAB/harness-mc/milestones/wealth-system/project.json#/goals",
+          "Vincent 2026-08-05：MVP 自動抓資料並產生買／等待建議"
+        ],
+        "source_boundary": "HC 是思考檢查，不是 source of truth；wealth-system architecture、政策契約、MVP verifier 與 MC tasks.json 才是各自的正本。"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "verification-before-completion",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "$COLLAB/wealth-system/ARCHITECTURE.md",
+          "verified price-source contract",
+          "wealth-system budget／allocation policy contract",
+          "e-5 acceptance matrix"
+        ],
+        "decision_output": "Gold observer MVP daily observation and explainable BUY／WAIT recommendation; user remains final decision owner",
+        "execution_boundary": "只可實作黃金觀察台的資料、規則與 surface；不得建立第二套預算／配置正本、通知、自動交易、AI 預測或多銀樓比較平台。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准建立 e-5 implementation task；需求已確認為每日自動抓取台灣 9999 銀樓賣出價／每錢，產生買／等待建議，且 MVP 不含通知與自動交易。",
+            "evidence_refs": [
+              "Vincent 2026-08-05：好，寫 e-5 task",
+              "$COLLAB/wealth-system/ARCHITECTURE.md",
+              "$COLLAB/harness-mc/milestones/wealth-system/project.json#/goals"
+            ],
+            "recorded_at": "2026-08-05"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准依 scope review 補強 e-5 implementation readiness 驗收；新增 canonical source、資料／排程、唯讀政策、evidence 與架構啟動 gates，並移除由觀察台計算或推薦投入金額的越界語意；不開始 MVP 實作。",
+            "evidence_refs": [
+              "Vincent 2026-08-06：以上規劃可以，補上相對應的驗收標準",
+              "$COLLAB/wealth-system/ARCHITECTURE.md",
+              "$COLLAB/harness-mc/milestones/wealth-system/tasks.json#e-5"
+            ],
+            "recorded_at": "2026-08-06"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准維持單一 e-5 連續完成；補上 readiness、核心實作、決策 UX、replay／live acceptance 與 closeout 的四階段 execution route。Readiness 未全過前維持 todo，commit／push 仍需明確授權。",
+            "evidence_refs": [
+              "Vincent 2026-08-09：可以進行，需要先補充 task 內容嗎？",
+              "$COLLAB/harness-mc/milestones/wealth-system/tasks.json#e-5.execution_contract.continuous_execution_route",
+              "$COLLAB/wealth-system/ARCHITECTURE.md"
+            ],
+            "recorded_at": "2026-08-09"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "GOLD-READY-01 至 GOLD-READY-05 已在同一 revision 全數通過；來源、資料／排程、wealth-system 唯讀政策、evidence 與架構啟動契約均有可重跑證據，依 Vincent 核准開始 Phase 2 TDD 實作。",
+            "evidence_refs": [
+              "$COLLAB/wealth-system/evidence/gold-observer/readiness/phase-gate-receipt.json",
+              "$COLLAB/wealth-system/docs/gold-observer-mvp.md",
+              "$COLLAB/wealth-system/ARCHITECTURE.md",
+              "node scripts/verify-gold-observer-mvp.mjs --case readiness-source",
+              "node scripts/verify-gold-observer-mvp.mjs --case readiness-data-runtime",
+              "node scripts/verify-gold-observer-mvp.mjs --case readiness-policy",
+              "node scripts/verify-gold-observer-mvp.mjs --case readiness-evidence",
+              "node scripts/verify-gold-observer-mvp.mjs --case readiness-architecture"
+            ],
+            "recorded_at": "2026-08-09"
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "核心實作、三個 decision surfaces、每日 LaunchAgent、replay 與 live flow 已完成；canonical 12 項矩陣在 fingerprint sha256:76d5b182b55e541474766d87fd88b4c0010ff69ac5e658983896db64175309e0 下 exact coverage 且全 pass。依核准 route 停在 commit 前，待 Vincent 明確授權 exact-scope commit 後再完成 canonical closeout。",
+            "evidence_refs": [
+              "$COLLAB/wealth-system/evidence/gold-observer/acceptance/acceptance-receipt.json",
+              "$COLLAB/wealth-system/evidence/gold-observer/2026-08-09/",
+              "$COLLAB/wealth-system/evidence/gold-observer/ui/",
+              "$COLLAB/wealth-system/evidence/gold-observer/runtime/launchd-install-receipt.json",
+              "npm test: 49/49 pass",
+              "node scripts/verify-gold-observer-mvp.mjs: 12/12 pass"
+            ],
+            "recorded_at": "2026-08-09"
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "Vincent 已明確授權 worktree-commit 與 cc-push；C1 實作已通過修後 code review、49/49 tests、12/12 canonical acceptance 與 live runtime 驗收，送達 wealth-system origin/main 且 0/0。task.completed event 已套用，無外部綁定的 Canvas sync 已以 skip receipt 收口。",
+            "evidence_refs": [
+              "0aef69dbf3c8acf53bd2376f256b613ab2f425a9",
+              "$COLLAB/wealth-system/evidence/gold-observer/acceptance/acceptance-receipt.json",
+              "$COLLAB/wealth-system/evidence/gold-observer/2026-08-09/",
+              "$COLLAB/wealth-system/evidence/gold-observer/runtime/launchd-install-receipt.json",
+              "$COLLAB/harness-mc/task-events/applied/20260809T084123Z-wealth-system-0aef69dbf3c8acf53bd2376f256b613ab2f425a9-wealth-system-e-5.json",
+              "npm test: 49/49 pass",
+              "node scripts/verify-gold-observer-mvp.mjs: 12/12 pass"
+            ],
+            "recorded_at": "2026-08-09"
+          }
+        ]
+      },
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "collector records actual 9999 sell price per qian with provenance, quality and estimate boundary",
+          "daily ingestion is idempotent and exposes source failure or stale data",
+          "decision engine returns deterministic BUY or WAIT with reason codes and no transaction side effect",
+          "today, weekly and monthly surfaces consume the same observation and decision records",
+          "replay evidence and live collector evidence remain explicitly separated"
+        ],
+        "test_level": [
+          "domain",
+          "integration",
+          "runtime",
+          "ui"
+        ],
+        "red_command": "node scripts/verify-gold-observer-mvp.mjs",
+        "expected_red_reason": "e-5 尚未實作 collector、snapshot、decision engine、surface 與 live evidence；verifier 應先以未完成原因失敗。",
+        "green_command": "node scripts/verify-gold-observer-mvp.mjs",
+        "full_regression_commands": [
+          "node scripts/validate-tasks.mjs --changed-only --project wealth-system",
+          "node scripts/generate-data.mjs",
+          "git diff --check -- milestones/wealth-system/tasks.json"
+        ],
+        "fixture_refs": [
+          "$COLLAB/wealth-system/fixtures/gold-observer/source-actual.json",
+          "$COLLAB/wealth-system/fixtures/gold-observer/source-estimate.json",
+          "$COLLAB/wealth-system/fixtures/gold-observer/collector-timeout.json",
+          "$COLLAB/wealth-system/fixtures/gold-observer/policy-valid.json",
+          "$COLLAB/wealth-system/fixtures/gold-observer/policy-budget-limit.json"
+        ],
+        "evidence_refs": [
+          "$COLLAB/wealth-system/evidence/gold-observer/readiness/phase-gate-receipt.json",
+          "$COLLAB/wealth-system/evidence/gold-observer/acceptance/acceptance-receipt.json",
+          "$COLLAB/wealth-system/evidence/gold-observer/2026-08-09/",
+          "$COLLAB/wealth-system/evidence/gold-observer/ui/",
+          "$COLLAB/wealth-system/evidence/gold-observer/runtime/launchd-install-receipt.json"
+        ],
+        "runtime_evidence_required": true,
+        "planned_evidence_location": "$COLLAB/harness-mc/milestones/wealth-system/tasks.json#e-5.test_contract.evidence_refs"
+      },
+      "completion_evidence": {
+        "red_evidence": [
+          "TDD RED: incomplete actual observation initially returned BUY instead of WAIT/DATA_INVALID.",
+          "TDD RED: a failed retry overwrote date-level accepted evidence and mismatched surface runs were presented as valid.",
+          "TDD RED: schema-invalid policy, robots Disallow: /* and HTTP 404 retry cases initially violated fail-closed/retry contracts."
+        ],
+        "green_evidence": [
+          "npm test from product C1 -> 49/49 pass.",
+          "node scripts/verify-gold-observer-mvp.mjs from product C1 -> exact 12/12 acceptance pass.",
+          "Post-fix code review -> Ready for C1 with no Critical or Important findings."
+        ],
+        "regression_evidence": [
+          "npm test -> 49/49 pass",
+          "node scripts/verify-gold-observer-mvp.mjs -> 12/12 pass",
+          "node scripts/verify-gold-runtime.mjs -> PASS, last exit code 0",
+          "node scripts/validate-tasks.mjs --changed-only --project wealth-system -> PASS"
+        ],
+        "verifier_refs": [
+          "$COLLAB/wealth-system/scripts/verify-gold-observer-mvp.mjs",
+          "$COLLAB/wealth-system/scripts/verify-gold-runtime.mjs",
+          "$COLLAB/wealth-system/evidence/gold-observer/acceptance/acceptance-receipt.json",
+          "0aef69dbf3c8acf53bd2376f256b613ab2f425a9"
+        ],
+        "fixture_runtime_boundary": "Fixtures prove deterministic parser, collector failure, policy, decision, storage, scheduler and surface behavior but do not impersonate production. Separate 2026-08-09 live HTTPS evidence, launchd state and browser artifacts prove the accepted runtime; MVP does not claim notifications, forecasts, automatic trading or multi-store comparison.",
+        "runtime_evidence": [
+          "Live collector run 20260809T083559731Z-live-b29d80ef read https://99golden.tw/ with robots allowed, no redirect, fresh actual 16,800 TWD per qian and WAIT/POLICY_INCOMPLETE.",
+          "macOS LaunchAgent com.hisenzi.wealth-system.gold-observer loaded with 20:15/20:45/21:15 slots and last exit code 0.",
+          "Today, weekly, monthly and 390px mobile JPEG evidence were inspected with browser console 0 error."
+        ],
+        "live_runtime_boundary": "2026-08-09 live source 16,800 TWD per qian, fresh actual; unconfigured canonical policy safely returned WAIT/POLICY_INCOMPLETE. No notification or transaction side effect."
+      }
     }
   ]
 }

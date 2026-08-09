@@ -1,0 +1,21 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-wealth-system-e-5-task.completed-wealth-system-e-5-0aef69dbf3c8acf53bd2376f256b613ab2f425a9-20260809T084123Z-20260809T084123Z",
+  "type": "sync_skipped",
+  "target": "obsidian_canvas",
+  "status": "skipped",
+  "source_event_id": "task.completed-wealth-system-e-5-0aef69dbf3c8acf53bd2376f256b613ab2f425a9-20260809T084123Z",
+  "project": "wealth-system",
+  "task_id": "e-5",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-08-09T08:41:23Z",
+  "actor": "codex",
+  "session_id": "codex-2026-08-09-gold-observer-e5-closeout",
+  "exemption_reason": "wealth-system/e-5 has no project-owned Obsidian Canvas or Heptabase card binding; canonical tasks/state plus the generated MC read model are the supported closeout surfaces.",
+  "verifier": "milestones/wealth-system/tasks.json e-5 external_refs inventory and generated MC read-model check",
+  "resolved_at": "2026-08-09T08:42:30Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "codex-2026-08-09-gold-observer-e5-closeout"
+}

@@ -1430,6 +1430,346 @@
         "evidence_refs": ["$COLLAB/rrrealll-ocr/ARCHITECTURE.md"],
         "source_boundary": "HC is a thinking check, not source of truth；驗收腳本、production probe 與結果紀錄才是 release truth。"
       }
+    },
+    {
+      "id": "p9-data-rule-semantic-correction-and-meeting-acceptance",
+      "title": "補正 canonical 資料、規則可達性與會議後驗收",
+      "status": "in_progress",
+      "commits": ["bc6d27df5f1729c25b1caca99b64a174ffc317f6"],
+      "started_at": "2026-08-09",
+      "summary": "2026-08-09 已完成本地 fail-closed 補正：unknown-only 不顯示整體分數，mixed unresolved／partial／unverified 不取得有利缺席規則；長配方不再 12 行截斷，多產品 panel 明確拒絕混算，UI 分開三類證據。原始／canonical 語意差異、39 條 token disposition 與 15 組會議 corpus 已版本化；但 target Neon row-content fingerprint、44 條不可達規則、222 個會議 unknown、golden 評分、原始多圖與部署驗收仍缺正式證據，task 維持 in_progress，不覆寫 RRO-05／RRO-09 歷史 receipt。",
+      "track": "quality",
+      "order_label": "RRO-10",
+      "priority": "P0",
+      "capability_domain": "analysis-runtime",
+      "task_kind": "build",
+      "dependencies": [
+        "p4-ocr-normalization-and-versioned-analysis-api",
+        "p5-consumer-three-input-result-flow",
+        "p8-end-to-end-release-acceptance"
+      ],
+      "depends_on": [
+        "p4-ocr-normalization-and-versioned-analysis-api",
+        "p5-consumer-three-input-result-flow",
+        "p8-end-to-end-release-acceptance"
+      ],
+      "done_condition": "正式 runtime 不再把 unknown／low-confidence／partial input 推導為安全或完整配方；canonical、原始與 live 資料差異可追溯；每條 active rule 都能由正式 domain input 驗證可達性，R42–R80 不再依賴無來源 token；會議後 15 組 corpus、受影響 UI 與公開 runtime 取得新版可指紋化 acceptance receipt。",
+      "acceptance": [
+        "A01｜原始、canonical 與 live 資料都有可重跑的來源／語意差異台帳；每項差異有採用狀態、理由、版本與證據。",
+        "A02｜target Neon 不只符合 150／400／80 筆數，核准欄位的排序後內容 fingerprint 也與部署版本的 canonical seed 一致。",
+        "A03｜所有 rule predicate 都能追到正式 feature producer；每條 active rule 都由正規化 domain input 完成正向、負向與 unknown 可達性驗證，不得直接注入 feature 冒充 runtime。",
+        "A04｜R42–R80 的 token_v42–token_v80 每條都有核准處置：改為可觀察條件、合併重複語意，或明確停用並留下理由；active condition 不得保留無來源 token。",
+        "A05｜unknown／low-confidence 不會觸發依賴成分缺席或配方純淨的有利規則；全未知資料不得顯示完整或高安全分數。",
+        "A06｜golden fixtures 固定規則命中、score delta、五指標、A–E、成分順序、重複與 partial 行為；相同輸入及版本可完全重現。",
+        "A07｜會議 PDF 的 15 組資料都有原文、頁碼、產品範圍、完整度、預期 mapping 與 unknown disposition；非洗髮資料不得取得未加限定的洗髮評分。",
+        "A08｜曲面、反光、長配方、多 panel／多圖及 partial input 有明確處理；系統不得只選局部文字後冒充完整配方。",
+        "A09｜UI 分開顯示已知高風險、資料庫未收錄與 OCR 不確定，並完成掃描完成提示、A–E 說明、風險列表收合及 partial 狀態。",
+        "A10｜受影響的 paste／upload／camera、pending_review、Judge／passport provenance、部署 fingerprint 與公開 runtime 回歸全部通過，並取得與當前矩陣一致的 acceptance receipt。"
+      ],
+      "acceptance_matrix": [
+        {
+          "id": "A01",
+          "verify": "原始、canonical、meeting 與 live 資料差異台帳",
+          "precondition": "or/ 原始資料、db/seed canonical、會議 PDF、target Neon read-only snapshot 與部署版本識別",
+          "steps": "對來源檔計算 hash，分別執行 keyed diff、忽略 ID 的 semantic diff 與欄位差異分類，為每項差異記錄採用狀態及依據",
+          "pass": "所有納入範圍的來源都有 hash；每項資料與規則差異都標示 identical、intentional、pending 或 rejected，且可追到來源與版本",
+          "fail": "只有列數、缺少來源或 hash、差異未分類，或把 or/／PDF 直接冒充 canonical",
+          "evidence": "versioned source-difference register、deterministic diff verifier 與 PDF page references"
+        },
+        {
+          "id": "A02",
+          "verify": "target Neon canonical row-content parity",
+          "precondition": "公開 runtime 指向的 target Neon、核准 canonical seed 與部署 identifier",
+          "steps": "以穩定排序及核准欄位計算 INCI、alias、rule row-content fingerprints，逐表比對 local canonical 與 read-only live result",
+          "pass": "筆數符合 150／400／80，且三張表的核准欄位 fingerprint 與 canonical 完全一致；無未核准 extra/missing/changed row",
+          "fail": "只驗筆數、query 指向非 target Neon、任一 row-content 不同或部署版本無法對應",
+          "evidence": "local seed verifier、redacted live query receipt、content fingerprints 與 deployment identifier"
+        },
+        {
+          "id": "A03",
+          "verify": "feature producer coverage 與 active-rule runtime 可達性",
+          "precondition": "canonical rule seed、normalizer、feature producer registry、canonical ingredient/alias data 與 domain fixtures",
+          "steps": "解析每條 condition 的 identifiers，追到 producer 及 canonical source；經 normalizeIngredients → analyzeFormula 正式路徑執行正向、負向、unknown fixtures",
+          "pass": "每個 active predicate 有正式 producer；每條 active rule 都至少有一組自然觸發與一組不觸發證據；unknown 不會被當成確定缺席；測試未直接注入 featureVector",
+          "fail": "存在無 producer／無 canonical source 的 active positive predicate、缺席條件把 unknown 當 false，或只測 evaluatedRuleCount／直接注入 feature",
+          "evidence": "rule-reachability verifier、per-rule fixture matrix 與 analyzer/rule-engine tests"
+        },
+        {
+          "id": "A04",
+          "verify": "R42–R80 token 與重複規則語意處置",
+          "precondition": "R42–R80 condition、名稱、delta、原始 ID mapping、可觀察產品／配方欄位與核准決策紀錄",
+          "steps": "逐條判定 token 的正式來源、互斥／優先／疊加；無來源者選擇改寫、合併或停用，並重跑 active-rule verifier",
+          "pass": "80 筆 canonical rule 都有 disposition；active conditions 不含無來源 token_vXX；重複基礎條件不會未定義疊加；停用或合併均保留版本與理由",
+          "fail": "由 rule ID 或測試程式生成 token、token 只存在 fixture、同組規則可無限制疊加，或無依據猜測 score delta",
+          "evidence": "rule disposition register、canonical diff、reachability output 與 approval history"
+        },
+        {
+          "id": "A05",
+          "verify": "unknown／low-confidence／partial fail-closed 評分",
+          "precondition": "全 unknown、mixed known+unknown、low-confidence、known-safe、known-risk 與 partial fixtures",
+          "steps": "經正式分析路徑比對 scoring status、triggered rules、五指標、risk grade、candidate review 與 UI presentation",
+          "pass": "未知資料保留未確定且 assumedSafe=false；含 unresolved 的配方不取得依賴缺席／純淨的有利規則；全 unknown 不顯示完整或高安全數值；partial 明示未完整",
+          "fail": "unknown-only 觸發無香／無矽靈／極簡加分、顯示完整高安全分數、候選被當 confirmed，或 partial 冒充完整分析",
+          "evidence": "TDD red/green output、analyzer tests、API payload assertions 與 component tests"
+        },
+        {
+          "id": "A06",
+          "verify": "評分算法 golden contract 與可重現性",
+          "precondition": "核准 golden formulas、expected canonical mappings、expected rule IDs/deltas/metrics/grades 與版本 fingerprints",
+          "steps": "執行相同輸入重播、成分順序、重複、邊界值、規則衝突、上下限及舊／新差異測試",
+          "pass": "相同 input+dataset+rule+engine+normalizer versions 得到相同結果；所有 delta 方向、bounds、order/duplicate 行為符合核准 expected；無 NaN 或未說明差異",
+          "fail": "只檢查 0–100 bounds、缺少 expected output、同版本不可重現，或舊／新差異沒有核准理由",
+          "evidence": "golden fixture file、differential verifier、unit/integration tests 與 version evidence"
+        },
+        {
+          "id": "A07",
+          "verify": "會議後 15 組 formula corpus 與產品適用範圍",
+          "precondition": "OCR資料庫比對20260806.pdf、逐頁原文、12 組洗髮／3 組非洗髮分類及第 13 組 partial 標記",
+          "steps": "逐案保存原文與順序，經 paste normalization 比對 expected mapping、unknown、critical ingredient recall 與 applicability presentation",
+          "pass": "15/15 可重跑；0 個錯誤 canonical mapping；關鍵／爭議成分 recall 100%；每個 unknown 有 disposition；非洗髮資料不取得未加限定的洗髮評分；第 13 組明示 partial",
+          "fail": "以整體 match rate 取代 mapping 正確性、漏掉危險成分、把 PDF 當 numeric oracle，或非洗髮／partial 被當完整洗髮配方",
+          "evidence": "meeting corpus fixture、page references、normalization report 與 expected-result assertions"
+        },
+        {
+          "id": "A08",
+          "verify": "OCR 長配方、多 panel／多圖與不完整輸入",
+          "precondition": "原始或受控曲面、反光、超過 12 行、兩 panel、同產品多圖及多產品圖片 fixtures",
+          "steps": "分別經 upload/camera OCR route，檢查 panel 選取、產品分離、跨圖 merge、ingredient order、overlap 與 completeness metadata",
+          "pass": "不因 12 行上限靜默截斷；多產品分離；同產品 merge 可重現且不盲目去重；無法完整辨識時回傳 partial／未確定並限制評分宣稱",
+          "fail": "只取最佳局部 panel 後冒充完整配方、混合不同產品、破壞順序、重複遺失或缺少 partial metadata",
+          "evidence": "ingredient-panel/OCR integration tests、API payload、original-image references 與 controlled E2E trace"
+        },
+        {
+          "id": "A09",
+          "verify": "會議後 UI 語意與操作",
+          "precondition": "完整、unknown、low-confidence、high-risk、partial、out-of-scope API fixtures 與 390px/desktop viewport",
+          "steps": "完成一次分析並逐一檢查完成通知、三類提示、A–E legend、風險列表收合、partial/applicability 狀態與手機版操作",
+          "pass": "已知高風險、資料庫未收錄、OCR 不確定分開呈現；有完成提示與 A–E 說明；風險列表可收合；partial／適用範圍不被高分掩蓋",
+          "fail": "unknown 被標為爭議、缺少完成／等級說明、列表不可收合，或不完整／不適用結果看似正式完整評分",
+          "evidence": "component tests、DOM assertions、390px/desktop browser smoke 與 screenshots"
+        },
+        {
+          "id": "A10",
+          "verify": "受影響 runtime 回歸與新版 acceptance gate",
+          "precondition": "核准產品 revision、完整 local tests/build、部署 identifier、target Neon read-only verifier 與 canonical acceptance matrix fingerprint",
+          "steps": "重跑 paste/upload/camera、private scan/pending_review、Judge/passport version provenance、live fingerprints 與公開 UI；以 A01–A10 精確結果執行 acceptance event",
+          "pass": "所有受影響回歸及 live evidence 通過；analysis 保存 dataset/rule/engine/normalizer versions；receipt fingerprint 與當前矩陣一致且 IDs 完整",
+          "fail": "fixture 冒充 live、未部署就宣稱 production 通過、版本證據缺失、矩陣指紋過期，或任何 P0/P1 acceptance result 不通過",
+          "evidence": "fresh test/build output、timestamped live traces、read-only production receipts、matrix fingerprint 與 acceptance_receipt"
+        }
+      ],
+      "goal_alignment": {
+        "project_id": "rrrealll-ocr",
+        "goal_ref": "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json#/goals",
+        "goal_fingerprint": "sha256:8fb101771c64a805aa9db57d9b269b568f3822d7bb30fdb8de9587cb2d700953",
+        "contribution": "把既有 150／400／80 載入與單一複合規則驗收，提升為可追溯 row-content parity、active-rule 可達性、unknown fail-closed、會議 corpus 與正式 runtime 的語意驗收。",
+        "evidence_plan": [
+          "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p9-data-rule-semantic-correction-and-meeting-acceptance.acceptance_matrix",
+          "$COLLAB/rrrealll-ocr/db/seed、src/analysis、test/analysis、web/src 與 docs/acceptance 的可重跑證據",
+          "target Neon content fingerprint、public runtime E2E 與新版 acceptance receipt"
+        ],
+        "reviewed_at": "2026-08-09"
+      },
+      "execution_contract": {
+        "owner": "Vincent 核准、Codex 執行",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p9-data-rule-semantic-correction-and-meeting-acceptance",
+        "inputs": [
+          "$COLLAB/rrrealll-ocr/or",
+          "$COLLAB/rrrealll-ocr/db/seed",
+          "$COLLAB/rrrealll-ocr/src/analysis",
+          "$COLLAB/rrrealll-ocr/or/OCR資料庫比對20260806.pdf"
+        ],
+        "outputs": [
+          "canonical task evolution and acceptance matrix",
+          "versioned data/rule difference and disposition registers",
+          "TDD-backed runtime/UI corrections and acceptance evidence"
+        ],
+        "verifiers": [
+          "node scripts/validate-tasks.mjs --changed-only --project rrrealll-ocr",
+          "npm test",
+          "npm run build:web",
+          "RRO-10 deterministic verifiers and acceptance event gate"
+        ],
+        "stop_condition": "若 token 或 score delta 缺少可證明的正式語意、原始 OCR 圖片缺失、live write／部署需要新授權，或 canonical／其他 session 發生同檔重疊，即停止並保留明確 residual。"
+      },
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "unknown-only 與 mixed unresolved 配方不得取得依賴缺席、極簡或純淨推論的有利規則及未加限定的高安全分數。",
+          "所有 active rule 經正式 normalization/analyze path 有正向、負向與 unknown 證據；不得直接注入 featureVector 冒充可達性。",
+          "R42–R80 的 token 有可觀察 producer、核准改寫／合併，或明確停用 disposition；不得以 rule ID 生成。",
+          "會議 15 組 corpus、partial、多產品、非洗髮適用範圍與 UI 三類提示可重跑。"
+        ],
+        "test_level": [
+          "analysis_unit",
+          "data_rule_verifier",
+          "service_http_integration",
+          "component_browser_smoke",
+          "production_read_only_acceptance"
+        ],
+        "red_command": "node --test test/analysis/analyzer.test.mjs test/analysis/rule-reachability.test.mjs",
+        "expected_red_reason": "現行 unknown-only 配方觸發 R10/R15/R28/R32/R36/R41 並得到溫和度 100；R42–R80 及部分既有 feature 無法由 canonical domain input 自然觸發。",
+        "green_command": "npm test && npm run build:web",
+        "full_regression_commands": [
+          "npm test",
+          "npm run build:web",
+          "node scripts/verify-seed.mjs",
+          "npm run verify:neon-content",
+          "node scripts/verify-rule-reachability.mjs",
+          "node scripts/verify-meeting-corpus.mjs"
+        ],
+        "fixture_refs": [
+          "$COLLAB/rrrealll-ocr/test/analysis/analyzer.test.mjs",
+          "$COLLAB/rrrealll-ocr/test/analysis/rule-reachability.test.mjs",
+          "$COLLAB/rrrealll-ocr/test/fixtures/meeting-20260806.json",
+          "$COLLAB/rrrealll-ocr/web/src/App.test.jsx"
+        ],
+        "runtime_evidence_required": true
+      },
+      "progress_evidence": {
+        "recorded_at": "2026-08-09",
+        "scope_state": "C1 delivered to rrrealll-ocr origin/main; canonical/live acceptance intentionally incomplete",
+        "local_revision_boundary": "Product C1 bc6d27df5f1729c25b1caca99b64a174ffc317f6 is committed and pushed to rrrealll-ocr origin/main with 0/0 parity. No deployment, live database write, live runtime verification, or production acceptance was performed.",
+        "acceptance_results": [
+          {"id": "A01", "status": "partial", "reason": "local/or/meeting hashes and deterministic semantic diffs recorded; live fingerprint is absent"},
+          {"id": "A02", "status": "blocked", "reason": "target Neon row-content fingerprint tied to the affected deployment revision is absent"},
+          {"id": "A03", "status": "blocked", "reason": "reachability verifier reports 44 blocked rules, including five non-token producer gaps"},
+          {"id": "A04", "status": "blocked", "reason": "R42–R80 are individually registered as unreachable pending approved rewrite, merge, or disable decisions"},
+          {"id": "A05", "status": "pass_local", "reason": "unknown, low-confidence, partial, and unverified fail-closed behavior is covered by analyzer, service, HTTP, and UI tests"},
+          {"id": "A06", "status": "blocked", "reason": "approved golden rule/delta/metric/grade outputs and order/duplicate policy are absent"},
+          {"id": "A07", "status": "blocked", "reason": "15-case corpus is reproducible and scope-gated, but 222 unknown mappings/dispositions are not approved"},
+          {"id": "A08", "status": "partial", "reason": "12-line truncation and multiple-product panel mixing are corrected; same-product multi-image and original curved/glare fixtures are absent"},
+          {"id": "A09", "status": "partial", "reason": "component semantics pass; fresh 390px/desktop visual smoke is not recorded for this revision"},
+          {"id": "A10", "status": "blocked", "reason": "no affected revision deployment, live database receipt, public runtime regression, or current acceptance receipt"}
+        ],
+        "red_evidence": [
+          "unknown-only baseline triggered R10/R15/R28/R32/R36/R41 and returned 30/100/90/70/95 before the fail-closed correction",
+          "new long-panel and multiple-panel tests failed before removing the 12-line truncation and best-panel selection",
+          "new partial-input, UI semantic, HTTP 422, and disposition-accounting tests failed before their corresponding corrections"
+        ],
+        "green_evidence": [
+          "npm test -> 86/86 PASS",
+          "npm run test:web -> 17/17 PASS",
+          "npm run build:web -> PASS",
+          "node scripts/verify-seed.mjs -> INCI 150/150, aliases 400/400, rules 80/80",
+          "node scripts/verify-source-differences.mjs -> canonical/or semantic parity 150/400/80 and meeting PDF fingerprint verified",
+          "npm run verify:neon-content -- --local-only -> stable approved-field fingerprints for 150/400/80 rows"
+        ],
+        "expected_blocking_evidence": [
+          "node scripts/verify-rule-reachability.mjs -> exit 1; 44 blocked rules, including R42–R80 and R13/R19/R21/R27/R31",
+          "node scripts/verify-meeting-corpus.mjs -> exit 1; 15 cases reproducible, 222 unknown, expected mappings/dispositions unapproved",
+          "npm run verify:neon-content -> exit 1 before query because DATABASE_URL is unavailable in this session"
+        ],
+        "verifier_refs": [
+          "$COLLAB/rrrealll-ocr/scripts/verify-source-differences.mjs",
+          "$COLLAB/rrrealll-ocr/scripts/verify-neon-content.mjs",
+          "$COLLAB/rrrealll-ocr/scripts/verify-rule-reachability.mjs",
+          "$COLLAB/rrrealll-ocr/scripts/verify-meeting-corpus.mjs",
+          "$COLLAB/rrrealll-ocr/docs/acceptance/rro-10-source-difference-register.md",
+          "$COLLAB/rrrealll-ocr/docs/acceptance/rro-10-rule-disposition-register.md",
+          "$COLLAB/rrrealll-ocr/test/fixtures/meeting-20260806.json"
+        ]
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review",
+          "verification-before-completion",
+          "acceptance"
+        ],
+        "decision_input": [
+          "$COLLAB/rrrealll-ocr/ARCHITECTURE.md",
+          "$COLLAB/rrrealll-ocr/db/seed/shampoo_rules.csv",
+          "$COLLAB/rrrealll-ocr/or/OCR資料庫比對20260806.pdf",
+          "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p4-ocr-normalization-and-versioned-analysis-api",
+          "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p8-end-to-end-release-acceptance"
+        ],
+        "decision_output": "不覆寫舊 receipt，以 RRO-10 交付可重跑的資料、規則、評分、會議 corpus 與正式 runtime 補正證據。",
+        "execution_boundary": "or/ 是唯讀原始依據；不以測試 token、硬編碼 snapshot、fixture 或 local count 冒充 canonical/live truth；未經另外授權不 push 或 deploy。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "2026-08-09 驗收盤點發現 RRO-05／RRO-09 原矩陣沒有驗證每條規則的 runtime 可達性，且 unknown-only 配方會因缺席／極簡規則得到假性高分；建立後續 task 保存既有完成歷史並補正新發現。",
+            "evidence_refs": [
+              "$COLLAB/rrrealll-ocr/src/analysis/analyzer.mjs",
+              "$COLLAB/rrrealll-ocr/src/analysis/rule-engine.mjs",
+              "$COLLAB/rrrealll-ocr/db/seed/shampoo_rules.csv",
+              "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p4-ocr-normalization-and-versioned-analysis-api"
+            ],
+            "recorded_at": "2026-08-09"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 於 2026-08-09 回覆「確認 PRO-10」；依前文將其確認為 proposed RRO-10，核准先記錄 task 演進，再執行補正與 scope 內驗收。",
+            "evidence_refs": [
+              "Vincent conversation approval 2026-08-09: 確認 PRO-10",
+              "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p9-data-rule-semantic-correction-and-meeting-acceptance.acceptance_matrix"
+            ],
+            "recorded_at": "2026-08-09"
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "完成 RRO-10 本地補正與 scope 內驗收：A05 本地通過，A01/A08/A09 部分成立；A02/A03/A04/A06/A07/A10 依 stop condition 保留明確阻擋。不以 fixture、筆數、舊部署或不可達 token 冒充新版 production acceptance。",
+            "evidence_refs": [
+              "$COLLAB/rrrealll-ocr/docs/acceptance/rro-10-source-difference-register.md",
+              "$COLLAB/rrrealll-ocr/docs/acceptance/rro-10-rule-disposition-register.md",
+              "$COLLAB/rrrealll-ocr/test/fixtures/meeting-20260806.json",
+              "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p9-data-rule-semantic-correction-and-meeting-acceptance.progress_evidence"
+            ],
+            "recorded_at": "2026-08-09"
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "最終邏輯複核補上兩個邊界：未完整輸入時所有依賴 NOT／缺席的規則均不可觸發，low-confidence 多候選以 resolution status 歸入 OCR 不確定；同時新增 target Neon 核准欄位 row-content fingerprint verifier。本地全量回歸 86/86 與 17/17 通過，但 live 連線不存在，仍不得產生 acceptance receipt。",
+            "evidence_refs": [
+              "$COLLAB/rrrealll-ocr/src/analysis/analyzer.mjs",
+              "$COLLAB/rrrealll-ocr/web/src/App.jsx",
+              "$COLLAB/rrrealll-ocr/scripts/verify-neon-content.mjs",
+              "$COLLAB/rrrealll-ocr/docs/acceptance/rro-10-source-difference-register.md"
+            ],
+            "recorded_at": "2026-08-09"
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "產品 C1 bc6d27df5f1729c25b1caca99b64a174ffc317f6 已推送至 rrrealll-ocr origin/main，並驗證 local／remote parity 0/0。RRO-10 本地補正已交付，但 token 語意、meeting mapping、live Neon、golden scoring 與 deployment acceptance 仍未完成，因此維持 in_progress。",
+            "evidence_refs": [
+              "$COLLAB/rrrealll-ocr@bc6d27df5f1729c25b1caca99b64a174ffc317f6",
+              "$COLLAB/rrrealll-ocr/docs/acceptance/rro-10-source-difference-register.md",
+              "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p9-data-rule-semantic-correction-and-meeting-acceptance.progress_evidence"
+            ],
+            "recorded_at": "2026-08-09"
+          }
+        ]
+      },
+      "hc_decision": {
+        "task_scope": "rrrealll-ocr/p9-data-rule-semantic-correction-and-meeting-acceptance",
+        "hc_refs": ["#rightProblem", "#systemDynamics", "#risk", "#confirmationBias", "#sourceBoundary"],
+        "hc_reasoning": "表面問題是 39 個 token 不會產生，機制問題是 feature producer、canonical seed 與 rule condition 沒有可達性契約，根本問題是既有驗收只證明筆數與少數範例，沒有阻止 unknown 缺席推論與不可執行規則。補正必須同時鎖定資料來源、規則語意、fail-closed 評分與 live provenance。",
+        "hc_confidence": 0.98,
+        "evidence_refs": [
+          "$COLLAB/rrrealll-ocr/src/analysis/analyzer.mjs",
+          "$COLLAB/rrrealll-ocr/src/analysis/rule-engine.mjs",
+          "$COLLAB/rrrealll-ocr/db/seed/shampoo_rules.csv",
+          "$COLLAB/rrrealll-ocr/or/OCR資料庫比對20260806.pdf",
+          "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json"
+        ],
+        "source_boundary": "HC is a thinking check, not source of truth；canonical task、seed、runtime code、deterministic verifier 與 acceptance receipt 才是本次完成證據。"
+      }
     }
   ]
 }

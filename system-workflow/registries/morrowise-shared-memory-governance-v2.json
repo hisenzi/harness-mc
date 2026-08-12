@@ -1,0 +1,963 @@
+{
+  "contract_id": "shared-memory-governance-v2.r1",
+  "task_id": "shared-memory-governance-v2",
+  "order_label": "JV-49",
+  "updated_at": "2026-08-12",
+  "status": "r1_baseline_inventory",
+  "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#shared-memory-governance-v2",
+  "phase_status": {
+    "r1": "inventory_complete_migration_pending",
+    "r2": "not_started",
+    "r3": "not_started",
+    "r4": "not_started"
+  },
+  "write_boundary": {
+    "current_phase": "read_only_inventory",
+    "source_mutations_performed": false,
+    "allowed": [
+      "read shared memory sources and safe metadata",
+      "record hashes, classifications, conflicts, proposed targets and recovery paths",
+      "add this JV-49 spec, registry and verifier in harness-mc"
+    ],
+    "forbidden": [
+      "edit shared MEMORY.md before the baseline checkpoint",
+      "move, merge, overwrite or delete dated logs",
+      "modify another session's Maxmodel skill or SKILLS-INDEX dirty scope",
+      "copy local Codex memory wholesale",
+      "create a parallel queue, scheduler, dashboard, task system, RAG or vector database"
+    ]
+  },
+  "taxonomy": [
+    {
+      "id": "l0_rules",
+      "source_of_truth": "$COLLAB/notyet-harness/000_Agent/CORE.md + SOUL.md + USER.md",
+      "content": "Shared red lines, durable preferences and collaboration rules."
+    },
+    {
+      "id": "l1_shared_active_memory",
+      "source_of_truth": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md",
+      "content": "Durable decisions, thin routes and high-value active indexes shared by all agents."
+    },
+    {
+      "id": "domain_skill",
+      "source_of_truth": "$COLLAB/notyet-harness/000_Agent/skills/<skill>/SKILL.md",
+      "content": "Complete repeatable procedures, domain branches and verification rules."
+    },
+    {
+      "id": "architecture",
+      "source_of_truth": "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+      "content": "System layers, ownership, canonical sources, runtime and governance boundaries."
+    },
+    {
+      "id": "canonical_task_state",
+      "source_of_truth": "$COLLAB/harness-mc/milestones/*/tasks.json",
+      "content": "Task status, done conditions, acceptance and evidence."
+    },
+    {
+      "id": "daily_raw_log",
+      "source_of_truth": "$COLLAB/notyet-harness/000_Agent/memory/daily/",
+      "content": "Dated raw session records and handoffs; never an automatic L1 promotion."
+    },
+    {
+      "id": "l2_archive",
+      "source_of_truth": "$COLLAB/notyet-harness/000_Agent/memory/archive/",
+      "content": "Historical, closed or low-frequency records retained for traceability."
+    },
+    {
+      "id": "agent_adapter_memory",
+      "source_of_truth": "$CODEX_HOME/memories/ and equivalent local runtime stores",
+      "content": "Local cache and candidate source only; never shared canonical truth."
+    }
+  ],
+  "l1_content_budget": {
+    "hard_max_lines": 150,
+    "target_max_lines": 120,
+    "entry_target_lines": "1-4",
+    "quality_gate": "five_query_no_regression",
+    "excluded_content": [
+      "volatile task counts or percent complete",
+      "daily progress blocks",
+      "case-level procedures",
+      "runtime version snapshots",
+      "project status already owned by canonical tasks.json"
+    ]
+  },
+  "before_fingerprint": {
+    "captured_at": "2026-08-12",
+    "harness_mc_head": "62a48f41734f70a141d86920f88fc76997475ac6",
+    "notyet_harness_head": "14bf7651927c800a18b4574f82395b01160453e1",
+    "shared_memory": {
+      "path": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md",
+      "lines": 174,
+      "bytes": 9477,
+      "section_count": 31,
+      "sha256": "faffb39164819c64da6d3f16308c0d2a483cdb5474c674be8fabe77641293a02"
+    },
+    "architecture": {
+      "path": "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+      "lines": 372,
+      "bytes": 34468,
+      "sha256": "fe96320cfe402f130da384fcb66df99d0eeb97b8e712a97706dfca17abcea5c6"
+    },
+    "skills_index": {
+      "path": "$COLLAB/notyet-harness/000_Agent/skills/SKILLS-INDEX.md",
+      "lines": 129,
+      "bytes": 9204,
+      "sha256": "f3e2789ee9715b84f0a45cce96e4420884170819fd1f400444459c84cdab9203",
+      "worktree_state": "modified_by_other_session_preserve"
+    },
+    "maxmodel_skill": {
+      "path": "$COLLAB/notyet-harness/000_Agent/skills/maxmodel-case-page/SKILL.md",
+      "lines": 91,
+      "bytes": 6041,
+      "sha256": "9c3871cc84325234532e68f2fa66b946732844ecc4dad989fd6b073748c4f4c4",
+      "worktree_state": "untracked_by_other_session_preserve"
+    },
+    "root_dated_logs_manifest_sha256": "3edd1aaca2baf3240cecd8237767d7918390dbdffe75b6128caca949b411128e",
+    "skills_name_manifest_sha256": "675db398d9ed26c3b50ffc3c569efc2e520bdc68d11495f6ee0b83cb2a1b97e7",
+    "local_codex_memory": {
+      "path": "$CODEX_HOME/memories/MEMORY.md",
+      "lines": 4305,
+      "bytes": 489620,
+      "sha256": "dd57a23904408f3f8a92b1ff9174295fba5587740edd5aeac1378a831ddaadef",
+      "content_copied": false
+    }
+  },
+  "dated_log_inventory": {
+    "root_count": 14,
+    "daily_same_name_different": 12,
+    "daily_missing": 2,
+    "daily_total_files": 210,
+    "daily_file_types": {
+      "md": 132,
+      "html": 58,
+      "jpg": 11,
+      "png": 9
+    },
+    "archive_existed_before": false,
+    "decision": "Never merge into daily by filename. Preserve each root file independently under a proposed archive path after approval."
+  },
+  "memory_section_inventory": [
+    {
+      "id": "l1-01-github-backup",
+      "heading": "[P1] GitHub 備份系統",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L6-L12",
+      "classification": "needs-review",
+      "reason": "Mixes project state, implementation details and runtime claims; current canonical owner must be verified.",
+      "proposed_target": "$COLLAB/harness-mc/milestones/<owner>/tasks.json or the backup architecture docs",
+      "recovery": "Retain the original section until the canonical owner is proven and the before hash remains available."
+    },
+    {
+      "id": "l1-02-memory-system",
+      "heading": "[P1] 記憶系統",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L13-L19",
+      "classification": "move-to-architecture",
+      "reason": "Describes L0/L1/L2 structure, janitor runtime and RAG roadmap rather than an active memory item.",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md#記憶系統 with an L1 thin route",
+      "recovery": "Preserve the original lines in the migration ledger until architecture and the thin route are both verified."
+    },
+    {
+      "id": "l1-03-heptabase",
+      "heading": "[P1] Heptabase 整合",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L20-L25",
+      "classification": "needs-review",
+      "reason": "Contains volatile authorization and integration status that may have drifted.",
+      "proposed_target": "$COLLAB/harness-mc capability registry and the owning integration task",
+      "recovery": "Keep this snapshot until current capability evidence is verified."
+    },
+    {
+      "id": "l1-04-notion-task-library",
+      "heading": "[P1] Notion 全案任務庫（2026-03-19）",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L26-L32",
+      "classification": "move-to-architecture",
+      "reason": "Defines integration topology and identifiers; task state remains in canonical tasks.json.",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md or the Notion capability contract",
+      "recovery": "Retain source until the architecture route and safe identifier policy are reviewed."
+    },
+    {
+      "id": "l1-05-notion-finance",
+      "heading": "[P1] Notion 記帳系統",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L33-L40",
+      "classification": "needs-review",
+      "reason": "Project status and bug history require current project/task evidence before removal.",
+      "proposed_target": "$COLLAB/harness-mc/milestones/<finance-owner>/tasks.json and project docs",
+      "recovery": "Do not alter until the project owner and current status are confirmed."
+    },
+    {
+      "id": "l1-06-mission-control-oc",
+      "heading": "[P1] Mission Control（OC）",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L41-L47",
+      "classification": "archive",
+      "reason": "OpenClaw Mission Control is historical according to the current architecture.",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/MEMORY-legacy-project-state.md",
+      "recovery": "Restore this exact section from the before fingerprint if historical routing is lost."
+    },
+    {
+      "id": "l1-07-mission-control-shared",
+      "heading": "[P1] Mission Control（共享）",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L48-L53",
+      "classification": "retain",
+      "reason": "The shared harness route is durable, but runtime detail should be reduced to a thin pointer.",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md as a short harness-mc route",
+      "recovery": "Compare the rewritten route to the original and ARCHITECTURE.md before accepting."
+    },
+    {
+      "id": "l1-08-hisenzi-website",
+      "heading": "[P1] hisenzi.com 靜態網站",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L54-L57",
+      "classification": "needs-review",
+      "reason": "Project deployment and article counts are volatile task/project state.",
+      "proposed_target": "$COLLAB/harness-mc/milestones/<website-owner>/tasks.json and project docs",
+      "recovery": "Keep the snapshot until the project owner and current status are verified."
+    },
+    {
+      "id": "l1-09-agent-architecture",
+      "heading": "[P1] Agent 架構",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L58-L68",
+      "classification": "move-to-architecture",
+      "reason": "Agent roles, model routing and runtime cost claims are architecture/runtime concerns and include historical assumptions.",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md plus historical extract where appropriate",
+      "recovery": "Retain the original section until current and historical statements are separated."
+    },
+    {
+      "id": "l1-10-ai2line",
+      "heading": "[P1] ai2line — 智慧業務預約系統",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L69-L71",
+      "classification": "needs-review",
+      "reason": "Project existence alone is not enough to establish active L1 relevance.",
+      "proposed_target": "$COLLAB/harness-mc/milestones/<ai2line-owner>/tasks.json or project index",
+      "recovery": "Keep until active status and canonical project home are confirmed."
+    },
+    {
+      "id": "l1-11-marketing-agent",
+      "heading": "[P1] 行銷人的 AI Agent",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L72-L76",
+      "classification": "needs-review",
+      "reason": "Progress counts and next steps belong to canonical task state.",
+      "proposed_target": "$COLLAB/harness-mc/milestones/<marketing-agent-owner>/tasks.json",
+      "recovery": "Retain until the owning milestone is identified and compared."
+    },
+    {
+      "id": "l1-12-agent-training",
+      "heading": "[P1] OpenClaw Agent 訓練套件",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L77-L80",
+      "classification": "move-to-skill",
+      "reason": "The reusable workflow belongs to agent-training; project-specific status requires its own task source.",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/skills/agent-training/SKILL.md with project status routed separately",
+      "recovery": "Verify the skill retains the needed workflow before removing the L1 detail."
+    },
+    {
+      "id": "l1-13-admi-automation",
+      "heading": "[P1] admi-automation — 國中招生流程自動化",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L81-L85",
+      "classification": "needs-review",
+      "reason": "Planning status and pending questions belong to the project task source.",
+      "proposed_target": "$COLLAB/harness-mc/milestones/<admi-owner>/tasks.json and project docs",
+      "recovery": "Preserve until the current project source is verified."
+    },
+    {
+      "id": "l1-14-daily-read",
+      "heading": "[P1] Daily Read 每日英文閱讀系統",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L86-L88",
+      "classification": "needs-review",
+      "reason": "Project status has no durable route or current evidence in this section.",
+      "proposed_target": "$COLLAB/harness-mc/milestones/<daily-read-owner>/tasks.json or project index",
+      "recovery": "Keep until owner and active state are confirmed."
+    },
+    {
+      "id": "l1-15-website-ecosystem",
+      "heading": "[P1] 三站內容生態系（website-ecosystem）",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L89-L92",
+      "classification": "needs-review",
+      "reason": "Project state and completion claims need current canonical evidence.",
+      "proposed_target": "$COLLAB/harness-mc/milestones/<website-ecosystem-owner>/tasks.json and project docs",
+      "recovery": "Retain until current project evidence is confirmed."
+    },
+    {
+      "id": "l1-16-notyet-md",
+      "heading": "[P1] notyet.md 世界觀主題站",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L93-L97",
+      "classification": "needs-review",
+      "reason": "Repo and implementation status are volatile and currently have a canonical milestone.",
+      "proposed_target": "$COLLAB/harness-mc/milestones/notyet-md/tasks.json and project docs",
+      "recovery": "Compare to the canonical milestone before changing this section."
+    },
+    {
+      "id": "l1-17-somedesign",
+      "heading": "[P1] someDesign 公司官網",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L98-L101",
+      "classification": "needs-review",
+      "reason": "A pending project task is not durable L1 content.",
+      "proposed_target": "$COLLAB/harness-mc/milestones/<somedesign-owner>/tasks.json",
+      "recovery": "Keep until the current project anchor is verified."
+    },
+    {
+      "id": "l1-18-how-i-work",
+      "heading": "[P1] how-i-work — 過渡性，17 篇搬到 notyet.md 後 close（→ ecosystem t8）",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L102-L103",
+      "classification": "archive",
+      "reason": "The section explicitly describes itself as transitional and task-linked.",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/MEMORY-legacy-project-state.md",
+      "recovery": "Restore from the before fingerprint if the canonical task no longer carries the handoff."
+    },
+    {
+      "id": "l1-19-openclaw-upgrade",
+      "heading": "[P1] OpenClaw 升級與驗證",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L104-L106",
+      "classification": "archive",
+      "reason": "OpenClaw is historical source material, not the current shared runtime owner.",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/MEMORY-legacy-project-state.md",
+      "recovery": "Retain the original snapshot through the migration ledger."
+    },
+    {
+      "id": "l1-20-hiblocks",
+      "heading": "[P1] HiBlocks 模組化網頁系統",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L107-L113",
+      "classification": "needs-review",
+      "reason": "Module counts, phase state and repo path are project/task data that may be stale.",
+      "proposed_target": "$COLLAB/harness-mc/milestones/<hiblocks-owner>/tasks.json and project docs",
+      "recovery": "Compare with the active HiBlocks project source before modifying."
+    },
+    {
+      "id": "l1-21-system-ops",
+      "heading": "[P1] system-ops — 系統維護方法論 + 賈維斯產品化",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L114-L117",
+      "classification": "needs-review",
+      "reason": "Project progress is stale-prone and Jarvis ownership is now MorroWise.",
+      "proposed_target": "$COLLAB/harness-mc/milestones/morrowise/tasks.json plus historical project docs",
+      "recovery": "Retain until ownership and any supersession mapping are verified."
+    },
+    {
+      "id": "l1-22-subagent-tracker",
+      "heading": "[P1] subagent-tracker — Sub-agent 追蹤管理",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L118-L120",
+      "classification": "move-to-skill",
+      "reason": "Reusable tracking procedure belongs to the skill; completion state belongs to its task source.",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/skills/subagent-tracker/SKILL.md and owning tasks.json",
+      "recovery": "Verify both workflow and historical task evidence before removing the L1 entry."
+    },
+    {
+      "id": "l1-23-save-token",
+      "heading": "[P1] save-token — 省錢專案",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L121-L124",
+      "classification": "needs-review",
+      "reason": "Project status belongs to a project/task source and has no current evidence here.",
+      "proposed_target": "$COLLAB/harness-mc/milestones/<save-token-owner>/tasks.json or project index",
+      "recovery": "Keep until owner and active status are verified."
+    },
+    {
+      "id": "l1-24-house123",
+      "heading": "[P1] house123_buy — 第二間房產購置評估系統",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L125-L128",
+      "classification": "needs-review",
+      "reason": "Implementation and Git lessons mix project status with reusable workflow knowledge.",
+      "proposed_target": "$COLLAB/harness-mc/milestones/<house123-owner>/tasks.json plus the owning Git workflow docs",
+      "recovery": "Split only after confirming both target sources preserve the information."
+    },
+    {
+      "id": "l1-25-dual-blade",
+      "heading": "[P1] 雙刀流協作系統",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L129-L133",
+      "classification": "archive",
+      "reason": "Dual-blade is historical lineage superseded by the agent control plane and MorroWise boundaries.",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/MEMORY-legacy-project-state.md",
+      "recovery": "Keep a historical route in ARCHITECTURE.md and retain the original snapshot."
+    },
+    {
+      "id": "l1-26-kids-reward",
+      "heading": "[P1] kids-reward — 遊戲化功能開發",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L134-L141",
+      "classification": "needs-review",
+      "reason": "Feature inventory and deployment decision are canonical project/task state.",
+      "proposed_target": "$COLLAB/harness-mc/milestones/<kids-reward-owner>/tasks.json and project docs",
+      "recovery": "Compare to the active project before changing."
+    },
+    {
+      "id": "l1-27-xiao-wei-persona",
+      "heading": "[P1] Claude Code (小未) Persona Establishment",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L142-L147",
+      "classification": "needs-review",
+      "reason": "Identity has its own source and the tool-specific project state may be historical.",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/identity/ plus historical archive if needed",
+      "recovery": "Verify the identity source before removing the L1 pointer."
+    },
+    {
+      "id": "l1-28-progress-2026-05-07",
+      "heading": "📌 今日重要進展（2026-05-07）",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L148-L157",
+      "classification": "archive",
+      "reason": "A dated progress snapshot belongs to daily or historical archive, not permanent L1.",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/MEMORY-dated-progress.md",
+      "recovery": "Preserve exact text and source lines in the archive record."
+    },
+    {
+      "id": "l1-29-progress-2026-05-06",
+      "heading": "📌 今日重要進展（2026-05-06）",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L158-L164",
+      "classification": "archive",
+      "reason": "A dated progress snapshot belongs to daily or historical archive, not permanent L1.",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/MEMORY-dated-progress.md",
+      "recovery": "Preserve exact text and source lines in the archive record."
+    },
+    {
+      "id": "l1-30-progress-2026-05-05",
+      "heading": "📌 今日重要進展（2026-05-05）",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L165-L169",
+      "classification": "archive",
+      "reason": "A dated progress snapshot belongs to daily or historical archive, not permanent L1.",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/MEMORY-dated-progress.md",
+      "recovery": "Preserve exact text and source lines in the archive record."
+    },
+    {
+      "id": "l1-31-system-location-2026-05-04",
+      "heading": "📌 系統定址 note（2026-05-04）",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#L170-L174",
+      "classification": "move-to-architecture",
+      "reason": "Canonical path and migration topology belong to the architecture entry; the dated note is historical evidence.",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md with the dated snapshot retained in archive",
+      "recovery": "Verify the current startup route before archiving the dated note."
+    }
+  ],
+  "skills_snapshot": {
+    "count": 49,
+    "names": [
+      "agent-training",
+      "astro-site-launcher",
+      "blog-writer",
+      "browser-setup",
+      "build-skill",
+      "capture-insight",
+      "cc-client-setup",
+      "cc-log",
+      "cc-push",
+      "cross-agent-memory",
+      "dispatching-parallel-agents",
+      "exam-pipeline",
+      "executing-plans",
+      "extract-joomla-articles",
+      "finishing-a-development-branch",
+      "fix-bug",
+      "formspark-n8n-autoreply",
+      "git-worktree",
+      "heptabase-notion-sync",
+      "heptabase-task-cards",
+      "hisenzi-skill-builder",
+      "jpmodel-case-page",
+      "marker-based-auto-doc",
+      "maxmodel-case-page",
+      "morrowise-second-brain-capture",
+      "nextjs-gh-pages",
+      "notyet-article",
+      "planning-preflight",
+      "project-init",
+      "promote-to-architecture",
+      "promote-to-morrowise-product",
+      "receiving-code-review",
+      "requesting-code-review",
+      "review",
+      "schedule-cron",
+      "security-scan",
+      "subagent-driven-development",
+      "subagent-tracker",
+      "systematic-debugging",
+      "test-driven-development",
+      "threads-writer",
+      "using-git-worktrees",
+      "using-superpowers",
+      "verification-before-completion",
+      "vincent-superpowers",
+      "worktree-commit",
+      "writing-plans",
+      "writing-skills",
+      "xiao-wei-mood"
+    ]
+  },
+  "skill_candidates": [
+    {
+      "id": "maxmodel-case-page",
+      "classification": "retain",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/maxmodel-case-page/SKILL.md",
+      "owns_domain_rule": "Max One source-copy conditional branch",
+      "reason": "This is the domain source for Maxmodel case generation; shared L1 must only route to it.",
+      "worktree_boundary": "Observed as another session's untracked scope; JV-49 does not modify or absorb it."
+    },
+    {
+      "id": "cross-agent-memory",
+      "classification": "needs-review",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/cross-agent-memory/SKILL.md",
+      "reason": "Uses OpenClaw and Claude-specific paths, duplicates summaries into entry files and lacks the current approval boundary."
+    },
+    {
+      "id": "project-init",
+      "classification": "needs-review",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/project-init/SKILL.md",
+      "reason": "Still says HiSenzi owns shared MEMORY.md and proposes adding project details to L1."
+    },
+    {
+      "id": "build-skill",
+      "classification": "needs-review",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/build-skill/SKILL.md",
+      "reason": "Still treats CC as read-only and hands suggestions to HiSenzi instead of an agent-neutral approved candidate."
+    },
+    {
+      "id": "hisenzi-skill-builder",
+      "classification": "needs-review",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/hisenzi-skill-builder/SKILL.md",
+      "reason": "Directly adds important skills to L1 and depends on historical OpenClaw tooling."
+    },
+    {
+      "id": "capture-insight",
+      "classification": "needs-review",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/capture-insight/SKILL.md",
+      "reason": "Uses a hard-coded machine path and needs an explicit daily-versus-promotion boundary."
+    },
+    {
+      "id": "cc-log",
+      "classification": "needs-review",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/cc-log/SKILL.md",
+      "reason": "Correctly targets daily, but claims a current memory-janitor downstream that is absent from the shared repo and uses tool-specific ownership wording."
+    },
+    {
+      "id": "agent-training",
+      "classification": "retain",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/agent-training/SKILL.md",
+      "reason": "Creates isolated client templates, not shared L1 entries; retain with client privacy boundary."
+    },
+    {
+      "id": "xiao-wei-mood",
+      "classification": "retain",
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/xiao-wei-mood/SKILL.md",
+      "reason": "Writes a daily visual asset only and does not promote content into shared L1."
+    }
+  ],
+  "memory_ingress_inventory": [
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/cross-agent-memory/SKILL.md",
+      "classification": "needs-review",
+      "observed_behavior": "Writes a full doc, AGENTS summary, Claude-specific local memory and a root dated log through OpenClaw-era paths.",
+      "proposed_behavior": "Emit one agent-neutral candidate with target layer and approval status; shared write only after approval.",
+      "reason": "Current behavior creates duplicated adapter truths and stale ownership."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/cross-agent-memory/references/rules.md",
+      "classification": "needs-review",
+      "observed_behavior": "Requires AGENTS and CC Memory duplication and writes memory/YYYY-MM-DD.md.",
+      "proposed_behavior": "Reference the same candidate contract as the main skill and keep daily logs under daily/.",
+      "reason": "Rules must not contradict the updated skill."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/project-init/SKILL.md",
+      "classification": "needs-review",
+      "observed_behavior": "Tells HiSenzi to add a project P1 block to shared MEMORY.md.",
+      "proposed_behavior": "Keep project state in canonical project/tasks; emit only a proposed thin route if durable cross-project discovery requires it.",
+      "reason": "Project details and volatile state must not refill L1."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/project-init/references/rules.md",
+      "classification": "needs-review",
+      "observed_behavior": "Lists direct MEMORY.md update as a mandatory post-init action.",
+      "proposed_behavior": "Replace direct update with an approval-gated candidate and target-layer decision.",
+      "reason": "Reference rules must match the agent-neutral main skill."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/build-skill/SKILL.md",
+      "classification": "needs-review",
+      "observed_behavior": "Declares CC read-only and sends a memory suggestion to HiSenzi.",
+      "proposed_behavior": "Any agent may prepare a candidate; Vincent approval controls shared memory mutation.",
+      "reason": "Tool identity must not be the ownership boundary."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/build-skill/references/rules.md",
+      "classification": "needs-review",
+      "observed_behavior": "Repeats the CC read-only and HiSenzi handoff boundary.",
+      "proposed_behavior": "Point to the shared candidate contract and approval policy.",
+      "reason": "Reference rules must not preserve stale ownership."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/hisenzi-skill-builder/SKILL.md",
+      "classification": "needs-review",
+      "observed_behavior": "Directly adds important skills or project details to MEMORY.md.",
+      "proposed_behavior": "Keep procedure in the skill and propose at most a thin discovery route.",
+      "reason": "Importance alone does not justify L1 duplication."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/hisenzi-skill-builder/references/conventions.md",
+      "classification": "needs-review",
+      "observed_behavior": "Contains the same automatic MEMORY.md decision table.",
+      "proposed_behavior": "Use target-layer classification and approval-gated candidates.",
+      "reason": "Conventions must not contradict the updated builder."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/capture-insight/SKILL.md",
+      "classification": "needs-review",
+      "observed_behavior": "Writes daily content through a hard-coded machine path and can fan out to project and article files.",
+      "proposed_behavior": "Use $COLLAB paths; explicit user capture may write daily, while L1 promotion remains a separate approved candidate.",
+      "reason": "Daily capture is not equivalent to long-term promotion."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/cc-log/SKILL.md",
+      "classification": "needs-review",
+      "observed_behavior": "Writes daily markdown/HTML and claims a current memory-janitor automatically performs downstream task and memory work.",
+      "proposed_behavior": "Keep daily logging, remove unsupported ownership/runtime claims, and forbid automatic L1 or task mutation.",
+      "reason": "The shared repo has no current memory-janitor implementation at the stated path."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/git-worktree/scripts/worktree-plan.sh",
+      "classification": "needs-review",
+      "observed_behavior": "Reads and writes $HOME/.openclaw/workspace/memory/YYYY-MM-DD.md.",
+      "proposed_behavior": "Use the shared daily route only when the workflow has explicit scope and never promote to L1 automatically.",
+      "reason": "The current path is historical and bypasses shared governance."
+    },
+    {
+      "source_ref": "$COLLAB/harness-mc/scripts/new-project.py",
+      "classification": "needs-review",
+      "observed_behavior": "Promote output reminds the operator to add a Repo line to MEMORY.md.",
+      "proposed_behavior": "Keep repo/project state canonical and emit an optional thin-route candidate only when justified.",
+      "reason": "A repo receipt does not automatically qualify as permanent L1 content."
+    },
+    {
+      "source_ref": "$COLLAB/harness-mc/scripts/generate-morrowise-auditor.mjs",
+      "classification": "needs-review",
+      "observed_behavior": "Memory-health metadata declares HiSenzi ownership and CC read-only maintenance.",
+      "proposed_behavior": "Report Vincent-authorized, agent-neutral maintenance with approval-gated L1 mutation.",
+      "reason": "Generated read-model labels must not preserve stale ownership."
+    }
+  ],
+  "memory_reference_exclusions": [
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/agent-training/",
+      "classification": "retain",
+      "reason": "Creates privacy-isolated client memory templates; it is not a shared-memory ingress."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/cc-client-setup/",
+      "classification": "retain",
+      "reason": "Client-local templates are outside the shared Vincent memory source and need their own client contract."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/xiao-wei-mood/SKILL.md",
+      "classification": "retain",
+      "reason": "References daily only as an image asset location."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/subagent-tracker/references/rules.md",
+      "classification": "retain",
+      "reason": "Mentions that sub-agents lack MEMORY.md context; it does not write memory."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/scripts/backup_config.sh.example",
+      "classification": "retain",
+      "reason": "Contains backup exclusions only and is not a memory ingress."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/skills/archive/project-init-cc-v2.1-2026-04-22/SKILL.md",
+      "classification": "archive",
+      "reason": "Already archived historical workflow; it is not an active ingress."
+    }
+  ],
+  "migration_ledger": [
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/2026-04-27.md",
+      "source_lines": 16,
+      "source_sha256": "ed2d918314059e389904cb5299c911a355ce5ecd90bbda7c28c30af11ed7880c",
+      "daily_ref": "$COLLAB/notyet-harness/000_Agent/memory/daily/2026-04-27.md",
+      "daily_relation": "missing",
+      "daily_lines": 0,
+      "daily_sha256": null,
+      "diff_evidence": "No same-name daily file exists; do not infer equivalence.",
+      "classification": "archive",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/root-dated-logs/2026-04-27.md",
+      "action_status": "proposed_no_write",
+      "recovery_path": "Move the archived file back to the exact source path and verify source_sha256."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/2026-04-29.md",
+      "source_lines": 16,
+      "source_sha256": "8c1e03d59a4c23dde8ed715e4f7b84865c2d6e9fdbfc8960064cca3529922891",
+      "daily_ref": "$COLLAB/notyet-harness/000_Agent/memory/daily/2026-04-29.md",
+      "daily_relation": "different",
+      "daily_lines": 12,
+      "daily_sha256": "ed89c66458b60edd2f1b4e1d1aa925fa46fb79ff25dc1cc6238b76d0c8f23543",
+      "diff_evidence": "Source and daily SHA-256 differ; source_lines=16, daily_lines=12.",
+      "classification": "archive",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/root-dated-logs/2026-04-29.md",
+      "action_status": "proposed_no_write",
+      "recovery_path": "Move the archived file back to the exact source path and verify source_sha256."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/2026-04-30.md",
+      "source_lines": 16,
+      "source_sha256": "453c7cd6748413ff771652d9fa88a0841ae816789c3444a4907001a00c3eb0df",
+      "daily_ref": "$COLLAB/notyet-harness/000_Agent/memory/daily/2026-04-30.md",
+      "daily_relation": "different",
+      "daily_lines": 13,
+      "daily_sha256": "3742cdfc2d48a86f7458e3e32e12037d222b4015fc1f9c453ce7b755aba8b9b1",
+      "diff_evidence": "Source and daily SHA-256 differ; source_lines=16, daily_lines=13.",
+      "classification": "archive",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/root-dated-logs/2026-04-30.md",
+      "action_status": "proposed_no_write",
+      "recovery_path": "Move the archived file back to the exact source path and verify source_sha256."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/2026-05-03.md",
+      "source_lines": 16,
+      "source_sha256": "888501563fd6b115f11517acc49301631e1ca5424578063724bb7833e233206f",
+      "daily_ref": "$COLLAB/notyet-harness/000_Agent/memory/daily/2026-05-03.md",
+      "daily_relation": "different",
+      "daily_lines": 59,
+      "daily_sha256": "39ece9e8c31e9067b25efd79a82cfc36f1de43d58160d68adf96317e1281e425",
+      "diff_evidence": "Source and daily SHA-256 differ; source_lines=16, daily_lines=59.",
+      "classification": "archive",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/root-dated-logs/2026-05-03.md",
+      "action_status": "proposed_no_write",
+      "recovery_path": "Move the archived file back to the exact source path and verify source_sha256."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/2026-05-04.md",
+      "source_lines": 16,
+      "source_sha256": "d54397b0d8e6b627b66fb437c86d1abd861e060e41cfe5f31f06212f0df83a91",
+      "daily_ref": "$COLLAB/notyet-harness/000_Agent/memory/daily/2026-05-04.md",
+      "daily_relation": "different",
+      "daily_lines": 25,
+      "daily_sha256": "9a451fd6c2cd21630852e243e007c4c1c2d439c391a3e7dbabe9ea472a0026e6",
+      "diff_evidence": "Source and daily SHA-256 differ; source_lines=16, daily_lines=25.",
+      "classification": "archive",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/root-dated-logs/2026-05-04.md",
+      "action_status": "proposed_no_write",
+      "recovery_path": "Move the archived file back to the exact source path and verify source_sha256."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/2026-05-05.md",
+      "source_lines": 16,
+      "source_sha256": "5f0e13dd1e99cbafb6a252f277d4d146312d20739967e9b525a30ff2892f027b",
+      "daily_ref": "$COLLAB/notyet-harness/000_Agent/memory/daily/2026-05-05.md",
+      "daily_relation": "different",
+      "daily_lines": 43,
+      "daily_sha256": "5d8f8a4d9357937065c033ff716c44fb5d011fd0dd6489547e21ff400ee909c6",
+      "diff_evidence": "Source and daily SHA-256 differ; source_lines=16, daily_lines=43.",
+      "classification": "archive",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/root-dated-logs/2026-05-05.md",
+      "action_status": "proposed_no_write",
+      "recovery_path": "Move the archived file back to the exact source path and verify source_sha256."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/2026-05-06.md",
+      "source_lines": 16,
+      "source_sha256": "584b41a0cbad5a518d5eb73691d7fbe9bd0e41ff0e3295cbe0fe4b0ab2531b3a",
+      "daily_ref": "$COLLAB/notyet-harness/000_Agent/memory/daily/2026-05-06.md",
+      "daily_relation": "different",
+      "daily_lines": 50,
+      "daily_sha256": "e65fd0ed66f2f962d802c106faecd84827a060ef0581d946bf2d65fa9e841b38",
+      "diff_evidence": "Source and daily SHA-256 differ; source_lines=16, daily_lines=50.",
+      "classification": "archive",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/root-dated-logs/2026-05-06.md",
+      "action_status": "proposed_no_write",
+      "recovery_path": "Move the archived file back to the exact source path and verify source_sha256."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/2026-05-07.md",
+      "source_lines": 16,
+      "source_sha256": "f0c4d753dd27434a12f0e39b042d1938160273ee92bca9eaa42592a3c6367e5c",
+      "daily_ref": "$COLLAB/notyet-harness/000_Agent/memory/daily/2026-05-07.md",
+      "daily_relation": "different",
+      "daily_lines": 36,
+      "daily_sha256": "8d001102d5614cbf197351a54e77946d2ddd3f77007aa24ad04b17474650f39a",
+      "diff_evidence": "Source and daily SHA-256 differ; source_lines=16, daily_lines=36.",
+      "classification": "archive",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/root-dated-logs/2026-05-07.md",
+      "action_status": "proposed_no_write",
+      "recovery_path": "Move the archived file back to the exact source path and verify source_sha256."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/2026-05-08.md",
+      "source_lines": 16,
+      "source_sha256": "d0074949665d97cd692b65d1031ec6e348c02b39c0afedc059af6841937be4b9",
+      "daily_ref": "$COLLAB/notyet-harness/000_Agent/memory/daily/2026-05-08.md",
+      "daily_relation": "different",
+      "daily_lines": 24,
+      "daily_sha256": "4997ceb309bfb5bd032de2db5b92bdd157b93397a1c42543fd779527cc854a51",
+      "diff_evidence": "Source and daily SHA-256 differ; source_lines=16, daily_lines=24.",
+      "classification": "archive",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/root-dated-logs/2026-05-08.md",
+      "action_status": "proposed_no_write",
+      "recovery_path": "Move the archived file back to the exact source path and verify source_sha256."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/2026-05-09.md",
+      "source_lines": 16,
+      "source_sha256": "68543496b01d12fc37354e460fe29fe65ff0e3e6af8204d04829a58e7f9b1dae",
+      "daily_ref": "$COLLAB/notyet-harness/000_Agent/memory/daily/2026-05-09.md",
+      "daily_relation": "missing",
+      "daily_lines": 0,
+      "daily_sha256": null,
+      "diff_evidence": "No same-name daily file exists; do not infer equivalence.",
+      "classification": "archive",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/root-dated-logs/2026-05-09.md",
+      "action_status": "proposed_no_write",
+      "recovery_path": "Move the archived file back to the exact source path and verify source_sha256."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/2026-05-10.md",
+      "source_lines": 16,
+      "source_sha256": "5f93eb872693f1ceaf21034c1b7402174124cc1b1fb002b4fc338eabdff58237",
+      "daily_ref": "$COLLAB/notyet-harness/000_Agent/memory/daily/2026-05-10.md",
+      "daily_relation": "different",
+      "daily_lines": 10,
+      "daily_sha256": "51c5eae58ad0119c2ec9d062cd83a90e121ac3887dd0bdf33d53ea804f52a75f",
+      "diff_evidence": "Source and daily SHA-256 differ; source_lines=16, daily_lines=10.",
+      "classification": "archive",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/root-dated-logs/2026-05-10.md",
+      "action_status": "proposed_no_write",
+      "recovery_path": "Move the archived file back to the exact source path and verify source_sha256."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/2026-05-11.md",
+      "source_lines": 16,
+      "source_sha256": "7852be8373aec9c3f8dad210141b317f1fb10c6ceae7cf91debae68b1050cf6b",
+      "daily_ref": "$COLLAB/notyet-harness/000_Agent/memory/daily/2026-05-11.md",
+      "daily_relation": "different",
+      "daily_lines": 34,
+      "daily_sha256": "14eb9bd4eed37643434be40bff4c2d1b7f0c6f354dd42f233d9f00f7256c569a",
+      "diff_evidence": "Source and daily SHA-256 differ; source_lines=16, daily_lines=34.",
+      "classification": "archive",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/root-dated-logs/2026-05-11.md",
+      "action_status": "proposed_no_write",
+      "recovery_path": "Move the archived file back to the exact source path and verify source_sha256."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/2026-05-12.md",
+      "source_lines": 16,
+      "source_sha256": "f4a20e649d7a475c90e5082f0bcbf3b702fe1b0379f6d0da6711fb5328196404",
+      "daily_ref": "$COLLAB/notyet-harness/000_Agent/memory/daily/2026-05-12.md",
+      "daily_relation": "different",
+      "daily_lines": 22,
+      "daily_sha256": "fa1fbfb988c843f042a2a6fa5723f5a3b182f7a68b5901cdf3ba635a36957dbf",
+      "diff_evidence": "Source and daily SHA-256 differ; source_lines=16, daily_lines=22.",
+      "classification": "archive",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/root-dated-logs/2026-05-12.md",
+      "action_status": "proposed_no_write",
+      "recovery_path": "Move the archived file back to the exact source path and verify source_sha256."
+    },
+    {
+      "source_ref": "$COLLAB/notyet-harness/000_Agent/memory/2026-05-13.md",
+      "source_lines": 12,
+      "source_sha256": "fff1ce1fc57d43e1760d72a93832ab29f24abd9dc2298665d1df87c230cdd28d",
+      "daily_ref": "$COLLAB/notyet-harness/000_Agent/memory/daily/2026-05-13.md",
+      "daily_relation": "different",
+      "daily_lines": 65,
+      "daily_sha256": "53df444cb0df1d45dcb4f16a72766a2999474594e9ba6ed93d541795901c3762",
+      "diff_evidence": "Source and daily SHA-256 differ; source_lines=12, daily_lines=65.",
+      "classification": "archive",
+      "proposed_target": "$COLLAB/notyet-harness/000_Agent/memory/archive/root-dated-logs/2026-05-13.md",
+      "action_status": "proposed_no_write",
+      "recovery_path": "Move the archived file back to the exact source path and verify source_sha256."
+    }
+  ],
+  "local_codex_candidate_source": {
+    "path": "$CODEX_HOME/memories/MEMORY.md",
+    "role": "candidate_source_only",
+    "bulk_import_allowed": false,
+    "content_copied_into_registry": false,
+    "required_candidate_fields": [
+      "source",
+      "reason",
+      "dedupe_comparison",
+      "target_layer",
+      "sensitivity",
+      "vincent_approval"
+    ],
+    "forbidden_candidate_types": [
+      "raw_rollout",
+      "chat_transcript",
+      "secret_or_runtime_auth",
+      "machine_local_transient",
+      "unverified_inference"
+    ],
+    "observed_conflict_sample": {
+      "source_ref": "$CODEX_HOME/memories/MEMORY.md#L1185-L1229",
+      "comparison_ref": "$COLLAB/notyet-harness/000_Agent/skills/maxmodel-case-page/SKILL.md#Max-One-分支",
+      "result": "needs_dedupe_and_source_precedence",
+      "reason": "Local memory contains historical batch-standardization details and a stale skill path, while the current domain rule is conditional on source copy. This sample must not be bulk-promoted."
+    }
+  },
+  "representative_queries": [
+    {
+      "id": "maxmodel-max-one-rule",
+      "question": "Maxmodel 案例沒有 Max One 原始文案時怎麼處理？",
+      "before_result": {
+        "status": "discoverable_local_only_with_drift_risk",
+        "answer": "Current local skill says do not add Max One explanation or link, but local Codex memory also contains older batch-standardization details and a stale skill path."
+      },
+      "expected_route": "$COLLAB/notyet-harness/000_Agent/skills/maxmodel-case-page/SKILL.md only; L1 may contain a thin skill pointer only",
+      "evidence_refs": [
+        "$COLLAB/notyet-harness/000_Agent/skills/maxmodel-case-page/SKILL.md#Max-One-分支",
+        "$CODEX_HOME/memories/MEMORY.md#L1185-L1229"
+      ],
+      "after_result": null
+    },
+    {
+      "id": "canonical-task-state",
+      "question": "project/task 目前狀態去哪裡查？",
+      "before_result": {
+        "status": "pass_with_l1_duplication",
+        "answer": "Canonical status is in harness-mc milestones tasks.json, but shared L1 repeats many stale-prone progress snapshots."
+      },
+      "expected_route": "$COLLAB/harness-mc/milestones/*/tasks.json; L1 keeps no volatile counts",
+      "evidence_refs": [
+        "$COLLAB/notyet-harness/000_Agent/CORE.md#里程碑維護",
+        "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md#目前系統現況"
+      ],
+      "after_result": null
+    },
+    {
+      "id": "shared-memory-owner",
+      "question": "誰可以更新 shared MEMORY.md，需不需要批准？",
+      "before_result": {
+        "status": "fail_conflicting_owner",
+        "answer": "Architecture and several skills still say HiSenzi manages and CC is read-only, while the current governance direction is Vincent-authorized agent-neutral maintenance."
+      },
+      "expected_route": "Any agent may propose; Vincent approval is required before shared L1 mutation through MorroWise Approval Policy",
+      "evidence_refs": [
+        "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md#記憶系統",
+        "$COLLAB/notyet-harness/000_Agent/skills/project-init/SKILL.md#Step-7",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json#memory_write_or_update"
+      ],
+      "after_result": null
+    },
+    {
+      "id": "dated-log-location",
+      "question": "日期工作記錄應放 root、daily 還是 archive？",
+      "before_result": {
+        "status": "fail_ambiguous_and_conflicting",
+        "answer": "daily/ is the declared raw-log home, but 14 root logs remain; 12 conflict with same-name daily files and 2 have no daily counterpart."
+      },
+      "expected_route": "New raw logs go to daily/; legacy root logs move only through the checksum ledger to a separate archive path",
+      "evidence_refs": [
+        "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md#記憶系統",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-shared-memory-governance-v2.json#/migration_ledger"
+      ],
+      "after_result": null
+    },
+    {
+      "id": "codex-to-shared-promotion",
+      "question": "local Codex memory 如何安全晉升到 shared L1？",
+      "before_result": {
+        "status": "fail_missing_adapter",
+        "answer": "Historical source-first guidance exists, but no current candidate schema, dedupe decision or approval-gated MorroWise adapter is implemented."
+      },
+      "expected_route": "$CODEX_HOME candidate -> existing Recommendation Engine -> Approval Policy -> Runner/task lifecycle -> approved target layer",
+      "evidence_refs": [
+        "$COLLAB/notyet-harness/000_Agent/docs/agent-control-plane/openclaw-memory-extract-260613.md",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-recommendation-engine.json",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json"
+      ],
+      "after_result": null
+    }
+  ],
+  "after_fingerprint": null,
+  "next_checkpoint": {
+    "requested_action": "Review the R1 baseline classifications and migration targets before any shared-memory mutation.",
+    "official_r1_gate": "node scripts/verify-shared-memory-governance-v2.mjs --phase r1",
+    "expected_current_result": "RED because migration, after fingerprint and after-query results are intentionally pending."
+  }
+}

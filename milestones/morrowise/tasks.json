@@ -10446,7 +10446,7 @@
     {
       "id": "shared-memory-governance-v2",
       "title": "JV-49 共享記憶治理 v2（L1 重整＋跨 Agent 候選晉升）",
-      "status": "todo",
+      "status": "in_progress",
       "track": "governance",
       "order_label": "JV-49",
       "priority": "high",
@@ -10612,7 +10612,11 @@
         ],
         "runtime_evidence_required": false,
         "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#shared-memory-governance-v2.test_contract.evidence_refs",
-        "evidence_refs": []
+        "evidence_refs": [
+          "$COLLAB/harness-mc/system-workflow/docs/specs/shared-memory-governance-v2.md",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-shared-memory-governance-v2.json",
+          "$COLLAB/harness-mc/scripts/verify-shared-memory-governance-v2.mjs#r1-baseline"
+        ]
       },
       "goal_alignment": {
         "project_id": "morrowise",
@@ -10713,10 +10717,47 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 明確指示『開始進行 JV-49』；先執行 R1 唯讀 baseline，建立 taxonomy、31 段 L1 分類、14 份 dated-log migration ledger、49 個 skill inventory、memory ingress 清單與五個代表性查詢，不修改 shared MEMORY.md、skills、ARCHITECTURE.md、dated logs 或 local Codex memory。",
+            "evidence_refs": [
+              "Vincent 2026-08-12 current session: 開始進行 JV-49",
+              "$COLLAB/harness-mc/system-workflow/docs/specs/shared-memory-governance-v2.md",
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-shared-memory-governance-v2.json",
+              "$COLLAB/harness-mc/scripts/verify-shared-memory-governance-v2.mjs"
+            ],
+            "recorded_at": "2026-08-12",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/shared-memory-governance-v2",
+                "morrowise/memory-health-read-model",
+                "morrowise/morrowise-second-brain-capture-gate",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "本次只把已核准 JV-49 從 todo 啟動為 in_progress，並固化 R1 baseline；memory-health 只觀測、second-brain capture 只管理知識收錄、JV-32 只管理 task mutation，均不擁有本次 L1 migration inventory。",
+                "owner_source_of_truth": "owner 仍是既有 morrowise/shared-memory-governance-v2；task state 留在同一 tasks.json，R1 evidence 留在同一 task 指向的 spec、registry 與 verifier，未建立新 task 或第二正本。",
+                "inputs_outputs": "輸入是已核准 task、共享 L1／dated logs／skills／architecture／local Codex metadata 的唯讀盤點；輸出只新增 R1 baseline contract、分類、ledger、before query evidence 與 verifier，不修改 shared memory sources。",
+                "lifecycle_completion": "本次只達 R1 baseline checkpoint，不滿足 R1 migration 或 JV-49 completion；正式 R1、R2、R3、R4 仍須逐段通過原 acceptance。"
+              },
+              "decision_reason": "Vincent 已明確要求開始 JV-49；這是既有 task 的狀態與 evidence amendment，不是新問題、新 owner 或 replacement，因此 outcome=amend。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-12",
+                "evidence_refs": [
+                  "Vincent 2026-08-12 current session: 開始進行 JV-49"
+                ]
+              }
+            }
           }
         ]
       },
-      "note": "2026-08-12 Scope A baseline：共享 MEMORY.md 為 174 lines／9477 bytes；memory 根目錄有 14 份 dated logs 且 archive/ 不存在。先前只讀比對顯示多數 root-vs-daily 同名檔內容不同，實作時必須重新產生 inventory 與 checksum，不得沿用舊統計直接搬移。Max One 規則已由 maxmodel-case-page skill 承接，因此 JV-49 只保留 shared-memory 薄路由。"
+      "note": "2026-08-12 Scope A baseline：共享 MEMORY.md 為 174 lines／9477 bytes；memory 根目錄有 14 份 dated logs 且 archive/ 不存在。先前只讀比對顯示多數 root-vs-daily 同名檔內容不同，實作時必須重新產生 inventory 與 checksum，不得沿用舊統計直接搬移。Max One 規則已由 maxmodel-case-page skill 承接，因此 JV-49 只保留 shared-memory 薄路由。2026-08-12 R1 baseline checkpoint：已固化 31 段 L1 分類、14 筆逐檔 ledger、49 個 skill inventory、13 個 active ingress 候選與五查詢 before evidence；`--phase r1-baseline` PASS。正式 R1 保持 RED，待共享 L1 重整、after fingerprint、ledger verified 與五查詢 no-regression；本 checkpoint 未移動、刪除或修改任何 shared memory source。"
     }
   ]
 }

@@ -756,7 +756,7 @@
       "summary": "JV-45 已完成：Vincent 管理登入；登入後由可信且唯讀的 Git probe 判定 remote truth、本機差異、freshness、blocked reason 與下一步，缺資料或 fixture 不得假裝 healthy。"
     },
     "shared-memory-governance-v2": {
-      "status": "todo",
+      "status": "in_progress",
       "commits": [
         "c1cb4b9f882938c97379aee3d0b1e98133bdf441"
       ]

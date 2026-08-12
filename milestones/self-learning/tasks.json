@@ -782,11 +782,11 @@
           ],
           "steps": [
             "分別收錄兩個主題的來源、當期最小行動與長期選擇關聯",
-            "記錄自由探索但不強迫轉成 task",
+            "記錄自由探索；必要時新增內容分類作為整理 metadata，但不強迫轉成 canonical task",
             "依生活現況、收入、證據與定錨目標排出當期順序"
           ],
-          "pass_condition": "兩個主題均可同時存在且各有一個清楚最小行動；自由探索有正式位置但不會自動新增 task。",
-          "fail_condition": "單一試行阻塞其他主題、每個探索都被強迫 task 化，或只增加筆記而沒有可執行的當期行動。",
+          "pass_condition": "兩個主題均可同時存在且各有一個清楚最小行動；自由探索與內容分類有正式位置，但都不會自動新增 task。",
+          "fail_condition": "單一試行阻塞其他主題、探索或新增分類被強迫 task 化，或只增加筆記而沒有可執行的當期行動。",
           "verification": [
             "人工檢視兩個不同主題的同一期紀錄",
             "人工檢視一筆自由探索沒有 canonical task mutation"
@@ -835,21 +835,23 @@
         {
           "id": "MVP-07",
           "task_labels": ["FP-01", "JV-44"],
-          "what": "同一來源同時產生私人生活證據、共同知識摘要及公開安全候選，三者以來源參照連接而非重複維護。",
+          "what": "真實 session 在收尾時完成一次輸出判定；有可分享的真實經驗或有用資訊時，同一來源產生私人證據參照、共同知識摘要及公開安全候選，三者以來源參照連接而非重複維護。",
           "preconditions": [
-            "MVP-04 已有合格來源與實踐證據",
+            "存在一筆可追溯的真實 session；若來源是生活實踐，也可沿用 MVP-04 的合格來源與證據",
             "共同知識庫及公開候選位置沿用既有系統"
           ],
           "steps": [
-            "保存私人證據參照但不複製敏感原文到共同層",
-            "從同一來源產生可共用知識摘要",
-            "從同一來源產生去識別公開安全候選並標示待核准"
+            "在既有 session closeout 路徑記錄 source ref 與 capture decision；只有真實經驗或有用資訊才標為 qualified，沒有合格內容時記錄 no_op reason",
+            "qualified 時保存私人證據參照但不複製敏感原文到共同層，並整理事件、Vincent 的判斷／思考邏輯、實際可用資訊與適用邊界；可新增內容分類，但不得因此新增 task",
+            "從同一來源產生共同知識摘要及去識別公開安全候選並標示待核准；若 session 含助理錯誤或 Vincent 修正，另連到 MVP-05A lesson candidate，不把一般內容誤送治理路線",
+            "no_op 時不強迫產生文章、知識摘要或 canonical task mutation"
           ],
-          "pass_condition": "三層可回溯同一 source ref；共同與公開層均不含私人敏感資料，且修正可由來源參照追蹤。",
-          "fail_condition": "三份內容互相失聯、需要手動重複維護，或私人財務、住址、健康、身分及憑證資訊進入共同或公開層。",
+          "pass_condition": "至少一筆真實 session 有 capture decision 且 qualified 後形成可回溯同一 source ref 的三層輸出；共同與公開層均不含私人敏感資料，分類不會自動建立 task，no_op 分支不會強迫產文或修改 canonical。",
+          "fail_condition": "真實 session 未經判定就遺失或被強迫產文、仍限定必須先有生活實踐、三份內容互相失聯、分類自動形成 task、需要手動重複維護，或私人財務、住址、健康、身分及憑證資訊進入共同或公開層。",
           "verification": [
             "執行 JV-44 現行 capture verifier",
-            "人工比對同一 source ref 的三層輸出與隱私遮罩"
+            "人工比對一筆 qualified 真實 session 的 capture decision、同一 source ref、三層輸出與隱私遮罩",
+            "人工反例測試：no_op 不產生文章、知識摘要或 canonical task mutation；新增分類不產生 task"
           ]
         },
         {
@@ -862,11 +864,11 @@
           ],
           "steps": [
             "記錄事件、原判斷、Vincent 修正、造成影響、建議教訓及證據參照",
-            "建立 lesson candidate 並連回原始事件",
+            "由 MVP-07 session capture decision 辨認助理／系統修正時，建立 lesson candidate 並連回原始事件；一般真實經驗或有用資訊仍留在內容路線",
             "確認尚未修改 canonical 或工具"
           ],
-          "pass_condition": "六個欄位齊全，candidate 能回溯 raw event，且候選階段 canonical mutation 為零。",
-          "fail_condition": "只寫抽象心得、找不到原始事件、缺少 Vincent 修正，或尚未核准就改規則。",
+          "pass_condition": "六個欄位齊全，candidate 能回溯 raw event，只有符合助理／系統修正條件的事件進入治理候選，且候選階段 canonical mutation 為零。",
+          "fail_condition": "只寫抽象心得、找不到原始事件、缺少 Vincent 修正、把一般內容誤送治理候選，或尚未核准就改規則。",
           "verification": [
             "人工逐欄核對一筆 MorroWise 原始事件及 lesson candidate",
             "核對候選階段 applied_actions=0"
@@ -1021,13 +1023,13 @@
         {
           "id": "MVP-12",
           "task_labels": ["FP-01"],
-          "what": "從一開始保留同源公開安全候選，但在人工核准前不發生任何網站、Git 或部署發布動作。",
+          "what": "從真實 session 或生活實踐第一次形成 qualified 內容時，就保留同源公開安全候選；但在人工核准前不發生任何網站、Git 或部署發布動作。",
           "preconditions": [
             "MVP-07 已產生一筆去識別公開安全候選",
             "候選狀態明確為待 Vincent 核准"
           ],
           "steps": [
-            "核對候選的 source ref、隱私遮罩及待核准狀態",
+            "核對候選的 session／實踐 source ref、隱私遮罩及待核准狀態",
             "在未核准狀態檢查 notyet_website、Git 與部署紀錄",
             "確認公開候選可修正但不會自動 publish"
           ],
@@ -1138,10 +1140,46 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 補正 FP-01 的核心輸出來源：重點是真實經驗分享與有用資訊，應依每次真實 session 做 capture decision；合格內容可新增分類並形成同源三層輸出，但分類、自由探索與 no_op 都不得自動建立 task。這是既有 FP-01 的 session 輸出接線缺口，不是新 task 或新系統。",
+            "evidence_refs": [
+              "Vincent current session：重點是真實經驗分享有用資訊，根據每次的 session 可以輸出",
+              "Vincent current session：可新增分類，但不用再新增分類的 task",
+              "Vincent current session：可以進行 scope 內的 task 寫入",
+              "$COLLAB/harness-mc/milestones/self-learning/tasks.json#future-practice-roadmap.acceptance_matrix[MVP-03,MVP-07,MVP-05A,MVP-12]"
+            ],
+            "recorded_at": "2026-08-12",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "self-learning/future-practice-roadmap",
+                "morrowise/morrowise-second-brain-capture-gate",
+                "morrowise/fable-harness-judgment-transfer"
+              ],
+              "scope_comparison": {
+                "problem": "FP-01 原 MVP-07 只允許在 MVP-04 生活實踐之後產生三層輸出，無法驗收真實工作 session 本身所包含的經驗、思考邏輯與有用資訊，也沒有 qualified／no_op 判定及分類不建 task 的邊界。",
+                "owner_source_of_truth": "owner 不變：self-learning/FP-01 擁有 Future Practice 路線及整體驗收；JV-44、MW-GOV-FABLE-01、JV-04、JV-40 與既有 runtime tasks 繼續擁有各自能力，不重開、不複製其正本；MC-LIVE-20 不承接本次內容路線。",
+                "inputs_outputs": "既有輸入仍是 Vincent 的 session、學習、實踐、證據與修正；既有輸出仍是私人證據參照、共同知識摘要、公開安全候選及必要時的 MorroWise lesson candidate。本 amend 只補 session closeout capture decision、no_op 與分類不建 task 的接線。",
+                "lifecycle_completion": "FP-01 維持 todo、order_label=FP-01、三階段與 16 項驗收不變；本次只修正既有 MVP-03、MVP-07、MVP-05A、MVP-12，完整完成邊界與 Vincent 最終確認要求不變。"
+              },
+              "decision_reason": "缺口與 FP-01 的問題、owner、輸入輸出及完成生命週期完全相同，應 amend 既有 task；不新增 session output task、分類 task、dashboard、tracker、database 或 scheduler。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-12",
+                "evidence_refs": [
+                  "Vincent current session：可以進行 scope 內的 task 寫入"
+                ]
+              }
+            }
           }
         ]
       },
-      "note": "FP-01 是完整路線及驗收 task，不是第二套 tracker。MVP 目的在加速取得真實運行證據；保存 MVP receipt 後 task 仍需繼續第一階段完整版。MorroWise 只能提出下一輪 task 或目標改變後的重整建議；經 Vincent 核准後，才透過 JV-32／JV-40 寫入該專案 task 正本。"
+      "note": "FP-01 是完整路線及驗收 task，不是第二套 tracker。MVP 目的在加速取得真實運行證據；保存 MVP receipt 後 task 仍需繼續第一階段完整版。MorroWise 只能提出下一輪 task 或目標改變後的重整建議；經 Vincent 核准後，才透過 JV-32／JV-40 寫入該專案 task 正本。2026-08-12 Amend：真實 session 進入收尾時應做 capture decision；qualified 才形成同源三層輸出，no_op 不強迫產文，內容分類與自由探索均不自動建立 task。"
     }
   ]
 }

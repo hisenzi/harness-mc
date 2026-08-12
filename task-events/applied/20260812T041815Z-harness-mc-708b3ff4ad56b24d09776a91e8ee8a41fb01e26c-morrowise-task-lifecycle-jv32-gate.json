@@ -1,0 +1,13 @@
+{
+  "event_id": "task.completed-morrowise-task-lifecycle-jv32-gate-708b3ff4ad56b24d09776a91e8ee8a41fb01e26c-20260812T041815Z",
+  "type": "task.completed",
+  "repo": "harness-mc",
+  "commit": "708b3ff4ad56b24d09776a91e8ee8a41fb01e26c",
+  "project": "morrowise",
+  "task_id": "task-lifecycle-jv32-gate",
+  "status": "completed",
+  "summary": "JV-40 R18 completed: overdue weekly-core review blocks only its own task; unrelated work remains allowed with an explicit warning and changed-only validation stays scoped.",
+  "created_at": "2026-08-12T04:18:15.274Z",
+  "actor": "codex",
+  "session_id": "019fc1fc-0792-7b11-8703-f0a2c09ae159"
+}

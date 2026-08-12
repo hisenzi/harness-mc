@@ -4540,7 +4540,7 @@
     },
     {
       "id": "task-lifecycle-jv32-gate",
-      "status": "in_progress",
+      "status": "completed",
       "weekly_core": false,
       "revision": "R18",
       "previous_revision": "R17",
@@ -4556,9 +4556,11 @@
         "85a57e922b4c2ff0040717a11830e286a65d8c93",
         "4d996a947417a1e8d25df7cd2a2974d617196227",
         "e5ce130f75e6662dae225de8b0bd5b6cb917ed82",
-        "298b761a653951288d179cc81adb3eb9003dc5b2"
+        "298b761a653951288d179cc81adb3eb9003dc5b2",
+        "708b3ff4ad56b24d09776a91e8ee8a41fb01e26c"
       ],
-      "summary": "JV-40 R17 完成證據保留於 revision_evidence；R18 依 Vincent 核准修正 weekly-core 到期 gate 的過度阻擋，實作與驗收完成前維持 in_progress。",
+      "completed_at": "2026-08-12",
+      "summary": "JV-40 R18 已完成：逾期 weekly core 只阻擋該 task 本身；無關 task 可繼續並顯示 weekly_core_overdue warning，changed-only validator 不再被未修改的逾期核心誤擋。",
       "title": "JV-40 任務生命週期接入 JV-32（新增／修改／停用／完成 gate）",
       "track": "governance",
       "order_label": "JV-40",
@@ -4773,8 +4775,9 @@
           "note": "R17 使用本 revision 的 fresh verifier 與 exact Acceptance Matrix receipt；R16 evidence 僅保留為歷史。"
         },
         "R18": {
-          "status": "acceptance_verified",
+          "status": "completed",
           "verified_at": "2026-08-06",
+          "completed_at": "2026-08-12",
           "acceptance_matrix_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate.acceptance_matrix",
           "acceptance_receipt": {
             "matrix_ref": "milestones/morrowise/tasks.json#task-lifecycle-jv32-gate.acceptance_matrix",
@@ -4839,6 +4842,13 @@
               "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
             ],
             "fixture_runtime_boundary": "JV-40 R18 的 fixtures 只驗證 lifecycle gate 與 changed-only validator；它們不冒充 JV-45 的真實 Git runtime evidence。"
+          },
+          "delivery_evidence": {
+            "c1_commit": "708b3ff4ad56b24d09776a91e8ee8a41fb01e26c",
+            "required_ci": "GitHub Actions Deploy to GitHub Pages run 31562625742 -> success",
+            "task_event": "task.completed-morrowise-task-lifecycle-jv32-gate-708b3ff4ad56b24d09776a91e8ee8a41fb01e26c-20260812T041815Z",
+            "sync_terminal": "obsidian_canvas sync request -> sync_skipped with explicit no-external-write exemption",
+            "remote_parity_before_c2": "harness-mc 0/0; notyet-harness 0/0"
           }
         }
       },
@@ -5008,6 +5018,30 @@
           "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
           "Vincent 2026-08-06 current session: 可以進行；先完成驗收標準。"
         ]
+      },
+      "completion_evidence": {
+        "red_evidence": [
+          "node scripts/verify-work-anchor-preflight.mjs -> unrelated JV-45 expected allow but legacy gate returned blocked",
+          "node scripts/verify-validate-tasks.mjs -> unchanged overdue weekly core polluted an unrelated changed-only fixture"
+        ],
+        "green_evidence": [
+          "node scripts/verify-work-anchor-preflight.mjs -> Work anchor preflight verification OK",
+          "node scripts/verify-validate-tasks.mjs -> validate-tasks verification OK"
+        ],
+        "regression_evidence": [
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise --as-of 2026-08-12 -> PASS",
+          "node scripts/verify-morrowise-dev-workflow-catalog.mjs -> PASS",
+          "npm run test:architecture-subsystems -> PASS",
+          "npm run test:system-pulse -> PASS",
+          "isolated exact-scope npm run test:tasks -> PASS with 0 issues and 0 warnings",
+          "GitHub Actions Deploy to GitHub Pages run 31562625742 -> pushed-task validation and production build success"
+        ],
+        "verifier_refs": [
+          "$COLLAB/harness-mc/scripts/verify-work-anchor-preflight.mjs",
+          "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
+        ],
+        "fixture_runtime_boundary": "JV-40 R18 的 fixtures 只驗證 lifecycle gate 與 changed-only validator；它們不冒充 JV-45 的真實 Git runtime evidence。"
       },
       "jv32_route": {
         "batch": "JV-32 task lifecycle governance batch",
@@ -5673,6 +5707,51 @@
                 "approved_at": "2026-08-06",
                 "evidence_refs": [
                   "Vincent 2026-08-06 current session: 可以進行；先完成驗收標準。"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "JV-40 R18 的五項 Acceptance Matrix、target-scoped weekly-core gate、changed-only regression、Architecture Admission check、C1 remote delivery 與 required CI 全部通過；completion event 已套用，外部 Canvas sync 依禁止未授權寫入原則以具體 exemption 終結。",
+            "evidence_refs": [
+              "708b3ff4ad56b24d09776a91e8ee8a41fb01e26c",
+              "GitHub Actions Deploy to GitHub Pages run 31562625742 -> success",
+              "task.completed-morrowise-task-lifecycle-jv32-gate-708b3ff4ad56b24d09776a91e8ee8a41fb01e26c-20260812T041815Z",
+              "sha256:ac4bc4136dcd8a20047fc36f135eb37fcec26ea565b2514d50f3bcd8f895b4bf",
+              "node scripts/verify-work-anchor-preflight.mjs",
+              "node scripts/verify-validate-tasks.mjs",
+              "node scripts/validate-tasks.mjs --changed-only --project morrowise --as-of 2026-08-12",
+              "Vincent 2026-08-12 current session: 確認完整交付"
+            ],
+            "recorded_at": "2026-08-12",
+            "revision": {
+              "revision": "R18",
+              "previous_revision": "R17",
+              "history_policy": "append_only"
+            },
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/account-login-sync-start-v1",
+                "morrowise/action-priority-read-model-v2"
+              ],
+              "scope_comparison": {
+                "problem": "本次只完成既有 JV-40 R18 的 weekly-core target scoping 修正，不建立新 lifecycle 或第二套 gate。",
+                "owner_source_of_truth": "Owner 維持 morrowise/task-lifecycle-jv32-gate；canonical state、規格、validator 與 verifier 邊界不變。",
+                "inputs_outputs": "輸入是已核准的 R18 scope、C1 remote delivery、required CI 與 completion event；輸出只回寫同一 task 的完成狀態與證據。",
+                "lifecycle_completion": "R18 Acceptance Matrix、C1、CI、event apply、sync terminal 與 C2 remote parity 全部成立後進入 completed。"
+              },
+              "decision_reason": "問題、owner 與完成邊界皆延續 JV-40 R18，因此 outcome=amend，不新增 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-12",
+                "evidence_refs": [
+                  "Vincent 2026-08-12 current session: 確認完整交付"
                 ]
               }
             }
@@ -9525,11 +9604,16 @@
       "id": "account-login-sync-start-v1",
       "order_label": "JV-45",
       "title": "JV-45 換任何硬體後登入必備帳號即可同步最新資料並開始工作",
-      "status": "in_progress",
+      "status": "completed",
       "acceptance_state": "VINCENT_CONFIRMED",
       "track": "governance",
       "priority": "medium",
       "weekly_core": false,
+      "completed_at": "2026-08-12",
+      "commits": [
+        "708b3ff4ad56b24d09776a91e8ee8a41fb01e26c"
+      ],
+      "summary": "JV-45 已完成：Vincent 管理登入；登入後由可信且唯讀的 Git probe 判定 remote truth、本機差異、freshness、blocked reason 與下一步，缺資料或 fixture 不得假裝 healthy。",
       "depends_on": [
         "task-lifecycle-jv32-gate"
       ],
@@ -9757,7 +9841,9 @@
           "node scripts/verify-validate-tasks.mjs -> PASS",
           "isolated exact-scope npm run test:tasks -> PASS with 0 issues and 0 warnings",
           "isolated exact-scope node scripts/generate-data.mjs -> PASS",
-          "git diff --check -> PASS"
+          "git diff --check -> PASS",
+          "2026-08-12 shared verification and isolated exact-scope verification -> PASS",
+          "GitHub Actions Deploy to GitHub Pages run 31562625742 -> pushed-task validation and production build success"
         ],
         "verifier_refs": [
           "$COLLAB/harness-mc/scripts/verify-account-login-sync-start.mjs",
@@ -9767,7 +9853,8 @@
         "fixture_runtime_boundary": "Fixtures only cover negative and deterministic classifications; ready and shared-checkout evidence come from real local Git repositories and read-only remote probes, never from fixture substitution.",
         "runtime_evidence": [
           "2026-08-06 two independent fresh clones and two independent Node processes against one real local bare remote produced consistent verified results",
-          "2026-08-06T07:28:30.963Z shared checkout read-only remote probe -> blocked because local changes exist; local_head=remote_head=4d6443a8986473830088fbccdc2a5eafafb5c535; upstream_state=in_sync; freshness=fresh; evidence=safe-probe:sha256:d0205154b0b10eda6f874372a87ac224a45ce2ce6043ee22f29ee5adacd52fe4"
+          "2026-08-06T07:28:30.963Z shared checkout read-only remote probe -> blocked because local changes exist; local_head=remote_head=4d6443a8986473830088fbccdc2a5eafafb5c535; upstream_state=in_sync; freshness=fresh; evidence=safe-probe:sha256:d0205154b0b10eda6f874372a87ac224a45ce2ce6043ee22f29ee5adacd52fe4",
+          "2026-08-12T03:32:46.371Z shared checkout read-only remote probe -> blocked because local changes exist; local_head=remote_head=a32e431bf0d2e94b3ac6883f1886a784a8e7ebda; upstream_state=in_sync; freshness=fresh; evidence=safe-probe:sha256:0e44a34a68b706e43a2b2bd1a53c8a87713ca663110852a7fdf0485ad1025c9e"
         ]
       },
       "hc_decision": {
@@ -9796,7 +9883,8 @@
       },
       "jv32_route": {
         "workflows": [
-          "task-lifecycle"
+          "task-lifecycle",
+          "closeout-commit-routing"
         ]
       },
       "task_lifecycle": {
@@ -9908,6 +9996,46 @@
                 "evidence_refs": [
                   "Vincent 2026-08-06 current session: 可以進行；先完成驗收標準。",
                   "Vincent current task: 所有相關帳號登入問題你不用驗證，我會管理。"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "JV-45 A01-A05 全部通過；C1 已到 remote main 並通過 pushed-task validation 與 production build，真實 read-only safe probe 未以 fixture 取代，completion event 已套用，未授權 Canvas sync 以具體 exemption 終結。",
+            "evidence_refs": [
+              "708b3ff4ad56b24d09776a91e8ee8a41fb01e26c",
+              "GitHub Actions Deploy to GitHub Pages run 31562625742 -> success",
+              "task.completed-morrowise-account-login-sync-start-v1-708b3ff4ad56b24d09776a91e8ee8a41fb01e26c-20260812T041816Z",
+              "sha256:29729a0e6e58f2747f9d3741064ab29a06ea22bfbff7ed65bc131ca19598c1d5",
+              "node scripts/verify-account-login-sync-start.mjs",
+              "actual shared checkout safe probe evidence safe-probe:sha256:0e44a34a68b706e43a2b2bd1a53c8a87713ca663110852a7fdf0485ad1025c9e",
+              "Vincent 2026-08-12 current session: 確認完整交付"
+            ],
+            "recorded_at": "2026-08-12",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/account-login-sync-start-v1",
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/credential-lifecycle-governance",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "本次只完成既有 JV-45 的登入後可信 work-start 判定，不新增登入、憑證或同步服務。",
+                "owner_source_of_truth": "JV-45 仍只擁有唯讀 evaluator／probe／verifier；登入由 Vincent 管理，Git remote、tasks 與 registries 維持各自正本。",
+                "inputs_outputs": "輸入是登入完成後的真實 read-only Git evidence；輸出是 deterministic decision、freshness、SHA、blocked reason 與 next action。",
+                "lifecycle_completion": "A01-A05、真實 safe probe、fresh-session consistency、C1、required CI、event apply、sync terminal 與 C2 remote parity 全部成立後進入 completed。"
+              },
+              "decision_reason": "問題、owner 與完成邊界完整延續 JV-45，因此 outcome=amend，不新增 task、scheduler、generator 或 credential owner。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-12",
+                "evidence_refs": [
+                  "Vincent 2026-08-12 current session: 確認完整交付"
                 ]
               }
             }

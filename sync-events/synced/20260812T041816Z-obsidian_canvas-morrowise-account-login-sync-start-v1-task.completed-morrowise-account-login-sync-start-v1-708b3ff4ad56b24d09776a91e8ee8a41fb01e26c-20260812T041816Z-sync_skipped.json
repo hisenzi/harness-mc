@@ -1,0 +1,21 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-morrowise-account-login-sync-start-v1-task.completed-morrowise-account-login-sync-start-v1-708b3ff4ad56b24d09776a91e8ee8a41fb01e26c-20260812T041816Z-20260812T041816Z",
+  "type": "sync_skipped",
+  "target": "obsidian_canvas",
+  "status": "skipped",
+  "source_event_id": "task.completed-morrowise-account-login-sync-start-v1-708b3ff4ad56b24d09776a91e8ee8a41fb01e26c-20260812T041816Z",
+  "project": "morrowise",
+  "task_id": "account-login-sync-start-v1",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-08-12T04:18:16.274Z",
+  "actor": "codex",
+  "session_id": "019fc1fc-0792-7b11-8703-f0a2c09ae159",
+  "exemption_reason": "External Obsidian Canvas write is not authorized for this governance closeout; canonical tasks plus regenerated MC read models are the accepted evidence.",
+  "verifier": "node scripts/generate-data.mjs && npm run test:tasks",
+  "resolved_at": "2026-08-12T04:18:54.126Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "019fc1fc-0792-7b11-8703-f0a2c09ae159"
+}

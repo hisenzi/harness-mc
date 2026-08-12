@@ -1,25 +1,18 @@
 {
-  "generated_at": "2026-08-03T10:05:59.134Z",
+  "generated_at": "2026-08-12T04:18:26.425Z",
   "applied": [
     {
-      "file": "20260803T100559Z-rrrealll-ocr-a615855c1837761f4bade22d5b533d439a12ca3f-rrrealll-ocr-p6-opt-in-product-passport-and-judge-queue.json",
-      "event_id": "rro-07-formal-mvp-accepted",
-      "project": "rrrealll-ocr",
-      "task_id": "p6-opt-in-product-passport-and-judge-queue",
+      "file": "20260812T041815Z-harness-mc-708b3ff4ad56b24d09776a91e8ee8a41fb01e26c-morrowise-task-lifecycle-jv32-gate.json",
+      "event_id": "task.completed-morrowise-task-lifecycle-jv32-gate-708b3ff4ad56b24d09776a91e8ee8a41fb01e26c-20260812T041815Z",
+      "project": "morrowise",
+      "task_id": "task-lifecycle-jv32-gate",
       "type": "task.completed"
     },
     {
-      "file": "20260803T100559Z-rrrealll-ocr-a615855c1837761f4bade22d5b533d439a12ca3f-rrrealll-ocr-p7-zeabur-supabase-secure-deployment.json",
-      "event_id": "rro-08-formal-mvp-accepted",
-      "project": "rrrealll-ocr",
-      "task_id": "p7-zeabur-supabase-secure-deployment",
-      "type": "task.completed"
-    },
-    {
-      "file": "20260803T100559Z-rrrealll-ocr-a615855c1837761f4bade22d5b533d439a12ca3f-rrrealll-ocr-p8-end-to-end-release-acceptance.json",
-      "event_id": "rro-09-formal-mvp-accepted",
-      "project": "rrrealll-ocr",
-      "task_id": "p8-end-to-end-release-acceptance",
+      "file": "20260812T041816Z-harness-mc-708b3ff4ad56b24d09776a91e8ee8a41fb01e26c-morrowise-account-login-sync-start-v1.json",
+      "event_id": "task.completed-morrowise-account-login-sync-start-v1-708b3ff4ad56b24d09776a91e8ee8a41fb01e26c-20260812T041816Z",
+      "project": "morrowise",
+      "task_id": "account-login-sync-start-v1",
       "type": "task.completed"
     }
   ],

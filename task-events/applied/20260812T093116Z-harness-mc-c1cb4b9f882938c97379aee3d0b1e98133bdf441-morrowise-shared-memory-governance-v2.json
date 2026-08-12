@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-morrowise-shared-memory-governance-v2-c1cb4b9f882938c97379aee3d0b1e98133bdf441-20260812T093116Z",
+  "type": "task.commit_attached",
+  "repo": "harness-mc",
+  "commit": "c1cb4b9f882938c97379aee3d0b1e98133bdf441",
+  "project": "morrowise",
+  "task_id": "shared-memory-governance-v2",
+  "status": "updated",
+  "summary": "Attach the remotely delivered JV-49 todo work-anchor commit as canonical provenance without claiming implementation completion.",
+  "created_at": "2026-08-12T09:31:16Z",
+  "actor": "codex",
+  "session_id": "codex-jv49-c2-2026-08-12"
+}

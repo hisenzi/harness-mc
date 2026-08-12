@@ -4540,11 +4540,12 @@
     },
     {
       "id": "task-lifecycle-jv32-gate",
-      "status": "in_progress",
+      "status": "completed",
+      "completed_at": "2026-08-12",
       "weekly_core": false,
       "revision": "R19",
       "previous_revision": "R18",
-      "acceptance_state": "ACCEPTANCE_VERIFIED",
+      "acceptance_state": "VINCENT_CONFIRMED",
       "commits": [
         "8dd92f7",
         "038bae0",
@@ -4557,9 +4558,11 @@
         "4d996a947417a1e8d25df7cd2a2974d617196227",
         "e5ce130f75e6662dae225de8b0bd5b6cb917ed82",
         "298b761a653951288d179cc81adb3eb9003dc5b2",
-        "708b3ff4ad56b24d09776a91e8ee8a41fb01e26c"
+        "708b3ff4ad56b24d09776a91e8ee8a41fb01e26c",
+        "72df3685caebb28868cc122465586dc535dd187e",
+        "14bf7651927c800a18b4574f82395b01160453e1"
       ],
-      "summary": "JV-40 R19 實作與驗收已通過：canonical order_label 缺少、空值、非字串或同檔重複會 fail，合法唯一值會 pass，planning／lifecycle task 草案模板已同步；尚未 commit、push 或 complete。",
+      "summary": "JV-40 R19 已完整交付：canonical order_label 缺少、空值、非字串或同檔重複會 fail，合法唯一值會 pass；planning／lifecycle task 草案模板與 Architecture Admission 已同步，兩個 C1 已送達 remote，required CI 的 pushed-task validation 與 production build 通過。Pages deployment 仍由平台排隊且不屬本 revision done condition，未宣稱部署成功。",
       "title": "JV-40 任務生命週期接入 JV-32（新增／修改／停用／完成 gate）",
       "track": "governance",
       "order_label": "JV-40",
@@ -4864,9 +4867,10 @@
           }
         },
         "R19": {
-          "status": "acceptance_verified",
+          "status": "completed",
           "started_at": "2026-08-12",
           "verified_at": "2026-08-12",
+          "completed_at": "2026-08-12",
           "acceptance_matrix_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate.acceptance_matrix[JV40-R19-A01..A05]",
           "fresh_evidence_status": "accepted",
           "red_evidence": [
@@ -4921,7 +4925,16 @@
             "all_passed": true,
             "verified_at": "2026-08-12"
           },
-          "approval_ref": "Vincent 2026-08-12 current session: 可以進行 order_label 補強。"
+          "approval_ref": "Vincent 2026-08-12 current session: 確認完整交付",
+          "delivery_evidence": {
+            "harness_c1": "72df3685caebb28868cc122465586dc535dd187e",
+            "notyet_c1": "14bf7651927c800a18b4574f82395b01160453e1",
+            "remote_parity_before_c2": "harness-mc 0/0; notyet-harness 0/0",
+            "required_ci": "GitHub Actions Deploy to GitHub Pages run 31586166770; build job 94080388505 -> pushed-task validation and production build success",
+            "deployment_boundary": "Pages deploy job 94080684462 remained queued by the platform at C2 intake; R19 runtime_evidence_required=false and changed no UI, runtime, scheduler or deployment behavior, so deployment success is not required for the done condition and is not claimed.",
+            "architecture_sync": "npm run test:architecture-subsystems and sync-architecture-subsystems.py --check -> PASS",
+            "external_sync": "not_applicable: R19 has no visual-layer or external mutation; no Heptabase／Canvas write, new task event or sync event was created."
+          }
         }
       },
       "work_item_manifest": {
@@ -5275,7 +5288,32 @@
           "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
           "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs"
         ],
-        "fixture_runtime_boundary": "JV-40 R18 的 fixtures 只驗證 lifecycle gate 與 changed-only validator；它們不冒充 JV-45 的真實 Git runtime evidence。"
+        "fixture_runtime_boundary": "JV-40 R18 的 fixtures 只驗證 lifecycle gate 與 changed-only validator；它們不冒充 JV-45 的真實 Git runtime evidence。",
+        "revision_addenda": {
+          "R19": {
+            "red_evidence": [
+              "duplicate order_label JV-45 was accepted before the R19 uniqueness check",
+              "planning baseline draft omitted order_label before the R19 template update"
+            ],
+            "green_evidence": [
+              "node scripts/verify-validate-tasks.mjs -> validate-tasks verification OK",
+              "planning skill v1.10 pressure test -> unique non-empty order_label present"
+            ],
+            "regression_evidence": [
+              "node scripts/validate-tasks.mjs --changed-only --project morrowise --as-of 2026-08-12 -> 0 issues, 0 warnings",
+              "isolated exact-scope npm run test:tasks and node scripts/generate-data.mjs -> PASS",
+              "GitHub Actions run 31586166770 build job 94080388505 -> pushed-task validation and production build success",
+              "Architecture Admission registry verifier and controlled ARCHITECTURE.md sync check -> PASS"
+            ],
+            "verifier_refs": [
+              "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+              "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
+              "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs",
+              "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py"
+            ],
+            "delivery_boundary": "R19 is governance／validator／documentation only with runtime_evidence_required=false. C1 remote containment and required CI build passed; queued Pages deployment is recorded but not required or claimed successful."
+          }
+        }
       },
       "jv32_route": {
         "batch": "JV-32 task lifecycle governance batch",
@@ -6028,6 +6066,53 @@
                 "approved_at": "2026-08-12",
                 "evidence_refs": [
                   "Vincent 2026-08-12 current session: 可以進行 order_label 補強。"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "JV-40 R19 的五項 Acceptance Matrix、order_label fail-closed 與同檔唯一性、planning／lifecycle template sync、Architecture Admission、兩筆 C1 remote delivery 及 required CI build 均已通過。Pages deploy 仍由平台排隊，但本 revision runtime_evidence_required=false 且未改 UI／runtime／deployment 行為，因此不屬 done condition，亦未宣稱部署成功。",
+            "evidence_refs": [
+              "72df3685caebb28868cc122465586dc535dd187e",
+              "14bf7651927c800a18b4574f82395b01160453e1",
+              "sha256:ec1638f091b058ba7f1f1bde89af9a8d8b8254f288bc65f211bfd130fb0380df",
+              "GitHub Actions run 31586166770; build job 94080388505 -> success",
+              "node scripts/verify-validate-tasks.mjs",
+              "node scripts/validate-tasks.mjs --changed-only --project morrowise --as-of 2026-08-12",
+              "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+              "npm run test:architecture-subsystems",
+              "sync-architecture-subsystems.py --check",
+              "Vincent 2026-08-12 current session: 確認完整交付"
+            ],
+            "recorded_at": "2026-08-12",
+            "revision": {
+              "revision": "R19",
+              "previous_revision": "R18",
+              "history_policy": "append_only"
+            },
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/morrowise-dev-workflow-catalog",
+                "morrowise/account-login-sync-start-v1"
+              ],
+              "scope_comparison": {
+                "problem": "本次只結案既有 JV-40 R19 的 order_label contract 補強，不建立新 task、編號系統或第二套 validator。",
+                "owner_source_of_truth": "Owner 維持 morrowise/task-lifecycle-jv32-gate；canonical tasks.json、既有 validator、lifecycle spec、planning skill 與 Architecture Admission registry 邊界不變。",
+                "inputs_outputs": "輸入是 R19 Acceptance Matrix、C1 remote hashes、required CI 與 controlled Architecture sync；輸出只回寫同一 task 的完成狀態與交付證據。",
+                "lifecycle_completion": "R19 A01..A05 fresh pass、兩筆 C1 已在 remote main、required CI build 成功、C2 送達且 closure-scoped pending／residual 為零後完成。"
+              },
+              "decision_reason": "問題、owner、輸入輸出與 completion boundary 均延續 JV-40 R19，因此 outcome=amend，不新增 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-12",
+                "evidence_refs": [
+                  "Vincent 2026-08-12 current session: 確認完整交付"
                 ]
               }
             }

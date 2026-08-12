@@ -714,7 +714,8 @@
       ]
     },
     "task-lifecycle-jv32-gate": {
-      "status": "in_progress",
+      "status": "completed",
+      "completed_at": "2026-08-12",
       "commits": [
         "8dd92f7",
         "038bae0",
@@ -722,9 +723,11 @@
         "82d1150",
         "4d996a947417a1e8d25df7cd2a2974d617196227",
         "85a57e922b4c2ff0040717a11830e286a65d8c93",
-        "708b3ff4ad56b24d09776a91e8ee8a41fb01e26c"
+        "708b3ff4ad56b24d09776a91e8ee8a41fb01e26c",
+        "72df3685caebb28868cc122465586dc535dd187e",
+        "14bf7651927c800a18b4574f82395b01160453e1"
       ],
-      "summary": "JV-40 R19 實作與驗收已通過；維持 in_progress，尚未 commit、push 或 complete。"
+      "summary": "JV-40 R19 已完整交付：order_label fail-closed 與同檔唯一性、兩個 task 草案模板、Architecture Admission、C1 remote delivery 及 required CI build 均通過；Pages deployment 不屬本 revision done condition，未宣稱部署成功。"
     },
     "morrowise-project-init-v1": {
       "status": "completed",

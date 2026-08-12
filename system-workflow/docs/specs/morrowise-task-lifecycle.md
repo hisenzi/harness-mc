@@ -113,7 +113,13 @@ MorroWise 的新增或語意修改 task 在寫入正本前，必須把 `semantic
 
 MorroWise 每次最多一個 task 可設 `weekly_core: true`。該 task 必須同時是 `in_progress` 且有 `review_date: YYYY-MM-DD`；首次進入 slot 時，最新 lifecycle event 必須帶 `weekly_core_review.decision: admit`、Vincent 核准證據與相同的 `next_review_date`。
 
-當 validator 正在驗證 MorroWise changed／full scope，或 work-anchor preflight 正在啟動 MorroWise execution，且 Asia/Taipei 的 `as_of >= review_date`，該 MorroWise scope 必須 hard-fail。只能由 Vincent 明確選擇：
+當 Asia/Taipei 的 `as_of >= review_date`，到期處置只約束該 weekly-core task，不是 MorroWise 全案停工期限：
+
+- work-anchor preflight 以該 weekly-core task 為 target 時必須 hard-fail；以無關非核心 task 為 target 時可繼續，但必須輸出 `weekly_core_overdue` warning、逾期 task identity 與人工 next action，不得假裝 healthy。
+- changed-only validator 只有在該逾期 weekly-core task 本次確實被修改時才輸出到期錯誤；未修改的逾期 task 不得阻擋其他 MorroWise task 的 scoped mutation。
+- full governance audit 仍可報告逾期狀態，但不得被包裝成無關 task 的隱性 execution dependency。
+
+要繼續或變更該逾期 weekly-core task，只能由 Vincent 明確選擇：
 
 - `reframe`：維持 `in_progress`，更新 scope 與 review date；event 必須精確記錄 `previous_review_date`、`next_review_date`、`new_scope` 及重新核准。
 - `suspend`：task 轉 `deferred`，清除 weekly core／review date，保留 `reactivation_criteria`。

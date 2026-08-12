@@ -276,9 +276,19 @@ function evaluateWeeklyCoreGate(tasks, targetTask, asOf) {
   }
 
   if (weeklyCoreTask && weeklyCoreTask.review_date <= asOf) {
+    const overdueReason = `weekly_core task ${weeklyCoreTask.id} review_date has arrived (${weeklyCoreTask.review_date}); explicit reframe, suspend, cancel, or complete is required`;
+    if (targetTask?.id === weeklyCoreTask.id) {
+      return {
+        decision: "blocked",
+        reason: overdueReason,
+        as_of: asOf,
+        task_ids: weeklyCoreTasks.map((task) => task.id),
+      };
+    }
     return {
-      decision: "blocked",
-      reason: `weekly_core task ${weeklyCoreTask.id} review_date has arrived (${weeklyCoreTask.review_date}); explicit reframe, suspend, cancel, or complete is required`,
+      decision: "allow",
+      warning_code: "weekly_core_overdue",
+      reason: `${overdueReason}; target task ${targetTask?.id || "unknown"} is not the weekly core and may continue.`,
       as_of: asOf,
       task_ids: weeklyCoreTasks.map((task) => task.id),
     };

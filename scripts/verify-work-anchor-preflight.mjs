@@ -354,9 +354,11 @@ const nonCoreTargetWithExpiredWeeklyCore = runPreflight({
   asOf: "2026-07-25",
   proposedAcceptance: [],
 });
-assert.equal(nonCoreTargetWithExpiredWeeklyCore.decision, "blocked");
-assert.equal(nonCoreTargetWithExpiredWeeklyCore.weekly_core_gate.decision, "blocked");
-assert.match(nonCoreTargetWithExpiredWeeklyCore.blocked_reason, /task-lifecycle-jv32-gate/);
-assert.match(nonCoreTargetWithExpiredWeeklyCore.blocked_reason, /review_date has arrived/);
+assert.equal(nonCoreTargetWithExpiredWeeklyCore.decision, "allow");
+assert.equal(nonCoreTargetWithExpiredWeeklyCore.weekly_core_gate.decision, "allow");
+assert.equal(nonCoreTargetWithExpiredWeeklyCore.weekly_core_gate.warning_code, "weekly_core_overdue");
+assert.match(nonCoreTargetWithExpiredWeeklyCore.weekly_core_gate.reason, /task-lifecycle-jv32-gate/);
+assert.match(nonCoreTargetWithExpiredWeeklyCore.weekly_core_gate.reason, /review_date has arrived/);
+assert.equal(nonCoreTargetWithExpiredWeeklyCore.blocked_reason, undefined);
 
 console.log("Work-anchor preflight verification OK");

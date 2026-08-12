@@ -76,7 +76,7 @@ Roadmap placeholder labels must not use bare future `JV-xx` numbers. Use anchor-
 
 ## Canonical Task Lifecycle
 
-`task-lifecycle` 將 canonical task mutation 接入 JV-32。MorroWise 新建或語意變更 task 必須在最新 event 記錄四維 scope comparison、canonical task refs、固定 intake outcome 與 Vincent approval；`reuse` 不寫正本。每次最多一個 `weekly_core: true`，且必須有未到期 review date；到期只能由 Vincent 明確核准 reframe、suspend、cancel 或 complete。停用不得使用模糊 `disabled`，而是明確使用 `deferred`、`cancelled` 或 `archived`；完成仍必須走下方的 `closeout-commit-routing`。完整欄位、狀態語意與 cross-repo boundary 見 [MorroWise Canonical Task Lifecycle](morrowise-task-lifecycle.md)。
+`task-lifecycle` 將 canonical task mutation 接入 JV-32。MorroWise 新建或語意變更 task 必須在最新 event 記錄四維 scope comparison、canonical task refs、固定 intake outcome 與 Vincent approval；`reuse` 不寫正本。每次最多一個 `weekly_core: true`，且必須有 review date；review date 到期只阻擋該 weekly-core task 的執行或修改，無關 task 可繼續但必須顯示 `weekly_core_overdue` warning。到期核心只能由 Vincent 明確核准 reframe、suspend、cancel 或 complete。停用不得使用模糊 `disabled`，而是明確使用 `deferred`、`cancelled` 或 `archived`；完成仍必須走下方的 `closeout-commit-routing`。完整欄位、狀態語意與 cross-repo boundary 見 [MorroWise Canonical Task Lifecycle](morrowise-task-lifecycle.md)。
 
 ## Closeout Rules
 

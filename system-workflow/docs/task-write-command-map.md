@@ -32,7 +32,7 @@ not reverse-write task state.
 
 - 每次最多一個 MorroWise task 可設 `weekly_core: true`；它必須是 `in_progress` 並帶 `review_date`。
 - 首次 admission 必須記錄 `weekly_core_review.decision: admit` 與 Vincent 核准。
-- `as_of >= review_date` 時，`validate-tasks` 與 `work-anchor-preflight` 都會阻擋執行。
+- `as_of >= review_date` 時，只阻擋該 weekly-core task 的執行或修改；無關 task 的 preflight 可繼續但必須顯示 `weekly_core_overdue` warning，changed-only validator 不得繼承未修改逾期 task 的錯誤。
 - 到期只接受帶 Vincent 核准的 reframe、suspend、cancel 或 complete；reframe 必須記錄舊／新日期、新 scope，complete 必須走 closeout route，禁止自動延長。
 - 不得從 `tasks.json` 物理刪除 task，也不得刪除整份 canonical `tasks.json`；不再執行的工作必須保留紀錄並走 cancel 或 archive。
 
@@ -62,7 +62,7 @@ For commits made outside `harness-mc`:
 Stop before writing task state when any of these are true:
 
 - The task id or project is ambiguous.
-- MorroWise weekly core 已到 review date，尚未由 Vincent 選擇 reframe、suspend、cancel 或 complete。
+- 本次 target 或 mutation 是已到 review date 的 MorroWise weekly core，尚未由 Vincent 選擇 reframe、suspend、cancel 或 complete；無關 task 只顯示 warning，不適用此 stop condition。
 - The requested change would close a task without an artifact or verifier.
 - The change would update Heptabase, Canvas, or dashboard data without updating MC
   source-of-truth first.

@@ -1048,11 +1048,29 @@ const weeklyCoreBaseline = {
         weekly_core_review: weeklyCoreReview("admit", { nextReviewDate: "2026-07-25" }),
       }),
     ], { weekly_core: true, review_date: "2026-07-25" }),
+    morrowiseTask("non-core-maintenance", "in_progress", [
+      lifecycleEvent("create", null, "in_progress", {
+        semantic_intake: semanticIntake("genuinely_new", {
+          comparedTaskRefs: ["morrowise/morrowise-seed-task"],
+        }),
+      }),
+    ]),
   ],
 };
 writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), weeklyCoreBaseline);
 git(["add", "milestones/morrowise/tasks.json"]);
 git(["commit", "-m", "seed weekly core review fixture"]);
+
+const unrelatedChangeWithOverdueWeeklyCore = structuredClone(weeklyCoreBaseline);
+const unrelatedMaintenanceTask = unrelatedChangeWithOverdueWeeklyCore.tasks.find((task) => task.id === "non-core-maintenance");
+unrelatedMaintenanceTask.note = "Fixture changes only an unrelated non-core task.";
+unrelatedMaintenanceTask.task_lifecycle.history.push(lifecycleEvent("amend", "in_progress", "in_progress", {
+  semantic_intake: semanticIntake("amend", {
+    comparedTaskRefs: ["morrowise/morrowise-seed-task"],
+  }),
+}));
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), unrelatedChangeWithOverdueWeeklyCore);
+run(["--changed-only", "--project", "morrowise", "--as-of", "2026-07-25"]);
 
 const overdueWeeklyCore = structuredClone(weeklyCoreBaseline);
 const overdueWeeklyCoreTask = overdueWeeklyCore.tasks.find((task) => task.id === "weekly-core-review");

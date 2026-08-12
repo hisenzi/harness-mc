@@ -946,7 +946,7 @@ function collectCanonicalTaskRefs() {
   return refs;
 }
 
-function validateMorrowiseWeeklyCore(tasks, { asOf }) {
+function validateMorrowiseWeeklyCore(tasks, { asOf, changedOnly = false, previous = new Map(), fileChanged = false }) {
   const diagnostics = [];
   const weeklyCoreTasks = tasks.filter((task) => task?.weekly_core === true);
 
@@ -973,6 +973,10 @@ function validateMorrowiseWeeklyCore(tasks, { asOf }) {
     if (!isDateOnly(task.review_date)) {
       diagnostics.push({ taskId, message: "weekly_core=true requires review_date in YYYY-MM-DD" });
     } else if (task.review_date <= asOf) {
+      const previousTask = taskId ? previous.get(taskId) || null : null;
+      const taskChanged = fileChanged
+        && (!taskId || JSON.stringify(previousTask) !== JSON.stringify(task));
+      if (changedOnly && !taskChanged) continue;
       diagnostics.push({
         taskId,
         message: `weekly_core review_date has arrived; choose reframe, suspend, cancel, or complete (review_date=${task.review_date}, as_of=${asOf})`,
@@ -1071,7 +1075,12 @@ export function validateTasks({
     }
 
     if (project === "morrowise") {
-      for (const issue of validateMorrowiseWeeklyCore(entries.map((entry) => entry.task), { asOf })) {
+      for (const issue of validateMorrowiseWeeklyCore(entries.map((entry) => entry.task), {
+        asOf,
+        changedOnly,
+        previous,
+        fileChanged: changedFiles.has(filePath),
+      })) {
         diagnostics.push({
           severity: "error",
           project,

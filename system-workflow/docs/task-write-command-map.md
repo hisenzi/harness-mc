@@ -21,7 +21,7 @@ not reverse-write task state.
 
 | Vincent phrase | Route | Primary skill | Primary script / command | Validator | Stop condition |
 |---|---|---|---|---|---|
-| `寫 task` / `新增 task` / `加一張 task` | `JV-32/task-lifecycle:create`：先做 semantic intake；只有 `genuinely_new` 或核准的 `replace` 可建立 MC canonical task。 | `planning` 或 `project-init` | 比對相關 canonical tasks，記錄四維 scope comparison、Vincent approval、`jv32_route` 與 `create` event；再執行 `node scripts/generate-data.mjs`。 | `npm run test:tasks` | task 有 id、title、status、track、done_condition、semantic intake、create evidence 與 `from_status: null`；`reuse` 不得寫入。 |
+| `寫 task` / `新增 task` / `加一張 task` | `JV-32/task-lifecycle:create`：先做 semantic intake；只有 `genuinely_new` 或核准的 `replace` 可建立 MC canonical task。 | `planning` 或 `project-init` | 比對相關 canonical tasks，提出含穩定 `id`、非空且同檔唯一 `order_label` 的草案，記錄四維 scope comparison、Vincent approval、`jv32_route` 與 `create` event；再執行 `node scripts/generate-data.mjs`。 | `npm run test:tasks` | MorroWise／control-plane task 有 id、order_label、title、status、track、done_condition、semantic intake、create evidence 與 `from_status: null`；order_label 缺少、空值、非字串或重複時 fail；`reuse` 不得寫入。 |
 | `更新 task` / `補 task 說明` | `JV-32/task-lifecycle:amend`：先確認與既有 task 是同一問題、owner、輸入輸出與完成邊界，再更新文字、依賴、note 或 tracking metadata。 | `planning`、`execution` 或 `worktree-commit` | 最新 event 記錄 `semantic_intake.outcome: amend` 與 Vincent approval，追加 `amend` event，不覆寫舊 history；再重建 MC data。若異動既有 promoted 子系統 contract，還要更新 Admission Record version review 並跑 architecture sync check。 | `npm run test:tasks`；架構變更另跑對應 subsystem verifier與 `sync-architecture-subsystems.py --check` | lifecycle history 與 current status 一致，更新可在 `public/data/projects.json` 看見，且未改動無關 task；version improvement 必有 `updated` 或 `no_index_change` 決定。 |
 | `暫緩 task` / `停用 task` / `取消 task` / `封存 task` | `JV-32/task-lifecycle:suspend|cancel|archive`：先判斷可恢復、取消或歷史封存。 | `planning` 或 `execution` | `deferred` 必填 reactivation_criteria；`cancelled` 必填 replacement_task_id 或 no_replacement_reason；`archived` 必填封存原因，若有取代者填 superseded_by。 | `npm run test:tasks` | 不使用 disabled；blocked 不算停用；history、理由與 status mapping 均通過 validator。 |
 | `恢復 task` | `JV-32/task-lifecycle:resume`：從 deferred 或已關閉狀態回到可執行狀態。 | `planning` 或 `execution` | 追加 resume event、semantic intake 與 Vincent 核准證據，再重建 MC data；若重新選入 weekly core，另記 admission 與 review date。 | `npm run test:tasks` | 上一個停用／關閉條件已重新評估，current status 不再是 deferred／closed。 |
@@ -75,6 +75,7 @@ Stop before writing task state when any of these are true:
 Before claiming a task write is complete:
 
 - `milestones/<project>/tasks.json` contains the intended state.
+- 新增 MorroWise／control-plane task 的 `order_label` 是非空字串，且在該 canonical `tasks.json` 內唯一；canonical identity 仍是 `project/task-id`。
 - `public/data/projects.json` reflects that state after `node scripts/generate-data.mjs`.
 - `npm run test:tasks` passes, allowing only known legacy warnings.
 - Any task-specific verifier named in the task summary or done condition passes.

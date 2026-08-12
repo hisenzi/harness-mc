@@ -268,7 +268,7 @@ function validateTask(task, {
     }
   }
 
-  if ("order_label" in task && task.order_label !== null && task.order_label !== "" && typeof task.order_label !== "string") {
+  if ("order_label" in task && typeof task.order_label !== "string") {
     problems.push("order_label must be a string when present");
   }
   if (isPortableAgentScope(task, project, includeProjectScope) && !nonEmptyString(task.order_label)) {
@@ -1040,10 +1040,19 @@ export function validateTasks({
     const previous = readPreviousTasks(relFile, resolvedBase);
     const projectGoalAnchor = readProjectGoalAnchor(project);
     const taskIdCounts = new Map();
+    const orderLabelCounts = new Map();
     for (const { task } of entries) {
-      if (!nonEmptyString(task?.id)) continue;
-      const taskId = String(task.id);
-      taskIdCounts.set(taskId, (taskIdCounts.get(taskId) || 0) + 1);
+      if (nonEmptyString(task?.id)) {
+        const taskId = String(task.id);
+        taskIdCounts.set(taskId, (taskIdCounts.get(taskId) || 0) + 1);
+      }
+      if (nonEmptyString(task?.order_label)) {
+        const orderLabel = task.order_label.trim();
+        const record = orderLabelCounts.get(orderLabel) || { count: 0, taskIds: [] };
+        record.count += 1;
+        if (nonEmptyString(task?.id)) record.taskIds.push(String(task.id));
+        orderLabelCounts.set(orderLabel, record);
+      }
     }
     for (const [taskId, count] of taskIdCounts.entries()) {
       if (count < 2) continue;
@@ -1054,6 +1063,17 @@ export function validateTasks({
         taskId,
         container: "tasks",
         message: `duplicate task id ${taskId}; found ${count} definitions`,
+      });
+    }
+    for (const [orderLabel, { count, taskIds }] of orderLabelCounts.entries()) {
+      if (count < 2) continue;
+      diagnostics.push({
+        severity: "error",
+        project,
+        filePath,
+        taskId: taskIds[0] || null,
+        container: "tasks",
+        message: `duplicate order_label ${orderLabel}; found ${count} definitions`,
       });
     }
 

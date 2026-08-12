@@ -171,6 +171,51 @@ if (!legacyWarn.output.includes("Task validation OK")) {
   throw new Error("Expected full project scan to warn but pass.");
 }
 
+function orderLabelFixture(labels) {
+  return {
+    tasks: [
+      morrowiseSeedTask(),
+      ...labels.map((orderLabel, index) => morrowiseTask(`order-label-${index + 1}`, "todo", [
+        lifecycleEvent("create", null, "todo", {
+          semantic_intake: semanticIntake("genuinely_new", {
+            comparedTaskRefs: ["morrowise/morrowise-seed-task"],
+          }),
+        }),
+      ], { order_label: orderLabel })),
+    ],
+  };
+}
+
+for (const emptyOrderLabel of ["", "   "]) {
+  writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), orderLabelFixture([emptyOrderLabel]));
+  const emptyOrderLabelResult = run(["--changed-only", "--project", "morrowise"], { expectFailure: true });
+  if (!emptyOrderLabelResult.output.includes("order_label is required")) {
+    throw new Error("Expected empty or whitespace-only order_label to fail.");
+  }
+}
+
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), orderLabelFixture([45]));
+const nonStringOrderLabelResult = run(["--changed-only", "--project", "morrowise"], { expectFailure: true });
+if (!nonStringOrderLabelResult.output.includes("order_label must be a string when present")) {
+  throw new Error("Expected non-string order_label to fail.");
+}
+
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), orderLabelFixture(["JV-45", "JV-45"]));
+const duplicateOrderLabelResult = run(["--changed-only", "--project", "morrowise"], { expectFailure: true });
+if (!duplicateOrderLabelResult.output.includes("duplicate order_label JV-45")) {
+  throw new Error("Expected duplicate order_label JV-45 to fail.");
+}
+
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), orderLabelFixture(["JV-45", "JV-46"]));
+const uniqueOrderLabelResult = run(["--changed-only", "--project", "morrowise"]);
+if (!uniqueOrderLabelResult.output.includes("Task validation OK")) {
+  throw new Error("Expected valid unique order_label values to pass.");
+}
+
+writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), {
+  tasks: [morrowiseSeedTask()]
+});
+
 const deletedCanonicalTask = structuredClone(baseTasks);
 deletedCanonicalTask.tasks = deletedCanonicalTask.tasks.filter((task) => task.id !== "acp-good-task");
 writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), deletedCanonicalTask);

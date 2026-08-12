@@ -4540,11 +4540,11 @@
     },
     {
       "id": "task-lifecycle-jv32-gate",
-      "status": "completed",
+      "status": "in_progress",
       "weekly_core": false,
-      "revision": "R18",
-      "previous_revision": "R17",
-      "acceptance_state": "VINCENT_CONFIRMED",
+      "revision": "R19",
+      "previous_revision": "R18",
+      "acceptance_state": "ACCEPTANCE_VERIFIED",
       "commits": [
         "8dd92f7",
         "038bae0",
@@ -4559,27 +4559,27 @@
         "298b761a653951288d179cc81adb3eb9003dc5b2",
         "708b3ff4ad56b24d09776a91e8ee8a41fb01e26c"
       ],
-      "completed_at": "2026-08-12",
-      "summary": "JV-40 R18 已完成：逾期 weekly core 只阻擋該 task 本身；無關 task 可繼續並顯示 weekly_core_overdue warning，changed-only validator 不再被未修改的逾期核心誤擋。",
+      "summary": "JV-40 R19 實作與驗收已通過：canonical order_label 缺少、空值、非字串或同檔重複會 fail，合法唯一值會 pass，planning／lifecycle task 草案模板已同步；尚未 commit、push 或 complete。",
       "title": "JV-40 任務生命週期接入 JV-32（新增／修改／停用／完成 gate）",
       "track": "governance",
       "order_label": "JV-40",
       "dependencies": [
         "morrowise-dev-workflow-catalog"
       ],
-      "done_condition": "以既有 JV-32／JV-40 task lifecycle gate 完成 R18 小型修正：review_date 到期只阻擋該 weekly-core task 的執行或修改；無關 MorroWise task 的 preflight 可繼續並顯示 weekly_core_overdue warning，changed-only validator 不得因未修改的逾期 weekly core 失敗。單一 weekly core、有效 review_date、Vincent 人工 reframe／suspend／cancel／complete 與禁止自動延長規則全部保留；不新增 task、dependency graph、scheduler、reporting system 或第二套 lifecycle。",
+      "done_condition": "以既有 JV-32／JV-40 task lifecycle gate 完成 R19 小型補強：canonical task 的 order_label 缺少、空值、非字串或同一 tasks.json 內重複時必須 fail；合法且唯一時必須 pass；planning 與 lifecycle task 草案模板都明列 order_label。不得改變 canonical task id 身分規則、建立新 task／第二套 validator，或擴張成排序重編與自動 lifecycle mutation。",
       "acceptance": [
-        "逾期 weekly-core task 本身的 preflight 仍必須 blocked，且指向 Vincent 的明確 lifecycle decision。",
-        "無關的 JV-45 preflight 必須 allowed，並以 weekly_core_overdue warning 保留治理提醒。",
-        "只修改 JV-45、未修改逾期 weekly core 時，changed-only validator 必須通過；若本次修改逾期 weekly core，仍必須失敗。",
-        "雙 weekly core、無效 review_date、未核准延長與既有 lifecycle 負向案例不得退化。",
-        "canonical A11、lifecycle spec、command map、preflight、validator 與 verifiers 必須一致。"
+        "order_label 缺少、空字串、全空白或非字串時，task validator 必須 fail。",
+        "同一 canonical tasks.json 內出現重複 order_label（包含再次使用 JV-45）時必須 fail。",
+        "合法且唯一的非空字串 order_label 必須 pass，不得誤判其他 task 檔案的合法標籤。",
+        "planning 與 lifecycle task 草案模板必須明列 order_label，並說明 canonical identity 仍是 project/task-id。",
+        "changed-only、task regression、generated-data 與 architecture sync 必須通過，且不新增第二套 validator 或 task system。"
       ],
       "source_refs": [
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
         "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json",
         "$COLLAB/harness-mc/system-workflow/schemas/morrowise-task-lifecycle.schema.json",
         "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-dev-workflow-catalog.md",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
         "$COLLAB/harness-mc/system-workflow/docs/task-write-command-map.md",
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json",
         "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
@@ -4596,6 +4596,7 @@
         "$COLLAB/harness-mc/scripts/verify-morrowise-proactive-loop.mjs",
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
         "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py",
+        "$COLLAB/notyet-harness/000_Agent/skills/vincent-superpowers/02-planning/SKILL.md",
         "$COLLAB/notyet-harness/000_Agent/skills/vincent-superpowers/03-execution/SKILL.md",
         "$COLLAB/notyet-harness/000_Agent/skills/review/SKILL.md"
       ],
@@ -4660,7 +4661,18 @@
           "changed-only validator Red／Green evidence",
           "JV-32 catalog 與 Architecture regression"
         ],
-        "reviewed_at": "2026-08-06"
+        "reviewed_at": "2026-08-06",
+        "revision_addenda": {
+          "R19": {
+            "contribution": "讓 canonical task 的人類可讀 order_label 具備 fail-closed 欄位與同檔唯一性保障，避免新 task 草案漏欄位或代碼碰撞，同時不改變 project/task-id 正本身分。",
+            "evidence_plan": [
+              "order_label validator Red／Green evidence",
+              "planning skill RED／GREEN pressure test",
+              "JV-32 catalog 與 Architecture regression"
+            ],
+            "reviewed_at": "2026-08-12"
+          }
+        }
       },
       "revision_evidence": {
         "R16": {
@@ -4850,6 +4862,66 @@
             "sync_terminal": "obsidian_canvas sync request -> sync_skipped with explicit no-external-write exemption",
             "remote_parity_before_c2": "harness-mc 0/0; notyet-harness 0/0"
           }
+        },
+        "R19": {
+          "status": "acceptance_verified",
+          "started_at": "2026-08-12",
+          "verified_at": "2026-08-12",
+          "acceptance_matrix_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate.acceptance_matrix[JV40-R19-A01..A05]",
+          "fresh_evidence_status": "accepted",
+          "red_evidence": [
+            "node scripts/verify-validate-tasks.mjs -> exit 1: Expected duplicate order_label JV-45 to fail",
+            "planning skill baseline pressure test: generated MorroWise task draft omitted order_label before R19 template update"
+          ],
+          "green_evidence": [
+            "node scripts/verify-validate-tasks.mjs -> validate-tasks verification OK",
+            "planning skill v1.10 GREEN pressure test -> proposed MorroWise task includes non-empty same-file-unique order_label and preserves project/task-id identity"
+          ],
+          "regression_evidence": [
+            "node scripts/validate-tasks.mjs --changed-only --project morrowise --as-of 2026-08-12 -> 0 issues, 0 warnings",
+            "node scripts/verify-work-anchor-preflight.mjs -> Work anchor preflight verification OK",
+            "node scripts/verify-morrowise-dev-workflow-catalog.mjs -> MorroWise dev workflow catalog verification OK",
+            "isolated exact-scope npm run test:tasks -> PASS with 0 issues and 0 warnings",
+            "isolated exact-scope node scripts/generate-data.mjs -> PASS; 39 projects and 772 tasks generated",
+            "npm run test:architecture-subsystems -> Architecture subsystem registry verification OK",
+            "npm run test:system-pulse -> System pulse verification OK",
+            "python3 $COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py --check -> PASS",
+            "git diff --check -> PASS in harness-mc and notyet-harness"
+          ],
+          "shared_worktree_boundary": "Direct npm run test:tasks was blocked only by another session's unrelated milestones/notyet-md/tasks.json goal_alignment mutation; R19 exact-scope isolated clone passed and the unrelated file was not modified.",
+          "acceptance_receipt": {
+            "matrix_ref": "milestones/morrowise/tasks.json#task-lifecycle-jv32-gate.acceptance_matrix",
+            "matrix_fingerprint": "sha256:ec1638f091b058ba7f1f1bde89af9a8d8b8254f288bc65f211bfd130fb0380df",
+            "caller_matrix_fingerprint": "sha256:ec1638f091b058ba7f1f1bde89af9a8d8b8254f288bc65f211bfd130fb0380df",
+            "required_ids": [
+              "JV40-R18-A01",
+              "JV40-R18-A02",
+              "JV40-R18-A03",
+              "JV40-R18-A04",
+              "JV40-R18-A05",
+              "JV40-R19-A01",
+              "JV40-R19-A02",
+              "JV40-R19-A03",
+              "JV40-R19-A04",
+              "JV40-R19-A05"
+            ],
+            "results": [
+              { "id": "JV40-R18-A01", "status": "pass" },
+              { "id": "JV40-R18-A02", "status": "pass" },
+              { "id": "JV40-R18-A03", "status": "pass" },
+              { "id": "JV40-R18-A04", "status": "pass" },
+              { "id": "JV40-R18-A05", "status": "pass" },
+              { "id": "JV40-R19-A01", "status": "pass" },
+              { "id": "JV40-R19-A02", "status": "pass" },
+              { "id": "JV40-R19-A03", "status": "pass" },
+              { "id": "JV40-R19-A04", "status": "pass" },
+              { "id": "JV40-R19-A05", "status": "pass" }
+            ],
+            "exact_id_coverage": true,
+            "all_passed": true,
+            "verified_at": "2026-08-12"
+          },
+          "approval_ref": "Vincent 2026-08-12 current session: 可以進行 order_label 補強。"
         }
       },
       "work_item_manifest": {
@@ -4893,7 +4965,50 @@
           "不修改 JV-45 功能實作或驗收結果",
           "不新增 dependency graph、scheduler、reporting system、task 或第二套 lifecycle gate",
           "不自動 commit、push、deploy、reframe、suspend、cancel 或 complete 其他 task"
-        ]
+        ],
+        "revision_addenda": {
+          "R19": {
+            "approved_by": "Vincent",
+            "approval_ref": "Vincent 2026-08-12 current session: 可以進行 order_label 補強。",
+            "items": [
+              {
+                "id": "R19-WI-01",
+                "output": "canonical order_label validation",
+                "pass_fail": "缺少、空值、全空白、非字串與重複值 fail；合法唯一值 pass",
+                "verifier": "node scripts/verify-validate-tasks.mjs"
+              },
+              {
+                "id": "R19-WI-02",
+                "output": "planning and lifecycle task draft templates",
+                "pass_fail": "兩個模板皆明列 order_label，planning skill 壓力測試由 omit 轉為 include",
+                "verifier": "planning skill RED／GREEN subagent evidence plus document inspection"
+              },
+              {
+                "id": "R19-WI-03",
+                "output": "canonical contract and architecture version review",
+                "pass_fail": "changed-only、task regression、generated-data 與 architecture sync 全部 pass",
+                "verifier": "npm run test:tasks and npm run test:architecture-subsystems"
+              }
+            ],
+            "exact_scope": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json",
+              "$COLLAB/harness-mc/milestones/morrowise/state.json",
+              "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
+              "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+              "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+              "$COLLAB/harness-mc/system-workflow/docs/task-write-command-map.md",
+              "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
+              "$COLLAB/notyet-harness/000_Agent/skills/vincent-superpowers/02-planning/SKILL.md",
+              "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md"
+            ],
+            "non_goals": [
+              "不變更 canonical task identity；正本身分仍是 project/task-id，order_label 只做人類可讀排序代碼",
+              "不自動重編既有 order_label，也不建立跨 repo 全域編號服務",
+              "不新增 task、第二套 validator、scheduler、generator 或 background mutation",
+              "不自動 commit、push、complete 或修改無關 task"
+            ]
+          }
+        }
       },
       "estimated_hours": 8,
       "acceptance_matrix": [
@@ -4979,6 +5094,89 @@
             "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
             "npm run test:architecture-subsystems"
           ]
+        },
+        {
+          "id": "JV40-R19-A01",
+          "what": "order_label 的缺少與型別／內容錯誤會 fail。",
+          "preconditions": [
+            "canonical task fixture 可由既有 task validator 讀取"
+          ],
+          "steps": [
+            "分別移除 order_label、設為空字串、全空白字串與非字串後執行 verifier"
+          ],
+          "pass_condition": "四個負向案例皆非零退出，且錯誤明確指出 required 或 non-empty string。",
+          "fail_condition": "任一負向案例 pass，或只因其他不相關錯誤而失敗。",
+          "verification": [
+            "node scripts/verify-validate-tasks.mjs"
+          ]
+        },
+        {
+          "id": "JV40-R19-A02",
+          "what": "同一 canonical tasks.json 內的重複 order_label 會 fail。",
+          "preconditions": [
+            "fixture 含兩個不同 task id 但共用同一非空 order_label，例如 JV-45"
+          ],
+          "steps": [
+            "執行 changed-only task validator verifier"
+          ],
+          "pass_condition": "非零退出，且輸出明確指出 duplicate order_label 與重複值。",
+          "fail_condition": "重複值 pass、僅檢查 task id，或只產生 warning。",
+          "verification": [
+            "node scripts/verify-validate-tasks.mjs"
+          ]
+        },
+        {
+          "id": "JV40-R19-A03",
+          "what": "合法且唯一的 order_label 會 pass。",
+          "preconditions": [
+            "fixture 內每個 task 的 order_label 皆為非空且互不重複的字串"
+          ],
+          "steps": [
+            "執行合法 fixture 與 canonical changed-only validator"
+          ],
+          "pass_condition": "validator pass，沒有 duplicate／required／type false positive。",
+          "fail_condition": "合法唯一值被拒絕，或因不同 tasks.json 檔案使用相同人類代碼而誤判。",
+          "verification": [
+            "node scripts/verify-validate-tasks.mjs",
+            "node scripts/validate-tasks.mjs --changed-only --project morrowise --as-of 2026-08-12"
+          ]
+        },
+        {
+          "id": "JV40-R19-A04",
+          "what": "planning 與 lifecycle task 草案模板明列 order_label。",
+          "preconditions": [
+            "更新前 planning skill 壓力測試會產出缺少 order_label 的 MorroWise task 草案"
+          ],
+          "steps": [
+            "更新兩個既有模板",
+            "由同一 subagent 讀取更新後 planning skill 並重跑相同情境"
+          ],
+          "pass_condition": "兩個模板皆明列 order_label；skill GREEN 草案包含唯一的人類可讀代碼，並保留 project/task-id 為 canonical identity。",
+          "fail_condition": "任一模板仍省略、把 order_label 說成可選，或把它取代 canonical task id。",
+          "verification": [
+            "$COLLAB/notyet-harness/000_Agent/skills/vincent-superpowers/02-planning/SKILL.md",
+            "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md"
+          ]
+        },
+        {
+          "id": "JV40-R19-A05",
+          "what": "R19 保持既有 lifecycle、generated-data 與 architecture contract 一致。",
+          "preconditions": [
+            "JV-40 為既有 promoted subsystem 的 version improvement"
+          ],
+          "steps": [
+            "執行 task regression、generated-data check、catalog verifier 與 architecture sync"
+          ],
+          "pass_condition": "所有驗證通過；Architecture triage=no_index_change，沒有第二套 task system 或 validator。",
+          "fail_condition": "任一 regression／sync 失敗，或範圍擴張到自動重編、task mutation、commit 或 push。",
+          "verification": [
+            "npm run test:tasks",
+            "node scripts/generate-data.mjs",
+            "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+            "npm run test:architecture-subsystems",
+            "python3 $COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py --check",
+            "git diff --check"
+          ]
         }
       ],
       "test_contract": {
@@ -5017,7 +5215,43 @@
           "$COLLAB/harness-mc/scripts/work-anchor-preflight.mjs",
           "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
           "Vincent 2026-08-06 current session: 可以進行；先完成驗收標準。"
-        ]
+        ],
+        "revision_addenda": {
+          "R19": {
+            "behavior_cases": [
+              "order_label 缺少、空字串、全空白或非字串時必須 fail。",
+              "同一 canonical tasks.json 內不同 task id 共用同一 order_label（例如 JV-45）時必須 fail。",
+              "合法且唯一的非空字串必須 pass。",
+              "planning 與 lifecycle task 草案模板都必須列出 order_label。"
+            ],
+            "test_level": [
+              "unit",
+              "negative_fixture",
+              "positive_fixture",
+              "skill_pressure_test",
+              "canonical_contract"
+            ],
+            "red_command": "node scripts/verify-validate-tasks.mjs",
+            "expected_red_reason": "既有 validator 沒有 duplicate order_label 檢查；更新前 planning skill 壓力測試也會產出省略 order_label 的 MorroWise task 草案。",
+            "green_command": "node scripts/verify-validate-tasks.mjs",
+            "full_regression_commands": [
+              "node scripts/validate-tasks.mjs --changed-only --project morrowise --as-of 2026-08-12",
+              "node scripts/verify-validate-tasks.mjs",
+              "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
+              "npm run test:tasks",
+              "npm run test:architecture-subsystems",
+              "node scripts/generate-data.mjs",
+              "python3 $COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py --check",
+              "git diff --check"
+            ],
+            "fixture_refs": [
+              "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+              "$COLLAB/notyet-harness/000_Agent/skills/vincent-superpowers/02-planning/SKILL.md"
+            ],
+            "runtime_evidence_required": false,
+            "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate.revision_evidence.R19"
+          }
+        }
       },
       "completion_evidence": {
         "red_evidence": [
@@ -5755,6 +5989,48 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "resume",
+            "from_status": "completed",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准重開既有 JV-40 為 R19，補強 order_label 的 required、non-empty string 與同檔唯一性驗證，並同步 planning／lifecycle task 草案模板；不新增 task 或第二套 validator。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate.acceptance_matrix[JV40-R19-A01..A05]",
+              "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
+              "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+              "Vincent 2026-08-12 current session: 可以進行 order_label 補強。"
+            ],
+            "recorded_at": "2026-08-12",
+            "revision": {
+              "revision": "R19",
+              "previous_revision": "R18",
+              "history_policy": "append_only",
+              "prior_evidence_policy": "R18 evidence remains historical and is stale for R19 acceptance"
+            },
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/morrowise-dev-workflow-catalog",
+                "morrowise/account-login-sync-start-v1"
+              ],
+              "scope_comparison": {
+                "problem": "現有 JV-40 validator 已檢查 order_label 缺少，但尚未阻擋重複值，且兩個 task 草案模板未完整要求此欄位；這是既有 lifecycle contract 缺口，不是新能力。",
+                "owner_source_of_truth": "Owner 維持 morrowise/task-lifecycle-jv32-gate；正本仍是 MorroWise tasks.json、既有 validator、verifier、lifecycle spec 與 planning skill。",
+                "inputs_outputs": "輸入是 Vincent 核准的五項 order_label 驗收標準與現有缺口證據；輸出只增加同檔唯一性檢查、正反 fixtures 與兩個既有模板欄位。",
+                "lifecycle_completion": "完成邊界是 JV40-R19-A01..A05 fresh pass；不自動重編 order_label、不改 canonical identity、不 commit、push 或完成 task。"
+              },
+              "decision_reason": "問題、owner、正本與完成邊界均屬既有 JV-40／JV-32 task lifecycle，因此 outcome=amend，不新增 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-12",
+                "evidence_refs": [
+                  "Vincent 2026-08-12 current session: 可以進行 order_label 補強。"
+                ]
+              }
+            }
           }
         ]
       },
@@ -5776,7 +6052,28 @@
           "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate.acceptance_matrix",
           "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md"
         ],
-        "source_boundary": "HC 只是思考檢查，用於定位過度阻擋；canonical task、lifecycle spec、validator 與 verifier 才是正本，不得由 HC 自動改 task state 或 review_date。"
+        "source_boundary": "HC 只是思考檢查，用於定位過度阻擋；canonical task、lifecycle spec、validator 與 verifier 才是正本，不得由 HC 自動改 task state 或 review_date。",
+        "revision_addenda": {
+          "R19": {
+            "task_scope": "morrowise/task-lifecycle-jv32-gate/R19",
+            "hc_refs": [
+              "#rightProblem",
+              "#sourceBoundary",
+              "#risk",
+              "#constraints",
+              "#evidenceBased"
+            ],
+            "hc_reasoning": "真正問題不是再建編號系統，而是既有 lifecycle validator 與 task 草案模板未把 order_label 的 required／type／同檔 uniqueness 串成單一 fail-closed contract。限制為既有 validator、fixtures 與兩個模板，保留 project/task-id 身分並禁止自動重編。",
+            "hc_confidence": 0.99,
+            "evidence_refs": [
+              "$COLLAB/harness-mc/scripts/validate-tasks.mjs",
+              "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+              "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+              "$COLLAB/notyet-harness/000_Agent/skills/vincent-superpowers/02-planning/SKILL.md"
+            ],
+            "source_boundary": "HC 只界定最小補強；canonical tasks.json、validator、lifecycle spec 與 verifier 才是正本，不得由 HC 自動建立、重編或完成 task。"
+          }
+        }
       },
       "architecture_decision": {
         "decision": "not_required",
@@ -5793,6 +6090,24 @@
             "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md"
           ],
           "reason": "R18 只修正既有 weekly-core gate 的 target scoping；contract fingerprint 與受控索引已同步，沒有新增架構節點。"
+        },
+        "revision_addenda": {
+          "R19": {
+            "decision": "not_required",
+            "evaluated_at": "2026-08-12",
+            "reason": "R19 是既有 promoted JV-32 task-lifecycle subsystem 的 version improvement；更新同一 Admission Record 的 contract fingerprint，薄索引名稱、owner、role 與 detail pointer 不變。",
+            "admission_review": {
+              "scope": "version_improvement",
+              "admission_record_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
+              "index_action": "no_index_change",
+              "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+              "evidence_refs": [
+                "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
+                "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs",
+                "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md"
+              ]
+            }
+          }
         }
       },
       "note": "2026-07-18 Vincent 核准：新增、修改、停用 task 必須接入 JV-32，並要求一次補齊後做模擬驗證。此 task 是 lifecycle governance 的唯一 work anchor。2026-07-18 已補 Architecture Admission Review 閉環：既有 JV-32 的受管 contract 變更會使 verifier 以 fingerprint 攔截 stale Admission Record，並要求受控 ARCHITECTURE.md sync check。完成證據：8dd92f7、038bae0、task event 與本 task listed verifiers。2026-07-19 version_improvement roadmap／weekly_core review：被選為當週唯一 MorroWise 核心改善項目並轉 in_progress 時，必須同時記錄 weekly_core 與 review_date；到 review_date 仍未完成，只能由 Vincent 明確選擇 amend(reframe)、suspend（defer，to_status=deferred）或 cancel。amend(reframe) 必須記錄新 scope 與原因、重新取得 Vincent 核准；若仍維持 in_progress，必須同時設定新的明確 review_date，否則不得續留 weekly_core。suspend 必須記錄 reactivation criteria；cancel 必須記錄原因與 replacement／no replacement。禁止自動延長 review_date，也不得以未回覆默認續期。2026-07-19 Vincent 核准進行機械強制與 event 套用；JV-40 已以 resume 重開為唯一 weekly_core，review_date=2026-07-26。實作範圍固定為 semantic intake 結構與 outcome mapping、單一 WIP／到期／reframe validator、work-anchor runtime gate、負向 fixture、Admission Record 與受控薄索引；完成驗證前維持 in_progress。"

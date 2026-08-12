@@ -30,6 +30,22 @@ Canonical task 的 `title` 以繁體中文為主要語言。Task ID、產品名�
 
 規範語意以繁體中文為準；validator 不以不可靠的字表猜測繁簡字形，而是在 changed-only 模式對新增或本次變更的 task 機械要求 `title` 至少包含一個 Han 字元。全 ASCII／全英文標題必須 fail；未變更的歷史 task 不追溯改寫，full scan 僅以 warning 顯示，待該 task 下次語意修改時再依本規範修正。
 
+## Task 草案最小欄位
+
+新增 MorroWise／control-plane task 的 proposed draft 至少先列出下列欄位，再進入 semantic intake 與 Vincent 核准：
+
+```json
+{
+  "id": "stable-task-id",
+  "order_label": "JV-XX",
+  "title": "繁體中文工作標題",
+  "status": "todo",
+  "track": "governance"
+}
+```
+
+`order_label` 必須是非空字串，且在同一 canonical `tasks.json` 內唯一；缺少、空字串、全空白、非字串或重複值都必須 fail。它是人類可讀的排序／討論代碼，不取代 canonical identity；task 的穩定身分仍是 `project/task-id`。Validator 不得自動重編既有 label，也不得建立跨 repo 的第二套編號正本。
+
 ## Operation 與狀態
 
 | operation | 使用時機 | status 規則 | 額外資料 |
@@ -147,7 +163,7 @@ MorroWise 每次最多一個 task 可設 `weekly_core: true`。該 task 必須�
 
 1. 先判斷正本 project 與 active owner task；跨 repo 變更不得直接繞過 task event single-writer 流程。
 2. Vincent 明確核准 task-state mutation 後，追加 lifecycle event 與所需的 `jv32_route`。
-3. 本機 worktree 執行 `node scripts/validate-tasks.mjs --changed-only`；clean CI 執行 `node scripts/validate-tasks.mjs --base <base-git-ref>` 驗證 `<base>..HEAD`。兩種 changed-only scope 都只讓實際變更的 project fatal；未變更的 MorroWise weekly-core／review-date 不得阻塞其他 project。新 task、語意修改、停用、恢復與完成若缺 route、history、semantic intake、理由、狀態一致性或 closeout 條件，必須 fail；測試／回放可用 `--as-of YYYY-MM-DD` 固定時鐘。
+3. 本機 worktree 執行 `node scripts/validate-tasks.mjs --changed-only`；clean CI 執行 `node scripts/validate-tasks.mjs --base <base-git-ref>` 驗證 `<base>..HEAD`。兩種 changed-only scope 都只讓實際變更的 project fatal；未變更的 MorroWise weekly-core／review-date 不得阻塞其他 project。MorroWise／control-plane task 的 `order_label` 若缺少、空值、非字串或同一 canonical file 內重複，必須 fail；新 task、語意修改、停用、恢復與完成若缺 route、history、semantic intake、理由、狀態一致性或 closeout 條件，也必須 fail。測試／回放可用 `--as-of YYYY-MM-DD` 固定時鐘。
 4. 進入 MorroWise implementation 前執行 `node scripts/work-anchor-preflight.mjs --project morrowise --task-id <id> --event implementation --scope <path>`；到期 weekly core 必須先處置，不能繼續改檔。
 5. 執行 `node scripts/generate-data.mjs`，確認 generated surface 只反映 canonical state。
 6. 完成 status 額外依 JV-32 `closeout-commit-routing` 走 verification-before-completion、必要的 cc-log、worktree-commit 與 task completion evidence；此 route 不取代 Vincent 的 commit／push 核准。

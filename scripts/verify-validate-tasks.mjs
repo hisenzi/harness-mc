@@ -13,6 +13,10 @@ if (!deployWorkflow.includes("node scripts/validate-tasks.mjs --base \"${{ githu
   throw new Error("Expected Pages push workflow to validate committed task changes from github.event.before to HEAD.");
 }
 
+if (!/^\s*cancel-in-progress:\s*true\s*$/m.test(deployWorkflow)) {
+  throw new Error("Expected Pages deployment policy to cancel an obsolete in-progress run when a newer main deployment is queued.");
+}
+
 function run(args, { cwd = repo, expectFailure = false } = {}) {
   try {
     const stdout = execFileSync(process.execPath, [script, ...args], {

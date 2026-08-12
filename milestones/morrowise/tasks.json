@@ -10042,6 +10042,281 @@
           }
         ]
       }
+    },
+    {
+      "id": "shared-memory-governance-v2",
+      "title": "JV-49 共享記憶治理 v2（L1 重整＋跨 Agent 候選晉升）",
+      "status": "todo",
+      "track": "governance",
+      "order_label": "JV-49",
+      "priority": "high",
+      "weekly_core": false,
+      "dependencies": [
+        "memory-health-read-model",
+        "task-lifecycle-jv32-gate",
+        "morrowise-second-brain-capture-gate"
+      ],
+      "done_condition": "完成共享記憶治理 v2：重整 $COLLAB/notyet-harness/000_Agent/memory/MEMORY.md 的 L1 常駐內容、分類並安全處理根目錄 dated logs、修正仍把 MEMORY.md 視為 HiSenzi／OpenClaw 專屬寫入點的入口，並在既有 MorroWise Recommendation Engine → Approval Policy → Runner 路徑加入跨 Agent 記憶候選晉升 adapter。$CODEX_HOME/memories/MEMORY.md 只能作為具來源、可去重、需明確核准的 candidate source，不得整份匯入、形成第二正本，或新增平行 queue、scheduler、dashboard、RAG／向量資料庫。完成前須以可重跑 verifier 證明零資料遺失、入口語意一致、候選未核准不寫正本，以及代表性查詢的可發現性不退步。",
+      "acceptance": [
+        "JV49-A01｜L1 正本與分類：共享 MEMORY.md 維持跨 Agent 的唯一 L1 常駐記憶入口；只保留耐久規則、路由、穩定偏好與高價值索引，案例操作細節留在對應 SKILL.md，系統結構留在 ARCHITECTURE.md，task 狀態留在 canonical tasks.json。",
+        "JV49-A02｜安全重整：先產 inventory、分類與 migration ledger，再處理 2026-08-12 baseline 的 14 份 memory 根目錄 dated logs、daily 對應差異與缺少 archive/ 的情況；任何移動、合併或歸檔都必須保留來源、checksum／diff 與回復路徑，不得直接刪除或以較新檔名推定內容相同。",
+        "JV49-A03｜入口修正：cross-agent-memory、project-init、build-skill、hisenzi-skill-builder、new-project 或其他會產生記憶建議的入口，不得再宣稱 MEMORY.md 由 HiSenzi／OpenClaw 專管，也不得把 project／skill 細節持續回灌 L1；仍需保留 agent-neutral、approval-gated 的候選輸出。",
+        "JV49-A04｜跨 Agent candidate intake：$CODEX_HOME/memories/MEMORY.md 僅能逐筆提出 candidate，必須記錄 source、reason、dedupe comparison、target layer、sensitivity 與 Vincent approval；raw rollout、聊天全文、秘密、runtime auth、機器專屬暫態與未驗證推論不得晉升。",
+        "JV49-A05｜沿用既有 MorroWise 閉環：候選只接入既有 Recommendation Engine → Approval Policy → Runner／task lifecycle；未核准時停在 proposal/read-only，核准後才可寫共享 L1。不得新增第二套 queue、scheduler、notification、dashboard、task system、RAG 或向量資料庫。",
+        "JV49-A06｜Maxmodel 邊界樣本：『有沒有 Max One 文案』等案例專屬規則以 maxmodel-case-page/SKILL.md 為正本；共享 MEMORY.md 最多保留何時查該 skill 的薄路由，不重複完整案例頁規範。",
+        "JV49-A07｜評估證據：建立至少一組重整前後的 discoverability、duplicate／drift、source attribution、未核准禁止寫入與五個代表性查詢測試；不得以單純縮短 MEMORY.md 或檔案數下降冒充品質提升。",
+        "JV49-A08｜交付邊界：本 task 建立時只記錄 todo plan，不修改 shared MEMORY.md、任何 skill、ARCHITECTURE.md、local Codex memory、排程、外部工具或 generated read model；後續實作、commit、push 與外部同步仍需各自通過 Repo Ready、work-anchor、驗收與明確授權。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md",
+        "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/maxmodel-case-page/SKILL.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/cross-agent-memory/SKILL.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/project-init/SKILL.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/build-skill/SKILL.md",
+        "$CODEX_HOME/memories/MEMORY.md",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#memory-health-read-model",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-second-brain-capture-gate",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-recommendation-engine.json",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json"
+      ],
+      "execution_contract": {
+        "owner": "morrowise/shared-memory-governance-v2",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#shared-memory-governance-v2",
+        "inputs": [
+          "共享 MEMORY.md、memory/daily、根目錄 dated logs 與現有 archive 狀態的唯讀 inventory",
+          "cross-agent-memory、project-init、skill builder 與相關模板的 memory ingress 規則",
+          "$CODEX_HOME/memories/MEMORY.md 的逐筆 explicit-intake candidates",
+          "既有 MorroWise Recommendation Engine、Approval Policy、Runner 與 task lifecycle contract"
+        ],
+        "outputs": [
+          "R1：L1 taxonomy、內容預算、thin routing 規則與可回復 migration ledger",
+          "R2：dated logs／daily／archive 與所有 memory ingress 的一致治理",
+          "R3：沿用既有 MorroWise 閉環的跨 Agent memory-promotion adapter contract",
+          "R4：重整前後 discoverability、dedupe、drift、source attribution 與 approval negative evidence"
+        ],
+        "verifiers": [
+          "node scripts/verify-shared-memory-governance-v2.mjs",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+          "git diff --check"
+        ],
+        "stop_condition": "若無法證明 dated log 的來源／差異、candidate 的來源與核准、或任何變更會形成第二正本、資料遺失、秘密外洩、平行治理管線，立即停止並保留現況；不得用 wholesale merge、直接刪檔或自動晉升繞過。"
+      },
+      "acceptance_matrix": [
+        {
+          "id": "JV49-R1-A01",
+          "what": "重整共享 L1 的 taxonomy 與 thin-routing 邊界，同時保留可發現性與零資料遺失。",
+          "preconditions": [
+            "完成 shared MEMORY.md、skills、ARCHITECTURE.md 與 dated logs 的唯讀 inventory",
+            "為每個候選段落標記 retain、move-to-skill、move-to-architecture、archive 或 needs-review"
+          ],
+          "steps": [
+            "產生 migration ledger 與 before fingerprint",
+            "依 taxonomy 重整並逐筆核對來源、目標與回復路徑",
+            "執行五個代表性查詢並比較重整前後結果"
+          ],
+          "pass_condition": "共享 L1 只保留耐久內容與薄路由；每筆移動均可追溯、可回復，五個查詢無退步且無遺失。",
+          "fail_condition": "以刪除或縮短冒充優化、無 ledger／fingerprint、查詢退步、或案例細節仍重複存在 L1 與 skill。",
+          "verification": [
+            "node scripts/verify-shared-memory-governance-v2.mjs --phase r1",
+            "manual evidence review: migration ledger plus five-query comparison"
+          ]
+        },
+        {
+          "id": "JV49-R2-A01",
+          "what": "收斂 dated logs 與記憶入口，消除 HiSenzi／OpenClaw 專屬寫入假設。",
+          "preconditions": [
+            "保留 2026-08-12 baseline inventory：共享 MEMORY.md 174 lines／9477 bytes、14 份根目錄 dated logs、archive/ 尚不存在",
+            "完成 root-vs-daily 同名檔逐筆 diff 與無對應檔分類"
+          ],
+          "steps": [
+            "建立安全 archive／daily placement 與 manifest",
+            "修正所有 memory ingress 的 owner、target layer 與 approval boundary",
+            "跑 stale wording、broken route、checksum 與 recovery fixtures"
+          ],
+          "pass_condition": "每份 dated log 有唯一可追溯位置；入口皆為 agent-neutral candidate flow，沒有遺失、重複正本或 stale owner 宣告。",
+          "fail_condition": "未比對即合併／刪除、仍宣稱 HiSenzi 專管、或 project／skill 細節持續無門檻回灌 L1。",
+          "verification": [
+            "node scripts/verify-shared-memory-governance-v2.mjs --phase r2",
+            "rg audit: HiSenzi/OpenClaw ownership and MEMORY.md write routes"
+          ]
+        },
+        {
+          "id": "JV49-R3-A01",
+          "what": "建立 local Codex memory 到共享 L1 的 approval-gated candidate adapter，並沿用既有 MorroWise 閉環。",
+          "preconditions": [
+            "Recommendation Engine、Approval Policy、Runner 與 task lifecycle 正本可讀",
+            "candidate schema 已定義 source、reason、dedupe、target layer、sensitivity 與 approval"
+          ],
+          "steps": [
+            "跑 duplicate、sensitive、machine-local、unverified、approved 與 rejected candidates",
+            "核對未核准 proposal 不寫共享 L1，核准 candidate 只寫指定 target layer",
+            "掃描確認沒有新增平行 queue、scheduler、dashboard、RAG 或 task source"
+          ],
+          "pass_condition": "candidate 決策可重跑、來源可追溯、未核准零寫入，且 mutation 只走既有 MorroWise approval／runner 邊界。",
+          "fail_condition": "wholesale merge、raw rollout 晉升、秘密／暫態資料進 L1、未核准寫入或產生第二套治理管線。",
+          "verification": [
+            "node scripts/verify-shared-memory-governance-v2.mjs --phase r3",
+            "negative fixtures: unapproved, duplicate, sensitive, machine-local and raw-rollout candidates"
+          ]
+        },
+        {
+          "id": "JV49-R4-A01",
+          "what": "以品質與治理證據驗收整體記憶優化，不以檔案縮減作為完成替代品。",
+          "preconditions": [
+            "R1-R3 verifier 全數通過",
+            "Architecture Admission Review 已判定 promoted、version improvement 或 not_required"
+          ],
+          "steps": [
+            "比較 before／after discoverability、duplicate、drift 與 source attribution",
+            "執行完整 negative fixtures、changed-only task validation 與 architecture sync check",
+            "核對 canonical task、Skill、L1、ARCHITECTURE.md 與 local candidate source 沒有雙正本"
+          ],
+          "pass_condition": "所有指標與負向案例有可重跑證據，沒有範圍外新系統，且 source-of-truth 邊界一致。",
+          "fail_condition": "只報行數／檔案數、缺少前後對照、負向案例失敗、架構判定缺漏或產生第二正本。",
+          "verification": [
+            "node scripts/verify-shared-memory-governance-v2.mjs",
+            "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+            "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+            "git diff --check"
+          ]
+        }
+      ],
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "L1 retain／move／archive 決策必須 deterministic、可追溯且可回復。",
+          "Maxmodel 等 domain-specific 規則只能留薄路由，完整操作規範由對應 skill 擁有。",
+          "local Codex memory candidate 未核准、重複、敏感、機器暫態、raw rollout 或未驗證時不得寫共享 L1。",
+          "已核准 candidate 只能透過既有 MorroWise approval／runner 邊界寫指定 target layer，不建立平行系統。"
+        ],
+        "test_level": [
+          "decision_contract",
+          "negative_fixture",
+          "migration_integrity",
+          "retrieval_regression"
+        ],
+        "red_command": "node scripts/verify-shared-memory-governance-v2.mjs",
+        "expected_red_reason": "JV-49 建立時尚未有 L1 taxonomy、migration ledger、candidate adapter、negative fixtures 與整體 verifier，應以明確缺件失敗。",
+        "green_command": "node scripts/verify-shared-memory-governance-v2.mjs",
+        "full_regression_commands": [
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+          "git diff --check"
+        ],
+        "fixture_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#shared-memory-governance-v2.acceptance_matrix",
+          "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md",
+          "$CODEX_HOME/memories/MEMORY.md"
+        ],
+        "runtime_evidence_required": false,
+        "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#shared-memory-governance-v2.test_contract.evidence_refs",
+        "evidence_refs": []
+      },
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "讓 memory source family 具有唯一共享 L1、可追溯分層、跨 Agent 候選晉升與 approval-gated mutation，避免 local memory、skill、ARCHITECTURE.md、dated logs 或 dashboard 形成第二正本。",
+        "evidence_plan": [
+          "L1 taxonomy、migration ledger、dated-log manifest 與 before／after fingerprints",
+          "五個代表性查詢的 discoverability regression",
+          "candidate adapter 的 approval、dedupe、sensitivity 與 no-parallel-system negative fixtures",
+          "changed-only task validation 與 Architecture Admission／sync evidence"
+        ],
+        "reviewed_at": "2026-08-12"
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/shared-memory-governance-v2",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#sourceBoundary",
+          "#risk",
+          "#optimization",
+          "#evidenceBased"
+        ],
+        "hc_reasoning": "真正問題不是把更多內容塞進 MEMORY.md，也不是同步兩份大檔，而是讓不同 Agent 在低 context 下找到正確且最新的記憶層。#rightProblem 將需求收斂為 L1 分層、入口治理與 candidate promotion；#systemDynamics 防止 project／skill 細節持續膨脹、dated logs 漂移與 local memory 成為第二正本；#sourceBoundary 分開共享 L1、domain skill、ARCHITECTURE.md、task state、daily/archive 與 local candidate source；#risk 禁止 wholesale merge、直接刪檔、秘密／raw rollout 晉升與未核准寫入；#optimization 沿用既有 Recommendation／Approval／Runner，不新增 queue、scheduler、dashboard 或 RAG；#evidenceBased 要求 migration ledger、負向 fixtures 與前後查詢比較。",
+        "hc_confidence": 0.96,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md",
+          "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+          "$COLLAB/notyet-harness/000_Agent/skills/maxmodel-case-page/SKILL.md",
+          "$COLLAB/notyet-harness/000_Agent/skills/cross-agent-memory/SKILL.md",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#memory-health-read-model",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-recommendation-engine.json",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json"
+        ],
+        "source_boundary": "HC 只是思考檢查，不是正本；task state 由 MorroWise tasks.json 管理，共享 L1 由 notyet-harness memory/MEMORY.md 管理，案例規則由正式 SKILL.md 管理，系統結構由 ARCHITECTURE.md 管理，local Codex memory 只提供需核准的 candidates。"
+      },
+      "architecture_decision": {
+        "decision": "deferred",
+        "evaluated_at": "2026-08-12",
+        "reason": "本次只建立 JV-49 todo work anchor；是否屬既有 memory／governance subsystem 的 version improvement，或需新增 Architecture Admission Record，必須在 R1-R3 contract、verifier 與實作範圍確定後再判定，現階段不得預先宣稱 promoted。"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "Scope A 的 L1、dated logs、memory ingress 與 local Codex candidate inventory",
+          "maxmodel-case-page skill 已承接 domain-specific 規範後的 shared MEMORY.md 去重需求",
+          "memory-health、second-brain capture、Recommendation Engine、Approval Policy 與 Runner 的既有 ownership"
+        ],
+        "decision_output": "一個不建立平行系統的共享記憶治理 work anchor，分 R1 L1 重整、R2 ingress／archive、R3 candidate adapter、R4 evaluation 四段驗收。",
+        "execution_boundary": "本次只新增 canonical todo task；不得修改 shared MEMORY.md、skills、ARCHITECTURE.md、local Codex memory、排程、外部工具、generated read model，也不授權 commit、push、部署或同步。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准把已完成 Scope A 分類與候選清單、AI 記憶系統研究、Heptabase OpenClaw 雙軌記憶參考價值及現有 MorroWise 機制統整為 JV-49；本次只建立可驗證計畫，不執行任何記憶重整或同步。",
+            "evidence_refs": [
+              "Vincent 2026-08-12 current session: JV-49 可以",
+              "Vincent 2026-08-12 current session: 可以寫入 JV-49 task",
+              "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md",
+              "$COLLAB/notyet-harness/000_Agent/skills/maxmodel-case-page/SKILL.md"
+            ],
+            "recorded_at": "2026-08-12",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/memory-health-read-model",
+                "morrowise/morrowise-second-brain-capture-gate",
+                "morrowise/task-lifecycle-jv32-gate",
+                "harness-mc/morrowise-recommendation-engine-v0",
+                "harness-mc/morrowise-approval-policy",
+                "harness-mc/morrowise-autonomous-action-runner-v0"
+              ],
+              "scope_comparison": {
+                "problem": "memory-health 只觀測健康度，second-brain capture 只管理知識收錄，JV-40 只管理 task mutation，Recommendation／Approval／Runner 只提供通用候選與核准執行；沒有 task 擁有共享 L1 重整、dated-log／ingress 收斂，以及 local Codex memory 到共享層的候選晉升完整治理。",
+                "owner_source_of_truth": "JV-49 只擁有共享記憶分層、migration contract、memory ingress 與 promotion adapter；共享 L1、domain skill、ARCHITECTURE、canonical tasks、local Codex memory 與 MorroWise registries 仍各自維持既有正本。",
+                "inputs_outputs": "輸入是 shared L1、dated logs、skills／templates ingress、local Codex candidates 與既有 governance contracts；輸出是 taxonomy、migration ledger、agent-neutral ingress、approval-gated adapter 與 evaluation evidence，不新增第二 queue、scheduler、dashboard、RAG 或 task writer。",
+                "lifecycle_completion": "只有 R1-R4 acceptance 全部通過、零資料遺失、五個代表性查詢無退步、未核准零寫入、負向 fixtures 與 Architecture Admission／sync evidence 完整後才可 completed；建立 task 不代表已優化記憶。"
+              },
+              "decision_reason": "相鄰 task 各自覆蓋觀測、知識收錄、task lifecycle 或通用 recommendation／approval，但沒有單一 owner 承接共享 L1 與跨 Agent promotion 的完整問題、來源與完成邊界，因此建立一個 genuinely_new governance work anchor，並明確禁止平行系統。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-12",
+                "evidence_refs": [
+                  "Vincent 2026-08-12 current session: JV-49 可以",
+                  "Vincent 2026-08-12 current session: 可以寫入 JV-49 task"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "note": "2026-08-12 Scope A baseline：共享 MEMORY.md 為 174 lines／9477 bytes；memory 根目錄有 14 份 dated logs 且 archive/ 不存在。先前只讀比對顯示多數 root-vs-daily 同名檔內容不同，實作時必須重新產生 inventory 與 checksum，不得沿用舊統計直接搬移。Max One 規則已由 maxmodel-case-page skill 承接，因此 JV-49 只保留 shared-memory 薄路由。"
     }
   ]
 }

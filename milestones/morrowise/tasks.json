@@ -4200,6 +4200,43 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 要求停止以局部 contract／fixture 冒充多 session closeout 完成；本次只把 JV-37 既有 A03、A05.1、A05.2、A07、A09、A10、A14 驗收邊界固化為可指紋的 canonical acceptance matrix，明確區分三 clone 模擬與真實多 session／三機 pilot，不實作 runtime 或提前關閉 task。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate.acceptance_matrix",
+              "$COLLAB/harness-mc/system-workflow/docs/specs/repo-coordination-gate.md#remote-closeout",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-phase3-fresh-session-e2e-admission",
+              "Vincent 2026-08-12 current session: 可以（核准只修正既有 JV-37 與 P3 canonical task）"
+            ],
+            "recorded_at": "2026-08-12",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/morrowise-phase3-fresh-session-e2e-admission",
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/morrowise-dev-workflow-catalog"
+              ],
+              "scope_comparison": {
+                "problem": "真正缺口是 JV-37 雖有完整文字 acceptance，卻沒有可指紋矩陣鎖定 concurrent C1、single-writer claim、crash recovery、授權續用、remote terminal closeout 與真實 pilot，因此可能再次以局部通過誤報完成。",
+                "owner_source_of_truth": "owner 仍是既有 JV-37；tasks.json acceptance_matrix 是驗收正本，Repo Coordination Gate 是 detail spec，JV-32 仍是唯一 workflow catalog。",
+                "inputs_outputs": "輸入是既有 JV-37 acceptance 與 Vincent 對原始舊疾的根治要求；輸出只新增六項可判定矩陣與 planned verifier command，不新增 task、workflow、registry、skill、daemon 或第二套 closeout。",
+                "lifecycle_completion": "JV-37 維持 todo；模擬通過不等於 runtime 完成，仍須真實多 session／三機 pilot receipt、remote 0/0、pending／scope residual zero 與 task_completed 才可驗收。"
+              },
+              "decision_reason": "問題、owner、輸入輸出與生命週期均已由 JV-37 承擔，故 outcome=amend；新增平行 task 或補丁機制會製造第二正本。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-12",
+                "evidence_refs": [
+                  "Vincent 2026-08-12 current session: 可以"
+                ]
+              }
+            }
           }
         ]
       },
@@ -4301,6 +4338,117 @@
         "A17｜worktree-commit 只重新審核並提交已驗收的 exact scope，不能代替 Execution／Review 修產品缺失、改 acceptance、補 scope、吸收其他 session commit 或建立 branch／worktree；任何產品修補都必須先返回 JV-40 規範重新驗收。",
         "A18｜Repo 建立授權：missing、wrong-project、ambiguous 與 valid Vincent receipt fixtures 中，只有 schema、action=create_repo、project_id、approved_by=Vincent、decision=approved 與 receipt_id 全部精準符合時可產生 create_repo=true；其他情況 command invocation 必須為零，對話推論、type 或 milestone 都不能代替授權。",
         "A19｜project-init 接線：standalone 無 receipt 時只建立 MC milestone，repo_ref 為空且 gh／git invocation 為零；有效 receipt 才呼叫 repo provisioning，並精準綁定 project ID。驗證必須使用 fake gh、fake git 與暫存目錄，不得建立真實 repo；--type standalone 單獨不得觸發 gh repo create。"
+      ],
+      "acceptance_matrix": [
+        {
+          "id": "JV37-E2E-01",
+          "what": "多個 session 可同時交付 C1，但只能由一個 integrator 取得 claim 並寫入 canonical C2。",
+          "preconditions": [
+            "至少兩個獨立 session／clone 對同一 remote 產生不同 exact scope 的 C1 與 durable delivery receipt",
+            "canonical task 尚未完成，且 claim、task-event、remote SHA 都可由新 session 讀取"
+          ],
+          "steps": [
+            "讓兩個 worker session 分別交付 C1，不直接修改 canonical task state",
+            "讓兩個 integrator contender 對同一 task claim，並由獲准者執行 single-writer canonical apply 與 C2"
+          ],
+          "pass_condition": "所有 C1 receipt 均保留；恰好一個 claim 成功，其他 contender 得到 deterministic BLOCKED；只有獲准 integrator 寫入 canonical C2。",
+          "fail_condition": "重複 claim、遺失 C1、worker 直接寫 canonical task、兩個 integrator 同時寫入，或 ownership 只存在聊天記憶。",
+          "verification": [
+            "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case concurrent-delivery-single-integrator",
+            "node scripts/verify-apply-task-events.mjs"
+          ]
+        },
+        {
+          "id": "JV37-E2E-02",
+          "what": "closeout 在每個 durable boundary 中斷後，fresh session 都能從首個未滿足 state 安全續跑。",
+          "preconditions": [
+            "具備 claim 後、commit 前、commit 後未 push、push 後未 event、event 後未 apply、apply 後未 integrate、integrate 後未 release 的中斷 fixtures",
+            "fresh session 不取得前一段 chat 或 agent 私有記憶"
+          ],
+          "steps": [
+            "逐一注入 A10 定義的中斷狀態",
+            "以 fresh session 只讀 canonical task、claim、Git SHA 與 pending／applied event，判定並執行下一個安全動作"
+          ],
+          "pass_condition": "每個案例都從首個未滿足 state 續跑，已完成步驟不重做，next action 與 blocked reason 可重跑且一致。",
+          "fail_condition": "需要舊 chat、重複 apply／push／C2、跳過 state、猜測 owner，或無法判定下一步。",
+          "verification": [
+            "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case crash-recovery-fresh-session"
+          ]
+        },
+        {
+          "id": "JV37-E2E-03",
+          "what": "完整交付授權在不變量不變時免二次確認，任一不變量改變時 fail-closed。",
+          "preconditions": [
+            "Vincent 已確認具 exact scope、base、grouping、message、verifier、owner 與 target main 的 C1／C2 plan",
+            "可分別重現完全不變、safe non-overlapping fast-forward、scope overlap、non-fast-forward、verifier change 與 ownership conflict"
+          ],
+          "steps": [
+            "在授權不變量不變及安全 fast-forward case 中斷後續跑",
+            "逐一改變 scope、base safety、diff／message／grouping、verifier、ownership 或 human decision"
+          ],
+          "pass_condition": "不變與安全 fast-forward case 不重問；任何不變量改變都輸出 deterministic BLOCKED 並要求新決策。",
+          "fail_condition": "不必要地重問相同授權，或沿用舊授權吸收 scope、overlap、非 fast-forward、verifier、ownership 或新人工決策。",
+          "verification": [
+            "node \"$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/tests/verify-full-delivery-continuation.test.mjs\"",
+            "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case authorization-continuation"
+          ]
+        },
+        {
+          "id": "JV37-E2E-04",
+          "what": "C2 closeout 必須到達 remote truth、pending zero、scope-owned residual zero 與 task_completed。",
+          "preconditions": [
+            "具可追溯 C1、single-writer C2、task event、sync request、baseline exclusions 與 residual ledger",
+            "所有 mutating closeout 已在 C2 前完成"
+          ],
+          "steps": [
+            "正常 push C1 與 C2 後重新 fetch target remote",
+            "只讀核對 remote ancestry、ahead／behind、canonical task、pending task／sync events、baseline exclusions 與 scope-owned residuals"
+          ],
+          "pass_condition": "origin/main 同時包含 C1 與 C2，ahead／behind=0/0，本次 pending task／sync=0、scope-owned residuals=0，canonical state=task_completed。",
+          "fail_condition": "只有 local／branch／event_pending／canonical_pending、C2 自我回填 hash、remote 非 0/0、pending 未清或 scope-owned residual 非零。",
+          "verification": [
+            "node \"$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/tests/verify-post-commit-closeout.test.mjs\"",
+            "node scripts/verify-closeout-residual-ledger.mjs",
+            "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case remote-terminal-closeout"
+          ]
+        },
+        {
+          "id": "JV37-E2E-05",
+          "what": "三 clone 模擬必須覆蓋競爭、dirty、Git 邊界與錯誤 integrator 的負向案例。",
+          "preconditions": [
+            "A09、A12、A13 的負向 fixtures 已建立",
+            "測試環境禁止 reset、casual rebase、auto stash、auto conflict resolution 與 force push"
+          ],
+          "steps": [
+            "重跑 clean／behind／ahead／diverged／detached／no-upstream／dirty classification／multi-worktree fixtures",
+            "重跑 duplicate claim、same-branch push race、wrong integrator、missing event 與 batch interruption fixtures"
+          ],
+          "pass_condition": "安全案例唯一放行；危險案例以固定分類 fail-closed；多次重跑結果一致且不破壞 repo。",
+          "fail_condition": "fixture-only 假綠燈、危險案例被放行、錯誤 integrator 可寫 main，或測試本身執行禁止的破壞性 Git 動作。",
+          "verification": [
+            "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case three-clone-negative-fixtures",
+            "node scripts/verify-direct-main-workflow-policy.mjs",
+            "node scripts/verify-explicit-git-isolation-approval.mjs"
+          ]
+        },
+        {
+          "id": "JV37-E2E-06",
+          "what": "真實多 session／三機 pilot 必須證明整條 closeout，而非以 fixture 或單次人工成功替代 runtime 驗收。",
+          "preconditions": [
+            "JV37-E2E-01 至 JV37-E2E-05 全部通過",
+            "至少兩個真實 Agent session 與 A14 定義的三機 pilot 使用同一 remote truth，並保留 source-bound runtime receipt"
+          ],
+          "steps": [
+            "執行真實並行 C1、single integrator claim、刻意中斷、fresh-session 恢復與 C2 closeout",
+            "三機重新 fetch，核對 HEAD、claims、events、pending、residual、授權不變量與 terminal task state"
+          ],
+          "pass_condition": "真實 receipt 證明唯一 integrator、fresh-session 續跑、授權正確沿用、三機 HEAD 一致、claims released、remote 0/0、pending=0、scope residual=0 與 task_completed。",
+          "fail_condition": "只有 fixture、單一 session、手工敘述或舊 receipt；任一機器不同步、claim 未釋放、重複請示、pending／residual 非零或 task 未到 terminal。",
+          "verification": [
+            "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case real-multi-session-three-machine-pilot",
+            "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+          ]
+        }
       ],
       "goal_alignment": {
         "project_id": "morrowise",
@@ -8314,10 +8462,11 @@
         "trusted-heartbeat-runtime-v1",
         "document-source-registry-and-human-sync",
         "morrowise-live-decision-loop-v1",
-        "task-lifecycle-jv32-gate"
+        "task-lifecycle-jv32-gate",
+        "multi-machine-repo-coordination-gate"
       ],
       "blocked_by": "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-priority-dashboard-surface-v2",
-      "done_condition": "在 Action Priority、Trusted Heartbeat、JV-36 R1–R5、唯一 Daily Decision 與 harness-mc Surface 都完成各自 verifier 後，執行不帶 task id 的 fresh-session、多 Agent deterministic、真實 safe runtime、fresh single-repo build、task validator、Architecture Admission 與受控跨 repo sync E2E；所有 coverage 與 evidence refs 齊全才可 completed，且本 task 只驗收、不建立平行 read model、scheduler、tracker、skill 或自動 commit／push。",
+      "done_condition": "在 Action Priority、Trusted Heartbeat、JV-36 R1–R5、唯一 Daily Decision、harness-mc Surface 與 JV-37 真實多 session closeout 都完成各自 verifier，且 JV-37 current acceptance receipt 證明唯一 integrator、fresh-session 續跑、remote 0/0、pending／scope residual zero 與 task_completed 後，執行不帶 task id 的 fresh-session、多 Agent deterministic、真實 safe runtime、fresh single-repo build、task validator、Architecture Admission 與受控跨 repo sync E2E；所有 coverage 與 evidence refs 齊全才可 completed，且本 task 只驗收、不建立平行 read model、scheduler、tracker、skill 或自動 commit／push。",
       "acceptance": [
         "F-01｜Fresh session 不提供 task id，仍能從 canonical source 選到相同 task 與 semantic route，或輸出相同可追溯拒絕理由。",
         "F-02｜Codex、Claude Code 與共享 Agent 使用相同 input，多次重跑得到 deterministic task、priority、heartbeat 與 daily decision 結果。",
@@ -8338,6 +8487,7 @@
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1",
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-live-decision-loop-v1",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate",
         "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-priority-dashboard-surface-v2",
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
         "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md"
@@ -8368,6 +8518,7 @@
             "trusted-heartbeat-runtime-v1",
             "document-source-registry-and-human-sync",
             "morrowise-live-decision-loop-v1",
+            "multi-machine-repo-coordination-gate",
             "morrowise-priority-dashboard-surface-v2"
           ],
           "completion_requires": [
@@ -8375,6 +8526,7 @@
             "trusted-heartbeat-runtime-v1",
             "document-source-registry-and-human-sync",
             "morrowise-live-decision-loop-v1",
+            "multi-machine-repo-coordination-gate",
             "morrowise-priority-dashboard-surface-v2"
           ]
         },
@@ -8416,12 +8568,45 @@
             "node scripts/verify-morrowise-phase3-e2e-admission.mjs",
             "npm run test:architecture-subsystems"
           ]
+        },
+        {
+          "id": "ADM-P2-02",
+          "what": "Final Admission 必須引用 JV-37 當前指紋的真實多 session closeout acceptance receipt。",
+          "preconditions": [
+            "multi-machine-repo-coordination-gate 已 completed，且 JV37-E2E-01 至 JV37-E2E-06 全部通過",
+            "receipt 綁定當前 acceptance matrix fingerprint、真實 runtime／三機 pilot evidence 與 remote terminal state"
+          ],
+          "steps": [
+            "執行 missing、stale、partial、fixture-only 與 fingerprint mismatch 的 JV-37 receipt cases",
+            "以當前真實 JV-37 receipt 重跑 P3 fresh-session／multi-Agent Final Admission"
+          ],
+          "pass_condition": "只有 current、完整且含真實 runtime evidence 的 JV-37 receipt 可通過；P3 結果可重跑、跨 Agent 一致並追到 remote truth。",
+          "fail_condition": "缺 receipt、舊指紋、部分通過、fixture-only、單一 session、remote 非 0/0、pending／scope residual 非零或 task 未 terminal 仍被接受。",
+          "verification": [
+            "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case real-multi-session-three-machine-pilot",
+            "node scripts/verify-morrowise-phase3-e2e-admission.mjs",
+            "npm run test:architecture-subsystems"
+          ]
         }
       ],
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "把 MorroWise 第三階段最終入場驗收綁定 JV-37 當前指紋的真實多 session closeout receipt，防止 fixture、單一成功案例或局部 C2 被誤報成跨 session runtime 已完成。",
+        "evidence_plan": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate.acceptance_matrix",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-phase3-fresh-session-e2e-admission.acceptance_matrix",
+          "node scripts/verify-multi-machine-repo-coordination-gate.mjs",
+          "node scripts/verify-morrowise-phase3-e2e-admission.mjs"
+        ],
+        "reviewed_at": "2026-08-12"
+      },
       "test_contract": {
         "applicability": "required",
         "behavior_cases": [
           "缺任一上游 completed／verifier／test evidence 時 integration admission 必須拒絕。",
+          "缺少、過期、部分通過、fixture-only 或 matrix fingerprint 不符的 JV-37 acceptance receipt 時 integration admission 必須拒絕。",
           "相同 canonical input 在 fresh session、多 Agent 與多次重跑時必須得到相同選擇或拒絕理由。",
           "fixture-only、stale、missing 或 unloaded runtime evidence 必須判定 degraded／blocked。",
           "所有 component 通過時才能產出 accepted coverage，且結果只引用正本與 evidence，不建立第二份狀態正本。",
@@ -8434,6 +8619,7 @@
           "fresh_session_e2e",
           "multi_agent_determinism",
           "runtime_integration",
+          "multi_session_closeout",
           "architecture_admission"
         ],
         "red_command": "node scripts/verify-morrowise-phase3-e2e-admission.mjs",
@@ -8441,6 +8627,7 @@
         "green_command": "node scripts/verify-morrowise-phase3-e2e-admission.mjs",
         "full_regression_commands": [
           "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "node scripts/verify-multi-machine-repo-coordination-gate.mjs",
           "node scripts/verify-morrowise-dev-workflow-catalog.mjs",
           "npm run test:architecture-subsystems",
           "npm run test:system-pulse",
@@ -8606,6 +8793,42 @@
                 "approved_at": "2026-07-31",
                 "evidence_refs": [
                   "Vincent 2026-07-31 current session: 先修改 task；然後安排進行及驗收"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 核准把 JV-37 真實多 session closeout 納入既有 P3 Final Admission：新增 dependency、source ref、start／completion gate 與 ADM-P2-02 receipt 驗收，缺失、過期、部分通過或 fixture-only receipt 一律拒絕；不新增 task 或執行 P3 runtime。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate.acceptance_matrix",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-phase3-fresh-session-e2e-admission.acceptance_matrix.ADM-P2-02",
+              "Vincent 2026-08-12 current session: 可以（核准只修正既有 JV-37 與 P3 canonical task）"
+            ],
+            "recorded_at": "2026-08-12",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-phase3-fresh-session-e2e-admission",
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/morrowise-dev-workflow-catalog"
+              ],
+              "scope_comparison": {
+                "problem": "既有 P3 Final Admission 未依賴 JV-37，也未要求 current JV-37 acceptance receipt，可能在多 session closeout 尚未成立時仍通過其他 P3 coverage。",
+                "owner_source_of_truth": "P3 仍只擁有最終 integration admission；JV-37 擁有 repo coordination／Remote Closeout runtime，JV-40 擁有 task acceptance，JV-32 仍是唯一 workflow catalog。",
+                "inputs_outputs": "輸入新增 JV-37 current fingerprint、逐項結果與真實 pilot receipt；輸出只新增 Final Admission dependency 與 deterministic accept／reject 條件，不複製 JV-37 runtime 或建立第二套 gate。",
+                "lifecycle_completion": "P3 維持 todo；只有 JV-37 completed 且真實 receipt 通過，再加上原 P3 所有上游與 E2E evidence，才能完成 Final Admission。"
+              },
+              "decision_reason": "這是既有 P3 integration admission 的必要 dependency amendment，不是新的產品能力或 task，因此 outcome=amend。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-12",
+                "evidence_refs": [
+                  "Vincent 2026-08-12 current session: 可以"
                 ]
               }
             }

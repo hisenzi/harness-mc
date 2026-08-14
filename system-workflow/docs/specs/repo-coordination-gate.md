@@ -2,13 +2,13 @@
 
 > Task: `multi-machine-repo-coordination-gate` (`JV-37`)
 > Contract: `MW-GIT-AUTH-01`
-> Status: contract only; runtime not yet accepted
-> Updated: 2026-08-01
+> Status: local JV37-E2E-01..05 passed; real multi-session E2E-06 blocked
+> Updated: 2026-08-14
 > Read when: any Agent is about to modify a Git repo for the first time in a session, or is closing work that must reach remote truth
 
 ## Purpose
 
-Make repo collaboration safe across Vincent's machines without asking him to
+Make repo collaboration safe across Vincent's supported work environments without asking him to
 remember Git commands or clean up Agent-created isolation.
 
 The user-facing result has only two states:
@@ -22,7 +22,9 @@ The user-facing result has only two states:
 - `$COLLAB/AGENTS.md` and `$COLLAB/CLAUDE.md` route supported Agent runtimes to CORE.
 - This document is the human-readable coordination contract.
 - `$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate` owns task state and acceptance.
-- The future JV-37 script may enforce this contract only after negative fixtures prove it.
+- `$COLLAB/harness-mc/scripts/repo-coordination-runtime.mjs` is the executable Repo Ready／continuation driver.
+- `$COLLAB/notyet-harness/000_Agent/skills/multi-machine-repo-coordination/SKILL.md` is the thin Agent entrypoint.
+- Local JV37-E2E-01..05 passing is not full acceptance. JV-37 stays incomplete until the source-bound JV37-E2E-06 real multi-session pilot passes.
 
 Do not copy the complete state table into entry files or another registry.
 
@@ -228,6 +230,37 @@ JV-37 A03 remains the only repo scope/classification contract.
 
 ## Current Enforcement
 
-The verifier proves contract wiring and forbidden fallbacks only. JV-37 runtime
-is otherwise still `todo`; Agents must follow this contract explicitly and must
-not claim the full coordination workflow is automated.
+The JV-37 runtime uses a hidden remote coordination ref and normal Git push as
+the compare-and-swap claim boundary. The durable
+`task.claimed`／`task.remote_synced`／`task.released` reducer accepts only evidence
+whose remote ref/SHA and ancestry can be read back. Crash recovery derives the
+first unmet action from that remote chain, canonical overlay and queues rather
+than caller-supplied booleans. Multi-clone negative fixtures, live Git
+authorization/terminal inspection and the source-bound P3 seam cover the local
+acceptance boundary. Run
+`npm run test:repo-coordination-runtime` for JV37-E2E-01 through JV37-E2E-05.
+
+Without `--case`, the verifier intentionally exits blocked until a source-bound
+JV37-E2E-06 receipt is supplied. JV-37 stays `todo`; Agents must not claim the
+full coordination workflow or downstream P3 Final Admission is accepted.
+
+P3 reads this receipt only through
+`scripts/morrowise-phase3-jv37-admission.mjs`; its missing／stale／partial／
+fixture-only rejection wiring is verified by `npm run test:phase3-jv37-admission`.
+The production CLI is pinned to its own harness-mc checkout/origin and verifies
+the current matrix, runtime-source digest, verifier ref, claim ancestry, at
+least two independently identified fresh-session observation refs and terminal
+state. GitHub account/repo permission is the access boundary. A device is never
+registered, white-listed or granted C2 authority; observations are remote-bound
+Git evidence and may originate from the same or different supported
+environments. No hardware fingerprint, machine key or device registry is
+collected.
+
+Authorization continuation remains verify-only: its immutable remote approval
+record must carry a valid signature from the one active Vincent approver public
+key in `system-workflow/registries/jv37-authorization-approvers.json`. That is
+one user-level approval root, not a per-device gate, and the runtime never reads
+a private key or self-issues approval. Local E2E-01..05 may pass while E2E-06
+and P3 remain blocked until a current source-bound multi-session receipt is
+available. This is the JV-37 admission seam, not an implementation of the rest
+of P3.

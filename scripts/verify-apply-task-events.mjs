@@ -56,6 +56,113 @@ const selectiveState = JSON.parse(fs.readFileSync(path.join(selectiveProjectDir,
 assert.deepEqual(selectiveState.tasks["task-1"].commits, ["sel1111"]);
 assert.equal(Object.hasOwn(selectiveState.tasks, "task-2"), false);
 
+const coordinationRoot = fs.mkdtempSync(path.join(os.tmpdir(), "apply-task-events-coordination-"));
+const coordinationProjectDir = path.join(coordinationRoot, "milestones", "morrowise");
+const coordinationPendingDir = path.join(coordinationRoot, "task-events", "pending");
+fs.mkdirSync(coordinationProjectDir, { recursive: true });
+fs.mkdirSync(coordinationPendingDir, { recursive: true });
+writeJson(path.join(coordinationProjectDir, "tasks.json"), {
+  tasks: [{ id: "jv37", title: "Repo coordination", status: "todo" }],
+});
+const claimA = {
+  claim_id: "claim-a",
+  repo_class: "shared_core_multi_writer",
+  branch: "main",
+  base_sha: "a".repeat(40),
+  claimed_at: "2026-08-12T01:00:00Z",
+  owner_role: "integrator",
+  actor: "codex",
+  session_id: "session-jv37",
+  remote_claim_ref: "refs/jv37/claims/morrowise/jv37",
+  remote_claim_sha: "1".repeat(40),
+  remote_state: "claimed",
+};
+const claimB = { ...claimA, claim_id: "claim-b", session_id: "session-jv37-b" };
+const coordinationBase = {
+  repo: "harness-mc",
+  project: "morrowise",
+  task_id: "jv37",
+  actor: "codex",
+  session_id: "session-jv37",
+};
+writeJson(path.join(coordinationPendingDir, "001-claim-a.json"), {
+  ...coordinationBase,
+  event_id: "evt-claim-a",
+  type: "task.claimed",
+  summary: "Claim A",
+  created_at: "2026-08-12T01:00:00Z",
+  coordination: claimA,
+});
+writeJson(path.join(coordinationPendingDir, "002-claim-b.json"), {
+  ...coordinationBase,
+  session_id: claimB.session_id,
+  event_id: "evt-claim-b",
+  type: "task.claimed",
+  summary: "Conflicting Claim B",
+  created_at: "2026-08-12T01:00:01Z",
+  coordination: claimB,
+});
+writeJson(path.join(coordinationPendingDir, "003-remote.json"), {
+  ...coordinationBase,
+  event_id: "evt-remote-a",
+  type: "task.remote_synced",
+  commit: "abc1234",
+  summary: "C1 reached remote",
+  created_at: "2026-08-12T01:01:00Z",
+  coordination: {
+    ...claimA,
+    remote_claim_sha: "2".repeat(40),
+    remote_state: "c1_remote_synced",
+  },
+});
+writeJson(path.join(coordinationPendingDir, "004-complete.json"), {
+  ...coordinationBase,
+  event_id: "evt-complete-a",
+  type: "task.completed",
+  commit: "def5678",
+  summary: "Canonical apply by the active integrator",
+  created_at: "2026-08-12T01:01:30Z",
+  coordination: {
+    ...claimA,
+    remote_claim_sha: "3".repeat(40),
+    remote_state: "canonical_applied",
+  },
+});
+writeJson(path.join(coordinationPendingDir, "005-release.json"), {
+  ...coordinationBase,
+  event_id: "evt-release-a",
+  type: "task.released",
+  summary: "Claim released after terminal closeout",
+  created_at: "2026-08-12T01:02:00Z",
+  coordination: {
+    ...claimA,
+    remote_claim_sha: "4".repeat(40),
+    remote_state: "released",
+  },
+});
+const coordinationReport = applyTaskEvents({
+  root: coordinationRoot,
+  runGenerateData: false,
+  writeLatestReport: false,
+  coordinationProofVerifier: ({ event, expectedState }) => event.coordination?.remote_state === expectedState
+    ? { decision: "READY" }
+    : { decision: "BLOCKED", reason: "remote_claim_proof_mismatch" },
+});
+assert.deepEqual(coordinationReport.applied.map((item) => item.type), ["task.claimed", "task.remote_synced", "task.completed", "task.released"]);
+assert.equal(coordinationReport.rejected.find((item) => item.event_id === "evt-claim-b").reason, "claim_conflict");
+const coordinationState = JSON.parse(fs.readFileSync(path.join(coordinationProjectDir, "state.json"), "utf8"));
+assert.equal(coordinationState.tasks.jv37.coordination.active_claim, null);
+assert.equal(coordinationState.tasks.jv37.coordination.last_release.claim_id, "claim-a");
+assert.deepEqual(coordinationState.tasks.jv37.commits, ["abc1234", "def5678"]);
+
+const lockDir = path.join(coordinationRoot, "task-events", ".jv37-apply.lock");
+fs.mkdirSync(lockDir);
+assert.throws(
+  () => applyTaskEvents({ root: coordinationRoot, runGenerateData: false }),
+  /task_event_apply_locked/,
+);
+fs.rmdirSync(lockDir);
+
 const preservedReportPath = path.join(selectiveRoot, "task-events", "latest-report.json");
 const preservedReport = '{\n  "owner": "another-session"\n}\n';
 fs.writeFileSync(preservedReportPath, preservedReport);
@@ -87,6 +194,44 @@ assert.equal(fs.readFileSync(preservedReportPath, "utf8"), preservedReport);
 assert.deepEqual(fs.readdirSync(selectivePendingDir), ["002-preserved.json"]);
 
 const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "apply-task-events-"));
+const crashRoot = fs.mkdtempSync(path.join(os.tmpdir(), "apply-task-events-crash-recovery-"));
+fs.mkdirSync(path.join(crashRoot, "milestones", "crash-project"), { recursive: true });
+fs.mkdirSync(path.join(crashRoot, "task-events", "pending"), { recursive: true });
+writeJson(path.join(crashRoot, "milestones", "crash-project", "tasks.json"), {
+  tasks: [{ id: "crash-task", title: "Crash recovery task", status: "todo" }],
+});
+writeJson(path.join(crashRoot, "task-events", "pending", "001-crash.json"), {
+  event_id: "evt-crash-after-state",
+  type: "task.completed",
+  repo: "crash-repo",
+  commit: "c100000",
+  project: "crash-project",
+  task_id: "crash-task",
+  summary: "Crash after durable state before event move.",
+  created_at: "2026-08-12T02:00:00Z",
+  actor: "codex",
+  session_id: "crash-session",
+});
+const crashModuleUrl = new URL("./apply-task-events.mjs", import.meta.url).href;
+const crashedProcess = spawnSync(process.execPath, [
+  "--input-type=module",
+  "-e",
+  `import { applyTaskEvents } from ${JSON.stringify(crashModuleUrl)}; applyTaskEvents({ root: process.argv[1], runGenerateData: false, afterStatePersisted: () => process.kill(process.pid, "SIGKILL") });`,
+  crashRoot,
+], { encoding: "utf8" });
+assert.equal(crashedProcess.signal, "SIGKILL", crashedProcess.stderr || crashedProcess.stdout);
+assert.equal(JSON.parse(fs.readFileSync(path.join(crashRoot, "milestones", "crash-project", "state.json"), "utf8")).tasks["crash-task"].status, "completed");
+assert.equal(fs.readdirSync(path.join(crashRoot, "task-events", "pending")).length, 1);
+assert.equal(fs.readdirSync(path.join(crashRoot, "task-events", "transactions")).length, 1);
+assert.equal(fs.readdirSync(path.join(crashRoot, "sync-events", "pending")).length, 1);
+assert.equal(fs.existsSync(path.join(crashRoot, "task-events", ".jv37-apply.lock", "owner.json")), true);
+const recoveredCrash = applyTaskEvents({ root: crashRoot, runGenerateData: false });
+assert.deepEqual(recoveredCrash.applied.map((item) => [item.event_id, item.recovered]), [["evt-crash-after-state", true]]);
+assert.equal(fs.readdirSync(path.join(crashRoot, "task-events", "pending")).length, 0);
+assert.equal(fs.readdirSync(path.join(crashRoot, "task-events", "transactions")).length, 0);
+assert.equal(fs.readdirSync(path.join(crashRoot, "task-events", "applied")).length, 1);
+assert.equal(fs.readdirSync(path.join(crashRoot, "sync-events", "pending")).length, 1, "recovery must not duplicate an already enqueued sync event");
+assert.equal(fs.readdirSync(path.join(crashRoot, "task-events", "stale-locks")).length, 1, "dead lock must be preserved as recoverable evidence");
 const manualRejectionReview = {
   approved_by: "Vincent",
   approved_at: "2026-07-19",

@@ -2625,24 +2625,59 @@
               "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-dual-machine-observed"
             ],
             "recorded_at": "2026-07-18"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 取消固定機器數量；JV-28 改為被動觀測任何目前工作環境，缺少歷史 MBA 不再是 runtime failure。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-dual-machine-observed",
+              "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/jv37-self-use-coordination-handoff-260814.md"
+            ],
+            "recorded_at": "2026-08-14",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/capability-dual-machine-observed",
+                "morrowise/credential-lifecycle-governance",
+                "morrowise/morrowise-phase3-fresh-session-e2e-admission"
+              ],
+              "scope_comparison": {
+                "problem": "固定 MBA／三機觀測將歷史機器名稱誤當成目前自用環境的必要集合。",
+                "owner_source_of_truth": "JV-28 仍只擁有被動 observed snapshot；JV-24 保持 GitHub global record，JV-37 保持 remote coordination truth。",
+                "inputs_outputs": "輸入是安全的 environment-scoped metadata 與 global record reference；輸出是資料齡、unknown 或 not_applicable，不推導未回報的固定裝置。",
+                "lifecycle_completion": "只改觀測 contract；不新增 registry、runtime gate 或環境註冊，task 仍為 todo。"
+              },
+              "decision_reason": "這是既有 JV-28 的 version improvement，不新增 device registry、GitHub 設定、平行 task 或新的 workflow。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-14",
+                "evidence_refs": [
+                  "Vincent 2026-08-14 current session: 我覺得自用不要這麼複雜，到時卡死自己"
+                ]
+              }
+            }
           }
         ]
       },
       "status": "todo",
-      "title": "JV-28 三機 observed 快照（machine-scoped＋資料齡）",
+      "title": "JV-28 跨環境 observed 快照（資料齡＋被動觀測）",
       "track": "runtime-delivery",
       "order_label": "JV-28",
       "dependencies": [
         "capability-observed-scan",
         "capability-registry-v1-coverage"
       ],
-      "done_condition": "observed 輸出 machine-scoped（observed/<machine-id>.json）；快照級非即時（禁自動 commit 不開例外，對端資料標資料齡）；read model 呈現 MBA-1／MBA-2／MBA-3 各自 observed、資料齡或 missing-machine。collector 必須與代理工具無關，只讀安全 integration／repo metadata；GitHub 五面向只引用 JV-24 的單一 global safe record，三機僅回報各自觀測來源、observed_at 與資料齡，不得製造三套遠端真相；任何未安裝的本機能力以通用的 not_applicable 呈現，不讀取、不寫入，也不將機器私有資料列為同步範圍。",
+      "done_condition": "observed 輸出 environment-scoped（observed/<environment-id>.json）；快照級非即時（禁自動 commit 不開例外，對端資料標資料齡）。read model 呈現目前有回報環境的 observed、資料齡、unknown 或 not_applicable；不預設、註冊或期待固定機器集合，歷史 MBA 未回報不構成 missing failure。collector 必須與代理工具無關，只讀安全 integration／repo metadata；GitHub 五面向只引用 JV-24 的單一 global safe record，各環境僅回報自身觀測來源、observed_at 與資料齡，不得製造多套遠端真相；任何未安裝的本機能力以通用的 not_applicable 呈現，不讀取、不寫入，也不將環境私有資料列為同步範圍。",
       "acceptance": [
-        "A01｜MBA-1、MBA-2、MBA-3 使用相同 schema 與 status vocabulary；未安裝能力一律 not_applicable，未回報機器一律 missing-machine。",
-        "A02｜每個 machine snapshot 只含安全 integration／repo metadata、observed_at、資料齡、evidence_ref、next_action；不得含 Token、Cookie、帳號、runtime auth、快取或私人設定。",
-        "A03｜GitHub remote／Actions／Pages／PR／Issues 的真相只由 JV-24 global record 提供；machine snapshot 只可引用 record id／資料齡，不得複製、覆寫或推導遠端狀態。",
-        "A04｜collector、generator 與 verifier 必須將 stale、unknown、error、not_applicable、missing-machine 分開，並以 negative fixture 阻擋自動 commit、私有資料與假綠燈。",
-        "A05｜完成前驗證三機 fixture、資料齡、global-to-machine reference、read model 與 MC surface wiring。"
+        "A01｜任何目前工作環境使用相同 schema 與 status vocabulary；未安裝能力一律 not_applicable。未觀測環境不可從歷史名稱推論為 missing 或 failure。",
+        "A02｜每個 environment snapshot 只含安全 integration／repo metadata、observed_at、資料齡、evidence_ref、next_action；不得含 Token、Cookie、帳號、runtime auth、快取或私人設定。",
+        "A03｜GitHub remote／Actions／Pages／PR／Issues 的真相只由 JV-24 global record 提供；environment snapshot 只可引用 record id／資料齡，不得複製、覆寫或推導遠端狀態。",
+        "A04｜collector、generator 與 verifier 必須將 stale、unknown、error、not_applicable 分開，並以 negative fixture 阻擋自動 commit、私有資料與假綠燈。",
+        "A05｜完成前驗證多環境 fixture、資料齡、global-to-environment reference、read model 與 MC surface wiring；不得要求固定硬體數量。"
       ],
       "jv32_route": {
         "batch": "JV-32 整合透明度修正批次",
@@ -2656,11 +2691,11 @@
           "closeout-commit-routing"
         ],
         "decision_input": [
-          "三機 portable／local boundary",
+          "不限裝置的 portable／local boundary",
           "JV-24 GitHub global record",
           "既有 observed schema"
         ],
-        "decision_output": "三機快照級觀測與 global record 引用契約",
+        "decision_output": "跨環境快照級觀測與 global record 引用契約",
         "execution_boundary": "只讀安全 metadata；禁自動 commit，禁讀寫憑證、私有 runtime、GitHub 或部署。"
       },
       "hc_decision": {
@@ -2671,15 +2706,26 @@
           "#constraints",
           "#risk"
         ],
-        "hc_reasoning": "跨機可見性的正確輸出是有資料齡的三機 observed snapshot，不是假裝即時全域狀態或同步本機 app state。#sourceBoundary 分離 portable canonical data 與 machine-local runtime；#constraints 禁自動 commit；#risk 要求缺少回報時標 missing-machine，未安裝能力則以通用的 not_applicable 呈現。",
+        "hc_reasoning": "跨環境可見性的正確輸出是有資料齡的被動 observed snapshot，不是假裝即時全域狀態、同步本機 app state 或期待固定硬體集合。#sourceBoundary 分離 portable canonical data 與 environment-local runtime；#constraints 禁自動 commit；#risk 要求未安裝能力以通用的 not_applicable 呈現，不以歷史裝置名稱製造 missing failure。",
         "hc_confidence": 0.9,
         "evidence_refs": [
           "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-registry-v1-coverage",
           "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate"
         ],
-        "source_boundary": "HC is a thinking check only, not source of truth. Canonical evidence is the safe machine-scoped observed file, its generator/verifier, and remote-backed repo coordination state."
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical evidence is the safe environment-scoped observed file, its generator/verifier, and remote-backed repo coordination state."
       },
-      "note": "HC 審 F1：registries forbidden 清單禁自動 commit，故為快照級。2026-07-18 operating model 更新為三機：portable canonical data 與 repo 要同步；機器私有 runtime 不同步。machine catalog／repo scope 必須消費 JV-37 的 contract，不得另建平行正本；尚未回報的機器只標 missing-machine，不可假定其狀態。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。"
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "讓任何目前工作環境可被安全、被動地觀測，而不把歷史硬體集合誤當成系統健康條件。",
+        "evidence_plan": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-dual-machine-observed.acceptance",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate.acceptance_matrix"
+        ],
+        "reviewed_at": "2026-08-14"
+      },
+      "note": "2026-08-14 current decision：JV-28 是不限裝置的被動觀測，不建立預期機器名單、裝置登錄或 missing-machine failure；GitHub／JV-37 仍各自持有 repo access／remote coordination truth。2026-07-18 的三機 operating model 保留為歷史脈絡：portable canonical data 與 repo 要同步；環境私有 runtime 不同步。registries forbidden 清單禁自動 commit，故為快照級。計畫：$COLLAB/notyet-harness/100_Todo/plan/integration-transparency-260705.md。"
     },
     {
       "id": "architecture-subsystem-index-live-sync",
@@ -3901,7 +3947,7 @@
     {
       "id": "multi-machine-repo-coordination-gate",
       "jv32_route": {
-        "batch": "JV-32 三機 Repo Ready 延伸批次",
+        "batch": "JV-32 不限裝置 Repo Ready 延伸批次",
         "workflows": [
           "domain-modeling",
           "to-prd",
@@ -3913,10 +3959,10 @@
         ],
         "decision_input": [
           "JV-32 workflow catalog",
-          "三機 repo coordination requirements",
+          "跨環境 repo coordination requirements",
           "既有 task-event 與 closeout boundary"
         ],
-        "decision_output": "Repo Ready、Remote Closeout 與三機 portable data coordination gate",
+        "decision_output": "Repo Ready、Remote Closeout 與不限裝置的 portable data coordination gate",
         "execution_boundary": "不授權未核准自動 commit、push、rebase、stash、reset、force push 或外部帳號設定。"
       },
       "task_lifecycle": {
@@ -4237,6 +4283,121 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "在既有 JV-37 scope 內落地 Repo Ready runtime、durable claim／remote-synced／release event、crash recovery、授權續跑、terminal closeout 與三 clone local RC；真實多 session／三機 pilot 尚未完成，task 維持 todo。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/scripts/repo-coordination-runtime.mjs",
+              "$COLLAB/harness-mc/scripts/verify-multi-machine-repo-coordination-gate.mjs",
+              "$COLLAB/notyet-harness/000_Agent/skills/multi-machine-repo-coordination/SKILL.md",
+              "npm run test:repo-coordination-runtime"
+            ],
+            "recorded_at": "2026-08-12",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/morrowise-phase3-fresh-session-e2e-admission",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "既有 JV-37 contract 已定義整條 closeout，但仍缺能由 fresh session 執行的 runtime、durable coordination event 與可重跑 local RC。",
+                "owner_source_of_truth": "JV-37 仍擁有 repo coordination runtime；既有 task-event pipeline 保存 durable state，P3 只讀 current receipt，不建立第二正本。",
+                "inputs_outputs": "輸入是既有 JV-37 acceptance matrix 與 Git／task-event truth；輸出是 Repo Ready、claim、recovery、continuation、terminal gate、三 clone verifier 與 local RC evidence。",
+                "lifecycle_completion": "本輪只達 JV37-E2E-01 至 JV37-E2E-05 local RC；未通過真實 E2E-06 前 JV-37 維持 todo。"
+              },
+              "decision_reason": "runtime 與 verifier 是 JV-37 既有驗收的 implementation，不是新 task；P3 seam 是下游 admission reader，不改變 ownership。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-12",
+                "evidence_refs": [
+                  "Vincent 2026-08-12 current session: 這次應鎖定『JV-37 runtime＋P3 對 JV-37 的 admission 接線』，不把整個 P3 擴張成另一輪大工程。"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 將 JV-37 定位為不限固定硬體數量的自用協調模型：GitHub 帳號／repo 權限是存取前置，JV-37 只機械處理 remote claim、唯一 integrator、斷線續跑與 C2 closeout；不建立裝置登錄、硬體白名單或 C2 裝置核准門檻。既有 MBA／三機記錄保留為歷史 evidence。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate",
+              "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/jv37-self-use-coordination-handoff-260814.md",
+              "Vincent 2026-08-14 current session: 我覺得自用不要這麼複雜，到時卡死自己"
+            ],
+            "recorded_at": "2026-08-14",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/capability-dual-machine-observed",
+                "morrowise/credential-lifecycle-governance",
+                "morrowise/morrowise-phase3-fresh-session-e2e-admission"
+              ],
+              "scope_comparison": {
+                "problem": "固定 MBA／三機驗收將個人自用的工作環境數量誤當成 remote coordination 的安全條件。",
+                "owner_source_of_truth": "JV-37 仍是 Repo Ready、claim、C2 closeout 與 remote truth 的唯一 owner；GitHub 仍是帳號／repo access owner。",
+                "inputs_outputs": "輸入仍是 Git remote、canonical task、task events 與 Vincent 的 exact scope 授權；輸出仍是 deterministic READY／BLOCKED 與 source-bound closeout receipt。",
+                "lifecycle_completion": "只改為至少兩個 fresh session 的真實 pilot；舊 three-machine local RC 不再滿足現行 matrix，task 仍為 todo。"
+              },
+              "decision_reason": "這是既有 JV-37 的 version improvement，不新增 device registry、GitHub 設定、平行 task 或新的 workflow。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-14",
+                "evidence_refs": [
+                  "Vincent 2026-08-14 current session: 我覺得自用不要這麼複雜，到時卡死自己"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "在既有 JV-37 scope 內完成不限裝置的 runtime migration：claim／event schema 移除 machine_id，pilot receipt 改為至少兩個 remote-bound fresh session observations，P3 seam 改消費 current generic receipt；保留 Vincent 單一授權簽章作 human approval provenance，不把它當裝置登錄或 C2 機器門檻。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/scripts/lib/repo-coordination-runtime.mjs",
+              "$COLLAB/harness-mc/scripts/repo-coordination-runtime.mjs",
+              "$COLLAB/harness-mc/scripts/verify-multi-machine-repo-coordination-gate.mjs",
+              "$COLLAB/harness-mc/scripts/task-event-outbox.mjs",
+              "$COLLAB/harness-mc/scripts/apply-task-events.mjs",
+              "$COLLAB/harness-mc/system-workflow/registries/jv37-authorization-approvers.json",
+              "npm run test:repo-coordination-runtime",
+              "npm run test:task-event-outbox",
+              "npm run test:apply-task-events",
+              "npm run test:phase3-jv37-admission"
+            ],
+            "recorded_at": "2026-08-14",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/morrowise-phase3-fresh-session-e2e-admission",
+                "morrowise/credential-lifecycle-governance",
+                "morrowise/capability-dual-machine-observed"
+              ],
+              "scope_comparison": {
+                "problem": "上一版 live runtime 仍把固定 machine identity／machine-key attestation 寫進 claim 與 pilot，與已核准的不限裝置 contract 不一致。",
+                "owner_source_of_truth": "JV-37 仍是 remote coordination runtime／receipt owner；GitHub 維持帳號與 repo access boundary；P3 只讀 JV-37 的 current receipt。",
+                "inputs_outputs": "輸入是 Git remote、canonical task、兩個 fresh session observations 與既有 Vincent approval receipt；輸出是 device-free READY／BLOCKED、唯一 integrator 與 source-bound pilot validation。",
+                "lifecycle_completion": "current local E2E01–05 與 P3 fixture seam 已通過；真實 E2E06 source-bound pilot、task_completed 與 P3 Final Admission 尚未成立，兩 task 均維持 todo。"
+              },
+              "decision_reason": "這是既有 JV-37 runtime 的一致性修正；不新增 device registry、平行 event、P3 runtime、GitHub 設定或新 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-14",
+                "evidence_refs": [
+                  "Vincent 2026-08-14 current session: 1"
+                ]
+              }
+            }
           }
         ]
       },
@@ -4249,7 +4410,7 @@
         "b78afbf6d2dd90667df62aa7db32669e8e1fcbb9",
         "bd10e1af89b144341b3a14dc2c92a52eafc14372"
       ],
-      "summary": "JV-37 A18–A19 交付切片已完成 closeout：repo provisioning 只接受精準 Vincent project receipt，standalone／milestone 不再自行建立 repo；Harness C1 b78afbf 與 Notyet C1 bd10e1a 已送達 remote main 並 fresh pass。父 task 維持 todo，等待原定 runtime、claim/event hardening 與三機 pilot。",
+      "summary": "JV-37 A18–A19 交付切片已完成 closeout；2026-08-14 的 runtime／claim-event／P3 receipt seam 已遷移為不限裝置模型，並通過 current local E2E01–05、outbox/reducer 與 P3 fixture seam。父 task 維持 todo，等待 current source-bound 真實多 session E2E06；不以歷史 MBA／三機資料代替。",
       "slice_delivery_receipts": [
         {
           "receipt_id": "JV37-A18-A19-20260802",
@@ -4300,7 +4461,7 @@
           "verified_at": "2026-08-02"
         }
       ],
-      "title": "JV-37 三機共享資料／Repo Freshness、Claim 與 Remote Truth Gate",
+      "title": "JV-37 不限裝置的 Repo Freshness、Claim 與 Remote Truth Gate",
       "track": "governance",
       "order_label": "JV-37",
       "dependencies": [
@@ -4309,30 +4470,30 @@
         "morrowise-dev-workflow-catalog",
         "runtime-closeout-residual-ledger"
       ],
-      "done_condition": "讓 Vincent 不論使用 MBA-1、MBA-2 或 MBA-3，Agent 在首次修改檔案前都能自動完成『先收尾自己的未提交／未 push 狀態，再同步別人的最新版本』，只有 target repo 與 core repos 通過 Repo Ready 才能寫入；完成工作時，同一次明確核准涵蓋 exact-scope commit、正常 push 與 Remote Closeout SHA 驗證，未到 remote truth 不得宣稱完成。單人循序工作預設留在目前 checked-out main，通過 fetch／upstream／SHA／ahead-behind／dirty ownership 握手後直接使用 exact paths；沒有依存活時間命名的 branch 類型。MW-GIT-AUTH-01 禁止 Agent 未經 Vincent 明確同意自行建立或切換 branch／linked worktree；只有 Vincent 對具名外部 PR／review、真正並行且 owner 分離的 scope，或緊急 hotfix 隔離作出精確選擇時，才能進入完整 create／execute／integrate target main／verify／cleanup 生命週期，branch-only、worktree-only 或 pending-event 狀態都不得算完成。三機同步的資料邊界是 core repo 中受 Git 管理的 portable canonical data；generated read model 只能由正本重建，secrets、tokens、cookies、cache、runtime auth 與其他 machine-local app state 一律不複製。Session 開始可平行掃描所有已註冊且正在維護的 repo，提供 fleet visibility，但無關 repo 的異常不得阻擋本次工作。Gate 依 shared_core_multi_writer／owner_single_writer 分流，沿用 JV-32 Router、既有 task-event outbox/reducer、worktree inventory、project-init、worktree-commit、cc-push 與 mba3-move.sh，不另建 workflow、repo-classification 或 event 的平行正本；不得自動 commit 未知／使用者修改，不得自動 stash、reset、rebase、解衝突、force push，或以 heartbeat commit 製造同步噪音。",
+      "done_condition": "讓 Vincent 在任何具 Git 與必要工具的受支援工作環境中，首次修改檔案前都能自動完成『先收尾自己的未提交／未 push 狀態，再同步 remote truth』；只有 target repo 與 core repos 通過 Repo Ready 才能寫入。GitHub 帳號／repo 權限是存取前置，JV-37 不建立裝置登錄、硬體白名單或 C2 裝置核准門檻；完成工作時，同一次明確核准涵蓋 exact-scope commit、正常 push 與 Remote Closeout SHA 驗證，未到 remote truth 不得宣稱完成。單人循序工作預設留在目前 checked-out main，通過 fetch／upstream／SHA／ahead-behind／dirty ownership 握手後直接使用 exact paths；沒有依存活時間命名的 branch 類型。MW-GIT-AUTH-01 禁止 Agent 未經 Vincent 明確同意自行建立或切換 branch／linked worktree；只有 Vincent 對具名外部 PR／review、真正並行且 owner 分離的 scope，或緊急 hotfix 隔離作出精確選擇時，才能進入完整 create／execute／integrate target main／verify／cleanup 生命週期，branch-only、worktree-only 或 pending-event 狀態都不得算完成。跨環境同步的資料邊界是 core repo 中受 Git 管理的 portable canonical data；generated read model 只能由正本重建，secrets、tokens、cookies、cache、runtime auth 與其他 machine-local app state 一律不複製。Session 開始可平行掃描 maintained repo，提供 fleet visibility，但無關 repo 的異常不得阻擋本次工作。Gate 依 shared_core_multi_writer／owner_single_writer 分流，沿用 JV-32 Router、既有 task-event outbox/reducer、worktree inventory、project-init、worktree-commit、cc-push 與 mba3-move.sh，不另建 workflow、repo-classification 或 event 的平行正本；不得自動 commit 未知／使用者修改，不得自動 stash、reset、rebase、解衝突、force push，或以 heartbeat commit 製造同步噪音。",
       "acceptance": [
         "A00｜JV-32 Router integration：JV-32 維持 completed 且是唯一開發 workflow catalog；JV-37 是其 automation／safety extension，不建立第二套 workflow。所有 writes_to 指向 repo files 的 workflow 在首次 mutation 前必經 Repo Ready；既有 closeout-commit-routing 延伸為 Remote Closeout。JV-37 runtime 與 fixtures 未通過前，catalog 不得把這兩段標成 accepted capability。",
         "A00.1｜單一使用者流程：Agent 對 Vincent 只呈現 READY 或 BLOCKED。READY 必須同時證明相關 repo 無未處理 manual/mixed/unknown dirty、無未授權 ahead、已 fetch、必要的 behind-only 已 ff-only、目前 branch/upstream/SHA/ahead/behind 通過；BLOCKED 必須列 repo、固定原因與單一步驟 next action，不要求 Vincent 記 pull/push/claim 指令。",
         "A00.2｜兩級掃描：Session 開始對所有 lifecycle=maintained 的 repo 平行 fetch/status，產生 fleet visibility；只有本次 target repo 與 core repos（至少 harness-mc、notyet-harness）是 action-time hard gate。*tmp、00*無Git、教材、歷史 clone 與 lifecycle=excluded|retired 不納入自動同步；無關 repo 的 dirty/offline 不得阻擋本次工作。",
-        "A00.3｜跨 Agent 可發現性：所有 Agent 啟動必讀的 $COLLAB/notyet-harness/000_Agent/CORE.md 只保留 Repo Ready／Remote Closeout 強制入口，並引用 $COLLAB/harness-mc/system-workflow/docs/specs/repo-coordination-gate.md；完整狀態表只住在該 detail spec，AGENTS.md、CLAUDE.md、skills 與其他入口不得複製。跨 repo 發布固定先讓 harness-mc spec 到達 remote truth，再發布 notyet-harness CORE pointer；JV-37 verifier 與三機 pilot 必須證明每台的 AGENTS／CLAUDE 入口都能到 CORE、CORE pointer target 可解析、task/spec lineage 一致。",
+        "A00.3｜跨 Agent 可發現性：所有 Agent 啟動必讀的 $COLLAB/notyet-harness/000_Agent/CORE.md 只保留 Repo Ready／Remote Closeout 強制入口，並引用 $COLLAB/harness-mc/system-workflow/docs/specs/repo-coordination-gate.md；完整狀態表只住在該 detail spec，AGENTS.md、CLAUDE.md、skills 與其他入口不得複製。跨 repo 發布固定先讓 harness-mc spec 到達 remote truth，再發布 notyet-harness CORE pointer；JV-37 verifier 與真實多 session pilot 必須證明每個受測 fresh session 的入口都能到 CORE、CORE pointer target 可解析、task/spec lineage 一致，不要求固定電腦名稱或數量。",
         "A00.4｜MW-GIT-AUTH-01：禁止 Agent 未經 Vincent 精確核准自行建立或切換 Git branch／linked worktree。唯讀盤點可以；preflight、dirty、concurrency、hotfix、verification、一般功能或既有計畫都不是授權。核准 evidence 必須固定 repo/task、branch/worktree 名稱與路徑、target main、清理方案，且一次核准涵蓋 create -> execute -> integrate target main -> verify -> cleanup；scope、remote SHA、衝突或非 fast-forward 改變時必須 BLOCKED。",
         "A00.5｜Direct-main default：單人循序工作預設留在目前 checked-out main，通過 fetch、upstream、HEAD／remote SHA、ahead／behind、dirty ownership 與 exact commit scope 後直接工作；已知無關 dirty 用 exact paths 原地排除，scope 重疊則 BLOCKED。不存在依 branch 存活時間、乾淨 baseline 或 verification 命名的例外。只有 Vincent 為具名外部 PR／review、真正並行且 owner 分離的 scope，或緊急 hotfix 隔離作出精確選擇，才可依 A00.4 進入 branch／worktree lifecycle。",
         "A01｜建立共用 multi-machine-repo-coordination skill 與 deterministic preflight：依序檢查 repo_class、git status --porcelain=v2 --branch、git fetch --prune、branch、HEAD SHA、upstream SHA、ahead/behind、staged/unstaged/untracked、worktree/common-dir/remote 與 task claim。clean + behind-only 才可自動 ff-only；clean + 0/0 可 READY。ahead-only 必須標 needs_push；只有該 commit 已有 durable exact-scope approval／closeout evidence、push 目的 ref 精確、重新 fetch 後 remote SHA 未變時，才可重試非 force 的正常 push，否則停止。dirty 必須分類 generated_only、manual、mixed、unknown；manual/mixed/unknown、diverged、detached HEAD、no-upstream、fetch/auth failure 一律停止並輸出固定分類與 next action。",
         "A02｜project-init 由 v3.10 升級：讀取 JV/task/project 狀態與執行 new-project.py 前必須先對 core repos 與 target repo 跑 freshness gate；JV 編號只能在同步後分配。manual/mixed/unknown dirty、未具 A01 durable approval evidence 的 ahead、diverged、detached、no-upstream 或 freshness unknown 時不得建立專案、task 或 visual mirror；只有 declared generated_only dirty 通過 deterministic check 後可帶 warning 繼續。",
-        "A03｜repo scope/classification 只由 JV-37 A03 contract 定義，供既有 project/worktree inventory 消費，不在 automation layer 另建第二份清單：repo_class 至少支援 shared_core_multi_writer 與 owner_single_writer，lifecycle=maintained|excluded|retired 管理同步範圍；claim 至少包含 task_id、project_id、repo_class、machine_id、branch、base_sha、claimed_at、state、owner_role、expires_or_handoff。同一 active task 不得由兩台機器同時 claim，claim/release/handoff 必須可被其他機器從 remote truth 看見，不以單機暫存檔作唯一依據。",
+        "A03｜repo scope/classification 只由 JV-37 A03 contract 定義，供既有 project/worktree inventory 消費，不在 automation layer 另建第二份清單：repo_class 至少支援 shared_core_multi_writer 與 owner_single_writer，lifecycle=maintained|excluded|retired 管理同步範圍；claim 至少包含 task_id、project_id、repo_class、branch、base_sha、claimed_at、state、owner_role、expires_or_handoff。環境或 session identifier 僅作診斷 metadata，不是裝置授權或固定台數條件；同一 active task 不得由兩個 contender 同時 claim，claim/release/handoff 必須可被 fresh session 從 remote truth 看見，不以單機暫存檔作唯一依據。",
         "A04｜固定狀態機：unclaimed -> claimed -> committed_local -> remote_synced -> event_pending -> canonical_applied -> integrated -> released；owner_single_writer 直推 main 時，integrated 可與 remote_synced 由同一四值握手證據成立，但仍不得跳過 event/canonical apply。例外至少包含 dirty_blocked、generated_dirty_warning、detached_blocked、needs_push、needs_reconcile、stale_review、auth_blocked、git_isolation_approval_missing；committed_local、只有本機 task-event、ahead>0、branch-only、worktree-only 或 event_pending 都不得標完成或 release claim。經核准的 recovery branch 必須有 owner、reason、created_at、review_by、target_main、cleanup_plan，完成時必須整合並清理，不得成為永久垃圾分支。",
         "A05｜worktree-commit 由 v1.8 升級並依 repo_class 分流：單人循序預設在目前 checked-out main 操作，不自行 create/switch；已知無關 dirty 只用 exact paths 排除。若 Vincent 已依 MW-GIT-AUTH-01 核准 isolation，同一次核准涵蓋 exact-scope commit、task/event update、正常 push、target-main integration、remote verification 與 clean cleanup；feature worker 角色仍不得越權整合 shared-core main。owner_single_writer 的 task owner 機可在目前 main、HEAD SHA、upstream SHA、ahead/behind 四值握手通過後直接 commit/push main。兩類都必須 push 前 fetch、behind/diverged 熔斷，push 後驗證 target main 含核准 commit、ahead/behind=0/0、無本次 pending event；失敗維持 BLOCKED/needs_push，不得宣稱完成。",
         "A05.1｜worktree-commit v2.2 post-commit closeout：單一 task 必須依 committed_local -> commit_reviewed -> integrated_main -> delivery_verified -> canonical_applied -> closeout_remote_synced -> residual_zero -> task_completed 前進。C1 implementation 需符合 approved scope 並經 review；target origin/main、Test contract 的 Unit／integration／runtime／E2E 或 exemption、CI／runtime evidence 成立後才能 apply canonical completion。task event、sync request 與所有 mutating generator 必須在 C2 closeout 前完成；不適用的 mirror request 只有具 exemption reason、rerunnable verifier 與 terminal skipped record 才能關閉。C2 不回填自身 hash，push 後只做 closure-scoped read-only checks，要求 origin/main 含 C1／C2、ahead/behind=0/0、本次 task/sync pending zero、baseline exclusions 不變且 scope-owned residuals=0。",
         "A05.2｜Air Traffic Controller full-delivery continuation：Vincent 對已展示的 exact C1／C2 plan 說『確認完整交付』後，以一次授權依序完成 C1 commit／正常 push／遠端驗證、task event 與 authorized single-writer canonical apply、closeout sync、必要 generator 與 MC 儀表板、C2 commit／正常 push及 read-only Terminal Gate；session 中斷或暫時 BLOCKED 時從首個未滿足 state 續跑。只有 exact scope、base path 無 overlap、fast-forward safety、diff／message／grouping、verifier、ownership 與既有 human decision 等授權不變量都不變，才可排隊／重試／續跑；任一改變即 BLOCKED 並升級 Vincent。這是既有 closeout-commit-routing 角色，不另建 workflow、task system、dashboard 或 daemon，也不授權 force push、部署、scope 擴張或吸收 baseline dirty。",
         "A06｜cc-push 由 v1.0 升級為 batch/recovery coordinator，不取代正常 worktree-commit push：每個 repo push 前重新 fetch；預設直接驗證並送出核准的 checked-out main exact ref。shared_core_multi_writer 由指定 integrator 套用 durable exact-scope commits／task events 並更新 main；只有已具 MW-GIT-AUTH-01 核准時才可包含 isolation branches。owner_single_writer 由 task owner 機驗證 main 四值握手。第一個失敗即停止，push_with_exclusions 或 manual/mixed/unknown dirty repo 不得宣稱 fully synced，最後執行 fleet-wide SHA/0-0/pending-event 驗證。",
-        "A07｜擴充既有 task-event pipeline，不新建平行機制：在 $COLLAB/harness-mc/scripts/task-event-outbox.mjs、apply-task-events.mjs、既有 pending/applied/rejected 目錄、event_id 去重與 single-writer reducer 上新增 task.claimed、task.remote_synced、task.released event type。Schema 必須改為 type-specific payload：claim 發生在 commit 前，不得用假 commit 滿足現有 commit 必填；commit/base_sha/branch/machine_id/repo_class 的必填性依 event type 決定。feature repo 不直接改 MorroWise task definition；single-writer apply 到既有 state.json overlay、validate、產生 sync queue/可見 evidence，並依核准流程 commit/push；pending event 必須可跨機觀察。",
-        "A08｜shared_core_multi_writer repo 的 main integration 仍只由指定 integrator／single-writer 執行，但 repo class 不構成 branch/worktree 建立或切換授權，也不建立 branch-first default。integrator 在 fetch、claim、verifier、task-event、base SHA 與 freshness 全部通過後，將核准的 exact-scope commit 更新至 main 並正常 push；只有已核准 isolation 存在時才在同次整合與清理該 branch/worktree。wrong machine/role 必須被阻擋。owner_single_writer repo 由 task owner 機依 A05 四值握手更新目前 main。",
-        "A09｜以 TDD 將三 clone 模擬固化成可重跑 verifier：先寫會失敗的負向 fixtures，再寫 coordination gate。至少涵蓋 clean behind-only ff、generated/manual/mixed/unknown dirty、staged/untracked、ahead、diverged、detached HEAD、no upstream、fetch/auth failure、同 remote 多 worktree、兩機重複 claim、同 branch push race、unpushed commit 對他機不可見、push 後 SHA equality、multi-writer 錯誤 integrator、single-writer owner main 直推、task-event 未持久化、event duplicate、claim 無 commit、batch 中途失敗與 restore rerun risk；驗證不得執行 destructive reset、casual rebase、auto stash、auto conflict resolution 或 force push。",
+        "A07｜擴充既有 task-event pipeline，不新建平行機制：在 $COLLAB/harness-mc/scripts/task-event-outbox.mjs、apply-task-events.mjs、既有 pending/applied/rejected 目錄、event_id 去重與 single-writer reducer 上新增 task.claimed、task.remote_synced、task.released event type。Schema 必須改為 type-specific payload：claim 發生在 commit 前，不得用假 commit 滿足現有 commit 必填；commit/base_sha/branch/repo_class 與必要 session metadata 的必填性依 event type 決定。feature repo 不直接改 MorroWise task definition；single-writer apply 到既有 state.json overlay、validate、產生 sync queue/可見 evidence，並依核准流程 commit/push；pending event 必須可跨環境觀察。",
+        "A08｜shared_core_multi_writer repo 的 main integration 仍只由指定 integrator／single-writer 執行，但 repo class 不構成 branch/worktree 建立或切換授權，也不建立 branch-first default。integrator 在 fetch、claim、verifier、task-event、base SHA 與 freshness 全部通過後，將核准的 exact-scope commit 更新至 main 並正常 push；只有已核准 isolation 存在時才在同次整合與清理該 branch/worktree。wrong actor/role 必須被阻擋。owner_single_writer repo 由 task owner 機依 A05 四值握手更新目前 main。",
+        "A09｜以 TDD 將多 clone 模擬固化成可重跑 verifier：先寫會失敗的負向 fixtures，再寫 coordination gate。至少涵蓋 clean behind-only ff、generated/manual/mixed/unknown dirty、staged/untracked、ahead、diverged、detached HEAD、no upstream、fetch/auth failure、同 remote 多 worktree、重複 claim、同 branch push race、unpushed commit 對其他 fresh session 不可見、push 後 SHA equality、multi-writer 錯誤 integrator、single-writer owner main 直推、task-event 未持久化、event duplicate、claim 無 commit、batch 中途失敗與 restore rerun risk；驗證不得執行 destructive reset、casual rebase、auto stash、auto conflict resolution 或 force push。",
         "A10｜crash recovery 有 durable boundary：分別模擬 claim 後、commit 前、commit 後未 push、push 後未 event、event 後未 apply、apply 後未 integrate、integrate 後未 release 的中斷；重新啟動後必須能由 repo_class、remote branch/SHA、claim 與 pending/applied event 判定安全 next action，不依賴上一個 chat/session 記憶。",
         "A11｜mba3-move.sh restore 重跑 guard：pack/restore 不得把 SSD 內的 .git metadata rsync 覆蓋到已存在的 live repo；目的 $COLLAB 或任何 repo 已存在時，restore 必須先檢查 marker、repo HEAD/common-dir/remote 與 restore state，預設阻擋第二次完整 restore，輸出可逆 recovery/人工確認步驟。負向 fixture 必須證明 restore 重跑會在碰觸 .git 前停止，且不改 HEAD、refs、index 或 worktree。",
         "A12｜generated dirty 不誤擋、真人 dirty 必擋：只有 registry/allowlist 宣告且由 deterministic generator/verifier 證明可重建的 generated-only path 或 managed-block 內純 generated diff 可標 generated_dirty_warning；manual path、managed-block 外變更、同檔 mixed diff、未知 path 或 generator/source fingerprint 不一致都必須 blocking。Fixture 至少涵蓋 generate-data output、tracked public/data generated file、ARCHITECTURE.md generated block、ARCHITECTURE.md manual prose 與同檔 mixed diff。",
         "A13｜detached HEAD、no upstream、同 remote 多 worktree 三邊界都有明確判定：使用 porcelain v2 的 branch.head=(detached) 或等價 plumbing，不得靠會把 HEAD (no branch) 漏判的字串 parser；detached 與 no-upstream 預設 blocking，同 remote/common-dir 的多 worktree 必須列出 path、branch、HEAD、dirty 與 claim owner，若同 branch/同 task/同寫入 scope 衝突即 blocking。Verifier 必須重現目前 *-acp-event-pipeline detached clone 曾被錯標 clean 的 regression。",
-        "A14｜完成分級後的三機實機 pilot：負向案例先證明未具 MW-GIT-AUTH-01 時，三台都不能 create/switch branch/worktree；再以 Vincent fixture approval 驗證 shared_core_multi_writer 的隔離生命週期由 single-writer/integrator 更新 main 並清理。另選 owner_single_writer fixture repo 驗證 task owner機在目前 main 直推＋四值握手。三台最後 fetch 後相關 main HEAD 一致、核准 branch/SHA 可追溯且已清理、claims released、ahead/behind=0/0，且無未解 manual/mixed/unknown dirty 或 pending event。",
+        "A14｜完成分級後的真實多 session pilot：至少兩個獨立 fresh session／working copy 使用同一 remote truth，可在同一或不同受支援環境執行；負向案例先證明未具 MW-GIT-AUTH-01 時，任何 session 都不能 create/switch branch/worktree；再以 Vincent fixture approval 驗證 shared_core_multi_writer 的隔離生命週期由 single-writer/integrator 更新 main 並清理。另選 owner_single_writer fixture repo 驗證 task owner 在目前 main 直推＋四值握手。所有受測 session 最後 fetch 後相關 main HEAD 一致、核准 branch/SHA 可追溯且已清理、claims released、ahead/behind=0/0，且無未解 manual/mixed/unknown dirty 或 pending event。",
         "A15｜完成前至少驗證 skill/frontmatter/version history、repo classification/freshness/claim/event/main-integration fixtures、mba3 restore guard、generated dirty classifier、detached/no-upstream/multi-worktree regression、project-init/worktree-commit/cc-push trigger discoverability、$COLLAB hard-path gate、node scripts/validate-tasks.mjs --changed-only --project morrowise、既有 task-event verifier chain、相關 MorroWise wiring/system-pulse verifier；失敗案例需輸出固定分類、證據與可逆修復步驟。",
         "A16｜worktree-commit 的進入條件必須引用同一 source state 的 JV-40 ACCEPTANCE_VERIFIED receipt 與 Vincent 明確 VINCENT_CONFIRMED；receipt 缺失、stale、diff fingerprint／commit grouping／message／verifier 改變時固定 BLOCKED 並返回成果驗收。",
         "A17｜worktree-commit 只重新審核並提交已驗收的 exact scope，不能代替 Execution／Review 修產品缺失、改 acceptance、補 scope、吸收其他 session commit 或建立 branch／worktree；任何產品修補都必須先返回 JV-40 規範重新驗收。",
@@ -4414,7 +4575,7 @@
         },
         {
           "id": "JV37-E2E-05",
-          "what": "三 clone 模擬必須覆蓋競爭、dirty、Git 邊界與錯誤 integrator 的負向案例。",
+          "what": "多 clone 模擬必須覆蓋競爭、dirty、Git 邊界與錯誤 integrator 的負向案例。",
           "preconditions": [
             "A09、A12、A13 的負向 fixtures 已建立",
             "測試環境禁止 reset、casual rebase、auto stash、auto conflict resolution 與 force push"
@@ -4426,26 +4587,26 @@
           "pass_condition": "安全案例唯一放行；危險案例以固定分類 fail-closed；多次重跑結果一致且不破壞 repo。",
           "fail_condition": "fixture-only 假綠燈、危險案例被放行、錯誤 integrator 可寫 main，或測試本身執行禁止的破壞性 Git 動作。",
           "verification": [
-            "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case three-clone-negative-fixtures",
+            "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case multi-clone-negative-fixtures",
             "node scripts/verify-direct-main-workflow-policy.mjs",
             "node scripts/verify-explicit-git-isolation-approval.mjs"
           ]
         },
         {
           "id": "JV37-E2E-06",
-          "what": "真實多 session／三機 pilot 必須證明整條 closeout，而非以 fixture 或單次人工成功替代 runtime 驗收。",
+          "what": "真實多 session pilot 必須證明整條 closeout，而非以 fixture、單一 session 或單次人工成功替代 runtime 驗收。",
           "preconditions": [
             "JV37-E2E-01 至 JV37-E2E-05 全部通過",
-            "至少兩個真實 Agent session 與 A14 定義的三機 pilot 使用同一 remote truth，並保留 source-bound runtime receipt"
+            "至少兩個真實、獨立的 Agent session／working copy 使用同一 remote truth，並保留 source-bound runtime receipt；不要求固定硬體名稱或台數"
           ],
           "steps": [
             "執行真實並行 C1、single integrator claim、刻意中斷、fresh-session 恢復與 C2 closeout",
-            "三機重新 fetch，核對 HEAD、claims、events、pending、residual、授權不變量與 terminal task state"
+            "所有受測 session 重新 fetch，核對 HEAD、claims、events、pending、residual、授權不變量與 terminal task state"
           ],
-          "pass_condition": "真實 receipt 證明唯一 integrator、fresh-session 續跑、授權正確沿用、三機 HEAD 一致、claims released、remote 0/0、pending=0、scope residual=0 與 task_completed。",
+          "pass_condition": "真實 receipt 證明唯一 integrator、fresh-session 續跑、授權正確沿用、所有受測 session HEAD 一致、claims released、remote 0/0、pending=0、scope residual=0 與 task_completed。",
           "fail_condition": "只有 fixture、單一 session、手工敘述或舊 receipt；任一機器不同步、claim 未釋放、重複請示、pending／residual 非零或 task 未到 terminal。",
           "verification": [
-            "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case real-multi-session-three-machine-pilot",
+            "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case real-multi-session-pilot",
             "node scripts/validate-tasks.mjs --changed-only --project morrowise"
           ]
         }
@@ -4454,12 +4615,12 @@
         "project_id": "morrowise",
         "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
         "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
-        "contribution": "把 MorroWise 的安全、project 與 Git source boundary 接到 repo provisioning，確保 milestone 或 type 不會繞過 Vincent 的精準授權。",
+  "contribution": "讓 MorroWise 在任何受支援工作環境中以 remote truth、唯一 integrator 與可續跑 closeout 協調多 session，而不以固定硬體數量或裝置登錄阻塞自用工作。",
         "evidence_plan": [
           "npm run test:project-init-admission",
           "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate.acceptance"
         ],
-        "reviewed_at": "2026-08-02"
+  "reviewed_at": "2026-08-14"
       },
       "source_refs": [
         "$COLLAB/notyet-harness/000_Agent/CORE.md",
@@ -4485,7 +4646,13 @@
         "https://git-scm.com/docs/git-push",
         "https://git-scm.com/docs/git-worktree",
         "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches",
-        "$COLLAB/notyet-harness/000_Agent/skills/project-init/SKILL.md"
+        "$COLLAB/notyet-harness/000_Agent/skills/project-init/SKILL.md",
+        "$COLLAB/harness-mc/scripts/repo-coordination-runtime.mjs",
+        "$COLLAB/harness-mc/scripts/morrowise-phase3-jv37-admission.mjs",
+        "$COLLAB/harness-mc/scripts/verify-multi-machine-repo-coordination-gate.mjs",
+        "$COLLAB/harness-mc/scripts/verify-morrowise-phase3-jv37-admission.mjs",
+        "$COLLAB/notyet-harness/000_Agent/skills/multi-machine-repo-coordination/SKILL.md",
+        "$COLLAB/notyet-harness/000_Agent/scripts/verify-mba3-move-restore-guard.mjs"
       ],
       "hc_decision": {
         "task_scope": "morrowise/multi-machine-repo-coordination-gate",
@@ -4497,7 +4664,7 @@
           "#constraints",
           "#evidenceBased"
         ],
-        "hc_reasoning": "真正問題不是提醒三台機器每次先 pull，也不是替每次工作建立中介 branch，而是依 repo 寫入風險建立 checked-out main、remote SHA、task claim、既有 cross-repo event、single-writer apply 與 main integration 的可機械完成邊界。#rightProblem 將單人循序預設固定為 direct main + exact scope，只有 Vincent 精確選擇的例外才進入 isolation lifecycle；#sourceBoundary 把 task definition、state.json overlay、既有 event writer/reducer、Git SHA、generated-only output、manual/mixed changes 與 integration evidence 分層；#systemDynamics 將 commit、push、event apply、integration、release 串成有狀態的 feedback loop，同時避免 branch 垃圾與回頭整併；#risk 覆蓋重複承接、restore 重跑覆蓋 .git、generated dirty 狼來了、detached 被誤標 clean、diverged history、多寫者錯誤推 main、未 push commit 與 crash 中斷；#constraints 要求沿用 project-init、worktree-commit、cc-push、task-event outbox/reducer、worktree inventory、mba3-move.sh 與現有 remote，不建立第二套 task/git/event 正本；#evidenceBased 要求先寫 direct-main 與 isolation 負向 fixture，再以三 clone regression 與三機實機 pilot 驗證拒絕、放行與復原路徑。",
+        "hc_reasoning": "真正問題不是要求固定數量裝置每次先 pull，也不是替每次工作建立中介 branch，而是依 repo 寫入風險建立 checked-out main、remote SHA、task claim、既有 cross-repo event、single-writer apply 與 main integration 的可機械完成邊界。#rightProblem 將單人循序預設固定為 direct main + exact scope，只有 Vincent 精確選擇的例外才進入 isolation lifecycle；#sourceBoundary 把 task definition、state.json overlay、既有 event writer/reducer、Git SHA、generated-only output、manual/mixed changes 與 integration evidence 分層；#systemDynamics 將 commit、push、event apply、integration、release 串成有狀態的 feedback loop，同時避免 branch 垃圾與回頭整併；#risk 覆蓋重複承接、restore 重跑覆蓋 .git、generated dirty 狼來了、detached 被誤標 clean、diverged history、多寫者錯誤推 main、未 push commit 與 crash 中斷；#constraints 要求沿用 project-init、worktree-commit、cc-push、task-event outbox/reducer、worktree inventory、mba3-move.sh 與現有 remote，不建立第二套 task/git/event 正本；#evidenceBased 要求先寫 direct-main 與 isolation 負向 fixture，再以多 clone regression 與真實 fresh-session pilot 驗證拒絕、放行與復原路徑。",
         "hc_confidence": 0.95,
         "evidence_refs": [
           "$COLLAB/notyet-harness/000_Agent/skills/project-init/SKILL.md",
@@ -4515,8 +4682,8 @@
       },
       "architecture_decision": {
         "decision": "deferred",
-        "evaluated_at": "2026-07-28",
-        "reason": "JV-37 完整 runtime 仍待 durable claim/event extension、負向 fixtures、single-writer evidence 與三機 pilot，故本身維持 deferred；MW-GIT-AUTH-01、direct-main normalization、worktree-commit post-commit closeout 與 v2.5 Air Traffic Controller full-delivery continuation 都是已 promoted 的 JV-32 開發工作流 Catalog 之 version improvement，不新增第二個子系統。",
+        "evaluated_at": "2026-08-12",
+        "reason": "JV-37 runtime、durable coordination events、多 clone fixtures、crash recovery、authorization continuation、terminal gate 與 P3 receipt seam 已達 current local RC；真實多 session pilot 尚未完成，因此維持 deferred，不更新為 accepted subsystem。",
         "admission_review": {
           "scope": "version_improvement",
           "admission_record_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#morrowise-dev-workflow-catalog",
@@ -4536,7 +4703,94 @@
           "reason": "授權與 post-commit closeout 邊界已收緊，新增 Air Traffic Controller degraded-state 可見性；既有薄索引的子系統名稱、owner、role 與 detail pointer 不變，仍保留同一 Admission Record，不建立第二個子系統或把完整 C1／C2 route 複製進 ARCHITECTURE.md。"
         }
       },
-      "note": "Roadmap-in-Anchor Task：目前只開 JV-37，不提前拆 future JV tasks。2026-07-12 最終整合裁決：真正目標是『不論使用哪台電腦，Agent 在首次修改檔案前都先收尾自己的未 commit／未 push，再同步別人的最新版本；完成時立即送到 remote truth』。使用者只看 READY／BLOCKED，內部治理不得外露成每日操作。跨 Agent discoverability 採薄入口：所有 Agent 必讀的 CORE.md 只放強制 pointer，完整合約只放 $COLLAB/harness-mc/system-workflow/docs/specs/repo-coordination-gate.md，AGENTS.md 與 skills 不複製。JV-32 是唯一 workflow catalog／Router，JV-37 是其 automation layer：新增 Repo Ready 前置語意並延伸既有 closeout-commit-routing 為 Remote Closeout；在 runtime、負向 fixtures、workflow hooks 有證據前，不得把能力標成 accepted。JV-37.R1 contract／lineage：由 JV-37 A03 固定唯一 repo scope/classification contract，供既有 worktree inventory 消費；同時固定 session inventory 與 action-time hard gate 的邊界、maintained/excluded/retired lifecycle、shared_core_multi_writer／owner_single_writer、READY/BLOCKED vocabulary、禁止操作與 JV-32 extended_by lineage。JV-37.R2 first usable release：先以 TDD 落地所有 maintained repo 的非阻斷 session fetch/status inventory，以及只針對 target＋core 的 Repo Ready／Remote Closeout；依 status porcelain v2、fetch、ahead-behind、ff-only、HEAD/upstream/remote SHA 判定，clean behind-only 可 ff-only，已核准且 remote 未變的 needs_push 可重試正常 push，其他 ahead/dirty/diverged/detached/no-upstream/auth failure fail closed。這一 slice 完成後即可先提供日常價值，不等待完整 claim/event/pilot 才開始使用。JV-37.R3 repo-class workflow hooks：單人循序與 owner single-writer 皆以 checked-out main 四值握手＋exact scope 為預設；shared core 由指定 integrator 更新 main，不因 repo class 自動開 branch/worktree。只有 Vincent 為具名外部 PR/review、真正並行且 owner 分離的 scope，或緊急 hotfix 隔離精確核准時，才進入完整 isolation lifecycle；同一次明確核准可涵蓋 exact-scope commit、正常 push、main integration、SHA verification 與 cleanup，batch push 只作 recovery/coordinator。JV-37.R4 durable claim／event extension：不建新 event 系統；在既有 task-event-outbox.mjs、apply-task-events.mjs、pending/applied/rejected、event_id 去重、state.json overlay、sync queue 與 single-writer actor 上擴充 task.claimed/task.remote_synced/task.released，補 duplicate claim、pending visibility、idempotent apply 與 crash recovery。JV-37.R5 hardening／pilot：補 generated/manual/mixed dirty classifier、same-remote multi-worktree、mba3 restore rerun、approved isolation owner/review_by/stale_review、三 clone verifier 與 MBA-1/MBA-2/MBA-3 pilot。FACTLOCK：2026-07-11 實查歷史模擬位於 /private/tmp/multi-machine-repo-sim-1783762204468，含 s1-fast-forward、s2-local-only、s3-branch-race、s4-diverged、s5-dirty、s6-cc-push-fetch-first；該目錄只有暫存 Git repos，沒有 durable runner/report，且 /private/tmp 可被清除，不得當 source of truth。正式 verifier 必須每次以 mkdtemp 重建 fixture；路徑不存在時自動重建，不得假設歷史產物仍在。研究依據：Git porcelain v2 提供可機械解析的 branch/upstream/ahead-behind，fetch 更新 remote-tracking refs，pull --ff-only 在 diverged 時失敗，正常 push 保護 fast-forward；Git worktree／GitHub branch flow 只作精確核准的例外工具，protected branch/merge queue 只在外部流程需要時採用，不是單人循序預設。Split gate：只有某一 slice 的 input/output、owner、寫入邊界、驗收與 Vincent implementation approval 均明確，且單一 anchor 無法維持可審計邊界時才拆下一個 JV task；拆出時回填 origin_anchor=JV-37、origin_slice=JV-37.Rn、origin_task_id=multi-machine-repo-coordination-gate。此 task 不授權 heartbeat commits、全域無關 repo 阻擋、未核准自動 commit、auto merge conflict resolution、rebase、reset、stash、force push、GitHub branch protection 修改或外部帳號設定。"
+      "note": "Roadmap-in-Anchor Task：目前只開 JV-37，不提前拆 future JV tasks。2026-07-12 最終整合裁決：真正目標是『不論使用哪台電腦，Agent 在首次修改檔案前都先收尾自己的未 commit／未 push，再同步別人的最新版本；完成時立即送到 remote truth』。使用者只看 READY／BLOCKED，內部治理不得外露成每日操作。跨 Agent discoverability 採薄入口：所有 Agent 必讀的 CORE.md 只放強制 pointer，完整合約只放 $COLLAB/harness-mc/system-workflow/docs/specs/repo-coordination-gate.md，AGENTS.md 與 skills 不複製。JV-32 是唯一 workflow catalog／Router，JV-37 是其 automation layer：新增 Repo Ready 前置語意並延伸既有 closeout-commit-routing 為 Remote Closeout；在 runtime、負向 fixtures、workflow hooks 有證據前，不得把能力標成 accepted。JV-37.R1 contract／lineage：由 JV-37 A03 固定唯一 repo scope/classification contract，供既有 worktree inventory 消費；同時固定 session inventory 與 action-time hard gate 的邊界、maintained/excluded/retired lifecycle、shared_core_multi_writer／owner_single_writer、READY/BLOCKED vocabulary、禁止操作與 JV-32 extended_by lineage。JV-37.R2 first usable release：先以 TDD 落地所有 maintained repo 的非阻斷 session fetch/status inventory，以及只針對 target＋core 的 Repo Ready／Remote Closeout；依 status porcelain v2、fetch、ahead-behind、ff-only、HEAD/upstream/remote SHA 判定，clean behind-only 可 ff-only，已核准且 remote 未變的 needs_push 可重試正常 push，其他 ahead/dirty/diverged/detached/no-upstream/auth failure fail closed。這一 slice 完成後即可先提供日常價值，不等待完整 claim/event/pilot 才開始使用。JV-37.R3 repo-class workflow hooks：單人循序與 owner single-writer 皆以 checked-out main 四值握手＋exact scope 為預設；shared core 由指定 integrator 更新 main，不因 repo class 自動開 branch/worktree。只有 Vincent 為具名外部 PR/review、真正並行且 owner 分離的 scope，或緊急 hotfix 隔離精確核准時，才進入完整 isolation lifecycle；同一次明確核准可涵蓋 exact-scope commit、正常 push、main integration、SHA verification 與 cleanup，batch push 只作 recovery/coordinator。JV-37.R4 durable claim／event extension：不建新 event 系統；在既有 task-event-outbox.mjs、apply-task-events.mjs、pending/applied/rejected、event_id 去重、state.json overlay、sync queue 與 single-writer actor 上擴充 task.claimed/task.remote_synced/task.released，補 duplicate claim、pending visibility、idempotent apply 與 crash recovery。JV-37.R5 hardening／pilot：補 generated/manual/mixed dirty classifier、same-remote multi-worktree、mba3 restore rerun、approved isolation owner/review_by/stale_review、可重跑多 clone verifier 與真實 fresh-session pilot。MBA-1/MBA-2/MBA-3 與三機 pilot 是 2026-08-14 前的歷史脈絡，不再是 active runtime contract 或裝置門檻。FACTLOCK：2026-07-11 實查歷史模擬位於 /private/tmp/multi-machine-repo-sim-1783762204468，含 s1-fast-forward、s2-local-only、s3-branch-race、s4-diverged、s5-dirty、s6-cc-push-fetch-first；該目錄只有暫存 Git repos，沒有 durable runner/report，且 /private/tmp 可被清除，不得當 source of truth。正式 verifier 必須每次以 mkdtemp 重建 fixture；路徑不存在時自動重建，不得假設歷史產物仍在。研究依據：Git porcelain v2 提供可機械解析的 branch/upstream/ahead-behind，fetch 更新 remote-tracking refs，pull --ff-only 在 diverged 時失敗，正常 push 保護 fast-forward；Git worktree／GitHub branch flow 只作精確核准的例外工具，protected branch/merge queue 只在外部流程需要時採用，不是單人循序預設。Split gate：只有某一 slice 的 input/output、owner、寫入邊界、驗收與 Vincent implementation approval 均明確，且單一 anchor 無法維持可審計邊界時才拆下一個 JV task；拆出時回填 origin_anchor=JV-37、origin_slice=JV-37.Rn、origin_task_id=multi-machine-repo-coordination-gate。此 task 不授權 heartbeat commits、全域無關 repo 阻擋、未核准自動 commit、auto merge conflict resolution、rebase、reset、stash、force push、GitHub branch protection 修改或外部帳號設定。",
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "多 session C1 競爭時只有一個 integrator claim 可寫 canonical C2。",
+          "每個 durable boundary 中斷後，fresh session 從首個未滿足 state 續跑。",
+          "完整交付授權只在不變量不變或 safe non-overlapping fast-forward 時續用。",
+          "Remote Closeout 未達 0/0、pending zero、scope residual zero、released、task_completed 時 fail-closed。",
+          "多 clone 覆蓋 dirty、behind、ahead、diverged、detached、no-upstream、worktree conflict 與錯誤 claim。",
+          "未提供 source-bound real multi-session receipt 時，完整 verifier 與 P3 admission 均保持 blocked；receipt 不得要求固定硬體數量。"
+        ],
+        "test_level": [
+          "unit",
+          "integration",
+          "runtime",
+          "multi_clone_e2e",
+          "real_pilot"
+        ],
+    "red_command": "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case device-free-identity-contract",
+    "expected_red_reason": "2026-08-14 migration red：固定 machine_id／machine-key identity 尚未移除，device-free claim 與 session observation 仍被 runtime 拒絕。",
+        "green_command": "npm run test:repo-coordination-runtime",
+        "full_regression_commands": [
+          "npm run test:repo-coordination-runtime",
+          "npm run test:phase3-jv37-admission",
+          "npm run test:task-event-outbox",
+          "npm run test:apply-task-events",
+          "node scripts/verify-direct-main-workflow-policy.mjs",
+          "node scripts/verify-explicit-git-isolation-approval.mjs",
+          "node scripts/verify-closeout-residual-ledger.mjs",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "node \"$COLLAB/notyet-harness/000_Agent/scripts/verify-mba3-move-restore-guard.mjs\"",
+          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/update-skills-index.py\" --check"
+        ],
+        "fixture_refs": [
+          "$COLLAB/harness-mc/scripts/verify-multi-machine-repo-coordination-gate.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-phase3-jv37-admission.mjs"
+        ],
+        "runtime_evidence_required": true,
+        "planned_evidence_location": "$COLLAB/harness-mc/system-workflow/reports/jv37-real-multi-session-pilot.json",
+        "evidence_refs": [
+          "$COLLAB/harness-mc/scripts/repo-coordination-runtime.mjs",
+          "$COLLAB/harness-mc/scripts/lib/repo-coordination-runtime.mjs",
+          "$COLLAB/harness-mc/scripts/lib/jv37-admission.mjs",
+          "$COLLAB/notyet-harness/000_Agent/skills/multi-machine-repo-coordination/SKILL.md"
+        ]
+      },
+      "local_rc": {
+        "status": "superseded",
+        "recorded_at": "2026-08-12",
+        "acceptance_ids": [
+          "JV37-E2E-01",
+          "JV37-E2E-02",
+          "JV37-E2E-03",
+          "JV37-E2E-04",
+          "JV37-E2E-05"
+        ],
+        "matrix_fingerprint": "sha256:49fd10db1d26a3a44b879579a67949b86a15ccabde6620770a4464efebe4fdd3",
+        "verifier_refs": [
+          "npm run test:repo-coordination-runtime",
+          "npm run test:phase3-jv37-admission",
+          "npm run test:task-event-outbox",
+          "npm run test:apply-task-events",
+          "node \"$COLLAB/notyet-harness/000_Agent/scripts/verify-mba3-move-restore-guard.mjs\""
+        ],
+        "runtime_boundary": "Historical local RC only: its matrix fingerprint predates the 2026-08-14 不限裝置 contract and cannot satisfy the current matrix. JV37-E2E-06 requires a new source-bound real multi-session pilot receipt; JV-37 remains todo and P3 ADM-P2-02 remains blocked until then."
+      },
+      "current_local_rc": {
+        "status": "passed_nonterminal",
+        "recorded_at": "2026-08-14",
+        "acceptance_ids": [
+          "JV37-E2E-01",
+          "JV37-E2E-02",
+          "JV37-E2E-03",
+          "JV37-E2E-04",
+          "JV37-E2E-05"
+        ],
+        "matrix_fingerprint": "sha256:bbcba7f9c214e6ce5d28fdf6823d7715faa1f1e1bc93eb55988ef456b3e62224",
+        "verifier_refs": [
+          "npm run test:repo-coordination-runtime",
+          "npm run test:task-event-outbox",
+          "npm run test:apply-task-events",
+          "npm run test:phase3-jv37-admission",
+          "node scripts/verify-direct-main-workflow-policy.mjs",
+          "node scripts/verify-explicit-git-isolation-approval.mjs",
+          "node scripts/verify-closeout-residual-ledger.mjs"
+        ],
+        "runtime_boundary": "Current device-free local RC only. It verifies two fresh-session observations without device registration or hardware fingerprint. E2E06 still requires a real source-bound pilot receipt, canonical task_completed and P3 Final Admission; JV-37 and P3 remain todo."
+      }
     },
     {
       "id": "morrowise-dev-workflow-catalog-ephemeral-source-repair",
@@ -4601,30 +4855,64 @@
               "$COLLAB/harness-mc/milestones/morrowise/tasks.json#credential-lifecycle-governance"
             ],
             "recorded_at": "2026-07-18"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 明定自用模型不可因裝置登錄卡住本人；JV-39 保留 GitHub SSH key、token、session 的遺失／汰換／撤銷 recovery 規範，但不建立 runtime 裝置 registry、不把新環境登錄當 JV-37 C2 門檻。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#credential-lifecycle-governance",
+              "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/jv37-self-use-coordination-handoff-260814.md"
+            ],
+            "recorded_at": "2026-08-14",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/credential-lifecycle-governance",
+                "morrowise/account-login-sync-start-v1",
+                "morrowise/multi-machine-repo-coordination-gate"
+              ],
+              "scope_comparison": {
+                "problem": "安全復原規範若被實作成裝置登錄與 C2 gate，會違反自用系統可換環境即開始工作的目標。",
+                "owner_source_of_truth": "JV-39 仍只擁有 credential lifecycle 與 recovery policy；GitHub 保持帳號／repo access，JV-37 保持 closeout coordination。",
+                "inputs_outputs": "輸入仍是 sanitized lifecycle policy、capability metadata 與安全 probe；輸出仍是不含憑證值的 recovery／posture guidance。",
+                "lifecycle_completion": "只移除固定硬體與 runtime device-gate 前提；不執行撤銷、不觸及憑證，task 仍為 todo。"
+              },
+              "decision_reason": "這是既有 JV-39 的 version improvement，不新增裝置 registry、密碼庫、GitHub 設定或平行安全正本。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-14",
+                "evidence_refs": [
+                  "Vincent 2026-08-14 current session: 我覺得自用不要這麼複雜，到時卡死自己"
+                ]
+              }
+            }
           }
         ]
       },
       "status": "todo",
-      "title": "JV-39 安全憑證生命週期與三機安全啟用治理",
+      "title": "JV-39 安全憑證生命週期與不限裝置的復原治理",
       "track": "governance",
       "order_label": "JV-39",
       "dependencies": [
         "account-connector-policy",
         "capability-registry-v1-coverage"
       ],
-      "done_condition": "建立不綁定 Codex、Claude Code 或特定電腦的安全憑證生命週期合約：憑證值只存在 Vincent 管理的受管加密密碼庫與各機安全儲存；$COLLAB/harness-mc 僅保存規則與安全 metadata。完成時須以既有 capability registry 的延伸欄位、受信任本機 probe 產出的 machine-scoped 摘要、generated read model 與 verifier，呈現 MBA-1／MBA-2／MBA-3 的安全狀態與資料時間；不得建立平行整合 registry、讀取或輸出任何憑證、Cookie、runtime auth 或私有設定。服務身分、CI 聯邦身分、人類帳號、裝置 session、復原與 private runtime 必須各有最小權限、輪替／撤銷／失效規則、責任人與可重跑驗收；所有外部帳號、密碼庫、GitHub secrets、撤銷、輪替、排程、commit、push 與部署仍遵守 Vincent 明確核准。",
+      "done_condition": "建立不綁定 Codex、Claude Code 或特定硬體的安全憑證生命週期合約：憑證值只存在 Vincent 管理的受管加密密碼庫與各環境安全儲存；$COLLAB/harness-mc 僅保存規則與安全 metadata。完成時須以既有 capability registry 的延伸欄位、受信任本機 probe 產出的 environment-scoped 摘要、generated read model 與 verifier，呈現目前工作環境的安全資料時間；不得建立平行整合 registry、讀取或輸出任何憑證、Cookie、runtime auth 或私有設定。GitHub 帳號／repo 權限維持帳號層存取前置；JV-39 僅定義 GitHub SSH key、token、session 的遺失、汰換與撤銷 recovery，不建立裝置登錄、硬體白名單或 JV-37 C2 權限門檻。服務身分、CI 聯邦身分、人類帳號、環境 session、復原與 private runtime 必須各有最小權限、輪替／撤銷／失效規則、責任人與可重跑驗收；所有外部帳號、密碼庫、GitHub secrets、撤銷、輪替、排程、commit、push 與部署仍遵守 Vincent 明確核准。",
       "acceptance": [
         "A01｜新增 $COLLAB/harness-mc/system-workflow/docs/specs/morrowise-credential-lifecycle.md，固定 service_static、ci_federated、human_account、device_session、recovery、private_runtime 六類的用途、來源真相、最小權限、擁有者、使用者、輪替／撤銷、失效、復原與資料保留邊界。",
-        "A02｜安全真相分層固定：憑證值僅在 Vincent 管理的受管加密密碼庫與 OS／應用程式安全儲存；Repo、MC、task event、read model、dashboard、log 與 verifier 只能保存 capability_id、machine_id、credential_class、posture、connection_observed、observed_at、next_action 與 sanitized evidence reference。禁止寫入憑證值、vault 路徑、secret 名稱、Cookie、帳號、私有檔案路徑或可重放的 hash。",
+    "A02｜安全真相分層固定：憑證值僅在 Vincent 管理的受管加密密碼庫與 OS／應用程式安全儲存；Repo、MC、task event、read model、dashboard、log 與 verifier 只能保存 capability_id、environment_id、credential_class、posture、connection_observed、observed_at、next_action 與 sanitized evidence reference。禁止寫入憑證值、vault 路徑、secret 名稱、Cookie、帳號、私有檔案路徑或可重放的 hash。",
         "A03｜不新增平行整合 registry：擴充既有 $COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json 的安全契約欄位，將 generated credential-health read model 視為衍生資料；任何非 capability 的安全治理規則只住在 lifecycle spec，不另建含狀態的第二正本。",
-        "A04｜三機安全啟用 runbook 對 MBA-1／MBA-2／MBA-3 完全對等：同步 portable canonical Repo 與公開設定模板後，各機由 Vincent 以本機安全儲存完成啟用；禁止跨機複製 Cookie、OAuth session、runtime auth、cache 或私人設定。未安裝的本機能力一律以通用 not_applicable 表示，不對任何單一機器建立例外。",
-        "A05｜定義受信任本機 probe 與 MC 讀取邊界：probe 不輸出或回傳憑證內容，僅產生 machine-scoped 安全摘要；Agent 只讀取該摘要。read model 必須分開 posture、connection_observed 與 observed_at，資料過期或缺席時誠實顯示 unknown／missing-machine，不得產生假綠燈。",
+        "A04｜不限裝置的安全啟用 runbook：同步 portable canonical Repo 與公開設定模板後，任何受支援環境由 Vincent 以本機安全儲存完成啟用；禁止跨環境複製 Cookie、OAuth session、runtime auth、cache 或私人設定。未安裝的本機能力一律以通用 not_applicable 表示，不預設特定機器集合，也不對任何單一機器建立例外。",
+        "A05｜定義受信任本機 probe 與 MC 讀取邊界：probe 不輸出或回傳憑證內容，僅產生 environment-scoped 安全摘要；Agent 只讀取該摘要。read model 必須分開 posture、connection_observed 與 observed_at，資料過期或缺席時誠實顯示 unknown，不得由歷史裝置名稱產生 missing failure 或假綠燈。",
         "A06｜GitHub Actions 安全基線：預設 GITHUB_TOKEN 最小讀取權限；不受信任 PR、fork、artifact 或 cache 不得接觸 secrets；沒有必要時禁用 pull_request_target；部署雲端資源優先使用 OIDC 或短效聯邦身分，不複製長效雲端憑證；workflow 成功與失敗 log 都須納入敏感資料檢查。",
         "A07｜輪替規則依類型分流：服務靜態憑證採新版建立、受限驗證、漸進切換、rollback、舊版停用／撤銷；疑似外洩時先撤銷再處理 code、log、cache 與歷史殘留。人類帳密僅在疑似外洩、服務要求或帳號擁有權異動時輪替，不設定機械式定期換密碼。每個適用 capability 必須記錄 rotation_policy、last_rotated_at、rotation_due_at 與回復規則的安全 metadata。",
         "A08｜定義遺失、竊取、外洩、裝置汰換與復原流程：P0 管理者／部署身分在通報後一小時內由 Vincent 執行 session 終止、裝置撤銷或憑證停用；一般服務身分於同工作日處理。復原必須有兩個獨立因子，不得由單一日常登入因子取得另一個復原因子；裝置報廢須清除本機 session、快取與私有設定，並僅回寫安全摘要。",
-        "A09｜建立可重跑 verifier 與負向 fixtures：任何 Token、私鑰、Cookie、.env、runtime auth、私有路徑或疑似憑證值進入 registry、task、generated data、dashboard 或 log 時必須 fail；另驗證不受信任 PR 無法取得 secrets、workflow 成功／失敗 log 無敏感資料、read model 不含禁用欄位與三機摘要可正確標示 stale／unknown。",
+        "A09｜建立可重跑 verifier 與負向 fixtures：任何 Token、私鑰、Cookie、.env、runtime auth、私有路徑或疑似憑證值進入 registry、task、generated data、dashboard 或 log 時必須 fail；另驗證不受信任 PR 無法取得 secrets、workflow 成功／失敗 log 無敏感資料、read model 不含禁用欄位與多環境摘要可正確標示 stale／unknown。",
         "A10｜安全稽核 metadata 至少涵蓋用途、credential_class、owner_role、consumer、最小權限契約、rotation_policy、last_verified_at、incident_state、next_action 與 sanitized evidence reference；完整 audit／復原材料留在受管安全系統，MC 不保存其內容。",
-        "A11｜本 task 不選定、安裝或遷移密碼庫，不登入帳號、不設定 GitHub secrets、不讀取或匯出憑證，也不執行輪替／撤銷。若未來實作需要上述外部效果，必須另以明確 approval task 承接；完成本 task 前需補 architecture decision，只有 source／contract／verifier／generator／surface 均已驗收才可經 Admission Record 收編 ARCHITECTURE.md。"
+        "A11｜本 task 不選定、安裝或遷移密碼庫，不登入帳號、不設定 GitHub secrets、不讀取或匯出憑證，也不執行輪替／撤銷；不得建立裝置登錄 runtime、硬體白名單或 C2 裝置核准。若未來實作需要上述外部效果，必須另以明確 approval task 承接；完成本 task 前需補 architecture decision，只有 source／contract／verifier／generator／surface 均已驗收才可經 Admission Record 收編 ARCHITECTURE.md。"
       ],
       "jv32_route": {
         "batch": "JV-32 安全治理延伸批次",
@@ -4639,7 +4927,7 @@
         ],
         "decision_input": [
           "既有 capability registry",
-          "三機 portable／local boundary",
+          "不限裝置的 portable／local boundary",
           "MorroWise approval policy",
           "官方安全基線文件"
         ],
@@ -4669,7 +4957,7 @@
           "#constraints",
           "#evidenceBased"
         ],
-        "hc_reasoning": "真正問題不是把帳密同步到 MC 或由某個 Agent 保管，而是將憑證值的外部受管儲存、每機本地 session、portable capability contract 與可觀測安全 metadata 分成不可混淆的層。#sourceBoundary 禁止 Git、MC、task、read model、log 與 Agent 接觸或保存憑證內容；#systemDynamics 將新機啟用、輪替、撤銷、遺失裝置、復原與退役串成可稽核生命週期；#risk 對準 Actions log、fork PR、長效 CI 憑證、假綠燈與單一復原因子；#constraints 維持三機對等、既有 capability registry 為整合正本、所有外部效果須經 Vincent 核准；#evidenceBased 要求負向 fixture、機器 scoped 摘要與 verifier，而非相信文件宣告。",
+        "hc_reasoning": "真正問題不是把帳密同步到 MC 或由某個 Agent 保管，而是將憑證值的外部受管儲存、各環境本地 session、portable capability contract 與可觀測安全 metadata 分成不可混淆的層。#sourceBoundary 禁止 Git、MC、task、read model、log 與 Agent 接觸或保存憑證內容；#systemDynamics 將新環境啟用、輪替、撤銷、遺失裝置、復原與退役串成可稽核生命週期；#risk 對準 Actions log、fork PR、長效 CI 憑證、假綠燈與單一復原因子；#constraints 維持不限裝置、既有 capability registry 為整合正本、所有外部效果須經 Vincent 核准，且不把裝置登錄做成 C2 gate；#evidenceBased 要求負向 fixture、環境 scoped 摘要與 verifier，而非相信文件宣告。",
         "hc_confidence": 0.94,
         "evidence_refs": [
           "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-approval-policy.md",
@@ -4677,14 +4965,25 @@
           "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-registry-v1-coverage",
           "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json"
         ],
-        "source_boundary": "HC is a thinking check only, not source of truth. Canonical security policy is the lifecycle spec; canonical integration contract is the existing capability registry; observed status is a sanitized machine-scoped read model; secret values remain outside $COLLAB in Vincent-managed encrypted storage and local secure stores."
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical security policy is the lifecycle spec; canonical integration contract is the existing capability registry; observed status is a sanitized environment-scoped read model; secret values remain outside $COLLAB in Vincent-managed encrypted storage and local secure stores."
+      },
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "保留可撤銷的帳號與憑證 recovery，同時讓自用工作可在任何受支援環境開始，而不新增自我阻塞的裝置 gate。",
+        "evidence_plan": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#credential-lifecycle-governance.acceptance",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#account-login-sync-start-v1"
+        ],
+        "reviewed_at": "2026-08-14"
       },
       "architecture_decision": {
         "decision": "deferred",
         "evaluated_at": "2026-07-18",
-        "reason": "JV-39 先建立治理 task 與驗收契約，不宣稱已有 credential runtime。若後續完成 lifecycle spec、既有 capability registry 的安全欄位、sanitized machine-scoped read model、generator、negative verifier、MC surface 與 Admission Record，才評估收編為 ARCHITECTURE.md generated 子系統索引；不得因規劃階段建立第二套整合 registry 或把密碼庫視為 Agent runtime。"
+        "reason": "JV-39 先建立治理 task 與驗收契約，不宣稱已有 credential runtime。若後續完成 lifecycle spec、既有 capability registry 的安全欄位、sanitized environment-scoped read model、generator、negative verifier、MC surface 與 Admission Record，才評估收編為 ARCHITECTURE.md generated 子系統索引；不得因規劃階段建立第二套整合 registry、裝置授權 runtime 或把密碼庫視為 Agent runtime。"
       },
-      "note": "2026-07-18 Vincent 核准建立 JV-39。規劃已以 OWASP、NIST、GitHub Actions 與 Secret Manager 官方文件進行桌上壓測；原案補強為 v1.1：憑證六類分流、三機對等本機啟用、受信任安全摘要、Actions／OIDC 邊界、類型化輪替、遺失裝置／復原／退役與負向 fixtures。本 task 只建立治理合約與可驗收範圍，不選定密碼庫品牌、不接觸憑證值、不替任何機器建立例外。"
+      "note": "2026-08-14 current decision：JV-39 是不限裝置的 credential recovery policy；GitHub 帳號／repo 權限仍是存取前置，遺失或汰換環境時依 GitHub SSH key、token、session 的撤銷 runbook 處理，不把裝置登錄變成 JV-37 C2 runtime gate。2026-07-18 原案的三機對等啟用保留為歷史脈絡。規劃已以 OWASP、NIST、GitHub Actions 與 Secret Manager 官方文件進行桌上壓測；本 task 只建立治理合約與可驗收範圍，不選定密碼庫品牌、不接觸憑證值、不替任何機器建立例外。"
     },
     {
       "id": "task-lifecycle-jv32-gate",
@@ -8490,7 +8789,9 @@
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate",
         "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-priority-dashboard-surface-v2",
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
-        "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md"
+        "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
+        "$COLLAB/harness-mc/scripts/morrowise-phase3-jv37-admission.mjs",
+        "$COLLAB/harness-mc/scripts/verify-morrowise-phase3-jv37-admission.mjs"
       ],
       "execution_contract": {
         "owner": "morrowise/morrowise-phase3-fresh-session-e2e-admission",
@@ -8574,7 +8875,7 @@
           "what": "Final Admission 必須引用 JV-37 當前指紋的真實多 session closeout acceptance receipt。",
           "preconditions": [
             "multi-machine-repo-coordination-gate 已 completed，且 JV37-E2E-01 至 JV37-E2E-06 全部通過",
-            "receipt 綁定當前 acceptance matrix fingerprint、真實 runtime／三機 pilot evidence 與 remote terminal state"
+            "receipt 綁定當前 acceptance matrix fingerprint、真實 runtime／多 session pilot evidence 與 remote terminal state；不得要求固定硬體名稱或數量"
           ],
           "steps": [
             "執行 missing、stale、partial、fixture-only 與 fingerprint mismatch 的 JV-37 receipt cases",
@@ -8583,8 +8884,9 @@
           "pass_condition": "只有 current、完整且含真實 runtime evidence 的 JV-37 receipt 可通過；P3 結果可重跑、跨 Agent 一致並追到 remote truth。",
           "fail_condition": "缺 receipt、舊指紋、部分通過、fixture-only、單一 session、remote 非 0/0、pending／scope residual 非零或 task 未 terminal 仍被接受。",
           "verification": [
-            "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case real-multi-session-three-machine-pilot",
-            "node scripts/verify-morrowise-phase3-e2e-admission.mjs",
+        "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case real-multi-session-pilot",
+        "node scripts/verify-morrowise-phase3-jv37-admission.mjs --receipt <current-source-bound-jv37-receipt>",
+        "node scripts/verify-morrowise-phase3-e2e-admission.mjs",
             "npm run test:architecture-subsystems"
           ]
         }
@@ -8829,6 +9131,111 @@
                 "approved_at": "2026-08-12",
                 "evidence_refs": [
                   "Vincent 2026-08-12 current session: 可以"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "只接上 P3 對 JV-37 current receipt 的 deterministic admission seam，覆蓋 missing、stale、partial、fixture-only、remote 非 0/0、pending／residual 與 task 非 terminal 的拒絕；不執行或擴張其他 P3 上游。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/scripts/morrowise-phase3-jv37-admission.mjs",
+              "$COLLAB/harness-mc/scripts/verify-morrowise-phase3-jv37-admission.mjs",
+              "npm run test:phase3-jv37-admission"
+            ],
+            "recorded_at": "2026-08-12",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-phase3-fresh-session-e2e-admission",
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "P3 已有 ADM-P2-02 contract，但缺只驗證 JV-37 current receipt 的 executable admission seam。",
+                "owner_source_of_truth": "P3 仍只擁有 Final Admission；JV-37 receipt、task status 與 matrix fingerprint 保持各自 canonical owner。",
+                "inputs_outputs": "輸入只限 JV-37 current receipt 與 canonical matrix；輸出 deterministic accepted／blocked reason，不執行其他 P3 上游。",
+                "lifecycle_completion": "本輪完成負向 seam wiring，不產生 full P3 evidence；JV-37 E2E-06 與其他上游完成前 P3 維持 todo。"
+              },
+              "decision_reason": "這是既有 ADM-P2-02 的窄幅 implementation；若展開其他上游會越過 Vincent 本次鎖定 scope。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-12",
+                "evidence_refs": [
+                  "Vincent 2026-08-12 current session: 這次應鎖定『JV-37 runtime＋P3 對 JV-37 的 admission 接線』，不把整個 P3 擴張成另一輪大工程。"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "P3 仍只消費 JV-37 current receipt；Vincent 已將其來源驗收從固定三機改為不限固定硬體數量的真實多 session pilot，不擴張 P3、也不建立裝置授權判斷。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-phase3-fresh-session-e2e-admission.acceptance_matrix.ADM-P2-02",
+              "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/jv37-self-use-coordination-handoff-260814.md"
+            ],
+            "recorded_at": "2026-08-14",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-phase3-fresh-session-e2e-admission",
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "P3 的 JV-37 receipt gate 不應把固定硬體數量誤當整條 closeout 的必要證據。",
+                "owner_source_of_truth": "P3 仍只擁有最終 integration admission；JV-37 的 remote coordination 和 receipt 保持既有 owner。",
+                "inputs_outputs": "輸入仍是 JV-37 current matrix 與 source-bound receipt；輸出仍是 deterministic accept／reject，僅移除固定硬體 cardinality。",
+                "lifecycle_completion": "P3 維持 todo；JV-37 依新 matrix 的真實多 session receipt 與其他上游完成前不得 admission。"
+              },
+              "decision_reason": "此變更只修正既有 ADM-P2-02 的 receipt 語意，不新增 P3 capability、registry、runtime 或 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-14",
+                "evidence_refs": [
+                  "Vincent 2026-08-14 current session: 我覺得自用不要這麼複雜，到時卡死自己"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "在既有 ADM-P2-02 seam 完成 device-free runtime 接線：只接受 current matrix 的 source-bound 真實多 session receipt；fixture seam 已驗證 generic receipt 與缺失、過期、部分、偽造、非 terminal 的拒絕，不執行其他 P3 上游。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/scripts/morrowise-phase3-jv37-admission.mjs",
+              "$COLLAB/harness-mc/scripts/lib/jv37-admission.mjs",
+              "$COLLAB/harness-mc/scripts/verify-morrowise-phase3-jv37-admission.mjs",
+              "npm run test:phase3-jv37-admission"
+            ],
+            "recorded_at": "2026-08-14",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-phase3-fresh-session-e2e-admission",
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "P3 seam 必須與已改為不限裝置的 JV-37 receipt schema 同步，否則會把歷史 machine evidence 誤當 admission input。",
+                "owner_source_of_truth": "JV-37 保持 receipt／remote closeout truth owner；P3 保持 final integration admission owner，沒有吸收 claim、registry 或 runtime。",
+                "inputs_outputs": "輸入是 current JV-37 matrix fingerprint 與 source-bound receipt；輸出是 deterministic accepted／blocked reason，並以 current terminal truth 固定 admission。",
+                "lifecycle_completion": "此處只有 fixture seam green；真實 JV-37 E2E06、所有 P3 upstream 與 P3 Final Admission 未完成，task 維持 todo。"
+              },
+              "decision_reason": "只更新既有 ADM-P2-02 reader，維持 P3 對 JV-37 的窄幅依賴，不擴張成另一輪 P3 工程。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-14",
+                "evidence_refs": [
+                  "Vincent 2026-08-14 current session: 1"
                 ]
               }
             }

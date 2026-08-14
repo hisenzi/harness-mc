@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "policy": "One Vincent approval key verifies immutable remote continuation receipts. It is not a device registry: private keys remain outside this repo, and GitHub account/repo permission governs repository access.",
+  "authorization_approvers": [
+    {
+      "approver_id": "vincent",
+      "key_id": null,
+      "public_key_pem": null,
+      "status": "pending_enrollment"
+    }
+  ]
+}

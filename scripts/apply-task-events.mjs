@@ -1,28 +1,111 @@
 import { spawnSync } from "node:child_process";
+import crypto from "node:crypto";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { mergeTaskDefinitionsWithState, stateFromTask } from "./task-state.mjs";
 import { writeSyncEvent } from "./sync-event-queue.mjs";
 import { resolveMilestoneProject } from "./lib/milestone-projects.mjs";
+import {
+  acquireClaim,
+  authorizeCanonicalApply,
+  verifyRemoteCoordinationProof,
+} from "./lib/repo-coordination-runtime.mjs";
 
 const SUPPORTED_TYPES = new Set([
   "task.completed",
   "task.commit_attached",
   "task.reopened",
   "task.blocked",
+  "task.claimed",
+  "task.remote_synced",
+  "task.released",
 ]);
 
 export function applyTaskEvents(options = {}) {
+  const lockRoot = options.root || process.cwd();
+  const lockDir = path.join(lockRoot, "task-events", ".jv37-apply.lock");
+  const lock = acquireApplyLock(lockDir);
+  try {
+    return applyTaskEventsUnlocked(options);
+  } finally {
+    releaseApplyLock(lock);
+  }
+}
+
+function acquireApplyLock(lockDir) {
+  fs.mkdirSync(path.dirname(lockDir), { recursive: true });
+  const owner = {
+    version: 1,
+    pid: process.pid,
+    hostname: os.hostname(),
+    nonce: crypto.randomUUID(),
+    acquired_at: new Date().toISOString(),
+  };
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      fs.mkdirSync(lockDir);
+      fs.writeFileSync(path.join(lockDir, "owner.json"), `${JSON.stringify(owner, null, 2)}\n`, { flag: "wx" });
+      return { lockDir, owner };
+    } catch (error) {
+      if (error?.code !== "EEXIST") throw error;
+      const existing = readLockOwner(lockDir);
+      if (!existing || existing.hostname !== os.hostname() || isProcessAlive(existing.pid)) {
+        throw new Error("task_event_apply_locked");
+      }
+      const staleDir = path.join(path.dirname(lockDir), "stale-locks");
+      fs.mkdirSync(staleDir, { recursive: true });
+      const target = path.join(staleDir, `${timestampSlug(existing.acquired_at)}-${existing.pid}-${existing.nonce || "legacy"}`);
+      try {
+        fs.renameSync(lockDir, target);
+      } catch (renameError) {
+        if (renameError?.code !== "ENOENT") throw new Error("task_event_apply_locked");
+      }
+    }
+  }
+  throw new Error("task_event_apply_locked");
+}
+
+function releaseApplyLock(lock) {
+  const existing = readLockOwner(lock.lockDir);
+  if (!existing || existing.nonce !== lock.owner.nonce || existing.pid !== lock.owner.pid) return;
+  fs.unlinkSync(path.join(lock.lockDir, "owner.json"));
+  fs.rmdirSync(lock.lockDir);
+}
+
+function readLockOwner(lockDir) {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(lockDir, "owner.json"), "utf8"));
+  } catch {
+    return null;
+  }
+}
+
+function isProcessAlive(pid) {
+  if (!Number.isInteger(pid) || pid <= 0) return false;
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return error?.code !== "ESRCH";
+  }
+}
+
+function applyTaskEventsUnlocked(options = {}) {
   const root = options.root || process.cwd();
   const eventsRoot = path.join(root, "task-events");
   const pendingDir = path.join(eventsRoot, "pending");
   const appliedDir = path.join(eventsRoot, "applied");
   const rejectedDir = path.join(eventsRoot, "rejected");
+  const transactionsDir = path.join(eventsRoot, "transactions");
 
   fs.mkdirSync(pendingDir, { recursive: true });
   fs.mkdirSync(appliedDir, { recursive: true });
   fs.mkdirSync(rejectedDir, { recursive: true });
+  fs.mkdirSync(transactionsDir, { recursive: true });
+
+  const recovered = recoverInterruptedTransactions({ transactionsDir, pendingDir, appliedDir });
 
   const allPendingFiles = fs
     .readdirSync(pendingDir)
@@ -38,7 +121,7 @@ export function applyTaskEvents(options = {}) {
   const tasksCache = new Map();
   const report = {
     generated_at: new Date().toISOString(),
-    applied: [],
+    applied: [...recovered],
     rejected: [],
     duplicates: [],
   };
@@ -89,27 +172,38 @@ export function applyTaskEvents(options = {}) {
       continue;
     }
 
+    const coordinationRejection = coordinationRejectionReason(task, event, { ...options, root });
+    if (coordinationRejection) {
+      seenEventIds.add(eventId);
+      rejectEvent({ source, fileName, event, reason: coordinationRejection, rejectedDir, report });
+      continue;
+    }
+
     applyEventToTask(task, event);
     enqueueSyncRequests(root, event, task);
-    projectTasks.dirty = true;
-    projectTasks.touchedTaskIds.add(task.id);
+    projectTasks.state.tasks[task.id] = stateFromTask(task);
     seenEventIds.add(eventId);
 
+    const transactionPath = path.join(transactionsDir, fileName);
+    const transaction = {
+      version: 1,
+      phase: "prepared",
+      event_id: eventId,
+      event,
+      source_file: fileName,
+      state_path: path.relative(root, projectTasks.statePath),
+      state_payload: projectTasks.state,
+    };
+    writeJsonAtomic(transactionPath, transaction);
+    writeJsonAtomic(projectTasks.statePath, projectTasks.state);
+    writeJsonAtomic(transactionPath, { ...transaction, phase: "state_persisted" });
+    options.afterStatePersisted?.({ event, transactionPath, statePath: projectTasks.statePath });
     moveEventFile(source, path.join(appliedDir, fileName), event, "applied");
+    fs.unlinkSync(transactionPath);
     report.applied.push({ file: fileName, event_id: eventId, project: event.project, task_id: event.task_id, type: event.type });
   }
 
-  for (const projectTasks of tasksCache.values()) {
-    if (projectTasks?.dirty) {
-      for (const taskId of projectTasks.touchedTaskIds) {
-        const task = projectTasks.data.tasks.find((item) => item.id === taskId);
-        if (task) projectTasks.state.tasks[task.id] = stateFromTask(task);
-      }
-      writeJson(projectTasks.statePath, projectTasks.state);
-    }
-  }
-
-  if (pendingFiles.length > 0 && options.writeLatestReport !== false) {
+  if ((pendingFiles.length > 0 || recovered.length > 0) && options.writeLatestReport !== false) {
     writeJson(path.join(eventsRoot, "latest-report.json"), report);
   }
 
@@ -124,6 +218,41 @@ export function applyTaskEvents(options = {}) {
   }
 
   return report;
+}
+
+function recoverInterruptedTransactions({ transactionsDir, pendingDir, appliedDir }) {
+  const recovered = [];
+  for (const fileName of fs.readdirSync(transactionsDir).filter((name) => name.endsWith(".json")).sort()) {
+    const transactionPath = path.join(transactionsDir, fileName);
+    const transaction = readJson(transactionPath);
+    if (transaction?.version !== 1 || !transaction.event_id || !transaction.event || !transaction.state_path || !transaction.state_payload) {
+      throw new Error(`invalid task event transaction: ${fileName}`);
+    }
+    const root = path.dirname(path.dirname(transactionsDir));
+    const statePath = path.resolve(root, transaction.state_path);
+    const relativeState = path.relative(root, statePath);
+    if (relativeState.startsWith("..") || path.isAbsolute(relativeState)) throw new Error(`transaction state path escaped root: ${fileName}`);
+    writeJsonAtomic(statePath, transaction.state_payload);
+    const source = path.join(pendingDir, transaction.source_file);
+    const target = path.join(appliedDir, transaction.source_file);
+    if (fs.existsSync(source)) {
+      const pendingEvent = readJson(source);
+      if (pendingEvent?.event_id !== transaction.event_id) throw new Error(`transaction event mismatch: ${fileName}`);
+      moveEventFile(source, target, transaction.event, "applied");
+    } else if (!fs.existsSync(target)) {
+      throw new Error(`transaction source missing: ${fileName}`);
+    }
+    fs.unlinkSync(transactionPath);
+    recovered.push({
+      file: transaction.source_file,
+      event_id: transaction.event_id,
+      project: transaction.event.project,
+      task_id: transaction.event.task_id,
+      type: transaction.event.type,
+      recovered: true,
+    });
+  }
+  return recovered;
 }
 
 function validateManualRejectionReview(manualRejections, review) {
@@ -222,9 +351,52 @@ function loadProjectTasks(root, project, tasksCache) {
 function applyEventToTask(task, event) {
   appendCommit(task, event.commit);
 
+  if (event.type === "task.claimed") {
+    const proposed = claimFromEvent(event);
+    const result = acquireClaim(task.coordination?.active_claim || null, proposed);
+    task.coordination = {
+      ...(task.coordination || {}),
+      active_claim: result.claim,
+    };
+    return;
+  }
+
+  if (event.type === "task.remote_synced") {
+    task.coordination = {
+      ...(task.coordination || {}),
+      active_claim: {
+        ...task.coordination.active_claim,
+        state: "remote_synced",
+        remote_commit: event.commit,
+        remote_synced_at: event.created_at,
+      },
+    };
+    return;
+  }
+
+  if (event.type === "task.released") {
+    task.coordination = {
+      ...(task.coordination || {}),
+      active_claim: null,
+      last_release: {
+        ...task.coordination.active_claim,
+        state: "released",
+        released_at: event.created_at,
+      },
+    };
+    return;
+  }
+
   if (event.type === "task.completed") {
     task.status = "completed";
     task.completed_at = dateOnly(event.created_at);
+    if (task.coordination?.active_claim) {
+      task.coordination.active_claim = {
+        ...task.coordination.active_claim,
+        state: "canonical_applied",
+        canonical_applied_at: event.created_at,
+      };
+    }
     return;
   }
 
@@ -239,7 +411,63 @@ function applyEventToTask(task, event) {
   }
 }
 
+function coordinationRejectionReason(task, event, options) {
+  const verifyProof = options.coordinationProofVerifier
+    || ((proofOptions) => verifyRemoteCoordinationProof({ repoPath: options.root, ...proofOptions }));
+  if (event.type === "task.claimed") {
+    if (event.actor !== event.coordination?.actor || event.session_id !== event.coordination?.session_id) {
+      return "claim_owner_mismatch";
+    }
+    const result = acquireClaim(task.coordination?.active_claim || null, claimFromEvent(event));
+    if (result.decision === "BLOCKED") return result.reason;
+    const proof = verifyProof({ event, expectedState: "claimed" });
+    return proof.decision === "BLOCKED" ? proof.reason : null;
+  }
+
+  const active = task.coordination?.active_claim;
+  if (event.type === "task.completed" && !active) {
+    return requiresCoordination(task) ? "claim_missing" : null;
+  }
+  if (!["task.remote_synced", "task.released", "task.completed"].includes(event.type)) return null;
+  if (!active) return "claim_missing";
+  if (event.actor !== active.actor) return "claim_owner_mismatch";
+  if (!sameCoordinationIdentity(active, event.coordination)) return "claim_owner_mismatch";
+
+  if (event.type === "task.remote_synced") {
+    if (active.state !== "claimed") return "invalid_state_transition";
+    const proof = verifyProof({ event, expectedState: "c1_remote_synced" });
+    return proof.decision === "BLOCKED" ? proof.reason : null;
+  }
+  if (event.type === "task.completed") {
+    const authorization = authorizeCanonicalApply(active);
+    if (authorization.decision === "BLOCKED") return authorization.reason;
+    const proof = verifyProof({ event, expectedState: "canonical_applied" });
+    return proof.decision === "BLOCKED" ? proof.reason : null;
+  }
+  if (active.state !== "canonical_applied" || task.status !== "completed") return "closeout_not_terminal";
+  const proof = verifyProof({ event, expectedState: "released" });
+  return proof.decision === "BLOCKED" ? proof.reason : null;
+}
+
+function requiresCoordination(task) {
+  return task.id === "multi-machine-repo-coordination-gate" || task.repo_coordination_required === true;
+}
+
+function claimFromEvent(event) {
+  return {
+    task_id: event.task_id,
+    project_id: event.project,
+    ...event.coordination,
+  };
+}
+
+function sameCoordinationIdentity(active, proposed = {}) {
+  return ["claim_id", "repo_class", "branch", "base_sha", "owner_role", "actor"]
+    .every((field) => active?.[field] === proposed?.[field]);
+}
+
 function enqueueSyncRequests(root, event, task) {
+  if (["task.claimed", "task.remote_synced", "task.released"].includes(event.type)) return;
   const base = {
     root,
     type: "sync_requested",
@@ -340,6 +568,24 @@ function readJson(filePath) {
 
 function writeJson(filePath, value) {
   fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`);
+}
+
+function writeJsonAtomic(filePath, value) {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  const tempPath = `${filePath}.tmp-${process.pid}-${cryptoRandomSuffix()}`;
+  fs.writeFileSync(tempPath, `${JSON.stringify(value, null, 2)}\n`, { flag: "wx" });
+  fs.renameSync(tempPath, filePath);
+}
+
+function cryptoRandomSuffix() {
+  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function timestampSlug(value) {
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime())
+    ? "unknown-time"
+    : parsed.toISOString().replace(/[-:.]/g, "").replace(/Z$/, "Z");
 }
 
 const isCli = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);

@@ -785,7 +785,13 @@ export function classifyRepoSnapshot(snapshot = {}) {
       ? { decision: "READY", reason: "ff_only_required", action: "git_merge_ff_only" }
       : blocked("dirty_blocked", snapshot.dirty_kind);
   }
-  if (snapshot.dirty_kind !== "clean" && hasExactUnrelatedExclusions(snapshot)) {
+  if (snapshot.dirty_kind === "scope_owned") {
+    return { decision: "READY", reason: "scope_owned_dirty" };
+  }
+  if (snapshot.dirty_kind === "scope_owned_with_exclusions") {
+    return { decision: "READY", reason: "scope_owned_dirty_with_exclusions", warning: true };
+  }
+  if (snapshot.dirty_kind === "manual") {
     return { decision: "READY", reason: "unrelated_dirty_excluded", warning: true };
   }
   if (["manual", "mixed", "unknown"].includes(snapshot.dirty_kind)) return blocked("dirty_blocked", snapshot.dirty_kind);
@@ -805,7 +811,7 @@ export function inspectRepo(repoPath, options = {}) {
     return { ...classifyRepoSnapshot(snapshot), snapshot, evidence: trimEvidence(fetchResult.stderr) };
   }
 
-  const statusResult = git(cwd, ["status", "--porcelain=v2", "--branch"]);
+  const statusResult = git(cwd, ["status", "--porcelain=v2", "--branch", "--untracked-files=all"]);
   if (statusResult.status !== 0) {
     const snapshot = { fetch_ok: false, branch_head: "unknown", upstream: null, ahead: 0, behind: 0, dirty_kind: "unknown" };
     return { ...classifyRepoSnapshot(snapshot), snapshot, evidence: trimEvidence(statusResult.stderr) };
@@ -813,18 +819,14 @@ export function inspectRepo(repoPath, options = {}) {
 
   const parsed = parsePorcelainV2(statusResult.stdout);
   const dirtyClassification = classifyDirtyPaths(cwd, parsed.dirty_paths, options);
-  const hasOnlyExactExclusions = hasExactUnrelatedExclusions({
-    dirty_paths: parsed.dirty_paths,
-    approved_exclusions: options.exclusions || [],
-    commit_scope: options.commitScope || [],
-  });
+  const scopedDirtyKind = classifyScopedDirtyPaths(parsed.dirty_paths, options, parsed.rename_pairs);
   const snapshot = {
     fetch_ok: true,
     branch_head: parsed.branch_head,
     upstream: parsed.upstream,
     ahead: parsed.ahead,
     behind: parsed.behind,
-    dirty_kind: parsed.dirty_count === 0 ? "clean" : hasOnlyExactExclusions ? "manual" : dirtyClassification.kind,
+    dirty_kind: parsed.dirty_count === 0 ? "clean" : scopedDirtyKind || dirtyClassification.kind,
     generated_proof_valid: dirtyClassification.generatedProofValid,
     conflicting_worktree: hasConflictingWorktree(cwd, parsed.branch_head),
     staged_count: parsed.staged_count,
@@ -839,11 +841,6 @@ export function inspectRepo(repoPath, options = {}) {
 
 function classifyDirtyPaths(repoPath, dirtyPaths, options) {
   if (dirtyPaths.length === 0) return { kind: "clean", generatedProofValid: false };
-  const exclusions = new Set(options.exclusions || []);
-  const scope = new Set(options.commitScope || []);
-  if (scope.size > 0 && dirtyPaths.every((item) => exclusions.has(item) && !scope.has(item))) {
-    return { kind: "manual", generatedProofValid: false };
-  }
 
   const registryPath = path.resolve(repoPath, options.generatedRegistryPath || ".morrowise/repo-coordination-generated.json");
   if (!fs.existsSync(registryPath)) return { kind: "unknown", generatedProofValid: false };
@@ -1148,6 +1145,10 @@ function parsePorcelainV2(output) {
     untracked_count: changes.filter((line) => line.startsWith("? ")).length,
     dirty_count: changes.length,
     dirty_paths: [...new Set(changes.flatMap(parsePorcelainPaths).filter(Boolean))],
+    rename_pairs: changes
+      .filter((line) => line.startsWith("2 "))
+      .map(parsePorcelainPaths)
+      .filter((paths) => paths.length === 2),
   };
 }
 
@@ -1168,13 +1169,21 @@ function unquotePath(value) {
   try { return JSON.parse(text); } catch { return text; }
 }
 
-function hasExactUnrelatedExclusions(snapshot) {
-  const dirtyPaths = snapshot.dirty_paths || [];
-  const exclusions = new Set(snapshot.approved_exclusions || []);
-  const commitScope = new Set(snapshot.commit_scope || []);
-  return dirtyPaths.length > 0
-    && commitScope.size > 0
-    && dirtyPaths.every((filePath) => exclusions.has(filePath) && !commitScope.has(filePath));
+function classifyScopedDirtyPaths(dirtyPaths, options, renamePairs = []) {
+  const exclusions = new Set(options.exclusions || []);
+  const scope = new Set(options.commitScope || []);
+  if (dirtyPaths.length === 0 || scope.size === 0) return null;
+  if ([...scope].some((filePath) => exclusions.has(filePath))) return null;
+  if (renamePairs.some((paths) => paths.some((filePath) => !scope.has(filePath)))) return null;
+  if (dirtyPaths.every((filePath) => scope.has(filePath))) return "scope_owned";
+  if (
+    dirtyPaths.some((filePath) => scope.has(filePath))
+    && dirtyPaths.every((filePath) => scope.has(filePath) || exclusions.has(filePath))
+  ) {
+    return "scope_owned_with_exclusions";
+  }
+  if (dirtyPaths.every((filePath) => exclusions.has(filePath))) return "manual";
+  return null;
 }
 
 function hasConflictingWorktree(cwd, branchHead) {

@@ -482,6 +482,28 @@ async function verifyMultiCloneNegativeFixtures() {
   fs.writeFileSync(path.join(dirty, "manual.txt"), "manual\n");
   assert.equal(inspectRepo(dirty).reason, "dirty_blocked");
   assert.equal(inspectRepo(dirty, { exclusions: ["manual.txt"], commitScope: ["scope.txt"] }).reason, "unrelated_dirty_excluded");
+
+  const scopeOwned = cloneFresh(fixture, "scope-owned");
+  fs.mkdirSync(path.join(scopeOwned, "legal"), { recursive: true });
+  fs.writeFileSync(path.join(scopeOwned, "legal", "privacy.txt"), "policy\n");
+  assert.equal(
+    inspectRepo(scopeOwned, { commitScope: ["legal/privacy.txt"] }).reason,
+    "scope_owned_dirty",
+    "an exact scope must allow its own nested untracked file",
+  );
+
+  const scopeWithExclusion = cloneFresh(fixture, "scope-with-exclusion");
+  fs.writeFileSync(path.join(scopeWithExclusion, "scope.txt"), "owned\n");
+  fs.writeFileSync(path.join(scopeWithExclusion, "other-session.txt"), "preserve\n");
+  assert.equal(
+    inspectRepo(scopeWithExclusion, {
+      commitScope: ["scope.txt"],
+      exclusions: ["other-session.txt"],
+    }).reason,
+    "scope_owned_dirty_with_exclusions",
+    "an exact scope may coexist with a proven unrelated exclusion",
+  );
+
   const staged = cloneFresh(fixture, "staged-dirty");
   fs.writeFileSync(path.join(staged, "staged.txt"), "staged\n");
   git(staged, ["add", "staged.txt"]);

@@ -1,0 +1,87 @@
+{
+  "adapter_id": "morrowise-memory-promotion-adapter.v1",
+  "task_id": "shared-memory-governance-v2",
+  "order_label": "JV-49",
+  "updated_at": "2026-08-12",
+  "status": "active_contract",
+  "purpose": "Convert agent-local or shared evidence into one traceable, deduplicated and approval-gated shared-L1 promotion candidate without creating another memory system.",
+  "reuses_existing": {
+    "recommendation_engine": "$COLLAB/harness-mc/system-workflow/registries/morrowise-recommendation-engine.json",
+    "approval_policy": "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json#memory_write_or_update",
+    "runner": "$COLLAB/harness-mc/scripts/morrowise-action-runner.mjs",
+    "task_lifecycle": "JV-32/JV-40"
+  },
+  "candidate_contract": {
+    "required_fields": [
+      "candidate_id",
+      "source",
+      "reason",
+      "dedupe",
+      "target",
+      "sensitivity",
+      "verification",
+      "mutation",
+      "approval",
+      "evidence_refs"
+    ],
+    "source_required_fields": ["ref", "fingerprint_sha256"],
+    "dedupe_required_fields": ["key", "compared_against", "status"],
+    "target_required_fields": ["layer", "ref"],
+    "approval_required_fields": [
+      "status",
+      "approved_by",
+      "approval_id",
+      "evidence_ref",
+      "approved_candidate_id",
+      "approved_target_ref",
+      "approved_text_sha256"
+    ],
+    "governed_target": {
+      "layer": "l1_shared_active_memory",
+      "ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md"
+    },
+    "mutation_mode": "append_exact_text",
+    "preimage_gate": "expected_preimage_sha256 must match immediately before the runner writes"
+  },
+  "decision_order": [
+    "reject missing or malformed provenance and exact-scope fields",
+    "reject machine-local absolute paths and raw rollout/session sources",
+    "reject sensitive or secret-bearing candidates",
+    "reject duplicates",
+    "reject unverified candidates",
+    "reject Vincent-rejected candidates",
+    "route pending candidates to the existing approval policy with zero writes",
+    "route exact-scope Vincent-approved candidates to the existing runner",
+    "runner applies only the governed L1 target after preimage parity"
+  ],
+  "source_boundary": {
+    "portable_local_adapter_source": "$CODEX_HOME/memories/MEMORY.md",
+    "allowed_role": "candidate source only",
+    "forbidden": [
+      "wholesale import",
+      "raw rollout promotion",
+      "machine-specific absolute source path",
+      "secret or sensitive content",
+      "direct write outside the runner"
+    ]
+  },
+  "new_runtime_components": ["candidate_adapter"],
+  "forbidden_parallel_components": {
+    "queue": false,
+    "scheduler": false,
+    "dashboard": false,
+    "rag": false,
+    "vector_database": false,
+    "task_source": false
+  },
+  "fixtures": [
+    "unapproved",
+    "duplicate",
+    "sensitive",
+    "machine-local",
+    "raw-rollout",
+    "unverified",
+    "rejected",
+    "approved"
+  ]
+}

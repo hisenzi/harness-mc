@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -28,6 +29,7 @@ const ACTION_CLASS_BY_ACTION = {
   wait_for_approval: "task_state_mutation",
   propose_next_task: "task_state_mutation",
   propose_task_reorganization: "task_state_mutation",
+  apply_memory_promotion: "memory_write_or_update",
 };
 
 export function runMorrowiseActionRunner(input = {}, options = {}) {
@@ -35,12 +37,24 @@ export function runMorrowiseActionRunner(input = {}, options = {}) {
   const policy = input.policy || readJson(path.join(root, "system-workflow", "registries", "morrowise-approval-policy.json"));
   const candidates = Array.isArray(input.candidates) ? input.candidates : [];
   const writeSyncEvents = options.writeSyncEvents === true;
+  const writeMemoryPromotions = options.writeMemoryPromotions === true;
+  const collabRoot = options.collabRoot || path.resolve(root, "..");
 
-  const results = candidates.map((candidate) => runCandidate(candidate, { policy, root, writeSyncEvents }));
+  const results = candidates.map((candidate) => runCandidate(candidate, {
+    policy,
+    root,
+    collabRoot,
+    writeSyncEvents,
+    writeMemoryPromotions,
+  }));
 
   return {
     runner_id: "morrowise-action-runner.v0",
-    mode: writeSyncEvents ? "low_risk_sync_queue_enabled" : "dry_run_plan_only",
+    mode: writeMemoryPromotions
+      ? "approved_memory_write_enabled"
+      : writeSyncEvents
+        ? "low_risk_sync_queue_enabled"
+        : "dry_run_plan_only",
     generated_at: options.generated_at || new Date().toISOString(),
     applied_actions: results.filter((result) => result.applied === true).length,
     approval_requests: results.filter((result) => result.output_type === "approval_request").length,
@@ -53,7 +67,9 @@ function runCandidate(candidate, context) {
 
   const actionClass = candidate.action_class || ACTION_CLASS_BY_ACTION[candidate.suggested_action] || "unknown";
   const policyDecision = classifyPolicy(actionClass, context.policy);
-  const approvalNeeded = candidate.requires_approval === true || candidate.risk_level !== "low" || policyDecision.policy !== "allowed";
+  const approvalSatisfied = memoryPromotionApprovalSatisfied(candidate, actionClass);
+  const approvalNeeded = !approvalSatisfied
+    && (candidate.requires_approval === true || candidate.risk_level !== "low" || policyDecision.policy !== "allowed");
 
   if (policyDecision.policy === "forbidden") {
     return approvalRequest(candidate, actionClass, policyDecision, "forbidden_action");
@@ -61,6 +77,10 @@ function runCandidate(candidate, context) {
 
   if (approvalNeeded) {
     return approvalRequest(candidate, actionClass, policyDecision, "approval_required");
+  }
+
+  if (candidate.suggested_action === "apply_memory_promotion") {
+    return memoryPromotion(candidate, actionClass, policyDecision, context);
   }
 
   if (!LOW_RISK_ACTIONS.has(candidate.suggested_action)) {
@@ -136,6 +156,65 @@ function queueSyncRequested(candidate, actionClass, policyDecision, context) {
   });
 }
 
+function memoryPromotion(candidate, actionClass, policyDecision, context) {
+  const { target, mutation, memory_candidate_id: candidateId } = candidate.payload;
+  const plan = {
+    candidate_id: candidateId,
+    target_layer: target.layer,
+    target_ref: target.ref,
+    mutation_mode: mutation.mode,
+    expected_preimage_sha256: mutation.expected_preimage_sha256,
+    exact_text_sha256: sha256(mutation.exact_text),
+    approval_id: candidate.approval_evidence.approval_id,
+  };
+
+  if (!context.writeMemoryPromotions) {
+    return baseOutput(candidate, actionClass, policyDecision, {
+      output_type: "memory_promotion_plan",
+      applied: false,
+      ...plan,
+      note: "Approved plan only; set the explicit runner write boundary to apply the exact mutation.",
+    });
+  }
+
+  const targetPath = resolveMemoryPromotionTarget(target, context.collabRoot);
+  const stat = fs.lstatSync(targetPath);
+  if (!stat.isFile() || stat.isSymbolicLink()) throw new Error("memory promotion target must be a regular non-symlink file");
+  const lockPath = `${targetPath}.morrowise-memory.lock`;
+  const tempPath = `${targetPath}.morrowise-${process.pid}-${Date.now()}.tmp`;
+  let lockFd;
+  let beforeSha256;
+  let afterSha256;
+  try {
+    lockFd = fs.openSync(lockPath, "wx");
+    const before = fs.readFileSync(targetPath, "utf8");
+    beforeSha256 = sha256(before);
+    if (beforeSha256 !== mutation.expected_preimage_sha256) {
+      throw new Error("memory promotion preimage hash mismatch");
+    }
+    const exactText = mutation.exact_text;
+    if (before.includes(exactText.trim())) throw new Error("memory promotion exact text is already present");
+    const after = before + exactText;
+    afterSha256 = sha256(after);
+    fs.writeFileSync(tempPath, after, { flag: "wx", mode: stat.mode });
+    fs.renameSync(tempPath, targetPath);
+  } finally {
+    if (fs.existsSync(tempPath)) fs.rmSync(tempPath);
+    if (lockFd !== undefined) {
+      fs.closeSync(lockFd);
+      if (fs.existsSync(lockPath)) fs.rmSync(lockPath);
+    }
+  }
+
+  return baseOutput(candidate, actionClass, policyDecision, {
+    output_type: "memory_promotion_receipt",
+    applied: true,
+    ...plan,
+    before_sha256: beforeSha256,
+    after_sha256: afterSha256,
+  });
+}
+
 function approvalRequest(candidate, actionClass, policyDecision, reason) {
   const taskGovernanceHandoff = actionClass === "task_state_mutation" && candidate.target_project
     ? {
@@ -206,12 +285,83 @@ function assertCandidate(candidate, root) {
     }
     assertTaskGovernanceCandidate(candidate, root);
   }
+  if (candidate?.suggested_action === "apply_memory_promotion") {
+    assertMemoryPromotionCandidate(candidate);
+  }
   for (const field of ["recommendation_id", "suggested_action", "suggested_task_id", "risk_level", "requires_approval", "evidence_refs"]) {
     if (candidate?.[field] === undefined || candidate?.[field] === null) throw new Error(`candidate.${field} is required`);
   }
   if (!["low", "medium", "high"].includes(candidate.risk_level)) throw new Error(`invalid risk_level: ${candidate.risk_level}`);
   if (typeof candidate.requires_approval !== "boolean") throw new Error("candidate.requires_approval must be boolean");
   if (!Array.isArray(candidate.evidence_refs) || candidate.evidence_refs.length === 0) throw new Error("candidate.evidence_refs must be non-empty");
+}
+
+function assertMemoryPromotionCandidate(candidate) {
+  if (candidate.action_class !== "memory_write_or_update") {
+    throw new Error("memory promotion candidate.action_class must be memory_write_or_update");
+  }
+  const { memory_candidate_id: candidateId, target, mutation } = candidate.payload || {};
+  if (!candidateId) throw new Error("memory promotion candidate.payload.memory_candidate_id is required");
+  if (target?.layer !== "l1_shared_active_memory") {
+    throw new Error("memory promotion target.layer must be l1_shared_active_memory");
+  }
+  if (target?.ref !== "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md") {
+    throw new Error("memory promotion target.ref is outside the governed L1 target");
+  }
+  if (mutation?.mode !== "append_exact_text") {
+    throw new Error("memory promotion mutation.mode must be append_exact_text");
+  }
+  if (typeof mutation?.exact_text !== "string" || mutation.exact_text.length === 0) {
+    throw new Error("memory promotion mutation.exact_text is required");
+  }
+  if (!/^[a-f0-9]{64}$/.test(mutation?.expected_preimage_sha256 || "")) {
+    throw new Error("memory promotion mutation.expected_preimage_sha256 must be SHA-256");
+  }
+  const { source, dedupe, sensitivity, verification } = candidate.payload;
+  if (!source?.ref || !/^[a-f0-9]{64}$/.test(source.fingerprint_sha256 || "")) {
+    throw new Error("memory promotion source ref and fingerprint are required");
+  }
+  if (/^(\/Users\/|~\/|\$HOME\/|[A-Za-z]:\\)/.test(source.ref) || !/^(\$CODEX_HOME|\$COLLAB)\//.test(source.ref)) {
+    throw new Error("memory promotion source ref must be portable");
+  }
+  if (/(^|\/)rollout_summaries\//.test(source.ref) || /(^|\/)rollouts?\//.test(source.ref)) {
+    throw new Error("memory promotion raw rollout source is forbidden");
+  }
+  if (dedupe?.status !== "unique" || !dedupe.key || !Array.isArray(dedupe.compared_against) || dedupe.compared_against.length === 0) {
+    throw new Error("memory promotion requires a unique dedupe decision");
+  }
+  if (sensitivity?.classification !== "non_sensitive") {
+    throw new Error("memory promotion candidate must be non-sensitive");
+  }
+  if (verification?.status !== "verified" || !verification.evidence_ref) {
+    throw new Error("memory promotion candidate must be verified");
+  }
+  const sensitiveField = findForbiddenSensitiveField(candidate);
+  if (sensitiveField) throw new Error(`memory promotion candidate contains forbidden sensitive field: ${sensitiveField}`);
+}
+
+function memoryPromotionApprovalSatisfied(candidate, actionClass) {
+  if (candidate?.suggested_action !== "apply_memory_promotion" || actionClass !== "memory_write_or_update") return false;
+  const approval = candidate.approval_evidence;
+  const payload = candidate.payload || {};
+  return approval?.status === "approved"
+    && approval.approved_by === "Vincent"
+    && typeof approval.approval_id === "string"
+    && approval.approval_id.length > 0
+    && typeof approval.evidence_ref === "string"
+    && approval.evidence_ref.length > 0
+    && approval.approved_candidate_id === payload.memory_candidate_id
+    && approval.approved_target_ref === payload.target?.ref
+    && approval.approved_text_sha256 === sha256(payload.mutation?.exact_text || "");
+}
+
+function resolveMemoryPromotionTarget(target, collabRoot) {
+  const expectedRef = "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md";
+  if (target.ref !== expectedRef) throw new Error("memory promotion target ref is not allowed");
+  const resolved = path.resolve(collabRoot, target.ref.slice("$COLLAB/".length));
+  const expected = path.resolve(collabRoot, "notyet-harness", "000_Agent", "memory", "MEMORY.md");
+  if (resolved !== expected) throw new Error("memory promotion target path escaped the governed L1 target");
+  return resolved;
 }
 
 function assertTaskGovernanceCandidate(candidate, root) {
@@ -287,11 +437,18 @@ function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
 }
 
+function sha256(value) {
+  return crypto.createHash("sha256").update(value).digest("hex");
+}
+
 const isCli = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
 if (isCli) {
   const inputPath = process.argv[2];
   if (!inputPath) throw new Error("Usage: node scripts/morrowise-action-runner.mjs <input.json>");
   const input = readJson(path.resolve(inputPath));
-  const output = runMorrowiseActionRunner(input, { writeSyncEvents: input.writeSyncEvents === true });
+  const output = runMorrowiseActionRunner(input, {
+    writeSyncEvents: input.writeSyncEvents === true,
+    writeMemoryPromotions: input.writeMemoryPromotions === true,
+  });
   console.log(JSON.stringify(output, null, 2));
 }

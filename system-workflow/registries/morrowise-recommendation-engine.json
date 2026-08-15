@@ -135,6 +135,13 @@
       "suggested_task_id_rule": "Point to the approval-policy task or the task that owns the requested action."
     },
     {
+      "type": "apply_memory_promotion",
+      "allowed_when": "A verified, unique and non-sensitive memory candidate names the exact governed L1 target and carries exact-scope Vincent approval.",
+      "requires_approval": true,
+      "risk_level": "high",
+      "suggested_task_id_rule": "Use shared-memory-governance-v2 and route mutation through the existing approval policy and action runner."
+    },
+    {
       "type": "create_task_event",
       "allowed_when": "Another repo finished relevant work but harness-mc should receive portable task-state evidence through the event queue.",
       "requires_approval": false,

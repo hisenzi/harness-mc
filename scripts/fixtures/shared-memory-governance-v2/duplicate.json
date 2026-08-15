@@ -1,0 +1,49 @@
+{
+  "source": {
+    "kind": "agent_adapter_memory",
+    "ref": "$CODEX_HOME/memories/MEMORY.md#jv49-fixture",
+    "fingerprint_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "reason": "A durable cross-agent route is useful and is not owned by an existing skill or architecture entry.",
+  "dedupe": {
+    "key": "jv49-fixture-durable-route",
+    "compared_against": [
+      "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md",
+      "$COLLAB/notyet-harness/000_Agent/skills/",
+      "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md"
+    ],
+    "status": "duplicate",
+    "duplicate_of": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md#existing-route"
+  },
+  "target": {
+    "layer": "l1_shared_active_memory",
+    "ref": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md"
+  },
+  "sensitivity": {
+    "classification": "non_sensitive",
+    "review": "passed"
+  },
+  "verification": {
+    "status": "verified",
+    "evidence_ref": "$COLLAB/harness-mc/scripts/verify-shared-memory-governance-v2.mjs"
+  },
+  "mutation": {
+    "mode": "append_exact_text",
+    "exact_text": "\n- JV-49 fixture route: durable test-only route.\n",
+    "expected_preimage_sha256": "065abf8de83676467fdeae350ea324f7d555fbdff44afc28d844d6d0f8e1cf36"
+  },
+  "approval": {
+    "status": "pending"
+  },
+  "evidence_refs": [
+    {
+      "type": "source_fingerprint",
+      "ref": "$CODEX_HOME/memories/MEMORY.md#jv49-fixture"
+    },
+    {
+      "type": "governance_registry",
+      "ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-memory-promotion-adapter.json"
+    }
+  ],
+  "candidate_id": "jv49-duplicate"
+}

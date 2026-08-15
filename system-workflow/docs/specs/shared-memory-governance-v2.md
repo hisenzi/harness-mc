@@ -1,7 +1,7 @@
 # Shared Memory Governance v2
 
 > Task: `shared-memory-governance-v2` (`JV-49`)
-> Status: R1 baseline inventory complete; migration pending
+> Status: R1-R3 verified; R4 Architecture Admission prepared, canonical task application pending
 > Updated: 2026-08-12
 > Machine-readable evidence: `$COLLAB/harness-mc/system-workflow/registries/morrowise-shared-memory-governance-v2.json`
 > Verifier: `node scripts/verify-shared-memory-governance-v2.mjs`
@@ -35,7 +35,7 @@
 - `archive`：歷史、daily progress 或已被現行正本取代。
 - `needs-review`：可能仍有價值，但 canonical source、active state 或目標層尚未確認。
 
-R1 baseline 只記錄候選，不執行移動、合併、覆蓋或刪除。
+R1 的 frozen baseline 保留在 registry 與 `memory/archive/MEMORY-pre-jv49-2026-08-12.md`；實作後共享 L1 只保留耐久內容與薄路由。
 
 ## L1 content budget
 
@@ -56,7 +56,7 @@ R1 baseline 只記錄候選，不執行移動、合併、覆蓋或刪除。
 4. action status；
 5. recovery path。
 
-R1 建議目標是獨立的 `memory/archive/root-dated-logs/`，但實際建立與搬移必須在 baseline checkpoint 後另行執行並驗證；原檔在此前保持不變。
+14 份 root dated logs 已逐筆搬到 `memory/archive/root-dated-logs/`，且保留 source SHA-256、target SHA-256、daily relation 與 recovery path。`memory/archive/MANIFEST.json` 另收錄 pre-JV-49 L1 snapshot，共 15 筆可回復項目；同名 daily 檔未被覆蓋或合併。
 
 ## Memory ingress boundary
 
@@ -67,7 +67,7 @@ R1 建議目標是獨立的 `memory/archive/root-dated-logs/`，但實際建立�
 - 先產生一筆有來源與目標層的 candidate；memory write 屬 Approval Policy 的 `memory_write_or_update`，需 Vincent 明確核准。
 - daily raw log 的明確使用者要求可走 daily writer，但不得藉此自動升格 L1 或改 task state。
 
-R1 只盤點 stale ingress；實際修正屬 R2。
+R2 已修正 inventory 中 13 個 active ingress。每個入口都在 registry 保存 expected／forbidden markers，讓 stale owner、硬編碼路徑與自動升格宣告可被重跑 verifier 攔截。
 
 ## Maxmodel boundary sample
 
@@ -96,7 +96,9 @@ raw rollout、聊天全文、秘密、runtime auth、機器專屬暫態與未驗
 
 `Recommendation Engine → Approval Policy → Runner / task lifecycle`
 
-R1 不修改此閉環；R3 才加入 memory-promotion candidate contract。不得新增第二套 queue、scheduler、notification、dashboard、task system、RAG 或向量資料庫。
+R3 新增 `morrowise-memory-promotion-adapter.v1`，只把 candidate 轉成既有 Recommendation／Approval／Runner 可判斷的輸入。pending candidate 只產生 approval request；approved candidate 仍須通過 exact target、exact text hash 與 preimage SHA-256，才可由既有 Runner 寫入。不得新增第二套 queue、scheduler、notification、dashboard、task system、RAG 或向量資料庫。
+
+負向 fixtures 固定覆蓋 unapproved、duplicate、sensitive、machine-local、raw-rollout、unverified 與 rejected；正向 approved fixture 只在 verifier 建立的臨時 `$COLLAB` root 寫入，真實 shared L1 的 fixture write count 必須為 0。
 
 ## Five representative queries
 
@@ -113,13 +115,13 @@ registry 保存 before result 與 evidence。R1 實際重整後才填 after resu
 | Phase | Current state | Gate |
 | --- | --- | --- |
 | R1 baseline | complete | `node scripts/verify-shared-memory-governance-v2.mjs --phase r1-baseline` |
-| R1 migration | pending | shared L1 重整、ledger verified、after fingerprint、五查詢 no regression |
-| R2 | not started | dated logs／archive 與 ingress owner 修正 |
-| R3 | not started | approval-gated candidate adapter + negative fixtures |
-| R4 | not started | full evaluation + Architecture Admission decision |
+| R1 migration | complete | `node scripts/verify-shared-memory-governance-v2.mjs --phase r1` |
+| R2 | complete | `node scripts/verify-shared-memory-governance-v2.mjs --phase r2` |
+| R3 | complete | `node scripts/verify-shared-memory-governance-v2.mjs --phase r3` |
+| R4 | canonical pending | Architecture Admission 已建立；待 canonical task 無同檔 overlap 後回寫 admission review、acceptance receipt 並跑 full gate |
 
-官方 `--phase r1` 在 migration 尚未執行前必須維持 RED；完整 verifier 在 R1–R4 未完成前也必須維持 RED。這可防止把「盤點完成」誤報成「JV-49 完成」。
+完整 verifier 在 R4 canonical application 未完成前必須維持 RED。這可防止把「本機實作完成」或 Architecture Admission 草案誤報成 canonical JV-49 完成。
 
 ## Recovery
 
-R1 baseline 沒有 source mutation。回復只需移除本 task 新增的 harness spec、registry 與 verifier；shared MEMORY.md、skills、ARCHITECTURE.md、dated logs 與 local Codex memory 均保持原狀。後續任何 migration 必須在 registry 逐筆把 `action_status` 從 `proposed_no_write` 更新為 `verified`，並留下 before／after hash 與反向路徑。
+完整 pre-JV-49 L1 可由 `memory/archive/MEMORY-pre-jv49-2026-08-12.md` 依 manifest hash 回復。每份 root dated log 可由 manifest 的 `target_ref` 搬回 `recovery_path`，並核對 SHA-256；不得覆蓋同名 daily 檔。promotion write 若 preimage 漂移會 fail closed，不執行猜測性合併。R2 ingress 修正與 R3 adapter 應以 Git diff／commit 反向回復，不得刪除 archive evidence。

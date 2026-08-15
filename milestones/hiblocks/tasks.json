@@ -29,6 +29,236 @@
       "note": "由 RRREALLL 手機版回饋「字偏小」確認：單站補 global.css 不是長期解法。既有 p1-s-typography 已建立 --hi-type-* 語意 token 與中文 mobile baseline；本 task 補 adoption/hardening：把 baseline 寫入新站流程、模板/skill 指引與驗證命令，並掃 downstream 常見偏小來源（card desc / FAQ answer / footer/legal / raw 13px-14px）。原則：caption 只給 eyebrow/meta，不承載閱讀型內容；新 theme 可放大品牌字級，但不能低於中文手機基線。"
     },
     {
+      "id": "p1-performance-font-policy",
+      "title": "首屏效能模組：字型載入政策",
+      "status": "completed",
+      "completed_at": "2026-08-15",
+      "summary": "HB-PERF-01 已將 HiBlocks 預設字型載入改為系統 fallback 與可驗證的本站自架 WOFF2 政策；C1 5ccd20f 已在 origin/main，字型契約、Astro check、靜態建置與產物稽核均通過。",
+      "commits": [
+        "5ccd20f"
+      ],
+      "track": "phase-1",
+      "order_label": "HB-PERF-01",
+      "priority": "high",
+      "estimate": "4hr",
+      "done_condition": "HiBlocks 所有 layout 提供預設系統字型與可選的本站自架 WOFF2 字型政策，不再載入 Google Fonts 或 DM Mono；只有被標示為首屏需要的自架字型可 preload，且全部使用 font-display: swap；靜態 verifier 的正反向案例、建置 HTML 稽核與 Astro build 均通過。",
+      "note": "本 task 只處理 render-blocking 字型與可重用載入政策。玉田法律行動首屏實測 FCP 17.9 秒、LCP 19.9 秒，Google Fonts CSS 約 200 KiB 且 Lighthouse 估計可解除 19.1 秒關鍵路徑等待；圖片、快取與 CSS 拆分另立後續 task，不以動畫優化取代本 task。2026-08-15 build audit 另發現 DemoMonaka layout 直接載入 Google Fonts，納入同一政策，避免只修預設 BaseLayout 而留下已建置頁面。",
+      "project_problem": "HiBlocks 的 BaseLayout 與 DemoMonaka layout 預設無條件載入多組 Google Fonts 與 DM Mono，讓採用它們的新站把可避免的字型網路依賴放進首屏關鍵路徑。",
+      "core_value": {
+        "statement": "品牌字型可保留，首屏不被外部字型阻塞",
+        "pillars": [
+          {
+            "label": "快速預設",
+            "description": "未提供品牌字型時只使用系統字型，不產生外部字型請求。"
+          },
+          {
+            "label": "品牌可控",
+            "description": "需要明體或其他品牌字型時，只接受本站自架、可子集化的 WOFF2 與明確 preload。"
+          },
+          {
+            "label": "可驗證",
+            "description": "以靜態 verifier 阻止 Google Fonts、遠端字型、DM Mono 預設載入與不安全的 preload。"
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "hiblocks",
+        "goal_ref": "$COLLAB/harness-mc/milestones/hiblocks/project.json#/goals",
+        "goal_fingerprint": "sha256:d19b24244f6f38b0545cd37a17e083970cee4d9bc501fdd4dd85ec81bd37db40",
+        "contribution": "把所有 HiBlocks 新站都會繼承的字型載入方式，改為可選品牌自架字型與安全的系統預設，降低首屏等待並提高開站品質的一致性。",
+        "evidence_plan": [
+          "$COLLAB/hiblocks/scripts/verify-font-policy.mjs",
+          "$COLLAB/hiblocks/src/components/layout/BaseLayout.astro",
+          "node scripts/validate-tasks.mjs --changed-only --project hiblocks"
+        ],
+        "reviewed_at": "2026-08-15"
+      },
+      "acceptance_matrix": [
+        {
+          "id": "HB-PERF-01-A01",
+          "requirement": "所有 HiBlocks layout 預設不再產生 Google Fonts CSS、gstatic preconnect 或 DM Mono 載入。",
+          "verification": "scripts/verify-font-policy.mjs static contract"
+        },
+        {
+          "id": "HB-PERF-01-A02",
+          "requirement": "自架字型政策只允許本站 WOFF2；所有 face 均含 font-display: swap，只有首屏標記字型可 preload。",
+          "verification": "scripts/verify-font-policy.mjs positive and negative cases"
+        },
+        {
+          "id": "HB-PERF-01-A03",
+          "requirement": "模組可被 BaseLayout 使用且不破壞 Astro 靜態建置。",
+          "verification": "npm run build"
+        }
+      ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "verification-before-completion",
+          "closeout-commit-routing"
+        ],
+        "execution_boundary": "僅變更 HiBlocks 的字型政策、BaseLayout／DemoMonaka layout、系統 fallback token 與 verifier；不直接修改 yutianlaw、不部署、不改 CDN cache header，也不碰既有 package.json 或 template-library 工作。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 要求先把 PageSpeed 找出的字型關鍵路徑問題做成 HiBlocks 可重用模組，而非直接修改單一網站。",
+            "evidence_refs": [
+              "Vincent 2026-08-15 current session: 我們先針對以下做優化；先成模組開始。",
+              "PageSpeed Insights 2026-08-15: yutianlaw.com mobile FCP 17.9s / LCP 19.9s; Google Fonts render-blocking diagnosis."
+            ],
+            "recorded_at": "2026-08-15",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "hiblocks/p1-s",
+                "hiblocks/p1-s-typography",
+                "hiblocks/p1-s-typography-adoption",
+                "hiblocks/p1-block-template-library"
+              ],
+              "scope_comparison": {
+                "problem": "既有 task 處理 token schema、閱讀字級基線或 HTML 樣板；本 task 處理外部字型造成的首屏網路關鍵路徑。",
+                "owner_source_of_truth": "p1-s 與 typography tasks 仍擁有文字 token 與可讀性基線；本 task 只擁有載入來源、preload、font-display 與 BaseLayout 字型政策。",
+                "inputs_outputs": "輸入為字型角色、本站自架 WOFF2 路徑與首屏需求；輸出為可渲染的 head 標籤、系統 fallback 與可重跑的 static verifier。",
+                "lifecycle_completion": "既有 task 在 token 或字級契約成立時完成；本 task 必須證明預設沒有外部字型關鍵路徑、自架例外符合政策，且 Astro build 成功。"
+              },
+              "decision_reason": "問題、正本、輸入輸出與完成邊界均不同於既有 typography 與樣板 task，故建立獨立的首屏字型效能 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-15",
+                "evidence_refs": [
+                  "Vincent 2026-08-15 current session: 我們先針對以下做優化；先成模組開始。"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "建置 HTML 稽核發現 DemoMonaka 是獨立 layout，仍直接載入 Google Fonts。將完成條件由僅 BaseLayout 收緊為所有 HiBlocks layout，避免模組留下已建置頁面的首屏字型依賴。",
+            "evidence_refs": [
+              "$COLLAB/hiblocks/src/layouts/DemoMonaka.astro",
+              "$COLLAB/hiblocks/dist/demo/monaka/index.html",
+              "Vincent 2026-08-15 current session: 優先處理字型載入，先成模組開始。"
+            ],
+            "recorded_at": "2026-08-15",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "hiblocks/p1-performance-font-policy"
+              ],
+              "scope_comparison": {
+                "problem": "仍是同一個外部字型首屏關鍵路徑問題，只是稽核發現第二個 layout 入口。",
+                "owner_source_of_truth": "字型政策 task 仍是所有 layout 的唯一載入政策正本；DemoMonaka 不另建重複 task。",
+                "inputs_outputs": "既有輸入輸出不變；新增 DemoMonaka 作為接受同一 policy 的 layout consumer。",
+                "lifecycle_completion": "完成邊界由預設 layout 的靜態檢查，收緊為所有建置 HTML 都沒有外部字型請求。"
+              },
+              "decision_reason": "這是同一問題、owner、輸入輸出與生命週期的發現性收緊，故 amend 現有 task 而非建立新 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-15",
+                "evidence_refs": [
+                  "Vincent 2026-08-15 current session: 優先處理字型載入，先成模組開始。"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "依 Vincent 指示開始製作可重用的字型載入模組。BaseLayout 與 DemoMonaka 已改接同一政策，並完成本機 verifier、Astro 型別檢查、靜態建置與建置產物稽核；尚未提交、推送、部署或以真實網站重新量測，故 task 保持 in_progress。",
+            "evidence_refs": [
+              "$COLLAB/hiblocks/src/components/performance/HiFontPolicy.astro",
+              "$COLLAB/hiblocks/src/lib/performance/font-policy.mjs",
+              "$COLLAB/hiblocks/scripts/verify-font-policy.mjs",
+              "npm run build",
+              "npx astro check",
+              "Vincent 2026-08-15 current session: 我們先針對以下做優化；先成模組開始。"
+            ],
+            "recorded_at": "2026-08-15"
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "HB-PERF-01 的自架 WOFF2／系統 fallback 字型政策已由 C1 5ccd20f 交付到 hiblocks/origin/main；所有 layout 已移除 Google Fonts，靜態 contract、Astro check、production build 與建置產物稽核均通過。此 task 不宣稱 yutianlaw 已部署或已重跑 PageSpeed。",
+            "evidence_refs": [
+              "Product C1 5ccd20f on hiblocks/origin/main; remote ancestry and local/upstream 0/0 verified 2026-08-15",
+              "$COLLAB/hiblocks/scripts/verify-font-policy.mjs",
+              "npx astro check",
+              "npm run build",
+              "Vincent 2026-08-15 current session: 進行 C2 走 scope-only 收尾。"
+            ],
+            "recorded_at": "2026-08-15"
+          }
+        ]
+      },
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "BaseLayout 與 DemoMonaka 預設不再輸出 Google Fonts、gstatic preconnect 或 DM Mono 載入。",
+          "字型政策只接受本站絕對 WOFF2 路徑，拒絕遠端 URL、父層路徑與非關鍵字型 preload。",
+          "有效的本站自架字型會輸出 font-display: swap，且只有 critical preload 字型輸出 preload tag。"
+        ],
+        "test_level": [
+          "static policy contract",
+          "Astro type and template check",
+          "static production build"
+        ],
+        "fixture_refs": [
+          "$COLLAB/hiblocks/scripts/verify-font-policy.mjs validPolicy and negative policy cases",
+          "$COLLAB/hiblocks/src/components/layout/BaseLayout.astro",
+          "$COLLAB/hiblocks/src/layouts/DemoMonaka.astro"
+        ],
+        "evidence_refs": [
+          "node scripts/verify-font-policy.mjs -> PASS",
+          "npx astro check -> 0 errors, 0 warnings, 0 hints",
+          "npm run build -> 5 pages built",
+          "built asset audit -> 11 HTML/CSS/JS files contain no Google Fonts or DM+Mono URL"
+        ],
+        "runtime_evidence_required": false,
+        "red_command": "node scripts/verify-font-policy.mjs before the font-policy module and layout changes",
+        "expected_red_reason": "缺少字型政策模組，且 BaseLayout／DemoMonaka 仍直接載入 Google Fonts。",
+        "green_command": "node scripts/verify-font-policy.mjs",
+        "full_regression_commands": [
+          "npm run validate:typography",
+          "npx astro check",
+          "npm run build"
+        ]
+      },
+      "completion_evidence": {
+        "red_evidence": [
+          "2026-08-15: 新 verifier 在模組尚未建立時失敗，指出 font policy module unavailable、BaseLayout 仍有 Google Fonts，且預設 theme 缺少系統 fallback。",
+          "2026-08-15: 將 DemoMonaka 納入所有 layout contract 後，verifier 先失敗，指出該 layout 尚未接入字型政策與 Monaka theme 仍有 remote-only default。"
+        ],
+        "green_evidence": [
+          "node scripts/verify-font-policy.mjs -> PASS，涵蓋有效本站 WOFF2、遠端 URL／父層路徑／非 WOFF2／非 critical preload 拒絕，以及所有 layout 與 themes 的 static contract。"
+        ],
+        "regression_evidence": [
+          "npm run validate:typography -> PASS",
+          "npx astro check -> 0 errors, 0 warnings, 0 hints",
+          "npm run build -> 5 static pages built",
+          "建置產物稽核 -> 11 HTML/CSS/JS files contain no Google Fonts or DM+Mono URL",
+          "C1 5ccd20f is contained by hiblocks/origin/main; local/upstream parity 0/0"
+        ],
+        "verifier_refs": [
+          "$COLLAB/hiblocks/scripts/verify-font-policy.mjs",
+          "$COLLAB/hiblocks/scripts/validate-typography-contract.mjs",
+          "$COLLAB/hiblocks/package.json#scripts.build"
+        ],
+        "fixture_runtime_boundary": "本 task 驗收的是可重用的 HiBlocks 靜態字型載入政策與建置輸出；不宣稱既有 yutianlaw production 已採用本模組、CDN cache 已更新，或 PageSpeed 已重新量測。"
+      }
+    },
+    {
       "id": "p1-navbar-mobile-overlay",
       "title": "HiNavbar 手機選單滿版遮罩與關閉行為修正",
       "status": "todo",

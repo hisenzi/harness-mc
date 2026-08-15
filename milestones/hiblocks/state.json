@@ -36,6 +36,14 @@
         "3cbe98fa9297fbdc78c0a37857a933a79bc80414"
       ],
       "summary": "HB-MVP-05 已完成可重跑的 Conversation-to-Prototype spike；目前驗收矩陣 A01–A11 全數通過，使用者移動後順序、Agent 明示改序、Vincent 核准與 Prototype 輸出可完整追溯，Dashboard 維持唯讀 consumer。"
+    },
+    "p1-performance-font-policy": {
+      "status": "completed",
+      "completed_at": "2026-08-15",
+      "commits": [
+        "5ccd20f"
+      ],
+      "summary": "HB-PERF-01 已將 HiBlocks 預設字型載入改為系統 fallback 與可驗證的本站自架 WOFF2 政策；C1 5ccd20f 已在 origin/main，字型契約、Astro check、靜態建置與產物稽核均通過。"
     }
   }
 }

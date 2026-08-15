@@ -29,6 +29,25 @@ withFixture(({ collabRoot, registryPath, initScript, commandLog, env }) => {
 });
 
 withFixture(({ collabRoot, registryPath, initScript, commandLog, env }) => {
+  const id = "existing-repo";
+  const result = runInit({ initScript, id, registryPath, existingRepoRef: `hisenzi/${id}`, env });
+  assert.equal(result.status, 0, result.stderr || result.stdout);
+  const project = readJson(path.join(collabRoot, "harness-mc", "milestones", id, "project.json"));
+  assert.equal(project.repo_ref, `hisenzi/${id}`);
+  assert.deepEqual(project.repo_creation, { create_repo: false, approval_ref: null });
+  assert.equal(readLog(commandLog), "", "attaching an existing repo must not invoke gh or git");
+});
+
+withFixture(({ collabRoot, registryPath, initScript, commandLog, env }) => {
+  const id = "existing-repo-mismatch";
+  const before = digestTree(collabRoot);
+  const result = runInit({ initScript, id, registryPath, existingRepoRef: "hisenzi/another-project", env });
+  assert.equal(result.status, 2, result.stderr || result.stdout);
+  assert.equal(readLog(commandLog), "", "a mismatched existing repo must not invoke gh or git");
+  assert.equal(digestTree(collabRoot), before, "a mismatched existing repo changed the fixture");
+});
+
+withFixture(({ collabRoot, registryPath, initScript, commandLog, env }) => {
   const id = "kj-mascot";
   const result = runInit({ initScript, id, registryPath, env, group: "kj", folderDate: "260803" });
   assert.equal(result.status, 0, result.stderr || result.stdout);
@@ -149,7 +168,7 @@ function withFixture(callback) {
   }
 }
 
-function runInit({ initScript, id, registryPath, receiptPath, env, group = null, folderDate = null }) {
+function runInit({ initScript, id, registryPath, receiptPath, existingRepoRef, env, group = null, folderDate = null }) {
   const args = [
     initScript,
     "--id", id,
@@ -169,6 +188,7 @@ function runInit({ initScript, id, registryPath, receiptPath, env, group = null,
   if (group) args.push("--group", group);
   if (folderDate) args.push("--folder-date", folderDate);
   if (receiptPath) args.push("--repo-create-receipt", receiptPath);
+  if (existingRepoRef) args.push("--existing-repo-ref", existingRepoRef);
   return spawnSync("python3", args, { cwd: path.dirname(path.dirname(initScript)), encoding: "utf8", env });
 }
 

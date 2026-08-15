@@ -142,6 +142,17 @@ def load_repo_create_receipt(receipt_path: str, project_id: str):
     return receipt
 
 
+def load_existing_repo_ref(repo_ref: str, project_id: str):
+    """驗證既有 repo 精準對應本專案；連結不授權任何 GitHub／Git 動作。"""
+    if not repo_ref:
+        return None
+    expected = f"hisenzi/{project_id}"
+    if repo_ref != expected:
+        print(f"❌ existing repo 必須精準為 '{expected}'，收到：{repo_ref}", file=sys.stderr)
+        sys.exit(2)
+    return repo_ref
+
+
 def require_write_admission(destination: Path, topology_registry: str = None):
     """在任何 project-init mkdir／同步前取得 target-specific topology admission。"""
     registry = Path(topology_registry) if topology_registry else DEFAULT_TOPOLOGY_REGISTRY
@@ -194,7 +205,7 @@ def make_project_json(args) -> dict:
         "priority":    args.priority,
         "created":     datetime.now().strftime("%Y-%m-%d"),
         "estimated_completion": args.due,
-        "repo_ref": None,
+        "repo_ref": args.existing_repo_ref,
         "repo_creation": {
             "create_repo": args.repo_create_receipt is not None,
             "approval_ref": args.repo_create_receipt.get("receipt_id") if args.repo_create_receipt else None,
@@ -460,7 +471,7 @@ def promote(args):
         print(f"\n🎉 升級完成：{args.id} → standalone")
         print(f"   Repo: https://github.com/hisenzi/{args.id}")
         print(f"   本地: Claude_協作/{args.id}/")
-        print("   ⚠️ 記得更新 MEMORY.md 加入 Repo 行")
+        print("   🧠 如需長期記憶，請建立 shared-memory candidate（source、reason、dedupe_key、target_layer、sensitivity、Vincent approval）；未核准不得直接更新 MEMORY.md")
     else:
         print("❌ 升級失敗")
 
@@ -545,6 +556,8 @@ def create(args):
     if repo_created:
         print(f"   Repo: https://github.com/hisenzi/{args.id}")
         print(f"   本地: Claude_協作/{args.id}/")
+    elif args.existing_repo_ref:
+        print(f"   已連結既有 Repo: https://github.com/{args.existing_repo_ref}")
     print("   ✅ 成果契約與 starter task taxonomy 已建立；下一步依 task lifecycle 執行。")
 
 
@@ -576,6 +589,7 @@ def main():
     parser.add_argument("--group", default=None, help="milestone group slug；搭配後使用 milestones/<group>/<yymmdd-id>")
     parser.add_argument("--folder-date", default=None, help="grouped milestone 目錄日期 yymmdd；未提供則用 Asia/Taipei 今日")
     parser.add_argument("--repo-create-receipt", default=None, help="Vincent 精準 repo 建立 receipt JSON")
+    parser.add_argument("--existing-repo-ref", default=None, help="已存在且精準對應本專案的 GitHub repo，例如 hisenzi/my-project")
     parser.add_argument("--topology-registry", default=None, help=argparse.SUPPRESS)
     parser.add_argument("--template", default=None, help="（已棄用，請用 --type）")
     parser.add_argument("--repo-path", default=None, help="（已棄用）")
@@ -597,7 +611,12 @@ def main():
 
     validate_outcome_contract(parser, args)
     args.project_dir, args.milestone = resolve_milestone_destination(parser, args)
+    if args.repo_create_receipt and args.existing_repo_ref:
+        parser.error("--repo-create-receipt 與 --existing-repo-ref 不可同時使用")
+    if args.existing_repo_ref and args.type != "standalone":
+        parser.error("--existing-repo-ref 只適用於 standalone 專案")
     args.repo_create_receipt = load_repo_create_receipt(args.repo_create_receipt, args.id)
+    args.existing_repo_ref = load_existing_repo_ref(args.existing_repo_ref, args.id)
 
     create(args)
 

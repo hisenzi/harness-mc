@@ -1,0 +1,130 @@
+{
+  "name": "KJ 116 招生網站資產自主化",
+  "description": "將高中部招生網站從即將停用的 sgoods.info 資產依賴遷移為可在 iSchool 使用的自主管理資產。",
+  "type": "standalone",
+  "status": "active",
+  "priority": "P0",
+  "created": "2026-08-14",
+  "estimated_completion": "2026-08-21",
+  "repo_ref": "hisenzi/kj-116-admissions",
+  "repo_creation": {
+    "create_repo": false,
+    "approval_ref": null
+  },
+  "tracks": {
+    "phase-1": "資產盤點與遷移",
+    "phase-2": "iSchool 驗證與交付"
+  },
+  "outcome": {
+    "problem_statement": "高中部招生頁直接載入 sgoods.info 的 CSS、JS 與圖片；網域停用後，頁面會失去版型、圖示或互動。",
+    "impact": "招生頁可能在校方網站失去版型、輪播與圖示功能；沒有 FTP 時無法快速復原。",
+    "success_target": {
+      "metric": "高中部頁面實際執行期 sgoods.info 依賴數",
+      "baseline": "24 active references（另有 6 筆 HTML 註解，不計入執行期依賴）",
+      "target": "0 active references",
+      "due": "2026-08-21"
+    },
+    "measurement_source": "依 kj116-high-sgoods-dependency-inventory 的 comment-aware scanner，掃描 02_招生_html/115_KJ_admi_high 的 HTML、CSS、JS href、src 與 CSS url()；HTML 註解另列、不計入執行期依賴。"
+  },
+  "task_taxonomy": {
+    "version": "v1",
+    "sort_rule": "dependencies_then_priority_then_id",
+    "capability_domains": [
+      "direction-governance",
+      "source-memory",
+      "sensing-events",
+      "judgment-priority",
+      "approval-safety",
+      "action-delivery",
+      "feedback-learning",
+      "heartbeat-scheduling",
+      "dashboard-surface",
+      "knowledge-capture",
+      "verification-immunity"
+    ],
+    "task_kinds": [
+      "discover",
+      "decide",
+      "design",
+      "implement",
+      "verify",
+      "operate",
+      "closeout"
+    ],
+    "priority_order": ["P0", "P1", "P2"]
+  },
+  "goals": [
+    "在不取得學校 FTP 的條件下，產出可貼入 iSchool 的 CSS／JS 資產遷移方案。",
+    "使高中部範圍的實際執行期 sgoods.info 依賴數從 24 降至 0，且保留 CSS、JS、圖片與字型的來源證據。",
+    "以獨立 GitHub repo 保留每次資產遷移與驗證紀錄，不混入學校營運任務正本。"
+  ],
+  "risks": [
+    {
+      "risk": "iSchool 可能過濾或重排貼上的 style／script 標籤。",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "先在非正式頁面測試保存後原始碼與功能；未獲校方確認前不宣告可正式上線。"
+    },
+    {
+      "risk": "既有 CSS 內仍引用未下載的 sgoods.info 圖片或字型。",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "盤點每個 CSS url()，先保全缺失資產或提供視覺等效替代，再移除外部引用。"
+    },
+    {
+      "risk": "將 HTML 註解、其他第三方服務或國中部頁面誤計入本次範圍。",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "scanner 明確區分實際執行期、HTML 註解與非 sgoods 第三方來源；本案只處理高中部。"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "comment-aware scanner 對 115_KJ_admi_high 回報 0 筆實際執行期 sgoods.info 依賴。",
+      "verify_cmd": "依 kj116-high-sgoods-dependency-inventory 建立並執行 scanner。",
+      "expected": "baseline=24 active references；target=0 active references。"
+    },
+    {
+      "criterion": "CSS bundle 保留既有載入順序與需要的圖片／字型來源，且不以失效外連結替代。",
+      "verify_cmd": "比對 CSS dependency inventory、bundle 與本機瀏覽器視覺 smoke test。",
+      "expected": "主要版型、選單、輪播與圖示無可見退化。"
+    },
+    {
+      "criterion": "JS bundle 維持 jQuery → plugins → functions 的執行順序，並在 iSchool 儲存後實測。",
+      "verify_cmd": "本機與 iSchool 測試頁檢查主控台錯誤、輪播與選單互動。",
+      "expected": "無 sgoods.info JS 載入；必要互動可用或有明確降級說明。"
+    },
+    {
+      "criterion": "學校未提供 FTP 的限制與 iSchool 保存結果被記錄；本案不自行對正式網站發布。",
+      "verify_cmd": "檢查交付紀錄與校方測試證據。",
+      "expected": "正式發布仍待校方確認或由具權限人員執行。"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "範圍邊界",
+      "decision": "本案只處理 02_招生_html/115_KJ_admi_high；國中部、其他年度頁面與非 sgoods 第三方服務不在本輪遷移範圍。",
+      "reason": "停用風險與已盤點的 24 筆實際執行期依賴都在高中部範圍。",
+      "alternatives_rejected": ["一次改寫整個招生網站", "把 HTML 註解也當成必須遷移的執行期依賴"]
+    },
+    {
+      "topic": "無 FTP 的交付形式",
+      "decision": "以可貼入 iSchool 的 style／script bundle 為候選交付，先測試平台是否保留並執行標籤；不假設平台允許。",
+      "reason": "校方未提供 CSS／JS 目錄 FTP 權限，現有外部網域停止後需有不依賴該目錄的備援。",
+      "alternatives_rejected": ["假設可直接上傳 CSS 或 JS 檔", "未測試 iSchool 就直接覆寫正式頁面"]
+    },
+    {
+      "topic": "任務正本邊界",
+      "decision": "HMC 只管理本次技術遷移的成果契約與可重跑驗證；KJ 招生活動、狀態與共編進度仍以既有 KJ Notion 行動庫為正本。",
+      "reason": "避免技術遷移看板取代或複製校務招生任務的正本。",
+      "alternatives_rejected": ["把全部 KJ 招生活動搬入 HMC", "在 PAI 另建 KJ 任務正本"]
+    }
+  ],
+  "milestone": {
+    "layout": "grouped-v1",
+    "project_id": "kj-116-admissions",
+    "group": "kj",
+    "folder_date": "260814",
+    "relative_ref": "milestones/kj/260814-kj-116-admissions"
+  }
+}

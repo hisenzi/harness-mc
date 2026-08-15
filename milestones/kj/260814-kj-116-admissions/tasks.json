@@ -1,0 +1,210 @@
+{
+  "project": "kj-116-admissions",
+  "tasks": [
+    {
+      "id": "kj116-high-sgoods-dependency-inventory",
+      "title": "盤點高中部 sgoods.info 執行期依賴與本機來源",
+      "status": "todo",
+      "track": "phase-1",
+      "order_label": "KJ116-01",
+      "priority": "P0",
+      "capability_domain": "source-memory",
+      "task_kind": "discover",
+      "dependencies": [],
+      "done_condition": "建立可重跑的 comment-aware scanner 與資產清單，精準列出 115_KJ_admi_high 的 24 筆執行期 sgoods.info 依賴、6 筆 HTML 註解、四個 CSS、三個 JS、圖片、字型與每個本機／缺失來源；不改動頁面內容。",
+      "acceptance": [
+        "scanner 只計算 HTML href／src、CSS url() 與 JavaScript 實際載入位置，並排除完整 HTML 註解區塊。",
+        "盤點結果保留四個 CSS 外連、jQuery → plugins → functions 三個 JS 外連、header_pic.png 與 CSS 內嵌資產的來源位置。",
+        "清楚標記本機檔名差異（例如遠端 kj-style.css 與本機 kj-style-5.css）及未在 repo 找到的資產。",
+        "本 task 不抓取、覆寫、刪除或發布學校頁面。"
+      ],
+      "source_refs": [
+        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_admi_high",
+        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/css",
+        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/js"
+      ],
+      "jv32_route": {
+        "workflows": ["task-lifecycle"]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准建立 KJ 116 招生網站資產自主化專案與遷移任務；此 task 先以唯讀盤點界定高中部 sgoods.info 依賴。",
+            "evidence_refs": [
+              "Vincent 2026-08-14: 可以進行處理這兩個 HMC-side 設定，再正式建立 kj-116-admissions 專案與遷移任務",
+              "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json"
+            ],
+            "recorded_at": "2026-08-14"
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "kj-116-admissions",
+        "goal_ref": "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json#/goals",
+        "goal_fingerprint": "sha256:755d90099a89100f4e1291921b44d4974b54a48fdc4652195fd0510fb9510039",
+        "contribution": "建立可回查的高中部 sgoods.info 執行期依賴基線與資產缺口，直接支援無 FTP 條件下的 CSS／JS 遷移決策。",
+        "evidence_plan": [
+          "comment-aware scanner 輸出",
+          "24 active／6 HTML 註解的基線清單",
+          "CSS、JS、圖片與字型來源對照",
+          "本 task acceptance 結果"
+        ],
+        "reviewed_at": "2026-08-14"
+      }
+    },
+    {
+      "id": "kj116-ishool-css-bundle",
+      "title": "封裝 CSS 與圖像依賴為 iSchool 可貼用 bundle",
+      "status": "todo",
+      "track": "phase-1",
+      "order_label": "KJ116-02",
+      "priority": "P0",
+      "capability_domain": "action-delivery",
+      "task_kind": "implement",
+      "dependencies": ["kj116-high-sgoods-dependency-inventory"],
+      "done_condition": "以盤點確認的本機 CSS 依載入順序組成可版本追蹤的 style bundle，補齊或替換必要的圖片／字型來源，並使 bundle 與其 CSS url() 不再載入 sgoods.info。",
+      "acceptance": [
+        "CSS 載入順序等效於 plugins → style → custom-admi01 → custom-admi00。",
+        "每個原本由 sgoods.info 提供的 CSS 圖片與字型都有本機資產、經核准替代或明確的待校方確認項。",
+        "bundle 可以貼入 iSchool 的 HTML 欄位，但尚未直接發布到正式招生頁。",
+        "本機預覽的主要版型、選單、輪播區塊與圖示沒有可見退化。"
+      ],
+      "jv32_route": {
+        "workflows": ["task-lifecycle"]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准建立 KJ 116 招生網站資產自主化專案與遷移任務；此 task 將盤點結果封裝為待 iSchool 測試的 CSS bundle，不發布正式頁面。",
+            "evidence_refs": [
+              "Vincent 2026-08-14: 可以進行處理這兩個 HMC-side 設定，再正式建立 kj-116-admissions 專案與遷移任務",
+              "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json"
+            ],
+            "recorded_at": "2026-08-14"
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "kj-116-admissions",
+        "goal_ref": "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json#/goals",
+        "goal_fingerprint": "sha256:755d90099a89100f4e1291921b44d4974b54a48fdc4652195fd0510fb9510039",
+        "contribution": "將確認的 CSS、圖片與字型依賴整理為可貼入 iSchool 的候選 bundle，降低 sgoods.info 停用造成版型失效的風險。",
+        "evidence_plan": [
+          "CSS 載入順序對照",
+          "圖片與字型來源決策清單",
+          "本機視覺 smoke test",
+          "iSchool 測試頁保存結果"
+        ],
+        "reviewed_at": "2026-08-14"
+      }
+    },
+    {
+      "id": "kj116-ishool-js-bundle",
+      "title": "封裝 JS 依賴並驗證 iSchool 互動相容性",
+      "status": "todo",
+      "track": "phase-1",
+      "order_label": "KJ116-03",
+      "priority": "P0",
+      "capability_domain": "action-delivery",
+      "task_kind": "implement",
+      "dependencies": ["kj116-high-sgoods-dependency-inventory", "kj116-ishool-css-bundle"],
+      "done_condition": "以本機 jquery、kj-plugins、kj-functions 組成保持既有順序的 script bundle，確認 iSchool 儲存後是否保留並執行；若平台不允許，提出不依賴 FTP 的可行降級方案。",
+      "acceptance": [
+        "JS 順序固定為 jQuery → plugins → functions，且不再請求 sgoods.info 的 JS。",
+        "在本機 smoke test 檢查選單與輪播相關初始化，不以無錯誤訊息代替功能檢查。",
+        "iSchool 測試頁保存後檢查原始碼是否保留 script，並記錄平台實測結果。",
+        "沒有校方正式發布授權時，不改動正式頁面。"
+      ],
+      "jv32_route": {
+        "workflows": ["task-lifecycle"]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准建立 KJ 116 招生網站資產自主化專案與遷移任務；此 task 驗證 JS bundle 與 iSchool 的相容性，不改動校方正式頁面。",
+            "evidence_refs": [
+              "Vincent 2026-08-14: 可以進行處理這兩個 HMC-side 設定，再正式建立 kj-116-admissions 專案與遷移任務",
+              "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json"
+            ],
+            "recorded_at": "2026-08-14"
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "kj-116-admissions",
+        "goal_ref": "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json#/goals",
+        "goal_fingerprint": "sha256:755d90099a89100f4e1291921b44d4974b54a48fdc4652195fd0510fb9510039",
+        "contribution": "維持既有 jQuery、plugins、functions 的依賴順序並取得 iSchool 實測證據，支援無 FTP 條件下的互動功能遷移。",
+        "evidence_plan": [
+          "JS 載入順序對照",
+          "選單與輪播本機 smoke test",
+          "iSchool 測試頁保存後原始碼與互動檢查",
+          "平台限制或降級方案紀錄"
+        ],
+        "reviewed_at": "2026-08-14"
+      }
+    },
+    {
+      "id": "kj116-sgoods-migration-acceptance-handoff",
+      "title": "驗收零 sgoods.info 執行期依賴並交付校方測試包",
+      "status": "todo",
+      "track": "phase-2",
+      "order_label": "KJ116-04",
+      "priority": "P1",
+      "capability_domain": "verification-immunity",
+      "task_kind": "verify",
+      "dependencies": ["kj116-ishool-css-bundle", "kj116-ishool-js-bundle"],
+      "done_condition": "comment-aware scanner 回報 0 筆 sgoods.info 執行期依賴；本機視覺／互動 smoke test 與 iSchool 保存測試都有可回查證據；交付可貼用 bundle、差異說明、回復方式及待校方確認事項。",
+      "acceptance": [
+        "scanner 的 active count 從 24 降為 0；HTML 註解不混入結果，必要時另列。",
+        "CSS、JS、圖片與字型的來源、版本與替代決策可回查。",
+        "iSchool 實測結果清楚區分已通過、平台限制與待校方確認，不把本機預覽當成正式上線。",
+        "交付物不包含未授權的 FTP 上傳、正式發布或刪除舊內容。"
+      ],
+      "jv32_route": {
+        "workflows": ["task-lifecycle"]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准建立 KJ 116 招生網站資產自主化專案與遷移任務；此 task 保留校方測試與正式發布權限的邊界。",
+            "evidence_refs": [
+              "Vincent 2026-08-14: 可以進行處理這兩個 HMC-side 設定，再正式建立 kj-116-admissions 專案與遷移任務",
+              "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json"
+            ],
+            "recorded_at": "2026-08-14"
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "kj-116-admissions",
+        "goal_ref": "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json#/goals",
+        "goal_fingerprint": "sha256:755d90099a89100f4e1291921b44d4974b54a48fdc4652195fd0510fb9510039",
+        "contribution": "用零 active sgoods.info 依賴、可回查資產來源與 iSchool 保存實測作為交付門檻，確保技術遷移不被誤稱為已正式上線。",
+        "evidence_plan": [
+          "active dependency count=0 的 scanner 結果",
+          "CSS、JS、圖片與字型的來源與版本清單",
+          "iSchool 實測與待校方確認紀錄",
+          "可貼用 bundle、回復方式與交付說明"
+        ],
+        "reviewed_at": "2026-08-14"
+      }
+    }
+  ]
+}

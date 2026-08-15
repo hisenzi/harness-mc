@@ -1,8 +1,8 @@
 # Shared Memory Governance v2
 
 > Task: `shared-memory-governance-v2` (`JV-49`)
-> Status: R1-R3 verified; R4 Architecture Admission prepared, canonical task application pending
-> Updated: 2026-08-12
+> Status: R1-R4 verified; JV-49 canonical task completed
+> Updated: 2026-08-15
 > Machine-readable evidence: `$COLLAB/harness-mc/system-workflow/registries/morrowise-shared-memory-governance-v2.json`
 > Verifier: `node scripts/verify-shared-memory-governance-v2.mjs`
 
@@ -118,9 +118,9 @@ registry 保存 before result 與 evidence。R1 實際重整後才填 after resu
 | R1 migration | complete | `node scripts/verify-shared-memory-governance-v2.mjs --phase r1` |
 | R2 | complete | `node scripts/verify-shared-memory-governance-v2.mjs --phase r2` |
 | R3 | complete | `node scripts/verify-shared-memory-governance-v2.mjs --phase r3` |
-| R4 | canonical pending | Architecture Admission 已建立；待 canonical task 無同檔 overlap 後回寫 admission review、acceptance receipt 並跑 full gate |
+| R4 | complete | Architecture Admission、canonical task completion evidence、acceptance receipt 與 full gate 全數通過 |
 
-完整 verifier 在 R4 canonical application 未完成前必須維持 RED。這可防止把「本機實作完成」或 Architecture Admission 草案誤報成 canonical JV-49 完成。
+完整 verifier 現在應維持 PASS，並精確覆蓋 `JV49-R1-A01` 至 `JV49-R4-A01`。C1 實作已到達 harness-mc `79cc7a1c491ebdfccd414c22653d51d71c9f7768` 與 notyet-harness `2f338c71c96fd4a455bc24e14e5abc9057ba9815` 的 remote main；R4 只將已驗證證據、Architecture Admission 與 all-pass receipt 收回 canonical task，沒有建立第二記憶正本或平行治理系統。
 
 ## Recovery
 

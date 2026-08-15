@@ -11076,7 +11076,7 @@
     {
       "id": "shared-memory-governance-v2",
       "title": "JV-49 共享記憶治理 v2（L1 重整＋跨 Agent 候選晉升）",
-      "status": "in_progress",
+      "status": "completed",
       "track": "governance",
       "order_label": "JV-49",
       "priority": "high",
@@ -11245,8 +11245,72 @@
         "evidence_refs": [
           "$COLLAB/harness-mc/system-workflow/docs/specs/shared-memory-governance-v2.md",
           "$COLLAB/harness-mc/system-workflow/registries/morrowise-shared-memory-governance-v2.json",
-          "$COLLAB/harness-mc/scripts/verify-shared-memory-governance-v2.mjs#r1-baseline"
+          "$COLLAB/harness-mc/scripts/verify-shared-memory-governance-v2.mjs"
         ]
+      },
+      "completion_evidence": {
+        "red_evidence": [
+          "JV-49 建立時的完整 verifier 因缺少 taxonomy、migration ledger、promotion adapter 與 negative fixtures 維持 RED",
+          "C1 後、canonical application 前：node scripts/verify-shared-memory-governance-v2.mjs --phase r4 => AssertionError: JV-49 R4 is not complete"
+        ],
+        "green_evidence": [
+          "node scripts/verify-shared-memory-governance-v2.mjs --phase r1 => pass",
+          "node scripts/verify-shared-memory-governance-v2.mjs --phase r2 => pass",
+          "node scripts/verify-shared-memory-governance-v2.mjs --phase r3 => pass",
+          "node scripts/verify-shared-memory-governance-v2.mjs --phase r4 => pass",
+          "node scripts/verify-shared-memory-governance-v2.mjs => pass",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise => 0 issues, 0 warnings",
+          "npm run test:architecture-subsystems => pass",
+          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check => pass"
+        ],
+        "regression_evidence": [
+          "five representative queries: 5/5 pass, 0 regressions, 5 source-attributed",
+          "archive manifest: 15 entries, 0 checksum failures, 0 daily overwrite",
+          "promotion fixtures: 8 total, 7 unapproved/blocked zero-write, 1 approved temporary exact-target write, 0 real shared-L1 fixture writes",
+          "harness-mc C1 origin/main=79cc7a1c491ebdfccd414c22653d51d71c9f7768; parity 0/0 after push",
+          "notyet-harness C1 origin/main=2f338c71c96fd4a455bc24e14e5abc9057ba9815; parity 0/0 after push",
+          "project-init exact scope commit=5036d4b5f144875ae656719176384138afb4619a"
+        ],
+        "verifier_refs": [
+          "node scripts/verify-shared-memory-governance-v2.mjs",
+          "node scripts/verify-morrowise-action-runner.mjs",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "npm run test:architecture-subsystems",
+          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+          "git diff --check"
+        ],
+        "fixture_runtime_boundary": "JV-49 不需外部 live runtime；approved fixture 只在 verifier 建立的臨時 $COLLAB root 寫入，真實 shared L1 在所有 fixture 前後 hash 不變。"
+      },
+      "acceptance_receipt": {
+        "matrix_ref": "milestones/morrowise/tasks.json#shared-memory-governance-v2.acceptance_matrix",
+        "matrix_fingerprint": "sha256:3c9d65bedf7c707d00ed2fdc6b8e0e111542c59393769cd9f9ec08c2cc8573bb",
+        "required_ids": [
+          "JV49-R1-A01",
+          "JV49-R2-A01",
+          "JV49-R3-A01",
+          "JV49-R4-A01"
+        ],
+        "results": [
+          {
+            "id": "JV49-R1-A01",
+            "status": "pass"
+          },
+          {
+            "id": "JV49-R2-A01",
+            "status": "pass"
+          },
+          {
+            "id": "JV49-R3-A01",
+            "status": "pass"
+          },
+          {
+            "id": "JV49-R4-A01",
+            "status": "pass"
+          }
+        ],
+        "exact_id_coverage": true,
+        "all_passed": true,
+        "verified_at": "2026-08-15"
       },
       "goal_alignment": {
         "project_id": "morrowise",
@@ -11285,9 +11349,27 @@
         "source_boundary": "HC 只是思考檢查，不是正本；task state 由 MorroWise tasks.json 管理，共享 L1 由 notyet-harness memory/MEMORY.md 管理，案例規則由正式 SKILL.md 管理，系統結構由 ARCHITECTURE.md 管理，local Codex memory 只提供需核准的 candidates。"
       },
       "architecture_decision": {
-        "decision": "deferred",
-        "evaluated_at": "2026-08-12",
-        "reason": "本次只建立 JV-49 todo work anchor；是否屬既有 memory／governance subsystem 的 version improvement，或需新增 Architecture Admission Record，必須在 R1-R3 contract、verifier 與實作範圍確定後再判定，現階段不得預先宣稱 promoted。"
+        "decision": "promoted",
+        "evaluated_at": "2026-08-15",
+        "registry_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#shared-memory-governance",
+        "detail_doc": "$COLLAB/harness-mc/system-workflow/docs/specs/shared-memory-governance-v2.md",
+        "reason": "JV-49 已落地共享 L1 分層、可回復 dated-log archive、agent-neutral ingress 與沿用現有 Recommendation Engine → Approval Policy → Runner 的 memory-promotion adapter；Architecture Admission Record 以 shared-memory-governance 晉升為 active 薄索引，且未新增平行 queue、scheduler、dashboard、RAG、vector database 或 task source。",
+        "admission_review": {
+          "record_id": "shared-memory-governance",
+          "scope": "version_improvement",
+          "admission_record_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#shared-memory-governance",
+          "index_action": "updated",
+          "sync_check_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+          "evidence_refs": [
+            "node scripts/verify-shared-memory-governance-v2.mjs",
+            "node scripts/verify-morrowise-action-runner.mjs",
+            "npm run test:architecture-subsystems",
+            "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check",
+            "harness-mc C1 79cc7a1c491ebdfccd414c22653d51d71c9f7768",
+            "notyet-harness C1 2f338c71c96fd4a455bc24e14e5abc9057ba9815"
+          ],
+          "reason": "C1 已新增並同步 shared-memory-governance active index；C2 只將同一 admission 決策回寫 canonical task，不建立第二個架構紀錄。"
+        }
       },
       "jv32_route": {
         "workflows": [
@@ -11384,10 +11466,53 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "JV-49 R1-R4 已全數通過：共享 L1 分層與薄路由、dated-log 可回復 archive、13 個 agent-neutral ingress、approval-gated promotion adapter、五查詢 no-regression 與 Architecture Admission 均已有可重跑證據；C1 已分別到達 harness-mc 與 notyet-harness remote main，canonical task 同檔 ownership 已釋放，因此完成 R4 canonical application。",
+            "evidence_refs": [
+              "Vincent 2026-08-15 current session: 可以，繼續完成",
+              "node scripts/verify-shared-memory-governance-v2.mjs --phase r4 => pass",
+              "node scripts/verify-shared-memory-governance-v2.mjs => pass",
+              "node scripts/validate-tasks.mjs --changed-only --project morrowise => 0 issues, 0 warnings",
+              "npm run test:architecture-subsystems => pass",
+              "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check => pass",
+              "harness-mc C1 79cc7a1c491ebdfccd414c22653d51d71c9f7768",
+              "notyet-harness C1 2f338c71c96fd4a455bc24e14e5abc9057ba9815",
+              "project-init 5036d4b5f144875ae656719176384138afb4619a"
+            ],
+            "recorded_at": "2026-08-15",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/shared-memory-governance-v2",
+                "morrowise/memory-health-read-model",
+                "morrowise/morrowise-second-brain-capture-gate",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "本次只關閉已核准的 JV-49，將 R1-R3 實作證據、R4 品質評估與 Architecture Admission 回寫同一 canonical task，不新增記憶問題或平行 owner。",
+                "owner_source_of_truth": "JV-49 仍只擁有共享記憶治理 contract 與 promotion adapter；shared L1、domain skills、ARCHITECTURE.md、canonical tasks 與 local Codex memory 各自維持原正本。",
+                "inputs_outputs": "輸入是已推送 C1、migration/fixture/query evidence 與 active Architecture Admission Record；輸出是同一 JV-49 的 completed 狀態、acceptance receipt 與 R4 registry/spec closeout。",
+                "lifecycle_completion": "R1-R4、零資料遺失、五查詢 no-regression、未核准零寫入、Architecture Admission、雙 repo C1 remote truth 與 canonical receipt 全部成立後，JV-49 進入 completed。"
+              },
+              "decision_reason": "這是同一 JV-49 的 R4 canonical closeout，outcome=amend；不建立新 task、queue、scheduler、dashboard、RAG 或第二記憶正本。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-15",
+                "evidence_refs": [
+                  "Vincent 2026-08-15 current session: /worktree-commit /cc-push",
+                  "Vincent 2026-08-15 current session: 可以，繼續完成"
+                ]
+              }
+            }
           }
         ]
       },
-      "note": "2026-08-12 Scope A baseline：共享 MEMORY.md 為 174 lines／9477 bytes；memory 根目錄有 14 份 dated logs 且 archive/ 不存在。先前只讀比對顯示多數 root-vs-daily 同名檔內容不同，實作時必須重新產生 inventory 與 checksum，不得沿用舊統計直接搬移。Max One 規則已由 maxmodel-case-page skill 承接，因此 JV-49 只保留 shared-memory 薄路由。2026-08-12 R1 baseline checkpoint：已固化 31 段 L1 分類、14 筆逐檔 ledger、49 個 skill inventory、13 個 active ingress 候選與五查詢 before evidence；`--phase r1-baseline` PASS。正式 R1 保持 RED，待共享 L1 重整、after fingerprint、ledger verified 與五查詢 no-regression；本 checkpoint 未移動、刪除或修改任何 shared memory source。"
+      "note": "2026-08-15 JV-49 正式完成：共享 MEMORY.md 從 31 段收斂為 5 個耐久區段，保留薄路由與五查詢 5/5 no-regression；14 份 root dated logs 安全歸檔，連同 pre-JV-49 L1 snapshot 形成 15 筆 manifest 可回復證據；13 個 ingress 收斂為 agent-neutral candidate flow；8 個 promotion fixtures 證明未核准／被阻擋零寫入，approved fixture 只寫 verifier 臨時 root，真實 shared L1 零 fixture write。Max One 案例規則仍只由 maxmodel-case-page skill 擁有，L1 只留薄路由。Architecture Admission `shared-memory-governance` 已 promoted/active；C1 harness-mc `79cc7a1` 與 notyet-harness `2f338c7` 已到 remote main，R1-R4 full verifier 與 canonical acceptance receipt 全數通過。"
     }
   ]
 }

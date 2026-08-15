@@ -2,17 +2,17 @@
   "contract_id": "shared-memory-governance-v2.r1",
   "task_id": "shared-memory-governance-v2",
   "order_label": "JV-49",
-  "updated_at": "2026-08-12",
-  "status": "r3_complete_r4_pending",
+  "updated_at": "2026-08-15",
+  "status": "complete",
   "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#shared-memory-governance-v2",
   "phase_status": {
     "r1": "complete",
     "r2": "complete",
     "r3": "complete",
-    "r4": "not_started"
+    "r4": "complete"
   },
   "write_boundary": {
-    "current_phase": "r3_complete",
+    "current_phase": "r4_complete",
     "source_mutations_performed": true,
     "allowed": [
       "rewrite shared L1 from the approved inventory while preserving the exact pre-JV-49 snapshot",
@@ -1328,7 +1328,7 @@
     "verified_at": "2026-08-12"
   },
   "r4_evaluation": {
-    "status": "local_rc_canonical_pending",
+    "status": "complete",
     "quality_basis": "discoverability_integrity_and_governance_not_size_alone",
     "discoverability": {
       "query_count": 5,
@@ -1366,28 +1366,39 @@
       "architecture_sync_check": "pass"
     },
     "canonical_task_application": {
-      "status": "blocked_same_file_overlap",
-      "reason": "milestones/morrowise/tasks.json contains another session's JV-37 and P3 changes; same-file canonical mutation is unsafe even when JV-49 hunks differ",
-      "required_update": "replace deferred architecture_decision with the shared-memory-governance admission review, then rerun changed-only validation and acceptance"
+      "status": "complete",
+      "reason": "the previous same-file owner released milestones/morrowise/tasks.json; JV-49 architecture admission, completion evidence, lifecycle and acceptance receipt are now applied to the canonical task",
+      "c1_remote_refs": {
+        "harness_mc": "79cc7a1c491ebdfccd414c22653d51d71c9f7768",
+        "notyet_harness": "2f338c71c96fd4a455bc24e14e5abc9057ba9815",
+        "project_init": "5036d4b5f144875ae656719176384138afb4619a"
+      }
     },
-    "evaluated_at": "2026-08-12"
+    "evaluated_at": "2026-08-15"
   },
-  "acceptance_preflight": {
+  "acceptance_receipt": {
+    "matrix_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#shared-memory-governance-v2.acceptance_matrix",
     "matrix_fingerprint": "sha256:3c9d65bedf7c707d00ed2fdc6b8e0e111542c59393769cd9f9ec08c2cc8573bb",
+    "required_ids": [
+      "JV49-R1-A01",
+      "JV49-R2-A01",
+      "JV49-R3-A01",
+      "JV49-R4-A01"
+    ],
     "results": [
       {"id": "JV49-R1-A01", "status": "pass"},
       {"id": "JV49-R2-A01", "status": "pass"},
       {"id": "JV49-R3-A01", "status": "pass"},
-      {"id": "JV49-R4-A01", "status": "fail"}
+      {"id": "JV49-R4-A01", "status": "pass"}
     ],
     "exact_id_coverage": true,
-    "all_passed": false,
-    "blocked_reason": "canonical task architecture admission review cannot be updated while another session owns dirty changes in the same tasks.json"
+    "all_passed": true,
+    "verified_at": "2026-08-15"
   },
   "next_checkpoint": {
-    "requested_action": "After the other tasks.json writer releases the file, apply the JV-49 architecture admission review, rerun changed-only validation and issue a fresh all-pass acceptance receipt.",
+    "requested_action": "No remaining JV-49 implementation checkpoint; retain the verifier, manifest and recovery paths as the durable governance evidence.",
     "official_r4_gate": "node scripts/verify-shared-memory-governance-v2.mjs --phase r4",
-    "expected_current_result": "RED until R4 evidence and architecture admission are complete."
+    "expected_current_result": "PASS with exact JV49-R1-A01 through JV49-R4-A01 coverage."
   },
   "historical_snapshot": {
     "path": "$COLLAB/notyet-harness/000_Agent/memory/archive/MEMORY-pre-jv49-2026-08-12.md",

@@ -1,0 +1,130 @@
+{
+  "name": "學校共用靜態資產",
+  "description": "集中託管 KJ 與 FJ iSchool 所需的 CSS、JavaScript、圖片與字型資產。",
+  "type": "standalone",
+  "status": "active",
+  "priority": "P0",
+  "created": "2026-08-16",
+  "estimated_completion": "2026-08-31",
+  "repo_ref": "hisenzi/school-static-assets",
+  "repo_creation": {
+    "create_repo": false,
+    "approval_ref": null
+  },
+  "source_boundary": "MC 的 project.json 與 tasks.json 是本案目標與任務狀態正本；GitHub repository 是版本化資產來源；Zeabur 是公開靜態載入端點；iSchool 頁面仍由各校後台發布。",
+  "tracks": {
+    "bootstrap": "資產庫與靜態服務建置",
+    "migration": "校別資產盤點與遷移",
+    "verification": "公開載入與 iSchool 相容性驗收"
+  },
+  "outcome": {
+    "problem_statement": "sgoods.info 即將停用，KJ 與 FJ 的招生頁仍依賴其靜態資產網址，且目前沒有可共同維護的替代來源。",
+    "impact": "若未遷移，既有招生頁的樣式、互動、圖片或字型可能失效；完成後兩校可用相同主機規則獨立維護資產。",
+    "success_target": {
+      "metric": "KJ 與 FJ 已盤點並驗證可公開載入的資產根目錄數。",
+      "baseline": "0 個可驗證的共用靜態資產根目錄。",
+      "target": "2 個具獨立路徑與資產清單的可公開載入根目錄。",
+      "due": "2026-08-31"
+    },
+    "measurement_source": "資產清單加上公開 HTTP 載入驗證與 iSchool 頁面驗收。"
+  },
+  "task_taxonomy": {
+    "version": "v1",
+    "sort_rule": "dependencies_then_priority_then_id",
+    "capability_domains": [
+      "direction-governance",
+      "source-memory",
+      "sensing-events",
+      "judgment-priority",
+      "approval-safety",
+      "action-delivery",
+      "feedback-learning",
+      "heartbeat-scheduling",
+      "dashboard-surface",
+      "knowledge-capture",
+      "verification-immunity"
+    ],
+    "task_kinds": [
+      "discover",
+      "decide",
+      "design",
+      "implement",
+      "verify",
+      "operate",
+      "closeout"
+    ],
+    "priority_order": ["P0", "P1", "P2"]
+  },
+  "goals": [
+    "將 KJ 與 FJ 的公開資產根目錄分開管理為 kj-admi 與 fj-admi，避免跨校命名或版本衝突。",
+    "建立 private GitHub repository 作為 school-static-assets 的版本化資產來源，讓日後的調整可追溯與回復。",
+    "部署 Zeabur 靜態服務，先驗證兩個校別根目錄皆可公開載入代表性 CSS 與 JavaScript。",
+    "為 KJ 與 FJ 建立資產清單與 iSchool 相容性驗收，完成後才逐一替換 sgoods.info 網址。"
+  ],
+  "risks": [
+    {
+      "risk": "尚未從 sgoods.info 取得完整圖片、字型與其他相依檔。",
+      "impact": "high",
+      "probability": "high",
+      "mitigation": "先建立可部署的 CSS 與 JavaScript 骨架；完整遷移以逐校 manifest 為依據，不把尚未下載的檔案視為已完成。"
+    },
+    {
+      "risk": "iSchool 頁面、瀏覽器快取或字型跨來源載入可能在切換時失效。",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "啟用公開 HTTP 與 iSchool 實測；字型與快取政策在 manifest 與 Zeabur headers 驗證後再定案。"
+    },
+    {
+      "risk": "兩校共用主機卻混用資產路徑，造成版本或內容誤載。",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "服務只採 kj-admi 與 fj-admi 的校別根目錄；除非檔案位元組相同並有 manifest 證據，否則不建立 shared 資料夾。"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "GitHub 資產庫與 Zeabur 靜態服務已建立，且保留 KJ、FJ 的獨立根目錄。",
+      "verify_cmd": "GitHub repository metadata、Zeabur deployment terminal status 與兩校代表性資產 HTTP 請求。",
+      "expected": "hisenzi/school-static-assets 為 private source repository；Zeabur 公開端點可載入 kj-admi 與 fj-admi 的代表性 CSS、JavaScript。"
+    },
+    {
+      "criterion": "KJ 與 FJ 都有可追溯的資產清單。",
+      "verify_cmd": "比較各校 manifest 與部署目錄。",
+      "expected": "每一個公開引用檔皆能對應來源、校別路徑與驗證結果；缺檔明確列為 pending。"
+    },
+    {
+      "criterion": "iSchool 切換不以檔案存在或服務部署成功取代頁面驗收。",
+      "verify_cmd": "各校在 iSchool 預覽頁實測選單、輪播、字型與圖片。",
+      "expected": "已替換的頁面沒有 sgoods.info 載入依賴，且核心互動及視覺資產正常。"
+    }
+  ],
+  "decisions": [
+    {
+      "topic": "資產路徑拓撲",
+      "decision": "以一個 Zeabur 靜態服務承載 kj-admi 與 fj-admi 兩個校別根目錄。",
+      "reason": "服務部署、網域與快取規則可共用，但校別資產仍保有獨立命名空間，降低 KJ 與 FJ 互相覆蓋的風險。",
+      "alternatives_rejected": "排除一開始將兩校資產混成單一 shared 目錄，也排除每一個頁面各自內嵌完整 CSS／JavaScript。",
+      "hc_used": ["#breakItDown", "#systemDynamics"]
+    },
+    {
+      "topic": "來源與發布邊界",
+      "decision": "GitHub private repository 作為可追溯的來源，Zeabur 只負責公開靜態載入；iSchool 保持頁面內容與引用網址的發布端。",
+      "reason": "把版本管理、靜態託管與學校後台分開，可在不具 FTP 權限時仍維護外部資產。",
+      "alternatives_rejected": "排除繼續依賴即將停用的 sgoods.info，也排除把所有資產長期複製進各篇 iSchool HTML。",
+      "hc_used": ["#rightProblem", "#levelsOfAnalysis"]
+    },
+    {
+      "topic": "遷移完成判準",
+      "decision": "先完成可部署服務與代表性資產載入，再由校別 manifest 和 iSchool 實測決定每一頁的網址替換。",
+      "reason": "目前尚未取得完整 legacy 資產，服務建立不等於全量遷移完成。",
+      "alternatives_rejected": "排除用 CSS／JS 已上傳或 Zeabur 顯示成功，直接宣稱 sgoods.info 已被完整替代。",
+      "hc_used": ["#multipleExplanations", "#risk"]
+    }
+  ],
+  "system_growth": {
+    "trigger": "新增、更新或替換任一 KJ／FJ 公開資產引用時。",
+    "data_flow": "legacy 資產來源 → 校別 manifest → GitHub source repository → Zeabur deployment → iSchool 外部引用實測。",
+    "surface": "MC 顯示任務狀態；GitHub 顯示版本與檔案；Zeabur 顯示部署與公開端點；iSchool 預覽頁顯示實際相容性。",
+    "feedback_loop": "每次 iSchool 實測將成功、缺檔、快取或跨來源問題回寫到校別 manifest 與下一個遷移 task，再重新部署驗證。"
+  }
+}

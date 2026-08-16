@@ -1,0 +1,193 @@
+{
+  "project": "school-static-assets",
+  "tasks": [
+    {
+      "id": "p1-1",
+      "title": "建立 GitHub 資產庫與 Zeabur 靜態服務",
+      "status": "in_progress",
+      "track": "bootstrap",
+      "order_label": "SSA-01",
+      "priority": "P0",
+      "capability_domain": "action-delivery",
+      "task_kind": "implement",
+      "dependencies": [],
+      "done_condition": "private GitHub repository hisenzi/school-static-assets 已連接既有本機資產根目錄，Zeabur 靜態服務已從此 repository 成功部署，並可公開載入 kj-admi 與 fj-admi 的代表性 CSS 與 JavaScript。",
+      "acceptance": [
+        "GitHub repository 是 private，且初始提交只納入 school-static-assets 既有資產與必要服務設定。",
+        "Zeabur deployment 到達 terminal success，並記錄公開端點。",
+        "公開端點可成功載入 kj-admi 與 fj-admi 各至少一個 CSS 與 JavaScript 檔案。",
+        "本 task 不替換任何 iSchool 頁面的 sgoods.info 引用；替換必須等待校別 manifest 與相容性驗收。"
+      ],
+      "goal_alignment": {
+        "project_id": "school-static-assets",
+        "goal_ref": "$COLLAB/harness-mc/milestones/school-static-assets/project.json#/goals",
+        "goal_fingerprint": "sha256:dfb5cef2197545f3e0ea6b879bf89c982738347ba2c06baea2574079b7c5e89a",
+        "contribution": "建立可追溯的資產來源與公開靜態服務，直接支援兩校獨立根目錄的第一輪載入驗證。",
+        "evidence_plan": [
+          "GitHub repository metadata 與初始提交",
+          "Zeabur deployment terminal status 與公開端點",
+          "kj-admi、fj-admi 代表性 CSS／JavaScript HTTP 載入結果"
+        ],
+        "reviewed_at": "2026-08-16"
+      },
+      "jv32_route": {"workflows": ["task-lifecycle"]},
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 明確要求先建立本案正式 task，再進行 GitHub 資產庫與 Zeabur 靜態服務。",
+            "evidence_refs": [
+              "user request 2026-08-16: 先建立本案正式 task，再進行 GitHub 資產庫與 Zeabur 靜態服務。",
+              "$COLLAB/harness-mc/milestones/school-static-assets/project.json"
+            ],
+            "recorded_at": "2026-08-16"
+          }
+        ]
+      },
+      "execution_contract": {
+        "owner": "Vincent",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/school-static-assets/tasks.json#p1-1",
+        "inputs": [
+          "$COLLAB/school-static-assets/kj-admi/",
+          "$COLLAB/school-static-assets/fj-admi/"
+        ],
+        "outputs": [
+          "private GitHub repository hisenzi/school-static-assets",
+          "Zeabur static service public endpoint"
+        ],
+        "verifiers": [
+          "GitHub repository metadata and initial commit",
+          "Zeabur deployment terminal status",
+          "HTTP load checks for representative KJ and FJ CSS and JavaScript"
+        ],
+        "allowed_scope": [
+          "$COLLAB/school-static-assets/",
+          "GitHub private repository hisenzi/school-static-assets",
+          "Zeabur static service for this repository"
+        ],
+        "stop_condition": "若 GitHub repository 建立或 Zeabur deployment 無法驗證，或公開載入失敗，停止並保留 iSchool 與 sgoods.info 既有引用不變。",
+        "execution_boundary": "本 task 授權建立資產庫、初始提交與 Zeabur 靜態服務；不授權 DNS 自訂網域、刪除 sgoods.info 內容，或修改 iSchool 頁面引用。"
+      }
+    },
+    {
+      "id": "p1-2",
+      "title": "盤點並遷移 KJ 招生資產",
+      "status": "todo",
+      "track": "migration",
+      "order_label": "SSA-02",
+      "priority": "P0",
+      "capability_domain": "source-memory",
+      "task_kind": "discover",
+      "dependencies": ["p1-1"],
+      "done_condition": "KJ 招生頁的 sgoods.info 資產引用已形成 manifest，下載資產已置於 kj-admi，且每個替換網址均在 iSchool 預覽頁驗收。",
+      "acceptance": [
+        "manifest 列出原始網址、目標路徑、檔案類型與驗證結果。",
+        "缺少或授權不明的檔案明確標示 pending，不以猜測補檔。",
+        "已替換頁面在 iSchool 預覽頁維持選單、輪播與視覺資產正常。"
+      ],
+      "goal_alignment": {
+        "project_id": "school-static-assets",
+        "goal_ref": "$COLLAB/harness-mc/milestones/school-static-assets/project.json#/goals",
+        "goal_fingerprint": "sha256:dfb5cef2197545f3e0ea6b879bf89c982738347ba2c06baea2574079b7c5e89a",
+        "contribution": "將 KJ 的外部相依轉為可追溯的校別資產清單與可驗收的替換路徑。",
+        "evidence_plan": ["KJ asset manifest", "kj-admi 部署內容", "iSchool 預覽驗收紀錄"],
+        "reviewed_at": "2026-08-16"
+      },
+      "jv32_route": {"workflows": ["task-lifecycle"]},
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "以 KJ 校別 manifest 與 iSchool 實測取代一次性大量網址替換。",
+            "evidence_refs": ["$COLLAB/harness-mc/milestones/school-static-assets/project.json"],
+            "recorded_at": "2026-08-16"
+          }
+        ]
+      }
+    },
+    {
+      "id": "p1-3",
+      "title": "盤點並遷移 FJ 招生資產",
+      "status": "todo",
+      "track": "migration",
+      "order_label": "SSA-03",
+      "priority": "P0",
+      "capability_domain": "source-memory",
+      "task_kind": "discover",
+      "dependencies": ["p1-1"],
+      "done_condition": "FJ 招生頁的 sgoods.info 資產引用已形成 manifest，下載資產已置於 fj-admi，且每個替換網址均在 iSchool 預覽頁驗收。",
+      "acceptance": [
+        "manifest 列出原始網址、目標路徑、檔案類型與驗證結果。",
+        "FJ 資產只置於 fj-admi；未經檔案相同證據不得混入 KJ 或 shared 根目錄。",
+        "已替換頁面在 iSchool 預覽頁維持核心互動與視覺資產正常。"
+      ],
+      "goal_alignment": {
+        "project_id": "school-static-assets",
+        "goal_ref": "$COLLAB/harness-mc/milestones/school-static-assets/project.json#/goals",
+        "goal_fingerprint": "sha256:dfb5cef2197545f3e0ea6b879bf89c982738347ba2c06baea2574079b7c5e89a",
+        "contribution": "將 FJ 的外部相依轉為可追溯的校別資產清單與可驗收的替換路徑。",
+        "evidence_plan": ["FJ asset manifest", "fj-admi 部署內容", "iSchool 預覽驗收紀錄"],
+        "reviewed_at": "2026-08-16"
+      },
+      "jv32_route": {"workflows": ["task-lifecycle"]},
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "以 FJ 校別 manifest 與 iSchool 實測取代一次性大量網址替換。",
+            "evidence_refs": ["$COLLAB/harness-mc/milestones/school-static-assets/project.json"],
+            "recorded_at": "2026-08-16"
+          }
+        ]
+      }
+    },
+    {
+      "id": "p1-verify",
+      "title": "驗收公開載入與 iSchool 相容性",
+      "status": "todo",
+      "track": "verification",
+      "order_label": "SSA-04",
+      "priority": "P1",
+      "capability_domain": "verification-immunity",
+      "task_kind": "verify",
+      "dependencies": ["p1-2", "p1-3"],
+      "done_condition": "KJ 與 FJ 的 manifest、公開 HTTP 載入與 iSchool 實測都已完成；任何未遷移資產或相容性缺口都有明確後續 task。",
+      "acceptance": [
+        "兩校各有可重跑的代表性 HTTP 載入驗證。",
+        "各校所有已替換頁面皆完成 iSchool 預覽驗收。",
+        "sgoods.info 剩餘引用、缺檔與延後項目均有可追溯清單。"
+      ],
+      "goal_alignment": {
+        "project_id": "school-static-assets",
+        "goal_ref": "$COLLAB/harness-mc/milestones/school-static-assets/project.json#/goals",
+        "goal_fingerprint": "sha256:dfb5cef2197545f3e0ea6b879bf89c982738347ba2c06baea2574079b7c5e89a",
+        "contribution": "以公開載入與實際 iSchool 頁面證據確認兩校遷移成果，而非只依部署狀態判定完成。",
+        "evidence_plan": ["校別 manifest", "HTTP 載入紀錄", "iSchool 驗收紀錄", "剩餘引用清單"],
+        "reviewed_at": "2026-08-16"
+      },
+      "jv32_route": {"workflows": ["task-lifecycle"]},
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "完整替代 sgoods.info 必須由公開載入與 iSchool 相容性共同驗收。",
+            "evidence_refs": ["$COLLAB/harness-mc/milestones/school-static-assets/project.json"],
+            "recorded_at": "2026-08-16"
+          }
+        ]
+      }
+    }
+  ]
+}

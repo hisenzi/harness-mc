@@ -11631,6 +11631,39 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "修正 notyet-harness C1 的完整 commit SHA 證據；原短 SHA 768d280 與遠端 commit 正確，上一筆 append-only lifecycle event 曾多寫一個無效尾碼 9。本次保留該歷史事件原文，並以新 amendment 更正 current evidence 與 commits 為可由 Git 解析且已在 origin/main 的 768d28053e9bb91342643da776caf41520e51866。",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness@768d28053e9bb91342643da776caf41520e51866",
+              "$COLLAB/harness-mc@8f4c66058b90cd99d56e59c473bf90c8530c4429"
+            ],
+            "recorded_at": "2026-08-17",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-project-init-v1",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "修正同一 MW-PI-02 closeout 中不可解析的 C1 證據，不建立新問題或新 task。",
+                "owner_source_of_truth": "遠端 commit 真相由 notyet-harness Git object 與 origin/main ancestry 證明；canonical 引用仍由本 task 擁有。",
+                "inputs_outputs": "輸入是 git rev-parse 與 origin/main ancestry；輸出是更正 current test contract／commits 的 SHA，並追加本修正紀錄；不改寫先前 lifecycle event。",
+                "lifecycle_completion": "task 維持 completed；修正後重跑 changed-only validator、remote ancestry 與 MC 局部核對。"
+              },
+              "decision_reason": "證據引用修正屬既有 task amendment，不改變五階段驗收、功能 scope 或完成判定。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-17",
+                "evidence_refs": [
+                  "Vincent 2026-08-17 current session: commit／push"
+                ]
+              }
+            }
           }
         ]
       },
@@ -11720,7 +11753,7 @@
         "evidence_refs": [
           "$COLLAB/notyet-harness/100_Todo/plan/2026-08-17-project-init-fast-default-v2-temporary-tracker.md",
           "$COLLAB/harness-mc@89062993bf662fdf7fde42cb18b222a82ae156a8",
-          "$COLLAB/notyet-harness@768d28053e9bb91342643da776caf41520e518669"
+          "$COLLAB/notyet-harness@768d28053e9bb91342643da776caf41520e51866"
         ],
         "runtime_evidence_required": false,
         "red_command": "node scripts/verify-project-init-quick.mjs",
@@ -11769,7 +11802,7 @@
       "completed_at": "2026-08-17",
       "commits": [
         "89062993bf662fdf7fde42cb18b222a82ae156a8",
-        "768d28053e9bb91342643da776caf41520e518669",
+        "768d28053e9bb91342643da776caf41520e51866",
         "95f424b0421fdaebc704faa87880b3e2986ae487"
       ],
       "summary": "2026-08-17：階段 1 至 5 均由 Vincent 判定通過；quick／formalize、order_label 執行、獨立 sync-mc、VTS quick 遷移與 legacy snapshots 已完成。VTS 5 tasks 與 MW-PI-02 經 canonical、generated read model 與 localhost MC 核對；C1 與追蹤 closeout 已到兩個 origin/main，本 task 正式完成。"

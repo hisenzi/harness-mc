@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MorroWise 最終系統架構圖</title>
+  <style>
+    :root { color-scheme: light dark; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: Canvas; color: CanvasText; }
+    header { padding: 16px 20px 12px; border-bottom: 1px solid color-mix(in srgb, CanvasText 18%, transparent); background: Canvas; }
+    h1 { margin: 0 0 10px; font-size: 20px; font-weight: 650; }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    button { appearance: none; padding: 7px 11px; border: 1px solid color-mix(in srgb, CanvasText 28%, transparent); border-radius: 7px; background: Canvas; color: CanvasText; font: inherit; cursor: pointer; }
+    button:hover { background: color-mix(in srgb, CanvasText 8%, Canvas); }
+    output { min-width: 58px; font-variant-numeric: tabular-nums; }
+    main { height: calc(100vh - 104px); overflow: auto; background: #f6f6f6; }
+    iframe { display: block; width: var(--canvas-width); height: var(--canvas-height); border: 0; transform-origin: top left; }
+    @media (max-width: 560px) { header { padding: 12px; } main { height: calc(100vh - 148px); } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MorroWise 最終系統架構圖</h1>
+    <div class="controls" aria-label="閱讀控制">
+      <button type="button" data-action="out" aria-label="縮小">−</button>
+      <output id="zoom" aria-live="polite">100%</output>
+      <button type="button" data-action="in" aria-label="放大">＋</button>
+      <button type="button" data-action="fit">適應寬度</button>
+      <button type="button" data-action="reset">原始大小</button>
+      <button type="button" data-action="full">全螢幕</button>
+    </div>
+  </header>
+  <main id="stage" style="--canvas-width: 3618px; --canvas-height: 1781px;">
+    <iframe id="diagram" title="MorroWise 最終系統架構圖" src="MorroWise_%E6%9C%80%E7%B5%82%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B%E5%9C%96_V3_260726.svg"></iframe>
+  </main>
+  <script>
+    (() => {
+      const stage = document.getElementById('stage');
+      const diagram = document.getElementById('diagram');
+      const zoom = document.getElementById('zoom');
+      const nativeWidth = 3618;
+      const nativeHeight = 1781;
+      let scale = 1;
+      const render = () => {
+        stage.style.setProperty('--canvas-width', `${Math.round(nativeWidth * scale)}px`);
+        stage.style.setProperty('--canvas-height', `${Math.round(nativeHeight * scale)}px`);
+        zoom.value = `${Math.round(scale * 100)}%`;
+      };
+      document.querySelector('.controls').addEventListener('click', (event) => {
+        const action = event.target.dataset.action;
+        if (!action) return;
+        if (action === 'in') scale = Math.min(2, scale + 0.1);
+        if (action === 'out') scale = Math.max(0.2, scale - 0.1);
+        if (action === 'reset') scale = 1;
+        if (action === 'fit') scale = Math.min(1, Math.max(0.2, (stage.clientWidth - 24) / nativeWidth));
+        if (action === 'full') (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()).catch(() => {});
+        render();
+      });
+      window.addEventListener('resize', () => { if (scale < 1) { scale = Math.min(1, Math.max(0.2, (stage.clientWidth - 24) / nativeWidth)); render(); } });
+      render();
+    })();
+  </script>
+</body>
+</html>

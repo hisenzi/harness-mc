@@ -11517,7 +11517,7 @@
     {
       "id": "morrowise-project-init-fast-default-v2",
       "title": "開案 v2：快速開案預設與 MVP 後正式補完",
-      "status": "in_progress",
+      "status": "completed",
       "track": "governance",
       "order_label": "MW-PI-02",
       "priority": "high",
@@ -11542,11 +11542,13 @@
       ],
       "jv32_route": {
         "workflows": [
-          "task-lifecycle"
+          "task-lifecycle",
+          "closeout-commit-routing"
         ],
         "decision_input": [
           "Vincent 核准快速開案預設、order_label 規則、MVP 期間自由增補 tasks、獨立 MC 同步與 MVP 後 formalize。",
-          "階段 1 至 4 已由 Vincent 判定通過，並於 2026-08-17 啟動階段 5。"
+          "階段 1 至 5 已由 Vincent 判定通過。",
+          "Vincent 於 2026-08-17 明確授權本案 commit／push。"
         ],
         "decision_output": "以單一 MW-PI-02 記錄開案 v2 的實作、局部驗證與 VTS 實際套用，不建立額外驗收編號或平行追蹤系統。",
         "execution_boundary": "本 task 只記錄已核准的五階段開案流程優化、VTS quick 遷移與 MC 顯示；不授權 commit、push、部署、外部同步或新增架構工作。"
@@ -11588,6 +11590,44 @@
                   "Vincent 2026-08-17 current session: 以上可以",
                   "Vincent 2026-08-17 current session: 可以進行階段 1",
                   "Vincent 2026-08-17 current session: 進行階段 5"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "Vincent 已判定階段 1 至 5 通過並明確授權 commit／push；harness-mc C1 8906299 與 notyet-harness C1 768d280 已到各自 origin/main，臨時追蹤 closeout 95f424b 亦已到 notyet-harness/origin/main。局部 verifiers、VTS／MorroWise MC 核對與拓樸檢查全數通過，因此完成 MW-PI-02 canonical closeout。",
+            "evidence_refs": [
+              "Vincent 2026-08-17 current session: 階段5通過",
+              "Vincent 2026-08-17 current session: commit／push",
+              "$COLLAB/harness-mc@89062993bf662fdf7fde42cb18b222a82ae156a8",
+              "$COLLAB/notyet-harness@768d28053e9bb91342643da776caf41520e518669",
+              "$COLLAB/notyet-harness@95f424b0421fdaebc704faa87880b3e2986ae487",
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-08-17-project-init-fast-default-v2-temporary-tracker.md"
+            ],
+            "recorded_at": "2026-08-17",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-project-init-v1",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "本次只關閉已存在的 MW-PI-02，不新增另一個開案或驗收 task。",
+                "owner_source_of_truth": "MW-PI-02 的完成狀態、commit 與驗證證據仍只由 MorroWise tasks.json 擁有。",
+                "inputs_outputs": "輸入是 Vincent 的五階段通過與 commit／push 授權；輸出是既有 task 的 completed 狀態、test contract、completion evidence 與 remote hashes。",
+                "lifecycle_completion": "C1 與 notyet-harness tracker closeout 已到 remote main；本次 C2 只完成 canonical closeout，不改 VTS MVP tasks 或開案功能。"
+              },
+              "decision_reason": "既有 MW-PI-02 已完成其 done condition，因此以 amend 完成同一 task，不建立重複紀錄。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-17",
+                "evidence_refs": [
+                  "Vincent 2026-08-17 current session: 階段5通過",
+                  "Vincent 2026-08-17 current session: commit／push"
                 ]
               }
             }
@@ -11658,7 +11698,81 @@
           }
         ]
       },
-      "summary": "2026-08-17：階段 1 至 5 已由 Vincent 判定通過；封閉模擬、VTS quick 遷移、MC 同步與 scope 內最終局部驗證均完成。VTS 5 tasks 與 MW-PI-02 已由 canonical、generated read model 及 localhost MC 核對；task 保持 in_progress，只等待另行核准的 commit／push 與 remote truth。"
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "quick 以最小資料建立 README、project.json、任意數量且各有驗收標準的 MVP tasks、formalize checkpoint 與拓樸登錄。",
+          "quick 專案依 order_label 排序並選擇預設 work-anchor；明確指定可執行 task-id 時可跳做。",
+          "formalize 保留既有 project 欄位與全部 MVP task 身分及紀錄，只追加正式欄位與 PROJECT_CODE-NN tasks。",
+          "sync-mc 可獨立重建並核對指定專案、task id 與 order_label。"
+        ],
+        "test_level": [
+          "unit",
+          "integration",
+          "local read-model"
+        ],
+        "fixture_refs": [
+          "$COLLAB/harness-mc/scripts/verify-project-init-quick.mjs",
+          "$COLLAB/harness-mc/scripts/verify-project-init-formalize.mjs",
+          "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+          "$COLLAB/harness-mc/scripts/verify-work-anchor-preflight.mjs"
+        ],
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-08-17-project-init-fast-default-v2-temporary-tracker.md",
+          "$COLLAB/harness-mc@89062993bf662fdf7fde42cb18b222a82ae156a8",
+          "$COLLAB/notyet-harness@768d28053e9bb91342643da776caf41520e518669"
+        ],
+        "runtime_evidence_required": false,
+        "red_command": "node scripts/verify-project-init-quick.mjs",
+        "expected_red_reason": "實作前 new-project.py 缺 quick／formalize，既有排序、work-anchor、validator 與 sync-mc 尚未支援核准規則。",
+        "green_command": "node scripts/verify-project-init-quick.mjs",
+        "full_regression_commands": [
+          "node scripts/verify-project-init-formalize.mjs",
+          "node scripts/verify-project-init-v1.mjs",
+          "node scripts/verify-work-anchor-preflight.mjs",
+          "node scripts/verify-validate-tasks.mjs",
+          "npm run test:project-topology"
+        ]
+      },
+      "completion_evidence": {
+        "red_evidence": [
+          "臨時追蹤文件的階段 2 至 4 局部驗證結果記錄 quick、order_label／work-anchor／validator／sync-mc 與 formalize 的實作前預期失敗。"
+        ],
+        "green_evidence": [
+          "project-init quick verification OK",
+          "project-init formalize verification OK",
+          "project-init v1 verification OK",
+          "Work-anchor preflight verification OK",
+          "validate-tasks verification OK"
+        ],
+        "regression_evidence": [
+          "visual-template-system changed-only validation：0 issues、0 legacy warnings。",
+          "morrowise changed-only validation：0 issues、0 legacy warnings。",
+          "Project Topology Registry verification OK：50 root records。",
+          "C1 遠端驗證：harness-mc 8906299、notyet-harness 768d280 均在 origin/main，ahead／behind 0/0。"
+        ],
+        "verifier_refs": [
+          "$COLLAB/harness-mc/scripts/verify-project-init-quick.mjs",
+          "$COLLAB/harness-mc/scripts/verify-project-init-formalize.mjs",
+          "$COLLAB/harness-mc/scripts/verify-project-init-v1.mjs",
+          "$COLLAB/harness-mc/scripts/verify-work-anchor-preflight.mjs",
+          "$COLLAB/harness-mc/scripts/verify-validate-tasks.mjs",
+          "$COLLAB/notyet-harness/000_Agent/skills/sync-mc/scripts/verify-mc-project.mjs"
+        ],
+        "fixture_runtime_boundary": "quick／formalize 與排序負向案例使用隔離 fixture；MC 顯示只驗證本機 generated read model 與 localhost，未宣稱部署或外部同步。"
+      },
+      "architecture_decision": {
+        "decision": "not_required",
+        "evaluated_at": "2026-08-17",
+        "reason": "本案是既有 project-init 與 MC read-model 能力的版本改進；Vincent 已明確將 Architecture Atlas 排除於本輪快速開案與 closeout scope，未新增需 promoted 的獨立子系統。"
+      },
+      "completed_at": "2026-08-17",
+      "commits": [
+        "89062993bf662fdf7fde42cb18b222a82ae156a8",
+        "768d28053e9bb91342643da776caf41520e518669",
+        "95f424b0421fdaebc704faa87880b3e2986ae487"
+      ],
+      "summary": "2026-08-17：階段 1 至 5 均由 Vincent 判定通過；quick／formalize、order_label 執行、獨立 sync-mc、VTS quick 遷移與 legacy snapshots 已完成。VTS 5 tasks 與 MW-PI-02 經 canonical、generated read model 與 localhost MC 核對；C1 與追蹤 closeout 已到兩個 origin/main，本 task 正式完成。"
     }
   ]
 }

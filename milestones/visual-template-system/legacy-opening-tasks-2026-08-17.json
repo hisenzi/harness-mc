@@ -1,0 +1,47 @@
+{
+  "project": "visual-template-system",
+  "tasks": [
+    {
+      "id": "p1-1",
+      "title": "需求確認（功能範圍、使用者角色、完成定義）",
+      "status": "todo",
+      "track": "phase-1",
+      "order_label": "PI-01",
+      "priority": "P1",
+      "capability_domain": "direction-governance",
+      "task_kind": "discover",
+      "dependencies": [],
+      "done_condition": "outcome.problem_statement、impact、success_target 與 measurement_source 已由需求確認驗證，且沒有 placeholder"
+    },
+    {
+      "id": "p1-2",
+      "title": "架構設計（技術棧選定、系統架構文件）",
+      "status": "todo",
+      "track": "phase-1",
+      "order_label": "PI-02",
+      "priority": "P1",
+      "capability_domain": "source-memory",
+      "task_kind": "design",
+      "dependencies": [
+        "p1-1"
+      ],
+      "done_condition": "ARCHITECTURE.md 或等效文件已建立，並能對照 outcome contract"
+    },
+    {
+      "id": "p1-verify",
+      "title": "Phase 1 驗收整合",
+      "status": "todo",
+      "track": "phase-1",
+      "order_label": "PI-03",
+      "priority": "P2",
+      "capability_domain": "verification-immunity",
+      "task_kind": "verify",
+      "dependencies": [
+        "p1-1",
+        "p1-2"
+      ],
+      "done_condition": "success_criteria、done_condition、量測來源與環境異動均已驗證",
+      "note": "前置任務全 done 後執行"
+    }
+  ]
+}

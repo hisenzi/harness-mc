@@ -1,0 +1,14 @@
+{
+  "name": "視覺模板生成系統",
+  "description": "將既有美術模板編號化，依指定模板與內容生成可預覽及匯出的資訊圖",
+  "status": "active",
+  "created": "2026-08-17",
+  "project_code": "VTS",
+  "project_folder": "$COLLAB/visual-template-system",
+  "why_opened": "既有美術模板數量多，但缺少可機器讀取的編號、內容欄位與渲染規則，每次製作仍需重新找圖與手動改稿。",
+  "mvp_goal": "完成 3 款模板的編號化、指定模板內容輸入、本機預覽與 SVG／PNG 輸出。",
+  "final_goal": "把多年累積的美術模板整合成可搜尋、可指定模板編號、可替換內容並重複輸出的視覺製作系統。",
+  "tracks": {
+    "mvp": "MVP"
+  }
+}

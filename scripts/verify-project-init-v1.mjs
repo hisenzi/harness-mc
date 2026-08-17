@@ -75,6 +75,16 @@ assert.deepEqual(
   "ready tasks sort by priority/id, while dependencies always precede their dependents",
 );
 
+const quickOrdered = sortTasksByPlan([
+  { id: "later-mvp-task", order_label: "VTS-MVP-03", priority: "P0", dependencies: [] },
+  { id: "first-mvp-task", order_label: "VTS-MVP-02", priority: "P2", dependencies: [] },
+], { orderLabelAsSource: true });
+assert.deepEqual(
+  quickOrdered.map((task) => task.id),
+  ["first-mvp-task", "later-mvp-task"],
+  "quick projects must use order_label as the sorting source",
+);
+
 const mapPath = path.join(root, "milestones", "morrowise", "maps", "operating-loop.json");
 const operatingMap = JSON.parse(fs.readFileSync(mapPath, "utf8"));
 assert.equal(operatingMap.kind, "operating-loop");

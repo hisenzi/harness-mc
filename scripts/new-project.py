@@ -13,11 +13,13 @@ standalone 只描述預計的專案型態；只有精準 Vincent repo receipt �
   python3 scripts/new-project.py --id "my-app" --name "我的應用" --desc "說明" --type standalone \\
     --problem "要解決的問題" --impact "不解決的影響" --metric "衡量指標" \\
     --baseline "目前基準" --target "量化目標" --due "2026-08-31" --measurement-source "資料來源或驗證指令"
+  python3 scripts/new-project.py formalize --id "my-project" --formalize-file /path/to/formalize.json
   python3 scripts/new-project.py promote --id "my-project" --repo-create-receipt /path/to/receipt.json
 """
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 from datetime import datetime
@@ -153,15 +155,16 @@ def load_existing_repo_ref(repo_ref: str, project_id: str):
     return repo_ref
 
 
-def require_write_admission(destination: Path, topology_registry: str = None):
+def require_write_admission(destination: Path, topology_registry: str = None, collab_root: Path = None):
     """在任何 project-init mkdir／同步前取得 target-specific topology admission。"""
     registry = Path(topology_registry) if topology_registry else DEFAULT_TOPOLOGY_REGISTRY
+    resolved_collab_root = Path(collab_root) if collab_root else COLLAB_DIR
     result = subprocess.run(
         [
             "node",
             str(WRITE_ADMISSION),
             "--collab-root",
-            str(COLLAB_DIR),
+            str(resolved_collab_root),
             "--registry",
             str(registry),
             "--destination",
@@ -181,6 +184,404 @@ def require_write_admission(destination: Path, topology_registry: str = None):
             reason = result.stderr.strip() or "write admission failed"
         print(f"❌ project-init topology BLOCKED：{reason}", file=sys.stderr)
         sys.exit(2)
+
+
+def validate_quick_args(parser, args):
+    """驗證快速開案已核准的最小輸入，不要求完整治理欄位。"""
+    required = {
+        "--id": args.id,
+        "--name": args.name,
+        "--desc": args.desc,
+        "--project-code": args.project_code,
+        "--project-folder": args.project_folder,
+        "--why-open": args.why_open,
+        "--mvp-goal": args.mvp_goal,
+        "--final-goal": args.final_goal,
+        "--mvp-tasks-file": args.mvp_tasks_file,
+    }
+    missing = [flag for flag, value in required.items() if not str(value or "").strip()]
+    if missing:
+        parser.error(f"快速開案缺少：{', '.join(missing)}")
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", args.id):
+        parser.error("--id 必須是小寫英文、數字與連字號組成的 slug")
+
+    args.project_code = args.project_code.strip().upper()
+    if not re.fullmatch(r"[A-Z0-9]+(?:-[A-Z0-9]+)*", args.project_code):
+        parser.error("--project-code 必須使用英文字母、數字或連字號")
+
+    args.collab_root = Path(args.collab_root or COLLAB_DIR).expanduser().resolve()
+    args.milestones_root = Path(args.milestones_root or PROJECTS_DIR).expanduser().resolve()
+    args.topology_registry = Path(
+        args.topology_registry or DEFAULT_TOPOLOGY_REGISTRY
+    ).expanduser().resolve()
+
+    raw_project_folder = args.project_folder.strip()
+    if raw_project_folder.startswith("$COLLAB/"):
+        project_folder = args.collab_root / raw_project_folder.removeprefix("$COLLAB/")
+    else:
+        candidate = Path(raw_project_folder).expanduser()
+        project_folder = candidate if candidate.is_absolute() else args.collab_root / candidate
+    args.project_folder = project_folder.resolve()
+    if args.project_folder.parent != args.collab_root:
+        parser.error("--project-folder 必須是 $COLLAB 直屬專案資料夾")
+
+    args.project_dir = args.milestones_root / args.id
+    if args.project_dir.exists():
+        parser.error(f"MC 專案已存在：{args.project_dir}")
+    if args.project_folder.exists() and not args.project_folder.is_dir():
+        parser.error(f"專案資料夾不是目錄：{args.project_folder}")
+    if (args.project_folder / "README.md").exists():
+        parser.error(f"README.md 已存在，不覆寫：{args.project_folder / 'README.md'}")
+
+    args.mvp_tasks = load_quick_mvp_tasks(parser, args.mvp_tasks_file)
+
+
+def load_quick_mvp_tasks(parser, source_path: str) -> list:
+    """讀取由 Vincent 核准的 MVP task 清單。"""
+    try:
+        payload = json.loads(Path(source_path).expanduser().read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        parser.error(f"MVP tasks 無法讀取：{error}")
+    if not isinstance(payload, list) or not payload:
+        parser.error("--mvp-tasks-file 必須是至少一項 task 的 JSON array")
+
+    normalized = []
+    seen_ids = {"quick-open", "formalize"}
+    for index, item in enumerate(payload, start=1):
+        if not isinstance(item, dict):
+            parser.error(f"MVP task {index} 必須是 JSON object")
+        task_id = str(item.get("id") or "").strip()
+        title = str(item.get("title") or "").strip()
+        done_condition = str(item.get("done_condition") or item.get("acceptance") or "").strip()
+        if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", task_id):
+            parser.error(f"MVP task {index} 的 id 必須是小寫 slug")
+        if task_id in seen_ids:
+            parser.error(f"MVP task id 重複或使用保留值：{task_id}")
+        if not title:
+            parser.error(f"MVP task {task_id} 缺少明確 title")
+        if not done_condition:
+            parser.error(f"MVP task {task_id} 缺少驗收標準")
+        seen_ids.add(task_id)
+        normalized.append({
+            "id": task_id,
+            "title": title,
+            "done_condition": done_condition,
+        })
+    return normalized
+
+
+def make_quick_project_json(args) -> dict:
+    """快速開案的最小 project.json；完整治理欄位留待 formalize。"""
+    return {
+        "name": args.name,
+        "description": args.desc,
+        "status": "active",
+        "created": datetime.now(ZoneInfo("Asia/Taipei")).strftime("%Y-%m-%d"),
+        "project_code": args.project_code,
+        "project_folder": f"$COLLAB/{args.project_folder.name}",
+        "why_opened": args.why_open,
+        "mvp_goal": args.mvp_goal,
+        "final_goal": args.final_goal,
+        "tracks": {
+            "mvp": "MVP",
+        },
+    }
+
+
+def make_quick_tasks_json(args) -> dict:
+    """建立 quick-open、任意數量 MVP tasks 與 formalize checkpoint。"""
+    tasks = [
+        {
+            "id": "quick-open",
+            "title": "完成快速開案流程",
+            "status": "todo",
+            "track": "mvp",
+            "order_label": f"{args.project_code}-MVP-01",
+            "dependencies": [],
+            "done_condition": "README.md、最小 project.json、MVP tasks、formalize checkpoint、專案拓樸與局部驗證均完成，且 tasks 已可在 MC 查看",
+        },
+    ]
+    for index, item in enumerate(args.mvp_tasks, start=2):
+        tasks.append({
+            "id": item["id"],
+            "title": item["title"],
+            "status": "todo",
+            "track": "mvp",
+            "order_label": f"{args.project_code}-MVP-{index:02d}",
+            "dependencies": [],
+            "done_condition": item["done_condition"],
+        })
+
+    checkpoint_number = len(tasks) + 1
+    tasks.append({
+        "id": "formalize",
+        "title": "依 MVP 測試結果啟動正式補完",
+        "status": "todo",
+        "track": "mvp",
+        "order_label": f"{args.project_code}-MVP-{checkpoint_number:02d}",
+        "dependencies": [],
+        "done_condition": "已依 MVP 測試結果與最終目標補齊正式專案內容，並建立內容明確且各有驗收標準的正式 tasks",
+    })
+    return {
+        "project": args.id,
+        "tasks": tasks,
+    }
+
+
+def make_quick_readme(args) -> str:
+    return (
+        f"# {args.name}\n\n"
+        f"{args.desc}\n\n"
+        "## 為何開案\n\n"
+        f"{args.why_open}\n\n"
+        "## MVP 目標\n\n"
+        f"{args.mvp_goal}\n\n"
+        "## 最終目標\n\n"
+        f"{args.final_goal}\n"
+    )
+
+
+def register_quick_topology(parser, args):
+    """登錄或確認 quick 專案的 canonical project home。"""
+    try:
+        topology = json.loads(args.topology_registry.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        parser.error(f"專案拓樸檔無法讀取：{error}")
+    records = topology.get("records")
+    if not isinstance(records, list):
+        parser.error("專案拓樸檔缺少 records array")
+
+    path_label = f"$COLLAB/{args.project_folder.name}"
+    same_id = next((record for record in records if record.get("id") == args.id), None)
+    same_path = next((record for record in records if record.get("path_label") == path_label), None)
+    existing = same_id or same_path
+    if same_id and same_id.get("path_label") != path_label:
+        parser.error(f"拓樸中的 project id 已指向其他路徑：{args.id}")
+    if same_path and same_path.get("id") != args.id:
+        parser.error(f"拓樸中的 project folder 已由其他 project 使用：{path_label}")
+    if existing:
+        if (
+            existing.get("classification") != "canonical_project"
+            or existing.get("project_home_ref") != path_label
+            or existing.get("migration_state") == "blocked"
+        ):
+            parser.error(f"既有拓樸記錄不是可寫入的 canonical project：{path_label}")
+        return
+
+    today = datetime.now(ZoneInfo("Asia/Taipei")).strftime("%Y-%m-%d")
+    records.append({
+        "id": args.id,
+        "path_label": path_label,
+        "classification": "canonical_project",
+        "migration_state": "inventory_only",
+        "project_home_ref": path_label,
+        "topology_profile": "non-git-project",
+        "document_ref": f"{path_label}/README.md",
+        "repo_ref": None,
+        "evidence": [path_label],
+        "last_verified_at": today,
+        "notes": "Quick project opening registered this canonical local home; Git, deployment, and external sync remain separate MVP actions.",
+    })
+    if "updated_at" in topology:
+        topology["updated_at"] = today
+    if "inventory_as_of" in topology:
+        topology["inventory_as_of"] = today
+    args.topology_registry.write_text(
+        json.dumps(topology, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
+def quick_create(parser, args):
+    """快速開案：只建立 MVP 起跑所需資料，不執行同步或正式補完。"""
+    project = make_quick_project_json(args)
+    tasks = make_quick_tasks_json(args)
+    readme = make_quick_readme(args)
+
+    args.project_folder.mkdir(parents=False, exist_ok=True)
+    register_quick_topology(parser, args)
+    require_write_admission(
+        args.project_folder / "README.md",
+        args.topology_registry,
+        args.collab_root,
+    )
+    require_write_admission(args.project_dir, args.topology_registry, args.collab_root)
+
+    args.project_dir.mkdir(parents=True)
+    (args.project_folder / "README.md").write_text(readme, encoding="utf-8")
+    (args.project_dir / "project.json").write_text(
+        json.dumps(project, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    (args.project_dir / "tasks.json").write_text(
+        json.dumps(tasks, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+    print(f"✅ 快速開案資料已建立：{args.id}")
+    print(f"   專案資料夾：{args.project_folder}")
+    print(f"   MC canonical 資料：{args.project_dir}")
+    print("   尚未執行 MC 同步、Git、部署、外部同步或 formalize。")
+
+
+def has_content(value) -> bool:
+    """接受非空文字、array 或 object，避免替正式內容增加未核准 schema。"""
+    if isinstance(value, str):
+        return bool(value.strip())
+    if isinstance(value, (list, dict)):
+        return bool(value)
+    return value is not None
+
+
+def load_formalize_payload(parser, source_path: str, existing_tasks: list, project_code: str) -> dict:
+    """讀取 MVP 測試後核准的正式專案內容與正式 tasks。"""
+    try:
+        payload = json.loads(Path(source_path).expanduser().read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        parser.error(f"formalize 資料無法讀取：{error}")
+    if not isinstance(payload, dict):
+        parser.error("--formalize-file 必須是 JSON object")
+
+    required = {
+        "MVP 測試結果": payload.get("mvp_test_results"),
+        "goals": payload.get("goals"),
+        "risks": payload.get("risks"),
+        "metric": payload.get("metric"),
+        "due": payload.get("due"),
+        "System Growth Gate": payload.get("system_growth_gate"),
+    }
+    missing = [label for label, value in required.items() if not has_content(value)]
+    if missing:
+        parser.error(f"formalize 缺少：{', '.join(missing)}")
+    try:
+        datetime.strptime(str(payload["due"]), "%Y-%m-%d")
+    except ValueError:
+        parser.error("formalize due 必須是 YYYY-MM-DD")
+
+    raw_tasks = payload.get("tasks")
+    if not isinstance(raw_tasks, list) or not raw_tasks:
+        parser.error("formalize tasks 必須是至少一項 task 的 JSON array")
+
+    seen_ids = {
+        str(task.get("id") or "").strip()
+        for task in existing_tasks
+        if isinstance(task, dict) and str(task.get("id") or "").strip()
+    }
+    seen_labels = {
+        str(task.get("order_label") or "").strip()
+        for task in existing_tasks
+        if isinstance(task, dict) and str(task.get("order_label") or "").strip()
+    }
+    formal_tasks = []
+    for index, item in enumerate(raw_tasks, start=1):
+        if not isinstance(item, dict):
+            parser.error(f"正式 task {index} 必須是 JSON object")
+        task_id = str(item.get("id") or "").strip()
+        title = str(item.get("title") or "").strip()
+        done_condition = str(item.get("done_condition") or item.get("acceptance") or "").strip()
+        order_label = f"{project_code}-{index:02d}"
+        if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", task_id):
+            parser.error(f"正式 task {index} 的 id 必須是小寫 slug")
+        if task_id in seen_ids:
+            parser.error(f"正式 task id 重複：{task_id}")
+        if not title:
+            parser.error(f"正式 task {task_id} 缺少明確 title")
+        if not done_condition:
+            parser.error(f"正式 task {task_id} 缺少驗收標準")
+        if order_label in seen_labels:
+            parser.error(f"正式 task order_label 重複：{order_label}")
+        seen_ids.add(task_id)
+        seen_labels.add(order_label)
+        formal_tasks.append({
+            "id": task_id,
+            "title": title,
+            "status": "todo",
+            "track": "formal",
+            "order_label": order_label,
+            "dependencies": [],
+            "done_condition": done_condition,
+        })
+
+    payload["formal_tasks"] = formal_tasks
+    return payload
+
+
+def validate_formalize_args(parser, args):
+    """formalize 只接受既有 quick 專案，並保留其既有內容。"""
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", str(args.id or "")):
+        parser.error("--id 必須是小寫英文、數字與連字號組成的 slug")
+    args.collab_root = Path(args.collab_root or COLLAB_DIR).expanduser().resolve()
+    args.milestones_root = Path(args.milestones_root or PROJECTS_DIR).expanduser().resolve()
+    args.topology_registry = Path(
+        args.topology_registry or DEFAULT_TOPOLOGY_REGISTRY
+    ).expanduser().resolve()
+    args.project_dir = args.milestones_root / args.id
+    args.project_path = args.project_dir / "project.json"
+    args.tasks_path = args.project_dir / "tasks.json"
+    if not args.project_dir.is_dir() or not args.project_path.is_file() or not args.tasks_path.is_file():
+        parser.error(f"找不到既有 quick 專案：{args.project_dir}")
+
+    try:
+        args.project_data = json.loads(args.project_path.read_text(encoding="utf-8"))
+        args.tasks_data = json.loads(args.tasks_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        parser.error(f"既有 quick 專案資料無法讀取：{error}")
+    if not isinstance(args.project_data, dict):
+        parser.error("既有 project.json 必須是 JSON object")
+    if not isinstance(args.tasks_data, dict) or not isinstance(args.tasks_data.get("tasks"), list):
+        parser.error("既有 tasks.json 必須包含 tasks array")
+
+    project_code = str(args.project_data.get("project_code") or "").strip().upper()
+    if not re.fullmatch(r"[A-Z0-9]+(?:-[A-Z0-9]+)*", project_code):
+        parser.error("既有 quick 專案缺少有效 project_code")
+    if not has_content(args.project_data.get("final_goal")):
+        parser.error("既有 quick 專案缺少最終目標 final_goal")
+    if has_content(args.project_data.get("goals")):
+        parser.error("此專案已完成 formalize，不重複建立正式 tasks")
+
+    args.project_code = project_code
+    args.formalize_payload = load_formalize_payload(
+        parser,
+        args.formalize_file,
+        args.tasks_data["tasks"],
+        project_code,
+    )
+
+
+def formalize_project(parser, args):
+    """依 MVP 測試結果與既有 final_goal 更新專案，並只追加正式 tasks。"""
+    project = args.project_data
+    tasks_data = args.tasks_data
+    payload = args.formalize_payload
+
+    tracks = project.get("tracks")
+    if tracks is None:
+        tracks = {}
+    if not isinstance(tracks, dict):
+        parser.error("既有 project.json tracks 必須是 JSON object")
+    project["tracks"] = {**tracks, "formal": "正式執行"}
+    for field in ["goals", "risks", "metric", "due", "system_growth_gate"]:
+        project[field] = payload[field]
+    tasks_data["tasks"].extend(payload["formal_tasks"])
+
+    require_write_admission(
+        args.project_dir,
+        args.topology_registry,
+        args.collab_root,
+    )
+    args.project_path.write_text(
+        json.dumps(project, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    args.tasks_path.write_text(
+        json.dumps(tasks_data, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+    print(f"✅ 正式補完資料已建立：{args.id}")
+    print("   已保留既有 quick 專案與所有 MVP task 身分及紀錄。")
+    print(f"   已追加 {len(payload['formal_tasks'])} 項正式 task。")
+    print("   尚未執行 MC 同步、Git、部署、外部同步或其他全域重建。")
 
 
 def make_project_json(args) -> dict:
@@ -571,6 +972,27 @@ def main():
     promote_parser.add_argument("--repo-create-receipt", required=True, help="Vincent 精準 repo 建立 receipt JSON")
     promote_parser.add_argument("--topology-registry", default=None, help=argparse.SUPPRESS)
 
+    quick_parser = subparsers.add_parser("quick", help="以最小資料建立 MVP 專案")
+    quick_parser.add_argument("--id", required=True, help="專案 ID（小寫 slug）")
+    quick_parser.add_argument("--name", required=True, help="專案名稱")
+    quick_parser.add_argument("--desc", required=True, help="一句話目標")
+    quick_parser.add_argument("--project-code", required=True, help="人類溝通代碼，例如 VTS")
+    quick_parser.add_argument("--project-folder", required=True, help="$COLLAB 直屬專案資料夾")
+    quick_parser.add_argument("--why-open", required=True, help="專案為何開案")
+    quick_parser.add_argument("--mvp-goal", required=True, help="MVP 目標")
+    quick_parser.add_argument("--final-goal", required=True, help="最終目標")
+    quick_parser.add_argument("--mvp-tasks-file", required=True, help="MVP task JSON array；每項含 id、title、done_condition")
+    quick_parser.add_argument("--collab-root", default=None, help=argparse.SUPPRESS)
+    quick_parser.add_argument("--milestones-root", default=None, help=argparse.SUPPRESS)
+    quick_parser.add_argument("--topology-registry", default=None, help=argparse.SUPPRESS)
+
+    formalize_parser = subparsers.add_parser("formalize", help="依 MVP 測試結果補完正式專案與 tasks")
+    formalize_parser.add_argument("--id", required=True, help="既有 quick 專案 ID")
+    formalize_parser.add_argument("--formalize-file", required=True, help="MVP 測試結果、正式欄位與 tasks 的 JSON object")
+    formalize_parser.add_argument("--collab-root", default=None, help=argparse.SUPPRESS)
+    formalize_parser.add_argument("--milestones-root", default=None, help=argparse.SUPPRESS)
+    formalize_parser.add_argument("--topology-registry", default=None, help=argparse.SUPPRESS)
+
     parser.add_argument("--id",       help="專案 ID（英文、連字號）")
     parser.add_argument("--name",     help="專案名稱")
     parser.add_argument("--desc",     help="一句話描述")
@@ -599,6 +1021,16 @@ def main():
     if args.command == "promote":
         args.repo_create_receipt = load_repo_create_receipt(args.repo_create_receipt, args.id)
         promote(args)
+        return
+
+    if args.command == "quick":
+        validate_quick_args(quick_parser, args)
+        quick_create(quick_parser, args)
+        return
+
+    if args.command == "formalize":
+        validate_formalize_args(formalize_parser, args)
+        formalize_project(formalize_parser, args)
         return
 
     if args.template and not args.type:

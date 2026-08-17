@@ -220,6 +220,151 @@ writeJson(path.join(repo, "milestones", "morrowise", "tasks.json"), {
   tasks: [morrowiseSeedTask()]
 });
 
+const quickProjectDir = path.join(repo, "milestones", "visual-template-system");
+const validQuickTasks = {
+  project: "visual-template-system",
+  tasks: [
+    {
+      id: "quick-open",
+      title: "完成快速開案流程",
+      status: "done",
+      track: "mvp",
+      order_label: "VTS-MVP-01",
+      done_condition: "README、最小專案資料、MVP tasks 與拓樸均已建立。",
+    },
+    {
+      id: "mvp-build",
+      title: "完成最小模板製作流程",
+      status: "todo",
+      track: "mvp",
+      order_label: "VTS-MVP-02",
+      done_condition: "指定模板可產出一份可檢視成品。",
+    },
+    {
+      id: "formalize",
+      title: "依 MVP 測試結果正式補完",
+      status: "todo",
+      track: "formalize",
+      order_label: "VTS-MVP-03",
+      done_condition: "依 MVP 測試結果與最終目標建立正式 tasks。",
+    },
+    {
+      id: "mvp-added-later",
+      title: "補做測試中發現的 MVP 任務",
+      status: "todo",
+      track: "mvp",
+      order_label: "VTS-MVP-04",
+      done_condition: "測試中發現的必要項目已有可觀察結果。",
+    },
+  ],
+};
+writeJson(path.join(quickProjectDir, "project.json"), {
+  name: "視覺模板系統",
+  project_code: "VTS",
+  why_opened: "整合既有模板與製作流程。",
+  mvp_goal: "跑通指定模板的最小端到端流程。",
+  final_goal: "建立可持續擴充的視覺模板製作系統。",
+});
+writeJson(path.join(quickProjectDir, "tasks.json"), validQuickTasks);
+const validQuickResult = run(["--changed-only", "--project", "visual-template-system"]);
+if (!validQuickResult.output.includes("Task validation OK")) {
+  throw new Error("Expected quick MVP labels, including a task added after formalize, to pass.");
+}
+
+const invalidQuickLabel = structuredClone(validQuickTasks);
+invalidQuickLabel.tasks.find((task) => task.id === "mvp-build").order_label = "VTS-02";
+writeJson(path.join(quickProjectDir, "tasks.json"), invalidQuickLabel);
+const invalidQuickLabelResult = run(["--changed-only", "--project", "visual-template-system"], { expectFailure: true });
+if (!invalidQuickLabelResult.output.includes("order_label must match VTS-MVP-NN")) {
+  throw new Error("Expected a quick project task without the MVP label segment to fail.");
+}
+
+const missingQuickAcceptance = structuredClone(validQuickTasks);
+delete missingQuickAcceptance.tasks.find((task) => task.id === "mvp-build").done_condition;
+writeJson(path.join(quickProjectDir, "tasks.json"), missingQuickAcceptance);
+const missingQuickAcceptanceResult = run(["--changed-only", "--project", "visual-template-system"], { expectFailure: true });
+if (!missingQuickAcceptanceResult.output.includes("quick project task requires a non-empty done_condition")) {
+  throw new Error("Expected a quick project task without acceptance to fail.");
+}
+
+writeJson(path.join(quickProjectDir, "tasks.json"), validQuickTasks);
+
+const validFormalizedTasks = structuredClone(validQuickTasks);
+validFormalizedTasks.tasks.push(
+  {
+    id: "template-catalog",
+    title: "建立模板目錄與編號查找",
+    status: "todo",
+    track: "formal",
+    order_label: "VTS-01",
+    done_condition: "使用模板編號可找到唯一模板及其必要 metadata。",
+  },
+  {
+    id: "formal-output",
+    title: "建立正式視覺輸出流程",
+    status: "todo",
+    track: "formal",
+    order_label: "VTS-02",
+    done_condition: "指定模板編號可完成一份符合模板風格的正式成品。",
+  },
+);
+writeJson(path.join(quickProjectDir, "project.json"), {
+  name: "視覺模板系統",
+  project_code: "VTS",
+  why_opened: "整合既有模板與製作流程。",
+  mvp_goal: "跑通指定模板的最小端到端流程。",
+  final_goal: "建立可持續擴充的視覺模板製作系統。",
+  goals: ["建立可依模板編號重複產出一致視覺成品的正式系統"],
+  risks: ["模板 metadata 不一致會造成搜尋與輸出風格偏差"],
+  metric: "指定模板編號的端到端產出驗收通過率",
+  due: "2026-09-30",
+  system_growth_gate: { decision: "MVP 結果支持進入正式建構" },
+});
+writeJson(path.join(quickProjectDir, "tasks.json"), validFormalizedTasks);
+const validFormalizedResult = run(["--changed-only", "--project", "visual-template-system"]);
+if (!validFormalizedResult.output.includes("Task validation OK")) {
+  throw new Error("Expected preserved MVP labels and VTS-NN formal task labels to pass after formalize.");
+}
+
+const invalidFormalLabel = structuredClone(validFormalizedTasks);
+invalidFormalLabel.tasks.find((task) => task.id === "template-catalog").order_label = "VTS-MVP-05";
+writeJson(path.join(quickProjectDir, "tasks.json"), invalidFormalLabel);
+const invalidFormalLabelResult = run(["--changed-only", "--project", "visual-template-system"], { expectFailure: true });
+if (!invalidFormalLabelResult.output.includes("formal project task order_label must match VTS-NN")) {
+  throw new Error("Expected a formal task with an MVP label to fail.");
+}
+
+const missingFormalAcceptance = structuredClone(validFormalizedTasks);
+delete missingFormalAcceptance.tasks.find((task) => task.id === "formal-output").done_condition;
+writeJson(path.join(quickProjectDir, "tasks.json"), missingFormalAcceptance);
+const missingFormalAcceptanceResult = run(["--changed-only", "--project", "visual-template-system"], { expectFailure: true });
+if (!missingFormalAcceptanceResult.output.includes("formal project task requires a non-empty done_condition")) {
+  throw new Error("Expected a formal task without acceptance to fail.");
+}
+
+writeJson(path.join(quickProjectDir, "tasks.json"), validFormalizedTasks);
+
+const legacyCodedProject = "legacy-coded";
+writeJson(path.join(repo, "milestones", legacyCodedProject, "project.json"), {
+  name: "既有代碼專案",
+  project_code: "LEGACY",
+  goals: ["驗證只有 project_code 的既有專案不會誤套 quick/formalize 豁免"],
+});
+writeJson(path.join(repo, "milestones", legacyCodedProject, "tasks.json"), {
+  tasks: [{
+    id: "legacy-coded-new-task",
+    title: "新增既有專案任務",
+    status: "todo",
+    track: "product",
+    order_label: "LEGACY-01",
+    done_condition: "只有 project_code 的舊專案仍遵守既有 task lifecycle 規則。",
+  }],
+});
+const legacyCodedResult = run(["--changed-only", "--project", legacyCodedProject], { expectFailure: true });
+if (!legacyCodedResult.output.includes("jv32_route is required for changed or new canonical task mutations")) {
+  throw new Error("Expected a legacy project with only project_code to retain existing lifecycle governance.");
+}
+
 const deletedCanonicalTask = structuredClone(baseTasks);
 deletedCanonicalTask.tasks = deletedCanonicalTask.tasks.filter((task) => task.id !== "acp-good-task");
 writeJson(path.join(repo, "milestones", "harness-mc", "tasks.json"), deletedCanonicalTask);

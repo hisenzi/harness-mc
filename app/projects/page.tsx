@@ -45,6 +45,8 @@ interface Project {
   tracks: Record<string, string>;
   decision_refs?: DecisionRef[];
   project_map?: ProjectMap | null;
+  project_code?: string;
+  task_ordering?: "order_label";
 }
 
 interface ProjectMap {
@@ -337,7 +339,9 @@ export default function ProjectsPage() {
               )}
 
               {(() => {
-                const orderedTasks = sortTasksByPlan(selected.tasks) as Task[];
+                const orderedTasks = sortTasksByPlan(selected.tasks, {
+                  orderLabelAsSource: selected.task_ordering === "order_label",
+                }) as Task[];
                 const tracks = [...new Set(orderedTasks.map((t) => t.track))];
                 return tracks.map((key) => {
                   const tasks = orderedTasks.filter((t) => t.track === key);

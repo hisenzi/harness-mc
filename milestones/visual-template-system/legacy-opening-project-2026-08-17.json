@@ -1,0 +1,80 @@
+{
+  "name": "視覺模板生成系統",
+  "description": "將既有美術模板編號化，依指定模板與內容生成可預覽及匯出的資訊圖",
+  "type": "standalone",
+  "status": "active",
+  "priority": "P1",
+  "created": "2026-08-17",
+  "estimated_completion": "2026-08-31",
+  "repo_ref": null,
+  "repo_creation": {
+    "create_repo": false,
+    "approval_ref": null
+  },
+  "tracks": {
+    "phase-1": "Phase 1",
+    "deploy": "部署"
+  },
+  "outcome": {
+    "problem_statement": "既有美術模板數量多，但缺少可機器讀取的編號、內容欄位與渲染規則，無法穩定跨專案重用",
+    "impact": "每次製作都需重新找圖與手動改稿，設計資產難以累積成可重複能力",
+    "success_target": {
+      "metric": "通過端到端驗收的可執行模板數",
+      "baseline": "0",
+      "target": "3",
+      "due": "2026-08-31"
+    },
+    "measurement_source": "MVP驗收矩陣與三組SVG及PNG輸出證據"
+  },
+  "task_taxonomy": {
+    "version": "v1",
+    "sort_rule": "dependencies_then_priority_then_id",
+    "capability_domains": [
+      "direction-governance",
+      "source-memory",
+      "sensing-events",
+      "judgment-priority",
+      "approval-safety",
+      "action-delivery",
+      "feedback-learning",
+      "heartbeat-scheduling",
+      "dashboard-surface",
+      "knowledge-capture",
+      "verification-immunity"
+    ],
+    "task_kinds": [
+      "discover",
+      "decide",
+      "design",
+      "implement",
+      "verify",
+      "operate",
+      "closeout"
+    ],
+    "priority_order": [
+      "P0",
+      "P1",
+      "P2"
+    ]
+  },
+  "goals": [
+    "解決：既有美術模板數量多，但缺少可機器讀取的編號、內容欄位與渲染規則，無法穩定跨專案重用",
+    "通過端到端驗收的可執行模板數 從 0 提升至 3，截止 2026-08-31"
+  ],
+  "risks": [
+    {
+      "risk": "成果契約或量測來源失效，導致專案無法驗收。",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "在 Phase 1 驗收前重跑 measurement_source 並確認 baseline/target。"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion": "通過端到端驗收的可執行模板數 達到 3",
+      "verify_cmd": "MVP驗收矩陣與三組SVG及PNG輸出證據",
+      "expected": "baseline=0; target=3; due=2026-08-31"
+    }
+  ],
+  "decisions": []
+}

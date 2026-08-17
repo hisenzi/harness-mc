@@ -5,6 +5,7 @@ import crypto from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { resolveMilestoneProject } from "./lib/milestone-projects.mjs";
+import { sortTasksByPlan } from "../lib/taskOrdering.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = process.env.HARNESS_MC_ROOT
@@ -117,6 +118,17 @@ function readTasks(taskSource) {
   return parsed.tasks;
 }
 
+function usesOrderLabelSource(taskSource) {
+  const projectPath = path.join(path.dirname(taskSource), "project.json");
+  if (!fs.existsSync(projectPath)) return false;
+  try {
+    const project = JSON.parse(fs.readFileSync(projectPath, "utf-8").replace(/^﻿/, ""));
+    return typeof project.project_code === "string" && project.project_code.trim().length > 0;
+  } catch {
+    return false;
+  }
+}
+
 function normalizeStatus(status) {
   return String(status || "todo").toLowerCase();
 }
@@ -124,6 +136,7 @@ function normalizeStatus(status) {
 function summarizeTask(task) {
   return {
     id: task.id,
+    order_label: task.order_label || null,
     title: task.title,
     status: task.status || "todo",
     track: task.track || null,
@@ -169,6 +182,7 @@ function mostRecentTrack(tasks) {
 export function runPreflight(args) {
   const taskSource = resolveTaskSource(args);
   const tasks = readTasks(taskSource);
+  const orderLabelAsSource = usesOrderLabelSource(taskSource);
   const project = args.project || path.basename(path.dirname(taskSource));
   const existingTaskState = {
     total: tasks.length,
@@ -190,9 +204,16 @@ export function runPreflight(args) {
     }
   }
 
+  if (orderLabelAsSource) {
+    activeTasks.splice(0, activeTasks.length, ...sortTasksByPlan(activeTasks, { orderLabelAsSource: true }));
+  }
+
+  const executionCandidates = orderLabelAsSource
+    ? activeTasks.filter((task) => normalizeStatus(task.status) !== "blocked")
+    : activeTasks;
   const targetTask = args.taskId
-    ? activeTasks.find((task) => task.id === args.taskId) || null
-    : activeTasks[0] || null;
+    ? executionCandidates.find((task) => task.id === args.taskId) || null
+    : executionCandidates[0] || null;
   const hcGate = targetTask ? evaluateHcGate(targetTask, project) : null;
   const eventGate = args.event ? evaluateEventGate({ ...args, taskSource }, targetTask, hcGate) : null;
   const weeklyCoreGate = project === "morrowise"
@@ -203,6 +224,7 @@ export function runPreflight(args) {
     project,
     task_source: path.relative(root, taskSource),
     intent: args.intent,
+    ordering_source: orderLabelAsSource ? "order_label" : "canonical_task_order",
     target_task_id: args.taskId || null,
     existing_task_state: existingTaskState,
     active_tasks: activeTasks,

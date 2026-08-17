@@ -96,7 +96,8 @@ for (const descriptor of discoverMilestoneProjects({ repoRoot: root })) {
       meta = JSON.parse(fs.readFileSync(projectPath, "utf-8").replace(/^﻿/, ""));
     }
 
-    const orderedTasks = sortTasksByPlan(tasks);
+    const usesOrderLabel = typeof meta.project_code === "string" && meta.project_code.trim().length > 0;
+    const orderedTasks = sortTasksByPlan(tasks, { orderLabelAsSource: usesOrderLabel });
     const stat = fs.statSync(tasksPath);
     const done = orderedTasks.filter((t) => ["done", "completed", "fixed"].includes(t.status)).length;
 
@@ -121,6 +122,9 @@ for (const descriptor of discoverMilestoneProjects({ repoRoot: root })) {
       tracks: meta.tracks || {},
       decision_refs: meta.decision_refs || [],
       project_map: meta.project_map || null,
+      ...(usesOrderLabel
+        ? { project_code: meta.project_code.trim(), task_ordering: "order_label" }
+        : {}),
       ...(descriptor.group ? { group: descriptor.group, milestone_ref: descriptor.relativeDir } : {}),
     });
   } catch {

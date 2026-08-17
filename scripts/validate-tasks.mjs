@@ -126,6 +126,38 @@ function readProjectGoalAnchor(project) {
   }
 }
 
+function readProjectMetadata(project) {
+  const descriptor = resolveMilestoneProject({ repoRoot: root, projectId: project });
+  if (!descriptor || !fs.existsSync(descriptor.projectPath)) return {};
+  try {
+    return readJson(descriptor.projectPath);
+  } catch {
+    return {};
+  }
+}
+
+function hasProjectGoals(projectMeta) {
+  const goals = projectMeta?.goals;
+  return nonEmptyString(goals)
+    || (Array.isArray(goals) && goals.length > 0)
+    || (goals && typeof goals === "object" && !Array.isArray(goals) && Object.keys(goals).length > 0);
+}
+
+function isQuickProject(projectMeta) {
+  return isProjectInitProject(projectMeta) && !hasProjectGoals(projectMeta);
+}
+
+function isProjectInitProject(projectMeta) {
+  return nonEmptyString(projectMeta?.project_code)
+    && nonEmptyString(projectMeta?.why_opened)
+    && nonEmptyString(projectMeta?.mvp_goal)
+    && nonEmptyString(projectMeta?.final_goal);
+}
+
+function isFormalizedProject(projectMeta) {
+  return isProjectInitProject(projectMeta) && hasProjectGoals(projectMeta);
+}
+
 function listProjectDirs() {
   return discoverMilestoneProjects({ repoRoot: root }).map((descriptor) => descriptor.projectId);
 }
@@ -236,6 +268,8 @@ function validateTask(task, {
   previousTask = null,
   canonicalTaskRefs = new Map(),
   projectGoalAnchor = null,
+  quickProject = false,
+  projectInitProject = false,
 } = {}) {
   const problems = [];
   const includeProjectScope = !changedOnly || changed;
@@ -287,7 +321,7 @@ function validateTask(task, {
   if ("execution_contract" in task) {
     problems.push(...validateExecutionContract(task.execution_contract));
   }
-  if (requiresTaskLifecycleRoute({ task, changed, changedOnly, project })) {
+  if (requiresTaskLifecycleRoute({ task, changed, changedOnly, project, quickProject, projectInitProject })) {
     problems.push(...validateTaskLifecycleRoute(task));
     problems.push(...validateTaskLifecycleEvidence(task, { previousTask }));
     problems.push(...validateTaskRevision(task, { previousTask }));
@@ -453,8 +487,78 @@ function requiresHcDecision(task, project = "", includeProjectScope = false) {
   return isPortableAgentScope(task, project, includeProjectScope) && ACTIVE_STATUSES.has(String(task.status || "todo").toLowerCase());
 }
 
-function requiresTaskLifecycleRoute({ task, changed, changedOnly, project = "" }) {
-  return changedOnly && changed && nonEmptyString(task.id) && !isNotionCourseMirror(task, project);
+function requiresTaskLifecycleRoute({
+  task,
+  changed,
+  changedOnly,
+  project = "",
+  quickProject = false,
+  projectInitProject = false,
+}) {
+  return !quickProject
+    && !projectInitProject
+    && changedOnly
+    && changed
+    && nonEmptyString(task.id)
+    && !isNotionCourseMirror(task, project);
+}
+
+function validateQuickProjectTasks(entries, projectMeta) {
+  const projectCode = String(projectMeta.project_code || "").trim();
+  const expectedPattern = new RegExp(`^${projectCode.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}-MVP-\\d{2,}$`);
+  const issues = [];
+
+  for (const { task } of entries) {
+    const taskId = nonEmptyString(task?.id) ? String(task.id) : null;
+    if (!expectedPattern.test(String(task?.order_label || ""))) {
+      issues.push({ taskId, message: `order_label must match ${projectCode}-MVP-NN` });
+    }
+    if (!nonEmptyString(task?.done_condition)) {
+      issues.push({ taskId, message: "quick project task requires a non-empty done_condition" });
+    }
+  }
+
+  const quickOpen = entries.find(({ task }) => task?.id === "quick-open")?.task;
+  if (quickOpen && quickOpen.order_label !== `${projectCode}-MVP-01`) {
+    issues.push({ taskId: "quick-open", message: `quick-open order_label must equal ${projectCode}-MVP-01` });
+  }
+
+  return issues;
+}
+
+function validateFormalizedProjectTasks(entries, projectMeta) {
+  const projectCode = String(projectMeta.project_code || "").trim();
+  const escapedCode = projectCode.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const mvpPattern = new RegExp(`^${escapedCode}-MVP-\\d{2,}$`);
+  const formalPattern = new RegExp(`^${escapedCode}-\\d{2,}$`);
+  const issues = [];
+
+  for (const { task } of entries) {
+    const taskId = nonEmptyString(task?.id) ? String(task.id) : null;
+    const formalTask = task?.track === "formal";
+    const orderLabel = String(task?.order_label || "");
+    if (formalTask && !formalPattern.test(orderLabel)) {
+      issues.push({ taskId, message: `formal project task order_label must match ${projectCode}-NN` });
+    }
+    if (!formalTask && !mvpPattern.test(orderLabel)) {
+      issues.push({ taskId, message: `preserved MVP task order_label must match ${projectCode}-MVP-NN` });
+    }
+    if (!nonEmptyString(task?.done_condition)) {
+      issues.push({
+        taskId,
+        message: formalTask
+          ? "formal project task requires a non-empty done_condition"
+          : "preserved MVP task requires a non-empty done_condition",
+      });
+    }
+  }
+
+  const quickOpen = entries.find(({ task }) => task?.id === "quick-open")?.task;
+  if (quickOpen && quickOpen.order_label !== `${projectCode}-MVP-01`) {
+    issues.push({ taskId: "quick-open", message: `quick-open order_label must equal ${projectCode}-MVP-01` });
+  }
+
+  return issues;
 }
 
 function validateTaskLifecycleRoute(task) {
@@ -1039,6 +1143,10 @@ export function validateTasks({
     const relFile = path.relative(root, filePath);
     const previous = readPreviousTasks(relFile, resolvedBase);
     const projectGoalAnchor = readProjectGoalAnchor(project);
+    const projectMeta = readProjectMetadata(project);
+    const quickProject = isQuickProject(projectMeta);
+    const projectInitProject = isProjectInitProject(projectMeta);
+    const formalizedProject = isFormalizedProject(projectMeta);
     const taskIdCounts = new Map();
     const orderLabelCounts = new Map();
     for (const { task } of entries) {
@@ -1075,6 +1183,31 @@ export function validateTasks({
         container: "tasks",
         message: `duplicate order_label ${orderLabel}; found ${count} definitions`,
       });
+    }
+
+    if (quickProject) {
+      for (const issue of validateQuickProjectTasks(entries, projectMeta)) {
+        diagnostics.push({
+          severity: "error",
+          project,
+          filePath,
+          taskId: issue.taskId,
+          container: "tasks",
+          message: issue.message,
+        });
+      }
+    }
+    if (formalizedProject) {
+      for (const issue of validateFormalizedProjectTasks(entries, projectMeta)) {
+        diagnostics.push({
+          severity: "error",
+          project,
+          filePath,
+          taskId: issue.taskId,
+          container: "tasks",
+          message: issue.message,
+        });
+      }
     }
 
     if (changedOnly && changedFiles.has(filePath)) {
@@ -1120,7 +1253,14 @@ export function validateTasks({
       const previousTask = taskId ? previous.get(taskId) || null : null;
       const changed = changedFiles.has(filePath)
         && (!taskId || JSON.stringify(previousTask) !== fingerprint);
-      const lifecycleMutation = requiresTaskLifecycleRoute({ task, changed, changedOnly, project });
+      const lifecycleMutation = requiresTaskLifecycleRoute({
+        task,
+        changed,
+        changedOnly,
+        project,
+        quickProject,
+        projectInitProject,
+      });
       const severity = isCurrentWriteScope({ task, changed, changedOnly, project }) || lifecycleMutation ? "error" : "warn";
 
       for (const problem of validateTask(task, {
@@ -1130,6 +1270,8 @@ export function validateTasks({
         previousTask,
         canonicalTaskRefs,
         projectGoalAnchor,
+        quickProject,
+        projectInitProject,
       })) {
         diagnostics.push({
           severity,

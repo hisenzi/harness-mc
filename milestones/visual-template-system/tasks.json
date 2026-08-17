@@ -1,0 +1,50 @@
+{
+  "project": "visual-template-system",
+  "tasks": [
+    {
+      "id": "quick-open",
+      "title": "完成快速開案流程",
+      "status": "done",
+      "track": "mvp",
+      "order_label": "VTS-MVP-01",
+      "dependencies": [],
+      "done_condition": "README.md、最小 project.json、MVP tasks、formalize checkpoint、專案拓樸與局部驗證均完成，且 tasks 已可在 MC 查看"
+    },
+    {
+      "id": "template-catalog",
+      "title": "建立 3 款模板目錄、編號與縮圖",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "VTS-MVP-02",
+      "dependencies": [],
+      "done_condition": "3 款模板各有唯一模板編號、來源檔案定位與可辨識縮圖，能由編號找到唯一模板。"
+    },
+    {
+      "id": "content-schema",
+      "title": "定義 3 款模板的結構化內容與替換規則",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "VTS-MVP-03",
+      "dependencies": [],
+      "done_condition": "3 款模板各有可替換欄位、必填規則與一組測試內容，輸入錯誤時能指出缺少欄位。"
+    },
+    {
+      "id": "mvp-build",
+      "title": "完成指定模板編號的本機預覽與 SVG／PNG 輸出",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "VTS-MVP-04",
+      "dependencies": [],
+      "done_condition": "以 3 個模板編號分別輸入測試內容後，均能在本機預覽並輸出可檢視的 SVG 與 PNG 成品。"
+    },
+    {
+      "id": "formalize",
+      "title": "依 MVP 測試結果啟動正式補完",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "VTS-MVP-05",
+      "dependencies": [],
+      "done_condition": "已依 MVP 測試結果與最終目標補齊正式專案內容，並建立內容明確且各有驗收標準的正式 tasks"
+    }
+  ]
+}

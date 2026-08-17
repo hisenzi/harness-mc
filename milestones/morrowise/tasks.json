@@ -11513,6 +11513,152 @@
         ]
       },
       "note": "2026-08-15 JV-49 正式完成：共享 MEMORY.md 從 31 段收斂為 5 個耐久區段，保留薄路由與五查詢 5/5 no-regression；14 份 root dated logs 安全歸檔，連同 pre-JV-49 L1 snapshot 形成 15 筆 manifest 可回復證據；13 個 ingress 收斂為 agent-neutral candidate flow；8 個 promotion fixtures 證明未核准／被阻擋零寫入，approved fixture 只寫 verifier 臨時 root，真實 shared L1 零 fixture write。Max One 案例規則仍只由 maxmodel-case-page skill 擁有，L1 只留薄路由。Architecture Admission `shared-memory-governance` 已 promoted/active；C1 harness-mc `79cc7a1` 與 notyet-harness `2f338c7` 已到 remote main，R1-R4 full verifier 與 canonical acceptance receipt 全數通過。"
+    },
+    {
+      "id": "morrowise-project-init-fast-default-v2",
+      "title": "開案 v2：快速開案預設與 MVP 後正式補完",
+      "status": "in_progress",
+      "track": "governance",
+      "order_label": "MW-PI-02",
+      "priority": "high",
+      "dependencies": [
+        "morrowise-project-init-v1"
+      ],
+      "done_condition": "快速開案預設能以最小資料建立 README、project.json、明確且各有驗收標準的 MVP tasks、formalize checkpoint 與拓樸登錄；MVP 期間可新增 task、隨時同步 MC，並在 MVP 測試後以 formalize 補正式專案內容與正式 tasks。階段 1 至 5 局部驗證由 Vincent 判定通過，且後續經核准的 commit／push 到達 remote truth 後結案。",
+      "acceptance": [
+        "project-init Skill 明確管理 quick 與 formalize 兩階段；quick 建立最小開案資料，formalize 更新既有專案且不更動 MVP 身分與紀錄。",
+        "new-project.py、order_label 排序、work-anchor、task validator 與局部 verifiers 支援已核准的快速開案、任意數量 MVP tasks、明確跳做及正式補完規則。",
+        "sync-mc Skill 可在 task 變更後獨立呼叫，指定專案與 tasks 能在 MC 依 order_label 顯示；Git、部署與外部同步不構成快速開案前置關卡。",
+        "visual-template-system 以 VTS-MVP-01 起建立實際 MVP tasks 與 formalize checkpoint，且舊格式資料有可回復快照。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/100_Todo/plan/2026-08-17-project-init-fast-default-v2-temporary-tracker.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/project-init/SKILL.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/sync-mc/SKILL.md",
+        "$COLLAB/harness-mc/scripts/new-project.py",
+        "$COLLAB/harness-mc/scripts/verify-project-init-quick.mjs",
+        "$COLLAB/harness-mc/scripts/verify-project-init-formalize.mjs",
+        "$COLLAB/harness-mc/milestones/visual-template-system/tasks.json"
+      ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ],
+        "decision_input": [
+          "Vincent 核准快速開案預設、order_label 規則、MVP 期間自由增補 tasks、獨立 MC 同步與 MVP 後 formalize。",
+          "階段 1 至 4 已由 Vincent 判定通過，並於 2026-08-17 啟動階段 5。"
+        ],
+        "decision_output": "以單一 MW-PI-02 記錄開案 v2 的實作、局部驗證與 VTS 實際套用，不建立額外驗收編號或平行追蹤系統。",
+        "execution_boundary": "本 task 只記錄已核准的五階段開案流程優化、VTS quick 遷移與 MC 顯示；不授權 commit、push、部署、外部同步或新增架構工作。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 原先要求先以臨時文件追蹤，待開案流程優化完成後補 canonical task；階段 1 至 5 均已由 Vincent 判定通過，因此建立單一正式紀錄。task 保持 in_progress，只等待另行核准的 commit／push 與 remote truth，不把本次階段驗收誤當遠端交付。",
+            "evidence_refs": [
+              "Vincent 2026-08-17 current session: 以上規劃看起來可以",
+              "Vincent 2026-08-17 current session: 階段 4：通過",
+              "Vincent 2026-08-17 current session: 進行階段 5",
+              "Vincent 2026-08-17 current session: 階段 5 通過",
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-08-17-project-init-fast-default-v2-temporary-tracker.md"
+            ],
+            "recorded_at": "2026-08-17",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/morrowise-project-init-v1",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "MW-PI-01 的完整成果契約讓小型 MVP 開案過重；JV-40 只治理 task mutation，兩者都未提供 quick 預設、MVP 後 formalize 與獨立 MC 同步的組合能力。",
+                "owner_source_of_truth": "開案 v2 的正式 task state 只在 MorroWise tasks.json；project-init 與 sync-mc Skills／程式是執行能力，臨時追蹤文件在本 task 建立後只保留歷程證據。",
+                "inputs_outputs": "輸入是 Vincent 核准的快速開案、編號、MVP、formalize 與 MC 同步規則；輸出是兩階段 Skill、執行程式、verifiers、VTS quick 專案與 MC read model。",
+                "lifecycle_completion": "階段 1 至 5 已由 Vincent 判定通過；commit／push 尚未獲本輪授權與執行，因此 task 保持 in_progress，不宣稱 remote truth 或完整交付。"
+              },
+              "decision_reason": "這是 MW-PI-01 完成後新增的 quick-default／formalize 能力與實際 VTS 遷移，問題、輸入輸出及完成邊界均不同，因此建立 MW-PI-02；不新增任何固定 acceptance ID。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-17",
+                "evidence_refs": [
+                  "Vincent 2026-08-17 current session: 以上可以",
+                  "Vincent 2026-08-17 current session: 可以進行階段 1",
+                  "Vincent 2026-08-17 current session: 進行階段 5"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "降低新 MVP 進入 canonical project 與 MC 追蹤的開案摩擦，同時保留正式補完與驗收邊界。",
+        "evidence_plan": [
+          "階段 5 四項局部驗證結果",
+          "visual-template-system canonical tasks 與 MC 指定專案核對"
+        ],
+        "reviewed_at": "2026-08-17"
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/morrowise-project-init-fast-default-v2",
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#evidenceBased"
+        ],
+        "hc_reasoning": "真正問題是開案入口把正式治理提前成 MVP 阻擋，而不是安全規則本身。兩階段切分讓 quick 只建立可執行的最小正本，formalize 再依 MVP 證據補正式內容；MC 只做 read model 同步。",
+        "hc_confidence": 0.95,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-08-17-project-init-fast-default-v2-temporary-tracker.md",
+          "$COLLAB/harness-mc/scripts/verify-project-init-quick.mjs",
+          "$COLLAB/harness-mc/scripts/verify-project-init-formalize.mjs"
+        ],
+        "source_boundary": "HC 只作思考檢查，不是正本；task state 以 MorroWise tasks.json 為正本，VTS project／tasks 為專案正本，MC 為唯讀產生資料。"
+      },
+      "stage_acceptance": {
+        "overall_status": "passed",
+        "accepted_by": "Vincent",
+        "accepted_at": "2026-08-17",
+        "stages": [
+          {
+            "stage": 1,
+            "name": "目標責任切分文件驗收",
+            "status": "passed",
+            "evidence_ref": "$COLLAB/notyet-harness/100_Todo/plan/2026-08-17-project-init-fast-default-v2-temporary-tracker.md#階段-1-驗收方式"
+          },
+          {
+            "stage": 2,
+            "name": "快速開案本體",
+            "status": "passed",
+            "evidence_ref": "$COLLAB/notyet-harness/100_Todo/plan/2026-08-17-project-init-fast-default-v2-temporary-tracker.md#階段-2快速開案本體"
+          },
+          {
+            "stage": 3,
+            "name": "order_label 執行規則與 MC 同步",
+            "status": "passed",
+            "evidence_ref": "$COLLAB/notyet-harness/100_Todo/plan/2026-08-17-project-init-fast-default-v2-temporary-tracker.md#階段-3order_label-執行規則與-mc-同步"
+          },
+          {
+            "stage": 4,
+            "name": "MVP 測試後正式補完",
+            "status": "passed",
+            "evidence_ref": "$COLLAB/notyet-harness/100_Todo/plan/2026-08-17-project-init-fast-default-v2-temporary-tracker.md#階段-4mvp-測試後正式補完"
+          },
+          {
+            "stage": 5,
+            "name": "封閉驗證、正式追蹤與 VTS quick 遷移",
+            "status": "passed",
+            "evidence_ref": "$COLLAB/notyet-harness/100_Todo/plan/2026-08-17-project-init-fast-default-v2-temporary-tracker.md#階段-5封閉驗證正式追蹤與-vts-quick-遷移"
+          }
+        ]
+      },
+      "summary": "2026-08-17：階段 1 至 5 已由 Vincent 判定通過；封閉模擬、VTS quick 遷移、MC 同步與 scope 內最終局部驗證均完成。VTS 5 tasks 與 MW-PI-02 已由 canonical、generated read model 及 localhost MC 核對；task 保持 in_progress，只等待另行核准的 commit／push 與 remote truth。"
     }
   ]
 }

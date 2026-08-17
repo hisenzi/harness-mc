@@ -81,6 +81,81 @@ assert.equal(
   "blocked preflight must not expose an active task that would allow implementation",
 );
 
+const quickProjectDir = path.join(tmpDir, "visual-template-system");
+const quickTasksPath = path.join(quickProjectDir, "tasks.json");
+fs.mkdirSync(quickProjectDir, { recursive: true });
+fs.writeFileSync(
+  path.join(quickProjectDir, "project.json"),
+  JSON.stringify({
+    name: "視覺模板系統",
+    project_code: "VTS",
+  }, null, 2),
+  "utf-8",
+);
+fs.writeFileSync(
+  quickTasksPath,
+  JSON.stringify({
+    tasks: [
+      {
+        id: "blocked-mvp-task",
+        title: "目前被阻擋的 MVP 任務",
+        status: "blocked",
+        track: "mvp",
+        order_label: "VTS-MVP-02",
+        done_condition: "阻擋解除後才能執行。",
+      },
+      {
+        id: "later-mvp-task",
+        title: "稍後執行的 MVP 任務",
+        status: "todo",
+        track: "mvp",
+        order_label: "VTS-MVP-04",
+        done_condition: "指定的稍後任務可以被明確選取。",
+      },
+      {
+        id: "first-mvp-task",
+        title: "最先執行的 MVP 任務",
+        status: "todo",
+        track: "mvp",
+        order_label: "VTS-MVP-03",
+        done_condition: "未指定 task-id 時先選擇此任務。",
+      },
+    ],
+  }, null, 2),
+  "utf-8",
+);
+
+const quickDefaultResult = runPreflight({
+  project: "visual-template-system",
+  tasks: quickTasksPath,
+  intent: "開始 MVP",
+  proposedAcceptance: [],
+});
+assert.equal(quickDefaultResult.active_task.id, "first-mvp-task");
+assert.equal(quickDefaultResult.active_task.order_label, "VTS-MVP-03");
+assert.equal(quickDefaultResult.ordering_source, "order_label");
+
+const quickExplicitResult = runPreflight({
+  project: "visual-template-system",
+  tasks: quickTasksPath,
+  taskId: "later-mvp-task",
+  intent: "明確跳做稍後任務",
+  proposedAcceptance: [],
+});
+assert.equal(quickExplicitResult.decision, "allow");
+assert.equal(quickExplicitResult.active_task.id, "later-mvp-task");
+assert.equal(quickExplicitResult.active_task.order_label, "VTS-MVP-04");
+
+const quickBlockedExplicitResult = runPreflight({
+  project: "visual-template-system",
+  tasks: quickTasksPath,
+  taskId: "blocked-mvp-task",
+  intent: "嘗試指定被阻擋的任務",
+  proposedAcceptance: [],
+});
+assert.equal(quickBlockedExplicitResult.decision, "blocked");
+assert.equal(quickBlockedExplicitResult.active_task, null);
+
 const hcFixturePath = path.join(tmpDir, "hc-gate-tasks.json");
 fs.writeFileSync(
   hcFixturePath,

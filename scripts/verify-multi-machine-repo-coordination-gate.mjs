@@ -492,6 +492,17 @@ async function verifyMultiCloneNegativeFixtures() {
     "an exact scope must allow its own nested untracked file",
   );
 
+  const unicodeScopeOwned = cloneFresh(fixture, "scope-owned-unicode");
+  const unicodeScopePath = "docs/acceptance/RRO-10_正式落地版未達Prototype預期成果_歸因報告.md";
+  fs.mkdirSync(path.dirname(path.join(unicodeScopeOwned, unicodeScopePath)), { recursive: true });
+  fs.writeFileSync(path.join(unicodeScopeOwned, unicodeScopePath), "歸因報告\n");
+  git(unicodeScopeOwned, ["config", "core.quotePath", "true"]);
+  assert.equal(
+    inspectRepo(unicodeScopeOwned, { commitScope: [unicodeScopePath] }).reason,
+    "scope_owned_dirty",
+    "an exact scope must match an untracked Unicode path even when Git quotes non-ASCII bytes",
+  );
+
   const scopeWithExclusion = cloneFresh(fixture, "scope-with-exclusion");
   fs.writeFileSync(path.join(scopeWithExclusion, "scope.txt"), "owned\n");
   fs.writeFileSync(path.join(scopeWithExclusion, "other-session.txt"), "preserve\n");

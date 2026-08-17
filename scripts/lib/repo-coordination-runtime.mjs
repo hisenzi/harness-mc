@@ -811,7 +811,7 @@ export function inspectRepo(repoPath, options = {}) {
     return { ...classifyRepoSnapshot(snapshot), snapshot, evidence: trimEvidence(fetchResult.stderr) };
   }
 
-  const statusResult = git(cwd, ["status", "--porcelain=v2", "--branch", "--untracked-files=all"]);
+  const statusResult = git(cwd, ["status", "--porcelain=v2", "-z", "--branch", "--untracked-files=all"]);
   if (statusResult.status !== 0) {
     const snapshot = { fetch_ok: false, branch_head: "unknown", upstream: null, ahead: 0, behind: 0, dirty_kind: "unknown" };
     return { ...classifyRepoSnapshot(snapshot), snapshot, evidence: trimEvidence(statusResult.stderr) };
@@ -1127,51 +1127,72 @@ function claimFromEvent(event) {
 }
 
 function parsePorcelainV2(output) {
-  const lines = String(output || "").split("\n").filter(Boolean);
+  const text = String(output || "");
+  const zeroTerminated = text.includes("\0");
+  const records = text.split(zeroTerminated ? "\0" : "\n").filter(Boolean);
   const header = new Map();
-  for (const line of lines.filter((item) => item.startsWith("# "))) {
+  for (const line of records.filter((item) => item.startsWith("# "))) {
     const separator = line.indexOf(" ", 2);
     if (separator > 0) header.set(line.slice(2, separator), line.slice(separator + 1));
   }
   const ab = /^\+(\d+)\s+-(\d+)$/.exec(header.get("branch.ab") || "") || [];
-  const changes = lines.filter((item) => !item.startsWith("# "));
+  const changes = [];
+  const renamePairs = [];
+  for (let index = 0; index < records.length; index += 1) {
+    const record = records[index];
+    if (record.startsWith("# ")) continue;
+    const originalPath = zeroTerminated && record.startsWith("2 ") ? records[++index] || "" : "";
+    const paths = parsePorcelainPaths(record, { zeroTerminated, originalPath });
+    changes.push({ record, paths });
+    if (record.startsWith("2 ") && paths.length === 2) renamePairs.push(paths);
+  }
   return {
     branch_head: header.get("branch.head") || "unknown",
     upstream: header.get("branch.upstream") || null,
     ahead: Number(ab[1] || 0),
     behind: Number(ab[2] || 0),
-    staged_count: changes.filter((line) => /^[12] [^.]/.test(line)).length,
-    unstaged_count: changes.filter((line) => /^[12] ..[^.]/.test(line)).length,
-    untracked_count: changes.filter((line) => line.startsWith("? ")).length,
+    staged_count: changes.filter(({ record }) => /^[12] [^.]/.test(record)).length,
+    unstaged_count: changes.filter(({ record }) => /^[12] ..[^.]/.test(record)).length,
+    untracked_count: changes.filter(({ record }) => record.startsWith("? ")).length,
     dirty_count: changes.length,
-    dirty_paths: [...new Set(changes.flatMap(parsePorcelainPaths).filter(Boolean))],
-    rename_pairs: changes
-      .filter((line) => line.startsWith("2 "))
-      .map(parsePorcelainPaths)
-      .filter((paths) => paths.length === 2),
+    dirty_paths: [...new Set(changes.flatMap(({ paths }) => paths).filter(Boolean))],
+    rename_pairs: renamePairs,
   };
 }
 
-function parsePorcelainPaths(line) {
+function parsePorcelainPaths(line, options = {}) {
   if (line.startsWith("? ") || line.startsWith("! ")) return [unquotePath(line.slice(2))];
   if (line.startsWith("2 ")) {
+    if (options.zeroTerminated) {
+      return [unquotePath(pathAfterFields(line, 9)), unquotePath(options.originalPath || "")];
+    }
     const [currentRecord, originalPath] = line.split("\t");
-    return [unquotePath(currentRecord.split(" ").at(-1) || ""), unquotePath(originalPath || "")];
+    return [unquotePath(pathAfterFields(currentRecord, 9)), unquotePath(originalPath || "")];
   }
-  const tabIndex = line.lastIndexOf("\t");
-  if (tabIndex >= 0) return [unquotePath(line.slice(tabIndex + 1))];
-  return [unquotePath(line.split(" ").at(-1) || "")];
+  if (line.startsWith("1 ")) return [unquotePath(pathAfterFields(line, 8))];
+  if (line.startsWith("u ")) return [unquotePath(pathAfterFields(line, 10))];
+  return [];
+}
+
+function pathAfterFields(value, fieldCount) {
+  let offset = 0;
+  for (let index = 0; index < fieldCount; index += 1) {
+    offset = value.indexOf(" ", offset);
+    if (offset < 0) return "";
+    offset += 1;
+  }
+  return value.slice(offset);
 }
 
 function unquotePath(value) {
   const text = String(value || "");
-  if (!text.startsWith('"')) return text;
-  try { return JSON.parse(text); } catch { return text; }
+  if (!text.startsWith('"')) return text.normalize("NFC");
+  try { return String(JSON.parse(text)).normalize("NFC"); } catch { return text.normalize("NFC"); }
 }
 
 function classifyScopedDirtyPaths(dirtyPaths, options, renamePairs = []) {
-  const exclusions = new Set(options.exclusions || []);
-  const scope = new Set(options.commitScope || []);
+  const exclusions = new Set((options.exclusions || []).map((item) => String(item).normalize("NFC")));
+  const scope = new Set((options.commitScope || []).map((item) => String(item).normalize("NFC")));
   if (dirtyPaths.length === 0 || scope.size === 0) return null;
   if ([...scope].some((filePath) => exclusions.has(filePath))) return null;
   if (renamePairs.some((paths) => paths.some((filePath) => !scope.has(filePath)))) return null;
@@ -1463,7 +1484,7 @@ function countMatchingEvents(root, relativeDir, projectId, taskId) {
 }
 
 function readDirtyPaths(repoPath) {
-  const status = git(repoPath, ["status", "--porcelain=v2", "--branch"]);
+  const status = git(repoPath, ["status", "--porcelain=v2", "-z", "--branch"]);
   return status.status === 0 ? parsePorcelainV2(status.stdout).dirty_paths : [];
 }
 
@@ -1499,7 +1520,7 @@ function scopeWorktreeFingerprint(repoPath, commitScope) {
   const hash = crypto.createHash("sha256");
   hash.update(JSON.stringify(commitScope));
   if (commitScope.length === 0) return hash.digest("hex");
-  const status = git(repoPath, ["status", "--porcelain=v2", "--untracked-files=all", "--", ...commitScope]);
+  const status = git(repoPath, ["status", "--porcelain=v2", "-z", "--untracked-files=all", "--", ...commitScope]);
   const diff = git(repoPath, ["diff", "--binary", "HEAD", "--", ...commitScope]);
   if (status.status !== 0 || diff.status !== 0) throw new Error("cannot derive authorization diff");
   hash.update("\0status\0");

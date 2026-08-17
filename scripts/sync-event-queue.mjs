@@ -39,7 +39,12 @@ export function writeSyncEvent(input) {
 
   const fileName = `${timestampSlug(createdAt)}-${slug(input.target)}-${slug(input.project)}-${slug(input.task_id)}-${slug(input.source_event_id)}-${slug(input.type)}.json`;
   const target = path.join(queueDir, fileName);
-  fs.writeFileSync(target, `${JSON.stringify(event, null, 2)}\n`, { flag: "wx" });
+  const serialized = `${JSON.stringify(event, null, 2)}\n`;
+  try {
+    fs.writeFileSync(target, serialized, { flag: "wx" });
+  } catch (error) {
+    if (error?.code !== "EEXIST" || fs.readFileSync(target, "utf8") !== serialized) throw error;
+  }
 
   return event;
 }

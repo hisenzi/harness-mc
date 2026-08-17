@@ -4,6 +4,7 @@ export const TASK_STATE_FIELDS = [
   "commits",
   "summary",
   "external_refs",
+  "coordination",
 ];
 
 export function mergeTaskDefinitionsWithState(definitions, state = {}) {

@@ -1434,7 +1434,7 @@
     {
       "id": "p9-data-rule-semantic-correction-and-meeting-acceptance",
       "title": "補正 canonical 資料、規則可達性與會議後驗收",
-      "status": "completed",
+      "status": "in_progress",
       "commits": [
         "bc6d27df5f1729c25b1caca99b64a174ffc317f6",
         "2b172f98d23f0f018d926dbc47df5db88e1abada",
@@ -1442,8 +1442,7 @@
         "6b5687a54ad7ff2888657b66ed1f48484cd3d883"
       ],
       "started_at": "2026-08-09",
-      "completed_at": "2026-08-12",
-      "summary": "RRO-10 已依唯一 authority chain 完成交付：原始目標 → 提供的 DB／prototype／公式 → 核准的 D1–D5 → task／文件／verifier。39 條 generated rows 已 retire 並保留 provenance，7 條 producer gap 依 D4 disabled-with-reason，unknown／partial 依 D5 fail-closed；正式五軸沿用 corrected-resolver prototype 公式與方向，0–100 僅為 1–5×20。Affected revision 6b5687a 已部署，target Neon 150／400／80 row-content parity、32 項實品 paste、upload／camera、desktop／390px UI 及 A01–A12 current acceptance 全數通過，未修改 canonical Neon 資料。",
+      "summary": "RRO-10 因實測發現正式分析結果未照原 prototype 的 Consumer／R&D 結構、順序與 responsive 呈現，且同一份 10 項完整 INCI 出現 57/C 對 52/D 及頭皮友善 2.8 對 2.6 差異，已撤回完整交付判定並重開 P2／A06／A09／A12。本輪以「分析結果照 prototype 呈現」為不可降低的 UI 驗收標準；fail-closed、Judge、coverage 與 provenance 僅可作補充證據，不得取代 prototype 主結構。",
       "track": "quality",
       "order_label": "RRO-10",
       "priority": "P0",
@@ -1459,20 +1458,20 @@
         "p5-consumer-three-input-result-flow",
         "p8-end-to-end-release-acceptance"
       ],
-      "done_condition": "資料庫、原 prototype 與原分析公式先形成逐欄 authoritative contract；80 筆來源規則 80/80 具有核准 active／rewrite／merge／retire disposition，active token_v*=0、pending disposition=0、undefined stacking=0；正式 runtime 對核准等價欄位不得靜默換公式，unknown／low-confidence／partial 必須 fail-closed；指定 32 項 real-product、會議 15 組 corpus、受影響 UI 與公開 runtime 可重跑。A01–A09、A11、A12 必須先全數通過，A10 production gate 才可產生與當前矩陣一致的新版 acceptance receipt。",
+      "done_condition": "資料庫、原 prototype 與原分析公式先形成逐欄 authoritative contract；80 筆來源規則 80/80 具有核准 active／rewrite／merge／retire disposition，active token_v*=0、pending disposition=0、undefined stacking=0；正式 runtime 對核准等價欄位不得靜默換公式，unknown／low-confidence／partial 必須 fail-closed；正式 Consumer／R&D 分析結果必須依原 prototype 主區塊、資訊層級、順序、文案角色、互動與 desktop／390px responsive 呈現，正式 coverage／Judge／provenance 僅能嵌入對應補充區塊；指定 32 項 real-product、會議 15 組 corpus、完整 10 項 prototype 共用產品、受影響 UI 與公開 runtime 可重跑。A01–A09、A11、A12 必須先全數通過，A10 production gate 才可產生與當前矩陣一致的新版 acceptance receipt。",
       "acceptance": [
         "A01｜原始、canonical 與 live 資料都有可重跑的來源／語意差異台帳；每項差異有採用狀態、理由、版本與證據。",
         "A02｜target Neon 不只符合 150／400／80 筆數，核准欄位的排序後內容 fingerprint 也與部署版本的 canonical seed 一致。",
         "A03｜80 筆來源規則逐條追到正式 feature producer 或核准 rewrite／merge／retire disposition；每條 active rule 都由正規化 domain input 完成正向、負向與 unknown 可達性驗證，不得直接注入 feature 冒充 runtime。",
         "A04｜R42–R80 的 token_v42–token_v80、另外 7 條 producer 缺口及重複 condition family 全部完成核准處置；active token_v*=0、pending disposition=0、undefined stacking=0，不能只以 active blocked 0 宣告通過。",
         "A05｜unknown／low-confidence／partial 不會觸發依賴成分缺席或配方純淨的有利規則；五指標與雷達必須 withheld 並顯示「暫不能判定」，不得以確定的 0 呈現。",
-        "A06｜golden fixtures 固定資料庫、原 prototype、原分析公式與正式 runtime 的逐軸 authoritative mapping、方向、公式、輸出、規則命中、score delta、A–E、成分順序、重複與 partial 行為；完整 canonical inputs 驗證數值等價，指定 32 項 real-product 驗證 provided-DB unknown 的 fail-closed 與可解釋差異，不要求擴充資料庫或產生完整數值。",
+        "A06｜golden fixtures 固定資料庫、原 prototype、原分析公式與正式 runtime 的逐軸 authoritative mapping、方向、公式、輸出、規則命中、score delta、A–E、成分順序、重複與 partial 行為；完整 canonical inputs 與固定 10 項 prototype 共用產品必須用完全相同輸入驗證數值、總分與 A–E 等價，指定 32 項 real-product 驗證 provided-DB unknown 的 fail-closed 與可解釋差異，不要求擴充資料庫或產生完整數值。",
         "A07｜會議 PDF 的 15 組資料都有原文、頁碼、產品範圍、完整度、預期 mapping 與 unknown disposition；非洗髮資料不得取得未加限定的洗髮評分。",
         "A08｜曲面、反光、長配方、多 panel／多圖及 partial input 有明確處理；系統不得只選局部文字後冒充完整配方。",
-        "A09｜正式 UI 在完整且適用的配方依核准 prototype／分析公式保留五大指標、方向與雷達圖；0–100 僅能在與核准來源公式數學等價時作單一內部尺度，1–5 由同一數值換算且不得另跑新公式；unknown／low-confidence／partial 顯示「暫不能判定」且不得渲染 0 分或雷達數值。",
+        "A09｜正式 UI 在完整且適用的配方必須照原 prototype 的 Consumer／R&D 主區塊、順序、資訊層級、互動與 desktop／390px responsive 呈現，並依原 prototype／分析公式保留總評、五大指標、方向、雷達圖、三類風險、高風險提示與成分明細；coverage／Judge／provenance 僅可作補充而不得取代或重排主結構。0–100 僅能在與核准來源公式數學等價時作單一內部尺度，1–5 由同一數值換算；unknown／low-confidence／partial 顯示「暫不能判定」且不得渲染 0 分或雷達數值。",
         "A10｜受影響的 paste／upload／camera、pending_review、Judge／passport provenance、部署 fingerprint 與公開 runtime 回歸全部通過，並取得與當前矩陣一致的 acceptance receipt。",
         "A11｜貼上文字可安全移除 INGREDIENTS 標題與成分列句尾標點，不破壞 INCI 內部連字號、斜線、括號或數字逗號；Aqua 與 Citric Acid 等 canonical 成分不得因格式雜訊誤判 unknown。",
-        "A12｜前端採 prototype-first 驗收：P3 必須逐欄建立 prototype 五軸、方向、公式、尺度、輸出到正式欄位的 authoritative mapping；P4 以完全相同輸入重播，完整 canonical inputs 驗證核准等價輸出，32 項 real-product 驗證 historical 33/E、diagnostic 23/E 與 formal withheld 的差異可解釋且 unknown 不顯示 0。A01–A09、A11、A12 全數通過後才可進 A10 production gate。"
+        "A12｜前端採 prototype-first 驗收：P2 必須將 Consumer／R&D 的區塊清單、順序、層級、互動、完整／unknown 顯示與 desktop／390px responsive 寫成可執行 UI contract；P3 逐欄建立 prototype 五軸、方向、公式、尺度、輸出到正式欄位的 authoritative mapping；P4 以完全相同輸入重播，完整 canonical inputs 與固定 10 項 prototype 共用產品驗證總分／A–E／五軸與 UI 結構等價，32 項 real-product 驗證 historical 33/E、diagnostic 23/E 與 formal withheld 的差異可解釋且 unknown 不顯示 0。A01–A09、A11、A12 全數通過後才可進 A10 production gate。"
       ],
       "acceptance_matrix": [
         {
@@ -1523,11 +1522,11 @@
         {
           "id": "A06",
           "verify": "原 prototype／正式評分 authoritative mapping、golden contract 與可重現性",
-          "precondition": "原 prototype scoring.ts 與 UI 欄位、正式 analyzer/API/UI、核准逐軸 mapping、expected outputs、版本 fingerprints 及指定 32 項 real-product fixture",
-          "steps": "以完全相同輸入分別重播原 prototype 與正式路徑；逐軸核對欄位、名稱、方向、尺度、公式、輸出與 disposition；再驗成分順序、重複、partial、邊界值、規則衝突及上下限",
-          "pass": "五個 prototype 軸、總分與正式欄位逐欄有核准 authoritative mapping；完整 canonical inputs 在相同 input+versions 輸出一致；32 項案例與其餘 golden 可重現；provided-DB unknown／partial 不產生數值指標且差異由核准 fail-closed contract 解釋，不要求 canonical 擴充",
-          "fail": "只鎖正式新公式、以 differential 文件取代公式核准、以 score/20 宣稱 prototype 等價、存在未核准 semantic replacement／formal rewrite、缺少 32 項同輸入 oracle，或同版本不可重現",
-          "evidence": "prototype authoritative mapping、32-item real-product fixture、prototype/formal differential verifier、unit/integration tests 與 version evidence"
+          "precondition": "原 prototype scoring.ts、UI 欄位與固定 10 項共用產品，正式 analyzer/API/UI、核准逐軸 mapping、expected outputs、版本 fingerprints 及指定 32 項 real-product fixture",
+          "steps": "以完全相同輸入分別重播原 prototype 與正式路徑；先以固定 10 項產品逐軸核對欄位、名稱、方向、尺度、公式、輸出、總分與 A–E，再驗成分順序、重複、partial、邊界值、規則衝突及上下限",
+          "pass": "五個 prototype 軸、總分與正式欄位逐欄有核准 authoritative mapping；完整 canonical inputs 及固定 10 項產品在相同 input+versions 的五軸、總分與 A–E 輸出一致；32 項案例與其餘 golden 可重現；provided-DB unknown／partial 不產生數值指標且差異由核准 fail-closed contract 解釋",
+          "fail": "固定 10 項產品出現任一軸、總分或 A–E 不同，只鎖正式新公式、以 differential 文件取代公式核准、以 score/20 宣稱 prototype 等價、存在未核准 semantic replacement、缺少同輸入 oracle，或同版本不可重現",
+          "evidence": "prototype authoritative mapping、fixed 10-item shared-product fixture、32-item real-product fixture、prototype/formal differential verifier、unit/integration tests 與 version evidence"
         },
         {
           "id": "A07",
@@ -1551,9 +1550,9 @@
           "id": "A09",
           "verify": "正式 consumer／R&D 結果內容、尺度與操作",
           "precondition": "完整洗髮、unknown、low-confidence、high-risk、partial、unverified、out-of-scope API fixtures 與 390px/desktop viewport",
-          "steps": "完成一次分析並逐一檢查覆蓋率／適用範圍、核准綜合判讀與五大指標公式、方向、尺度、1–5 顯示、雷達圖、清潔系統、消費者指引、三類風險卡、三類證據、完整成分表、R&D 規則／版本／法規證據邊界、收合與手機版操作",
-          "pass": "五軸名稱、方向、公式及雷達符合核准 prototype／分析公式；若使用 0–100，必須是可證明的等價單一尺度，1–5 只能由同一數值換算；完整且適用配方才渲染五指標、雷達、overall／A–E；unknown／low-confidence／partial 明示「暫不能判定」且不顯示 0；R&D 可查看 authority 與 rule disposition",
-          "fail": "以新 0–100 semantic replacement 冒充原公式、把正式 score/20 冒充 prototype 等價、unknown 被標為爭議或顯示確定 0、方向反轉未核准、缺少 prototype 對映／覆蓋率／適用範圍，或不完整／不適用結果看似正式完整評分",
+          "steps": "使用固定完整產品及各 fail-closed fixture，對照原 prototype 逐區塊檢查 Consumer 的產品／狀態頭、Consumer／R&D 切換、總評與等級、五大指標與雷達、風險說明、高風險提示、成分明細；R&D 的評級定位、加減分明細、規則引擎、法規／證據邊界；並檢查 coverage／Judge／provenance 僅為補充、desktop 與 390px 順序一致、無水平溢位與操作可用",
+          "pass": "正式 Consumer／R&D 的主區塊、順序、資訊層級、文案角色與互動照原 prototype 呈現；coverage／Judge／provenance 未取代或重排主結構；五軸名稱、方向、公式及雷達符合核准 prototype／分析公式；完整配方才渲染數值，unknown／low-confidence／partial 明示「暫不能判定」且不顯示 0；desktop／390px 無水平溢位",
+          "fail": "任一 prototype 主區塊缺失、改名後語意或層級改變、順序被 coverage／Judge／provenance 取代或重排、Consumer／R&D 互動不同、desktop／390px 溢位，或以新 0–100 semantic replacement 冒充原公式、unknown 顯示確定 0／雷達、不完整／不適用結果看似正式完整評分",
           "evidence": "analyzer/API/component tests、DOM assertions、390px/desktop browser smoke、screenshots 與 result-content disposition register"
         },
         {
@@ -1578,9 +1577,9 @@
           "id": "A12",
           "verify": "P3 authoritative prototype mapping 與 P4 same-input formal differential",
           "precondition": "or/ Google AI Studio App、固定狀態 fixtures、正式架構、prototype boundary、consumer/R&D API contract 與結果 UI",
-          "steps": "依 P1–P5 執行：P1/P2 保留既有內容與 UI 狀態證據；P3 對五軸逐欄記錄 prototype field/label/direction/scale/formula/output 與 formal field/disposition/reason；P4 用完全相同輸入重播兩條路徑並輸出 deterministic differential，指定 32 項案例必跑；P5 deployment/live 另行驗收",
-          "pass": "P3 五軸與總分公式 authority 完整、machine-readable 且可由 UI/R&D 查明；P4 完整 canonical inputs 證明數值等價，32 項案例固定重播並清楚區分 historical、diagnostic 與 formal withheld；unknown／partial 顯示「暫不能判定」而非 0；A01–A09、A11、A12 全數通過後才可進 A10",
-          "fail": "只以畫面相似、名稱近似或 differential 存在宣稱通過、缺任一軸方向／公式／輸出、存在未核准 rewrite／replacement、兩條路徑不是同一輸入、32 項案例未固定，或 fixture 冒充 live",
+          "steps": "依 P1–P5 執行：P1 完整盤點內容；P2 將 Consumer／R&D 區塊、順序、層級、互動、complete／unknown 狀態與 desktop／390px 寫成 DOM/browser contract；P3 對五軸逐欄記錄 prototype field/label/direction/scale/formula/output 與 formal field/disposition/reason；P4 用完全相同輸入重播兩條路徑並輸出 deterministic differential，固定 10 項共用產品與 32 項案例必跑；P5 deployment/live 另行驗收",
+          "pass": "P2 Consumer／R&D UI contract 對每個主區塊與 responsive 順序都有可重跑 DOM/browser 證據；P3 五軸與總分公式 authority 完整、machine-readable 且可由 UI/R&D 查明；P4 完整 canonical inputs 與固定 10 項產品證明數值／總分／A–E 等價，32 項案例清楚區分 historical、diagnostic 與 formal withheld；unknown／partial 顯示「暫不能判定」而非 0；A01–A09、A11、A12 全數通過後才可進 A10",
+          "fail": "只以畫面大致相似、名稱近似或 differential 存在宣稱通過，缺任一 Consumer／R&D 主區塊、順序、互動或 390px 證據，缺任一軸方向／公式／輸出，固定 10 項產品數值／總分／A–E 不一致，兩條路徑不是同一輸入，32 項案例未固定，或 fixture 冒充 live",
           "evidence": "versioned authoritative mapping、32-item real-product fixture、same-input differential verifier、API/component tests、browser screenshots 與補正後獨立 production receipt"
         }
       ],
@@ -1687,21 +1686,41 @@
       },
       "progress_evidence": {
         "recorded_at": "2026-08-12",
-        "scope_state": "Vincent 於 2026-08-12 核准 RRO-10 STOP-2 與 C1／C2 精確範圍。唯一 authority chain 維持原始目標 → 提供的 DB／prototype／公式 → 核准的 D1–D5 → task／文件／verifier；metric contract 3.0 與 scoring golden 2.0 使用 corrected-resolver prototype 的總分及五軸公式，0–100 僅為 1–5×20，unknown／partial fail-closed。Affected revision、target Neon read-only parity、32 項 production E2E 與 current A01–A12 acceptance 均已完成。",
-        "local_revision_boundary": "Product C1 6b5687a54ad7ff2888657b66ed1f48484cd3d883 已精確 commit／push 並由 Zeabur deployment 6a7c72680d41a78958bb4e07 部署；product origin/main parity 0/0。C2 僅更新本 task；未修改 db/seed、canonical Neon rows 或其他 harness dirty files。",
+        "scope_state": "2026-08-12 同輸入 browser comparison 證明正式 Consumer／R&D 結果未照原 prototype 呈現，且固定 10 項產品仍有 prototype 57/C、頭皮溫和度 2.8 對正式 52/D、2.6 差異。Vincent 重申唯一 UI 驗收目標為『分析結果照 prototype 呈現』並核准本機修正；P2/A06/A09/A12 與完整交付判定已重開。現況為 P2/A09 local UI contract 通過，A06/P4 數值 parity 未通過，A10 affected-revision production gate 未執行。",
+        "local_revision_boundary": "本輪 product 修改 web/src/App.jsx、web/src/styles.css、web/src/App.test.jsx、src/analysis/analyzer.mjs、test/analysis/analyzer.test.mjs、docs/acceptance/rro-10-result-content-disposition.md；analyzer 只把既有 canonical category/function/irritation 欄位投影到 UI payload，未修改正規化、規則、scoreBreakdown 或任何評分公式。canonical task 僅修改 RRO-10；沒有修改 db/seed、canonical Neon rows 或其他 harness dirty files；沒有 commit、push 或 deploy。",
         "acceptance_results": [
-          {"id": "A01", "status": "pass", "reason": "DB／or／PDF hashes、41/41 lineage、80/80 dispositions 與 formula mapping 可重跑；所有 runtime 影響差異已有 final disposition"},
-          {"id": "A02", "status": "pass", "reason": "Affected revision container 對 target Neon 執行 read-only parity；inci_core 150、inci_alias 400、shampoo_rules 80 的核准欄位 fingerprints 全部 match"},
-          {"id": "A03", "status": "pass", "reason": "80/80 final disposition；34 active rules 經 normalizer→analyzer 完成 natural positive／near-miss／unknown 34/34，未直接注入 feature"},
-          {"id": "A04", "status": "pass", "reason": "39 generated rows retired 且不沿用 delta；7 genuine gaps disabled-with-reason；pending disposition=0、undefined stacking=0、active token_v*=0"},
-          {"id": "A05", "status": "pass", "reason": "unknown／low-confidence／partial metrics=null；production 32 項 consumer UI 顯示暫不能判定，沒有 0 或雷達數值"},
-          {"id": "A06", "status": "pass", "reason": "F01–F10、34/34 active coverage、machine-readable mapping 與 32 項 historical 33/E→diagnostic 23/E→formal withheld differential 全部可重跑"},
-          {"id": "A07", "status": "pass", "reason": "Meeting 15/15、235/235 mappings、222/222 dispositions、9/9 priority recall、3 組 out-of-scope 與 M13 partial 全部通過"},
-          {"id": "A08", "status": "pass", "reason": "Production upload scan 7c9ebb17-728f-4f56-9e50-c8eace96202f、camera scan 8250c24a-31d6-4451-9188-df6fba38e613 通過；cross-product 正確 422"},
-          {"id": "A09", "status": "pass", "reason": "Production 32 項 browser scan 3141fa14-cd67-4194-ad71-042f58305565 在 1440×900 與 390×844 均無 page overflow；unknown 不渲染 0／雷達，R&D 顯示 authority 與 provenance"},
-          {"id": "A10", "status": "pass", "reason": "Zeabur deployment 6a7c72680d41a78958bb4e07 精確對應 C1 6b5687a；health、paste／upload／camera、Judge protection、passport read、fingerprints 與 public UI 全通過"},
-          {"id": "A11", "status": "pass", "reason": "Fresh 126/126 Node regression 覆蓋標題、句尾、數字逗號、連字號／斜線／括號與 canonical normalization"},
-          {"id": "A12", "status": "pass", "reason": "P3 mapping 2.0 machine-readable；P4 same-input differential 可解釋；P5 affected-revision API 與 consumer／R&D desktop／390px 已獨立驗收"}
+          {"id": "A01", "status": "retained_pass", "reason": "本輪未變更 DB／rule authority；既有 source hashes、41/41 lineage 與 80/80 final dispositions 可重跑"},
+          {"id": "A02", "status": "retained_pass", "reason": "本輪未變更 canonical seed；既有 target Neon 150／400／80 read-only parity 保留，但新 UI revision 尚未進 A10 deploy gate"},
+          {"id": "A03", "status": "retained_pass", "reason": "本輪未變更 analyzer/rule producer；80/80 disposition 與 34/34 active natural reachability 保留"},
+          {"id": "A04", "status": "retained_pass", "reason": "39 generated rows retire、7 gaps disabled-with-reason、pending=0 與 undefined stacking=0 未受 UI 變更影響"},
+          {"id": "A05", "status": "local_pass", "reason": "Component regression 以不一致舊 payload（provisional 但夾帶 0 分 metrics／E grade）驗證 UI 自行以 scoringStatus=complete 關閉 aggregate；unknown／low-confidence／partial 保留 prototype 骨架並顯示暫不能判定，不渲染 0、A–E 或雷達"},
+          {"id": "A06", "status": "fail", "reason": "固定 10 項完全相同 INCI 仍為 prototype 57/C、頭皮溫和度 2.8，正式 52/D、2.6；五軸／總分／A–E 尚未全部數值等價"},
+          {"id": "A07", "status": "retained_pass", "reason": "本輪未變更 meeting corpus；15/15、235/235、222/222、9/9 與 M13 partial 證據保留"},
+          {"id": "A08", "status": "retained_pass", "reason": "本輪未變更 OCR/API input route；既有 upload／camera／cross-product 證據與 126/126 Node regression 保留"},
+          {"id": "A09", "status": "local_pass", "reason": "Consumer 9 段與 R&D 7 段 DOM order 符合 prototype；product header、綜合狀態、安全評級／引導、五軸狀態色／白話／雷達軸名、主規則警示、prototype 四欄成分表、四張可展開標準卡及 scoreBreakdown R&D 明細均有 component/browser 證據。1440×900 與 390×844 document scrollWidth=clientWidth，寬表只在 table-scroll 內捲動"},
+          {"id": "A10", "status": "not_run", "reason": "本輪未授權 commit、push 或 deploy；affected-revision production E2E 與新版 receipt 不得執行"},
+          {"id": "A11", "status": "retained_pass", "reason": "本輪未變更 normalizer；fresh 126/126 Node regression 通過"},
+          {"id": "A12", "status": "partial", "reason": "P2 executable UI contract 已 local pass；P3 mapping 保留；P4 固定 10 項數值／總分／A–E parity 因 57/C 對 52/D 與 2.8 對 2.6 尚未通過，P5 未執行"}
+        ],
+        "current_ui_red_evidence": [
+          "web/src/App.test.jsx prototype order assertions first failed because the formal headings were 完整配方摘要／消費者判讀摘要／三個優先判讀面向 and formal evidence preceded the prototype main result",
+          "390px browser R&D inspection exposed research-positioning width 723px inside a 347px result panel; mapping-table min-content widened the grid and clipped the main R&D result",
+          "independent UI review then found R&D deduction incorrectly re-aggregated triggeredRules, product/overall/grade layers collapsed, five-axis semantic colours and radar labels absent, formula messages demoted, prototype ingredient/standards interactions missing, and UI fail-closed dependent on null fields; new tests failed before each correction"
+        ],
+        "current_ui_green_evidence": [
+          "npm run test:web -> 27/27 PASS; complete and fail-closed fixtures lock Consumer 9-section and R&D 7-section prototype order, product/overall/grade hierarchy, exact five conversions, state labels, radar axis names, main formula warning, four ingredient columns, four expandable standard cards and scoreBreakdown source",
+          "npm test -> 126/126 PASS with loopback permission; analyzer, API, OCR, rule, provenance and fail-closed contracts pass，新增欄位測試證明 category/function/irritation 僅投影既有 canonical evidence",
+          "npm run build -> PASS; Vite production bundle dist/assets/index-BkkJ94dI.css and index-CT2Eg19g.js generated",
+          "Local fixed 10-item browser scan 9ed20efc-9067-4a2e-839c-2fa4b2418a56 -> formal 52/D; Consumer order product-status→tabs→overall→metrics→risks→warnings→ingredients→standards→supplemental；五個 1–5 值、五個狀態色／白話、五個雷達軸名、四欄成分表與四張 standards 均可見",
+          "R&D browser -> positioning→deductions→rules→regulatory→supplemental；Deduction Profile 直接顯示 scoreBreakdown -18/-20/-10/-15/0/+15，而不是從 triggeredRules 重算；無 page overflow",
+          "Desktop 1440×900 -> document clientWidth=1425, scrollWidth=1425；result panel 833，research 783，positioning/supplemental 781；Consumer radar labels=5、standard cards=4",
+          "Mobile 390×844 -> document clientWidth=375, scrollWidth=375 for Consumer and R&D；result panel 345，research 311；mapping table scrollWidth=685 contained by table-scroll clientWidth=273，ingredient table scrollWidth=457 contained by clientWidth=311",
+          "Browser standard interaction -> 無 SLS / SLES aria-expanded false→true and prototype explanatory detail rendered",
+          "Independent UI re-review -> Critical 0、Important 0、ready for local RC；確認前輪 7 項缺口均已修正、analyzer 只新增 4 個 presentation fields 且未改評分公式；A06 57/C 對 52/D 仍明確列為獨立未通過差距"
+        ],
+        "remaining_gaps": [
+          "A06/P4: fixed 10-item same-input prototype/formal numerical parity remains failed at 57/C versus 52/D and scalp friendliness 2.8 versus 2.6",
+          "A10/P5: no affected-revision commit, push, deploy, target-runtime browser E2E or current acceptance receipt is authorized or complete"
         ],
         "stop_1_evidence": [
           "node scripts/verify-rule-authority.mjs --report-only -> source rules 80/80 accounted; prototype behavior mappings 41/41; exact payload 40/41; one R50→R11 label correction; generated token rows 39; producer-gap rules 7",
@@ -1711,7 +1730,7 @@
           "$COLLAB/rrrealll-ocr/docs/acceptance/rro-10-stop-1-authority-decision.md",
           "$COLLAB/rrrealll-ocr/scripts/verify-rule-authority.mjs"
         ],
-        "red_evidence": [
+        "historical_red_evidence": [
           "補正 RED：5 個 analyzer assertions 先證明 unresolved 狀態仍產生數值 metrics 且缺少 authoritative mapping contract",
           "補正 RED：2 個 component cases 先證明 unknown／partial 會顯示 0／100 與雷達，且 R&D 缺少逐軸 mapping",
           "scope review RED：總指標 withheld 後，已辨識 4 項界面活性劑的 32 項案例仍錯顯示『尚未確認洗髮清潔系統』；新增 known-risk oracle 後先失敗再補正",
@@ -1734,7 +1753,7 @@
           "prototype-equivalent scoring test first failed because analyzer沒有scoreBreakdown且仍使用五個非等價0–100 rewrite；完成後metric contract 3.0與engine 2.0改用原總分/五軸公式",
           "scope authority tests first有4個測試失敗，證明verifier／fixture／文件仍把12 unknown與R13誤列為資料擴充 blocker；修正後5/5通過並鎖定provided-DB fail-closed與D4 disabled-with-reason"
         ],
-        "green_evidence": [
+        "superseded_or_retained_green_evidence": [
           "Product C1 6b5687a54ad7ff2888657b66ed1f48484cd3d883 -> 36-file exact manifest, pushed origin/main 0/0; Zeabur deployment 6a7c72680d41a78958bb4e07 RUNNING at the exact SHA; health HTTP 200 with database/evidenceStore ok",
           "Affected-revision target Neon read-only parity -> inci_core 150:6d3730012b73c08224c00b8ad3c21dd7a9bcc6406379cfe2e36bc0b2c1b75fd5, inci_alias 400:cd224bcb3f674f031be8e4cb1da86a44839b13952ca264024fe1e0ec28f6b4aa, shampoo_rules 80:befd386b7580923fc09b280ee345e36a1ed9f9c705e6d992b8961cf11ff96162; all status=match",
           "RRO10-REAL-01 production paste scan 5b3749b0-cc9b-4038-b891-7e29632bde32 -> 32 total, 20 matched, 12 unknown, metrics=null, 暫不能判定, metric contract 3.0, mapping 2.0, engine 2.0 and full dataset/rule/normalizer provenance",
@@ -1765,7 +1784,7 @@
           "superseded historical production paste/upload/camera/cross-product E2E receipts did not satisfy reopened A10 and are superseded by the current scans above",
           "superseded historical Judge-approved passport e78be388-5772-4ea2-a61d-3039d2c5b3cf remains route provenance; current passport read and Judge protection were rerun under the affected deployment"
         ],
-        "stop_2_evidence": [
+        "superseded_stop_2_evidence": [
           "C1 6b5687a54ad7ff2888657b66ed1f48484cd3d883 已 commit／push，product remote parity 0/0",
           "Zeabur deployment 6a7c72680d41a78958bb4e07 精確對應 affected revision 並為 RUNNING",
           "Target Neon canonical row-content parity 150／400／80 全部 match，僅執行 read-only queries",
@@ -1832,7 +1851,9 @@
         ],
         "fixture_runtime_boundary": "Fixtures lock deterministic scoring, meeting and OCR contracts; completion additionally relies on the exact-SHA public Zeabur runtime, target Neon read-only row content, controlled production scan receipts, approved public passport and real browser DOM acceptance. Canonical tables were never written during E2E."
       },
-      "acceptance_receipt": {
+      "superseded_ui_acceptance_receipt": {
+        "superseded_at": "2026-08-12",
+        "superseded_reason": "Same-input browser comparison proved that the formal Consumer/R&D result hierarchy, order and responsive presentation did not match the original prototype, while the fixed 10-item product also produced 57/C versus 52/D and scalpCare 2.8 versus 2.6. P2/A06/A09/A12 and complete delivery are therefore withdrawn until re-accepted against the amended matrix.",
         "matrix_ref": "milestones/rrrealll-ocr/tasks.json#p9-data-rule-semantic-correction-and-meeting-acceptance.acceptance_matrix",
         "matrix_fingerprint": "sha256:a6040fb30465c6125d371fe7815d093aa9796a5936472035cc472114fb3b2439",
         "caller_matrix_fingerprint": "sha256:a6040fb30465c6125d371fe7815d093aa9796a5936472035cc472114fb3b2439",
@@ -2092,6 +2113,20 @@
             "evidence_refs": [
               "$COLLAB/rrrealll-ocr@6b5687a54ad7ff2888657b66ed1f48484cd3d883",
               "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p9-data-rule-semantic-correction-and-meeting-acceptance.acceptance_receipt"
+            ],
+            "recorded_at": "2026-08-12"
+          },
+          {
+            "operation": "resume",
+            "from_status": "completed",
+            "to_status": "in_progress",
+            "reason": "2026-08-12 以相同 10 項完整 INCI 直接比對原 prototype 與正式本機頁面，確認正式 Consumer／R&D 主結構、順序、資訊層級與 responsive 呈現沒有照 prototype，且結果出現 prototype 57/C、頭皮友善 2.8 對正式 52/D、2.6 的差異。Vincent 明確重申唯一驗收目標為『分析結果照 prototype 呈現』並授權開始 UI 修正；因此撤回舊完整交付判定與 P2/A06/A09/A12 通過狀態。本輪僅限 RRO-10 task、UI、tests 與 acceptance docs 的本機補正，不含 commit、push、Neon write 或 deploy。",
+            "evidence_refs": [
+              "$COLLAB/rrrealll-ocr/or/成分刺激度比對_Google_AI_Studio/src/App.tsx",
+              "$COLLAB/rrrealll-ocr/web/src/App.jsx",
+              "Local same-input browser comparison: original prototype 57/C and scalpCare 2.8; formal 52/D and scalpCare 2.6",
+              "Vincent conversation approval 2026-08-12: 驗收目標是『分析結果照 prototype 呈現』，可以開始進行修正",
+              "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json#p9-data-rule-semantic-correction-and-meeting-acceptance.acceptance_matrix"
             ],
             "recorded_at": "2026-08-12"
           }

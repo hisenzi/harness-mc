@@ -4,22 +4,159 @@
     {
       "id": "kj-glory-lion-character-production-standard-v1",
       "title": "KJ 光榮獅角色與量產基準設定",
-      "status": "todo",
+      "status": "in_progress",
       "track": "phase-1",
       "order_label": "KJ-01",
       "priority": "P1",
       "capability_domain": "direction-governance",
       "task_kind": "design",
       "dependencies": [],
-      "done_condition": "完成並驗收永久角色設定規格：正／側／背三視圖、鬃毛／披風／尾飾／胸章細節、標準色與材質轉換、絨毛及 PVC／軟膠適配、可用／不可用規則；60 週年只留在應用層，原始 KJ 資料檔案不搬移。",
+      "done_condition": "完成並驗收六面正投影永久角色設定規格：正面、背面、左側、右側、俯視、仰視六面同尺度同座標，並完成尾巴、鬃毛、披風、正面胸章細節、標準色與材質轉換、絨毛及 PVC／軟膠適配、可用／不可用規則；60 週年只留在應用層，原始 KJ 資料檔案不搬移。",
       "acceptance": [
-        "正／側／背三視圖的比例與固定元素一致，胸章以正面造型為標準。",
+        "正面、背面、左側、右側、俯視、仰視六面正投影的比例與固定元素一致，胸章以正面造型為標準。",
         "鬃毛保留頂部上揚特徵，細碎毛束合併為大型金色／深藍色塊。",
-        "披風為單層短披風且只保留一條金邊。",
+        "披風為單層短披風；頸部／肩線金邊、前肢開口深藍結構邊、下襬獨立金邊分開收尾，不形成全外框。",
         "尾飾為厚實、封閉的金藍雙色毛束，不含十字或火焰。",
         "絨毛版胸章採平面繡章／布章，PVC／軟膠版採一體成形浮雕。",
         "標準色、材質轉換與可用／不可用規則可供後續 2D、絨毛及 PVC／軟膠延伸引用。",
         "工廠打版、3D 建模、開模、樣品打樣與正式量產明確列為不包含。"
+      ],
+      "acceptance_matrix": [
+        {
+          "id": "V01",
+          "what": "六面正投影使用同一角色座標、同一比例與同一地面基準。",
+          "preconditions": ["六面圖工作稿存在", "正面 master 已確認固定元素"],
+          "steps": ["逐一比對正面、背面、左側、右側、俯視、仰視的頭高、腳底線與身體中心軸"],
+          "pass_condition": "六面角色高度、頭身比例、腳底線與中心軸一致；沒有視角自行重設比例。",
+          "fail_condition": "任一視角比例漂移、站立高度不同、中心軸錯位或不是正投影。",
+          "verification": ["六面圖人工對齊檢查", "圖檔尺寸與視角標記檢查"]
+        },
+        {
+          "id": "V02",
+          "what": "正面完整呈現胸章、前鬃毛、披風前緣與尾巴起點。",
+          "preconditions": ["正面 master 圖檔存在"],
+          "steps": ["核對胸章盾形、藍底、金邊、金色十字與胸口置中比例"],
+          "pass_condition": "胸章正面結構完整可讀，與既定正面標準一致。",
+          "fail_condition": "胸章缺件、變形、偏移、被活動資訊取代或比例改變。",
+          "verification": ["正面 master 視覺檢查", "胸章細節 callout 對照"]
+        },
+        {
+          "id": "V03",
+          "what": "背面呈現後鬃毛、披風背面、尾巴路徑與尾端，不新增背章。",
+          "preconditions": ["背面視圖存在", "胸章規則為正面唯一完整識別"],
+          "steps": ["檢查背面可見結構與胸章排除規則"],
+          "pass_condition": "背面結構完整，沒有錯誤複製胸章或新增背章。",
+          "fail_condition": "背面缺少披風／尾巴／鬃毛，或出現未核准徽章。",
+          "verification": ["背面視覺檢查", "元素可見性矩陣核對"]
+        },
+        {
+          "id": "V04",
+          "what": "左右側面呈現口鼻、胸腹厚度、披風厚度與胸章合理側厚。",
+          "preconditions": ["左右側視圖存在"],
+          "steps": ["分別檢查左側與右側，不以單一鏡像圖代替兩面"],
+          "pass_condition": "左右側面可辨識同一角色，胸章只呈現合理厚度／遮擋，不被完整平面複製。",
+          "fail_condition": "左右側面缺少必要結構、胸章穿透、厚度消失或左右手性混亂。",
+          "verification": ["左右側視圖人工比對", "胸章與披風側厚 callout"]
+        },
+        {
+          "id": "V05",
+          "what": "俯視確認頭頂鬃毛、耳朵、披風肩線與尾巴根部路徑。",
+          "preconditions": ["俯視圖存在"],
+          "steps": ["從上方核對鬃毛外輪廓、披風外展與尾巴從骨盆出發的方向"],
+          "pass_condition": "俯視可說明所有主要上表面與尾巴根部，不依賴猜測補畫。",
+          "fail_condition": "尾巴根部漂浮、披風方向不明、鬃毛變成另一套造型。",
+          "verification": ["俯視圖人工檢查", "尾巴座標 callout"]
+        },
+        {
+          "id": "V06",
+          "what": "仰視確認腳底、腹部、披風下緣與尾巴根部離地關係。",
+          "preconditions": ["仰視圖存在"],
+          "steps": ["從下方核對四腳接觸、腹部輪廓、披風下襬與尾巴根部"],
+          "pass_condition": "仰視呈現必要下表面與接觸關係，不新增胸章或活動符號。",
+          "fail_condition": "腳底數量錯誤、身體穿透、披風下緣不合理或尾巴無法連接。",
+          "verification": ["仰視圖人工檢查", "底部結構 callout"]
+        },
+        {
+          "id": "V07",
+          "what": "正面全身比例以 Vincent 附件 master 為唯一幾何基準，腳長不得漂移。",
+          "preconditions": ["附件比例標線／疊圖存在", "正面身體骨架尚未被局部重建覆蓋"],
+          "steps": ["將正面草稿與附件比例標線疊合，逐一比對鬃毛最高點、眼線、下巴／頸線、胸章框、腹部／髖部、腳掌上緣、腳底線與尾巴根部"],
+          "pass_condition": "頭／鬃毛框、軀幹框、胸章框、腳底基準與尾巴根部均落在附件 master 的比例容許範圍內；腿段不得比附件延長。",
+          "fail_condition": "腳變長、腳底線下移、頭身比改變、胸章框漂移、披風包絡拉動身體骨架或尾巴根部升高／降低。",
+          "verification": ["front-proportion-overlay-v0.2.png 疊圖比對", "front-proportion-matrix-v0.2.md anchor 檢查"]
+        },
+        {
+          "id": "D01",
+          "what": "尾巴在六面之間維持同一根部、手性、彎曲路徑與金藍尾飾順序。",
+          "preconditions": ["尾巴局部結構圖存在", "角色左／右座標已定義"],
+          "steps": ["以角色座標追蹤尾巴根部至尾端，再比對正面、背面、側面、俯視與仰視"],
+          "pass_condition": "所有視角可由同一條 3D 尾巴投影；正背面不發生錯誤鏡像。",
+          "fail_condition": "尾巴在不同視角改變彎曲方向、根部位置或金藍順序。",
+          "verification": ["尾巴 callout 與六面投影人工追蹤"]
+        },
+        {
+          "id": "D02",
+          "what": "鬃毛簡化為可跨媒材複製的金／藍大型封閉毛束。",
+          "preconditions": ["鬃毛局部 callout 存在"],
+          "steps": ["比對頂部上揚主輪廓、側／背深藍塊與小尺寸可讀性"],
+          "pass_condition": "保留頂部上揚特徵，無依賴細碎髮絲或不可複製尖刺。",
+          "fail_condition": "視角間鬃毛數量／方向漂移，或回復細碎插畫毛束。",
+          "verification": ["鬃毛 callout", "縮小預覽人工檢查"]
+        },
+        {
+          "id": "D03",
+          "what": "披風在六面維持同一件單層短披風，並使用可實際施工的分段邊界。",
+          "preconditions": ["披風各面視圖存在"],
+          "steps": ["核對肩部起點、前肢開口深藍結構邊、下襬獨立金邊、背面連續性、下襬弧度與離地關係"],
+          "pass_condition": "披風為同一件單層結構；不同位置／粗細的金邊各自收尾，不連成全外框，沒有多層皺褶或新增裝飾。",
+          "fail_condition": "前肢圈定區域出現不合理金色滾邊、不同寬度金邊硬接、側／背面新增結構或出現多層下襬。",
+          "verification": ["六面披風輪廓比對", "披風做工 callout 對照"]
+        },
+        {
+          "id": "D04",
+          "what": "正面胸章維持固定造型並具備絨毛／PVC 適配規則。",
+          "preconditions": ["胸章正面與材質 callout 存在"],
+          "steps": ["比對平面繡章／布章與一體成形浮雕的共同輪廓"],
+          "pass_condition": "盾形、深藍底、金邊、金色十字比例一致，媒材只改工藝不改識別。",
+          "fail_condition": "媒材版改變胸章比例、十字結構或完整正面識別。",
+          "verification": ["胸章 detail callout", "材質規格表"]
+        },
+        {
+          "id": "C01",
+          "what": "標準色角色與 2D／絨毛／PVC 轉換原則可引用。",
+          "preconditions": ["角色規格與材質表存在"],
+          "steps": ["核對金黃、深藍、胸章藍、金邊四個色彩角色及三媒材規則"],
+          "pass_condition": "每種媒材都有輪廓、色塊、布料／繡章或浮雕／分色的明確原則。",
+          "fail_condition": "只描述風格，沒有可執行的媒材轉換邊界。",
+          "verification": ["規格表逐欄檢查"]
+        },
+        {
+          "id": "C02",
+          "what": "可用／不可用規則能限制六面圖後續延伸。",
+          "preconditions": ["角色規格使用邊界存在"],
+          "steps": ["測試胸章、尾飾、60 週年與材質變體案例"],
+          "pass_condition": "規則能判斷哪些延伸保留永久角色、哪些只能放應用層。",
+          "fail_condition": "遇到新姿勢／新媒材仍需重新猜測永久元素。",
+          "verification": ["可用／不可用案例檢查"]
+        },
+        {
+          "id": "C03",
+          "what": "原始 KJ 資料維持原位且不被本 task 搬移。",
+          "preconditions": ["原始資料夾存在"],
+          "steps": ["檢查來源路徑與 Git 變更範圍"],
+          "pass_condition": "原始資料夾未搬移、未重命名、未進入 harness-mc Git。",
+          "fail_condition": "來源路徑消失、改名或被複製進本 repo。",
+          "verification": ["來源路徑存在檢查", "git status scope 檢查"]
+        },
+        {
+          "id": "C04",
+          "what": "工廠打版、3D 建模、開模、打樣與正式量產保持在 task 外。",
+          "preconditions": ["角色規格完成"],
+          "steps": ["檢查規格邊界與輸出物清單"],
+          "pass_condition": "本 task 只交付角色與媒材基準，不宣稱製造完成。",
+          "fail_condition": "以概念圖冒充 3D 模型、開模或量產驗證。",
+          "verification": ["spec scope review"]
+        }
       ],
       "goal_alignment": {
         "project_id": "kj-mascot",
@@ -52,6 +189,50 @@
               "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/acceptance.md"
             ],
             "recorded_at": "2026-08-03"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 於 2026-08-05 核准將原三視圖範圍正式擴充為六面正投影，並逐面重建尾巴、胸章、鬃毛、披風、俯視與仰視。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/acceptance.md",
+              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/character-spec-v0.2.md"
+            ],
+            "recorded_at": "2026-08-05"
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 於 2026-08-05 指定以附件正面 master 嚴格鎖定全身比例，先建立比例標線／疊圖與腳長驗收規則，再進行局部重建。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/front-proportion-overlay-v0.1.png",
+              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/front-proportion-matrix-v0.1.md"
+            ],
+            "recorded_at": "2026-08-05"
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 指出腳長仍偏長；重新以附件實際腳底線與身體下緣量測，v0.1 比例標線作廢，改用 v0.2 短腿 anchor。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/front-proportion-overlay-v0.2.png",
+              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/front-proportion-matrix-v0.2.md"
+            ],
+            "recorded_at": "2026-08-05"
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 釐清披風實際做工：不同粗細／位置的金邊不得硬接成一圈；前肢交界採深藍結構邊，頸肩與下襬金邊分段收尾。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/character-spec-v0.2.md",
+              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/acceptance.md"
+            ],
+            "recorded_at": "2026-08-05"
           }
         ]
       },

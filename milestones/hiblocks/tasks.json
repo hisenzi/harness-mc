@@ -42,7 +42,7 @@
       "priority": "high",
       "estimate": "4hr",
       "done_condition": "HiBlocks 所有 layout 提供預設系統字型與可選的本站自架 WOFF2 字型政策，不再載入 Google Fonts 或 DM Mono；只有被標示為首屏需要的自架字型可 preload，且全部使用 font-display: swap；靜態 verifier 的正反向案例、建置 HTML 稽核與 Astro build 均通過。",
-      "note": "本 task 只處理 render-blocking 字型與可重用載入政策。玉田法律行動首屏實測 FCP 17.9 秒、LCP 19.9 秒，Google Fonts CSS 約 200 KiB 且 Lighthouse 估計可解除 19.1 秒關鍵路徑等待；圖片、快取與 CSS 拆分另立後續 task，不以動畫優化取代本 task。2026-08-15 build audit 另發現 DemoMonaka layout 直接載入 Google Fonts，納入同一政策，避免只修預設 BaseLayout 而留下已建置頁面。",
+      "note": "本 task 只處理 render-blocking 字型與可重用載入政策。雨田法律行動首屏實測 FCP 17.9 秒、LCP 19.9 秒，Google Fonts CSS 約 200 KiB 且 Lighthouse 估計可解除 19.1 秒關鍵路徑等待；圖片、快取與 CSS 拆分另立後續 task，不以動畫優化取代本 task。2026-08-15 build audit 另發現 DemoMonaka layout 直接載入 Google Fonts，納入同一政策，避免只修預設 BaseLayout 而留下已建置頁面。",
       "project_problem": "HiBlocks 的 BaseLayout 與 DemoMonaka layout 預設無條件載入多組 Google Fonts 與 DM Mono，讓採用它們的新站把可避免的字型網路依賴放進首屏關鍵路徑。",
       "core_value": {
         "statement": "品牌字型可保留，首屏不被外部字型阻塞",
@@ -199,6 +199,38 @@
               "Vincent 2026-08-15 current session: 進行 C2 走 scope-only 收尾。"
             ],
             "recorded_at": "2026-08-15"
+          },
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "更正 task note 的網站中文名稱：將誤寫的「玉田法律」更正為「雨田法律」。此為文字正確性修正，不改變字型模組、既有驗證證據或 task 狀態。",
+            "evidence_refs": [
+              "Vincent 2026-08-15 current session: 1.誤寫「玉田法律」改成「雨田法律」"
+            ],
+            "recorded_at": "2026-08-15",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "hiblocks/p1-s",
+                "hiblocks/p1-s-typography"
+              ],
+              "scope_comparison": {
+                "problem": "本次只修正本 task 的網站名稱錯字，未新增或改變字型效能問題。",
+                "owner_source_of_truth": "p1-performance-font-policy 仍是這段字型政策與其問題背景的唯一 task 正本；p1-s 與 p1-s-typography 不持有該名稱紀錄。",
+                "inputs_outputs": "字型政策的輸入、自架 WOFF2 輸出與驗證命令均不變。",
+                "lifecycle_completion": "既有 completed 記錄及其驗證邊界不變；本次只留下可追溯的術語更正事件。"
+              },
+              "decision_reason": "名稱錯誤屬同一 task 的文字修正，應 amend 現有正本，不另建 task 或改變驗收範圍。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-15",
+                "evidence_refs": [
+                  "Vincent 2026-08-15 current session: 1.誤寫「玉田法律」改成「雨田法律」"
+                ]
+              }
+            }
           }
         ]
       },

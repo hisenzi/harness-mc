@@ -470,6 +470,61 @@
           "next_action": "Use JV-19 cc-runner style safe probe as the periodic audit mechanism when capability-registry-v1-coverage expands connector entries."
         }
       ]
+    },
+    {
+      "id": "lottie-creator-mcp",
+      "type": "mcp",
+      "provider": "LottieFiles Lottie Creator MCP",
+      "entrypoint": [
+        "npx -y @lottiefiles/creator-mcp@latest",
+        "https://docs.lottiefiles.com/en/creator/13_ai-tools/lottie-creator-mcp"
+      ],
+      "owner_task": "capability-registry-v1-coverage",
+      "scope": "local_runtime",
+      "source_of_truth": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-registry-v1-coverage",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json"
+      ],
+      "auth_boundary": "The MCP bridge uses the local Lottie Creator browser session; registry records only safe provider, scope, entrypoint, and probe metadata. Never inspect browser cookies, profiles, storage, tokens, or runtime auth content.",
+      "read_write_boundary": {
+        "read": [
+          "safe MCP registration metadata",
+          "sanitized Agent registration and connection probe results"
+        ],
+        "write": [
+          "Lottie Creator scenes, layers, shapes, keyframes, easing, and exports only through explicit Agent calls",
+          "registry history and sanitized observed/runtime status"
+        ],
+        "forbidden": [
+          "read or output browser cookies, profiles, storage, tokens, or runtime auth",
+          "store credentials or secrets in the registry or generated read models",
+          "treat one Agent client's connection as global runtime health"
+        ]
+      },
+      "secret_policy": "Store only LottieFiles provider metadata, MCP command metadata, safe probe results, and scope ownership; never store API keys, browser cookies, tokens, local auth files, or runtime credential content.",
+      "status": "ready",
+      "verifier": [
+        "npm run test:capability-registry",
+        "codex mcp list",
+        "claude mcp list"
+      ],
+      "next_action": {
+        "type": "task",
+        "task_id": "capability-registry-v1-coverage",
+        "description": "Keep Lottie Creator MCP agent-agnostic in the registry; record Creator browser-session pairing and machine-scoped applicability separately from the declared capability."
+      },
+      "history": [
+        {
+          "date": "2026-08-04",
+          "event_type": "registration_confirmed",
+          "from_state": "observed_not_declared",
+          "to_state": "ready",
+          "reason": "The official Lottie Creator MCP was registered with the same standard STDIO command in Codex global scope and Claude Code user scope; Claude Code returned a successful MCP health check. Creator-side browser pairing remains a runtime precondition and is not treated as global health.",
+          "evidence_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-registry-v1-coverage; https://docs.lottiefiles.com/en/creator/13_ai-tools/lottie-creator-mcp",
+          "actor_or_task": "capability-registry-v1-coverage",
+          "next_action": "Verify Lottie Creator browser-session pairing in a client session and keep client-specific diagnostics separate from global capability health."
+        }
+      ]
     }
   ]
 }

@@ -118,12 +118,133 @@
     {
       "id": "acp-007",
       "title": "組裝 sample-package 並建立 package manifest",
-      "status": "todo",
+      "status": "in_progress",
       "track": "package",
       "order": 70,
       "order_label": "07",
       "done_condition": "建立 sample-package/package-manifest.json，至少追蹤一個輸出檔的 source、prompt、recipe、tool_node、version、qa_status",
-      "note": "若 Adobe spike 尚未能產真實檔，可用 placeholder artifact，但必須標明 simulated",
+      "note": "若 Adobe spike 尚未能產真實檔，可用 placeholder artifact，但必須標明 simulated。本輪由 Vincent 於 2026-08-14 核准先完成 AI 貓咪短劇 pilot 的角色設定與第一集正式腳本；fresh 驗收結果為 ACP07-CAT-01=pass、ACP07-CAT-02=pass、ACP07-PKG-01=fail，矩陣指紋 sha256:7ee96e59eb89cdd59bc4a27a5d231e830e07b4519e95ab99fc3af196242a68ec。此為 sample-package 的第一個 partial slice，不代表生成、manifest、QA 或 task 已完成。",
+      "hc_decision": {
+        "task_scope": "adobe-creative-pipeline/acp-007",
+        "hc_refs": [
+          "#rightProblem",
+          "#breakItDown",
+          "#medium",
+          "#evidenceBased",
+          "#risk"
+        ],
+        "hc_reasoning": "#rightProblem 將需求界定為可延續的 AI 短影音角色與腳本資產，而不是一次性的模仿影片；#breakItDown 把 12 秒成片拆成角色基準、正式腳本、關鍵影格、生成短鏡頭、後製與 manifest，這一輪只執行前兩項；#medium 讓 bitmap／video 直接走影像與剪輯節點，不強制經 Illustrator；#evidenceBased 要求後續每個生成檔都回到 reference、prompt、recipe 與 QA evidence；#risk 防止角色漂移、照抄參考作品、未生成卻宣稱影片完成，或把寵物暴力表現成真實傷害。",
+        "hc_confidence": 0.9,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/project.json",
+          "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/tasks.json#acp-007",
+          "Vincent 2026-08-14 current session: 可以進行『兩隻貓的角色設定＋第一集正式腳本』"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical task state remains tasks.json；本輪角色與腳本檔是 sample-package 的 authored sources；後續生成檔、selection、recipe、manifest 與 QA 才能作為交付證據。"
+      },
+      "acceptance_matrix": [
+        {
+          "id": "ACP07-CAT-01",
+          "what": "兩隻貓的角色設定具有可生成、可辨識且互不混淆的固定特徵。",
+          "preconditions": [
+            "本輪採全 AI 角色、9:16 寫實寵物喜劇的核准假設",
+            "參考 Reel 只提供節奏與類型，不複製帳號品牌、角色識別、原對白或音訊"
+          ],
+          "steps": [
+            "核對兩個角色各自的外觀不變量、比例、性格、表演與聲音規則",
+            "核對共同場景、鏡位、字幕與禁止項",
+            "確認下一階段可由角色設定產生正面、側面與四分之三角度 reference plates"
+          ],
+          "pass_condition": "角色文件明列兩隻貓各自的固定毛色、眼睛、體型、臉型、性格、動作節奏與不可改變項，且不存在相互矛盾設定。",
+          "fail_condition": "角色只靠名稱區分、外觀特徵可互換、同一角色有矛盾毛色或體型，或沿用參考作品的專有角色／品牌識別。",
+          "verification": [
+            "文件章節與必填欄位檢查",
+            "角色不變量交叉比對",
+            "reference prompt 與 negative constraints 人工審閱"
+          ]
+        },
+        {
+          "id": "ACP07-CAT-02",
+          "what": "第一集腳本能在 10–15 秒內完成開場、衝突、反轉與收尾。",
+          "preconditions": [
+            "兩個角色的關係與說話節奏已在角色文件固定",
+            "影片採多個短鏡頭組接，不要求模型一次生成完整成片"
+          ],
+          "steps": [
+            "逐段核對時間碼、畫面動作、對白／字幕、聲音與生成方式",
+            "加總時長並確認高潮在第 8–11 秒",
+            "靜音閱讀字幕，確認不依賴貼文說明也能理解"
+          ],
+          "pass_condition": "腳本總長 10–15 秒、至少包含 hook／衝突／反轉／反應收尾，字幕可獨立傳達情節，且高難度動作已標示首尾關鍵影格策略。",
+          "fail_condition": "時長超限、對白無法在畫面時間內讀完、反轉晚於結尾、動作不可分鏡生成，或包含模型直接生成可讀文字的要求。",
+          "verification": [
+            "時間碼加總",
+            "逐鏡 shot list 檢查",
+            "靜音理解測試與字幕字數檢查"
+          ]
+        },
+        {
+          "id": "ACP07-PKG-01",
+          "what": "後續 sample-package manifest 能追蹤至少一個實際或明確標示 simulated 的輸出檔。",
+          "preconditions": [
+            "角色設定與第一集腳本已通過 ACP07-CAT-01／02",
+            "至少完成一個生成或 placeholder artifact"
+          ],
+          "steps": [
+            "建立 package-manifest.json",
+            "核對 source、prompt、recipe、tool_node、version、qa_status",
+            "確認 simulated 與 generated 狀態沒有混用"
+          ],
+          "pass_condition": "manifest 可由輸出檔回溯到來源、提示詞、處理 recipe、工具節點、版本與 QA 狀態。",
+          "fail_condition": "只有輸出檔沒有 provenance，或 simulated artifact 被宣稱為真實生成結果。",
+          "verification": [
+            "JSON parse",
+            "必填欄位與檔案存在性檢查",
+            "qa_status／simulated 邊界人工審閱"
+          ]
+        }
+      ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle"
+        ],
+        "decision_input": [
+          "Vincent 核准的 AI 貓咪短影音 pilot 計劃",
+          "Adobe 創意素材產線的 sample-package done condition",
+          "兩隻固定角色與 12 秒分鏡的可驗收輸出範圍"
+        ],
+        "decision_output": "在既有 acp-007 內加入第一個 AI 短影音 pilot slice：角色設定與第一集正式腳本；保留生成、manifest 與 QA 為後續未完成範圍。",
+        "execution_boundary": "本輪只修改 acp-007 canonical task 與 $COLLAB/harness-mc/milestones/adobe-creative-pipeline/sample-package/ 下兩份 authored source；不得生成影片、操作 Adobe 帳號、發布社群、commit、push，或把 partial slice 宣稱為完整 sample-package。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准開始製作兩隻貓的角色設定與第一集正式腳本；本次沿用既有 acp-007 作為 sample-package work anchor，加入 HC、驗收矩陣與第一個 authored-source slice，不建立平行專案或新 task。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/project.json",
+              "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/tasks.json#acp-007",
+              "Vincent 2026-08-14 current session: 可以進行『兩隻貓的角色設定＋第一集正式腳本』"
+            ],
+            "recorded_at": "2026-08-14"
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "adobe-creative-pipeline",
+        "goal_ref": "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/project.json#/goals",
+        "goal_fingerprint": "sha256:bb375dc7f1bf40634b37ca4359aa1435954baa137a030de2d90458db250fe226",
+        "contribution": "用一個可回溯的 AI 貓咪短影音 pilot 驗證角色 brief、腳本、提示詞與後續生成／manifest 的銜接，讓素材產線不只停留在抽象契約。",
+        "evidence_plan": [
+          "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/sample-package/ai-cat-reels-character-bible.md",
+          "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/sample-package/ai-cat-reels-episode-01-script.md",
+          "node scripts/validate-tasks.mjs --changed-only --project adobe-creative-pipeline"
+        ],
+        "reviewed_at": "2026-08-14"
+      },
       "external_refs": {
         "heptabase": {
           "whiteboard": "Adobe 創意素材產線",

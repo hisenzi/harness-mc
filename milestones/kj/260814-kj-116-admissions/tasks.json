@@ -205,6 +205,62 @@
         ],
         "reviewed_at": "2026-08-14"
       }
+    },
+    {
+      "id": "kj116-admi00-inline-css-js-bundle",
+      "title": "封裝招生共用首頁 CSS／JS 為 iSchool 內嵌 bundle",
+      "status": "in_progress",
+      "track": "phase-1",
+      "order_label": "KJ116-00",
+      "priority": "P0",
+      "capability_domain": "action-delivery",
+      "task_kind": "implement",
+      "dependencies": [],
+      "done_condition": "為 115_KJ_admi_00 的現存 HTML 產生可貼入 iSchool 的 CSS 與 JS bundle，CSS 以 kj-admi-00 root namespace 隔離、JS 保持 jQuery → plugins → functions 順序並完成選單與輪播 smoke test；使用者正在刪除的 113 內容檔完全排除。",
+      "acceptance": [
+        "CSS bundle 只使用 css/kj-plugins.css、kj-style-5.css、kj-custom-admi01-211201.css、kj-custom-admi00-211201.css 中可由 115_KJ_admi_00 現存 HTML 使用的規則，且不保留 sgoods.info CSS 或字型載入。",
+        "所有可貼用的 HTML fragment 都以 kj-admi-00 root wrapper 隔離；不逐一重命名既有 class，避免破壞原本的 markup 與 jQuery selector。",
+        "JS bundle 保留 jQuery → plugins → functions 的明確順序，初始化只鎖定 kj-admi-00 內的選單與輪播元素，並以本機頁面 smoke test 檢查互動。",
+        "不修改或還原 00_04_kj-113_admi_content_與國中部招生共用.html，也不把直接圖片 URL 的資產遷移誤稱為本 task 已完成。"
+      ],
+      "source_refs": [
+        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_admi_00",
+        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/css",
+        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/js"
+      ],
+      "jv32_route": {
+        "workflows": ["task-lifecycle"]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 2026-08-16 指定從 115_KJ_admi_00 開始，將使用到的 CSS 內嵌、建立 JS bundle，並以 kj-admi-00 namespace 隔離 iSchool 衝突。",
+            "evidence_refs": [
+              "Vincent 2026-08-16: 先從 115_KJ_admi_00 資料夾開始，CSS 內嵌、JS bundle、kj-admi-00 class namespace",
+              "Vincent 2026-08-16: 正在刪除 00_04_kj-113_admi_content_與國中部招生共用.html；可以繼續",
+              "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json"
+            ],
+            "recorded_at": "2026-08-16"
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "kj-116-admissions",
+        "goal_ref": "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json#/goals",
+        "goal_fingerprint": "sha256:755d90099a89100f4e1291921b44d4974b54a48fdc4652195fd0510fb9510039",
+        "contribution": "先將招生共用首頁的 CSS／JS 斷鏈風險收斂為有 namespace 的 iSchool 可貼用候選 bundle，為後續圖片資產遷移與平台實測建立可回查基線。",
+        "evidence_plan": [
+          "bundle contract verifier 的 RED/GREEN 結果",
+          "CSS selector namespace 與 sgoods.info 掃描結果",
+          "jQuery → plugins → functions 順序檢查",
+          "選單與輪播本機 smoke test"
+        ],
+        "reviewed_at": "2026-08-16"
+      }
     }
   ]
 }

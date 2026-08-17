@@ -114,6 +114,12 @@
       "alternatives_rejected": ["假設可直接上傳 CSS 或 JS 檔", "未測試 iSchool 就直接覆寫正式頁面"]
     },
     {
+      "topic": "115_KJ_admi_00 先行範圍",
+      "decision": "依 Vincent 2026-08-16 指示，先處理 115_KJ_admi_00 的現存 HTML 與共用 CSS／JS，產出以 kj-admi-00 root namespace 隔離的 iSchool 內嵌 bundle；正在由 Vincent 刪除的 00_04_kj-113_admi_content_與國中部招生共用.html 明確排除，不修改、不還原。",
+      "reason": "招生共用首頁的選單頁直接載入 sgoods.info CSS／JS；先將它的 CSS 與 JS 載入邊界隔離，才能在不具 FTP 權限時進行 iSchool 測試。",
+      "alternatives_rejected": ["把使用者正在整理的舊 113 檔納入本輪", "逐一改寫既有 class 名稱並冒著破壞既有 jQuery selector 的風險"]
+    },
+    {
       "topic": "任務正本邊界",
       "decision": "HMC 只管理本次技術遷移的成果契約與可重跑驗證；KJ 招生活動、狀態與共編進度仍以既有 KJ Notion 行動庫為正本。",
       "reason": "避免技術遷移看板取代或複製校務招生任務的正本。",

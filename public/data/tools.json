@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-18T15:09:16.622Z",
+  "generatedAt": "2026-08-17T15:12:00.020Z",
   "sourceStatus": {
     "skills": "scanned",
     "scripts": {
@@ -9,9 +9,9 @@
     "hooks": "scanned"
   },
   "summary": {
-    "totalSkills": 46,
-    "totalScripts": 113,
-    "totalHooks": 2
+    "totalSkills": 50,
+    "totalScripts": 150,
+    "totalHooks": 3
   },
   "skills": [
     {
@@ -58,20 +58,24 @@
       "id": "build-skill",
       "name": "build-skill",
       "description": "建立或更新 Claude Code skill 的流程（CC 原生，不依賴外部腳本）。當 Vincent 說「建一個新 skill」、「把這個流程做成 skill」、「新增 skill」、「更新 skill」、「做一個 skill」時使用。直接用 Write 建檔，產出 ~/.claude/skills/{name}/。取代舊的 hisenzi-skill-builder（那版依賴 OpenCla",
-      "version": "1.1",
+      "version": "1.2",
       "category": "技能系統",
-      "groups": [],
-      "lastModified": "2026-06-28T06:16:55.634Z",
+      "groups": [
+        "MorroWise"
+      ],
+      "lastModified": "2026-08-12T13:58:42.184Z",
       "changelog": []
     },
     {
       "id": "capture-insight",
       "name": "capture-insight",
       "description": "工作中捕捉洞見、踩坑、關鍵發現。當使用者說「記下來」「這個值得記」「寫下這個發現」「capture」「紀錄洞見」，或對話中出現值得未來寫文章的觀點時使用。",
-      "version": null,
+      "version": "1.1",
       "category": "一般工具",
-      "groups": [],
-      "lastModified": "2026-05-14T06:27:05.705Z",
+      "groups": [
+        "MorroWise"
+      ],
+      "lastModified": "2026-08-12T13:58:42.348Z",
       "changelog": []
     },
     {
@@ -87,33 +91,35 @@
     {
       "id": "cc-log",
       "name": "cc-log",
-      "description": "Use when a Claude Code session is ending, or when the user says /cc-log, session log, or asks to record work. Appends a [CC] summary block to HiSenzi's daily memory file so memory-janitor picks it up ",
-      "version": null,
-      "category": "一般工具",
-      "groups": [],
-      "lastModified": "2026-06-13T16:30:08.407Z",
+      "description": "Use when a Claude Code session is ending, or when the user says /cc-log, session log, or asks to record work. Appends a [CC] summary block to the shared daily raw log; it never auto-promotes L1 or mut",
+      "version": "2.0",
+      "category": "任務管理",
+      "groups": [
+        "MorroWise"
+      ],
+      "lastModified": "2026-08-12T13:58:42.400Z",
       "changelog": []
     },
     {
       "id": "cc-push",
       "name": "cc-push",
       "description": "Use when Vincent says \"cc-push\", \"一起 push\", \"batch push\", \"多個 session 都 commit 完了\", \"檢查哪些可以 push\", \"最後統一 push\", or wants a final push after cc-log/worktree-commit across one or more repos.",
-      "version": "1.0",
+      "version": "2.1",
       "category": "一般工具",
-      "groups": [
-        "MorroWise"
-      ],
-      "lastModified": "2026-07-02T15:50:07.563Z",
+      "groups": [],
+      "lastModified": "2026-07-28T03:29:55.816Z",
       "changelog": []
     },
     {
       "id": "cross-agent-memory",
       "name": "cross-agent-memory",
-      "description": "跨 Agent 記憶同步。當需要確保某個知識點被 HiSenzi 和 Claude Code 都記住時使用。觸發詞：「兩邊都要記住」、「CC 也要知道」、「跨 agent 記憶」、「同步記憶」。",
-      "version": "1.0",
+      "description": "跨 Agent 記憶候選治理。當 Vincent 說「兩邊都要記住」、「CC 也要知道」、「跨 agent 記憶」、「同步記憶」時使用；輸出 agent-neutral、可去重且需核准的 candidate，不建立多份記憶正本。",
+      "version": "2.0",
       "category": "一般工具",
-      "groups": [],
-      "lastModified": "2026-05-30T15:38:37.880Z",
+      "groups": [
+        "MorroWise"
+      ],
+      "lastModified": "2026-08-12T14:00:52.798Z",
       "changelog": []
     },
     {
@@ -143,7 +149,7 @@
       "version": null,
       "category": "一般工具",
       "groups": [],
-      "lastModified": "2026-04-11T06:24:25.541Z",
+      "lastModified": "2026-07-28T03:29:29.736Z",
       "changelog": []
     },
     {
@@ -159,11 +165,11 @@
     {
       "id": "finishing-a-development-branch",
       "name": "finishing-a-development-branch",
-      "description": "Use when implementation is complete, all tests pass, and you need to decide how to integrate the work - guides completion of development work by presenting structured options for merge, PR, or cleanup",
-      "version": null,
-      "category": "除錯驗證",
+      "description": "Use only when Vincent has explicitly approved a Git isolation branch/worktree lifecycle and the implementation is ready for target-main integration, verification, and cleanup.",
+      "version": "2.1",
+      "category": "一般工具",
       "groups": [],
-      "lastModified": "2026-04-11T06:24:25.543Z",
+      "lastModified": "2026-07-28T03:32:46.860Z",
       "changelog": []
     },
     {
@@ -189,13 +195,13 @@
     {
       "id": "git-worktree",
       "name": "git-worktree",
-      "description": "Git Worktree 協作技能。當使用者說「拆分需求」、「平行開發」、「建 worktree」、「智能 commit」、「自動 PR」、「subagent 派工」時使用。支援三個 command：worktree-plan（需求拆分+建工作區+subagent 派工）、worktree-commit（智能拆分 commit）、worktree-pr（自動生成 PR）。",
-      "version": "1.1",
+      "description": "Use when Vincent explicitly requests a branch/worktree plan, parallel worktree execution, or cleanup of an approved linked worktree",
+      "version": "2.1",
       "category": "版本控制",
       "groups": [
         "Commit gate"
       ],
-      "lastModified": "2026-05-30T15:30:22.547Z",
+      "lastModified": "2026-07-28T03:29:56.039Z",
       "changelog": []
     },
     {
@@ -230,23 +236,25 @@
       "id": "heptabase-task-cards",
       "name": "heptabase-task-cards",
       "description": "| 把專案 tasks 寫到 Heptabase 白板。當使用者說「寫到 Heptabase」、「建卡到白板」、「task 寫到 Heptabase」、「同步 task 到 Heptabase」、「每個 task 建一張卡」時使用。 讀取 MC milestones 的 tasks.json，為每個 task 建立一張 Heptabase note card，含完整細節。",
-      "version": "1.5",
+      "version": "1.6",
       "category": "同步",
       "groups": [
         "MorroWise",
         "視覺層同步"
       ],
-      "lastModified": "2026-06-28T06:16:55.634Z",
+      "lastModified": "2026-08-10T07:21:25.284Z",
       "changelog": []
     },
     {
       "id": "hisenzi-skill-builder",
       "name": "hisenzi-skill-builder",
       "description": "HiSenzi 自製 Skill 建立流程。當 Vincent 說「幫我做一個新 skill」、「把這個流程做成 skill」、「建立 skill」、「新增 skill」時使用。覆蓋系統內建 skill-creator，套用 Vincent 的版本控制、dist/ 歸檔與命名規範。",
-      "version": "1.3",
+      "version": "1.4",
       "category": "技能系統",
-      "groups": [],
-      "lastModified": "2026-06-28T06:16:55.635Z",
+      "groups": [
+        "MorroWise"
+      ],
+      "lastModified": "2026-08-12T13:58:42.242Z",
       "changelog": []
     },
     {
@@ -270,6 +278,40 @@
       "changelog": []
     },
     {
+      "id": "maxmodel-case-page",
+      "name": "maxmodel-case-page",
+      "description": "Maxmodel／展創模型成功案例頁面產出。當 Vincent 說「做 Maxmodel 案例」、「產出 Maxmodel HTML」、「建立成功案例頁面」、「新增 YouTube 影片」或提供展創模型案例資料夾時使用；與 JPmodel 的 Polo／txt 流程不同，使用 Maxmodel 的 docx、02.1920_1080、03.1600、04.720_540 結構。",
+      "version": "1.0",
+      "category": "一般工具",
+      "groups": [],
+      "lastModified": "2026-08-12T01:48:54.989Z",
+      "changelog": []
+    },
+    {
+      "id": "morrowise-second-brain-capture",
+      "name": "morrowise-second-brain-capture",
+      "description": "Use when Vincent asks「第二大腦知識庫收錄」、「整理成第二大腦」、「收進 Obsidian 知識庫」、「模擬線有沒有接上」，或提供來源路徑並要求未來 Agent 可查找、引用或運用。",
+      "version": "1.1",
+      "category": "MorroWise",
+      "groups": [
+        "MorroWise"
+      ],
+      "lastModified": "2026-07-28T03:27:06.567Z",
+      "changelog": []
+    },
+    {
+      "id": "multi-machine-repo-coordination",
+      "name": "multi-machine-repo-coordination",
+      "description": "Use when a session is about to modify or close out a Git repo shared across Vincent's supported environments or concurrent Agent sessions.",
+      "version": null,
+      "category": "一般工具",
+      "groups": [
+        "MorroWise"
+      ],
+      "lastModified": "2026-08-14T02:59:50.731Z",
+      "changelog": []
+    },
+    {
       "id": "nextjs-gh-pages",
       "name": "nextjs-gh-pages",
       "description": "Next.js 專案部署到 GitHub Pages 的標準化流程。當 Vincent 說「部署到 GitHub Pages」、「上線靜態站」、「加 GitHub Pages」時使用。涵蓋 static export 設定、資料打包、GitHub Actions CI、驗證的完整 pipeline。",
@@ -282,11 +324,11 @@
     {
       "id": "notyet-article",
       "name": "notyet-article",
-      "description": "notyet.md 文章生產器（引擎＋可插拔風格）。當 Vincent 說「寫一篇 notyet 文」、「notyet 文章」、「用 XX 風格寫 notyet」、「把這個經驗寫成 notyet 文」時使用。引擎是通用 9 步流程，風格放 styles/ 可陸續增加。姊妹 skill：blog-writer（hisenzi.com 用）；notyet 調性更 raw、允許未完成。",
-      "version": "1.2",
-      "category": "技能系統",
+      "description": "Use when Vincent asks to write, revise, translate, or publish a notyet.md article, including requests for a specific style or a bilingual zh/en version.",
+      "version": "1.5",
+      "category": "內容寫作",
       "groups": [],
-      "lastModified": "2026-06-08T02:14:11.562Z",
+      "lastModified": "2026-08-01T06:40:35.301Z",
       "changelog": [
         {
           "version": "1.2",
@@ -316,15 +358,15 @@
     {
       "id": "project-init",
       "name": "project-init",
-      "description": "| 開案自動化。當 Vincent 說「開案」、「新增專案」、「開一個新案子」、「開一個新專案」，或需要 create/init a new project 時使用此 skill。 自動建立專案目錄、JSON 模板、填寫 goals/risks/success_criteria、同步 Obsidian，並 rebuild MC 儀表板。",
-      "version": "3.10",
+      "description": "| 開案自動化。當 Vincent 說「開案」、「新增專案」、「開一個新案子」、「開一個新專案」，或需要 create/init a new project 時使用此 skill。 預設使用 quick，以最小資料建立 README、canonical JSON、MVP tasks、formalize checkpoint 與專案拓樸；完整治理留待 MVP 測試後 formalize。",
+      "version": "3.16",
       "category": "任務管理",
       "groups": [
         "MorroWise",
         "驗收規範",
         "視覺層同步"
       ],
-      "lastModified": "2026-06-28T06:16:55.636Z",
+      "lastModified": "2026-08-17T12:00:42.989Z",
       "changelog": []
     },
     {
@@ -376,13 +418,13 @@
       "id": "review",
       "name": "review",
       "description": "Use when checking whether completed work, a spec, UI, task, workflow, or MorroWise loop actually meets its original success criteria before claiming it is done",
-      "version": "1.0",
+      "version": "1.1",
       "category": "品質驗收",
       "groups": [
         "MorroWise",
         "驗收規範"
       ],
-      "lastModified": "2026-06-28T06:16:55.636Z",
+      "lastModified": "2026-08-01T12:09:33.238Z",
       "changelog": [
         {
           "version": "1.0",
@@ -420,7 +462,7 @@
       "version": null,
       "category": "任務管理",
       "groups": [],
-      "lastModified": "2026-04-11T06:24:25.550Z",
+      "lastModified": "2026-07-28T03:27:06.572Z",
       "changelog": []
     },
     {
@@ -431,6 +473,16 @@
       "category": "任務管理",
       "groups": [],
       "lastModified": "2026-05-30T15:38:37.904Z",
+      "changelog": []
+    },
+    {
+      "id": "sync-mc",
+      "name": "sync-mc",
+      "description": "當 Vincent 說「同步 MC」、「更新 MC 儀表板」、「重建 MC 資料」，或 project.json／tasks.json 變更後需要讓指定專案出現在 MC 時使用。",
+      "version": "1.0",
+      "category": "同步",
+      "groups": [],
+      "lastModified": "2026-08-17T13:32:10.748Z",
       "changelog": []
     },
     {
@@ -466,13 +518,13 @@
     {
       "id": "using-git-worktrees",
       "name": "using-git-worktrees",
-      "description": "Use when starting feature work that needs isolation from current workspace or before executing implementation plans - creates isolated git worktrees with smart directory selection and safety verificat",
-      "version": null,
+      "description": "Use when Vincent has explicitly approved creating or switching a linked Git worktree for a named repo and task",
+      "version": "2.1",
       "category": "版本控制",
       "groups": [
         "Commit gate"
       ],
-      "lastModified": "2026-04-11T06:24:25.587Z",
+      "lastModified": "2026-07-28T03:29:55.924Z",
       "changelog": []
     },
     {
@@ -508,15 +560,14 @@
     {
       "id": "worktree-commit",
       "name": "worktree-commit",
-      "description": "| Git commit 防呆流程。當要 commit 時使用此 skill。 掃描 → diff → 分組 → message → 10 天自驗 → 檢查 → 確認 → commit → task 狀態紀錄 → push + 部署。 commit repo 是 harness-mc 時直接回填 tasks.json + rebuild；跨 repo 時只寫 task event outbox，避",
-      "version": "1.8",
+      "description": "Use when preparing or executing one or more Git commits after Vincent asks to commit or invokes worktree-commit",
+      "version": "2.5",
       "category": "版本控制",
       "groups": [
         "MorroWise",
-        "視覺層同步",
         "Commit gate"
       ],
-      "lastModified": "2026-07-04T17:44:51.912Z",
+      "lastModified": "2026-08-01T09:02:13.340Z",
       "changelog": []
     },
     {
@@ -552,6 +603,12 @@
   ],
   "scripts": [
     {
+      "name": "account-login-sync-start.mjs",
+      "description": ", \"\") : currentBranch.stdout;",
+      "location": "harness-mc",
+      "lastModified": "2026-08-06T07:19:45.843Z"
+    },
+    {
       "name": "analyze_projects.py",
       "description": "",
       "location": "000_Agent",
@@ -561,7 +618,7 @@
       "name": "apply-task-events.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-15T07:09:55.459Z"
+      "lastModified": "2026-08-14T02:49:45.318Z"
     },
     {
       "name": "backfill-skill-frontmatter-versions.mjs",
@@ -597,7 +654,19 @@
       "name": "check-adr-backlinks.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-21T03:43:02.913Z"
+      "lastModified": "2026-08-03T02:44:48.288Z"
+    },
+    {
+      "name": "collab_root.py",
+      "description": "",
+      "location": "000_Agent",
+      "lastModified": "2026-07-22T14:47:53.219Z"
+    },
+    {
+      "name": "collab-root.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-07-21T14:03:20.920Z"
     },
     {
       "name": "gd_mirror.sh",
@@ -621,13 +690,13 @@
       "name": "generate-closeout-residual-ledger.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-27T10:02:23.321Z"
+      "lastModified": "2026-08-03T02:42:50.383Z"
     },
     {
       "name": "generate-commit-attention.mjs",
-      "description": ");",
+      "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-24T01:22:48.653Z"
+      "lastModified": "2026-08-03T02:42:15.545Z"
     },
     {
       "name": "generate-commit-cleanup-plan.mjs",
@@ -645,13 +714,13 @@
       "name": "generate-data.mjs",
       "description": "lastModified 取「最後 commit 該專案的時間」而非檔案 mtime——",
       "location": "harness-mc",
-      "lastModified": "2026-06-28T07:51:09.359Z"
+      "lastModified": "2026-08-17T10:48:51.550Z"
     },
     {
       "name": "generate-morrowise-auditor.mjs",
       "description": "MorroWise auditor generator v0 (morrowise/morrowise-auditor-fixtures, MW-AUDITOR-02).",
       "location": "harness-mc",
-      "lastModified": "2026-07-05T23:00:50.464Z"
+      "lastModified": "2026-08-12T13:38:36.211Z"
     },
     {
       "name": "generate-morrowise-capabilities.mjs",
@@ -663,7 +732,7 @@
       "name": "generate-morrowise-dev-workflows.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-07-08T12:44:06.478Z"
+      "lastModified": "2026-08-01T09:02:13.153Z"
     },
     {
       "name": "generate-morrowise-live-dashboard.mjs",
@@ -675,7 +744,7 @@
       "name": "generate-morrowise-proactive-loop.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-20T16:12:56.794Z"
+      "lastModified": "2026-08-03T09:28:55.516Z"
     },
     {
       "name": "generate-morrowise-system.mjs",
@@ -717,13 +786,13 @@
       "name": "generate-visual-sync-coverage.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-27T15:54:09.016Z"
+      "lastModified": "2026-08-03T02:41:11.551Z"
     },
     {
       "name": "generate-worktree-status.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-17T03:47:14.952Z"
+      "lastModified": "2026-07-22T14:48:41.206Z"
     },
     {
       "name": "heptabase-card-to-notion-page.py",
@@ -753,13 +822,31 @@
       "name": "mba3-move.sh",
       "description": "mba3-move.sh — MBA-3 出國環境搬運（pack: MBA-1→SSD ／ restore: SSD→MBA-3）",
       "location": "000_Agent",
-      "lastModified": "2026-07-11T07:19:52.875Z"
+      "lastModified": "2026-08-12T14:05:52.886Z"
+    },
+    {
+      "name": "milestone-project-index.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-08-03T02:35:06.809Z"
     },
     {
       "name": "morrowise-action-runner.mjs",
-      "description": "",
+      "description": ".test(source.ref)) {",
       "location": "harness-mc",
-      "lastModified": "2026-06-20T16:05:06.833Z"
+      "lastModified": "2026-08-12T13:56:06.541Z"
+    },
+    {
+      "name": "morrowise-memory-promotion-adapter.mjs",
+      "description": ".test(ref);",
+      "location": "harness-mc",
+      "lastModified": "2026-08-12T13:55:56.486Z"
+    },
+    {
+      "name": "morrowise-phase3-jv37-admission.mjs",
+      "description": "This executable owns only the JV-37 receipt seam, not full P3 admission.",
+      "location": "harness-mc",
+      "lastModified": "2026-08-12T15:14:22.271Z"
     },
     {
       "name": "multi_project_backup_v4.sh",
@@ -771,7 +858,7 @@
       "name": "new-project.py",
       "description": "── Standalone repo 建立 ──────────────────────────────────────────────────",
       "location": "harness-mc",
-      "lastModified": "2026-05-19T13:03:37.127Z"
+      "lastModified": "2026-08-17T11:58:35.238Z"
     },
     {
       "name": "notification-outbox.mjs",
@@ -786,6 +873,24 @@
       "lastModified": "2026-04-22T14:08:03.714Z"
     },
     {
+      "name": "project-topology-health.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-07-22T14:48:41.206Z"
+    },
+    {
+      "name": "project-write-admission.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-08-02T11:18:07.842Z"
+    },
+    {
+      "name": "project-write-hook.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-08-02T11:05:24.924Z"
+    },
+    {
       "name": "pulse-proposal-queue.mjs",
       "description": "Pulse proposal queue (JV-08, morrowise/system-pulse-feedback-loop).",
       "location": "harness-mc",
@@ -798,6 +903,12 @@
       "lastModified": "2026-07-02T16:29:43.676Z"
     },
     {
+      "name": "repo-coordination-runtime.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-08-14T02:49:29.487Z"
+    },
+    {
       "name": "run-system-pulse.mjs",
       "description": "JV-08: 失敗 → proposal 佇列；每輪都跑（healthy 時做 TTL sweep + read model 重生成）",
       "location": "harness-mc",
@@ -807,7 +918,7 @@
       "name": "sentinel-diff.mjs",
       "description": "sentinel-diff.mjs — MC 哨兵：milestones 變化偵測（sn-2）",
       "location": "harness-mc",
-      "lastModified": "2026-07-05T22:45:05.941Z"
+      "lastModified": "2026-08-03T02:45:25.363Z"
     },
     {
       "name": "sentinel-notion.mjs",
@@ -822,6 +933,12 @@
       "lastModified": "2026-04-22T14:08:03.717Z"
     },
     {
+      "name": "sync-architecture-atlas.py",
+      "description": "",
+      "location": "000_Agent",
+      "lastModified": "2026-07-22T14:47:53.219Z"
+    },
+    {
       "name": "sync-architecture-current-state.py",
       "description": "",
       "location": "000_Agent",
@@ -831,7 +948,7 @@
       "name": "sync-architecture-subsystems.py",
       "description": "",
       "location": "000_Agent",
-      "lastModified": "2026-07-07T04:10:01.811Z"
+      "lastModified": "2026-07-22T14:47:53.220Z"
     },
     {
       "name": "sync-cc-claude.sh",
@@ -843,7 +960,7 @@
       "name": "sync-event-queue.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-27T13:01:23.798Z"
+      "lastModified": "2026-08-12T15:13:02.850Z"
     },
     {
       "name": "sync-morrowise-manual.py",
@@ -855,7 +972,7 @@
       "name": "sync-notion-courses.mjs",
       "description": "www.notion.so/my-integrations → 建立 integration",
       "location": "harness-mc",
-      "lastModified": "2026-05-20T16:00:28.471Z"
+      "lastModified": "2026-07-28T03:24:26.205Z"
     },
     {
       "name": "sync-obsidian-canvas.mjs",
@@ -873,13 +990,13 @@
       "name": "task-event-outbox.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-15T01:18:56.551Z"
+      "lastModified": "2026-08-14T02:49:45.274Z"
     },
     {
       "name": "task-state.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-15T07:03:42.004Z"
+      "lastModified": "2026-08-12T13:21:45.113Z"
     },
     {
       "name": "update-skills-index.py",
@@ -895,21 +1012,39 @@
     },
     {
       "name": "validate-tasks.mjs",
+      "description": "Invalid files are reported by the main validation pass.",
+      "location": "harness-mc",
+      "lastModified": "2026-08-17T12:04:23.129Z"
+    },
+    {
+      "name": "verify-account-login-sync-start.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-07-18T15:06:58.013Z"
+      "lastModified": "2026-08-06T07:22:07.838Z"
     },
     {
       "name": "verify-apply-task-events.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-15T07:09:39.774Z"
+      "lastModified": "2026-08-14T03:01:04.747Z"
+    },
+    {
+      "name": "verify-architecture-atlas.py",
+      "description": "",
+      "location": "000_Agent",
+      "lastModified": "2026-07-22T14:47:53.220Z"
+    },
+    {
+      "name": "verify-architecture-subsystems-fresh-worktree.mjs",
+      "description": ", \"this regression test must run from a nested fresh worktree\");",
+      "location": "harness-mc",
+      "lastModified": "2026-07-21T14:03:20.922Z"
     },
     {
       "name": "verify-architecture-subsystems.mjs",
       "description": ",",
       "location": "harness-mc",
-      "lastModified": "2026-07-07T04:35:56.269Z"
+      "lastModified": "2026-07-22T14:48:41.207Z"
     },
     {
       "name": "verify-capability-drift.mjs",
@@ -942,6 +1077,24 @@
       "lastModified": "2026-07-05T22:46:06.612Z"
     },
     {
+      "name": "verify-direct-main-workflow-policy.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-08-01T09:11:33.013Z"
+    },
+    {
+      "name": "verify-explicit-git-isolation-approval.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-07-28T03:29:55.464Z"
+    },
+    {
+      "name": "verify-future-practice-domain-tracking.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-08-03T02:35:41.309Z"
+    },
+    {
       "name": "verify-generate-morrowise-auditor.mjs",
       "description": "1. Fixture runs: strict category assertions — fixtures are synthetic, so exact",
       "location": "harness-mc",
@@ -954,22 +1107,28 @@
       "lastModified": "2026-06-28T02:27:50.342Z"
     },
     {
+      "name": "verify-grouped-nested-milestones.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-08-03T03:00:06.484Z"
+    },
+    {
       "name": "verify-hc-framing-gate.mjs",
       "description": "版本用數值下限比較（HC gate 引入版），不用 exact pin——skill 例行升版不應弄壞本 verifier",
       "location": "harness-mc",
-      "lastModified": "2026-07-05T15:07:37.030Z"
+      "lastModified": "2026-07-21T14:03:20.923Z"
     },
     {
       "name": "verify-kj-handoff-live-sync.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-07-02T16:00:51.633Z"
+      "lastModified": "2026-07-21T14:03:20.923Z"
     },
     {
       "name": "verify-kj-mirror-reconcile.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-07-02T16:29:43.766Z"
+      "lastModified": "2026-07-21T14:03:20.924Z"
     },
     {
       "name": "verify-kj-notion-read-model.mjs",
@@ -978,22 +1137,40 @@
       "lastModified": "2026-07-01T16:09:00.532Z"
     },
     {
+      "name": "verify-mba3-move-restore-guard.mjs",
+      "description": "",
+      "location": "000_Agent",
+      "lastModified": "2026-08-12T14:05:52.921Z"
+    },
+    {
       "name": "verify-morrowise-action-runner.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-20T16:05:28.253Z"
+      "lastModified": "2026-08-01T12:07:07.661Z"
     },
     {
       "name": "verify-morrowise-approval-policy.mjs",
       "description": ".test(sharedText), \"shared approval policy must not hard-code local user paths\");",
       "location": "harness-mc",
-      "lastModified": "2026-06-21T00:20:04.178Z"
+      "lastModified": "2026-07-28T02:07:26.907Z"
+    },
+    {
+      "name": "verify-morrowise-architecture-atlas.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-07-22T14:48:41.207Z"
+    },
+    {
+      "name": "verify-morrowise-auditor-isolated.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-07-21T15:07:34.475Z"
     },
     {
       "name": "verify-morrowise-auditor-schema.mjs",
       "description": ", `${target.target_id}: target_path must use $COLLAB`);",
       "location": "harness-mc",
-      "lastModified": "2026-06-27T12:15:15.250Z"
+      "lastModified": "2026-07-21T14:03:20.924Z"
     },
     {
       "name": "verify-morrowise-capability-registry.mjs",
@@ -1023,7 +1200,7 @@
       "name": "verify-morrowise-dev-workflow-catalog.mjs",
       "description": ",",
       "location": "harness-mc",
-      "lastModified": "2026-07-18T15:08:35.154Z"
+      "lastModified": "2026-08-01T12:11:47.739Z"
     },
     {
       "name": "verify-morrowise-live-dashboard-data.mjs",
@@ -1056,16 +1233,34 @@
       "lastModified": "2026-07-07T01:15:45.399Z"
     },
     {
+      "name": "verify-morrowise-operating-map.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-07-25T09:18:53.961Z"
+    },
+    {
+      "name": "verify-morrowise-phase3-jv37-admission.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-08-14T02:56:20.594Z"
+    },
+    {
       "name": "verify-morrowise-proactive-loop.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-20T16:20:20.345Z"
+      "lastModified": "2026-08-03T09:27:34.589Z"
     },
     {
       "name": "verify-morrowise-product-promotions.mjs",
       "description": "i,",
       "location": "harness-mc",
       "lastModified": "2026-07-07T03:12:08.095Z"
+    },
+    {
+      "name": "verify-morrowise-project-topology.mjs",
+      "description": "hisenzi.local/schemas/morrowise-project-topology.schema.json\");",
+      "location": "harness-mc",
+      "lastModified": "2026-07-22T14:48:41.207Z"
     },
     {
       "name": "verify-morrowise-read-model-card.mjs",
@@ -1083,7 +1278,7 @@
       "name": "verify-morrowise-recommendations.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-20T15:43:08.210Z"
+      "lastModified": "2026-08-01T12:07:53.725Z"
     },
     {
       "name": "verify-morrowise-system-json.mjs",
@@ -1110,6 +1305,12 @@
       "lastModified": "2026-07-03T04:32:06.627Z"
     },
     {
+      "name": "verify-multi-machine-repo-coordination-gate.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-08-17T11:56:00.497Z"
+    },
+    {
       "name": "verify-notification-outbox-contract.mjs",
       "description": "",
       "location": "harness-mc",
@@ -1122,10 +1323,70 @@
       "lastModified": "2026-07-03T04:28:10.620Z"
     },
     {
+      "name": "verify-notyet-md-task-normalization.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-07-28T03:24:26.193Z"
+    },
+    {
       "name": "verify-pai-domain-taxonomy.mjs",
       "description": "provisional_project_domains：他方 session in-flight（本機存在、尚未 commit）的專案 mapping。",
       "location": "harness-mc",
       "lastModified": "2026-07-06T08:04:19.748Z"
+    },
+    {
+      "name": "verify-project-init-admission.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-08-14T15:38:51.573Z"
+    },
+    {
+      "name": "verify-project-init-formalize.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-08-17T11:55:30.708Z"
+    },
+    {
+      "name": "verify-project-init-quick.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-08-17T10:51:46.021Z"
+    },
+    {
+      "name": "verify-project-init-v1.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-08-17T10:47:31.246Z"
+    },
+    {
+      "name": "verify-project-local-worktree.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-07-22T14:48:41.207Z"
+    },
+    {
+      "name": "verify-project-local-worktree.py",
+      "description": "",
+      "location": "000_Agent",
+      "lastModified": "2026-07-22T14:47:53.220Z"
+    },
+    {
+      "name": "verify-project-topology-contract.py",
+      "description": "",
+      "location": "000_Agent",
+      "lastModified": "2026-08-02T11:13:01.681Z"
+    },
+    {
+      "name": "verify-project-topology-maintenance.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-07-22T14:48:41.207Z"
+    },
+    {
+      "name": "verify-project-write-admission.mjs",
+      "description": "",
+      "location": "harness-mc",
+      "lastModified": "2026-08-02T11:20:29.635Z"
     },
     {
       "name": "verify-projects-filter.mjs",
@@ -1143,13 +1404,19 @@
       "name": "verify-required-publish-flow.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-21T16:37:32.876Z"
+      "lastModified": "2026-07-21T14:03:20.925Z"
     },
     {
       "name": "verify-schedule-health.mjs",
       "description": "",
       "location": "harness-mc",
       "lastModified": "2026-07-04T17:37:08.377Z"
+    },
+    {
+      "name": "verify-shared-memory-governance-v2.mjs",
+      "description": ");",
+      "location": "harness-mc",
+      "lastModified": "2026-08-12T13:56:21.554Z"
     },
     {
       "name": "verify-skill-version-backfill.mjs",
@@ -1161,7 +1428,13 @@
       "name": "verify-sync-event-queue.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-27T13:01:23.872Z"
+      "lastModified": "2026-08-01T11:46:43.319Z"
+    },
+    {
+      "name": "verify-sync-notion-course-ids.mjs",
+      "description": "app.notion.com/${id.replaceAll(\"-\", \"\")}`,",
+      "location": "harness-mc",
+      "lastModified": "2026-07-28T03:24:26.205Z"
     },
     {
       "name": "verify-system-pulse.mjs",
@@ -1179,7 +1452,7 @@
       "name": "verify-task-event-outbox.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-06-15T01:18:32.345Z"
+      "lastModified": "2026-08-14T03:00:48.514Z"
     },
     {
       "name": "verify-task-state-merge.mjs",
@@ -1197,7 +1470,7 @@
       "name": "verify-validate-tasks.mjs",
       "description": "",
       "location": "harness-mc",
-      "lastModified": "2026-07-18T15:07:11.187Z"
+      "lastModified": "2026-08-17T12:03:59.730Z"
     },
     {
       "name": "verify-verifier-suite-health.mjs",
@@ -1215,7 +1488,7 @@
       "name": "verify-work-anchor-preflight.mjs",
       "description": "JV-17 事件點 gate：dispatch 缺三件套 → blocked，缺件逐項點名",
       "location": "harness-mc",
-      "lastModified": "2026-07-05T22:49:45.500Z"
+      "lastModified": "2026-08-17T10:54:26.949Z"
     },
     {
       "name": "verify-worktree-commit-race-governance.mjs",
@@ -1227,10 +1500,17 @@
       "name": "work-anchor-preflight.mjs",
       "description": "JV-17 事件點 gate（morrowise/dispatch-gate-extension）。",
       "location": "harness-mc",
-      "lastModified": "2026-07-05T22:49:31.427Z"
+      "lastModified": "2026-08-17T10:54:42.187Z"
     }
   ],
   "hooks": [
+    {
+      "event": "PreToolUse",
+      "matcher": "Edit|Write|apply_patch",
+      "type": "command",
+      "command": "node $COLLAB/harness-mc/scripts/project-write-hook.mjs",
+      "statusMessage": "Checking canonical project destination..."
+    },
     {
       "event": "PostToolUse",
       "matcher": "Edit|Write",
@@ -1248,144 +1528,149 @@
   ],
   "recentChanges": [
     {
-      "date": "2026-07-10",
-      "message": "fix(migration): harden MBA-3 restore safety",
+      "date": "2026-08-17",
+      "message": "feat(project-init): define quick and formalize workflow",
       "repo": "notyet-harness",
       "files": [
-        "000_Agent/scripts/mba3-move.sh"
+        "000_Agent/skills/project-init/SKILL.md",
+        "000_Agent/skills/project-init/references/rules.md",
+        "000_Agent/skills/project-init/references/sop.md",
+        "000_Agent/skills/sync-mc/SKILL.md",
+        "000_Agent/skills/sync-mc/scripts/verify-mc-project.mjs"
       ]
     },
     {
-      "date": "2026-07-10",
-      "message": "docs(skills): add architecture triage rules",
+      "date": "2026-08-17",
+      "message": "fix(task-events): preserve coordination on replay",
+      "repo": "harness-mc",
+      "files": [
+        "scripts/sync-event-queue.mjs",
+        "scripts/task-state.mjs"
+      ]
+    },
+    {
+      "date": "2026-08-17",
+      "message": "fix(morrowise): enforce fresh proactive loop anchors",
+      "repo": "harness-mc",
+      "files": [
+        "scripts/generate-morrowise-proactive-loop.mjs",
+        "scripts/verify-morrowise-proactive-loop.mjs"
+      ]
+    },
+    {
+      "date": "2026-08-17",
+      "message": "feat(project-init): add quick and formalize workflows",
+      "repo": "harness-mc",
+      "files": [
+        "scripts/generate-data.mjs",
+        "scripts/new-project.py",
+        "scripts/validate-tasks.mjs",
+        "scripts/verify-project-init-formalize.mjs",
+        "scripts/verify-project-init-quick.mjs"
+      ]
+    },
+    {
+      "date": "2026-08-17",
+      "message": "fix(jv37): normalize Unicode Git status paths",
+      "repo": "harness-mc",
+      "files": [
+        "scripts/lib/repo-coordination-runtime.mjs",
+        "scripts/verify-multi-machine-repo-coordination-gate.mjs"
+      ]
+    },
+    {
+      "date": "2026-08-15",
+      "message": "feat(memory): establish shared memory governance v2",
       "repo": "notyet-harness",
       "files": [
-        "000_Agent/skills/promote-to-architecture/SKILL.md",
+        "000_Agent/skills/build-skill/SKILL.md",
+        "000_Agent/skills/build-skill/references/rules.md",
+        "000_Agent/skills/capture-insight/SKILL.md",
+        "000_Agent/skills/cc-log/SKILL.md",
+        "000_Agent/skills/cross-agent-memory/SKILL.md"
+      ]
+    },
+    {
+      "date": "2026-08-15",
+      "message": "feat(morrowise): add governed memory promotion",
+      "repo": "harness-mc",
+      "files": [
+        "scripts/fixtures/shared-memory-governance-v2/approved.json",
+        "scripts/fixtures/shared-memory-governance-v2/duplicate.json",
+        "scripts/fixtures/shared-memory-governance-v2/machine-local.json",
+        "scripts/fixtures/shared-memory-governance-v2/raw-rollout.json",
+        "scripts/fixtures/shared-memory-governance-v2/rejected.json"
+      ]
+    },
+    {
+      "date": "2026-08-15",
+      "message": "feat(project-init): govern existing repository linkage and memory guidance",
+      "repo": "harness-mc",
+      "files": [
+        "scripts/new-project.py",
+        "scripts/verify-project-init-admission.mjs"
+      ]
+    },
+    {
+      "date": "2026-08-14",
+      "message": "docs(jv37): hand off device-independent coordination",
+      "repo": "notyet-harness",
+      "files": [
+        "000_Agent/skills/multi-machine-repo-coordination/SKILL.md",
+        "000_Agent/skills/multi-machine-repo-coordination/tests/verify-skill.mjs"
+      ]
+    },
+    {
+      "date": "2026-08-14",
+      "message": "fix(jv37): allow scope-owned repo-ready dirt",
+      "repo": "harness-mc",
+      "files": [
+        "scripts/lib/repo-coordination-runtime.mjs",
+        "scripts/verify-multi-machine-repo-coordination-gate.mjs"
+      ]
+    },
+    {
+      "date": "2026-08-14",
+      "message": "feat(jv37): make coordination device-independent",
+      "repo": "harness-mc",
+      "files": [
+        "scripts/apply-task-events.mjs",
+        "scripts/lib/jv37-admission.mjs",
+        "scripts/lib/repo-coordination-runtime.mjs",
+        "scripts/morrowise-phase3-jv37-admission.mjs",
+        "scripts/repo-coordination-runtime.mjs"
+      ]
+    },
+    {
+      "date": "2026-08-12",
+      "message": "docs(planning): require canonical order labels",
+      "repo": "notyet-harness",
+      "files": [
         "000_Agent/skills/vincent-superpowers/02-planning/SKILL.md"
       ]
     },
     {
-      "date": "2026-07-10",
-      "message": "docs(mba3): add targeted migration setup",
+      "date": "2026-08-12",
+      "message": "docs(heptabase): route Codex sandbox recovery",
       "repo": "notyet-harness",
       "files": [
-        "000_Agent/scripts/mba3-move.sh"
+        "000_Agent/skills/heptabase-task-cards/SKILL.md"
       ]
     },
     {
-      "date": "2026-07-09",
-      "message": "docs(morrowise): resolve Playwright capability as legacy",
+      "date": "2026-08-12",
+      "message": "fix(pages): prefer latest deployment",
       "repo": "harness-mc",
       "files": [
-        "scripts/generate-capability-runtime-status.mjs",
-        "scripts/generate-morrowise-capabilities.mjs",
-        "scripts/verify-capability-runtime-status.mjs",
-        "scripts/verify-morrowise-capability-registry.mjs"
+        "scripts/verify-validate-tasks.mjs"
       ]
     },
     {
-      "date": "2026-07-08",
-      "message": "docs(skills): add Formspark n8n autoresponder workflow",
-      "repo": "notyet-harness",
-      "files": [
-        "000_Agent/skills/SKILLS-INDEX.md",
-        "000_Agent/skills/formspark-n8n-autoreply/SKILL.md"
-      ]
-    },
-    {
-      "date": "2026-07-08",
-      "message": "feat(morrowise): add JV-32 closeout routing",
+      "date": "2026-08-12",
+      "message": "feat(morrowise): add JV-49 R1 memory baseline",
       "repo": "harness-mc",
       "files": [
-        "scripts/verify-morrowise-dev-workflow-catalog.mjs"
-      ]
-    },
-    {
-      "date": "2026-07-08",
-      "message": "chore(morrowise): record JV-32 completion",
-      "repo": "harness-mc",
-      "files": [
-        "scripts/verify-morrowise-dev-workflow-catalog.mjs"
-      ]
-    },
-    {
-      "date": "2026-07-08",
-      "message": "feat(morrowise): add JV-32 workflow catalog gate",
-      "repo": "harness-mc",
-      "files": [
-        "scripts/generate-morrowise-dev-workflows.mjs",
-        "scripts/generate-morrowise-live-dashboard.mjs",
-        "scripts/verify-morrowise-dev-workflow-catalog.mjs",
-        "scripts/verify-morrowise-live-dashboard-data.mjs"
-      ]
-    },
-    {
-      "date": "2026-07-07",
-      "message": "docs(architecture): sync MorroWise subsystem index",
-      "repo": "notyet-harness",
-      "files": [
-        "000_Agent/scripts/sync-architecture-subsystems.py"
-      ]
-    },
-    {
-      "date": "2026-07-07",
-      "message": "feat(skills): add Joomla article extraction skill",
-      "repo": "notyet-harness",
-      "files": [
-        "000_Agent/skills/SKILLS-INDEX.md",
-        "000_Agent/skills/extract-joomla-articles/SKILL.md",
-        "000_Agent/skills/extract-joomla-articles/scripts/extract_joomla_articles.py"
-      ]
-    },
-    {
-      "date": "2026-07-07",
-      "message": "docs(agent): add MorroWise promotion skills and catch-up runbook",
-      "repo": "notyet-harness",
-      "files": [
-        "000_Agent/skills/SKILLS-INDEX.md",
-        "000_Agent/skills/promote-to-architecture/SKILL.md",
-        "000_Agent/skills/promote-to-morrowise-product/SKILL.md"
-      ]
-    },
-    {
-      "date": "2026-07-07",
-      "message": "feat(morrowise): add architecture subsystem admission gate",
-      "repo": "harness-mc",
-      "files": [
-        "scripts/pulse-proposal-queue.mjs",
-        "scripts/run-system-pulse.mjs",
-        "scripts/validate-tasks.mjs",
-        "scripts/verify-architecture-subsystems.mjs",
-        "scripts/verify-pulse-proposal-queue.mjs"
-      ]
-    },
-    {
-      "date": "2026-07-07",
-      "message": "feat(morrowise): add secure notifier and governance gates",
-      "repo": "harness-mc",
-      "files": [
-        "scripts/notification-outbox.mjs",
-        "scripts/verify-morrowise-notifier-source.mjs",
-        "scripts/verify-morrowise-product-promotions.mjs",
-        "scripts/verify-notification-outbox-contract.mjs"
-      ]
-    },
-    {
-      "date": "2026-07-06",
-      "message": "feat(morrowise): JV-19 capability observed scan + declared/observed drift",
-      "repo": "harness-mc",
-      "files": [
-        "scripts/capability-observed-lib.mjs",
-        "scripts/generate-capability-observed.mjs",
-        "scripts/verify-capability-drift.mjs"
-      ]
-    },
-    {
-      "date": "2026-07-06",
-      "message": "fix(registry): PAI taxonomy 加 provisional 區，修 CI/本機可見性不對稱",
-      "repo": "harness-mc",
-      "files": [
-        "scripts/verify-pai-domain-taxonomy.mjs"
+        "scripts/verify-shared-memory-governance-v2.mjs"
       ]
     }
   ]

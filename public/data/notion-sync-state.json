@@ -1,6 +1,6 @@
 {
   "schema_version": "notion-sync-state.v0",
-  "generated_at": "2026-07-18T15:56:34.166Z",
+  "generated_at": "2026-08-17T15:11:42.423Z",
   "read_only": true,
   "source": "$COLLAB/harness-mc/system-workflow/registries/morrowise-notion-sync-state.json",
   "generator": "$COLLAB/harness-mc/scripts/generate-notion-sync-state.mjs",
@@ -165,7 +165,7 @@
       "source_of_truth": "Notion",
       "mirror_path": "$COLLAB/harness-mc/milestones/self-learning/tasks.json",
       "notion_count": null,
-      "mirror_count": 29,
+      "mirror_count": 30,
       "last_sync": null,
       "sync_direction": "Notion -> MC self-learning tasks.json",
       "status": "unknown",

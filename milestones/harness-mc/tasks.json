@@ -767,7 +767,7 @@
     {
       "id": "morrowise-proactive-loop-dashboard",
       "title": "MC 顯示 MorroWise proactive loop",
-      "status": "completed",
+      "status": "in_progress",
       "track": "morrowise-system",
       "batch": "proactive-loop",
       "order": 20,
@@ -778,11 +778,101 @@
       ],
       "done_condition": "MC 顯示 trigger → recommendation → approval → action → feedback 狀態；至少能看見最近 trigger、建議原因、approval queue、runner output、未閉合 loop。",
       "note": "第二批主動化的可觀測面。先做 static mockup，再接 read model / frontend；mockup 放在 system-workflow/docs/mockups/，目標是驗證 trigger → recommendation → approval → action → feedback 的狀態語意，不是做裝飾稿。mockup 至少呈現正常閉環、等待 approval、runner blocked / open loop 三種狀態，並標清 read-only boundary。此 dashboard 只顯示 proactive loop 狀態，不可寫回 task state、不可取代 tasks.json / task-events / approval policy，也不可在 morrowise-proactive-loop-verify 通過前宣稱 MorroWise 已具備完整主動化閉環。",
-      "completed_at": "2026-06-21",
+      "completed_at": null,
       "commits": [
         "acf4787"
       ],
       "summary": "MC 首頁已顯示 MorroWise proactive loop read model，覆蓋正常閉環、等待 approval、runner blocked/open loop，並以驗證器守住 read-only boundary。",
+      "goal_alignment": {
+        "project_id": "harness-mc",
+        "goal_ref": "$COLLAB/harness-mc/milestones/harness-mc/project.json#/goals",
+        "goal_fingerprint": "sha256:63e26badb1609ed0f4af30b7ec69030a6e2103d1e34ec657351800a8a483b168",
+        "contribution": "讓 MC proactive-loop read model 在 self-learning 已建立二十年定錨與 FP-01 後，正確顯示 proposal-only 的 task 重整狀態及 fresh-evidence 缺口，不再呈現過期的缺定錨訊息。",
+        "evidence_plan": [
+          "node scripts/verify-morrowise-proactive-loop.mjs",
+          "node scripts/validate-tasks.mjs --changed-only --project harness-mc",
+          "npm run test:future-practice-domain-tracking"
+        ],
+        "reviewed_at": "2026-08-03"
+      },
+      "hc_decision": {
+        "task_scope": "harness-mc/morrowise-proactive-loop-dashboard",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#evidenceBased",
+          "#risk",
+          "#sourceBoundary"
+        ],
+        "hc_reasoning": "真正問題不是讓 verifier 配合新字串，而是 canonical 定錨與 FP-01 已存在後，read model 仍把舊的缺定錨候選當成現況。version improvement 必須同時修正 generator 的治理語意與 verifier，繼續維持 proposal-only、named approval、零 canonical mutation 及 read-only dashboard 邊界。",
+        "hc_confidence": 0.97,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/self-learning/project.json#/goals",
+          "$COLLAB/harness-mc/milestones/self-learning/tasks.json#future-practice-roadmap",
+          "$COLLAB/harness-mc/scripts/generate-morrowise-proactive-loop.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-proactive-loop.mjs",
+          "Vincent 2026-08-03：核准 Amend MC-LIVE-20；核准重開 MC-LIVE-20"
+        ],
+        "source_boundary": "HC 只是思考檢查，不是正本；self-learning project/tasks 是目標及 FP-01 正本，MC-LIVE-20 擁有 dashboard/read-model surface，generator 與 verifier 擁有可執行投影及驗收，JV-32／JV-40 仍是 task mutation gate。"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "verification-before-completion",
+          "closeout-commit-routing"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "resume",
+            "from_status": "completed",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准重開 MC-LIVE-20，修正 self-learning 定錨與 FP-01 已建立後仍顯示舊缺定錨狀態的 generator／verifier version improvement；重開不撤銷 v1 完成事實。",
+            "evidence_refs": [
+              "Vincent 2026-08-03：核准 Amend MC-LIVE-20",
+              "Vincent 2026-08-03：核准重開 MC-LIVE-20",
+              "$COLLAB/harness-mc/milestones/self-learning/project.json#/goals",
+              "$COLLAB/harness-mc/milestones/self-learning/tasks.json#future-practice-roadmap",
+              "node scripts/verify-morrowise-proactive-loop.mjs：actual=review_required；expected=blocked_missing_canonical_anchor"
+            ],
+            "recorded_at": "2026-08-03",
+            "prior_completion": {
+              "completed_at": "2026-06-21",
+              "commits": [
+                "acf4787"
+              ],
+              "summary": "MC 首頁已顯示 MorroWise proactive loop read model，覆蓋正常閉環、等待 approval、runner blocked/open loop，並以驗證器守住 read-only boundary。"
+            },
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "harness-mc/morrowise-proactive-loop-dashboard",
+                "harness-mc/morrowise-proactive-loop-verify",
+                "self-learning/future-practice-roadmap"
+              ],
+              "scope_comparison": {
+                "problem": "既有 MC-LIVE-20 surface 已完成，但 generator／verifier 的 self-learning dogfood fixture 仍假設二十年定錨及 item 1 task 尚未建立；這是同一 read model 的過期版本，不是新的 dashboard 或治理系統。",
+                "owner_source_of_truth": "MC-LIVE-20 繼續擁有 dashboard/read-model surface；self-learning project.json 與 FP-01 繼續擁有目標及 roadmap，JV-32／JV-40 繼續擁有 task mutation gate。",
+                "inputs_outputs": "輸入改為目前 canonical anchor、FP-01 及 open tasks；輸出仍是 read-only proactive-loop JSON、approval request 與零 applied actions，不新增 scheduler、database、tracker 或 reverse write。",
+                "lifecycle_completion": "新版 generator 正確產生 proposal_task_reorganization／review_required 狀態，verifier 在最新乾淨快照通過，且 canonical self-learning 檔案生成前後 digest 不變後，才可再次 complete。"
+              },
+              "decision_reason": "缺口屬既有 MC-LIVE-20 read model 的 version drift，沿用同一 task Amend；不建立新 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-03",
+                "evidence_refs": [
+                  "Vincent current session：核准 Amend MC-LIVE-20",
+                  "Vincent current session：核准重開 MC-LIVE-20"
+                ]
+              }
+            }
+          }
+        ]
+      },
       "naming_note": "正式名稱為 MorroWise；Jarvis / system-ops 僅保留為歷史來源與參照。",
       "external_refs": {
         "heptabase": {

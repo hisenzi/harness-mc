@@ -51,28 +51,34 @@ for (const scenario of data.scenarios) {
 assert.equal(requiredScenarios.size, 0, `missing scenarios: ${[...requiredScenarios].join(", ")}`);
 
 const dogfood = data.scenarios.find((scenario) => scenario.scenario_id === "self_learning_read_only_dogfood");
+assert.equal(dogfood.recommendation.suggested_task_id, "future-practice-roadmap");
+assert.equal(dogfood.recommendation.task_governance.candidate_type, "propose_task_reorganization");
 assert.equal(dogfood.recommendation.task_governance.target_project, "self-learning");
 assert.equal(dogfood.recommendation.task_governance.target_task_source, "$COLLAB/harness-mc/milestones/self-learning/tasks.json");
 assert.equal(dogfood.recommendation.task_governance.goal_ref, "$COLLAB/harness-mc/milestones/self-learning/project.json#/goals");
 assert.match(dogfood.recommendation.task_governance.goal_fingerprint, /^sha256:[a-f0-9]{64}$/);
 assert.equal(dogfood.recommendation.task_governance.proposed_operation, "blocked");
-assert.ok(dogfood.recommendation.task_governance.limitations.some((item) => item.includes("twenty-year anchor")));
+assert.ok(dogfood.recommendation.task_governance.observed_gap.includes("fresh task-level contribution evidence"));
+assert.ok(dogfood.recommendation.task_governance.limitations.some((item) => item.includes("Fresh task-level contribution evidence")));
+assert.ok(!JSON.stringify(dogfood).includes("item 1"));
 assert.equal(dogfood.approval.requires_approval, true);
 assert.equal(dogfood.action.applied, false);
 assert.equal(dogfood.runner_output.approval_request.task_governance_handoff.write_route, "JV-32/JV-40-after-Vincent-approval");
 
 assert.ok(data.goal_drift_review, "goal_drift_review missing");
 assert.equal(data.goal_drift_review.target_project, "self-learning");
-assert.equal(data.goal_drift_review.status, "blocked_missing_canonical_anchor");
+assert.equal(data.goal_drift_review.status, "review_required");
 assert.match(data.goal_drift_review.current_goal_fingerprint, /^sha256:[a-f0-9]{64}$/);
 assert.equal(data.goal_drift_review.reviewed_goal_fingerprint, null);
 assert.deepEqual(data.goal_drift_review.open_task_ids.slice().sort(), expectedOpenTaskIds);
 assert.deepEqual(data.goal_drift_review.proposals.map((item) => item.task_id).sort(), expectedOpenTaskIds);
+assert.ok(data.goal_drift_review.open_task_ids.includes("future-practice-roadmap"));
 for (const proposal of data.goal_drift_review.proposals) {
   assert.equal(proposal.proposed_operation, "blocked");
   assert.equal(proposal.requires_approval, true);
   assert.ok(Array.isArray(proposal.evidence_refs) && proposal.evidence_refs.length > 0);
-  assert.ok(proposal.limitations.some((item) => item.includes("canonical anchor")));
+  assert.ok(proposal.limitations.some((item) => item.includes("fresh contribution evidence")));
+  assert.ok(!proposal.limitations.some((item) => item.includes("Missing canonical anchor")));
 }
 assert.equal(data.goal_drift_review.canonical_mutations, 0);
 assert.equal(data.goal_drift_review.canonical_deletions, 0);

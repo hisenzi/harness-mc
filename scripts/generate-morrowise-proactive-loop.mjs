@@ -12,6 +12,9 @@ const selfLearningProject = readJson(selfLearningProjectPath);
 const selfLearningTasks = readJson(selfLearningTasksPath).tasks || [];
 const selfLearningGoalFingerprint = `sha256:${crypto.createHash("sha256").update(JSON.stringify(selfLearningProject.goals)).digest("hex")}`;
 const hasTwentyYearAnchor = JSON.stringify(selfLearningProject.goals).includes("二十年定錨");
+const futurePracticeRoadmap = selfLearningTasks.find((task) => task.id === "future-practice-roadmap");
+const hasApprovedFuturePracticeRoadmap = hasTwentyYearAnchor
+  && futurePracticeRoadmap?.order_label === "FP-01";
 const openStatuses = new Set(["todo", "not_started", "in_progress", "doing", "blocked"]);
 const selfLearningOpenTasks = selfLearningTasks.filter((task) => openStatuses.has(task.status));
 
@@ -94,20 +97,35 @@ const candidates = [
     scenario_id: "self_learning_read_only_dogfood",
     label: "self-learning 唯讀治理驗證",
     feedback_status: "waiting_approval",
-    feedback_destination: "Vincent approval / item 1 canonical goal anchor",
-    feedback_note: "MorroWise identified a goal-anchor gap and stopped at a proposal; self-learning canonical project and tasks remain unchanged.",
-    candidate_type: "propose_next_task",
-    recommendation_id: "loop.task-governance.self-learning.goal-anchor-gap",
+    feedback_destination: hasApprovedFuturePracticeRoadmap
+      ? "Vincent approval / fresh task-level contribution evidence"
+      : "Vincent approval / canonical goal anchor and roadmap",
+    feedback_note: hasApprovedFuturePracticeRoadmap
+      ? "MorroWise recognized the canonical anchor and FP-01, then stopped at a reorganization proposal because fresh task-level contribution evidence has not been reviewed."
+      : "MorroWise identified a canonical work-anchor gap and stopped at a proposal; self-learning canonical project and tasks remain unchanged.",
+    candidate_type: hasApprovedFuturePracticeRoadmap
+      ? "propose_task_reorganization"
+      : "propose_next_task",
+    recommendation_id: hasApprovedFuturePracticeRoadmap
+      ? "loop.task-governance.self-learning.goal-drift-review"
+      : "loop.task-governance.self-learning.goal-anchor-gap",
     trigger_id: "morrowise.weekly_review",
-    reason: "Task reorganization cannot be evidence-safe until the approved twenty-year anchor is written to the self-learning canonical project source.",
-    suggested_action: "propose_next_task",
-    suggested_task_id: "pending-vincent-approved-item-1-task-id",
+    reason: hasApprovedFuturePracticeRoadmap
+      ? "The canonical anchor and FP-01 exist, but task reorganization must remain blocked until fresh task-level contribution evidence is reviewed."
+      : "Task reorganization cannot be evidence-safe until the approved anchor and roadmap are written to the self-learning canonical sources.",
+    suggested_action: hasApprovedFuturePracticeRoadmap
+      ? "propose_task_reorganization"
+      : "propose_next_task",
+    suggested_task_id: hasApprovedFuturePracticeRoadmap
+      ? "future-practice-roadmap"
+      : "pending-vincent-approved-roadmap-task-id",
     target_project: "self-learning",
     target_task_source: "$COLLAB/harness-mc/milestones/self-learning/tasks.json",
     goal_ref: "$COLLAB/harness-mc/milestones/self-learning/project.json#/goals",
     goal_fingerprint: selfLearningGoalFingerprint,
     source_task_refs: [
       "self-learning/future-practice-finance-pilot-v1",
+      ...(hasApprovedFuturePracticeRoadmap ? ["self-learning/future-practice-roadmap"] : []),
       "morrowise/task-lifecycle-jv32-gate",
     ],
     evidence_refs: [
@@ -115,19 +133,28 @@ const candidates = [
       { type: "canonical_tasks", ref: "$COLLAB/harness-mc/milestones/self-learning/tasks.json" },
       { type: "acceptance_matrix", ref: "$COLLAB/harness-mc/milestones/morrowise/tasks.json#task-lifecycle-jv32-gate.acceptance_matrix" },
     ],
-    observed_gap: hasTwentyYearAnchor
-      ? "The canonical anchor exists; item 1 may now define the proposed task scope with Vincent."
-      : "The current self-learning project goals do not yet contain the approved twenty-year anchor.",
+    observed_gap: hasApprovedFuturePracticeRoadmap
+      ? "The canonical anchor and FP-01 exist; fresh task-level contribution evidence has not yet been reviewed for the open tasks."
+      : "The current self-learning canonical sources do not yet contain both the approved anchor and roadmap task.",
     proposed_operation: "blocked",
-    proposed_done_condition: "Vincent approves item 1 and its canonical self-learning goal anchor before MorroWise proposes any task reorganization.",
-    limitations: [
-      "Canonical twenty-year anchor（正式二十年定錨目標）尚未由 item 1 寫入 self-learning project source.",
-      "Read-only dogfood: this candidate does not create, amend, reorder, defer, cancel, or replace a self-learning task.",
-    ],
+    proposed_done_condition: hasApprovedFuturePracticeRoadmap
+      ? "Fresh contribution evidence is reviewed for every open task before MorroWise proposes retain, amend, defer, cancel, replace, or create operations."
+      : "Vincent approves the canonical self-learning anchor and roadmap before MorroWise proposes any task reorganization.",
+    limitations: hasApprovedFuturePracticeRoadmap
+      ? [
+          "Fresh task-level contribution evidence has not been reviewed; no mutating operation is evidence-safe.",
+          "Proposal only; Vincent approval plus JV-32/JV-40 is required before any canonical write.",
+        ]
+      : [
+          "Canonical anchor and roadmap are incomplete; no mutating operation is evidence-safe.",
+          "Read-only dogfood: this candidate does not create, amend, reorder, defer, cancel, or replace a self-learning task.",
+        ],
     risk_level: "medium",
     requires_approval: true,
     hc_refs: ["#rightProblem", "#systemDynamics", "#risk"],
-    hc_reasoning: "Keep the goal anchor, task mutation, and evidence loop ordered; missing canonical evidence must block rather than invent a task.",
+    hc_reasoning: hasApprovedFuturePracticeRoadmap
+      ? "Keep task reorganization evidence-driven and proposal-only; the anchor alone cannot justify mutating an open task."
+      : "Keep the goal anchor, task mutation, and evidence loop ordered; missing canonical evidence must block rather than invent a task.",
     hc_confidence: 0.94,
     payload: {
       project: "self-learning",
@@ -242,7 +269,9 @@ const data = {
         { type: "canonical_task", ref: `$COLLAB/harness-mc/milestones/self-learning/tasks.json#${task.id}` },
       ],
       limitations: [
-        "Missing canonical anchor or fresh contribution evidence; this proposal cannot choose a mutating operation.",
+        hasTwentyYearAnchor
+          ? "This proposal is blocked because fresh contribution evidence has not been reviewed; it cannot choose a mutating operation."
+          : "Missing canonical anchor; this proposal cannot choose a mutating operation.",
         "Proposal only; Vincent approval plus JV-32/JV-40 is required before any canonical write.",
       ],
       requires_approval: true,

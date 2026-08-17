@@ -1,0 +1,24 @@
+{
+  "rejected_at": "2026-07-28T03:30:24.207Z",
+  "reason": "superseded_by_canonical_main_3b807ea",
+  "manual_review": {
+    "evidence_refs": [
+      "Vincent current session: 逐一完成不通過及部分通過項目；可以繼續進行；其他 session 另外解決"
+    ],
+    "approved_by": "Vincent",
+    "approved_at": "2026-07-28"
+  },
+  "event": {
+    "event_id": "task.completed-self-learning-mind-training-book-capture-3dbd8bd-20260726T095208Z",
+    "type": "task.completed",
+    "repo": "notyet-harness",
+    "commit": "3dbd8bd",
+    "project": "self-learning",
+    "task_id": "mind-training-book-capture",
+    "status": "completed",
+    "summary": "已將 13 張指定書頁收錄為可由 shared AGENTS 路由發現、回溯頁碼並直接運用的第二大腦知識，三種 Agent 取用情境均通過。",
+    "created_at": "2026-07-26T09:52:08.470Z",
+    "actor": "codex",
+    "session_id": "codex-2026-07-26-mind-training-book-capture"
+  }
+}

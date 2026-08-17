@@ -1,0 +1,21 @@
+{
+  "sync_event_id": "sync_requested-obsidian_canvas-morrowise-project-topology-architecture-atlas-task.commit_attached-morrowise-project-topology-architecture-atlas-e0411c6-20260720T161133Z-20260720T161133Z",
+  "type": "sync_skipped",
+  "target": "obsidian_canvas",
+  "status": "skipped",
+  "source_event_id": "task.commit_attached-morrowise-project-topology-architecture-atlas-e0411c6-20260720T161133Z",
+  "project": "morrowise",
+  "task_id": "project-topology-architecture-atlas",
+  "reason": "task_state_changed",
+  "payload": {
+    "whiteboard": "MC 儀表版"
+  },
+  "created_at": "2026-07-20T16:11:33.591Z",
+  "actor": "codex",
+  "session_id": "codex-jv43-20260721",
+  "exemption_reason": "Historical task-event accounting has no project-specific Obsidian Canvas binding; canonical task state and generated MC read models remain authoritative.",
+  "verifier": "origin/main commit containment plus sync payload whiteboard=MC 儀表版 inventory",
+  "resolved_at": "2026-07-31T16:01:42.963Z",
+  "resolved_by": "codex",
+  "resolution_session_id": "019fab8f-0d33-78e0-b5a5-fe29499dbde1"
+}

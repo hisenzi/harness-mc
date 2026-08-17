@@ -1,0 +1,13 @@
+{
+  "event_id": "task.commit_attached-rrrealll-ocr-p2-architecture-product-passport-contract-1cc4321babdb884712fb3036535908ff1452a91c-20260722T170409Z",
+  "type": "task.commit_attached",
+  "repo": "rrrealll-ocr",
+  "commit": "1cc4321babdb884712fb3036535908ff1452a91c",
+  "project": "rrrealll-ocr",
+  "task_id": "p2-architecture-product-passport-contract",
+  "status": "updated",
+  "summary": "Architecture contract committed in rrrealll-ocr: Zeabur/Supabase, dual data lanes, and Product Passport.",
+  "created_at": "2026-07-22T17:04:09.677Z",
+  "actor": "codex",
+  "session_id": "codex-rrrealll-ocr-20260723"
+}

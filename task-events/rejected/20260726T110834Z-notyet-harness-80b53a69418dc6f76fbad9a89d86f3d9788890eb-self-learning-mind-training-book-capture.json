@@ -1,0 +1,24 @@
+{
+  "rejected_at": "2026-07-28T03:30:24.208Z",
+  "reason": "superseded_by_canonical_main_3b807ea",
+  "manual_review": {
+    "evidence_refs": [
+      "Vincent current session: 逐一完成不通過及部分通過項目；可以繼續進行；其他 session 另外解決"
+    ],
+    "approved_by": "Vincent",
+    "approved_at": "2026-07-28"
+  },
+  "event": {
+    "event_id": "task.completed-self-learning-mind-training-book-capture-80b53a69418dc6f76fbad9a89d86f3d9788890eb-20260726T110834Z",
+    "type": "task.completed",
+    "repo": "notyet-harness",
+    "commit": "80b53a69418dc6f76fbad9a89d86f3d9788890eb",
+    "project": "self-learning",
+    "task_id": "mind-training-book-capture",
+    "status": "completed",
+    "summary": "將第二大腦收錄個案固化為可重跑驗證的共用 Skill，並新增嚴格 fresh-agent 證據分級與負向測試。",
+    "created_at": "2026-07-26T11:08:34.781Z",
+    "actor": "codex",
+    "session_id": "codex-new-chat-2-20260726"
+  }
+}

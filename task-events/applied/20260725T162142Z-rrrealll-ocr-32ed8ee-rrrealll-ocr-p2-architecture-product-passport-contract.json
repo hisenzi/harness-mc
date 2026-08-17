@@ -1,0 +1,13 @@
+{
+  "event_id": "task.completed-rrrealll-ocr-p2-architecture-product-passport-contract-32ed8ee-20260725T162142Z",
+  "type": "task.completed",
+  "repo": "rrrealll-ocr",
+  "commit": "32ed8ee",
+  "project": "rrrealll-ocr",
+  "task_id": "p2-architecture-product-passport-contract",
+  "status": "completed",
+  "summary": "鎖定 Neon、private scan record、Judge gate 與 private evidence 的正式架構基線文件。",
+  "created_at": "2026-07-25T16:21:42.993Z",
+  "actor": "codex",
+  "session_id": "codex-rrrealll-ocr-2026-07-26"
+}

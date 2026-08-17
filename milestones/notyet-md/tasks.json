@@ -851,6 +851,181 @@
         "reason": "本 task 是 notyet.md 公開網站 surface，不建立新的 system registry、runtime、scheduler 或 canonical evidence source；其上游 MorroWise system task 在 implementation 前需另做 Architecture Admission Review。"
       },
       "note": "2026-07-26 已完成核心問題、責任邊界與可驗收 task 定錨；第二次 amend 已定錨 exact producer／consumer snapshot、join keys、freshness／degraded 與 two-phase check；normalization 再補 canonical dependency／review window，但所有 script／JSON／網站仍未實作。Status 維持 todo；MorroWise public-safe read model 完成前不得實作成真實成效 surface 或宣稱已有後續專案驗證。"
+    },
+    {
+      "id": "ai-git-closeout-bilingual-article-v1",
+      "title": "AI Git 收尾失準的雙語文章與工作流修正",
+      "status": "in_progress",
+      "track": "p1-lineage",
+      "priority": "high",
+      "progress_scope": "active",
+      "review_date": "2026-07-28",
+      "estimated_hours": 4,
+      "summary": "本 session 修復項：完成第二大腦收錄殘留清理、補齊 notyet-article 英文自然改寫 contract，最後才把 AI 協作中 Git 收尾失準的真實經驗重寫成中英文文章。",
+      "done_condition": "R03 的第二大腦 canonical task／pending event／本 session 臨時 branch 與 worktree 完成校正及清理；R05 的 notyet-article 通過 RED／GREEN／REFACTOR、frontmatter、路徑、generated index 與 diff 驗證；R04 的中英文文章正文完成 FACTLOCK、脫敏、冷讀者、AI 味與 metadata contract 後，依本次追加 TDD 驗收把文章接入 generated lineage，讓孤立文章無法只靠 build 綠燈進入 commit。不得順帶實作 practice-impact evidence runtime，或整合／修改 RRREALLL、Future Practice、HiBlocks、Dashboard、Eddy 與其他 session 的工作。",
+      "acceptance": [
+        "NY-CLOSEOUT-A01｜唯一 work anchor 為本 task；長期的 practice-impact-article-lineage-surface-v1 保持 todo／blocked，不以本次文章交付宣稱 lineage runtime 已實作。",
+        "NY-CLOSEOUT-A02｜R03 只校正第二大腦收錄的 canonical commit、task state 與兩筆舊 pending event，並在證明成果已被 main 吸收後清理本 session 遺留 branch／worktree；不得碰其他 pending event 或其他 session 的 Git 狀態。",
+        "NY-CLOSEOUT-A03｜R05 將 notyet-article 升為 1.5：保留 1.4 的 name／description-only frontmatter、CONTENT-PLAN、英文自然改寫／FACTLOCK／雙語 metadata／冷讀者／AI 味／朗讀與 en/ runtime boundary，再加入 article graph gate。",
+        "NY-CLOSEOUT-A04｜R05 必須保留可觀察的 Skill RED／GREEN／REFACTOR 證據；同步 SKILLS-INDEX generated mirror，並通過 index --check、結構、路徑與 git diff --check；若 live check 只受他方 working Skill 影響，須以 HEAD 加本 task exact scope 的隔離 check 判定，不得重建納入他方內容。",
+        "NY-CLOSEOUT-A05｜R04 是最後一個實質內容步驟：先完成中文，再依同一 FACTLOCK 自然重寫英文；沿用現有 zh/en basename，不新增重複文章。",
+        "NY-CLOSEOUT-A06｜文章公開內容必須移除 repo 名稱、task ID、長 SHA 與內部 closeout 黑話，保留真實決策與可遷移洞見；核心結論是安全取決於核准範圍與正確終止條件，不取決於批准次數。",
+        "NY-CLOSEOUT-A07｜中英 filename／slug、pubDate、status、author 一致；title、description、contents、tags 語意一致且自然改寫，readTime 各自重算。英文 runtime 尚未公開時不得宣稱 bilingual route 已上線。",
+        "NY-CLOSEOUT-A08｜完成前通過 changed-only notyet-md task validator、notyet-article Skill checks、文章 metadata／AI 味／脫敏檢查、npm run build 與 git diff --check；commit／push 仍依 Vincent 核准流程。",
+        "NY-CLOSEOUT-A09｜追加 article graph TDD：新 dated article 必須用文章自身 theme_id、lineage_stage、practice_task_refs 接到既有同主題繁中文章；previous／successor／related 由 content collection 依日期產生，禁止人工 registry。unit、verify:article-graph、fresh build 與 built HTML links 任一失敗不得完成或進 commit；本項不包含 MorroWise practice-impact evidence read model。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/skills/notyet-article/SKILL.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/notyet-article/references/rules.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/blog-writer/SKILL.md",
+        "$COLLAB/notyet_website/notyet-md/CONTENT-PLAN.md",
+        "$COLLAB/notyet_website/notyet-md/WRITING-PIPELINE.md",
+        "$COLLAB/notyet_website/notyet-md/src/content/blog/zh/2026-07-26-ai-worktree-single-developer.md",
+        "$COLLAB/notyet_website/notyet-md/src/content/blog/en/2026-07-26-ai-worktree-single-developer.md"
+      ],
+      "execution_contract": {
+        "owner": "notyet-md/ai-git-closeout-bilingual-article-v1",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/notyet-md/tasks.json#ai-git-closeout-bilingual-article-v1",
+        "inputs": [
+          "本 session 的第二大腦收錄、commit／push／main integration 與殘留清理紀錄",
+          "notyet-article、blog-writer 與 notyet.md 寫作正本",
+          "現有中英文文章草稿"
+        ],
+        "outputs": [
+          "第二大腦收錄殘留的正確 closeout",
+          "notyet-article 1.5 與 generated Skill index",
+          "完成驗證並接入 generated lineage 的中英文 notyet.md 文章",
+          "article lineage unit／verifier／built HTML link gates"
+        ],
+        "verifiers": [
+          "node scripts/validate-tasks.mjs --changed-only --project notyet-md",
+          "python3 000_Agent/scripts/update-skills-index.py --check",
+          "npm run test:article-lineage",
+          "npm run build",
+          "npm run test:article-lineage:built",
+          "git diff --check"
+        ],
+        "stop_condition": "若 harness-mc checkout 正由其他 session 操作、第二大腦成果尚未證明被 main 吸收、英文新增 FACTLOCK 外事實、文章仍含內部識別資訊、metadata 漂移、build 失敗，或工作擴張到其他 session 時停止，不得覆寫、清理或宣稱完成。",
+        "write_boundary": "只可修改本 task、notyet-article Skill／rules／generated SKILLS-INDEX、本 session 第二大腦 closeout 記錄、notyet.md 的 WRITING-PIPELINE／article lineage schema／generator／renderer／verifier／tests 與本主題文章 metadata；不得修改 RRREALLL、Future Practice、HiBlocks、Dashboard、Eddy、其他 task lane、secrets、runtime auth、外部 tracker或其他 pending event。"
+      },
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "舊 Skill 在期限壓力下會逐句快翻、讓 metadata 漂移或補出無來源背景；1.5 必須拒絕。",
+          "文章若含內部 repo／task／SHA、中文語序英文、雙語 metadata 漂移或重複檔案必須失敗。",
+          "英文 source 存在但 runtime 僅渲染 zh 時，驗收不得宣稱英文 route 已公開。",
+          "新 dated article 若缺 lineage metadata／英文 counterpart、theme 只有單一繁中文章、雙語 lineage 漂移或 built route 沒有 generated previous／successor links 必須失敗。"
+        ],
+        "test_level": [
+          "skill_pressure",
+          "content_static",
+          "production_build"
+        ],
+        "red_command": "由 baseline Agent 僅讀取 committed notyet-article 1.2，執行限時雙語改寫壓力情境",
+        "expected_red_reason": "舊 Skill 未禁止逐句直譯、未定義 metadata 差異與英文 FACTLOCK 背景邊界。",
+        "green_command": "由 GREEN Agent 讀取 working notyet-article 1.5，執行相同限時雙語改寫壓力情境",
+        "article_graph_red_command": "node --test tests/article-lineage.test.mjs；npm run verify:article-graph；npm run test:article-lineage:built",
+        "article_graph_expected_red_reason": "現行 generator／verifier 不存在；補 verifier 後，新文章又因缺 theme_id／lineage_stage 失敗；補 metadata 與 build 後，built HTML 仍因沒有 previous／successor links 失敗。",
+        "article_graph_green_command": "npm run test:article-lineage && npm run build && npm run test:article-lineage:built",
+        "full_regression_commands": [
+          "python3 000_Agent/scripts/update-skills-index.py --check",
+          "node scripts/validate-tasks.mjs --changed-only --project notyet-md",
+          "npm run test:article-lineage",
+          "npm run build",
+          "npm run test:article-lineage:built",
+          "git diff --check"
+        ],
+        "runtime_evidence_required": false
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "code-review",
+          "verification-before-completion",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "本 session review 的 R03 不通過、R05 部分通過與 R04 不通過",
+          "既有長期 lineage task 與本次一次性文章／流程修復的語意差異",
+          "Vincent 指示不使用 worktree，且其他 session 的工作另外解決、不要分心"
+        ],
+        "decision_output": "一個不擴張到其他 session、先完成治理與清理、最後交付中英文文章的可驗收 closeout。",
+        "execution_boundary": "直接在已核准的既有 checkout 處理 exact scope，不建立或切換 branch/worktree；若共享 checkout 被其他 session 佔用則保持 read-only，改做不衝突的同 session 步驟。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 核准逐一完成本 session review 的不通過／部分通過項目，要求不使用 worktree，並在發現其他 session 工作時再次收斂範圍、不要分心。",
+            "evidence_refs": [
+              "Vincent current session: 逐一完成『不通過』及『部分通過』項目，最後完成 R04",
+              "Vincent current session: 不使用 worktree；可以進行；可以，繼續進行",
+              "Vincent current session: 不在這個 session 的另外解決；不要分心"
+            ],
+            "recorded_at": "2026-07-28",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "notyet-md/practice-impact-article-lineage-surface-v1",
+                "notyet-md/brand-human-copy-pass-v0"
+              ],
+              "scope_comparison": {
+                "problem": "長期 lineage task 解決跨文章與 MorroWise evidence 的網站功能，brand task 已完成品牌文件文字修正；兩者都不擁有本 session 的第二大腦 closeout、英文 Skill contract 與單篇雙語文章修復。",
+                "owner_source_of_truth": "本 task 只擁有本 session remediation 與文章交付；第二大腦知識仍由 notyet-harness 知識庫擁有，文章內容仍由 notyet.md Markdown 擁有。",
+                "inputs_outputs": "輸入是本 session 記錄、現有 Skill 與草稿；輸出是殘留清理、Skill 1.5、一組雙語文章與 publication article graph gates，不是 practice-impact runtime 或 MorroWise evidence producer。",
+                "lifecycle_completion": "R03、R05、最後 R04 及其驗證、commit／push／parity／cleanup 全部完成才可 close；只完成文章或 Skill 不算完成。"
+              },
+              "decision_reason": "問題、交付與終止條件皆不同於既有長期功能 task，因此建立小型 genuinely_new remediation task；不改寫或完成既有 lineage task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-07-28",
+                "evidence_refs": [
+                  "Vincent current session: 可以進行；可以，繼續進行"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "notyet-md",
+        "goal_ref": "$COLLAB/harness-mc/milestones/notyet-md/project.json#/goals",
+        "goal_fingerprint": "sha256:34a97cdd57a160c31127345a742da2204092031384e5d2c13ce2125c9d59d39b",
+        "contribution": "把 AI 協作中的真實 Git 收尾經驗轉成可驗證、可回鏈的雙語文章與 publication lineage，支援 notyet.md 將專案經驗沉澱為可被後續實踐引用的公開內容。",
+        "evidence_plan": [
+          "node scripts/validate-tasks.mjs --changed-only --project notyet-md",
+          "notyet.md article-lineage tests and production build recorded by the owning task"
+        ],
+        "reviewed_at": "2026-08-17"
+      },
+      "hc_decision": {
+        "task_scope": "notyet-md/ai-git-closeout-bilingual-article-v1",
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#evidenceBased",
+          "#risk"
+        ],
+        "hc_reasoning": "真正問題是本 session 的工作流與文章修復沒有唯一可驗收終止條件，而不是把 branch 上所有內容整合進 main。正確邊界是只處理第二大腦 closeout、英文 Skill contract 與既有雙語草稿；其他 session 的 task、dirty 與 pending event保持原狀。",
+        "hc_confidence": 0.98,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/notyet-md/tasks.json",
+          "$COLLAB/notyet-harness/000_Agent/skills/notyet-article/SKILL.md",
+          "$COLLAB/notyet_website/notyet-md/CONTENT-PLAN.md"
+        ],
+        "source_boundary": "HC 只負責範圍與證據的思考檢查，不是正本；task state 在 harness-mc notyet-md tasks.json，Skill 在 notyet-harness，文章在 notyet-md repo，其他 session 的 Git／task 狀態不由本 task處理。"
+      },
+      "architecture_decision": {
+        "decision": "not_required",
+        "evaluated_at": "2026-07-28",
+        "reason": "本 task 新增的 lineage generator／verifier 只從文章 content collection 產生 publication navigation 與 build gate，不建立新的人工 registry、scheduler、canonical evidence source 或 practice-impact runtime。"
+      },
+      "note": "R04 文章正文已在 R03／R05 後完成；後續只修正驗收暴露的孤立文章缺口，以 TDD 補 article-owned metadata、content-derived navigation、verifier 與流程 contract，不再改正文，也不擴張到 practice-impact runtime。其他 session 的工作保持原狀並另案處理。"
     }
   ]
 }

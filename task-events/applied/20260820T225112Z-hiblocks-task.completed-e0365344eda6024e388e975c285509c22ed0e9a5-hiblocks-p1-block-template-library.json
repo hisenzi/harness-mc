@@ -1,0 +1,13 @@
+{
+  "event_id": "task.completed-hiblocks-p1-block-template-library-e0365344eda6024e388e975c285509c22ed0e9a5-20260820T225112Z",
+  "type": "task.completed",
+  "repo": "hiblocks",
+  "commit": "e0365344eda6024e388e975c285509c22ed0e9a5",
+  "project": "hiblocks",
+  "task_id": "p1-block-template-library",
+  "status": "completed",
+  "summary": "Batch 03 完成 HTML Template Library：新增 brand-landing 與 portfolio-case 樣版、搜尋 manifest 與 verify:templates；manifest／placeholder／block reference verifier、Astro boundary test 與 astro check 均通過，C1 e036534 已同步 hiblocks origin/main。",
+  "created_at": "2026-08-20T22:51:12Z",
+  "actor": "codex",
+  "session_id": "codex-new-chat-3-20260821-batch03"
+}

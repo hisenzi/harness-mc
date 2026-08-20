@@ -44,6 +44,13 @@
         "5ccd20f"
       ],
       "summary": "HB-PERF-01 已將 HiBlocks 預設字型載入改為系統 fallback 與可驗證的本站自架 WOFF2 政策；C1 5ccd20f 已在 origin/main，字型契約、Astro check、靜態建置與產物稽核均通過。"
+    },
+    "p1-block-template-library": {
+      "status": "completed",
+      "completed_at": "2026-08-20",
+      "commits": [
+        "e0365344eda6024e388e975c285509c22ed0e9a5"
+      ]
     }
   }
 }

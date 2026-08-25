@@ -114,7 +114,7 @@
     {
       "id": "p1-3",
       "title": "盤點並遷移 FJ 招生資產",
-      "status": "todo",
+      "status": "in_progress",
       "track": "migration",
       "order_label": "SSA-03",
       "priority": "P0",
@@ -126,6 +126,53 @@
         "manifest 列出原始網址、目標路徑、檔案類型與驗證結果。",
         "FJ 資產只置於 fj-admi；未經檔案相同證據不得混入 KJ 或 shared 根目錄。",
         "已替換頁面在 iSchool 預覽頁維持核心互動與視覺資產正常。"
+      ],
+      "acceptance_matrix": [
+        {
+          "id": "FJ91-A1",
+          "check": "Page 91 直接與間接舊網域依賴盤點",
+          "prerequisites": ["Page 91 線上來源與既有 FJ CSS／JS 可讀"],
+          "steps": ["記錄 3 個 CSS 與 3 個 JS 直接引用", "遞迴記錄 CSS 內 7 個圖示與 2 個字型引用"],
+          "pass_condition": "manifest 逐筆保留來源 URL、目標路徑、類型、SHA-256 與驗證狀態，合計 6 筆直接及 9 筆間接資產",
+          "fail_condition": "漏列依賴、來源或目標不明，或把 FJ 資產放入 KJ／shared 路徑",
+          "verification": "tests/fj-page-91-assets.test.mjs 與 manifest/fj-page-91.json"
+        },
+        {
+          "id": "FJ91-A2",
+          "check": "CSS 間接資產閉合",
+          "prerequisites": ["FJ91-A1 通過", "舊網域資產仍可唯讀下載"],
+          "steps": ["補齊 7 個 PNG 與 2 個 inspiro 字型", "把兩個 CSS 的絕對舊網域 URL 改為 FJ 相對路徑"],
+          "pass_condition": "9 個檔案存在且雜湊可追溯；正式 FJ CSS 不再含可執行的 sgoods.info URL",
+          "fail_condition": "任何資產缺檔、雜湊不符或 CSS 仍依賴舊網域",
+          "verification": "Node 測試、檔案雜湊與 scoped rg"
+        },
+        {
+          "id": "FJ91-A3",
+          "check": "iSchool 後台貼用片段與載入順序",
+          "prerequisites": ["FJ91-A2 通過", "Zeabur FJ 路徑規則已確認"],
+          "steps": ["建立 head 的 3 個 CSS 引用", "建立 footer 的 jQuery → plugins → functions 引用"],
+          "pass_condition": "兩個 prepared 檔只引用 FJ Zeabur 資產、零 sgoods.info，且 JS 順序固定",
+          "fail_condition": "CSS／JS 混放、引用錯校別、順序錯誤或仍含舊網域",
+          "verification": "tests/fj-page-91-assets.test.mjs"
+        },
+        {
+          "id": "FJ91-A4",
+          "check": "GitHub／Zeabur 公開資產驗證",
+          "prerequisites": ["FJ91-A1 至 A3 通過", "Vincent 另行授權 commit、push 與部署"],
+          "steps": ["精確範圍 commit 與 push", "等待 Zeabur 終態並逐一驗證 15 個公開 URL"],
+          "pass_condition": "15 個公開 URL 均回應成功且內容與 manifest 雜湊一致",
+          "fail_condition": "部署未達終態、任一 URL 失敗或內容不一致",
+          "verification": "Zeabur deployment 終態與可重跑 HTTP／SHA-256 檢查"
+        },
+        {
+          "id": "FJ91-A5",
+          "check": "Page 91 iSchool 相容性",
+          "prerequisites": ["FJ91-A4 通過", "替換片段已貼入 iSchool 預覽或正式頁"],
+          "steps": ["確認零 sgoods.info 網路請求", "測試桌機／手機選單、站內錨點與回頂端", "確認無水平溢出並與既有 console 基準比對"],
+          "pass_condition": "核心互動與視覺正常、無水平溢出，且沒有相較基準新增錯誤",
+          "fail_condition": "仍請求舊網域、互動失效、版面溢出或新增 JavaScript 錯誤",
+          "verification": "Page 91 瀏覽器預覽與 network／console 驗收紀錄"
+        }
       ],
       "goal_alignment": {
         "project_id": "school-static-assets",
@@ -146,6 +193,18 @@
             "reason": "以 FJ 校別 manifest 與 iSchool 實測取代一次性大量網址替換。",
             "evidence_refs": ["$COLLAB/harness-mc/milestones/school-static-assets/project.json"],
             "recorded_at": "2026-08-16"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 2026-08-25 核准依序執行 FJ Page 91 舊網域資產遷移；先完成本機資產閉合、manifest 與後台貼用片段，commit、push、Zeabur 與 iSchool 更新另行授權。",
+            "evidence_refs": [
+              "Vincent 2026-08-25: 這個順序可以進行",
+              "https://www.shsh.kl.edu.tw/ischool/publish_page/91/",
+              "$COLLAB/school-static-assets/fj-admi/"
+            ],
+            "recorded_at": "2026-08-25"
           }
         ]
       }

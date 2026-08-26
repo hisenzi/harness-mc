@@ -95,7 +95,7 @@ function record(name, overrides = {}) {
     document_ref: null,
     repo_ref: `$COLLAB/${name}`,
     evidence: [`$COLLAB/${name}`],
-    last_verified_at: "2026-07-20",
+    last_verified_at: new Date().toISOString().slice(0, 10),
     notes: "fixture",
     ...overrides,
   };

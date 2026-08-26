@@ -1195,7 +1195,12 @@ function classifyScopedDirtyPaths(dirtyPaths, options, renamePairs = []) {
   const scope = new Set((options.commitScope || []).map((item) => String(item).normalize("NFC")));
   if (dirtyPaths.length === 0 || scope.size === 0) return null;
   if ([...scope].some((filePath) => exclusions.has(filePath))) return null;
-  if (renamePairs.some((paths) => paths.some((filePath) => !scope.has(filePath)))) return null;
+  if (renamePairs.some((paths) => {
+    const touchesScope = paths.some((filePath) => scope.has(filePath));
+    return touchesScope
+      ? paths.some((filePath) => !scope.has(filePath))
+      : paths.some((filePath) => !exclusions.has(filePath));
+  })) return null;
   if (dirtyPaths.every((filePath) => scope.has(filePath))) return "scope_owned";
   if (
     dirtyPaths.some((filePath) => scope.has(filePath))

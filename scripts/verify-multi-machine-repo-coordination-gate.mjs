@@ -534,6 +534,17 @@ async function verifyMultiCloneNegativeFixtures() {
   git(renamed, ["mv", "old.txt", "scope.txt"]);
   assert.equal(inspectRepo(renamed, { exclusions: ["old.txt"], commitScope: ["scope.txt"] }).reason, "dirty_blocked");
 
+  const preservedRename = cloneFresh(fixture, "preserved-rename");
+  git(preservedRename, ["mv", "old.txt", "other-session.txt"]);
+  assert.equal(
+    inspectRepo(preservedRename, {
+      exclusions: ["old.txt", "other-session.txt"],
+      commitScope: ["scope.txt"],
+    }).reason,
+    "unrelated_dirty_excluded",
+    "a fully excluded foreign rename pair must not block an unrelated exact scope",
+  );
+
   const generated = cloneFresh(fixture, "generated");
   fs.writeFileSync(path.join(generated, "public", "data", "generated.txt"), "generated-v2\n");
   const generatedReady = inspectRepo(generated);

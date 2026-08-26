@@ -174,6 +174,8 @@
           "verification": "Page 91 瀏覽器預覽與 network／console 驗收紀錄"
         }
       ],
+      "note": "2026-08-25 已完成 FJ00-A1 至 FJ00-A4 本機階段：桌機 1317px 與手機 390px 盤點皆只觀察到 4 個 sgoods.info CSS、0 個舊網域 JS／字型／圖片請求；已建立頁面工作檔、scoped fj-home-page-0.css、兩個 iSchool 後台 blocks、manifest 與可重跑驗證。fj-custom-admi00 的 3 個舊圖片 URL 已改為 FJ 相對路徑並補齊圖示。桌機／手機本機預覽 6 張圖片載入、無水平溢出、無 console error。FJ00-A5 尚待 Vincent 另行授權 commit、push、Zeabur 部署與 iSchool 更新。",
+      "remaining_gate": "FJ00-A5：精確範圍 commit／push、Zeabur 終態與公開 URL 驗證，以及 Page 0 iSchool 貼回後的 network／console／視覺驗收。",
       "goal_alignment": {
         "project_id": "school-static-assets",
         "goal_ref": "$COLLAB/harness-mc/milestones/school-static-assets/project.json#/goals",
@@ -205,8 +207,154 @@
               "$COLLAB/school-static-assets/fj-admi/"
             ],
             "recorded_at": "2026-08-25"
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "FJ00-A1 至 FJ00-A4 本機盤點、scoped CSS、後台 blocks、manifest、可重跑測試及桌機／手機預覽均已通過；FJ00-A5 保留為外部發布與 iSchool 驗收閘門。",
+            "evidence_refs": [
+              "$COLLAB/FJ/260816_FJ_116_招生_html/02_招生html/260825_116_FJSH_入口頁/manifest/fj-page-0.json",
+              "$COLLAB/FJ/260816_FJ_116_招生_html/02_招生html/260825_116_FJSH_入口頁/tests/verify-fj-page-0.mjs",
+              "$COLLAB/FJ/260816_FJ_116_招生_html/02_招生html/260825_116_FJSH_入口頁/preview/fj-page-0-preview.html",
+              "$COLLAB/school-static-assets/fj-admi/css/fj-home-page-0.css"
+            ],
+            "recorded_at": "2026-08-25"
           }
         ]
+      }
+    },
+    {
+      "id": "fj-page-0-home-assets",
+      "title": "規劃並遷移 FJ 首頁（Page 0）舊網域 CSS 資產",
+      "status": "in_progress",
+      "track": "migration",
+      "order_label": "SSA-03B",
+      "priority": "P0",
+      "capability_domain": "action-delivery",
+      "task_kind": "implement",
+      "dependencies": ["p1-1"],
+      "done_condition": "FJ 首頁 Page 0 的四個 sgoods.info CSS 連結與實際使用的間接資產已改由 fj-admi 託管，首頁專屬內嵌樣式已整理為受限範圍的獨立 CSS，後台貼用片段及桌機／手機 iSchool 驗收均完成。",
+      "acceptance": [
+        "保留 Page 0 直接 CSS、內嵌 style、CSS 內部字型與圖片依賴的可追溯盤點；未使用的 library 資產不得誤列為本頁必遷移項目。",
+        "所有 FJ 資產維持 fj-admi 校別根目錄；首頁工作檔集中於 Vincent 指定的 260825_116_FJSH_入口頁資料夾。",
+        "後台貼用片段只引用 Zeabur FJ CSS，實際頁面零 sgoods.info 請求，且桌機／手機版面、輪播、選單、K–12 區塊與 Footer 正常。"
+      ],
+      "acceptance_matrix": [
+        {
+          "id": "FJ00-A1",
+          "check": "Page 0 直接與間接舊網域依賴盤點",
+          "prerequisites": ["Page 0 線上來源與既有 FJ CSS 可讀"],
+          "steps": ["記錄四個 sgoods.info CSS 直接引用與首頁內嵌 style", "以頁面實際使用狀態盤點 CSS 內的字型與圖片請求", "確認本頁沒有 sgoods.info JavaScript 引用"],
+          "pass_condition": "manifest 可追溯每個本頁必要依賴的來源、目標路徑、類型與狀態，並把 library 未使用引用分開標示",
+          "fail_condition": "只替換 link 而漏列 CSS 間接依賴，或把未驗證的 library 引用當成本頁必要資產",
+          "verification": "Page 0 原始碼、瀏覽器 network／computed style 與 manifest 對照"
+        },
+        {
+          "id": "FJ00-A2",
+          "check": "首頁工作檔與專屬 CSS 管理",
+          "prerequisites": ["FJ00-A1 通過", "Vincent 指定工作資料夾可用"],
+          "steps": ["在 260825_116_FJSH_入口頁建立 blocks、css、manifest 等頁面工作檔", "將內嵌 style 整理為 fj-home-page-0.css", "以 fj-home-page-0 外層 class 限制 img、svg 與 col-lg-3 等通用規則"],
+          "pass_condition": "工作檔一頁一處管理，首頁專屬 CSS 不以全域選擇器干擾其他 iSchool 元件",
+          "fail_condition": "工作檔散落、仍保留危險全域規則，或把首頁專屬 CSS 混入其他頁面檔案",
+          "verification": "檔案樹、scoped CSS selector 檢查與本機預覽"
+        },
+        {
+          "id": "FJ00-A3",
+          "check": "FJ 共用 CSS 與間接資產閉合",
+          "prerequisites": ["FJ00-A1 通過", "必要資產來源可追溯"],
+          "steps": ["將四個舊 CSS 對應至 fj-plugins、fj-style-5、fj-custom-admi01、fj-custom-admi00", "修正 fj-custom-admi00 的 next4、pre4、gototop4 舊網址", "補齊本頁實際使用且缺少的字型或圖片"],
+          "pass_condition": "正式 FJ CSS 與本頁所需資產完整，且釋出內容零可執行 sgoods.info URL",
+          "fail_condition": "任何必要資產缺檔、跨校路徑混用、雜湊來源不明或 CSS 仍依賴舊網域",
+          "verification": "scoped rg、檔案存在／SHA-256 與本機 HTTP 載入檢查"
+        },
+        {
+          "id": "FJ00-A4",
+          "check": "iSchool 後台貼用片段與本機預覽",
+          "prerequisites": ["FJ00-A2 與 FJ00-A3 通過"],
+          "steps": ["建立依序載入四個共用 CSS 與一個首頁專屬 CSS 的 head 片段", "在 K–12 HTML 加入首頁專屬外層 class", "檢查桌機與手機畫面"],
+          "pass_condition": "後台貼用碼責任清楚、零 sgoods.info，且本機預覽沒有水平溢出或元件樣式衝突",
+          "fail_condition": "貼用碼混入 JS、CSS 順序錯誤、舊網域殘留或版面回歸",
+          "verification": "prepared HTML 靜態檢查與桌機／手機本機預覽"
+        },
+        {
+          "id": "FJ00-A5",
+          "check": "GitHub／Zeabur 與 Page 0 iSchool 驗收",
+          "prerequisites": ["FJ00-A1 至 A4 通過", "Vincent 另行授權 commit、push、部署與 iSchool 更新"],
+          "steps": ["精確範圍 commit、push 並等待 Zeabur 終態", "驗證公開 CSS／必要資產 URL", "貼回 iSchool 後檢查 network、console、桌機與手機畫面"],
+          "pass_condition": "公開資產回應成功，Page 0 零 sgoods.info 請求，輪播、選單、K–12 區塊與 Footer 正常且無水平溢出",
+          "fail_condition": "部署未達終態、任一必要資產失敗、仍請求舊網域或頁面互動／視覺回歸",
+          "verification": "Zeabur 終態、HTTP 檢查與 Page 0 iSchool network／console／視覺驗收"
+        }
+      ],
+      "goal_alignment": {
+        "project_id": "school-static-assets",
+        "goal_ref": "$COLLAB/harness-mc/milestones/school-static-assets/project.json#/goals",
+        "goal_fingerprint": "sha256:dfb5cef2197545f3e0ea6b879bf89c982738347ba2c06baea2574079b7c5e89a",
+        "contribution": "把 FJ 首頁的舊網域 CSS 與專屬樣式轉為可追溯、可部署且不干擾 iSchool 其他元件的校別資產。",
+        "evidence_plan": ["FJ Page 0 asset manifest", "首頁工作檔與 scoped CSS", "Zeabur 公開載入結果", "Page 0 iSchool 驗收紀錄"],
+        "reviewed_at": "2026-08-25"
+      },
+      "hc_decision": {
+        "task_scope": "school-static-assets/fj-page-0-home-assets",
+        "not_required_reason": "本 task 是既定 school-static-assets 架構內的單頁 CSS 與靜態資產遷移，不變更 control-plane、workflow、gate、validator、skill 或共享 Agent 行為。",
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/school-static-assets/project.json",
+          "$COLLAB/harness-mc/milestones/school-static-assets/tasks.json#fj-page-0-home-assets"
+        ],
+        "source_boundary": "HC 在本 task 僅是思考檢查且不作必要決策閘門；MC tasks.json、資產 manifest 與實際頁面驗證維持正本。"
+      },
+      "jv32_route": {"workflows": ["task-lifecycle"]},
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准建立 FJ 首頁 Page 0 舊網域 CSS 遷移 task，並指定頁面工作檔位置。",
+            "evidence_refs": [
+              "Vincent 2026-08-25: 可以建立 task，檔案建在這",
+              "https://www.shsh.kl.edu.tw/ischool/publish_page/0/",
+              "$COLLAB/FJ/260816_FJ_116_招生_html/02_招生html/260825_116_FJSH_入口頁",
+              "$COLLAB/harness-mc/milestones/school-static-assets/project.json"
+            ],
+            "recorded_at": "2026-08-25"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 明確指示可以進行，啟動 FJ00-A1 至 FJ00-A4 本機資產盤點、工作檔與預覽驗證；commit、push、Zeabur 與 iSchool 更新仍不在本次授權。",
+            "evidence_refs": [
+              "Vincent 2026-08-25: 可以進行",
+              "$COLLAB/harness-mc/milestones/school-static-assets/tasks.json#fj-page-0-home-assets"
+            ],
+            "recorded_at": "2026-08-25"
+          }
+        ]
+      },
+      "execution_contract": {
+        "owner": "Vincent",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/school-static-assets/tasks.json#fj-page-0-home-assets",
+        "inputs": [
+          "https://www.shsh.kl.edu.tw/ischool/publish_page/0/",
+          "$COLLAB/FJ/260816_FJ_116_招生_html/02_招生html/260825_116_FJSH_入口頁",
+          "$COLLAB/school-static-assets/fj-admi/"
+        ],
+        "outputs": [
+          "$COLLAB/FJ/260816_FJ_116_招生_html/02_招生html/260825_116_FJSH_入口頁 的頁面工作檔",
+          "$COLLAB/school-static-assets/fj-admi/css/fj-home-page-0.css",
+          "FJ Page 0 iSchool 後台貼用片段與資產 manifest"
+        ],
+        "verifiers": ["task schema validation", "scoped old-domain scan", "local desktop／mobile preview", "Zeabur HTTP checks", "iSchool network／console verification"],
+        "allowed_scope": [
+          "$COLLAB/harness-mc/milestones/school-static-assets/tasks.json",
+          "$COLLAB/FJ/260816_FJ_116_招生_html/02_招生html/260825_116_FJSH_入口頁/",
+          "$COLLAB/school-static-assets/fj-admi/"
+        ],
+        "stop_condition": "若必要資產來源無法追溯、FJ 指定路徑出現不明同檔修改、或 iSchool／部署授權尚未取得，停止在對應閘門且不宣稱完成。",
+        "execution_boundary": "建立 task 與本機工作檔不等於授權 commit、push、Zeabur 部署或修改 iSchool；這些外部動作須由 Vincent 另行授權。"
       }
     },
     {
@@ -218,7 +366,7 @@
       "priority": "P1",
       "capability_domain": "verification-immunity",
       "task_kind": "verify",
-      "dependencies": ["p1-2", "p1-3"],
+      "dependencies": ["p1-2", "p1-3", "fj-page-0-home-assets"],
       "done_condition": "KJ 與 FJ 的 manifest、公開 HTTP 載入與 iSchool 實測都已完成；任何未遷移資產或相容性缺口都有明確後續 task。",
       "acceptance": [
         "兩校各有可重跑的代表性 HTTP 載入驗證。",
@@ -244,6 +392,17 @@
             "reason": "完整替代 sgoods.info 必須由公開載入與 iSchool 相容性共同驗收。",
             "evidence_refs": ["$COLLAB/harness-mc/milestones/school-static-assets/project.json"],
             "recorded_at": "2026-08-16"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "新增 FJ 首頁 Page 0 舊網域 CSS 遷移 task 後，將其納入兩校公開載入與 iSchool 相容性總驗收相依項目。",
+            "evidence_refs": [
+              "Vincent 2026-08-25: 可以建立 task，檔案建在這",
+              "$COLLAB/harness-mc/milestones/school-static-assets/tasks.json#fj-page-0-home-assets"
+            ],
+            "recorded_at": "2026-08-25"
           }
         ]
       }

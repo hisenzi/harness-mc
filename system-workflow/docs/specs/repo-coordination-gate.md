@@ -31,6 +31,22 @@ Do not copy the complete state table into entry files or another registry.
 Cross-repo publication order is fixed: publish this `harness-mc` contract first,
 verify remote truth, then publish the `notyet-harness` CORE/Skill references.
 
+## Quick bootstrap 例外
+
+本契約的 Repo Ready 與 Remote Closeout 管理一般 repo 修改及所有 Git 生命週期；
+不適用於 Quick 的受控原子開案交易。唯一例外是明確執行
+`$COLLAB/harness-mc/scripts/new-project.py quick`，並只寫入其定義的 README、
+最小 project.json、tasks.json 與 topology record。
+
+Quick 不得先執行 Repo Ready，也不讀取、判定或處理 Git／GitHub、commit、push、
+branch、worktree、部署或同步。已正式 commit 但尚未 push 的批次，以及無關 root 的
+global maintenance，只能出現在 Quick receipt 的 maintenance 資訊；不得阻擋合法
+target。Quick 的安全邊界只由 `project-init` Skill 的三項 Gate Budget 決定。
+
+Quick receipt 回傳後，任何後續 Git 生命週期或一般 repo 修改立即重新適用本契約。
+此例外不允許以 Quick 名義繞過 target 自身衝突、非 canonical destination、
+path／symlink escape、blocked migration 或無法完整回復的交易。
+
 ## Default Direct-Main Workflow
 
 For single-developer sequential work, the workflow does not create an

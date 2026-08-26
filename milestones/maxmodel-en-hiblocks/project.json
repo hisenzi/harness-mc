@@ -1,0 +1,14 @@
+{
+  "name": "Maxmodel 英文站 HiBlocks 轉換",
+  "description": "將 Maxmodel 英文 Joomla 首頁轉為可驗收的 HiBlocks/Astro 品牌站。",
+  "status": "active",
+  "created": "2026-08-26",
+  "project_code": "MMEN",
+  "project_folder": "$COLLAB/maxmodel-en-hiblocks",
+  "why_opened": "現有英文站依賴 Joomla 與 SP Page Builder，難以以可維護的元件方式持續更新。",
+  "mvp_goal": "完成英文首頁內容與資產盤點，以及核准內容到 HiBlocks 區塊的可追溯對應。",
+  "final_goal": "完成可部署、可維護且保留英文站核心商業內容的 Maxmodel HiBlocks 品牌站。",
+  "tracks": {
+    "mvp": "MVP"
+  }
+}

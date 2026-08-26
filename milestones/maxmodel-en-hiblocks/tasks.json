@@ -1,0 +1,41 @@
+{
+  "project": "maxmodel-en-hiblocks",
+  "tasks": [
+    {
+      "id": "quick-open",
+      "title": "完成快速開案流程",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "MMEN-MVP-01",
+      "dependencies": [],
+      "done_condition": "README.md、最小 project.json、MVP tasks、formalize checkpoint、專案拓樸與局部驗證均完成，且 tasks 已可在 MC 查看"
+    },
+    {
+      "id": "mmen-mvp-content-inventory",
+      "title": "完成英文首頁內容與資產盤點",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "MMEN-MVP-02",
+      "dependencies": [],
+      "done_condition": "現有英文首頁的內容群組、文案、圖片、Logo、CTA 與外部連結均有可追溯清單及移植決策，且未寫入正式網站。"
+    },
+    {
+      "id": "mmen-mvp-block-mapping",
+      "title": "完成英文首頁 HiBlocks 區塊對應",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "MMEN-MVP-03",
+      "dependencies": [],
+      "done_condition": "已將核准內容逐段對應至既有 HiBlocks 區塊，並明確標出合作流程等需要下游專屬實作的缺口；未修改上游 HiBlocks。"
+    },
+    {
+      "id": "formalize",
+      "title": "依 MVP 測試結果啟動正式補完",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "MMEN-MVP-04",
+      "dependencies": [],
+      "done_condition": "已依 MVP 測試結果與最終目標補齊正式專案內容，並建立內容明確且各有驗收標準的正式 tasks"
+    }
+  ]
+}

@@ -11855,7 +11855,7 @@
     {
       "id": "quick-init-ten-second-atomic-v1",
       "title": "Quick 開案 10 秒：原子化與 scoped admission",
-      "status": "in_progress",
+      "status": "completed",
       "track": "governance",
       "order_label": "MW-PI-03",
       "priority": "high",
@@ -11929,7 +11929,7 @@
         }
       ],
       "jv32_route": {
-        "workflows": ["task-lifecycle"],
+        "workflows": ["task-lifecycle", "closeout-commit-routing"],
         "decision_input": [
           "第 10 節模擬驗證發現現行 Quick 先寫入後 admission，且 target/global status 不清楚。",
           "Vincent 於 2026-08-26 核准以獨立 task 處理 Quick 10 秒優化。"
@@ -12022,6 +12022,50 @@
               "$COLLAB/notyet-harness/000_Agent/skills/project-init/SKILL.md"
             ],
             "recorded_at": "2026-08-26"
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "Vincent 重新定義完成邊界：在本機滿足 done condition、驗收與可重跑驗證即為 task 完成；push 是獨立 delivery，不能阻擋 MW-PI-03 的完成。Q10-A01～Q10-A06 與原有 Quick verifier 均已通過，且本機 commit 已留下驗收回寫。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#quick-init-ten-second-atomic-v1.acceptance_matrix",
+              "$COLLAB/harness-mc/scripts/verify-project-init-quick-v2.mjs",
+              "$COLLAB/harness-mc/scripts/verify-project-init-quick.mjs",
+              "$COLLAB/harness-mc/scripts/verify-project-write-admission.mjs",
+              "$COLLAB/harness-mc/scripts/verify-project-init-admission.mjs",
+              "$COLLAB/harness-mc/scripts/verify-project-topology-maintenance.mjs",
+              "$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/SKILL.md",
+              "Vincent 2026-08-26 current session: 重新定義；在本機完成就是完成；push 是另一件事"
+            ],
+            "recorded_at": "2026-08-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-project-init-fast-default-v2",
+                "morrowise/project-topology-architecture-atlas"
+              ],
+              "scope_comparison": {
+                "problem": "Quick 原子化與 scoped admission 的技術問題已完成；本次只釐清已驗收 task 的本機完成與遠端 delivery 邊界。",
+                "owner_source_of_truth": "MW-PI-03 仍由 MorroWise tasks.json 擁有；worktree-commit Skill 只提供共用的本機 completion／delivery 判讀規則。",
+                "inputs_outputs": "輸入仍是既有 Q10 acceptance matrix、Quick verifiers 與本機 commits；輸出改為 completed task status，加上獨立 pending_push delivery 說明。",
+                "lifecycle_completion": "本機完成依 done condition 與本機 evidence 結束 task；後續 batch push 只補 remote delivery receipt，不會重開或否定本 task。"
+              },
+              "decision_reason": "Vincent 已明確裁定本機完成即完成，且所有 MW-PI-03 驗收已通過；保留 in_progress 會把未授權的 push 誤當功能缺口。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-26",
+                "evidence_refs": [
+                  "Vincent 2026-08-26 current session: 重新定義；在本機完成就是完成；push 是另一件事"
+                ]
+              }
+            },
+            "delivery": {
+              "status": "pending_push",
+              "boundary": "遠端 delivery 與 task completion 分離。",
+              "next_action": "依 Vincent 另行指定的 batch push 處理遠端交付與 remote verification。"
+            }
           }
         ]
       },
@@ -12054,9 +12098,68 @@
         "evaluated_at": "2026-08-26",
         "reason": "這是既有 project-init 與 topology admission 的版本改善，不新增新的系統 owner、registry、runtime 或 dashboard surface。"
       },
-      "completed_at": null,
-      "commits": [],
-      "summary": "2026-08-26：第 10 節五階段已完成至最終驗收。canonical acceptance gate 的 Q10-A01～Q10-A06 以 fingerprint sha256:8b7e6e740c48f15991bebd968f7f770b918f6b895101eec5c2f1e7ce421d0883 全數 pass；新／原有 Quick verifier、target-scoped admission、topology maintenance／contract 與 project-init Skill 路由皆已重跑。live topology health 如實維持 global_status: degraded（命令整體 blocked，因既有全域 maintenance）；隔離 Quick fixture 證明合法 target 仍可 created，兩者未混淆。task 維持 in_progress，等待 Vincent 決定本輪 canonical task 回寫與已存在本機 commits 的後續 commit／batch push。"
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "Quick candidate bootstrap 先驗證後原子提交，拒絕或中斷不留下半成品。",
+          "合法 target 的 receipt 與無關 global maintenance 分離。",
+          "20 次隔離 Quick fixture 的 p95 不超過 10 秒，且不產生 Git、部署、同步或通知副作用。"
+        ],
+        "test_level": [
+          "isolated integration fixture",
+          "admission and topology contract",
+          "performance regression"
+        ],
+        "red_command": "node scripts/verify-project-init-quick-v2.mjs",
+        "expected_red_reason": "在核心修正前，Quick 專用 14 個隔離 fixture 依契約預期 RED，因 candidate admission、原子 transaction 與 target/global receipt 尚未實作。",
+        "green_command": "node scripts/verify-project-init-quick-v2.mjs && node scripts/verify-project-init-quick.mjs",
+        "full_regression_commands": [
+          "node scripts/verify-project-init-quick-v2.mjs",
+          "node scripts/verify-project-init-quick.mjs",
+          "npm run test:project-write-admission",
+          "npm run test:project-init-admission",
+          "npm run test:project-topology-maintenance",
+          "node scripts/validate-tasks.mjs --changed-only"
+        ],
+        "fixture_refs": [
+          "$COLLAB/harness-mc/scripts/verify-project-init-quick-v2.mjs",
+          "$COLLAB/harness-mc/scripts/verify-project-init-quick.mjs"
+        ],
+        "runtime_evidence_required": false,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-08-17-project-init-fast-default-v2-temporary-tracker.md#10-morrowise-快速開案10秒目標優化計畫",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#quick-init-ten-second-atomic-v1.acceptance_matrix"
+        ]
+      },
+      "completion_evidence": {
+        "red_evidence": [
+          "2026-08-26：Quick 專用 verifier 的 14 個隔離 fixture 在實作前均以預期 RED 確認契約會抓到缺少的 candidate admission、transaction 與 scoped status 行為。"
+        ],
+        "green_evidence": [
+          "2026-08-26：node scripts/verify-project-init-quick-v2.mjs 通過，包含成功、衝突、path／symlink escape、global degraded、途中失敗、併發、無外部副作用與 20 次效能情境。",
+          "2026-08-26：node scripts/verify-project-init-quick.mjs 通過。"
+        ],
+        "regression_evidence": [
+          "2026-08-26：npm run test:project-write-admission、npm run test:project-init-admission 與 npm run test:project-topology-maintenance 通過。",
+          "2026-08-26：canonical acceptance gate 的 Q10-A01～Q10-A06 全數 pass，matrix fingerprint 為 sha256:8b7e6e740c48f15991bebd968f7f770b918f6b895101eec5c2f1e7ce421d0883。",
+          "2026-08-26：node scripts/validate-tasks.mjs --changed-only 與 git diff --check 通過。"
+        ],
+        "verifier_refs": [
+          "node scripts/verify-project-init-quick-v2.mjs",
+          "node scripts/verify-project-init-quick.mjs",
+          "npm run test:project-write-admission",
+          "npm run test:project-init-admission",
+          "npm run test:project-topology-maintenance",
+          "node scripts/validate-tasks.mjs --changed-only"
+        ],
+        "fixture_runtime_boundary": "驗收使用隔離 fixture 與外部命令攔截，證明 Quick 的本機行為、transaction、receipt、效能與零副作用；本 task 的 done condition 未宣稱 deployed runtime、外部同步或通知，因此不以 fixture 冒充遠端 delivery。"
+      },
+      "completed_at": "2026-08-26",
+      "commits": [
+        "bffdeec5ef424ba5fc3b88c397c8e83f1a8cdc73",
+        "a8f7846f18a672e4606cd9eb2b3e1bab8116d60f"
+      ],
+      "summary": "2026-08-26：MW-PI-03 已在本機完成。Q10-A01～Q10-A06 以 fingerprint sha256:8b7e6e740c48f15991bebd968f7f770b918f6b895101eec5c2f1e7ce421d0883 全數 pass；新／原有 Quick verifier、target-scoped admission、topology maintenance／contract 與 project-init Skill 路由均已重跑。全域 topology health 如實維持 degraded，但隔離 Quick fixture 證明合法 target 仍可 ready／created，兩者未混淆。依 Vincent 2026-08-26 的完成邊界，task 已 completed；batch push 是獨立的 pending delivery，不代表功能或 task 尚未完成。"
     }
   ]
 }

@@ -26,6 +26,7 @@
     "test:git-isolation-approval": "node scripts/verify-explicit-git-isolation-approval.mjs",
     "test:direct-main-workflow": "node scripts/verify-direct-main-workflow-policy.mjs",
     "test:repo-coordination-runtime": "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case all-local",
+    "test:local-c1-runtime": "node scripts/verify-local-c1-runtime.mjs",
     "test:phase3-jv37-admission": "node scripts/verify-morrowise-phase3-jv37-admission.mjs --case jv37-admission-fixtures",
     "repo:coordination": "node scripts/repo-coordination-runtime.mjs",
     "morrowise:phase3-jv37-admission": "node scripts/morrowise-phase3-jv37-admission.mjs",

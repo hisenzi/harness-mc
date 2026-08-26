@@ -6,6 +6,7 @@ import { writeTaskEvent } from "./task-event-outbox.mjs";
 import {
   acquireRemoteClaim,
   classifyRepoSnapshot,
+  commitLocalC1,
   inspectAuthorizationContinuation,
   inspectCloseoutState,
   inspectTerminalCloseout,
@@ -14,6 +15,7 @@ import {
   prepareRemoteRelease,
   recordC1Delivery,
   integrateC1Deliveries,
+  listLocalC1Receipts,
   recordPilotObservation,
   recordVerifierEvidence,
   repoReady,
@@ -39,6 +41,30 @@ if (options.command === "event") {
     commitScope: options.commitScope,
     signedRecord: options.signedObservationPath ? readJson(options.signedObservationPath) : null,
   });
+} else if (options.command === "local-c1-commit") {
+  requireOption(options.repoPath, "--repo <path>");
+  requireOption(options.eventId, "--event <id>");
+  requireOption(options.projectId, "--project <id>");
+  requireOption(options.taskId, "--task <id>");
+  requireOption(options.sessionId, "--session <id>");
+  requireOption(options.actor, "--actor <id>");
+  requireOption(options.message, "--message <text>");
+  requireOption(options.verifierId, "--verifier-id <id>");
+  requireOption(options.verifierCommand, "--verifier-command <command>");
+  result = commitLocalC1({
+    repoPath: options.repoPath,
+    eventId: options.eventId,
+    projectId: options.projectId,
+    taskId: options.taskId,
+    sessionId: options.sessionId,
+    actor: options.actor,
+    message: options.message,
+    scopePaths: options.commitScope,
+    verifier: { id: options.verifierId, command: options.verifierCommand, args: options.verifierArgs },
+  });
+} else if (options.command === "local-c1-pending") {
+  requireOption(options.repoPath, "--repo <path>");
+  result = { decision: "READY", reason: "local_c1_pending_listed", receipts: listLocalC1Receipts({ repoPath: options.repoPath }) };
 } else if (options.command === "remote-claim") {
   const input = readJson(options.inputPath);
   requireOption(options.repoPath, "--repo <path>");
@@ -210,6 +236,11 @@ function parseArgs(argv) {
     c2Sha: null,
     baseSha: null,
     commitSha: null,
+    eventId: null,
+    message: null,
+    verifierId: null,
+    verifierCommand: null,
+    verifierArgs: [],
     actor: null,
     pilotId: null,
     environmentId: null,
@@ -237,6 +268,11 @@ function parseArgs(argv) {
     else if (arg === "--c2") options.c2Sha = argv[++index] || null;
     else if (arg === "--base") options.baseSha = argv[++index] || null;
     else if (arg === "--commit") options.commitSha = argv[++index] || null;
+    else if (arg === "--event") options.eventId = argv[++index] || null;
+    else if (arg === "--message") options.message = argv[++index] || null;
+    else if (arg === "--verifier-id") options.verifierId = argv[++index] || null;
+    else if (arg === "--verifier-command") options.verifierCommand = argv[++index] || null;
+    else if (arg === "--verifier-arg") options.verifierArgs.push(argv[++index] || "");
     else if (arg === "--actor") options.actor = argv[++index] || null;
     else if (arg === "--pilot-id") options.pilotId = argv[++index] || null;
     else if (arg === "--environment") options.environmentId = argv[++index] || null;

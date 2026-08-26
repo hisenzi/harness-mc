@@ -53,8 +53,23 @@ const RUNTIME_SOURCE_FILES = [
   "scripts/repo-coordination-runtime.mjs",
   "scripts/morrowise-phase3-jv37-admission.mjs",
   "scripts/verify-multi-machine-repo-coordination-gate.mjs",
+  "scripts/verify-local-c1-runtime.mjs",
   "scripts/task-event-outbox.mjs",
   "scripts/apply-task-events.mjs",
+];
+
+const LOCAL_C1_NOTE_REF = "refs/notes/jv37-local-c1";
+const LOCAL_C1_REQUIRED_FIELDS = [
+  "event_id",
+  "project_id",
+  "task_id",
+  "session_id",
+  "actor",
+  "base_sha",
+  "c1_sha",
+  "scope_paths",
+  "verifier",
+  "verified_at",
 ];
 
 export function acquireClaim(activeClaim, proposedClaim) {
@@ -1116,6 +1131,276 @@ export function runtimeSourceDigest() {
     hash.update("\0");
   }
   return `sha256:${hash.digest("hex")}`;
+}
+
+export function validateLocalC1Receipt(receipt = {}) {
+  const missing = LOCAL_C1_REQUIRED_FIELDS.filter((field) => {
+    const value = receipt[field];
+    return value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0);
+  });
+  if (missing.length > 0) return blocked("local_c1_receipt_invalid", `missing=${missing.join(",")}`);
+  if (receipt.version !== 1) return blocked("local_c1_receipt_invalid", "version must be 1");
+  if (!isGitSha(receipt.base_sha) || !isGitSha(receipt.c1_sha)) {
+    return blocked("local_c1_receipt_invalid", "base_sha and c1_sha must be commit SHAs");
+  }
+  if (!Array.isArray(receipt.scope_paths)
+    || receipt.scope_paths.some((filePath) => !isSafeRepoPath(filePath))
+    || new Set(receipt.scope_paths).size !== receipt.scope_paths.length) {
+    return blocked("local_c1_receipt_invalid", "scope_paths must be unique repository-relative paths");
+  }
+  if (receipt.state !== "committed_local") {
+    return blocked("local_c1_terminal_state_forbidden", `state=${receipt.state || "missing"}`);
+  }
+  if (receipt.pending_delivery !== true) return blocked("local_c1_receipt_invalid", "pending_delivery must be true");
+  if (!receipt.verifier || typeof receipt.verifier !== "object"
+    || !receipt.verifier.id
+    || !receipt.verifier.command
+    || !Array.isArray(receipt.verifier.args)
+    || receipt.verifier.status !== "passed"
+    || !/^[0-9a-f]{64}$/i.test(String(receipt.verifier.output_sha256 || ""))) {
+    return blocked("local_c1_receipt_invalid", "verifier must contain id, command, args, passed status, and output_sha256");
+  }
+  if (Number.isNaN(Date.parse(receipt.verified_at))) return blocked("local_c1_receipt_invalid", "verified_at must be ISO-8601");
+  return { decision: "READY", reason: "local_c1_receipt_valid", receipt: normalizeLocalC1Receipt(receipt) };
+}
+
+export function acquireLocalC1Lock(options = {}) {
+  const repoPath = path.resolve(options.repoPath || ".");
+  if (!options.sessionId) return blocked("local_c1_lock_invalid", "session_id is required");
+  const lockPath = localC1LockPath(repoPath);
+  try {
+    fs.mkdirSync(lockPath);
+    fs.writeFileSync(path.join(lockPath, "owner.json"), `${JSON.stringify({ session_id: options.sessionId, acquired_at: options.acquiredAt || new Date().toISOString() })}\n`);
+    return { decision: "READY", reason: "local_c1_lock_acquired" };
+  } catch (error) {
+    if (error?.code !== "EEXIST") throw error;
+    const owner = readJsonFile(path.join(lockPath, "owner.json"));
+    return blocked("local_c1_lock_unavailable", owner?.session_id ? `session=${owner.session_id}` : "owner_unknown");
+  }
+}
+
+export function releaseLocalC1Lock(options = {}) {
+  const repoPath = path.resolve(options.repoPath || ".");
+  if (!options.sessionId) return blocked("local_c1_lock_invalid", "session_id is required");
+  const lockPath = localC1LockPath(repoPath);
+  if (!fs.existsSync(lockPath)) return blocked("local_c1_lock_missing");
+  const owner = readJsonFile(path.join(lockPath, "owner.json"));
+  if (!owner || owner.session_id !== options.sessionId) return blocked("local_c1_lock_owner_mismatch");
+  fs.rmSync(lockPath, { recursive: true, force: false });
+  return { decision: "READY", reason: "local_c1_lock_released" };
+}
+
+export function commitLocalC1(options = {}) {
+  const repoPath = path.resolve(options.repoPath || ".");
+  const scopePaths = normalizeScopePaths(options.scopePaths);
+  const input = validateLocalC1Input({ ...options, scopePaths });
+  if (input.decision !== "READY") return input;
+  const verifier = runLocalVerifier(repoPath, options.verifier);
+  if (verifier.decision !== "READY") return verifier;
+  const lock = acquireLocalC1Lock({ repoPath, sessionId: options.sessionId });
+  if (lock.decision !== "READY") return lock;
+  try {
+    const baseSha = git(repoPath, ["rev-parse", "HEAD"]);
+    if (baseSha.status !== 0) return blocked("local_c1_base_unavailable");
+    const stage = git(repoPath, ["add", "--", ...scopePaths]);
+    if (stage.status !== 0) return blocked("local_c1_stage_failed", trimEvidence(stage.stderr || stage.stdout));
+    const stagedPaths = commitPathsFromIndex(repoPath, scopePaths);
+    if (!samePathSet(stagedPaths, scopePaths)) return blocked("local_c1_scope_mismatch", `staged=${stagedPaths.join(",")}`);
+    const commit = git(repoPath, ["commit", "--only", "-m", options.message, "--", ...scopePaths]);
+    if (commit.status !== 0) return blocked("local_c1_commit_failed", trimEvidence(commit.stderr || commit.stdout));
+    const c1Sha = git(repoPath, ["rev-parse", "HEAD"]);
+    if (c1Sha.status !== 0) return blocked("local_c1_commit_missing");
+    const recorded = recordLocalC1Receipt({
+      ...options,
+      repoPath,
+      scopePaths,
+      baseSha: baseSha.stdout.trim(),
+      c1Sha: c1Sha.stdout.trim(),
+      verifier: verifier.evidence,
+      verifiedAt: verifier.evidence.verified_at,
+    });
+    if (recorded.decision !== "READY") return blocked("local_c1_receipt_failed_after_commit", `${recorded.reason}: ${recorded.details || ""}`);
+    return { decision: "READY", reason: "local_c1_committed", receipt: recorded.receipt };
+  } finally {
+    const release = releaseLocalC1Lock({ repoPath, sessionId: options.sessionId });
+    if (release.decision !== "READY") throw new Error(`cannot release local C1 lock: ${release.reason}`);
+  }
+}
+
+export function recordLocalC1Receipt(options = {}) {
+  const repoPath = path.resolve(options.repoPath || ".");
+  const c1Sha = options.c1Sha || options.c1_sha;
+  const baseSha = options.baseSha || options.base_sha;
+  const scopePaths = normalizeScopePaths(options.scopePaths || options.scope_paths);
+  if (!isGitSha(c1Sha) || git(repoPath, ["cat-file", "-e", `${c1Sha}^{commit}`]).status !== 0) {
+    return blocked("local_c1_commit_missing");
+  }
+  const receipt = {
+    version: 1,
+    event_id: options.eventId || options.event_id,
+    project_id: options.projectId || options.project_id,
+    task_id: options.taskId || options.task_id,
+    session_id: options.sessionId || options.session_id,
+    actor: options.actor,
+    base_sha: baseSha,
+    c1_sha: c1Sha,
+    scope_paths: scopePaths,
+    verifier: normalizeVerifierEvidence(options.verifier),
+    verified_at: options.verifiedAt || options.verified_at || options.verifier?.verified_at || new Date().toISOString(),
+    state: "committed_local",
+    pending_delivery: true,
+  };
+  const validation = validateLocalC1Receipt(receipt);
+  if (validation.decision !== "READY") return validation;
+  if (git(repoPath, ["merge-base", "--is-ancestor", receipt.base_sha, receipt.c1_sha]).status !== 0) {
+    return blocked("local_c1_base_mismatch");
+  }
+  const actualPaths = commitPaths(repoPath, receipt.c1_sha);
+  if (!samePathSet(actualPaths, receipt.scope_paths)) {
+    return blocked("local_c1_scope_mismatch", `expected=${receipt.scope_paths.join(",")}; actual=${actualPaths.join(",")}`);
+  }
+  const existing = readLocalC1Receipt({ repoPath, c1Sha: receipt.c1_sha });
+  if (existing) {
+    return JSON.stringify(existing) === JSON.stringify(validation.receipt)
+      ? { decision: "READY", reason: "local_c1_receipt_already_recorded", receipt: existing }
+      : blocked("local_c1_receipt_exists");
+  }
+  const note = git(repoPath, ["notes", `--ref=${LOCAL_C1_NOTE_REF}`, "add", "-m", `${JSON.stringify(validation.receipt, null, 2)}\n`, receipt.c1_sha]);
+  if (note.status !== 0) return blocked("local_c1_receipt_write_failed", trimEvidence(note.stderr || note.stdout));
+  return { decision: "READY", reason: "local_c1_receipt_recorded", receipt: validation.receipt };
+}
+
+export function readLocalC1Receipt(options = {}) {
+  const repoPath = path.resolve(options.repoPath || ".");
+  const c1Sha = options.c1Sha || options.c1_sha;
+  if (!isGitSha(c1Sha)) return null;
+  const note = git(repoPath, ["notes", `--ref=${LOCAL_C1_NOTE_REF}`, "show", c1Sha]);
+  if (note.status !== 0) return null;
+  try { return normalizeLocalC1Receipt(JSON.parse(note.stdout)); } catch { return null; }
+}
+
+export function listLocalC1Receipts(options = {}) {
+  const repoPath = path.resolve(options.repoPath || ".");
+  const listed = git(repoPath, ["notes", `--ref=${LOCAL_C1_NOTE_REF}`, "list"]);
+  if (listed.status !== 0) return [];
+  return listed.stdout.split(/\r?\n/).filter(Boolean).map((line) => line.trim().split(/\s+/)[1]).filter(isGitSha)
+    .map((c1Sha) => readLocalC1Receipt({ repoPath, c1Sha })).filter(Boolean)
+    .filter((receipt) => receipt.state === "committed_local" && receipt.pending_delivery === true)
+    .sort((left, right) => left.event_id.localeCompare(right.event_id));
+}
+
+function validateLocalC1Input(options) {
+  const missing = [
+    ["event_id", options.eventId],
+    ["project_id", options.projectId],
+    ["task_id", options.taskId],
+    ["session_id", options.sessionId],
+    ["actor", options.actor],
+    ["message", options.message],
+    ["scope_paths", options.scopePaths],
+  ].filter(([, value]) => value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0)).map(([field]) => field);
+  if (missing.length > 0) return blocked("local_c1_input_invalid", `missing=${missing.join(",")}`);
+  if (!options.verifier || typeof options.verifier !== "object"
+    || !options.verifier.id
+    || !options.verifier.command
+    || !Array.isArray(options.verifier.args)) {
+    return blocked("local_c1_input_invalid", "verifier must include id, command, and args");
+  }
+  if (options.scopePaths.some((filePath) => !isSafeRepoPath(filePath))) {
+    return blocked("local_c1_input_invalid", "scope_paths must be unique repository-relative paths");
+  }
+  return { decision: "READY", reason: "local_c1_input_valid" };
+}
+
+function runLocalVerifier(repoPath, verifier) {
+  const result = spawnSync(verifier.command, verifier.args, { cwd: repoPath, encoding: "utf8" });
+  const output = `${result.stdout || ""}${result.stderr || ""}`;
+  if ((result.status ?? 1) !== 0) {
+    return blocked("local_c1_verifier_failed", `id=${verifier.id}; exit=${result.status ?? 1}; output=${trimEvidence(output)}`);
+  }
+  return {
+    decision: "READY",
+    reason: "local_c1_verifier_passed",
+    evidence: {
+      id: verifier.id,
+      command: verifier.command,
+      args: [...verifier.args],
+      status: "passed",
+      output_sha256: sha256(output),
+      verified_at: new Date().toISOString(),
+    },
+  };
+}
+
+function normalizeLocalC1Receipt(receipt) {
+  return {
+    version: 1,
+    event_id: String(receipt.event_id),
+    project_id: String(receipt.project_id),
+    task_id: String(receipt.task_id),
+    session_id: String(receipt.session_id),
+    actor: String(receipt.actor),
+    base_sha: String(receipt.base_sha),
+    c1_sha: String(receipt.c1_sha),
+    scope_paths: normalizeScopePaths(receipt.scope_paths),
+    verifier: normalizeVerifierEvidence(receipt.verifier),
+    verified_at: String(receipt.verified_at),
+    state: "committed_local",
+    pending_delivery: true,
+  };
+}
+
+function normalizeVerifierEvidence(verifier = {}) {
+  return {
+    id: verifier.id,
+    command: verifier.command,
+    args: Array.isArray(verifier.args) ? [...verifier.args] : [],
+    status: verifier.status,
+    output_sha256: verifier.output_sha256,
+  };
+}
+
+function normalizeScopePaths(scopePaths) {
+  return [...new Set((scopePaths || []).map((filePath) => String(filePath).normalize("NFC")).filter(Boolean))].sort();
+}
+
+function isSafeRepoPath(filePath) {
+  const normalized = String(filePath || "").normalize("NFC");
+  return normalized !== "."
+    && !path.posix.isAbsolute(normalized)
+    && !normalized.split("/").includes("..")
+    && normalized === path.posix.normalize(normalized);
+}
+
+function isGitSha(value) {
+  return /^[0-9a-f]{40,64}$/i.test(String(value || ""));
+}
+
+function samePathSet(left, right) {
+  const first = normalizeScopePaths(left);
+  const second = normalizeScopePaths(right);
+  return first.length === second.length && first.every((filePath, index) => filePath === second[index]);
+}
+
+function commitPaths(repoPath, sha) {
+  const result = git(repoPath, ["diff-tree", "--no-commit-id", "--name-only", "-r", sha]);
+  return result.status === 0 ? normalizeScopePaths(result.stdout.split(/\r?\n/)) : [];
+}
+
+function commitPathsFromIndex(repoPath, scopePaths) {
+  const result = git(repoPath, ["diff", "--cached", "--name-only", "--", ...scopePaths]);
+  return result.status === 0 ? normalizeScopePaths(result.stdout.split(/\r?\n/)) : [];
+}
+
+function localC1LockPath(repoPath) {
+  const result = git(repoPath, ["rev-parse", "--git-path", "jv37-local-c1.lock"]);
+  if (result.status !== 0) throw new Error(`cannot resolve local C1 lock: ${result.stderr || result.stdout}`);
+  const value = result.stdout.trim();
+  return path.isAbsolute(value) ? value : path.join(repoPath, value);
+}
+
+function readJsonFile(filePath) {
+  try { return JSON.parse(fs.readFileSync(filePath, "utf8")); } catch { return null; }
 }
 
 function sameClaimOwner(active, proposed) {

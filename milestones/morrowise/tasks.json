@@ -4398,6 +4398,19 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 已確認本機 C1／批次 delivery 與 C2 的臨時執行規格，作為既有 JV-37 的執行方式：每件完成工作留下獨立本機 C1，遠端操作集中在清理批次。runtime C1 c800487 與 worktree-commit C1 8a89d4d 已有 committed_local／pending_delivery receipt。本紀錄不新增 task、不改 acceptance matrix，也不把本機 C1 說成已交付或已完成；JV-37 維持 todo，等待既有實作驗收完成，包含階段二批次機制與 source-bound 真實多 session closeout evidence。",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-08-26-local-c1-batch-closeout-spec.md",
+              "git note refs/notes/jv37-local-c1 on c800487ff4d82dfe1823690b87ebc899a939c3c1",
+              "git note refs/notes/jv37-local-c1 on 8a89d4dae43852e0b5ce2925f2a41af96c97dd13",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate.acceptance_matrix"
+            ],
+            "recorded_at": "2026-08-26"
           }
         ]
       },

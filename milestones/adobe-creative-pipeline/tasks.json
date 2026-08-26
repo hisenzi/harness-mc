@@ -4,12 +4,192 @@
     {
       "id": "acp-001",
       "title": "Capability Probe：確認 Firefly / Photoshop / Illustrator 可控方式",
-      "status": "todo",
+      "status": "in_progress",
       "track": "probe",
       "order": 10,
       "order_label": "01",
       "done_condition": "產出 capability-report.md，分別列出 Firefly API、Photoshop UXP/Actions/API、Illustrator script/plugin/template 的可用方式、限制、fallback、需 Vincent 確認項",
-      "note": "不得讀取或輸出 Adobe secrets；只記錄需要哪些環境變數或授權",
+      "note": "不得讀取或輸出 Adobe secrets；只記錄需要哪些環境變數或授權。2026-08-19 local acceptance 已通過 ACP01-CAP-01 至 ACP01-CAP-04；本 task 維持 in_progress，因本輪未取得 exact-scope commit 授權，delivery state 為 local_validated_uncommitted。",
+      "hc_decision": {
+        "task_scope": "adobe-creative-pipeline/acp-001",
+        "hc_refs": [
+          "#rightProblem",
+          "#breakItDown",
+          "#evidenceBased",
+          "#constraints",
+          "#risk"
+        ],
+        "hc_reasoning": "#rightProblem 將本任務界定為先降低 Adobe 節點的控制不確定性，而不是直接建 mega-plugin 或宣稱已串接成功；#breakItDown 將 probe 拆成 Firefly、Photoshop、Illustrator 三節，各自記錄控制方式、限制、fallback 與下一步；#evidenceBased 要求每個結論回到 Adobe 官方文件、現有 capability registry 與可重跑的本地檢查；#constraints 明確保留 credentials、OAuth token、cookie 與私人授權內容在 shared repo 外；#risk 防止把 API 文件能力誤報成帳號已授權或 live runtime 已驗證。",
+        "hc_confidence": 0.92,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/project.json",
+          "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/tasks.json#acp-001",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+          "Vincent 2026-08-19 approved acp-001 execution scope"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical task state remains this tasks.json；Adobe 官方文件是外部能力證據；capability-report.md 只記錄可追溯的 probe 結果與未決事項，不把文件證據升格為帳號授權、live API success 或已部署能力。"
+      },
+      "acceptance_matrix": [
+        {
+          "id": "ACP01-CAP-01",
+          "what": "Capability report 完整覆蓋 Firefly、Photoshop、Illustrator 三個 Adobe 節點。",
+          "preconditions": [
+            "本任務只做 capability probe，不操作 Adobe 帳號或桌面 App",
+            "三個節點的結論必須分開記錄，不以單一 Illustrator 證據代表整條 pipeline"
+          ],
+          "steps": [
+            "建立 capability-report.md",
+            "逐節記錄官方控制方式、可控範圍、限制、fallback 與 Vincent 待確認項",
+            "核對三節均有明確 status 與 next action"
+          ],
+          "pass_condition": "capability-report.md 存在，且 Firefly、Photoshop、Illustrator 三節各自列出控制方式、限制、fallback、status 與 next action。",
+          "fail_condition": "缺少任一節、只描述產品概念而沒有控制方式，或把一個節點的證據套用到其他節點。",
+          "verification": [
+            "test -f milestones/adobe-creative-pipeline/capability-report.md",
+            "rg -n '^## (Firefly|Photoshop|Illustrator)' milestones/adobe-creative-pipeline/capability-report.md",
+            "人工檢查每節的必填欄位"
+          ]
+        },
+        {
+          "id": "ACP01-CAP-02",
+          "what": "每個節點的能力結論都有來源與安全邊界。",
+          "preconditions": [
+            "官方文件查證完成",
+            "現有 capability registry 已先檢查，未將未登錄能力當成現行共用路由"
+          ],
+          "steps": [
+            "核對每節的官方來源連結、auth/env 需求、輸入輸出與限制",
+            "核對未驗證的本機或帳號狀態有明確標記",
+            "掃描報告內容與 diff 是否出現 token、secret、cookie 或 credential value"
+          ],
+          "pass_condition": "每節均能區分 official evidence、local/account verification、fallback 與 Vincent decision；只記錄環境變數名稱或授權步驟，不含秘密值。",
+          "fail_condition": "缺少來源、把文件能力寫成 live success，或報告／diff 含有秘密內容。",
+          "verification": [
+            "rg -n 'Source|Evidence|Auth|Limit|Fallback|Status|Next action' milestones/adobe-creative-pipeline/capability-report.md",
+            "秘密邊界文字掃描",
+            "git diff --check -- milestones/adobe-creative-pipeline/tasks.json milestones/adobe-creative-pipeline/capability-report.md"
+          ]
+        },
+        {
+          "id": "ACP01-CAP-03",
+          "what": "Illustrator Image Trace 的 API 證據被正確放在 Illustrator 節，並保留其權限限制。",
+          "preconditions": [
+            "Adobe 官方 Illustrator API 文件可取得",
+            "本輪不執行真實 API call"
+          ],
+          "steps": [
+            "查證 Image Trace endpoint、支援輸入／輸出與公開 preset",
+            "查證 authentication 與 access prerequisite",
+            "把 verified、unverified、blocked 三種狀態分開寫入報告"
+          ],
+          "pass_condition": "報告準確記錄官方文件支持的 Image Trace 能力、SVG 輸出與 access boundary，並明確標示尚未取得或驗證的帳號／runtime 狀態。",
+          "fail_condition": "把 API 文件誤報成已可用的本機 Illustrator Desktop bridge、已取得 Adobe API access，或宣稱已產生 SVG。",
+          "verification": [
+            "官方文件 URL 與查證日期檢查",
+            "Illustrator 節人工審閱",
+            "確認沒有 generated artifact 或 live-call receipt 被冒充"
+          ]
+        },
+        {
+          "id": "ACP01-CAP-04",
+          "what": "報告給出可執行的下一步，而不是只留下工具清單。",
+          "preconditions": [
+            "三個節點的 control route 與 fallback 已分開",
+            "credentials 與外部帳號操作不在本輪範圍"
+          ],
+          "steps": [
+            "為每個節點標記 recommended route、blocked/deferred reason 或 required Vincent decision",
+            "指出後續應進入 acp-004、acp-005、acp-006 哪一個 spike",
+            "核對報告沒有擴大到 package manifest、生成影片或部署"
+          ],
+          "pass_condition": "每個節點都有單一 next action，且後續 spike 入口與本輪 scope boundary 可追溯。",
+          "fail_condition": "報告停留在研究摘要、沒有下一步，或把後續 spike／package 工作提前混入本任務。",
+          "verification": [
+            "逐節核對 next action",
+            "確認引用的後續 task id 存在於同一 tasks.json",
+            "人工檢查 scope boundary"
+          ]
+        }
+      ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement"
+        ],
+        "decision_input": [
+          "Adobe 創意素材產線 project.json 的 capability probe 目標",
+          "acp-001 done_condition",
+          "Vincent 2026-08-19 核准的 contract 補齊、官方文件查證與 capability-report scope"
+        ],
+        "decision_output": "在既有 acp-001 內補齊可驗收的 capability probe contract，並產出只含官方證據、控制方式、限制、fallback 與下一步的 capability-report.md。",
+        "execution_boundary": "只修改本 task 在 tasks.json 的 contract 欄位與 milestones/adobe-creative-pipeline/capability-report.md；不得修改 acp-002 至 acp-verify、global capability registry、生成 Adobe 素材、操作外部帳號、commit、push 或部署。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准開始執行 adobe-creative-pipeline 第一個任務；本次先補齊 acp-001 的 HC、驗收、路由、生命週期與目標對齊 contract，再進行官方文件 probe 與報告產出。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/project.json",
+              "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/tasks.json#acp-001",
+              "Vincent 2026-08-19 approved acp-001 execution scope"
+            ],
+            "recorded_at": "2026-08-19"
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "adobe-creative-pipeline",
+        "goal_ref": "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/project.json#/goals",
+        "goal_fingerprint": "sha256:bb375dc7f1bf40634b37ca4359aa1435954baa137a030de2d90458db250fe226",
+        "contribution": "先用可查證的 capability report 降低 Firefly、Photoshop、Illustrator 控制方式與權限邊界的不確定性，為後續三個 Adobe spike 建立可回溯的決策入口。",
+        "evidence_plan": [
+          "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/capability-report.md",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+          "node scripts/validate-tasks.mjs --changed-only --project adobe-creative-pipeline"
+        ],
+        "reviewed_at": "2026-08-19"
+      },
+      "acceptance_receipt": {
+        "matrix_ref": "milestones/adobe-creative-pipeline/tasks.json#acp-001.acceptance_matrix",
+        "matrix_fingerprint": "sha256:f5d6886b70a0eb72ff20678a04947ef9e298c85507b878c78092ef0008e419e9",
+        "caller_matrix_fingerprint": "sha256:f5d6886b70a0eb72ff20678a04947ef9e298c85507b878c78092ef0008e419e9",
+        "required_ids": [
+          "ACP01-CAP-01",
+          "ACP01-CAP-02",
+          "ACP01-CAP-03",
+          "ACP01-CAP-04"
+        ],
+        "results": [
+          {
+            "id": "ACP01-CAP-01",
+            "status": "pass"
+          },
+          {
+            "id": "ACP01-CAP-02",
+            "status": "pass"
+          },
+          {
+            "id": "ACP01-CAP-03",
+            "status": "pass"
+          },
+          {
+            "id": "ACP01-CAP-04",
+            "status": "pass"
+          }
+        ],
+        "exact_id_coverage": true,
+        "all_passed": true,
+        "verified_at": "2026-08-19",
+        "verification_scope": [
+          "milestones/adobe-creative-pipeline/tasks.json#acp-001",
+          "milestones/adobe-creative-pipeline/capability-report.md"
+        ],
+        "delivery_state": "local_validated_uncommitted"
+      },
       "external_refs": {
         "heptabase": {
           "whiteboard": "Adobe 創意素材產線",
@@ -99,12 +279,248 @@
     {
       "id": "acp-006",
       "title": "Spike C：Illustrator 版型或向量輸出節點最小驗證",
-      "status": "todo",
+      "status": "in_progress",
       "track": "adobe-spikes",
       "order": 60,
       "order_label": "06",
       "done_condition": "在 spike-report.md 記錄 Illustrator 可用控制方式，完成或規劃一個 template/layout/vector export 流程，輸出 PDF/SVG/AI 至少一種",
-      "note": "依媒介分流，只有 vector/layout/PDF 類素材需要進 Illustrator",
+      "note": "依媒介分流，只有 vector/layout/PDF 類素材需要進 Illustrator。2026-08-19 依 MVP 暫時需求開始 Stage 2；Illustrator Cloud API 因組織 access blocked，Vincent 核准改走本機 Illustrator fallback；spike-report.md 必須區分 blocked API access、local desktop success 與 live API success。",
+      "hc_decision": {
+        "task_scope": "adobe-creative-pipeline/acp-006",
+        "hc_refs": [
+          "#rightProblem",
+          "#breakItDown",
+          "#evidenceBased",
+          "#constraints",
+          "#risk"
+        ],
+        "hc_reasoning": "#rightProblem 將本階段收斂為驗證 PNG/JPG → Illustrator Image Trace API → SVG 的最小可行節點，不提前建完整 pipeline 或 Desktop UI automation；#breakItDown 拆成 access preflight、最小 trace call、SVG receipt 三段；#evidenceBased 要求以 acp-001 capability report、Adobe 官方 Image Trace 文件與可重跑的本機 access check 為證據；#constraints 禁止讀取或輸出 credentials，只允許檢查環境變數是否存在；#risk 防止把官方文件、API route 或 blocked preflight 誤報成 live API success 或已產生 SVG。",
+        "hc_confidence": 0.94,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/project.json",
+          "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/mvp-requirements-temporary.md",
+          "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/capability-report.md",
+          "https://developer.adobe.com/firefly-services/docs/illustrator/guides/image-trace/",
+          "Vincent 2026-08-19 approved Stage 2 execution"
+        ],
+        "source_boundary": "HC is a thinking check only, not source of truth. Canonical task state remains tasks.json；MVP 暫時需求定義本階段邊界；Adobe 官方文件證明 API contract，不證明帳號 access；spike-report.md 是本次 live／blocked receipt；credentials、token、cookie 與 Adobe 私人授權內容不進 repo。"
+      },
+      "acceptance_matrix": [
+        {
+          "id": "ACP06-MVP-01",
+          "what": "Illustrator Image Trace 的最小 API route 可由官方證據與 MVP 文件對齊。",
+          "preconditions": [
+            "acp-001 capability report 已存在",
+            "MVP 暫時需求明確指定 PNG/JPG → Image Trace → SVG"
+          ],
+          "steps": [
+            "核對 endpoint、輸入格式、preset、job polling 與 SVG 輸出",
+            "核對 spike-report.md 的 route 與官方文件一致"
+          ],
+          "pass_condition": "spike-report.md 清楚記錄官方 route 與 MVP route，沒有把 Desktop UI 當成主要 route。",
+          "fail_condition": "缺少 endpoint／輸出契約，或以未查證的 Desktop automation 代替 API route。",
+          "verification": [
+            "官方 Illustrator Image Trace guide URL",
+            "MVP temporary requirements cross-check",
+            "spike-report.md route review"
+          ]
+        },
+        {
+          "id": "ACP06-MVP-02",
+          "what": "API access preflight 可安全判定是否具備 live call 前提。",
+          "preconditions": [
+            "不讀取 credentials value",
+            "只檢查必要環境變數是否存在"
+          ],
+          "steps": [
+            "檢查 Illustrator API client id／secret／access token 的存在狀態",
+            "記錄 access_ready 或 blocked_missing_access",
+            "確認 report 不含任何 secret value"
+          ],
+          "pass_condition": "報告明確區分 access ready、access blocked 與尚未 live verified；不因文件可行而宣稱成功。",
+          "fail_condition": "輸出秘密值、跳過 access preflight，或將缺少 credentials 誤標為 API success。",
+          "verification": [
+            "環境變數 presence-only check",
+            "secret boundary scan",
+            "spike-report.md status review"
+          ]
+        },
+        {
+          "id": "ACP06-MVP-03",
+          "what": "在 access ready 時完成一次最小 Image Trace live call；access 不足時保留可重跑的 blocked receipt。",
+          "preconditions": [
+            "Adobe API access 已由 Vincent 提供並可在本機安全注入",
+            "測試 PNG/JPG 的來源與輸出位置已明確"
+          ],
+          "steps": [
+            "提交 PNG/JPG 到 Illustrator Image Trace",
+            "poll job status",
+            "取得 SVG 或記錄明確 blocked reason"
+          ],
+          "pass_condition": "有 live-call receipt、job 狀態與 SVG artifact；若 access 不足，必須標示 blocked，不能建立假 SVG 或假 receipt。",
+          "fail_condition": "沒有 live evidence 卻宣稱完成，或將文件範例當成實際回應。",
+          "verification": [
+            "request／job／response receipt（不含 secrets）",
+            "SVG file existence and MIME check",
+            "blocked path exact reason check"
+          ]
+        },
+        {
+          "id": "ACP06-MVP-04",
+          "what": "Stage 2 結果可交接給後續 pipeline，而不提前擴張到後處理。",
+          "preconditions": [
+            "route 與 access state 已記錄",
+            "MVP 暫時需求列出的 out-of-scope 仍被保留"
+          ],
+          "steps": [
+            "記錄 artifact／receipt 或 blocked handoff",
+            "標示後續可進入的 path QA／Expand／Simplify 等工作尚未執行",
+            "確認不修改 Firefly、Photoshop、package 或 acp-007"
+          ],
+          "pass_condition": "spike-report.md 能讓下一個 session 直接知道 live／blocked 狀態、缺件與下一步，且 scope 沒有越界。",
+          "fail_condition": "遺漏 access blocker、把後處理當成本階段完成，或觸碰其他 task。",
+          "verification": [
+            "exact scope status",
+            "report handoff review",
+            "acp-007 unchanged check"
+          ]
+        },
+        {
+          "id": "ACP06-LOCAL-01",
+          "what": "本機 Illustrator fallback 能開啟指定 PNG/JPG 素材並保留輸入證據。",
+          "preconditions": [
+            "Illustrator Desktop 已安裝並可啟動",
+            "Vincent 提供的 PNG/JPG 素材路徑可讀取"
+          ],
+          "steps": [
+            "在 Illustrator Desktop 開啟指定素材",
+            "確認素材以 embedded raster image 進入文件",
+            "記錄使用的 Illustrator 版本與輸入檔 metadata"
+          ],
+          "pass_condition": "Illustrator 能開啟指定素材，且 report 記錄輸入檔、App 版本與 local route。",
+          "fail_condition": "素材未開啟、誤用 Adobe Console 截圖，或輸入檔與 report 不一致。",
+          "verification": [
+            "Illustrator document state",
+            "input file metadata",
+            "spike-report.md local input receipt"
+          ]
+        },
+        {
+          "id": "ACP06-LOCAL-02",
+          "what": "本機 Illustrator Image Trace → Expand 流程完成。",
+          "preconditions": [
+            "指定 raster image 已在 Illustrator 文件中選取",
+            "本輪不操作雲端 API credentials"
+          ],
+          "steps": [
+            "執行 Image Trace",
+            "採用適合黑白圖稿的 local tracing preset",
+            "執行 Expand 將 tracing result 轉成可編輯 vector paths"
+          ],
+          "pass_condition": "文件中產生 expanded vector artwork，且 report 清楚標示 local desktop processing，不冒充 Cloud API success。",
+          "fail_condition": "只套用外觀未 Expand、仍是 raster image，或把 local result 誤標成 API result。",
+          "verification": [
+            "Illustrator selection/object inspection",
+            "expanded artwork visual check",
+            "local route status review"
+          ]
+        },
+        {
+          "id": "ACP06-LOCAL-03",
+          "what": "本機 vector artwork 能輸出 SVG。",
+          "preconditions": [
+            "Image Trace 已 Expand",
+            "輸出位置限定為 milestones/adobe-creative-pipeline/acp-006-image-trace.svg"
+          ],
+          "steps": [
+            "以 SVG 格式輸出至指定路徑",
+            "解析 SVG XML",
+            "確認至少存在 path 或等價 vector element，且不只是 embedded raster"
+          ],
+          "pass_condition": "指定 SVG 存在、可解析、MIME/副檔名一致，且含有 vector path evidence。",
+          "fail_condition": "沒有 SVG、輸出仍嵌入原始 raster、檔案無法解析，或輸出到未核准位置。",
+          "verification": [
+            "file existence and size",
+            "SVG XML parse",
+            "path／image element inspection"
+          ]
+        },
+        {
+          "id": "ACP06-LOCAL-04",
+          "what": "本機 fallback 的結果可交接，並保留 Cloud API blocked 邊界。",
+          "preconditions": [
+            "local SVG receipt 已建立",
+            "API access evidence 已記錄為 blocked"
+          ],
+          "steps": [
+            "記錄輸入、App 版本、preset、Expand 與輸出檔",
+            "區分 local desktop success 與 Cloud API blocked",
+            "確認不修改 acp-007 或其他 Adobe task"
+          ],
+          "pass_condition": "report 能讓下一個 session 重現 local route，且不宣稱已取得 Illustrator API access。",
+          "fail_condition": "遺漏 local provenance、混淆兩條 route，或 scope 越界。",
+          "verification": [
+            "spike-report.md handoff review",
+            "exact scope status",
+            "acp-007 unchanged check"
+          ]
+        }
+      ],
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "acceptance"
+        ],
+        "decision_input": [
+          "adobe-creative-pipeline/mvp-requirements-temporary.md",
+          "acp-006 done_condition",
+          "acp-001 capability-report.md",
+          "Vincent 2026-08-19 approved Stage 2 execution"
+        ],
+        "decision_output": "在 Cloud API access 可用時產出最小 live-call receipt；目前依 Vincent 決策改走本機 Illustrator Image Trace → Expand → SVG，並保留 Cloud API blocked evidence。",
+        "execution_boundary": "只修改 acp-006 在 tasks.json 的執行契約、milestones/adobe-creative-pipeline/spike-report.md 與指定 generated artifact milestones/adobe-creative-pipeline/acp-006-image-trace.svg；不得修改 acp-001、acp-007、global capability registry、Adobe credentials、外部帳號、commit、push 或部署。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准依 MVP 暫時需求開始 Stage 2；先補齊 acp-006 的 HC、acceptance matrix、JV-32 route 與 access-safe 執行邊界，再進行 live／blocked spike。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/mvp-requirements-temporary.md",
+              "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/tasks.json#acp-006",
+              "Vincent 2026-08-19 approved Stage 2 execution"
+            ],
+            "recorded_at": "2026-08-19"
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Adobe Developer Console 顯示 Restricted access，Vincent 核准改走本機 Illustrator fallback 完成 MVP Stage 2。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/spike-report.md",
+              "Vincent 2026-08-19 approved local Illustrator fallback"
+            ],
+            "recorded_at": "2026-08-19"
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "adobe-creative-pipeline",
+        "goal_ref": "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/project.json#/goals",
+        "goal_fingerprint": "sha256:bb375dc7f1bf40634b37ca4359aa1435954baa137a030de2d90458db250fe226",
+        "contribution": "以最小 Illustrator Image Trace spike 驗證 project goal 所需的 vector output node，留下 live／blocked 證據，供後續 Codex pipeline 與 designer-in-the-loop 決策使用。",
+        "evidence_plan": [
+          "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/mvp-requirements-temporary.md",
+          "$COLLAB/harness-mc/milestones/adobe-creative-pipeline/spike-report.md",
+          "node scripts/validate-tasks.mjs --changed-only --project adobe-creative-pipeline"
+        ],
+        "reviewed_at": "2026-08-19"
+      },
       "external_refs": {
         "heptabase": {
           "whiteboard": "Adobe 創意素材產線",

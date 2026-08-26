@@ -1,0 +1,32 @@
+{
+  "project": "tsmc-ai",
+  "tasks": [
+    {
+      "id": "quick-open",
+      "title": "完成快速開案流程",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "TSMC-AI-MVP-01",
+      "dependencies": [],
+      "done_condition": "README.md、最小 project.json、MVP tasks、formalize checkpoint、專案拓樸與局部驗證均完成，且 tasks 已可在 MC 查看"
+    },
+    {
+      "id": "write-implementation-plan",
+      "title": "撰寫 TSMC AI 趨勢觀察實作計畫",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "TSMC-AI-MVP-02",
+      "dependencies": [],
+      "done_condition": "plan/ 包含官方資料來源、資料模型、趨勢狀態、evidence threshold、daily assessment、UI IA、通知與 verification plan，並明確保持 AI 趨勢反轉為主、台積電營收為下游驗證。"
+    },
+    {
+      "id": "formalize",
+      "title": "依 MVP 測試結果啟動正式補完",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "TSMC-AI-MVP-03",
+      "dependencies": [],
+      "done_condition": "已依 MVP 測試結果與最終目標補齊正式專案內容，並建立內容明確且各有驗收標準的正式 tasks"
+    }
+  ]
+}

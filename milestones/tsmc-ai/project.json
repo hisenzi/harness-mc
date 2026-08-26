@@ -1,0 +1,14 @@
+{
+  "name": "TSMC AI 趨勢觀察",
+  "description": "以官方 AI 上游與供應鏈證據辨識 AI 趨勢是否反轉，並以台積電營收作下游驗證。",
+  "status": "active",
+  "created": "2026-08-26",
+  "project_code": "TSMC-AI",
+  "project_folder": "$COLLAB/TSMC-AI",
+  "why_opened": "需要一套可追溯、避免以單一新聞判斷的系統，及早辨識 AI 趨勢是否反轉。",
+  "mvp_goal": "完成可交接的實作計畫，明確定義官方來源、判斷邏輯、每日評估與通知規則。",
+  "final_goal": "建立可持續以官方證據觀察 AI 趨勢反轉，並以台積電營收作下游驗證的雲端系統。",
+  "tracks": {
+    "mvp": "MVP"
+  }
+}

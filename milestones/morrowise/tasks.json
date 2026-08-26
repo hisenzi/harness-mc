@@ -12005,6 +12005,23 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 指示依第 10 節完成最終六項驗收並回寫既有 MW-PI-03 證據。本次只記錄 canonical acceptance gate 全數通過、全域 maintenance 與 scoped Quick 結果分離；不改 task scope、status、acceptance matrix、commit 或 push 狀態。",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-08-17-project-init-fast-default-v2-temporary-tracker.md#10-morrowise-快速開案10秒目標優化計畫",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#quick-init-ten-second-atomic-v1.acceptance_matrix",
+              "$COLLAB/harness-mc/scripts/verify-project-init-quick-v2.mjs",
+              "$COLLAB/harness-mc/scripts/verify-project-init-quick.mjs",
+              "$COLLAB/harness-mc/scripts/verify-project-write-admission.mjs",
+              "$COLLAB/harness-mc/scripts/verify-project-init-admission.mjs",
+              "$COLLAB/harness-mc/scripts/verify-project-topology-maintenance.mjs",
+              "$COLLAB/notyet-harness/000_Agent/skills/project-init/SKILL.md"
+            ],
+            "recorded_at": "2026-08-26"
           }
         ]
       },
@@ -12039,7 +12056,7 @@
       },
       "completed_at": null,
       "commits": [],
-      "summary": "2026-08-26：依第 10 節重做規格與測試階段。P0 固定契約與 fixture 設計在 system-workflow/docs/specs/project-init-quick-p0-contract.md；Quick 專用 verifier 已以 14 個隔離 fixture 覆蓋成功、不完整 input、四種衝突、path／symlink escape、global degraded、途中失敗、中斷、併發、無外部副作用與 20 次 p95，並確認為預期 RED。本輪驗收通過的範圍僅為「契約＋RED verifier＋正式 Quick 未修改」；功能驗收仍未通過，尚不可稱綠燈或完成。"
+      "summary": "2026-08-26：第 10 節五階段已完成至最終驗收。canonical acceptance gate 的 Q10-A01～Q10-A06 以 fingerprint sha256:8b7e6e740c48f15991bebd968f7f770b918f6b895101eec5c2f1e7ce421d0883 全數 pass；新／原有 Quick verifier、target-scoped admission、topology maintenance／contract 與 project-init Skill 路由皆已重跑。live topology health 如實維持 global_status: degraded（命令整體 blocked，因既有全域 maintenance）；隔離 Quick fixture 證明合法 target 仍可 created，兩者未混淆。task 維持 in_progress，等待 Vincent 決定本輪 canonical task 回寫與已存在本機 commits 的後續 commit／batch push。"
     }
   ]
 }

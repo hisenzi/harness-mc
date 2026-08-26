@@ -4,27 +4,65 @@
     {
       "id": "kj116-high-sgoods-dependency-inventory",
       "title": "盤點高中部 sgoods.info 執行期依賴與本機來源",
-      "status": "todo",
+      "status": "completed",
       "track": "phase-1",
       "order_label": "KJ116-01",
       "priority": "P0",
       "capability_domain": "source-memory",
       "task_kind": "discover",
       "dependencies": [],
-      "done_condition": "建立可重跑的 comment-aware scanner 與資產清單，精準列出 115_KJ_admi_high 的 24 筆執行期 sgoods.info 依賴、6 筆 HTML 註解、四個 CSS、三個 JS、圖片、字型與每個本機／缺失來源；不改動頁面內容。",
+      "done_condition": "建立可重跑的 comment-aware scanner 與資產清單，精準列出 115_KJ_page_90_admi_high 的 24 筆執行期 sgoods.info 依賴、6 筆 HTML 註解、四個 CSS、三個 JS、圖片、字型與每個本機／缺失來源；不改動頁面內容。",
       "acceptance": [
         "scanner 只計算 HTML href／src、CSS url() 與 JavaScript 實際載入位置，並排除完整 HTML 註解區塊。",
         "盤點結果保留四個 CSS 外連、jQuery → plugins → functions 三個 JS 外連、header_pic.png 與 CSS 內嵌資產的來源位置。",
         "清楚標記本機檔名差異（例如遠端 kj-style.css 與本機 kj-style-5.css）及未在 repo 找到的資產。",
         "本 task 不抓取、覆寫、刪除或發布學校頁面。"
       ],
+      "acceptance_matrix": [
+        {
+          "id": "A1",
+          "check": "comment-aware 舊網域依賴分類",
+          "prerequisites": ["115_KJ_page_90_admi_high 根目錄 HTML 可讀"],
+          "steps": ["掃描根目錄 HTML 的 sgoods.info URL", "排除完整 HTML 註解並另列 comment-only 引用"],
+          "pass_condition": "輸出 24 筆 active 與 6 筆 comment-only 引用，且每筆保留來源檔、行號與 URL",
+          "fail_condition": "active／comment 混算、數量不符或任一引用無法回查",
+          "verification": "scanner JSON summary 與逐筆 references"
+        },
+        {
+          "id": "A2",
+          "check": "CSS、JS、圖片與字型來源對照",
+          "prerequisites": ["A1 通過", "共用 css／js 與 Page 90 images／webfonts 目錄可讀"],
+          "steps": ["分類四個 CSS、三個 JS 與圖片引用", "對照本機來源並記錄檔名差異或缺失原因", "遞迴掃描 CSS url() 的圖片與字型依賴"],
+          "pass_condition": "每個 unique dependency 都有本機來源、核准映射或 missing 狀態；kj-style.css 對應 kj-style-5.css 的差異有記錄",
+          "fail_condition": "漏列 CSS 內部資產、來源含糊或把不存在檔案標成 found",
+          "verification": "inventory dependencies／css_internal_assets 與檔案存在性"
+        },
+        {
+          "id": "A3",
+          "check": "盤點可重跑與輸出一致性",
+          "prerequisites": ["scanner 可執行"],
+          "steps": ["以相同來源重跑 scanner", "驗證 JSON 可解析與 README 統計一致"],
+          "pass_condition": "重跑結果穩定、JSON schema 欄位完整，README 數量與 JSON 相符",
+          "fail_condition": "重跑產生非決定性差異、JSON 無法解析或摘要數量不一致",
+          "verification": "node --check、scanner --verify 與輸出雜湊比較"
+        },
+        {
+          "id": "A4",
+          "check": "原始 Page 90 檔案保護",
+          "prerequisites": ["執行前 Git scope 已界定"],
+          "steps": ["只新增 scanner 與 inventory 輸出", "核對原始 HTML、images、webfonts 未被改寫或刪除"],
+          "pass_condition": "原始來源零修改，正式 iSchool 與 Zeabur 均未發布",
+          "fail_condition": "任何原始來源被覆寫、刪除或未授權發布",
+          "verification": "exact-scope git status 與 source tree inventory"
+        }
+      ],
       "source_refs": [
-        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_admi_high",
-        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/css",
-        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/js"
+        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high",
+        "$COLLAB/school-static-assets/kj-admi/css",
+        "$COLLAB/school-static-assets/kj-admi/js"
       ],
       "jv32_route": {
-        "workflows": ["task-lifecycle"]
+        "workflows": ["task-lifecycle", "closeout-commit-routing"]
       },
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
@@ -39,6 +77,31 @@
               "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json"
             ],
             "recorded_at": "2026-08-14"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 2026-08-19 確認 115_KJ_page_90_admi_high 是原高中部資料夾改名，並確認啟動 Page 90 task；沿用既有 KJ116-01，不建立重複 task。",
+            "evidence_refs": [
+              "Vincent 2026-08-19: 路徑是我改名字；確認啟動 Page 90 task",
+              "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high",
+              "https://www.kjsh.ntpc.edu.tw/ischool/publish_page/90/"
+            ],
+            "recorded_at": "2026-08-19"
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "完成 Page 90 comment-aware scanner 與決定性 inventory；24 active、6 comment-only、四個 CSS、三個 JS 與 CSS 內部資產來源均可回查，原始 Page 90 來源未修改。",
+            "evidence_refs": [
+              "$COLLAB/KJ/260730_KJ_116_招生/scripts/inventory-page90-sgoods.mjs",
+              "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high/inventory/sgoods-dependencies.json",
+              "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high/inventory/README.md",
+              "acceptance receipt sha256:616d5866bca370d24f7df556d2922b7a7d067f59efe807e2e786784d09ddf323"
+            ],
+            "recorded_at": "2026-08-19"
           }
         ]
       },
@@ -54,27 +117,127 @@
           "本 task acceptance 結果"
         ],
         "reviewed_at": "2026-08-14"
+      },
+      "test_contract": {
+        "applicability": "exempt",
+        "tdd_exemption_reason": "本 task 是既有 HTML／CSS／JS 的唯讀依賴盤點與決定性報告生成，不新增瀏覽器執行期行為；以固定基線、重跑一致性與原始檔保護驗證取代 Red／Green TDD。",
+        "alternative_verification_commands": [
+          "node --check scripts/inventory-page90-sgoods.mjs",
+          "node scripts/inventory-page90-sgoods.mjs --verify",
+          "node scripts/validate-tasks.mjs --changed-only"
+        ],
+        "behavior_cases": [
+          "根目錄 HTML active=24、comment-only=6",
+          "四個 CSS 與三個 JS 依賴依來源檔可回查",
+          "CSS url() 圖片與字型遞迴依賴有來源狀態",
+          "Page 90 原始檔零修改"
+        ],
+        "test_level": ["static-inventory", "deterministic-output", "task-schema"],
+        "runtime_evidence_required": false,
+        "fixture_refs": [
+          "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high",
+          "$COLLAB/school-static-assets/kj-admi/css",
+          "$COLLAB/school-static-assets/kj-admi/js"
+        ],
+        "evidence_refs": [
+          "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high/inventory/sgoods-dependencies.json",
+          "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high/inventory/README.md"
+        ]
+      },
+      "completion_evidence": {
+        "regression_evidence": [
+          "node --check scripts/inventory-page90-sgoods.mjs PASS",
+          "node scripts/inventory-page90-sgoods.mjs --verify PASS: active=24, comment-only=6, css=4, js=3",
+          "CSS internal inventory: 49 references classified as found, missing, external, or embedded/fragment",
+          "exact-scope git status contains only the new scanner and inventory outputs; no original Page 90 source was modified"
+        ],
+        "verifier_refs": [
+          "$COLLAB/KJ/260730_KJ_116_招生/scripts/inventory-page90-sgoods.mjs --verify",
+          "$COLLAB/harness-mc/scripts/validate-tasks.mjs --changed-only"
+        ],
+        "fixture_runtime_boundary": "Only local root-level Page 90 HTML and shared school-static-assets CSS/JS were inventoried. No iSchool publication, Zeabur deployment, CSS asset repair, block generation, or live-page mutation is claimed.",
+        "runtime_evidence": [],
+        "acceptance_receipt": {
+          "matrix_ref": "milestones/kj/260814-kj-116-admissions/tasks.json#kj116-high-sgoods-dependency-inventory.acceptance_matrix",
+          "matrix_fingerprint": "sha256:616d5866bca370d24f7df556d2922b7a7d067f59efe807e2e786784d09ddf323",
+          "caller_matrix_fingerprint": "sha256:616d5866bca370d24f7df556d2922b7a7d067f59efe807e2e786784d09ddf323",
+          "required_ids": ["A1", "A2", "A3", "A4"],
+          "results": [
+            { "id": "A1", "status": "pass" },
+            { "id": "A2", "status": "pass" },
+            { "id": "A3", "status": "pass" },
+            { "id": "A4", "status": "pass" }
+          ],
+          "exact_id_coverage": true,
+          "all_passed": true
+        }
       }
     },
     {
       "id": "kj116-ishool-css-bundle",
-      "title": "封裝 CSS 與圖像依賴為 iSchool 可貼用 bundle",
-      "status": "todo",
+      "title": "封裝 Page 90 blocks、CSS 與圖像依賴為 iSchool 可貼用 bundle",
+      "status": "completed",
       "track": "phase-1",
       "order_label": "KJ116-02",
       "priority": "P0",
       "capability_domain": "action-delivery",
       "task_kind": "implement",
       "dependencies": ["kj116-high-sgoods-dependency-inventory"],
-      "done_condition": "以盤點確認的本機 CSS 依載入順序組成可版本追蹤的 style bundle，補齊或替換必要的圖片／字型來源，並使 bundle 與其 CSS url() 不再載入 sgoods.info。",
+      "done_condition": "將 115_KJ_page_90_admi_high 的現行內容整理為 13 個可獨立貼回 iSchool 的 kj-admi-high blocks，附 manifest、README、可重建工具與 Zeabur CSS head；補齊 Page 90 實際需要的圖片／字型來源，使產物不再載入 sgoods.info，且不改動原始 HTML。",
       "acceptance": [
-        "CSS 載入順序等效於 plugins → style → custom-admi01 → custom-admi00。",
-        "每個原本由 sgoods.info 提供的 CSS 圖片與字型都有本機資產、經核准替代或明確的待校方確認項。",
-        "bundle 可以貼入 iSchool 的 HTML 欄位，但尚未直接發布到正式招生頁。",
-        "本機預覽的主要版型、選單、輪播區塊與圖示沒有可見退化。"
+        "13 個 blocks 各自只有一個 kj-admi-high 外層，可獨立貼回 iSchool；原始 HTML 保留不動。",
+        "manifest、README 與 builder 明確記錄 block 順序、來源版本、跨 Page 75 共用來源及後台貼用方式。",
+        "CSS 載入順序等效於 plugins → style-5 → custom-admi01 → custom-admi00，並補入已 scoped 的 Page 90 inline style。",
+        "產物與 CSS 執行期依賴不再載入 sgoods.info；學校 rfile/openfid 圖片維持原址，Page 75 住宿／交通的舊網域圖片改用 Zeabur。",
+        "bundle 可供 iSchool 測試頁貼用，但尚未直接發布到正式招生頁；本機預覽驗收由後續測試 task 接續。"
+      ],
+      "acceptance_matrix": [
+        {
+          "id": "B1",
+          "check": "一個 block 一個 HTML 與來源版本治理",
+          "prerequisites": ["KJ116-01 依賴盤點已完成", "Page 90 原始 HTML 與 Page 75 住宿／交通 blocks 可讀"],
+          "steps": ["依現行來源版本建立 13 個獨立 blocks", "為每個 block 加上單一 kj-admi-high 外層", "在 manifest 與 README 記錄來源、順序、用途與貼用狀態"],
+          "pass_condition": "13 個 blocks 均可獨立貼用，來源與順序可回查，原始 HTML 零修改",
+          "fail_condition": "block 缺漏、來源不明、含完整文件 shell，或改寫原始 HTML",
+          "verification": "builder --verify、manifest schema 與 exact-scope git status"
+        },
+        {
+          "id": "B2",
+          "check": "舊網域與待補 placeholder 清零",
+          "prerequisites": ["B1 產物已生成", "Zeabur KJ 圖片路徑可對照"],
+          "steps": ["移除 blocks 內 CSS／core JS 外連", "將 sgoods.info 圖片改為 school-static-assets.zeabur.app", "保留學校 rfile/openfid 圖片原址並檢查 placeholder"],
+          "pass_condition": "blocks、manifest、README 與 prepared head 均無 sgoods.info 或 __KJ_IMAGE_PENDING__",
+          "fail_condition": "任何可執行舊網域引用或待補圖片 placeholder 殘留",
+          "verification": "verify-page90-blocks.mjs 靜態掃描"
+        },
+        {
+          "id": "B3",
+          "check": "Page 90 Zeabur CSS head 與作用域隔離",
+          "prerequisites": ["四個共用 CSS 已存在於 school-static-assets", "Page 90 inline style 可擷取"],
+          "steps": ["依 plugins、style-5、custom-admi01、custom-admi00 順序建立 head", "將 Page 90 專用 inline style 限定於 kj-admi-high", "確認 head 不混入 core JS"],
+          "pass_condition": "prepared head 順序固定、CSS scoped、無 sgoods.info，且可單獨貼入 iSchool head 區",
+          "fail_condition": "CSS 順序錯誤、selector 外洩、混入 core JS 或舊網域",
+          "verification": "head order／scope 靜態檢查"
+        },
+        {
+          "id": "B4",
+          "check": "Page 90 實際 CSS 圖片與字型依賴完整",
+          "prerequisites": ["KJ116-01 CSS internal asset inventory 可讀"],
+          "steps": ["比對 Page 90 實際使用 class 與 CSS url()", "複製 Font Awesome／Inspiro 必要字型到靜態資產庫", "將未補 generic selector 資產標示為 Page 90 未使用"],
+          "pass_condition": "Page 90 使用到的 CSS url() 均有 Zeabur 資產；未補項均有 unused 證據",
+          "fail_condition": "實際使用 selector 仍指向缺失資產，或把缺失項誤標為可用",
+          "verification": "CSS selector usage 與檔案存在性檢查"
+        }
+      ],
+      "source_refs": [
+        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high",
+        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_75_admi_00/blocks/09-dormitory.html",
+        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_75_admi_00/blocks/10-transportation.html",
+        "$COLLAB/school-static-assets/kj-admi/css",
+        "$COLLAB/school-static-assets/kj-admi/webfonts"
       ],
       "jv32_route": {
-        "workflows": ["task-lifecycle"]
+        "workflows": ["task-lifecycle", "closeout-commit-routing"]
       },
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
@@ -89,6 +252,32 @@
               "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json"
             ],
             "recorded_at": "2026-08-14"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 2026-08-19 確認啟動 Page 90 task；依已核准的 Page 75 管理模式，將改名後的 115_KJ_page_90_admi_high 整理為一個 block 一個 HTML 與 Zeabur CSS head。",
+            "evidence_refs": [
+              "Vincent 2026-08-19: 路徑是我改名字；確認啟動 Page 90 task",
+              "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high",
+              "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high/inventory/sgoods-dependencies.json"
+            ],
+            "recorded_at": "2026-08-19"
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "完成 Page 90 的 13 個 kj-admi-high blocks、manifest、README、決定性 builder、Zeabur CSS head 與必要字型搬移；B1-B4 靜態驗證均通過，未發布正式 Page 90。",
+            "evidence_refs": [
+              "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high/blocks",
+              "$COLLAB/KJ/260730_KJ_116_招生/scripts/verify-page90-blocks.mjs",
+              "$COLLAB/school-static-assets/prepared/kj-page-90-head.html",
+              "$COLLAB/school-static-assets/kj-admi/webfonts",
+              "acceptance receipt sha256:6e0a2a1624809c121356782bed871db896bf5505726ab0a16c908be956db3f92"
+            ],
+            "recorded_at": "2026-08-19"
           }
         ]
       },
@@ -96,35 +285,123 @@
         "project_id": "kj-116-admissions",
         "goal_ref": "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json#/goals",
         "goal_fingerprint": "sha256:755d90099a89100f4e1291921b44d4974b54a48fdc4652195fd0510fb9510039",
-        "contribution": "將確認的 CSS、圖片與字型依賴整理為可貼入 iSchool 的候選 bundle，降低 sgoods.info 停用造成版型失效的風險。",
-        "evidence_plan": [
-          "CSS 載入順序對照",
-          "圖片與字型來源決策清單",
-          "本機視覺 smoke test",
-          "iSchool 測試頁保存結果"
+        "contribution": "將 Page 90 內容與 CSS／圖片／字型依賴整理為可回查、可獨立貼用且不依賴 sgoods.info 的 blocks 與 Zeabur head，降低後台維護與網域停用風險。",
+        "evidence_plan": ["13 個 blocks 與來源 manifest", "CSS head 載入順序與 scope", "圖片與字型來源決策清單", "結構與資產靜態驗證"],
+        "reviewed_at": "2026-08-19"
+      },
+      "test_contract": {
+        "applicability": "exempt",
+        "tdd_exemption_reason": "本 task 是既有 HTML／CSS 的決定性拆分、包裝與資產搬移，不新增商業邏輯；以 builder 重跑一致性、結構掃描、依賴存在性與後續瀏覽器驗收取代 Red／Green TDD。",
+        "alternative_verification_commands": ["node --check blocks/build-page90-blocks.mjs", "node scripts/verify-page90-blocks.mjs", "node scripts/validate-tasks.mjs --changed-only"],
+        "behavior_cases": ["13 個可獨立貼用的 kj-admi-high blocks", "sgoods.info 與 __KJ_IMAGE_PENDING__ 清零", "CSS head 順序與 selector scope 固定", "Page 90 實際使用的 CSS 圖片／字型資產完整", "原始 HTML 零修改"],
+        "test_level": ["deterministic-generation", "static-structure", "asset-resolution", "task-schema"],
+        "runtime_evidence_required": false,
+        "fixture_refs": ["$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high", "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_75_admi_00/blocks", "$COLLAB/school-static-assets/kj-admi"],
+        "evidence_refs": [
+          "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high/blocks/manifest.json",
+          "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high/blocks/README.md",
+          "$COLLAB/KJ/260730_KJ_116_招生/scripts/verify-page90-blocks.mjs",
+          "$COLLAB/school-static-assets/prepared/kj-page-90-head.html"
+        ]
+      },
+      "completion_evidence": {
+        "regression_evidence": [
+          "node build-page90-blocks.mjs --verify PASS: blocks=13, root=.kj-admi-high, sgoods=0",
+          "node scripts/verify-page90-blocks.mjs PASS: blocks=13, unique_ids=17, fonts=17, sgoods=0",
+          "Page 90 CSS head order PASS: plugins → style-5 → custom-admi01 → custom-admi00",
+          "Page 90 inline selectors scope PASS: every selector contains .kj-admi-high",
+          "KJ blocks/00-page90-head.html and school-static-assets/prepared/kj-page-90-head.html are byte-identical",
+          "inventory refreshed after font migration; active=24, comment-only=6, css=4, js=3"
         ],
-        "reviewed_at": "2026-08-14"
+        "verifier_refs": [
+          "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high/blocks/build-page90-blocks.mjs --verify",
+          "$COLLAB/KJ/260730_KJ_116_招生/scripts/verify-page90-blocks.mjs",
+          "$COLLAB/KJ/260730_KJ_116_招生/scripts/inventory-page90-sgoods.mjs --verify",
+          "$COLLAB/harness-mc/scripts/validate-tasks.mjs --changed-only"
+        ],
+        "fixture_runtime_boundary": "This phase proves deterministic block/CSS packaging and local asset resolution only. It does not claim Page 90 JavaScript compatibility, iSchool save behavior, Zeabur redeployment, or production publication.",
+        "runtime_evidence": [],
+        "acceptance_receipt": {
+          "matrix_ref": "milestones/kj/260814-kj-116-admissions/tasks.json#kj116-ishool-css-bundle.acceptance_matrix",
+          "matrix_fingerprint": "sha256:6e0a2a1624809c121356782bed871db896bf5505726ab0a16c908be956db3f92",
+          "caller_matrix_fingerprint": "sha256:6e0a2a1624809c121356782bed871db896bf5505726ab0a16c908be956db3f92",
+          "required_ids": ["B1", "B2", "B3", "B4"],
+          "results": [
+            {"id": "B1", "status": "pass"},
+            {"id": "B2", "status": "pass"},
+            {"id": "B3", "status": "pass"},
+            {"id": "B4", "status": "pass"}
+          ],
+          "exact_id_coverage": true,
+          "all_passed": true
+        }
       }
     },
     {
       "id": "kj116-ishool-js-bundle",
-      "title": "封裝 JS 依賴並驗證 iSchool 互動相容性",
-      "status": "todo",
+      "title": "封裝 Page 90 JS、組合預覽並驗證 iSchool 互動相容性",
+      "status": "in_progress",
       "track": "phase-1",
       "order_label": "KJ116-03",
       "priority": "P0",
       "capability_domain": "action-delivery",
       "task_kind": "implement",
       "dependencies": ["kj116-high-sgoods-dependency-inventory", "kj116-ishool-css-bundle"],
-      "done_condition": "以本機 jquery、kj-plugins、kj-functions 組成保持既有順序的 script bundle，確認 iSchool 儲存後是否保留並執行；若平台不允許，提出不依賴 FTP 的可行降級方案。",
+      "done_condition": "建立 Page 90 footer JS 與可重建的完整本機預覽，固定 jQuery → plugins → functions 順序，將平板選單補強限制在 kj-admi-high，並以真實瀏覽器驗證桌機／手機選單、accordion、lightbox／影片入口、無水平溢出與零 sgoods.info 執行期請求；不直接發布正式頁面。",
       "acceptance": [
         "JS 順序固定為 jQuery → plugins → functions，且不再請求 sgoods.info 的 JS。",
-        "在本機 smoke test 檢查選單與輪播相關初始化，不以無錯誤訊息代替功能檢查。",
-        "iSchool 測試頁保存後檢查原始碼是否保留 script，並記錄平台實測結果。",
-        "沒有校方正式發布授權時，不改動正式頁面。"
+        "Page 90 平板選單補強只查找 kj-admi-high 內的 trigger、menu 與 links，不干擾 iSchool 其他區塊。",
+        "組合預覽由 CSS head、13 個 blocks 與 footer JS 決定性產生，無重複 ID、placeholder 或舊網域。",
+        "真實瀏覽器檢查桌機／手機選單、accordion 與音樂影片 lightbox 入口，並確認 390px 與 1440px 不水平溢出。",
+        "iSchool 保存行為與正式 Page 90 發布仍需 Vincent／校方操作，不以本機預覽代替。"
+      ],
+      "acceptance_matrix": [
+        {
+          "id": "C1",
+          "check": "Page 90 footer JS 順序與舊網域清零",
+          "prerequisites": ["KJ116-02 completed", "Zeabur 共用 JS 檔可讀"],
+          "steps": ["產生 footer JS", "解析三個 core script src", "確認順序與網域"],
+          "pass_condition": "jQuery → plugins → functions 恰好各一次且無 sgoods.info",
+          "fail_condition": "順序錯誤、重複、缺漏或舊網域殘留",
+          "verification": "node --test tests/page90-js-package.test.mjs"
+        },
+        {
+          "id": "C2",
+          "check": "平板選單補強作用域",
+          "prerequisites": ["Page 90 header block 含 kj-admi-high 與 mainMenu-trigger"],
+          "steps": ["初始化時先取得 kj-admi-high root", "僅從 root 查找 trigger／menu links", "驗證開啟、連結點擊與外部點擊關閉"],
+          "pass_condition": "補強 script 不以 document 全域查找 Page 90 選單，且互動狀態可關閉",
+          "fail_condition": "全域 selector 可能命中 iSchool 既有元素，或選單狀態無法回復",
+          "verification": "單元測試與瀏覽器 menu smoke test"
+        },
+        {
+          "id": "C3",
+          "check": "完整預覽決定性組裝",
+          "prerequisites": ["13 blocks、00-page90-head 與 footer JS 可讀"],
+          "steps": ["組裝完整 HTML 文件", "檢查 13 blocks 順序與 ID", "重跑 builder 比對產物"],
+          "pass_condition": "預覽可重建、含 13 blocks、無重複 ID／placeholder／sgoods.info",
+          "fail_condition": "產物非決定性、block 缺漏或結構污染",
+          "verification": "node --test 與 build-page90-js-package.mjs --verify"
+        },
+        {
+          "id": "C4",
+          "check": "Page 90 真實瀏覽器互動與 RWD",
+          "prerequisites": ["C1-C3 通過", "本機預覽可開啟"],
+          "steps": ["在 1440px 與 390px 載入預覽", "操作選單、accordion 與影片 lightbox 入口", "檢查 console、network 與 scrollWidth"],
+          "pass_condition": "指定互動可觀察地正常、無 sgoods.info 請求、無關鍵 console error，且 scrollWidth 不大於 viewport",
+          "fail_condition": "互動無反應、舊網域請求、關鍵錯誤或水平溢出",
+          "verification": "Browser runtime evidence 與截圖"
+        }
+      ],
+      "source_refs": [
+        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high/blocks",
+        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high/kj-senior-ipad_260521-js.html",
+        "$COLLAB/school-static-assets/kj-admi/js/jquery.js",
+        "$COLLAB/school-static-assets/kj-admi/js/kj-plugins.js",
+        "$COLLAB/school-static-assets/kj-admi/js/kj-functions.js"
       ],
       "jv32_route": {
-        "workflows": ["task-lifecycle"]
+        "workflows": ["task-lifecycle", "closeout-commit-routing"]
       },
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
@@ -139,6 +416,18 @@
               "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json"
             ],
             "recorded_at": "2026-08-14"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "KJ116-02 已完成 Page 90 blocks 與 CSS 資產封裝；依 Vincent 2026-08-19 確認啟動 Page 90 task，接續建立 JS footer、完整預覽與真實瀏覽器互動驗收。",
+            "evidence_refs": [
+              "Vincent 2026-08-19: 確認啟動 Page 90 task",
+              "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high/blocks/manifest.json",
+              "KJ116-02 acceptance receipt sha256:6e0a2a1624809c121356782bed871db896bf5505726ab0a16c908be956db3f92"
+            ],
+            "recorded_at": "2026-08-19"
           }
         ]
       },
@@ -146,14 +435,37 @@
         "project_id": "kj-116-admissions",
         "goal_ref": "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json#/goals",
         "goal_fingerprint": "sha256:755d90099a89100f4e1291921b44d4974b54a48fdc4652195fd0510fb9510039",
-        "contribution": "維持既有 jQuery、plugins、functions 的依賴順序並取得 iSchool 實測證據，支援無 FTP 條件下的互動功能遷移。",
-        "evidence_plan": [
-          "JS 載入順序對照",
-          "選單與輪播本機 smoke test",
-          "iSchool 測試頁保存後原始碼與互動檢查",
-          "平台限制或降級方案紀錄"
+        "contribution": "維持既有 jQuery、plugins、functions 的依賴順序，並用真實瀏覽器證明 Page 90 blocks 在無 sgoods.info 條件下仍可互動與響應。",
+        "evidence_plan": ["JS 載入順序測試", "平板選單 scope 測試", "完整預覽決定性組裝", "桌機與手機瀏覽器 runtime evidence"],
+        "reviewed_at": "2026-08-19"
+      },
+      "test_contract": {
+        "applicability": "required",
+        "test_first": true,
+        "test_command": "node --test tests/page90-js-package.test.mjs",
+        "behavior_cases": ["core JS 載入順序", "平板選單 root scope", "完整預覽組裝與舊網域清零", "桌機／手機互動與無水平溢出"],
+        "test_level": ["unit", "integration", "browser-smoke"],
+        "runtime_evidence_required": true,
+        "fixture_refs": ["$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high/blocks", "$COLLAB/school-static-assets/kj-admi/js"],
+        "evidence_refs": [
+          "$COLLAB/KJ/260730_KJ_116_招生/tests/page90-js-package.test.mjs",
+          "$COLLAB/KJ/260730_KJ_116_招生/scripts/build-page90-js-package.mjs",
+          "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high/blocks/99-page90-footer-js.html",
+          "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high/preview/page90-preview.html",
+          "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_90_admi_high/preview/evidence/runtime-smoke-2026-08-19.json"
+        ]
+      },
+      "progress_evidence": {
+        "verified": [
+          "TDD red: ERR_MODULE_NOT_FOUND before build-page90-js-package.mjs existed",
+          "TDD green: 5/5 unit and integration tests passed",
+          "JS package verify PASS: order=jquery>plugins>functions, blocks=13, sgoods=0",
+          "Browser desktop 1440 PASS: scrollWidth=viewportWidth=1440, 13 blocks, 0 duplicate IDs, 0 failed images, no console errors/warnings",
+          "Browser mobile 390 PASS: scrollWidth=viewportWidth=390; menu open/close, accordion and iframe lightbox passed",
+          "Overflow root cause fixed at scoped Page 90 full-width row and flex-center selectors"
         ],
-        "reviewed_at": "2026-08-14"
+        "remaining_gate": "The 15 Font Awesome files exist locally in school-static-assets but are not yet in the current Zeabur deployment; fa-solid-900.woff2 returns HTTP 404. KJ116-03 remains in_progress until an explicitly authorized commit/push/deploy and remote icon retest.",
+        "checked_at": "2026-08-19"
       }
     },
     {
@@ -260,6 +572,512 @@
           "選單與輪播本機 smoke test"
         ],
         "reviewed_at": "2026-08-16"
+      }
+    },
+    {
+      "id": "kj116-admi01-page78-blocks",
+      "title": "封裝國中部 page78 HTML blocks 並盤點 sgoods.info 依賴",
+      "status": "completed",
+      "track": "phase-1",
+      "order_label": "KJ116-05",
+      "priority": "P0",
+      "capability_domain": "action-delivery",
+      "task_kind": "implement",
+      "dependencies": [],
+      "done_condition": "為 115_KJ_page_78_admi_01 建立可回查的 source inventory 與 one-block-one-html blocks，產生檔以 kj-admi-01 root namespace 隔離、移除 sgoods.info 執行期引用，並將尚待學校圖片 URL 的項目逐一列出；不修改原始 HTML、不代表正式頁面已發布。",
+      "acceptance": [
+        "盤點 115_KJ_page_78_admi_01 的 HTML 版本、CSS／style 來源、外部 script 與 sgoods.info active／comment 依賴，並明確選出目前採用的 menu 版本與內容 block 來源。",
+        "每個可貼用內容區塊各自一個 HTML，只有 kj-admi-01 root wrapper；不把整頁 document shell、footer、CSS／JS 外連混入內容 block。",
+        "產生的 page78 blocks 不含 sgoods.info；圖片仍在學校網頁或待補時，manifest 必須列出來源路徑與 paste status，不把圖片遷移誤稱為完成。",
+        "保留 115_KJ_page_78_admi_01 原始檔與歷史版本，完成本機結構驗證；未取得校方正式發布授權時，不修改正式 page78。"
+      ],
+      "source_refs": [
+        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_78_admi_01",
+        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/css",
+        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/js",
+        "https://www.kjsh.ntpc.edu.tw/ischool/publish_page/78/"
+      ],
+      "jv32_route": {
+        "workflows": ["task-lifecycle", "closeout-commit-routing"]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 2026-08-18 確認新增正式 task kj116-admi01-page78-blocks；先以獨立 page78 scope 管理 block 化與 sgoods.info 依賴，不沿用 page75 task。",
+            "evidence_refs": [
+              "Vincent 2026-08-18: 確認新增正式 task：kj116-admi01-page78-blocks",
+              "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json",
+              "https://www.kjsh.ntpc.edu.tw/ischool/publish_page/78/"
+            ],
+            "recorded_at": "2026-08-18"
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "完成 page78 source inventory 與 12 個 one-block-one-html blocks；生成內容已移除 sgoods.info 執行期引用，187 個圖片資產路徑列為待補，未修改原始 HTML 或宣稱正式頁面發布。",
+            "evidence_refs": [
+              "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_78_admi_01/blocks/manifest.json",
+              "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_78_admi_01/blocks/README.md",
+              "Vincent 2026-08-18 sitemap scan screenshot: page78 effective sgoods.info references=181"
+            ],
+            "recorded_at": "2026-08-18"
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "kj-116-admissions",
+        "goal_ref": "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json#/goals",
+        "goal_fingerprint": "sha256:755d90099a89100f4e1291921b44d4974b54a48fdc4652195fd0510fb9510039",
+        "contribution": "將 page78 的選單與內容從高中部 page75 scope 分離管理，建立可重跑的 block 與資產依賴邊界，降低 sgoods.info 停用造成國中部頁面失效的風險。",
+        "evidence_plan": [
+          "page78 source inventory 與版本選擇紀錄",
+          "blocks manifest、namespace 與 sgoods.info 掃描結果",
+          "圖片／字型／CSS／JS 來源與待補清單",
+          "本機 fragment 結構驗證與線上頁面對照"
+        ],
+        "reviewed_at": "2026-08-18"
+      },
+      "test_contract": {
+        "applicability": "exempt",
+        "tdd_exemption_reason": "本 task 是既有 HTML 片段的可重跑封裝與資產依賴盤點，不新增執行期程式邏輯；以產生器重跑、結構檢查、舊網域負向掃描與 JSON validator 取代 Red/Green TDD。",
+        "alternative_verification_commands": [
+          "node --check blocks/build-page78-blocks.mjs",
+          "rg -n 'sgoods\\.info|<script|<link|<!DOCTYPE|<html|</head>|</body>|</html>' blocks/*.html",
+          "node scripts/validate-tasks.mjs --changed-only"
+        ],
+        "behavior_cases": [
+          "12 個 block 各自包含一個 .kj-admi-01 root wrapper",
+          "生成 HTML 不含 sgoods.info、CSS/JS 外連或 document shell",
+          "舊圖片依賴以 __KJ_IMAGE_PENDING__ placeholder 和 manifest pending_asset_paths 保留"
+        ],
+        "test_level": ["static-fragment", "manifest", "task-schema"],
+        "fixture_refs": [
+          "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_78_admi_01/blocks",
+          "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_78_admi_01"
+        ],
+        "evidence_refs": [
+          "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_78_admi_01/blocks/manifest.json",
+          "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_78_admi_01/blocks/README.md"
+        ],
+        "runtime_evidence_required": false
+      },
+      "completion_evidence": {
+        "regression_evidence": [
+          "node --check page78 blocks/build-page78-blocks.mjs PASS",
+          "generated page78 HTML forbidden-reference scan PASS",
+          "12 blocks each have exactly one .kj-admi-01 wrapper",
+          "source originals remain unchanged; no formal page78 publication claimed"
+        ],
+        "verifier_refs": [
+          "$COLLAB/harness-mc/scripts/validate-tasks.mjs --changed-only",
+          "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_78_admi_01/blocks/manifest.json"
+        ],
+        "fixture_runtime_boundary": "Only local source fragments and generated blocks were verified. School image URL replacement, iSchool paste, formal page publication, Zeabur deployment, and live visual acceptance remain outside this completion.",
+        "runtime_evidence": []
+      }
+    },
+    {
+      "id": "kj116-admi01-page78-images-zeabur",
+      "title": "批次遷移 page78 sgoods.info 圖片至 Zeabur",
+      "status": "in_progress",
+      "track": "phase-1",
+      "order_label": "KJ116-06",
+      "priority": "P0",
+      "capability_domain": "action-delivery",
+      "task_kind": "implement",
+      "dependencies": ["kj116-admi01-page78-blocks"],
+      "done_condition": "完成 page78 raw 187、active 169、comment-only 18 的圖片 union inventory、來源完整性與 SHA-256 manifest；將圖片寫入 school-static-assets/kj-admi/images/，把生成 blocks 的 placeholder 改為 Zeabur URL，並完成全量引用與結構驗證；不修改原始 HTML、不貼回正式 iSchool、不宣稱已部署。",
+      "acceptance": [
+        "local／live union inventory 可追溯，187 raw、169 active、18 comment-only 差異有明確分類。",
+        "來源檔完整性通過，每個 active 路徑非空且 MIME、SHA-256、bytes 已記錄。",
+        "school-static-assets 目標路徑一對一且無 checksum conflict，manifest 與實際檔案一致。",
+        "generated blocks 無 sgoods.info 與 __KJ_IMAGE_PENDING__，每個 block 只有一個 .kj-admi-01 root。",
+        "公開 Zeabur URL 全量回應非 404 且圖片可解碼；部署狀態另行標記。",
+        "page78 預覽的 menu、timeline、modal、lightbox、mobile smoke test 有可回查結果。"
+      ],
+      "acceptance_matrix": [
+        {
+          "id": "A1",
+          "check": "local／live union inventory",
+          "prerequisites": ["page78 blocks manifest 可讀", "線上 181 筆有效引用證據可回查"],
+          "steps": ["讀取 local raw、active、comment-only 清單", "對照線上有效引用並標記 local／live／union 差異"],
+          "pass_condition": "187 raw、169 active、18 comment-only 與線上差異均有明確分類與來源",
+          "fail_condition": "任一路徑無法追溯或被模糊合併",
+          "verification": "union inventory JSON／manifest 與差異統計"
+        },
+        {
+          "id": "A2",
+          "check": "來源檔完整性",
+          "prerequisites": ["Vincent 提供 page78 images 來源樹"],
+          "steps": ["依相對路徑檢查檔案存在、非零大小與 MIME", "計算每檔 SHA-256 與 bytes"],
+          "pass_condition": "169 active 與 18 comment-only 路徑均有可驗證來源，checksum 已記錄",
+          "fail_condition": "缺檔、空檔、無法辨識或 checksum 無法產生",
+          "verification": "source inventory／image manifest 完整性掃描"
+        },
+        {
+          "id": "A3",
+          "check": "school-static-assets 一致性",
+          "prerequisites": ["A2 通過", "目標資產庫 repo-ready"],
+          "steps": ["保留 kj-admi/images 相對路徑複製資產", "檢查既有目標檔 checksum 冲突", "比對 manifest 與實際檔案"],
+          "pass_condition": "目標路徑一對一、無 checksum conflict、active 缺檔為 0",
+          "fail_condition": "任何衝突或 manifest／檔案不一致",
+          "verification": "manifest 對檔案的逐檔 checksum 驗證"
+        },
+        {
+          "id": "A4",
+          "check": "generated blocks HTML 改寫",
+          "prerequisites": ["A3 通過", "可重跑 page78 blocks builder／migration script"],
+          "steps": ["將 placeholder 改為 Zeabur URL", "掃描所有 generated HTML 的舊網域與 placeholder", "檢查 root wrapper 數量"],
+          "pass_condition": "generated blocks 無 sgoods.info／placeholder，12 blocks 各只有一個 .kj-admi-01 root",
+          "fail_condition": "仍有舊網域、placeholder 或 wrapper 結構異常",
+          "verification": "HTML forbidden-reference、wrapper count、node --check"
+        },
+        {
+          "id": "A5",
+          "check": "Zeabur 公開服務",
+          "prerequisites": ["資產已提交至可部署的 static repo", "Zeabur service deployment receipt 可取得"],
+          "steps": ["對每個 Zeabur URL 執行 HEAD／GET", "檢查 status、content-type 與影像可解碼"],
+          "pass_condition": "全量 URL 非 404 且圖片可解碼；部署狀態與本機資產狀態分開記錄",
+          "fail_condition": "任何 URL 404、content-type 錯誤或圖片無法解碼",
+          "verification": "public URL probe report"
+        },
+        {
+          "id": "A6",
+          "check": "page78 預覽 smoke test",
+          "prerequisites": ["A4 通過", "A5 通過或明確標記未部署"],
+          "steps": ["預覽 menu／timeline", "開啟 music modal 與 lightbox", "檢查 mobile viewport 載入"],
+          "pass_condition": "互動區塊可操作、圖片無破圖、無 placeholder／舊網域",
+          "fail_condition": "選單、timeline、modal、lightbox 或 mobile 出現退化",
+          "verification": "page78 local preview／browser smoke test evidence"
+        }
+      ],
+      "source_refs": [
+        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_78_admi_01",
+        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_78_admi_01/images",
+        "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_78_admi_01/blocks/manifest.json",
+        "$COLLAB/school-static-assets",
+        "$COLLAB/school-static-assets/plan/kj-page-78-image-zeabur-plan.md",
+        "https://www.kjsh.ntpc.edu.tw/ischool/publish_page/78/"
+      ],
+      "jv32_route": {
+        "workflows": ["task-lifecycle"]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 2026-08-18 確認 page78 圖片已下載並核准依計劃批次遷移到 Zeabur；建立 successor task，承接已完成的 page78 blocks，不修改原始 HTML 或正式 iSchool。",
+            "evidence_refs": [
+              "Vincent 2026-08-18: 確認計劃；圖片已下載",
+              "$COLLAB/school-static-assets/plan/kj-page-78-image-zeabur-plan.md",
+              "$COLLAB/KJ/260730_KJ_116_招生/02_招生_html/115_KJ_page_78_admi_01/images"
+            ],
+            "recorded_at": "2026-08-18"
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "kj-116-admissions",
+        "goal_ref": "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json#/goals",
+        "goal_fingerprint": "sha256:755d90099a89100f4e1291921b44d4974b54a48fdc4652195fd0510fb9510039",
+        "contribution": "把 page78 的 187 個 sgoods.info 圖片依賴集中遷移到可版本追蹤的 Zeabur static asset 路徑，讓生成 blocks 可在不依賴學校 FTP 的情況下統一更新圖片引用。",
+        "evidence_plan": [
+          "page78 local／live union inventory 與 187 路徑差異表",
+          "來源圖片 SHA-256、MIME、bytes 與資產 manifest",
+          "school-static-assets 目標檔案與 checksum 對照",
+          "generated blocks 舊網域／placeholder 負向掃描與預覽 smoke test"
+        ],
+        "reviewed_at": "2026-08-18"
+      }
+    },
+    {
+      "id": "kj116-page91-freshman-high-blocks",
+      "title": "封裝 Page 91 新生專區－高中部 blocks 並遷移 sgoods.info",
+      "status": "in_progress",
+      "track": "phase-1",
+      "order_label": "KJ116-07",
+      "priority": "P0",
+      "capability_domain": "action-delivery",
+      "task_kind": "implement",
+      "dependencies": ["kj116-ishool-css-bundle"],
+      "done_condition": "保留 Page 91 四個原始 HTML 不變，採用高中部來源 kj_bootstrap_freshman_h_260723.html 建立可重跑的一個 block 一個 HTML 管理包、manifest、README 與本機預覽；四個 KJ 共用 CSS 改為 Zeabur 並維持正確順序，footer header_pic 改用 Zeabur，生成產物無有效 sgoods.info 引用且不增加不必要 JS；不代表已貼回或發布正式 iSchool Page 91。",
+      "acceptance": [
+        "明確區分高中部採用來源、國中部參考來源與目前線上未使用的 freshman index，並以 SHA-256 保護四個原始 HTML 不被改寫。",
+        "建立可獨立貼回 iSchool 的 banner、教務處、學務處、總務處、圖書館等內容 blocks；每個內容 block 恰有一個 .kj-page91-freshman-high root，且不混入 document shell。",
+        "Page 91 head 依序載入 Bootstrap、kj-plugins.css、kj-style-5.css、kj-custom-admi01-211201.css、kj-custom-admi00-211201.css；footer header_pic 改為 Zeabur，生成產物無有效 sgoods.info 引用且不新增 JS。",
+        "原本 inline CSS 收斂至 Page 91 namespace，避免全域 row、img、responsive class 與 keyframes 汙染既有 iSchool 樣式。",
+        "建立桌機與手機本機預覽，確認圖片載入、區塊顯示與無水平溢出；iSchool 貼回、儲存與正式發布仍需另行授權。"
+      ],
+      "acceptance_matrix": [
+        {
+          "id": "P91-A1",
+          "check": "Page 91 來源版本與原檔保護",
+          "prerequisites": ["Page 91 本機來源資料夾可讀", "線上 Page 91 可供結構對照"],
+          "steps": ["指定 kj_bootstrap_freshman_h_260723.html 為高中部內容來源", "將國中部與 freshman index 標示為參考或 optional_not_live", "記錄四個原始 HTML 的 SHA-256"],
+          "pass_condition": "來源角色逐檔明確，四個原始 HTML 在產生前後 checksum 一致",
+          "fail_condition": "來源混用、用途未標示或任一原始 HTML 被改寫",
+          "verification": "manifest source_inventory 與 shasum 比對"
+        },
+        {
+          "id": "P91-A2",
+          "check": "一個 block 一個 HTML",
+          "prerequisites": ["P91-A1 通過", "Page 91 builder 可重跑"],
+          "steps": ["依 banner 與四個處室拆分高中部來源", "以 .kj-page91-freshman-high 包裝每個內容 block", "掃描 document shell 與重複 root"],
+          "pass_condition": "每個可貼用內容 block 恰有一個 root wrapper，且不含 html、head、body document shell",
+          "fail_condition": "內容混塊、root 數量異常或含整頁 shell",
+          "verification": "node:test fragment contract 與 builder 重跑一致性"
+        },
+        {
+          "id": "P91-A3",
+          "check": "CSS 與圖片舊網域遷移",
+          "prerequisites": ["Zeabur 共用 KJ CSS 與 header_pic 路徑已存在"],
+          "steps": ["依 Bootstrap、plugins、style-5、custom01、custom00 順序建立 head", "將 footer header_pic 改為 Zeabur", "掃描所有生成產物的 sgoods.info 與 script"],
+          "pass_condition": "CSS 順序正確，生成產物無有效 sgoods.info 引用且不新增 JS",
+          "fail_condition": "CSS 順序錯誤、仍載入舊網域或出現不必要 script",
+          "verification": "node:test asset order／forbidden reference contract"
+        },
+        {
+          "id": "P91-A4",
+          "check": "Page 91 namespace 隔離",
+          "prerequisites": ["原 inline CSS 已抽取", "所有內容 block 已加 root wrapper"],
+          "steps": ["將全域 selector 限定在 .kj-page91-freshman-high", "將動畫名稱改為 Page 91 專用名稱", "掃描未加 scope 的 row、img、responsive selector"],
+          "pass_condition": "Page 91 CSS 只作用於 Page 91 root，無已知全域 selector 外洩",
+          "fail_condition": "生成 head 仍含會汙染 iSchool 的全域 selector 或共用動畫名稱",
+          "verification": "node:test CSS namespace contract"
+        },
+        {
+          "id": "P91-A5",
+          "check": "桌機與手機預覽",
+          "prerequisites": ["P91-A2 至 P91-A4 通過", "本機預覽可由 HTTP 開啟"],
+          "steps": ["以 1440px 檢查預設 paste sequence", "以 390px 檢查響應式內容", "檢查圖片、區塊可見性與水平溢出"],
+          "pass_condition": "桌機與手機主要內容可見、圖片無破圖且 document scrollWidth 不超過 viewport",
+          "fail_condition": "任一主要 block 不可見、圖片破圖或出現水平溢出",
+          "verification": "browser smoke evidence 與 preview manifest"
+        }
+      ],
+      "source_refs": [
+        "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_91_freshman_html",
+        "$COLLAB/school-static-assets/kj-admi/css",
+        "$COLLAB/school-static-assets/kj-admi/images/header_pic.png",
+        "https://www.kjsh.ntpc.edu.tw/ischool/publish_page/91/"
+      ],
+      "jv32_route": {
+        "workflows": ["task-lifecycle", "closeout-commit-routing"]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 2026-08-21 確認新增正式 task kj116-page91-freshman-high-blocks，授權在 Page 91 新生專區－高中部 scope 進行 block 化與 sgoods.info 遷移；不包含 commit、push、Zeabur 更新或正式 iSchool 發布。",
+            "evidence_refs": [
+              "Vincent 2026-08-21: 確認新增正式 task：kj116-page91-freshman-high-blocks",
+              "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_91_freshman_html",
+              "https://www.kjsh.ntpc.edu.tw/ischool/publish_page/91/"
+            ],
+            "recorded_at": "2026-08-21"
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Page 91 本機管理包已完成 RED→GREEN 契約測試與 1440px／390px 瀏覽器 smoke；四個原始 HTML checksum 不變、預設 7 個內容 blocks 可獨立貼用、26/26 圖片與 5 個 CSS 載入、無水平溢出、sgoods.info／script／console error 皆為 0。保留 in_progress，等待 Vincent 驗收與另行授權 commit／push；不宣稱已貼回正式 iSchool。",
+            "evidence_refs": [
+              "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_91_freshman_html/blocks/manifest.json",
+              "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_91_freshman_html/blocks/README.md",
+              "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_91_freshman_html/tests/page91-blocks.test.mjs（2026-08-21 6/6 pass）",
+              "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_91_freshman_html/preview/browser-smoke-2026-08-21.json"
+            ],
+            "recorded_at": "2026-08-21"
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "kj-116-admissions",
+        "goal_ref": "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json#/goals",
+        "goal_fingerprint": "sha256:755d90099a89100f4e1291921b44d4974b54a48fdc4652195fd0510fb9510039",
+        "contribution": "把 Page 91 新生專區－高中部從單一舊 HTML 與 sgoods.info 依賴，轉成可版本追蹤、可獨立貼用且具 Page 91 namespace 的 blocks，降低舊網域停用與 iSchool 樣式衝突風險。",
+        "evidence_plan": [
+          "四個原始 HTML 的 source inventory 與前後 SHA-256",
+          "Page 91 builder、manifest、README 與 one-block-one-html 結構測試",
+          "CSS 載入順序、namespace、sgoods.info 與不必要 JS 負向掃描",
+          "桌機與手機本機預覽 smoke evidence"
+        ],
+        "reviewed_at": "2026-08-21"
+      },
+      "test_contract": {
+        "applicability": "required",
+        "test_first": true,
+        "test_command": "node --test '06_新生專區/116_KJ_page_91_freshman_html/tests/page91-blocks.test.mjs'",
+        "behavior_cases": [
+          "builder 只採用高中部來源拆出預設 paste sequence，index 另標 optional_not_live",
+          "每個 Page 91 內容 block 恰有一個 .kj-page91-freshman-high root 且無 document shell",
+          "head 的 CSS URL 與順序正確，生成產物無 sgoods.info 或 script",
+          "Page 91 inline CSS 已 namespace，四個原始 HTML checksum 不變"
+        ],
+        "test_level": ["unit", "static-fragment", "browser-smoke"],
+        "fixture_refs": [
+          "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_91_freshman_html",
+          "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_91_freshman_html/blocks"
+        ],
+        "evidence_refs": [
+          "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_91_freshman_html/blocks/manifest.json",
+          "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_91_freshman_html/preview/page91-preview.html",
+          "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_91_freshman_html/preview/browser-smoke-2026-08-21.json"
+        ],
+        "runtime_evidence_required": true
+      }
+    },
+    {
+      "id": "kj116-page88-freshman-junior-blocks",
+      "title": "封裝 Page 88 新生專區－國中部 blocks 並遷移 sgoods.info",
+      "status": "in_progress",
+      "track": "phase-1",
+      "order_label": "KJ116-08",
+      "priority": "P0",
+      "capability_domain": "action-delivery",
+      "task_kind": "implement",
+      "dependencies": ["kj116-ishool-css-bundle"],
+      "done_condition": "建立獨立 116_KJ_page_88_freshman_junior_html 管理資料夾，唯讀引用既有國中部來源 kj_bootstrap_freshman_260723.html，產生可重跑的一個 block 一個 HTML 管理包、manifest、README 與本機預覽；四個 KJ 共用 CSS 改為 Zeabur 並維持正確順序，footer header_pic 改用 Zeabur，生成 HTML 無有效 sgoods.info 引用且不增加不必要 JS；不代表已貼回或發布正式 iSchool Page 88。",
+      "acceptance": [
+        "只採用 kj_bootstrap_freshman_260723.html 作為 Page 88 國中部來源，來源維持原位唯讀且 SHA-256 在產生前後一致。",
+        "建立可獨立貼回 iSchool 的 header、banner、教務處、學務處、總務處、圖書館與 footer blocks；每個內容 block 恰有一個 .kj-page88-freshman-junior root，且不混入 document shell。",
+        "Page 88 head 依序載入 Bootstrap、kj-plugins.css、kj-style-5.css、kj-custom-admi01-211201.css、kj-custom-admi00-211201.css；footer header_pic 改為 Zeabur，生成 HTML 無有效 sgoods.info 引用且不新增 JS。",
+        "原本 inline CSS 收斂至 Page 88 namespace，避免全域 row、img、responsive class 與 keyframes 汙染既有 iSchool 樣式。",
+        "建立桌機與手機本機預覽，確認圖片載入、四個處室區塊可見且無水平溢出；iSchool 貼回、儲存與正式發布仍需另行授權。"
+      ],
+      "acceptance_matrix": [
+        {
+          "id": "P88-A1",
+          "check": "Page 88 來源角色與原檔保護",
+          "prerequisites": ["國中部來源檔可讀", "線上 Page 88 可供結構對照"],
+          "steps": ["指定 kj_bootstrap_freshman_260723.html 為唯一內容來源", "記錄來源相對路徑與 SHA-256", "產生前後重新比對 checksum"],
+          "pass_condition": "Page 88 來源角色明確，原始 HTML 在產生前後 checksum 一致",
+          "fail_condition": "混用高中部來源、複製出第二份來源正本或原始 HTML 被改寫",
+          "verification": "manifest source_inventory 與 shasum 比對"
+        },
+        {
+          "id": "P88-A2",
+          "check": "一個 block 一個 HTML",
+          "prerequisites": ["P88-A1 通過", "Page 88 builder 可重跑"],
+          "steps": ["依 banner 與四個處室拆分國中部來源", "加入共享 header／footer", "以 .kj-page88-freshman-junior 包裝並掃描 document shell"],
+          "pass_condition": "七個可貼用內容 block 各只有一個 Page 88 root，且無 html、head、body document shell",
+          "fail_condition": "內容混塊、root 數量異常或含整頁 shell",
+          "verification": "node:test fragment contract 與 builder 重跑一致性"
+        },
+        {
+          "id": "P88-A3",
+          "check": "CSS 與 footer 圖片舊網域遷移",
+          "prerequisites": ["Zeabur 共用 KJ CSS 與 header_pic 路徑可用"],
+          "steps": ["依 Bootstrap、plugins、style-5、custom01、custom00 順序建立 head", "將 footer header_pic 改為 Zeabur", "掃描生成 HTML 的 sgoods.info 與 script"],
+          "pass_condition": "CSS 順序正確，生成 HTML 無有效 sgoods.info 引用且 script 數量為 0",
+          "fail_condition": "CSS 順序錯誤、仍載入舊網域或出現不必要 script",
+          "verification": "node:test asset order／forbidden reference contract"
+        },
+        {
+          "id": "P88-A4",
+          "check": "Page 88 namespace 隔離",
+          "prerequisites": ["原 inline CSS 已抽取", "所有內容 block 已加 root wrapper"],
+          "steps": ["將全域 selector 限定在 .kj-page88-freshman-junior", "將動畫名稱改為 Page 88 專用名稱", "掃描未加 scope 的 row、img、responsive selector"],
+          "pass_condition": "Page 88 CSS 只作用於 Page 88 root，無已知全域 selector 外洩",
+          "fail_condition": "生成 head 仍含會汙染 iSchool 的全域 selector 或共用動畫名稱",
+          "verification": "node:test CSS namespace contract"
+        },
+        {
+          "id": "P88-A5",
+          "check": "桌機與手機預覽",
+          "prerequisites": ["P88-A2 至 P88-A4 通過", "本機預覽可由 HTTP 開啟"],
+          "steps": ["以 1440px 檢查預設 paste sequence", "以 390px 檢查國中部行動版 banner 與內容", "檢查圖片、處室標題與水平溢出"],
+          "pass_condition": "桌機與手機四個處室可見、圖片無破圖且 document scrollWidth 不超過 viewport",
+          "fail_condition": "任一主要 block 不可見、圖片破圖或出現水平溢出",
+          "verification": "browser smoke evidence 與 preview manifest"
+        }
+      ],
+      "source_refs": [
+        "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_88_freshman_junior_html",
+        "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_91_freshman_html/kj_bootstrap_freshman_260723.html",
+        "$COLLAB/school-static-assets/kj-admi/css",
+        "$COLLAB/school-static-assets/kj-admi/images/header_pic.png",
+        "https://www.kjsh.ntpc.edu.tw/ischool/publish_page/88/"
+      ],
+      "jv32_route": {
+        "workflows": ["task-lifecycle", "closeout-commit-routing"]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 2026-08-21 確認建立 116_KJ_page_88_freshman_junior_html 與正式 task kj116-page88-freshman-junior-blocks；沿用 Page 91 的 block 管理方式，但維持獨立 namespace、builder、manifest 與驗收證據。全部受影響頁面完成前不 commit／push。",
+            "evidence_refs": [
+              "Vincent 2026-08-21: 確認建立 Page 88 資料夾與正式 task kj116-page88-freshman-junior-blocks",
+              "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_91_freshman_html/kj_bootstrap_freshman_260723.html",
+              "https://www.kjsh.ntpc.edu.tw/ischool/publish_page/88/"
+            ],
+            "recorded_at": "2026-08-21"
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Page 88 本機 block 管理包已完成，P88-A1 至 P88-A5 依 canonical acceptance matrix 全數通過；來源 checksum 未變、6 項測試通過，桌機 1440px 與手機 390px 預覽均無破圖或水平溢出。依 Vincent 指示，待全部受影響頁面完成後才統一 commit，因此本 task 仍維持 in_progress，且不代表已貼回、部署或發布 iSchool。",
+            "evidence_refs": [
+              "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_88_freshman_junior_html/blocks/manifest.json",
+              "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_88_freshman_junior_html/blocks/README.md",
+              "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_88_freshman_junior_html/tests/page88-blocks.test.mjs",
+              "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_88_freshman_junior_html/preview/browser-smoke-2026-08-21.json",
+              "acceptance matrix fingerprint sha256:1c34cbabebc1fbe58d809f504224592b6fe931cefbcf6ea153c95371f05b90f8; P88-A1=pass, P88-A2=pass, P88-A3=pass, P88-A4=pass, P88-A5=pass"
+            ],
+            "recorded_at": "2026-08-21"
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "kj-116-admissions",
+        "goal_ref": "$COLLAB/harness-mc/milestones/kj/260814-kj-116-admissions/project.json#/goals",
+        "goal_fingerprint": "sha256:755d90099a89100f4e1291921b44d4974b54a48fdc4652195fd0510fb9510039",
+        "contribution": "把 Page 88 新生專區－國中部從混放於 Page 91 資料夾的舊 HTML 與 sgoods.info 依賴，轉成獨立可追蹤、可貼用且具 Page 88 namespace 的 blocks，降低舊網域停用與 iSchool 樣式衝突風險。",
+        "evidence_plan": [
+          "國中部來源 HTML 的相對路徑與前後 SHA-256",
+          "Page 88 builder、manifest、README 與 one-block-one-html 結構測試",
+          "CSS 載入順序、namespace、sgoods.info 與不必要 JS 負向掃描",
+          "桌機與手機本機預覽 smoke evidence"
+        ],
+        "reviewed_at": "2026-08-21"
+      },
+      "test_contract": {
+        "applicability": "required",
+        "test_first": true,
+        "test_command": "node --test '06_新生專區/116_KJ_page_88_freshman_junior_html/tests/page88-blocks.test.mjs'",
+        "behavior_cases": [
+          "builder 只讀取 Page 91 資料夾內的國中部來源，不複製或改寫來源正本",
+          "七個 Page 88 內容 block 各有一個 .kj-page88-freshman-junior root 且無 document shell",
+          "head 的 CSS URL 與順序正確，生成 HTML 無 sgoods.info 或 script",
+          "Page 88 inline CSS 已 namespace，國中部原始 HTML checksum 不變"
+        ],
+        "test_level": ["unit", "static-fragment", "browser-smoke"],
+        "fixture_refs": [
+          "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_91_freshman_html/kj_bootstrap_freshman_260723.html",
+          "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_88_freshman_junior_html/blocks"
+        ],
+        "evidence_refs": [
+          "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_88_freshman_junior_html/blocks/manifest.json",
+          "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_88_freshman_junior_html/preview/page88-preview.html",
+          "$COLLAB/KJ/260730_KJ_116_招生/06_新生專區/116_KJ_page_88_freshman_junior_html/preview/browser-smoke-2026-08-21.json"
+        ],
+        "runtime_evidence_required": true
       }
     }
   ]

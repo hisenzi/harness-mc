@@ -24,7 +24,7 @@
       "target": "0 active references",
       "due": "2026-08-21"
     },
-    "measurement_source": "依 kj116-high-sgoods-dependency-inventory 的 comment-aware scanner，掃描 02_招生_html/115_KJ_admi_high 的 HTML、CSS、JS href、src 與 CSS url()；HTML 註解另列、不計入執行期依賴。"
+    "measurement_source": "依 kj116-high-sgoods-dependency-inventory 的 comment-aware scanner，掃描 02_招生_html/115_KJ_page_90_admi_high 的 HTML、CSS、JS href、src 與 CSS url()；HTML 註解另列、不計入執行期依賴。"
   },
   "task_taxonomy": {
     "version": "v1",
@@ -80,7 +80,7 @@
   ],
   "success_criteria": [
     {
-      "criterion": "comment-aware scanner 對 115_KJ_admi_high 回報 0 筆實際執行期 sgoods.info 依賴。",
+      "criterion": "comment-aware scanner 對 115_KJ_page_90_admi_high 回報 0 筆實際執行期 sgoods.info 依賴。",
       "verify_cmd": "依 kj116-high-sgoods-dependency-inventory 建立並執行 scanner。",
       "expected": "baseline=24 active references；target=0 active references。"
     },
@@ -103,7 +103,7 @@
   "decisions": [
     {
       "topic": "範圍邊界",
-      "decision": "本案只處理 02_招生_html/115_KJ_admi_high；國中部、其他年度頁面與非 sgoods 第三方服務不在本輪遷移範圍。",
+      "decision": "本案高中部來源已由 Vincent 於 2026-08-19 確認改名為 02_招生_html/115_KJ_page_90_admi_high；國中部、其他年度頁面與非 sgoods 第三方服務不在本輪遷移範圍。",
       "reason": "停用風險與已盤點的 24 筆實際執行期依賴都在高中部範圍。",
       "alternatives_rejected": ["一次改寫整個招生網站", "把 HTML 註解也當成必須遷移的執行期依賴"]
     },
@@ -124,6 +124,12 @@
       "decision": "HMC 只管理本次技術遷移的成果契約與可重跑驗證；KJ 招生活動、狀態與共編進度仍以既有 KJ Notion 行動庫為正本。",
       "reason": "避免技術遷移看板取代或複製校務招生任務的正本。",
       "alternatives_rejected": ["把全部 KJ 招生活動搬入 HMC", "在 PAI 另建 KJ 任務正本"]
+    },
+    {
+      "topic": "page78 scope expansion",
+      "decision": "依 Vincent 2026-08-18 確認，新增 kj116-admi01-page78-blocks，將 115_KJ_page_78_admi_01 納入本案的獨立 page78 block 化與 sgoods.info 依賴遷移工作；不因此擴張到其他國中部歷史頁面。",
+      "reason": "page78 線上頁面仍使用本案需處理的招生共用資產，且本機來源已有可分離的選單與內容 HTML；需以獨立 task 管理，避免與 page75 的 115_KJ_admi_00 scope 混用。",
+      "alternatives_rejected": ["直接沿用 page75 task 不新增 page78 task", "一次納入所有國中部歷史頁面"]
     }
   ],
   "milestone": {

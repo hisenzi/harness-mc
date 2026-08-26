@@ -18,10 +18,17 @@ standalone 只描述預計的專案型態；只有精準 Vincent repo receipt �
 """
 
 import argparse
+import fcntl
+import hashlib
 import json
+import os
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
+import time
+import uuid
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -186,88 +193,263 @@ def require_write_admission(destination: Path, topology_registry: str = None, co
         sys.exit(2)
 
 
-def validate_quick_args(parser, args):
-    """驗證快速開案已核准的最小輸入，不要求完整治理欄位。"""
-    required = {
-        "--id": args.id,
-        "--name": args.name,
-        "--desc": args.desc,
-        "--project-code": args.project_code,
-        "--project-folder": args.project_folder,
-        "--why-open": args.why_open,
-        "--mvp-goal": args.mvp_goal,
-        "--final-goal": args.final_goal,
-        "--mvp-tasks-file": args.mvp_tasks_file,
-    }
-    missing = [flag for flag, value in required.items() if not str(value or "").strip()]
-    if missing:
-        parser.error(f"快速開案缺少：{', '.join(missing)}")
-    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", args.id):
-        parser.error("--id 必須是小寫英文、數字與連字號組成的 slug")
+class QuickRejected(Exception):
+    """A contract rejection that must become a fixed Quick JSON receipt."""
 
-    args.project_code = args.project_code.strip().upper()
-    if not re.fullmatch(r"[A-Z0-9]+(?:-[A-Z0-9]+)*", args.project_code):
-        parser.error("--project-code 必須使用英文字母、數字或連字號")
-
-    args.collab_root = Path(args.collab_root or COLLAB_DIR).expanduser().resolve()
-    args.milestones_root = Path(args.milestones_root or PROJECTS_DIR).expanduser().resolve()
-    args.topology_registry = Path(
-        args.topology_registry or DEFAULT_TOPOLOGY_REGISTRY
-    ).expanduser().resolve()
-
-    raw_project_folder = args.project_folder.strip()
-    if raw_project_folder.startswith("$COLLAB/"):
-        project_folder = args.collab_root / raw_project_folder.removeprefix("$COLLAB/")
-    else:
-        candidate = Path(raw_project_folder).expanduser()
-        project_folder = candidate if candidate.is_absolute() else args.collab_root / candidate
-    args.project_folder = project_folder.resolve()
-    if args.project_folder.parent != args.collab_root:
-        parser.error("--project-folder 必須是 $COLLAB 直屬專案資料夾")
-
-    args.project_dir = args.milestones_root / args.id
-    if args.project_dir.exists():
-        parser.error(f"MC 專案已存在：{args.project_dir}")
-    if args.project_folder.exists() and not args.project_folder.is_dir():
-        parser.error(f"專案資料夾不是目錄：{args.project_folder}")
-    if (args.project_folder / "README.md").exists():
-        parser.error(f"README.md 已存在，不覆寫：{args.project_folder / 'README.md'}")
-
-    args.mvp_tasks = load_quick_mvp_tasks(parser, args.mvp_tasks_file)
+    def __init__(self, code: str, detail: str = None):
+        self.code = code
+        self.detail = detail
+        super().__init__(code)
 
 
-def load_quick_mvp_tasks(parser, source_path: str) -> list:
-    """讀取由 Vincent 核准的 MVP task 清單。"""
+class StableFileLock:
+    """Use a persistent /tmp inode so releasing a lock cannot create an unlink race."""
+
+    def __init__(self, scope: str, *, nonblocking: bool):
+        lock_root = Path(tempfile.gettempdir()) / "morrowise-project-init-locks"
+        lock_root.mkdir(mode=0o700, parents=True, exist_ok=True)
+        digest = hashlib.sha256(scope.encode("utf-8")).hexdigest()
+        self.path = lock_root / f"{digest}.lock"
+        self.nonblocking = nonblocking
+        self.handle = None
+
+    def __enter__(self):
+        self.handle = self.path.open("a+")
+        try:
+            operation = fcntl.LOCK_EX | (fcntl.LOCK_NB if self.nonblocking else 0)
+            fcntl.flock(self.handle.fileno(), operation)
+        except BlockingIOError as error:
+            self.handle.close()
+            self.handle = None
+            raise
+        return self
+
+    def __exit__(self, exc_type, exc, traceback):
+        if self.handle:
+            fcntl.flock(self.handle.fileno(), fcntl.LOCK_UN)
+            self.handle.close()
+
+
+class QuickLock:
+    """Reject only competing candidate ID/folder requests; registry commits serialize separately."""
+
+    def __init__(self, project_id: str, project_folder: Path):
+        scopes = {
+            f"quick-project-id:{project_id}",
+            f"quick-project-folder:{project_folder}",
+        }
+        self.locks = [StableFileLock(scope, nonblocking=True) for scope in sorted(scopes)]
+
+    def __enter__(self):
+        try:
+            for lock in self.locks:
+                lock.__enter__()
+        except BlockingIOError as error:
+            self.__exit__(None, None, None)
+            raise QuickRejected("transaction_unavailable") from error
+        return self
+
+    def __exit__(self, exc_type, exc, traceback):
+        for lock in reversed(self.locks):
+            lock.__exit__(exc_type, exc, traceback)
+
+
+class QuickRegistryLock(StableFileLock):
+    """Serialize the shared topology registry without rejecting unrelated candidates."""
+
+    def __init__(self, collab_root: Path):
+        super().__init__(f"quick-topology-registry:{collab_root}", nonblocking=False)
+
+
+def quick_tasks_from_file(source_path: str) -> list:
+    """Read the supplied MVP list without using argparse's non-contract output."""
     try:
         payload = json.loads(Path(source_path).expanduser().read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as error:
-        parser.error(f"MVP tasks 無法讀取：{error}")
+        raise QuickRejected("invalid_input") from error
     if not isinstance(payload, list) or not payload:
-        parser.error("--mvp-tasks-file 必須是至少一項 task 的 JSON array")
+        raise QuickRejected("invalid_input")
 
     normalized = []
     seen_ids = {"quick-open", "formalize"}
-    for index, item in enumerate(payload, start=1):
+    for item in payload:
         if not isinstance(item, dict):
-            parser.error(f"MVP task {index} 必須是 JSON object")
+            raise QuickRejected("invalid_input")
         task_id = str(item.get("id") or "").strip()
         title = str(item.get("title") or "").strip()
         done_condition = str(item.get("done_condition") or item.get("acceptance") or "").strip()
-        if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", task_id):
-            parser.error(f"MVP task {index} 的 id 必須是小寫 slug")
-        if task_id in seen_ids:
-            parser.error(f"MVP task id 重複或使用保留值：{task_id}")
-        if not title:
-            parser.error(f"MVP task {task_id} 缺少明確 title")
+        if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", task_id) or task_id in seen_ids or not title:
+            raise QuickRejected("invalid_input")
         if not done_condition:
-            parser.error(f"MVP task {task_id} 缺少驗收標準")
+            raise QuickRejected("invalid_input", f"MVP task {task_id} 缺少驗收標準")
         seen_ids.add(task_id)
-        normalized.append({
-            "id": task_id,
-            "title": title,
-            "done_condition": done_condition,
-        })
+        normalized.append({"id": task_id, "title": title, "done_condition": done_condition})
     return normalized
+
+
+def prepare_quick_input(args):
+    """Validate input and path shape before a transaction exists."""
+    required = [
+        args.id, args.name, args.desc, args.project_code, args.project_folder,
+        args.why_open, args.mvp_goal, args.final_goal, args.mvp_tasks_file,
+    ]
+    if any(not str(value or "").strip() for value in required):
+        raise QuickRejected("invalid_input")
+    args.id = args.id.strip()
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", args.id):
+        raise QuickRejected("invalid_input")
+    args.project_code = args.project_code.strip().upper()
+    if not re.fullmatch(r"[A-Z0-9]+(?:-[A-Z0-9]+)*", args.project_code):
+        raise QuickRejected("invalid_input")
+
+    args.collab_root = Path(os.path.abspath(Path(args.collab_root or COLLAB_DIR).expanduser()))
+    args.milestones_root = Path(os.path.abspath(Path(args.milestones_root or PROJECTS_DIR).expanduser()))
+    args.topology_registry = Path(os.path.abspath(Path(args.topology_registry or DEFAULT_TOPOLOGY_REGISTRY).expanduser()))
+    if not args.collab_root.is_dir():
+        raise QuickRejected("transaction_failed")
+    control_root = args.collab_root / "harness-mc"
+    allowed_registries = {
+        control_root / "topology.json",
+        control_root / "system-workflow" / "registries" / "morrowise-project-topology.json",
+    }
+    if args.milestones_root != control_root / "milestones" or args.topology_registry not in allowed_registries:
+        raise QuickRejected("destination_path_escape")
+    if args.milestones_root.is_symlink() or args.topology_registry.is_symlink():
+        raise QuickRejected("destination_symlink_escape")
+    if not args.milestones_root.is_dir() or not args.topology_registry.is_file():
+        raise QuickRejected("transaction_failed")
+
+    raw_folder = args.project_folder.strip()
+    if raw_folder.startswith("$COLLAB/"):
+        raw_folder = raw_folder.removeprefix("$COLLAB/")
+    supplied_folder = Path(raw_folder).expanduser()
+    logical_folder = supplied_folder if supplied_folder.is_absolute() else args.collab_root / supplied_folder
+    logical_folder = Path(os.path.abspath(logical_folder))
+    if logical_folder.parent != args.collab_root:
+        raise QuickRejected("destination_path_escape")
+    if logical_folder.is_symlink():
+        raise QuickRejected("destination_symlink_escape")
+    args.project_folder = logical_folder
+    args.project_dir = args.milestones_root / args.id
+    args.mvp_tasks = quick_tasks_from_file(args.mvp_tasks_file)
+
+
+def candidate_topology(args):
+    """Build and admit a new topology record entirely in memory."""
+    try:
+        topology = json.loads(args.topology_registry.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise QuickRejected("transaction_failed") from error
+    if topology.get("registry_id") != "morrowise-project-topology.v1":
+        raise QuickRejected("transaction_failed")
+    policy = topology.get("maintenance_policy") or {}
+    max_evidence_age = policy.get("evidence_warn_after_days", 30) if isinstance(policy, dict) else None
+    if not isinstance(max_evidence_age, int) or max_evidence_age < 1:
+        raise QuickRejected("transaction_failed")
+    records = topology.get("records")
+    if not isinstance(records, list):
+        raise QuickRejected("transaction_failed")
+
+    path_label = f"$COLLAB/{args.project_folder.name}"
+    same_id = next((record for record in records if record.get("id") == args.id), None)
+    same_path = next((record for record in records if record.get("path_label") == path_label), None)
+    if same_id and same_id.get("path_label") != path_label:
+        raise QuickRejected("id_conflict")
+    existing = same_id or same_path
+    if existing:
+        if existing.get("migration_state") == "blocked":
+            raise QuickRejected("target_migration_blocked")
+        if existing.get("classification") != "canonical_project" or existing.get("project_home_ref") != path_label:
+            raise QuickRejected("target_not_canonical")
+        if same_id:
+            raise QuickRejected("id_conflict")
+        raise QuickRejected("project_folder_conflict")
+    if args.project_folder.exists():
+        if (args.project_folder / "README.md").exists():
+            raise QuickRejected("readme_conflict")
+        raise QuickRejected("project_folder_conflict")
+    if args.project_dir.exists():
+        raise QuickRejected("milestone_conflict")
+
+    today = datetime.now(ZoneInfo("Asia/Taipei")).strftime("%Y-%m-%d")
+    candidate = {
+        "id": args.id,
+        "path_label": path_label,
+        "classification": "canonical_project",
+        "migration_state": "inventory_only",
+        "project_home_ref": path_label,
+        "topology_profile": "non-git-project",
+        "document_ref": f"{path_label}/README.md",
+        "repo_ref": None,
+        "evidence": [path_label],
+        "last_verified_at": today,
+        "notes": "Quick project opening registered this canonical local home; Git, deployment, and external sync remain separate MVP actions.",
+    }
+    next_topology = json.loads(json.dumps(topology))
+    next_topology["records"].append(candidate)
+    for field in ("updated_at", "inventory_as_of"):
+        if field in next_topology:
+            next_topology[field] = today
+    return next_topology
+
+
+def quick_global_context(args) -> tuple[str, list]:
+    """Report the same global maintenance signal even if candidate admission rejects."""
+    collab_root = Path(os.path.abspath(Path(args.collab_root or COLLAB_DIR).expanduser()))
+    registry = Path(os.path.abspath(Path(args.topology_registry or DEFAULT_TOPOLOGY_REGISTRY).expanduser()))
+    try:
+        topology = json.loads(registry.read_text(encoding="utf-8"))
+        records = topology.get("records")
+        policy = topology.get("maintenance_policy") or {}
+        max_evidence_age = policy.get("evidence_warn_after_days", 30) if isinstance(policy, dict) else None
+        if topology.get("registry_id") != "morrowise-project-topology.v1" or not collab_root.is_dir() or not isinstance(records, list) or not isinstance(max_evidence_age, int) or max_evidence_age < 1:
+            raise ValueError("topology input unavailable")
+        findings = quick_maintenance_findings(collab_root, records, policy)
+    except (OSError, ValueError, json.JSONDecodeError):
+        findings = ["topology_registry_unavailable"]
+    return ("degraded" if findings else "ready"), findings
+
+
+def quick_maintenance_findings(collab_root: Path, records: list, policy: dict) -> list:
+    """Mirror topology health findings, but retain them as non-blocking global maintenance."""
+    max_age = policy.get("evidence_warn_after_days", 30) if isinstance(policy, dict) else 30
+    if not isinstance(max_age, int) or max_age < 1:
+        max_age = 30
+    today = datetime.now(ZoneInfo("UTC")).date()
+    record_refs = set()
+    findings = []
+    for record in records:
+        if not isinstance(record, dict):
+            continue
+        ref = record.get("path_label")
+        if not isinstance(ref, str) or not re.fullmatch(r"\$COLLAB/[^/]+", ref):
+            continue
+        if ref in record_refs:
+            findings.append(f"duplicate_topology_root:{ref}")
+            continue
+        record_refs.add(ref)
+        local_path = collab_root / ref.removeprefix("$COLLAB/")
+        if not local_path.exists():
+            findings.append(f"missing_registered_topology_root:{ref}")
+        try:
+            verified = datetime.strptime(str(record.get("last_verified_at") or ""), "%Y-%m-%d").date()
+            stale = (today - verified).days > max_age
+        except ValueError:
+            stale = True
+        if stale:
+            findings.append(f"stale_topology_evidence:{ref}")
+        if record.get("classification") == "unknown":
+            findings.append(f"unclassified_topology_record:{ref}")
+        if record.get("migration_state") == "blocked":
+            code = "blocked_worktree_migration" if record.get("classification") == "git_worktree" else "blocked_topology_migration"
+            findings.append(f"{code}:{ref}")
+    for entry in collab_root.iterdir():
+        if entry.name.startswith(".quick-") or not entry.is_dir():
+            continue
+        ref = f"$COLLAB/{entry.name}"
+        if ref not in record_refs:
+            findings.append(f"unregistered_topology_root:{ref}")
+    return sorted(findings)
 
 
 def make_quick_project_json(args) -> dict:
@@ -341,87 +523,279 @@ def make_quick_readme(args) -> str:
     )
 
 
-def register_quick_topology(parser, args):
-    """登錄或確認 quick 專案的 canonical project home。"""
+QUICK_TRANSACTION_SCHEMA = "morrowise.quick-transaction.v1"
+QUICK_TRANSACTION_MARKER = ".quick-transaction.json"
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def transaction_payload(args, transaction: Path, topology_backup: Path, staged_topology: Path) -> dict:
+    return {
+        "schema_version": QUICK_TRANSACTION_SCHEMA,
+        "transaction_id": transaction.name,
+        "project_id": args.id,
+        "project_folder_name": args.project_folder.name,
+        "milestone_relative": f"harness-mc/milestones/{args.id}",
+        "topology_registry_relative": str(args.topology_registry.relative_to(args.collab_root)),
+        "topology_before_sha256": sha256_file(topology_backup),
+        "topology_after_sha256": sha256_file(staged_topology),
+    }
+
+
+def write_quick_marker(directory: Path, payload: dict, artifact: str):
+    marker = {
+        "schema_version": QUICK_TRANSACTION_SCHEMA,
+        "transaction_id": payload["transaction_id"],
+        "project_id": payload["project_id"],
+        "artifact": artifact,
+    }
+    (directory / QUICK_TRANSACTION_MARKER).write_text(
+        json.dumps(marker, ensure_ascii=False, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+
+def write_quick_journal(path: Path, payload: dict, state: str, committed: list, in_flight: str = None):
+    record = {**payload, "state": state, "committed": list(committed), "in_flight": in_flight}
+    temporary = path.with_name(f".{path.name}.tmp")
+    temporary.write_text(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+    os.replace(temporary, path)
+
+
+def trusted_journal_targets(collab_root: Path, transaction: Path, payload: dict) -> tuple[Path, Path, Path, Path]:
+    """Derive recovery targets from a tightly validated journal; never trust journal paths."""
+    allowed_registries = {
+        "harness-mc/topology.json",
+        "harness-mc/system-workflow/registries/morrowise-project-topology.json",
+    }
+    project_id = payload.get("project_id")
+    folder_name = payload.get("project_folder_name")
+    if (
+        payload.get("schema_version") != QUICK_TRANSACTION_SCHEMA
+        or payload.get("transaction_id") != transaction.name
+        or not isinstance(project_id, str)
+        or not re.fullmatch(r"[a-z0-9][a-z0-9-]*", project_id)
+        or not isinstance(folder_name, str)
+        or not folder_name
+        or folder_name in {".", ".."}
+        or "/" in folder_name
+        or "\\" in folder_name
+        or payload.get("milestone_relative") != f"harness-mc/milestones/{project_id}"
+        or payload.get("topology_registry_relative") not in allowed_registries
+        or not re.fullmatch(r"[0-9a-f]{64}", str(payload.get("topology_before_sha256") or ""))
+        or not re.fullmatch(r"[0-9a-f]{64}", str(payload.get("topology_after_sha256") or ""))
+        or not isinstance(payload.get("committed"), list)
+        or any(item not in {"project_folder", "milestone", "topology"} for item in payload["committed"])
+        or payload.get("in_flight") not in {None, "project_folder", "milestone", "topology"}
+    ):
+        raise QuickRejected("transaction_interrupted")
+    project_folder = collab_root / folder_name
+    milestone = collab_root / "harness-mc" / "milestones" / project_id
+    registry = collab_root / Path(payload["topology_registry_relative"])
+    backup = transaction / "topology.before.json"
+    return project_folder, milestone, registry, backup
+
+
+def owned_marker_matches(directory: Path, payload: dict, artifact: str) -> bool:
+    marker_path = directory / QUICK_TRANSACTION_MARKER
+    if directory.is_symlink() or marker_path.is_symlink() or not marker_path.is_file():
+        return False
     try:
-        topology = json.loads(args.topology_registry.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as error:
-        parser.error(f"專案拓樸檔無法讀取：{error}")
-    records = topology.get("records")
-    if not isinstance(records, list):
-        parser.error("專案拓樸檔缺少 records array")
-
-    path_label = f"$COLLAB/{args.project_folder.name}"
-    same_id = next((record for record in records if record.get("id") == args.id), None)
-    same_path = next((record for record in records if record.get("path_label") == path_label), None)
-    existing = same_id or same_path
-    if same_id and same_id.get("path_label") != path_label:
-        parser.error(f"拓樸中的 project id 已指向其他路徑：{args.id}")
-    if same_path and same_path.get("id") != args.id:
-        parser.error(f"拓樸中的 project folder 已由其他 project 使用：{path_label}")
-    if existing:
-        if (
-            existing.get("classification") != "canonical_project"
-            or existing.get("project_home_ref") != path_label
-            or existing.get("migration_state") == "blocked"
-        ):
-            parser.error(f"既有拓樸記錄不是可寫入的 canonical project：{path_label}")
-        return
-
-    today = datetime.now(ZoneInfo("Asia/Taipei")).strftime("%Y-%m-%d")
-    records.append({
-        "id": args.id,
-        "path_label": path_label,
-        "classification": "canonical_project",
-        "migration_state": "inventory_only",
-        "project_home_ref": path_label,
-        "topology_profile": "non-git-project",
-        "document_ref": f"{path_label}/README.md",
-        "repo_ref": None,
-        "evidence": [path_label],
-        "last_verified_at": today,
-        "notes": "Quick project opening registered this canonical local home; Git, deployment, and external sync remain separate MVP actions.",
-    })
-    if "updated_at" in topology:
-        topology["updated_at"] = today
-    if "inventory_as_of" in topology:
-        topology["inventory_as_of"] = today
-    args.topology_registry.write_text(
-        json.dumps(topology, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+        marker = json.loads(marker_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    return marker == {
+        "schema_version": QUICK_TRANSACTION_SCHEMA,
+        "transaction_id": payload["transaction_id"],
+        "project_id": payload["project_id"],
+        "artifact": artifact,
+    }
 
 
-def quick_create(parser, args):
-    """快速開案：只建立 MVP 起跑所需資料，不執行同步或正式補完。"""
-    project = make_quick_project_json(args)
-    tasks = make_quick_tasks_json(args)
-    readme = make_quick_readme(args)
+def remove_owned_artifact(directory: Path, payload: dict, artifact: str) -> bool:
+    if not directory.exists() and not directory.is_symlink():
+        return True
+    if not owned_marker_matches(directory, payload, artifact):
+        return False
+    try:
+        shutil.rmtree(directory)
+        return True
+    except OSError:
+        return False
 
-    args.project_folder.mkdir(parents=False, exist_ok=True)
-    register_quick_topology(parser, args)
-    require_write_admission(
-        args.project_folder / "README.md",
-        args.topology_registry,
-        args.collab_root,
-    )
-    require_write_admission(args.project_dir, args.topology_registry, args.collab_root)
 
-    args.project_dir.mkdir(parents=True)
-    (args.project_folder / "README.md").write_text(readme, encoding="utf-8")
-    (args.project_dir / "project.json").write_text(
-        json.dumps(project, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
-    (args.project_dir / "tasks.json").write_text(
-        json.dumps(tasks, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+def rollback_quick_transaction(collab_root: Path, transaction: Path, payload: dict) -> bool:
+    """Restore only outputs carrying this transaction marker and an exact registry digest."""
+    project_folder, milestone, registry, backup = trusted_journal_targets(collab_root, transaction, payload)
+    committed = set(payload["committed"])
+    if payload.get("in_flight"):
+        committed.add(payload["in_flight"])
+    if "topology" in committed:
+        if backup.is_symlink() or registry.is_symlink() or not backup.is_file() or sha256_file(backup) != payload["topology_before_sha256"] or not registry.is_file():
+            return False
+        current_digest = sha256_file(registry)
+        if current_digest == payload["topology_after_sha256"]:
+            os.replace(backup, registry)
+        elif current_digest != payload["topology_before_sha256"]:
+            return False
+    if "project_folder" in committed and not remove_owned_artifact(project_folder, payload, "project_folder"):
+        return False
+    if "milestone" in committed and not remove_owned_artifact(milestone, payload, "milestone"):
+        return False
+    return True
 
-    print(f"✅ 快速開案資料已建立：{args.id}")
-    print(f"   專案資料夾：{args.project_folder}")
-    print(f"   MC canonical 資料：{args.project_dir}")
-    print("   尚未執行 MC 同步、Git、部署、外部同步或 formalize。")
+
+def remove_transaction_staging(transaction_root: Path, transaction: Path, journal: Path):
+    """The journal is the commit decision; remove it before deleting only its direct staging folder."""
+    try:
+        journal.unlink()
+    except FileNotFoundError:
+        pass
+    if transaction.parent == transaction_root and transaction.exists() and transaction.is_dir() and not transaction.is_symlink():
+        shutil.rmtree(transaction)
+    try:
+        transaction_root.rmdir()
+    except OSError:
+        pass
+
+
+def recover_unfinished_quick_transactions(collab_root: Path) -> bool:
+    """Recover only journaled Quick artifacts that prove they belong to that transaction."""
+    transaction_root = collab_root / ".quick-transactions"
+    if not transaction_root.exists():
+        return False
+    if transaction_root.is_symlink() or not transaction_root.is_dir():
+        raise QuickRejected("transaction_interrupted")
+    journals = sorted(transaction_root.glob("*/journal.json"))
+    if not journals:
+        if any(transaction_root.iterdir()):
+            raise QuickRejected("transaction_interrupted")
+        transaction_root.rmdir()
+        return False
+    for journal in journals:
+        transaction = journal.parent
+        try:
+            payload = json.loads(journal.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as error:
+            raise QuickRejected("transaction_interrupted") from error
+        if not rollback_quick_transaction(collab_root, transaction, payload):
+            raise QuickRejected("transaction_interrupted")
+        remove_transaction_staging(transaction_root, transaction, journal)
+    return True
+
+
+def interrupt_for_quick_recovery_fixture(phase: str):
+    """Only the isolated verifier sets this hook to model an uncatchable process interruption."""
+    if os.environ.get("MORROWISE_QUICK_TEST_INTERRUPT_AFTER") == phase:
+        os._exit(91)
+
+
+def commit_quick_transaction(args, topology):
+    """Stage every output, then commit and recover only marker-proven partial artifacts."""
+    transaction_root = args.collab_root / ".quick-transactions"
+    transaction = transaction_root / f"{args.id}-{uuid.uuid4().hex}"
+    staged_project = transaction / "project-folder"
+    staged_milestone = transaction / "milestone"
+    staged_topology = transaction / "topology.json"
+    topology_backup = transaction / "topology.before.json"
+    journal = transaction / "journal.json"
+    committed = []
+    in_flight = None
+    payload = None
+    completed = False
+    try:
+        staged_project.mkdir(parents=True)
+        staged_milestone.mkdir()
+        (staged_project / "README.md").write_text(make_quick_readme(args), encoding="utf-8")
+        (staged_milestone / "project.json").write_text(json.dumps(make_quick_project_json(args), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        (staged_milestone / "tasks.json").write_text(json.dumps(make_quick_tasks_json(args), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        shutil.copyfile(args.topology_registry, topology_backup)
+        staged_topology.write_text(json.dumps(topology, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        payload = transaction_payload(args, transaction, topology_backup, staged_topology)
+        write_quick_marker(staged_project, payload, "project_folder")
+        write_quick_marker(staged_milestone, payload, "milestone")
+        in_flight = "project_folder"
+        write_quick_journal(journal, payload, "committing", committed, in_flight)
+
+        os.replace(staged_project, args.project_folder)
+        committed.append("project_folder")
+        in_flight = None
+        write_quick_journal(journal, payload, "committing", committed, in_flight)
+        interrupt_for_quick_recovery_fixture("project_folder")
+        in_flight = "milestone"
+        write_quick_journal(journal, payload, "committing", committed, in_flight)
+        os.replace(staged_milestone, args.project_dir)
+        committed.append("milestone")
+        in_flight = None
+        write_quick_journal(journal, payload, "committing", committed, in_flight)
+        interrupt_for_quick_recovery_fixture("milestone")
+        in_flight = "topology"
+        write_quick_journal(journal, payload, "committing", committed, in_flight)
+        os.replace(staged_topology, args.topology_registry)
+        committed.append("topology")
+        in_flight = None
+        write_quick_journal(journal, payload, "committed", committed, in_flight)
+        interrupt_for_quick_recovery_fixture("topology")
+        completed = True
+    except BaseException:
+        if payload is not None:
+            recovery_payload = {**payload, "committed": committed, "in_flight": in_flight}
+            try:
+                write_quick_journal(journal, payload, "rolling_back", committed, in_flight)
+            except OSError:
+                pass
+            if rollback_quick_transaction(args.collab_root, transaction, recovery_payload):
+                remove_transaction_staging(transaction_root, transaction, journal)
+            else:
+                raise QuickRejected("transaction_interrupted")
+        raise
+    finally:
+        if completed:
+            remove_transaction_staging(transaction_root, transaction, journal)
+
+
+def emit_quick_receipt(outcome: str, start_time: float, global_status: str, findings: list, reason_code: str = None):
+    receipt = {
+        "outcome": outcome,
+        "target_status": "ready" if outcome == "created" else "rejected",
+        "global_status": global_status,
+        "duration_ms": round((time.perf_counter() - start_time) * 1000),
+        "maintenance_findings": findings,
+    }
+    if reason_code:
+        receipt["reason_code"] = reason_code
+    sys.stdout.write(json.dumps(receipt, ensure_ascii=False) + "\n")
+
+
+def quick_create(args):
+    """Quick contract: validate candidate, stage all outputs, then commit or leave nothing."""
+    start_time = time.perf_counter()
+    global_status, findings = quick_global_context(args)
+    try:
+        prepare_quick_input(args)
+        with QuickLock(args.id, args.project_folder):
+            with QuickRegistryLock(args.collab_root):
+                if recover_unfinished_quick_transactions(args.collab_root):
+                    raise QuickRejected("transaction_interrupted")
+                topology = candidate_topology(args)
+                global_status, findings = quick_global_context(args)
+                commit_quick_transaction(args, topology)
+        emit_quick_receipt("created", start_time, global_status, findings)
+        return 0
+    except QuickRejected as error:
+        if error.detail:
+            print(error.detail, file=sys.stderr)
+        emit_quick_receipt("rejected", start_time, global_status, findings, error.code)
+        return 2
+    except Exception:
+        emit_quick_receipt("rejected", start_time, global_status, findings, "transaction_failed")
+        return 2
 
 
 def has_content(value) -> bool:
@@ -973,15 +1347,15 @@ def main():
     promote_parser.add_argument("--topology-registry", default=None, help=argparse.SUPPRESS)
 
     quick_parser = subparsers.add_parser("quick", help="以最小資料建立 MVP 專案")
-    quick_parser.add_argument("--id", required=True, help="專案 ID（小寫 slug）")
-    quick_parser.add_argument("--name", required=True, help="專案名稱")
-    quick_parser.add_argument("--desc", required=True, help="一句話目標")
-    quick_parser.add_argument("--project-code", required=True, help="人類溝通代碼，例如 VTS")
-    quick_parser.add_argument("--project-folder", required=True, help="$COLLAB 直屬專案資料夾")
-    quick_parser.add_argument("--why-open", required=True, help="專案為何開案")
-    quick_parser.add_argument("--mvp-goal", required=True, help="MVP 目標")
-    quick_parser.add_argument("--final-goal", required=True, help="最終目標")
-    quick_parser.add_argument("--mvp-tasks-file", required=True, help="MVP task JSON array；每項含 id、title、done_condition")
+    quick_parser.add_argument("--id", default=None, help="專案 ID（小寫 slug）")
+    quick_parser.add_argument("--name", default=None, help="專案名稱")
+    quick_parser.add_argument("--desc", default=None, help="一句話目標")
+    quick_parser.add_argument("--project-code", default=None, help="人類溝通代碼，例如 VTS")
+    quick_parser.add_argument("--project-folder", default=None, help="$COLLAB 直屬專案資料夾")
+    quick_parser.add_argument("--why-open", default=None, help="專案為何開案")
+    quick_parser.add_argument("--mvp-goal", default=None, help="MVP 目標")
+    quick_parser.add_argument("--final-goal", default=None, help="最終目標")
+    quick_parser.add_argument("--mvp-tasks-file", default=None, help="MVP task JSON array；每項含 id、title、done_condition")
     quick_parser.add_argument("--collab-root", default=None, help=argparse.SUPPRESS)
     quick_parser.add_argument("--milestones-root", default=None, help=argparse.SUPPRESS)
     quick_parser.add_argument("--topology-registry", default=None, help=argparse.SUPPRESS)
@@ -1024,9 +1398,7 @@ def main():
         return
 
     if args.command == "quick":
-        validate_quick_args(quick_parser, args)
-        quick_create(quick_parser, args)
-        return
+        sys.exit(quick_create(args))
 
     if args.command == "formalize":
         validate_formalize_args(formalize_parser, args)

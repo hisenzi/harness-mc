@@ -11,7 +11,7 @@ const collabRoot = path.resolve(args.collabRoot || resolveCollabRoot(repoRoot));
 const registryPath = path.resolve(args.registry || path.join(repoRoot, "system-workflow", "registries", "morrowise-project-topology.json"));
 
 try {
-  const report = inspectTopology({ collabRoot, registryPath, strict: args.strict });
+  const report = inspectTopology({ collabRoot, registryPath, strict: args.strict, targetRef: args.targetRef });
   if (args.format === "json") {
     process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
   } else {
@@ -35,6 +35,8 @@ function parseArgs(values) {
       parsed.collabRoot = values[++index];
     } else if (value === "--registry") {
       parsed.registry = values[++index];
+    } else if (value === "--target") {
+      parsed.targetRef = values[++index];
     } else if (value === "--strict") {
       parsed.strict = true;
     } else {
@@ -45,7 +47,7 @@ function parseArgs(values) {
   return parsed;
 }
 
-function inspectTopology({ collabRoot, registryPath, strict }) {
+function inspectTopology({ collabRoot, registryPath, strict, targetRef = null }) {
   if (!fs.existsSync(collabRoot)) throw new Error(`$COLLAB root missing: ${collabRoot}`);
   if (!fs.existsSync(registryPath)) throw new Error(`topology registry missing: ${registryPath}`);
   const registry = JSON.parse(fs.readFileSync(registryPath, "utf8"));
@@ -98,14 +100,26 @@ function inspectTopology({ collabRoot, registryPath, strict }) {
   const errorCount = sortedItems.filter((entry) => entry.severity === "error").length;
   const actionCount = sortedItems.filter((entry) => entry.severity === "action").length;
   const exitCode = errorCount > 0 || (strict && actionCount > 0) ? 1 : 0;
-  return {
+  const report = {
     status: errorCount > 0 ? "blocked" : actionCount > 0 ? "attention" : "ready",
     exit_code: exitCode,
     source_of_truth: "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json",
     command: "npm run health:project-topology",
     summary: { errors: errorCount, actions: actionCount, total: sortedItems.length },
+    global_status: errorCount > 0 || actionCount > 0 ? "degraded" : "ready",
     items: sortedItems,
   };
+  if (targetRef) {
+    const targetBlocked = sortedItems.some((entry) => entry.ref === targetRef
+      && ((entry.severity === "error" && entry.code !== "stale_topology_evidence")
+        || entry.code === "blocked_topology_migration"
+        || entry.code === "blocked_worktree_migration"));
+    report.target_ref = targetRef;
+    report.target_status = targetBlocked ? "rejected" : "ready";
+    report.scoped_status = report.target_status;
+    report.maintenance_findings = sortedItems.filter((entry) => entry.ref !== targetRef || entry.code === "stale_topology_evidence");
+  }
+  return report;
 }
 
 function isRootRef(ref) {
@@ -137,12 +151,24 @@ function compareItems(left, right) {
 }
 
 function formatSummary(report) {
-  const lines = [
-    "Project Topology Maintenance Inbox",
-    `status: ${report.status} | errors: ${report.summary.errors} | actions: ${report.summary.actions}`,
-    `source: ${report.source_of_truth}`,
-    `command: ${report.command}`,
-  ];
+  let lines;
+  if (report.target_ref) {
+    lines = [
+      "Project Topology Scoped Result",
+      `target: ${report.target_ref} | target_status: ${report.target_status}`,
+      `global_status: ${report.global_status} | global_maintenance: ${report.status} | errors: ${report.summary.errors} | actions: ${report.summary.actions}`,
+      `source: ${report.source_of_truth}`,
+      `command: ${report.command}`,
+    ];
+  } else {
+    lines = [
+      "Project Topology Maintenance Inbox",
+      `status: ${report.status} | errors: ${report.summary.errors} | actions: ${report.summary.actions}`,
+      `global_status: ${report.global_status}`,
+      `source: ${report.source_of_truth}`,
+      `command: ${report.command}`,
+    ];
+  }
   if (report.items.length === 0) {
     lines.push("No topology maintenance actions.");
   } else {

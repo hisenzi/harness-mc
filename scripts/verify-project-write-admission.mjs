@@ -26,7 +26,10 @@ for (const configPath of [path.join(liveCollabRoot, ".codex", "hooks.json"), pat
 
 withFixture(({ collabRoot, registryPath }) => {
   const canonical = path.join(collabRoot, "harness-mc", "fixture.txt");
-  assertAllowed(runAdmission({ collabRoot, registryPath, destination: canonical }), "ready canonical destination");
+  const result = runAdmission({ collabRoot, registryPath, destination: canonical });
+  assertAllowed(result, "ready canonical destination");
+  assert.equal(result.target_status, "ready");
+  assert.equal(result.global_status, "ready");
 });
 
 withFixture(({ collabRoot, registryPath, records }) => {
@@ -36,14 +39,20 @@ withFixture(({ collabRoot, registryPath, records }) => {
   const canonical = path.join(collabRoot, "harness-mc", "fixture.txt");
   const result = runAdmission({ collabRoot, registryPath, destination: canonical });
   assertAllowed(result, "unrelated attention must not block the canonical target");
-  assert.equal(result.topology_status, "attention");
+  assert.equal(result.topology_status, "ready");
+  assert.equal(result.global_topology_status, "attention");
+  assert.equal(result.target_status, "ready");
+  assert.equal(result.global_status, "degraded");
 });
 
 withFixture(({ collabRoot, registryPath }) => {
   fs.mkdirSync(path.join(collabRoot, "surprise"));
   const result = runAdmission({ collabRoot, registryPath, destination: path.join(collabRoot, "harness-mc", "fixture.txt") });
   assertAllowed(result, "unrelated unregistered root must not block the canonical target");
-  assert.equal(result.topology_status, "blocked");
+  assert.equal(result.topology_status, "ready");
+  assert.equal(result.global_topology_status, "blocked");
+  assert.equal(result.target_status, "ready");
+  assert.equal(result.global_status, "degraded");
 });
 
 withFixture(({ collabRoot, registryPath, records }) => {
@@ -51,7 +60,10 @@ withFixture(({ collabRoot, registryPath, records }) => {
   writeRegistry(registryPath, records);
   const result = runAdmission({ collabRoot, registryPath, destination: path.join(collabRoot, "harness-mc", "fixture.txt") });
   assertAllowed(result, "stale canonical evidence must remain a maintenance signal, not a write blocker");
-  assert.equal(result.topology_status, "blocked");
+  assert.equal(result.topology_status, "ready");
+  assert.equal(result.global_topology_status, "blocked");
+  assert.equal(result.target_status, "ready");
+  assert.equal(result.global_status, "degraded");
 });
 
 withFixture(({ collabRoot, registryPath, records }) => {
@@ -140,6 +152,7 @@ function assertBlocked(result, code) {
   assert.equal(result.process_status, 2, JSON.stringify(result));
   assert.equal(result.allowed, false);
   assert.equal(result.code, code);
+  assert.equal(result.target_status, "rejected");
 }
 
 function record(name, overrides = {}) {

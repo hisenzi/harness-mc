@@ -10,7 +10,7 @@
   "maintenance_policy": {
     "startup_command": "npm run health:project-topology",
     "evidence_warn_after_days": 30,
-    "startup_rule": "blocked integrity findings stop folder or worktree mutation; action findings remain visible but do not block unrelated scoped work"
+    "startup_rule": "target integrity findings reject only that target; global maintenance findings remain visible as degraded and do not block a safe scoped target"
   },
   "document_registry_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
   "repo_coordination_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate",

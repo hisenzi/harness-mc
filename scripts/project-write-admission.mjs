@@ -17,7 +17,11 @@ export function admitProjectWrite({ destination, cwd = process.cwd(), collabRoot
     return blocked("destination_outside_collab", absoluteDestination, null, "destination must stay inside a registered canonical project home");
   }
 
-  const topology = runTopologyHealth({ collabRoot: absoluteCollab, registryPath });
+  const relative = path.relative(absoluteCollab, absoluteDestination);
+  const rootName = relative.split(path.sep)[0];
+  const targetRef = `$COLLAB/${rootName}`;
+
+  const topology = runTopologyHealth({ collabRoot: absoluteCollab, registryPath, targetRef });
   if (topology.error) {
     return blocked("topology_check_failed", absoluteDestination, null, topology.error);
   }
@@ -26,37 +30,34 @@ export function admitProjectWrite({ destination, cwd = process.cwd(), collabRoot
   try {
     registry = JSON.parse(fs.readFileSync(registryPath, "utf8"));
   } catch (error) {
-    return blocked("topology_check_failed", absoluteDestination, topology.report.status, error.message);
+    return blocked("topology_check_failed", absoluteDestination, topology.report.target_status, error.message, topology.report);
   }
 
-  const relative = path.relative(absoluteCollab, absoluteDestination);
-  const rootName = relative.split(path.sep)[0];
-  const targetRef = `$COLLAB/${rootName}`;
   const targetIntegrityFinding = topology.report.items.find((item) => (
     item.ref === targetRef
     && item.severity === "error"
     && item.code !== "stale_topology_evidence"
   ));
   if (targetIntegrityFinding) {
-    return blocked("target_topology_blocked", absoluteDestination, topology.report.status, `target integrity finding: ${targetIntegrityFinding.code}`);
+    return blocked("target_topology_blocked", absoluteDestination, topology.report.target_status, `target integrity finding: ${targetIntegrityFinding.code}`, topology.report);
   }
   const records = Array.isArray(registry.records) ? registry.records : [];
   const record = records.find((entry) => entry.path_label === targetRef);
   if (!record) {
-    return blocked("target_unregistered", absoluteDestination, topology.report.status, `${targetRef} has no topology record`);
+    return blocked("target_unregistered", absoluteDestination, topology.report.target_status, `${targetRef} has no topology record`, topology.report);
   }
   if (record.classification !== "canonical_project" || record.project_home_ref !== record.path_label) {
-    return blocked("target_not_canonical", absoluteDestination, topology.report.status, `${targetRef} is ${record.classification || "unknown"}, not a canonical project home`);
+    return blocked("target_not_canonical", absoluteDestination, topology.report.target_status, `${targetRef} is ${record.classification || "unknown"}, not a canonical project home`, topology.report);
   }
   if (record.migration_state === "blocked") {
-    return blocked("target_migration_blocked", absoluteDestination, topology.report.status, `${targetRef} has a blocked migration state`);
+    return blocked("target_migration_blocked", absoluteDestination, topology.report.target_status, `${targetRef} has a blocked migration state`, topology.report);
   }
 
   const canonicalRoot = path.join(absoluteCollab, rootName);
   const physicalRoot = physicalPath(canonicalRoot);
   const physicalDestination = physicalPath(absoluteDestination);
   if (!physicalRoot || !physicalDestination || !isWithin(physicalRoot, physicalDestination)) {
-    return blocked("destination_path_escape", absoluteDestination, topology.report.status, "destination resolves outside its canonical project home");
+    return blocked("destination_path_escape", absoluteDestination, topology.report.target_status, "destination resolves outside its canonical project home", topology.report);
   }
 
   return {
@@ -64,13 +65,17 @@ export function admitProjectWrite({ destination, cwd = process.cwd(), collabRoot
     code: "target_admitted",
     destination: absoluteDestination,
     target_ref: targetRef,
-    topology_status: topology.report.status,
+    topology_status: topology.report.target_status,
+    global_topology_status: topology.report.status,
+    target_status: "ready",
+    global_status: topology.report.global_status || (topology.report.status === "ready" ? "ready" : "degraded"),
+    maintenance_findings: topology.report.maintenance_findings || topology.report.items,
     source_of_truth: "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json",
   };
 }
 
-function runTopologyHealth({ collabRoot, registryPath }) {
-  const execution = spawnSync(process.execPath, [healthScript, "--collab-root", collabRoot, "--registry", registryPath, "--format", "json"], { encoding: "utf8" });
+function runTopologyHealth({ collabRoot, registryPath, targetRef }) {
+  const execution = spawnSync(process.execPath, [healthScript, "--collab-root", collabRoot, "--registry", registryPath, "--target", targetRef, "--format", "json"], { encoding: "utf8" });
   if (execution.signal) return { error: `topology health terminated by ${execution.signal}` };
   if (!execution.stdout.trim()) return { error: execution.stderr.trim() || "topology health returned no report" };
   try {
@@ -97,8 +102,17 @@ function isWithin(parent, candidate) {
   return relative !== "" && relative !== ".." && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative);
 }
 
-function blocked(code, destination, topologyStatus, reason) {
-  return { allowed: false, code, destination, topology_status: topologyStatus, reason };
+function blocked(code, destination, topologyStatus, reason, report = null) {
+  return {
+    allowed: false,
+    code,
+    destination,
+    topology_status: topologyStatus,
+    target_status: "rejected",
+    global_status: report?.global_status || (topologyStatus === "ready" ? "ready" : "degraded"),
+    maintenance_findings: report?.maintenance_findings || report?.items || [],
+    reason,
+  };
 }
 
 function parseArgs(values) {

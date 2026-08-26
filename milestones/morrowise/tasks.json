@@ -11855,7 +11855,7 @@
     {
       "id": "quick-init-ten-second-atomic-v1",
       "title": "Quick 開案 10 秒：原子化與 scoped admission",
-      "status": "todo",
+      "status": "in_progress",
       "track": "governance",
       "order_label": "MW-PI-03",
       "priority": "high",
@@ -11970,6 +11970,38 @@
                 "evidence_refs": [
                   "Vincent 2026-08-26 current session: 1，並排除阻擋，快速完成！",
                   "Vincent 2026-08-26 current session: 保留目前 MW-PI-02 的所有未提交內容，直接在同一份 morrowise/tasks.json 追加新的 MW-PI-03"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 已核准進入第 10 節階段 2：原子 transaction、candidate admission 與 target/global 規則對齊。",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-08-17-project-init-fast-default-v2-temporary-tracker.md#10-morrowise-快速開案10秒目標優化計畫"
+            ],
+            "recorded_at": "2026-08-26",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-project-init-fast-default-v2",
+                "morrowise/project-topology-architecture-atlas"
+              ],
+              "scope_comparison": {
+                "problem": "既有 task 已固定 Quick 原子化與 scoped admission 的問題；本次只把核准的階段 2 實作狀態寫入，不改變問題定義。",
+                "owner_source_of_truth": "MorroWise tasks.json 仍是此 task 的唯一 lifecycle 正本；第 10 節與 P0 contract 只提供實作與驗收依據。",
+                "inputs_outputs": "輸入仍是 candidate、transaction、receipt 與既有 verifier；輸出仍是 Quick 行為、target/global 判讀與後續驗證證據。",
+                "lifecycle_completion": "本次只從 todo 轉為 in_progress；所有 P0、P1 與最終驗收通過前不會完成 task。"
+              },
+              "decision_reason": "Vincent 已明確指示繼續第 10 節階段 2，屬既有 MW-PI-03 的執行狀態更新，不另建平行 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-26",
+                "evidence_refs": [
+                  "Vincent 2026-08-26 current session: 繼續，下列2項，遵循第10項細節"
                 ]
               }
             }

@@ -44,14 +44,14 @@ Quick stdout 只輸出一個 JSON object：
 | `destination_symlink_escape` | destination 實體路徑逃出 canonical root。 |
 | `target_not_canonical` | candidate target classification 或 canonical profile 不可接受。 |
 | `target_migration_blocked` | candidate target 的 migration 為 blocked。 |
-| `transaction_unavailable` | 無法取得同一 ID／folder 的 Quick lock。 |
+| `transaction_unavailable` | 無法取得同一 ID／folder 的 Quick lock。不同 candidate 等待短暫 registry commit lock，不因彼此而拒絕。 |
 | `transaction_failed` | 寫入或 registry commit 失敗，且已回復。 |
 | `transaction_interrupted` | 發現未完成 transaction 並完成回復。 |
 
 ## Transaction 與併發
 
 - 同一 project ID 或 project folder 同時 Quick 時，最多一筆可進入 commit；另一筆回傳 `transaction_unavailable`。
-- 所有正式產出先寫入 transaction staging state；journal 要能識別未完成 transaction。
+- 所有正式產出先寫入 transaction staging state；journal 必須含 transaction ID、受限的相對目標、registry 前後 digest；project folder 與 milestone 必須帶同一 transaction marker，才可被回復刪除。
 - 只有 README、最小 project.json、tasks.json 與 topology record 都準備成功後，才提交為正式狀態。
 - 任一步驟失敗、程序中斷、registry 無法讀寫時，正式 project folder、milestone 與 topology registry 的 digest 必須回到執行前；下次 Quick 必須先回復未完成 journal。
 - Quick 不得建立 Git/repo、部署、資料庫、同步或通知。
@@ -70,13 +70,17 @@ Quick stdout 只輸出一個 JSON object：
 | --- | --- |
 | `success` | `created`、target `ready`；四份正式產出同時存在；外部命令記錄為空。 |
 | `invalid-input` | `rejected`／`invalid_input`；所有 digest 不變。 |
+| `invalid-topology-registry` | `rejected`／`transaction_failed`、global `degraded`；不得寫入不合格 registry。 |
 | `id-folder-readme-milestone-conflict` | 對四種衝突逐一回傳固定拒絕碼；檔案樹與 registry digest 不變。 |
 | `path-escape` | `destination_path_escape`；digest 不變。 |
 | `symlink-escape` | `destination_symlink_escape`；digest 不變。 |
+| `milestone-root-escape`、`topology-registry-escape` | 隱藏 destination 也只能在 canonical control-plane 範圍；否則 `destination_path_escape`，digest 不變。 |
+| `milestone-root-symlink` | milestone destination 的 symlink 也拒絕為 `destination_symlink_escape`。 |
 | `global-degraded` | `created`、target `ready`、global `degraded`，並含 maintenance finding。 |
 | `mid-write-failure` | `transaction_failed`；project folder、milestone、registry digest 回復。 |
-| `interrupted-transaction` | `transaction_interrupted` 或恢復後的正常 receipt；沒有 staging/journal 殘留。 |
+| `interrupted-transaction-project_folder`、`-milestone`、`-topology` | 每一個正式提交後的真實程序中斷均回 `transaction_interrupted`；沒有 staging/journal 或半成品殘留。 |
 | `concurrent-same-id-folder` | 最多一筆 `created`；另一筆 `transaction_unavailable`；只有一組正式產出。 |
+| `concurrent-distinct-candidates` | 兩個不同 candidate 均可完成；shared registry 不遺失任何 record。 |
 | `no-external-side-effects` | 成功與拒絕案例均不呼叫 Git、部署、MC rebuild、同步或通知。 |
 | `performance-20-runs` | 20 次 success fixture p95 小於或等於 10,000 ms。 |
 
@@ -86,7 +90,7 @@ Quick stdout 只輸出一個 JSON object：
 
 本文件中的「綠燈」只指同時符合下列三項；不得把新 verifier 單獨通過稱為綠燈：
 
-1. `node scripts/verify-project-init-quick-v2.mjs` 的 14 個 fixture 全部 GREEN，process exit code 為 0。
+1. `node scripts/verify-project-init-quick-v2.mjs` 的 23 個 fixture 全部 GREEN，process exit code 為 0。
 2. 既有 `node scripts/verify-project-init-quick.mjs` 也通過。
 3. 成功與拒絕 fixture 的外部命令記錄均為空；沒有 Git、部署、MC rebuild、同步或通知副作用。
 

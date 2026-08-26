@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,6 +10,7 @@ const repoRoot = path.resolve(__dirname, "..");
 const collabRoot = resolveCollabRoot(repoRoot);
 const registryPath = path.join(repoRoot, "system-workflow", "registries", "morrowise-project-topology.json");
 const schemaPath = path.join(repoRoot, "system-workflow", "schemas", "morrowise-project-topology.schema.json");
+const healthScript = path.join(repoRoot, "scripts", "project-topology-health.mjs");
 
 assert.ok(fs.existsSync(registryPath), "Project Topology Registry must exist");
 assert.ok(fs.existsSync(schemaPath), "Project Topology schema must exist");
@@ -25,19 +27,17 @@ assert.ok(registry.maintenance_policy, "topology registry must define maintenanc
 const maintenancePolicy = registry.maintenance_policy;
 assert.equal(maintenancePolicy.startup_command, "npm run health:project-topology");
 assert.equal(maintenancePolicy.evidence_warn_after_days, 30);
-assert.match(maintenancePolicy.startup_rule, /blocked/i, "maintenance policy must define the startup blocking rule");
+assert.match(maintenancePolicy.startup_rule, /target.*global.*degraded/i, "maintenance policy must distinguish target rejection from global maintenance");
 assert.equal(schema.$id, "https://hisenzi.local/schemas/morrowise-project-topology.schema.json");
 
 const classifications = new Set(["canonical_project", "git_worktree", "generated", "runtime", "archive", "unknown"]);
 const migrationStates = new Set(["not_assessed", "inventory_only", "blocked", "exempt", "planned", "approved", "migrated", "verified"]);
 const requiredFields = ["id", "path_label", "classification", "migration_state", "project_home_ref", "topology_profile", "evidence", "last_verified_at", "notes"];
-const MAX_INVENTORY_AGE_DAYS = 30;
 
 assert.deepEqual(registry.classification_vocabulary, [...classifications]);
 assert.deepEqual(registry.migration_state_vocabulary, [...migrationStates]);
 assert.match(registry.updated_at, /^\d{4}-\d{2}-\d{2}$/, "registry updated_at must be YYYY-MM-DD");
 assert.match(registry.inventory_as_of, /^\d{4}-\d{2}-\d{2}$/, "registry inventory_as_of must be YYYY-MM-DD");
-assert.ok(daysOld(registry.inventory_as_of) <= MAX_INVENTORY_AGE_DAYS, `inventory is stale: ${registry.inventory_as_of}`);
 assert.match(registry.document_registry_ref, /#document-source-registry-and-human-sync$/, "JV-36 must remain a thin task reference");
 assert.match(registry.repo_coordination_ref, /#multi-machine-repo-coordination-gate$/, "JV-37 must remain a thin task reference");
 assert.match(registry.write_boundary.forbidden.join(" "), /second source of truth/i, "registry must forbid duplicate JV-36/JV-37 state");
@@ -64,7 +64,6 @@ for (const record of registry.records) {
   assert.ok(migrationStates.has(record.migration_state), `invalid migration state: ${record.id}`);
   if (record.topology_profile) assert.ok(profileIds.has(record.topology_profile), `record references unknown topology profile: ${record.id}`);
   assert.match(record.last_verified_at, /^\d{4}-\d{2}-\d{2}$/, `invalid verification date: ${record.id}`);
-  assert.ok(daysOld(record.last_verified_at) <= MAX_INVENTORY_AGE_DAYS, `stale inventory evidence: ${record.id}`);
   assert.ok(Array.isArray(record.evidence) && record.evidence.length > 0, `record evidence is required: ${record.id}`);
   for (const ref of [record.project_home_ref, record.document_ref, record.repo_ref, ...record.evidence]) {
     if (ref === null) continue;
@@ -82,11 +81,21 @@ const topLevelDirs = fs.readdirSync(collabRoot, { withFileTypes: true })
   .map((entry) => entry.name)
   .sort();
 const registeredDirs = [...recordsByPath.keys()].map((label) => label.replace(/^\$COLLAB\//, "")).sort();
-assert.deepEqual(registeredDirs, topLevelDirs, "every $COLLAB top-level directory must have exactly one topology record");
+const health = spawnSync(process.execPath, [healthScript, "--collab-root", collabRoot, "--registry", registryPath, "--format", "json"], { encoding: "utf8" });
+assert.equal(health.signal, null, health.stderr);
+const healthReport = JSON.parse(health.stdout);
+assert.ok(["ready", "degraded"].includes(healthReport.global_status), "health must report global readiness separately");
 
 for (const name of topLevelDirs) {
   const target = path.join(collabRoot, name, ".git");
   const record = recordsByPath.get(`$COLLAB/${name}`);
+  if (!record) {
+    assert.ok(
+      healthReport.items.some((item) => item.code === "unregistered_topology_root" && item.ref === `$COLLAB/${name}`),
+      `unregistered root must remain a visible maintenance finding: ${name}`,
+    );
+    continue;
+  }
   if (!fs.existsSync(target)) continue;
   const gitStat = fs.lstatSync(target);
   if (gitStat.isDirectory()) {
@@ -97,12 +106,13 @@ for (const name of topLevelDirs) {
   }
 }
 
-console.log(`Project Topology Registry verification OK — ${registry.records.length} root records`);
-
-function daysOld(dateText) {
-  const parsed = Date.parse(`${dateText}T00:00:00Z`);
-  assert.equal(Number.isNaN(parsed), false, `invalid ISO date: ${dateText}`);
-  const now = new Date();
-  const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
-  return Math.floor((today - parsed) / 86_400_000);
+for (const name of registeredDirs) {
+  const localPath = path.join(collabRoot, name);
+  if (fs.existsSync(localPath)) continue;
+  assert.ok(
+    healthReport.items.some((item) => item.code === "missing_registered_topology_root" && item.ref === `$COLLAB/${name}`),
+    `missing registered root must remain a visible maintenance finding: ${name}`,
+  );
 }
+
+console.log(`Project Topology Registry verification OK — ${registry.records.length} root records`);

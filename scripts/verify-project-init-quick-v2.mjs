@@ -42,14 +42,35 @@ await check("invalid-input", () => {
   }
 });
 
+await check("invalid-topology-registry", () => {
+  const fixture = makeFixture("invalid-topology-registry");
+  try {
+    const registry = JSON.parse(fs.readFileSync(fixture.topologyRegistry, "utf8"));
+    registry.registry_id = "invalid-registry";
+    fs.writeFileSync(fixture.topologyRegistry, `${JSON.stringify(registry, null, 2)}\n`);
+    const before = digest(fixture.collabRoot);
+    const receipt = expectReceipt(runQuick(fixture), "rejected");
+    assert.equal(receipt.reason_code, "transaction_failed");
+    assert.equal(receipt.global_status, "degraded");
+    assert.equal(digest(fixture.collabRoot), before);
+  } finally {
+    fixture.cleanup();
+  }
+});
+
 for (const conflict of ["id", "folder", "readme", "milestone"]) {
   await check(`${conflict}-conflict`, () => {
     const fixture = makeFixture(`${conflict}-conflict`);
     try {
       createConflict(fixture, conflict);
+      if (conflict === "id") fs.mkdirSync(path.join(fixture.collabRoot, "unrelated-maintenance-root"));
       const before = digest(fixture.collabRoot);
       const receipt = expectReceipt(runQuick(fixture), "rejected");
       assert.equal(receipt.reason_code, `${conflict === "id" ? "id" : conflict === "folder" ? "project_folder" : conflict}_conflict`);
+      if (conflict === "id") {
+        assert.equal(receipt.global_status, "degraded", "rejected Quick must still expose global maintenance");
+        assert.ok(receipt.maintenance_findings.length > 0);
+      }
       assert.equal(digest(fixture.collabRoot), before, `${conflict} conflict must not change fixture state`);
     } finally {
       fixture.cleanup();
@@ -84,6 +105,90 @@ await check("symlink-escape", () => {
   }
 });
 
+await check("milestone-root-escape", () => {
+  const fixture = makeFixture("milestone-root-escape");
+  try {
+    const before = digest(fixture.collabRoot);
+    const receipt = expectReceipt(runQuick(fixture, { milestonesRoot: path.join(fixture.root, "outside-milestones") }), "rejected");
+    assert.equal(receipt.reason_code, "destination_path_escape");
+    assert.equal(digest(fixture.collabRoot), before);
+  } finally {
+    fixture.cleanup();
+  }
+});
+
+await check("topology-registry-escape", () => {
+  const fixture = makeFixture("topology-registry-escape");
+  try {
+    const outsideRegistry = path.join(fixture.root, "outside-topology.json");
+    fs.copyFileSync(fixture.topologyRegistry, outsideRegistry);
+    const before = digest(fixture.collabRoot);
+    const receipt = expectReceipt(runQuick(fixture, { topologyRegistry: outsideRegistry }), "rejected");
+    assert.equal(receipt.reason_code, "destination_path_escape");
+    assert.equal(digest(fixture.collabRoot), before);
+  } finally {
+    fixture.cleanup();
+  }
+});
+
+await check("milestone-root-symlink", () => {
+  const fixture = makeFixture("milestone-root-symlink");
+  try {
+    const outside = path.join(fixture.root, "outside-milestones");
+    fs.mkdirSync(outside);
+    fs.rmSync(fixture.milestonesRoot, { recursive: true, force: true });
+    fs.symlinkSync(outside, fixture.milestonesRoot);
+    const before = digest(fixture.collabRoot);
+    const receipt = expectReceipt(runQuick(fixture), "rejected");
+    assert.equal(receipt.reason_code, "destination_symlink_escape");
+    assert.equal(digest(fixture.collabRoot), before);
+  } finally {
+    fixture.cleanup();
+  }
+});
+
+await check("target-not-canonical", () => {
+  const fixture = makeFixture("target-not-canonical");
+  try {
+    const registry = JSON.parse(fs.readFileSync(fixture.topologyRegistry, "utf8"));
+    registry.records.push({
+      ...topologyFixture().records[0],
+      id: fixture.id,
+      path_label: `$COLLAB/${fixture.id}`,
+      project_home_ref: `$COLLAB/${fixture.id}`,
+      classification: "legacy_root",
+    });
+    fs.writeFileSync(fixture.topologyRegistry, `${JSON.stringify(registry, null, 2)}\n`);
+    const before = digest(fixture.collabRoot);
+    const receipt = expectReceipt(runQuick(fixture), "rejected");
+    assert.equal(receipt.reason_code, "target_not_canonical");
+    assert.equal(digest(fixture.collabRoot), before);
+  } finally {
+    fixture.cleanup();
+  }
+});
+
+await check("target-migration-blocked", () => {
+  const fixture = makeFixture("target-migration-blocked");
+  try {
+    const registry = JSON.parse(fs.readFileSync(fixture.topologyRegistry, "utf8"));
+    registry.records.push({
+      ...topologyFixture().records[0],
+      id: fixture.id,
+      path_label: `$COLLAB/${fixture.id}`,
+      project_home_ref: `$COLLAB/${fixture.id}`,
+      migration_state: "blocked",
+    });
+    fs.writeFileSync(fixture.topologyRegistry, `${JSON.stringify(registry, null, 2)}\n`);
+    const before = digest(fixture.collabRoot);
+    const receipt = expectReceipt(runQuick(fixture), "rejected");
+    assert.equal(receipt.reason_code, "target_migration_blocked");
+    assert.equal(digest(fixture.collabRoot), before);
+  } finally {
+    fixture.cleanup();
+  }
+});
+
 await check("global-degraded", () => {
   const fixture = makeFixture("global-degraded");
   try {
@@ -109,19 +214,24 @@ await check("mid-write-failure", () => {
   }
 });
 
-await check("interrupted-transaction", () => {
-  const fixture = makeFixture("interrupted-transaction");
-  try {
-    const transactionDir = path.join(fixture.collabRoot, ".quick-transactions");
-    fs.mkdirSync(transactionDir);
-    fs.writeFileSync(path.join(transactionDir, "unfinished.json"), "{\"state\":\"committing\"}\n");
-    const receipt = expectReceipt(runQuick(fixture), "rejected");
-    assert.equal(receipt.reason_code, "transaction_interrupted");
-    assert.equal(fs.existsSync(transactionDir), false, "recovery must remove an unfinished transaction journal");
-  } finally {
-    fixture.cleanup();
-  }
-});
+for (const phase of ["project_folder", "milestone", "topology"]) {
+  await check(`interrupted-transaction-${phase}`, () => {
+    const fixture = makeFixture(`interrupted-transaction-${phase}`);
+    try {
+      const before = digest(fixture.collabRoot);
+      const transactionDir = path.join(fixture.collabRoot, ".quick-transactions");
+      const interrupted = runQuick(fixture, { env: { MORROWISE_QUICK_TEST_INTERRUPT_AFTER: phase } });
+      assert.equal(interrupted.status, 91, `fixture hook must interrupt after the ${phase} commit: ${interrupted.stdout} ${interrupted.stderr}`);
+      assert.ok(fs.existsSync(transactionDir), "an interrupted process must leave the recovery journal");
+      const receipt = expectReceipt(runQuick(fixture), "rejected");
+      assert.equal(receipt.reason_code, "transaction_interrupted");
+      assert.equal(fs.existsSync(transactionDir), false, "recovery must remove an unfinished transaction journal");
+      assert.equal(digest(fixture.collabRoot), before, "recovery must restore every partially committed output");
+    } finally {
+      fixture.cleanup();
+    }
+  });
+}
 
 await check("concurrent-same-id-folder", async () => {
   const fixture = makeFixture("concurrent-same-id-folder");
@@ -139,12 +249,33 @@ await check("concurrent-same-id-folder", async () => {
   }
 });
 
+await check("concurrent-distinct-candidates", async () => {
+  const fixture = makeFixture("concurrent-distinct-candidates");
+  try {
+    const otherId = `${fixture.id}-other`;
+    const otherFolder = path.join(fixture.collabRoot, otherId);
+    const [first, second] = await Promise.all([
+      runQuickAsync(fixture),
+      runQuickAsync(fixture, { id: otherId, projectFolder: otherFolder }),
+    ]);
+    expectReceipt(first, "created");
+    expectReceipt(second, "created");
+    assert.ok(fs.existsSync(path.join(otherFolder, "README.md")));
+    assert.ok(fs.existsSync(path.join(fixture.milestonesRoot, otherId, "tasks.json")));
+  } finally {
+    fixture.cleanup();
+  }
+});
+
 await check("no-external-side-effects", () => {
   const fixture = makeFixture("no-external-side-effects", { commandTrap: true });
   try {
     const result = runQuick(fixture);
     assert.equal(fs.readFileSync(fixture.commandLog, "utf8"), "", "Quick must not call external commands");
     expectReceipt(result, "created");
+    const rejected = runQuick(fixture);
+    expectReceipt(rejected, "rejected");
+    assert.equal(fs.readFileSync(fixture.commandLog, "utf8"), "", "rejected Quick must not call external commands");
   } finally {
     fixture.cleanup();
   }
@@ -155,15 +286,21 @@ await check("performance-20-runs", () => {
   for (let index = 0; index < 20; index += 1) {
     const fixture = makeFixture(`performance-${index}`);
     try {
-      results.push(runQuick(fixture));
+      const startedAt = process.hrtime.bigint();
+      const result = runQuick(fixture);
+      const wallMs = Number(process.hrtime.bigint() - startedAt) / 1_000_000;
+      results.push({ result, wallMs });
     } finally {
       fixture.cleanup();
     }
   }
-  const durations = results.map((result) => expectReceipt(result, "created").duration_ms);
-  durations.sort((left, right) => left - right);
-  const p95 = durations[Math.ceil(durations.length * 0.95) - 1];
-  assert.ok(p95 <= 10_000, `p95 must be <= 10000ms, got ${p95}`);
+  const receiptDurations = results.map(({ result }) => expectReceipt(result, "created").duration_ms);
+  const wallDurations = results.map(({ wallMs }) => wallMs);
+  for (const durations of [receiptDurations, wallDurations]) {
+    durations.sort((left, right) => left - right);
+    const p95 = durations[Math.ceil(durations.length * 0.95) - 1];
+    assert.ok(p95 <= 10_000, `p95 must be <= 10000ms, got ${p95}`);
+  }
 });
 
 if (failures.length) {
@@ -188,7 +325,7 @@ function makeFixture(name, { milestonesAsFile = false, commandTrap = false } = {
   const mcRoot = path.join(collabRoot, "harness-mc");
   const milestonesRoot = path.join(mcRoot, "milestones");
   const topologyRegistry = path.join(mcRoot, "topology.json");
-  const id = `quick-${name}`;
+  const id = `quick-${name}`.replace(/[^a-z0-9-]+/g, "-");
   const projectFolder = path.join(collabRoot, id);
   const mvpTasksPath = path.join(root, "mvp-tasks.json");
   fs.mkdirSync(mcRoot, { recursive: true });
@@ -217,17 +354,17 @@ function makeFixture(name, { milestonesAsFile = false, commandTrap = false } = {
   return fixture;
 }
 
-function runQuick(fixture, { projectFolder = fixture.projectFolder } = {}) {
-  return spawnSync("python3", quickArgs(fixture, projectFolder), {
+function runQuick(fixture, { projectFolder = fixture.projectFolder, env = {}, milestonesRoot = fixture.milestonesRoot, topologyRegistry = fixture.topologyRegistry } = {}) {
+  return spawnSync("python3", quickArgs(fixture, projectFolder, { milestonesRoot, topologyRegistry }), {
     cwd: repoRoot,
     encoding: "utf8",
-    env: fixture.env,
+    env: { ...fixture.env, ...env },
   });
 }
 
-function runQuickAsync(fixture) {
+function runQuickAsync(fixture, { id = fixture.id, projectFolder = fixture.projectFolder } = {}) {
   return new Promise((resolve, reject) => {
-    const child = spawn("python3", quickArgs(fixture, fixture.projectFolder), {
+    const child = spawn("python3", quickArgs(fixture, projectFolder, { id }), {
       cwd: repoRoot,
       env: fixture.env,
       stdio: ["ignore", "pipe", "pipe"],
@@ -241,11 +378,11 @@ function runQuickAsync(fixture) {
   });
 }
 
-function quickArgs(fixture, projectFolder) {
+function quickArgs(fixture, projectFolder, { id = fixture.id, milestonesRoot = fixture.milestonesRoot, topologyRegistry = fixture.topologyRegistry } = {}) {
   return [
     initScript,
     "quick",
-    "--id", fixture.id,
+    "--id", id,
     "--name", "Quick Contract Fixture",
     "--desc", "驗證 Quick P0 contract。",
     "--project-code", "QCF",
@@ -255,8 +392,8 @@ function quickArgs(fixture, projectFolder) {
     "--final-goal", "安全完成 Quick 開案。",
     "--mvp-tasks-file", fixture.mvpTasksPath,
     "--collab-root", fixture.collabRoot,
-    "--milestones-root", fixture.milestonesRoot,
-    "--topology-registry", fixture.topologyRegistry,
+    "--milestones-root", milestonesRoot,
+    "--topology-registry", topologyRegistry,
   ];
 }
 

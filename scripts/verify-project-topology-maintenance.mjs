@@ -45,7 +45,20 @@ withFixture((fixtureRoot) => {
   makeDirectory(fixtureRoot, "surprise");
   const result = runHealth(fixtureRoot, [record("known-project")]);
   assert.equal(result.process_status, 1, "an unregistered root directory must block startup");
+  assert.equal(result.global_status, "degraded", "global maintenance must be explicitly degraded");
   assertItem(result, "unregistered_topology_root", "error", "$COLLAB/surprise");
+  const summary = runHealthSummary(fixtureRoot, [record("known-project")]);
+  assert.match(summary.stdout, /global_status: degraded/, "human summary must separate global maintenance state");
+  const scopedSummary = runHealthSummary(fixtureRoot, [record("known-project")], "$COLLAB/known-project");
+  assert.match(scopedSummary.stdout, /target_status: ready/, "scoped output must lead with the target result");
+  assert.match(scopedSummary.stdout, /global_maintenance: blocked/, "scoped output must keep global maintenance visible");
+  assert.doesNotMatch(scopedSummary.stdout, /^status: blocked/m, "a safe scoped target must not be labelled blocked");
+});
+
+withFixture((fixtureRoot) => {
+  makeDirectory(fixtureRoot, "known-project");
+  const result = runHealth(fixtureRoot, [record("known-project")]);
+  assert.equal(result.global_status, "ready", "a clean inventory must report global ready");
 });
 
 withFixture((fixtureRoot) => {
@@ -66,6 +79,7 @@ withFixture((fixtureRoot) => {
   makeDirectory(fixtureRoot, "stale-project");
   const result = runHealth(fixtureRoot, [record("stale-project", { last_verified_at: "2000-01-01" })]);
   assert.equal(result.process_status, 1, "stale topology evidence must block startup");
+  assert.equal(result.global_status, "degraded");
   assertItem(result, "stale_topology_evidence", "error", "$COLLAB/stale-project");
 });
 
@@ -117,6 +131,20 @@ function runHealth(fixtureRoot, records) {
   assert.equal(execution.signal, null, execution.stderr);
   assert.notEqual(execution.status, null, execution.stderr);
   return { process_status: execution.status, ...JSON.parse(execution.stdout) };
+}
+
+function runHealthSummary(fixtureRoot, records, target = null) {
+  const registryPath = path.join(fixtureRoot, "topology-summary.json");
+  fs.writeFileSync(registryPath, `${JSON.stringify({
+    registry_id: "morrowise-project-topology.v1",
+    maintenance_policy: { evidence_warn_after_days: 30, startup_command: "npm run health:project-topology" },
+    records,
+  })}\n`);
+  const args = [healthScript, "--collab-root", fixtureRoot, "--registry", registryPath, "--summary"];
+  if (target) args.push("--target", target);
+  const execution = spawnSync(process.execPath, args, { encoding: "utf8" });
+  assert.equal(execution.signal, null, execution.stderr);
+  return execution;
 }
 
 function assertItem(result, code, severity, ref) {

@@ -71,12 +71,10 @@ withFixture(({ collabRoot, registryPath, records, initScript, env }) => {
 
 withFixture(({ collabRoot, registryPath, initScript, commandLog, env }) => {
   fs.mkdirSync(path.join(collabRoot, "surprise"));
-  const before = digestTree(collabRoot);
-  const result = runInit({ initScript, id: "blocked-before-mkdir", registryPath, env });
-  assert.equal(result.status, 2, result.stderr || result.stdout);
-  assert.equal(fs.existsSync(path.join(collabRoot, "harness-mc", "milestones", "blocked-before-mkdir")), false);
+  const result = runInit({ initScript, id: "global-degraded-does-not-block", registryPath, env });
+  assert.equal(result.status, 0, result.stderr || result.stdout);
+  assert.equal(fs.existsSync(path.join(collabRoot, "harness-mc", "milestones", "global-degraded-does-not-block", "project.json")), true);
   assert.equal(readLog(commandLog), "");
-  assert.equal(digestTree(collabRoot), before, "blocked project-init changed the fixture before admission");
 });
 
 for (const receiptCase of ["wrong-project", "ambiguous"]) {
@@ -212,7 +210,7 @@ function record(name, overrides = {}) {
 function writeRegistry(registryPath, records) {
   fs.writeFileSync(registryPath, `${JSON.stringify({
     registry_id: "morrowise-project-topology.v1",
-    maintenance_policy: { startup_command: "npm run health:project-topology", evidence_warn_after_days: 30, startup_rule: "blocked integrity findings stop mutation" },
+    maintenance_policy: { startup_command: "npm run health:project-topology", evidence_warn_after_days: 30, startup_rule: "target integrity findings reject only that target; global maintenance findings remain visible as degraded and do not block a safe scoped target" },
     records,
   })}\n`);
 }

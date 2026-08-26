@@ -21,9 +21,6 @@ export function admitProjectWrite({ destination, cwd = process.cwd(), collabRoot
   if (topology.error) {
     return blocked("topology_check_failed", absoluteDestination, null, topology.error);
   }
-  if (topology.report.status === "blocked") {
-    return blocked("topology_blocked", absoluteDestination, topology.report.status, "blocked topology integrity findings must be resolved before mutation");
-  }
 
   let registry;
   try {
@@ -35,6 +32,14 @@ export function admitProjectWrite({ destination, cwd = process.cwd(), collabRoot
   const relative = path.relative(absoluteCollab, absoluteDestination);
   const rootName = relative.split(path.sep)[0];
   const targetRef = `$COLLAB/${rootName}`;
+  const targetIntegrityFinding = topology.report.items.find((item) => (
+    item.ref === targetRef
+    && item.severity === "error"
+    && item.code !== "stale_topology_evidence"
+  ));
+  if (targetIntegrityFinding) {
+    return blocked("target_topology_blocked", absoluteDestination, topology.report.status, `target integrity finding: ${targetIntegrityFinding.code}`);
+  }
   const records = Array.isArray(registry.records) ? registry.records : [];
   const record = records.find((entry) => entry.path_label === targetRef);
   if (!record) {

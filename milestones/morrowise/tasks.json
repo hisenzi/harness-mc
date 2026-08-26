@@ -11517,19 +11517,19 @@
     {
       "id": "morrowise-project-init-fast-default-v2",
       "title": "開案 v2：快速開案預設與 MVP 後正式補完",
-      "status": "completed",
+      "status": "in_progress",
       "track": "governance",
       "order_label": "MW-PI-02",
       "priority": "high",
       "dependencies": [
         "morrowise-project-init-v1"
       ],
-      "done_condition": "快速開案預設能以最小資料建立 README、project.json、明確且各有驗收標準的 MVP tasks、formalize checkpoint 與拓樸登錄；MVP 期間可新增 task、隨時同步 MC，並在 MVP 測試後以 formalize 補正式專案內容與正式 tasks。階段 1 至 5 局部驗證由 Vincent 判定通過，且後續經核准的 commit／push 到達 remote truth 後結案。",
+      "done_condition": "第 9 節核准的 task 完成流程完成分層落地：本案經驗寫入 daily，跨專案規則寫入既有 executing-plans，機械不變條件由局部 verifier 驗證；每階段提供驗收資訊並在 Vincent 判定後最小回寫 tracker 與 canonical task，MC 反映 canonical 狀態。tracker 於 closeout 先移入 owner 的 plan/end，再依授權完成可多次的 commit／push，最後核對所有核准變更已到 remote；不新增平行 Skill、schema、固定 C1／C2 或 project-init verifier。",
       "acceptance": [
-        "project-init Skill 明確管理 quick 與 formalize 兩階段；quick 建立最小開案資料，formalize 更新既有專案且不更動 MVP 身分與紀錄。",
-        "new-project.py、order_label 排序、work-anchor、task validator 與局部 verifiers 支援已核准的快速開案、任意數量 MVP tasks、明確跳做及正式補完規則。",
-        "sync-mc Skill 可在 task 變更後獨立呼叫，指定專案與 tasks 能在 MC 依 order_label 顯示；Git、部署與外部同步不構成快速開案前置關卡。",
-        "visual-template-system 以 VTS-MVP-01 起建立實際 MVP tasks 與 formalize checkpoint，且舊格式資料有可回復快照。"
+        "daily 只保留 MW-PI-02／VTS／五階段／commit 等本案經驗；executing-plans 只加入跨專案可複用的階段驗收、最小回寫、狀態分離與複利路由，不新增平行 Skill。",
+        "verify-phase-acceptance-loop.mjs 能讓缺少階段驗收必要資訊、立即最小回寫、狀態分離或複利分層，以及固定 commit／push 次數、固定 C1／C2、允許 schema 膨脹的版本失敗；核准版本通過，且不替 Vincent 做語意判定。",
+        "每階段均主動說明驗什麼、怎麼驗與 Agent 自驗結果；Vincent 判定後，tracker 寫完整決策脈絡，canonical task 只寫狀態、驗收結果與必要證據，MC 由 canonical 資料重新同步。",
+        "本輪各階段完成核准驗收；tracker 先移入同一 owner 的 plan/end，再依實際交付進度與授權執行可多次的 commit／push，最後確認所有核准變更均已到 remote。"
       ],
       "source_refs": [
         "$COLLAB/notyet-harness/100_Todo/plan/2026-08-17-project-init-fast-default-v2-temporary-tracker.md",
@@ -11548,10 +11548,11 @@
         "decision_input": [
           "Vincent 核准快速開案預設、order_label 規則、MVP 期間自由增補 tasks、獨立 MC 同步與 MVP 後 formalize。",
           "階段 1 至 5 已由 Vincent 判定通過。",
-          "Vincent 於 2026-08-17 明確授權本案 commit／push。"
+          "Vincent 於 2026-08-17 明確授權本案 commit／push。",
+          "Vincent 核准第 9 節的 task 完成流程萃取方向、四階段實作順序，並於 2026-08-18 指示開始階段 1。"
         ],
-        "decision_output": "以單一 MW-PI-02 記錄開案 v2 的實作、局部驗證與 VTS 實際套用，不建立額外驗收編號或平行追蹤系統。",
-        "execution_boundary": "本 task 只記錄已核准的五階段開案流程優化、VTS quick 遷移與 MC 顯示；不授權 commit、push、部署、外部同步或新增架構工作。"
+        "decision_output": "沿用單一 MW-PI-02，將本案完成經驗分層為 daily、既有 executing-plans 與局部 verifier；不建立新 task、平行 Skill、驗收編號或第二正本。",
+        "execution_boundary": "本 revision 只處理第 9 節核准的 task 完成流程萃取：MW-PI-02 resume／MC 同步、daily、executing-plans、局部 verifier、tracker 階段回寫與最終歸檔；不修改 project-init、sync-mc、worktree-commit、cc-push、VTS、CORE、ARCHITECTURE 或其他 execution／review／Git Skills。commit／push 仍須相應授權。"
       },
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
@@ -11661,6 +11662,50 @@
                 "approved_at": "2026-08-17",
                 "evidence_refs": [
                   "Vincent 2026-08-17 current session: commit／push"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "resume",
+            "from_status": "completed",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准沿用 MW-PI-02 執行第 9 節 task 完成流程萃取，並於 2026-08-18 指示開始階段 1。本 revision 先恢復 canonical work anchor 並同步 MC；後續才依階段處理 daily、既有 executing-plans、局部 verifier、驗收回寫與 tracker 歸檔，不重開已通過的開案 v2 五階段。",
+            "evidence_refs": [
+              "Vincent 2026-08-18 current session: 可以進行，開始前先說明怎麼進行",
+              "Vincent 2026-08-18 current session: 開始階段1",
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-08-17-project-init-fast-default-v2-temporary-tracker.md#9-task-完成流程萃取與複利計畫"
+            ],
+            "recorded_at": "2026-08-18",
+            "prior_completion": {
+              "completed_at": "2026-08-17",
+              "commits": [
+                "89062993bf662fdf7fde42cb18b222a82ae156a8",
+                "768d28053e9bb91342643da776caf41520e51866",
+                "95f424b0421fdaebc704faa87880b3e2986ae487"
+              ],
+              "summary": "階段 1 至 5 均由 Vincent 判定通過；quick／formalize、order_label 執行、獨立 sync-mc、VTS quick 遷移與 legacy snapshots 已完成，原 task 已於 2026-08-17 完成 remote closeout。"
+            },
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-project-init-v1",
+                "morrowise/task-lifecycle-jv32-gate"
+              ],
+              "scope_comparison": {
+                "problem": "本輪不是重做開案 v2，而是把同一 MW-PI-02 已驗證的 task 完成過程萃取為可跨專案複用的薄流程。",
+                "owner_source_of_truth": "MW-PI-02 繼續擁有 canonical 狀態與最小證據；tracker 保存決策脈絡，MC 只讀 canonical 資料，Git remote 證明交付。",
+                "inputs_outputs": "輸入是 Vincent 核准的第 9 節雙循環、責任分層與四階段執行順序；輸出限定為 daily、既有 executing-plans、局部 verifier、tracker 回寫／歸檔及 canonical／MC 狀態。",
+                "lifecycle_completion": "只有本輪各階段經 Vincent 判定、tracker 已歸檔、核准變更完成 commit／push 並確認到 remote 後，MW-PI-02 才再次完成；此前保持 in_progress。"
+              },
+              "decision_reason": "問題與 owner 仍屬 MW-PI-02 的開案流程實例及其完成方法複利，因此 resume 同一 task；不新增 task 或 project-init verifier。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-18",
+                "evidence_refs": [
+                  "Vincent 2026-08-18 current session: 可以進行，開始前先說明怎麼進行",
+                  "Vincent 2026-08-18 current session: 開始階段1"
                 ]
               }
             }
@@ -11799,13 +11844,170 @@
         "evaluated_at": "2026-08-17",
         "reason": "本案是既有 project-init 與 MC read-model 能力的版本改進；Vincent 已明確將 Architecture Atlas 排除於本輪快速開案與 closeout scope，未新增需 promoted 的獨立子系統。"
       },
-      "completed_at": "2026-08-17",
+      "completed_at": null,
       "commits": [
         "89062993bf662fdf7fde42cb18b222a82ae156a8",
         "768d28053e9bb91342643da776caf41520e51866",
         "95f424b0421fdaebc704faa87880b3e2986ae487"
       ],
-      "summary": "2026-08-17：階段 1 至 5 均由 Vincent 判定通過；quick／formalize、order_label 執行、獨立 sync-mc、VTS quick 遷移與 legacy snapshots 已完成。VTS 5 tasks 與 MW-PI-02 經 canonical、generated read model 與 localhost MC 核對；C1 與追蹤 closeout 已到兩個 origin/main，本 task 正式完成。"
+      "summary": "2026-08-18：保留 2026-08-17 已完成的開案 v2 五階段與 remote 證據；本輪依 Vincent 核准 resume 同一 MW-PI-02，執行第 9 節 task 完成流程萃取。階段 1 先恢復 canonical work anchor 並同步 MC，尚未進行 Skill、daily、verifier、歸檔或本輪 commit／push。"
+    },
+    {
+      "id": "quick-init-ten-second-atomic-v1",
+      "title": "Quick 開案 10 秒：原子化與 scoped admission",
+      "status": "todo",
+      "track": "governance",
+      "order_label": "MW-PI-03",
+      "priority": "high",
+      "dependencies": [
+        "morrowise-project-init-fast-default-v2",
+        "project-topology-architecture-atlas"
+      ],
+      "done_condition": "Quick 開案以 candidate bootstrap admission 與可回復 transaction 建立 README、最小 project.json、tasks.json 與 topology record；無關 global maintenance 不阻擋合法目標，且固定 receipt 可區分 target/global 狀態。Quick 專用 verifier 全數通過，20 次隔離 fixture p95 不超過 10 秒；Git、部署、同步與通知沒有成為 Quick 副作用。",
+      "source_refs": [
+        "$COLLAB/notyet-harness/100_Todo/plan/2026-08-17-project-init-fast-default-v2-temporary-tracker.md#10-morrowise-快速開案10秒目標優化計畫",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/project-init-quick-p0-contract.md",
+        "$COLLAB/harness-mc/scripts/verify-project-init-quick-v2.mjs",
+        "$COLLAB/harness-mc/scripts/new-project.py",
+        "$COLLAB/harness-mc/scripts/project-write-admission.mjs",
+        "$COLLAB/harness-mc/scripts/project-topology-health.mjs"
+      ],
+      "acceptance_matrix": [
+        {
+          "id": "Q10-A01",
+          "what": "Quick candidate bootstrap 在新專案尚未登錄時，先驗證後提交，不以未登錄拒絕自身。",
+          "preconditions": ["隔離 fixture", "完整有效 Quick input"],
+          "steps": ["執行合法新專案 Quick", "檢查成功 receipt 與四份正式產出"],
+          "pass_condition": "receipt 為 created；README、project.json、tasks.json、topology record 同時存在。",
+          "fail_condition": "需先手動登錄，或任一正式產出缺失。",
+          "verification": ["node scripts/verify-project-init-quick-v2.mjs"]
+        },
+        {
+          "id": "Q10-A02",
+          "what": "Quick 拒絕或中斷時不留下半開案資料。",
+          "preconditions": ["隔離 fixture", "衝突與寫入失敗注入"],
+          "steps": ["依序執行衝突、admission、途中寫入失敗情境", "比對檔案樹與 registry digest"],
+          "pass_condition": "每個拒絕情境均無持久化副作用，或可由 transaction recovery 回復。",
+          "fail_condition": "殘留 project folder、milestone、registry record 或 transaction。",
+          "verification": ["node scripts/verify-project-init-quick-v2.mjs"]
+        },
+        {
+          "id": "Q10-A03",
+          "what": "Quick receipt 明確分離 target 與 global 狀態。",
+          "preconditions": ["合法 target", "global degraded fixture"],
+          "steps": ["執行 Quick", "解析 receipt"],
+          "pass_condition": "target_status 為 ready、global_status 為 degraded，且 outcome 為 created。",
+          "fail_condition": "合法 target 因無關 global finding 顯示 rejected 或 blocked。",
+          "verification": ["node scripts/verify-project-init-quick-v2.mjs"]
+        },
+        {
+          "id": "Q10-A04",
+          "what": "不安全 target 與併發 Quick 會安全拒絕。",
+          "preconditions": ["隔離 fixture"],
+          "steps": ["測試 path escape、symlink escape、重複 ID／folder 與兩個並發 Quick"],
+          "pass_condition": "不安全 target 均 rejected；併發最多一筆 created。",
+          "fail_condition": "路徑逃逸、重複 registry／milestone 或兩筆成功。",
+          "verification": ["node scripts/verify-project-init-quick-v2.mjs"]
+        },
+        {
+          "id": "Q10-A05",
+          "what": "Quick 正常路徑在 10 秒效能合約內。",
+          "preconditions": ["隔離 fixture", "固定有效 Quick input"],
+          "steps": ["連跑 20 次 Quick", "計算 p95 duration_ms"],
+          "pass_condition": "p95 小於或等於 10,000 ms。",
+          "fail_condition": "p95 超過門檻，或計時混入需求討論／後續同步。",
+          "verification": ["node scripts/verify-project-init-quick-v2.mjs --performance"]
+        },
+        {
+          "id": "Q10-A06",
+          "what": "Quick 不產生 Git、部署、同步或通知副作用。",
+          "preconditions": ["隔離 fixture", "外部命令攔截"],
+          "steps": ["執行成功與拒絕 Quick", "檢查命令記錄與外部狀態"],
+          "pass_condition": "外部命令記錄為空。",
+          "fail_condition": "任何 Git、部署、MC rebuild、外部同步或通知被呼叫。",
+          "verification": ["node scripts/verify-project-init-quick-v2.mjs"]
+        }
+      ],
+      "jv32_route": {
+        "workflows": ["task-lifecycle"],
+        "decision_input": [
+          "第 10 節模擬驗證發現現行 Quick 先寫入後 admission，且 target/global status 不清楚。",
+          "Vincent 於 2026-08-26 核准以獨立 task 處理 Quick 10 秒優化。"
+        ],
+        "decision_output": "以獨立 MW-PI-03 處理 Quick 原子化、candidate bootstrap admission、receipt、verifier、效能與後續 Skill 收斂，不改寫 MW-PI-02 的第 9 節工作。",
+        "execution_boundary": "先完成第 10 節階段 1 的規格與 Quick 專用先失敗測試；後續依已核准階段順序處理 P0、P1 與最終驗收。不得建立 Git repo、部署、外部同步、通知或新平行開案系統。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 指出 Quick 開案會因無關全域 finding、非原子寫入與狀態混淆而卡住，並核准新增獨立 MorroWise task，目標為安全的 10 秒 Quick。",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-08-17-project-init-fast-default-v2-temporary-tracker.md#10-morrowise-快速開案10秒目標優化計畫",
+              "Vincent 2026-08-26 current session: 保留目前 MW-PI-02 的所有未提交內容，直接在同一份 morrowise/tasks.json 追加新的 MW-PI-03"
+            ],
+            "recorded_at": "2026-08-26",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/morrowise-project-init-fast-default-v2",
+                "morrowise/project-topology-architecture-atlas"
+              ],
+              "scope_comparison": {
+                "problem": "MW-PI-02 處理既有 Quick／formalize 與第 9 節流程萃取；本 task 專門解決 Quick 原子性、scope admission 與 10 秒效能合約。",
+                "owner_source_of_truth": "兩者皆由 MorroWise tasks.json 擁有，但 MW-PI-03 的程式與 verifier 正本在 harness-mc scripts，tracker 第 10 節保存核准計畫。",
+                "inputs_outputs": "輸入是第 10 節 candidate bootstrap、transaction、receipt 與測試矩陣；輸出是 Quick 行為、專用 verifier、效能證據與精簡 Skill 路由。",
+                "lifecycle_completion": "只有 P0、P1 與最終驗收均通過後才完成；MW-PI-02 的第 9 節狀態不受此 task 影響。"
+              },
+              "decision_reason": "問題、驗收與輸出均與 MW-PI-02 現有 scope 不同，使用獨立 task 可避免互相覆寫或將流程萃取誤當 Quick 安全修正。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-26",
+                "evidence_refs": [
+                  "Vincent 2026-08-26 current session: 1，並排除阻擋，快速完成！",
+                  "Vincent 2026-08-26 current session: 保留目前 MW-PI-02 的所有未提交內容，直接在同一份 morrowise/tasks.json 追加新的 MW-PI-03"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "把 Quick 開案的 target-scoped 準入、可回復寫入與可重跑驗證收斂為 MorroWise 既有控制面的一項可靠能力，避免全域 maintenance 與專案建立互相誤阻擋。",
+        "evidence_plan": [
+          "Quick 專用正負向 fixture、digest、併發與副作用 verifier",
+          "20 次隔離 fixture 的 p95 效能結果",
+          "target/global receipt contract 與 scoped maintenance 分離證據"
+        ],
+        "reviewed_at": "2026-08-26"
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/quick-init-ten-second-atomic-v1",
+        "hc_refs": ["#rightProblem", "#systemDynamics", "#risk", "#optimization", "#confirmationBias"],
+        "hc_reasoning": "真正問題不是少一個開案表單，而是無關全域維護、bootstrap 準入與跨檔寫入混成同一阻擋訊號。以 candidate admission 分離目標安全與 global maintenance；以 transaction 與負向 fixture 防止半開案；以 10 秒 p95 合約限制流程膨脹。",
+        "hc_confidence": 0.93,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-08-17-project-init-fast-default-v2-temporary-tracker.md#10-morrowise-快速開案10秒目標優化計畫",
+          "$COLLAB/harness-mc/scripts/new-project.py",
+          "$COLLAB/harness-mc/scripts/project-write-admission.mjs"
+        ],
+        "source_boundary": "HC is a thinking check, not source of truth; canonical task state remains in MorroWise tasks.json and executable behavior remains in scripts and verifiers."
+      },
+      "architecture_decision": {
+        "decision": "not_required",
+        "evaluated_at": "2026-08-26",
+        "reason": "這是既有 project-init 與 topology admission 的版本改善，不新增新的系統 owner、registry、runtime 或 dashboard surface。"
+      },
+      "completed_at": null,
+      "commits": [],
+      "summary": "2026-08-26：依第 10 節重做規格與測試階段。P0 固定契約與 fixture 設計在 system-workflow/docs/specs/project-init-quick-p0-contract.md；Quick 專用 verifier 已以 14 個隔離 fixture 覆蓋成功、不完整 input、四種衝突、path／symlink escape、global degraded、途中失敗、中斷、併發、無外部副作用與 20 次 p95，並確認為預期 RED。本輪驗收通過的範圍僅為「契約＋RED verifier＋正式 Quick 未修改」；功能驗收仍未通過，尚不可稱綠燈或完成。"
     }
   ]
 }

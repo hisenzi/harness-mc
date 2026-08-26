@@ -42,7 +42,16 @@ withFixture(({ collabRoot, registryPath, records }) => {
 withFixture(({ collabRoot, registryPath }) => {
   fs.mkdirSync(path.join(collabRoot, "surprise"));
   const result = runAdmission({ collabRoot, registryPath, destination: path.join(collabRoot, "harness-mc", "fixture.txt") });
-  assertBlocked(result, "topology_blocked");
+  assertAllowed(result, "unrelated unregistered root must not block the canonical target");
+  assert.equal(result.topology_status, "blocked");
+});
+
+withFixture(({ collabRoot, registryPath, records }) => {
+  records[0].last_verified_at = "2026-07-20";
+  writeRegistry(registryPath, records);
+  const result = runAdmission({ collabRoot, registryPath, destination: path.join(collabRoot, "harness-mc", "fixture.txt") });
+  assertAllowed(result, "stale canonical evidence must remain a maintenance signal, not a write blocker");
+  assert.equal(result.topology_status, "blocked");
 });
 
 withFixture(({ collabRoot, registryPath, records }) => {
@@ -54,7 +63,7 @@ withFixture(({ collabRoot, registryPath, records }) => {
 
 withFixture(({ collabRoot, registryPath }) => {
   fs.mkdirSync(path.join(collabRoot, "unregistered"));
-  assertBlocked(runAdmission({ collabRoot, registryPath, destination: path.join(collabRoot, "unregistered", "file.txt") }), "topology_blocked");
+  assertBlocked(runAdmission({ collabRoot, registryPath, destination: path.join(collabRoot, "unregistered", "file.txt") }), "target_topology_blocked");
   assertBlocked(runAdmission({ collabRoot, registryPath, destination: path.resolve(collabRoot, "..", "escaped.txt") }), "destination_outside_collab");
 });
 

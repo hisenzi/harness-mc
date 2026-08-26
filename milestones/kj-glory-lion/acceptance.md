@@ -2,7 +2,7 @@
 
 ## 任務
 
-- project：`kj-mascot`
+- project：`kj-glory-lion`
 - task：`kj-glory-lion-character-production-standard-v1`
 - order：`KJ-01`
 - 目標日：2026-08-31

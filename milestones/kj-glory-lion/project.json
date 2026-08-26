@@ -105,7 +105,7 @@
     },
     {
       "criterion": "成果在 MC task、Obsidian 專案頁與 KJ-光榮獅視覺層可追溯。",
-      "verify_cmd": "檢查 tasks.json、Projects/kj-mascot.md、Heptabase card 與 Obsidian Canvas mirror。",
+      "verify_cmd": "檢查 tasks.json、Projects/kj-glory-lion.md、Heptabase card 與 Obsidian Canvas mirror。",
       "expected": "四個來源均可回查同一 task。"
     }
   ],
@@ -135,17 +135,10 @@
   "system_growth": {
     "trigger": "KJ 提出新的角色視覺、活動或周邊媒材需求時。",
     "data_flow": "既有 KJ 原始資料與已確認設計摘要 → 本案角色設定規格 → 新媒材適配與使用審查。",
-    "surface": "MC canonical task、Obsidian Projects/kj-mascot.md、Heptabase 白板 KJ-光榮獅與同名 Canvas mirror。",
+    "surface": "MC canonical task、Obsidian Projects/kj-glory-lion.md、Heptabase 白板 KJ-光榮獅與同名 Canvas mirror。",
     "feedback_loop": "每次新媒材使用後記錄與基準規格的差異；需要永久化的差異進入版本修訂，僅屬活動的差異留在應用層。"
   },
   "hc_decision": {
     "not_required_reason": "本案是角色與設計規格，不修改 MorroWise、workflow、verifier、同步流程或共享 agent 行為。"
-  },
-  "milestone": {
-    "layout": "grouped-v1",
-    "project_id": "kj-mascot",
-    "group": "kj",
-    "folder_date": "260803",
-    "relative_ref": "milestones/kj/260803-kj-mascot"
   }
 }

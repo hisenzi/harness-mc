@@ -85,4 +85,4 @@
 
 - 已產出並檢查 v0.2 無文字、無浮水印的正／側／背 draft；相較 v0.1，鬃毛已進一步收斂為較少、較厚的金／藍宏觀毛束，草圖呈現上述四項簡化方向。
 - 待 Vincent 確認：鬃毛大型色塊的層次數量、披風下緣弧度、尾端金／藍比例，以及胸章在側面需要保留的最小厚度。
-- Vincent 確認後，才把本草案升版為正式角色設定，逐項回填 `$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/acceptance.md`。
+- Vincent 確認後，才把本草案升版為正式角色設定，逐項回填 `$COLLAB/harness-mc/milestones/kj-glory-lion/acceptance.md`。

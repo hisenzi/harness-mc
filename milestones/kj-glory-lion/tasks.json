@@ -1,5 +1,5 @@
 {
-  "project": "kj-mascot",
+  "project": "kj-glory-lion",
   "tasks": [
     {
       "id": "kj-glory-lion-character-production-standard-v1",
@@ -159,12 +159,12 @@
         }
       ],
       "goal_alignment": {
-        "project_id": "kj-mascot",
-        "goal_ref": "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/project.json#/goals",
+        "project_id": "kj-glory-lion",
+        "goal_ref": "$COLLAB/harness-mc/milestones/kj-glory-lion/project.json#/goals",
         "goal_fingerprint": "sha256:9a90beeabf84e125b5be64663c4968d572a5a9fd124caa2acfeced358ceebf3a",
         "contribution": "把已確認的光榮獅設計摘要轉成可跨媒材引用的永久角色設定與量產適配基準。",
         "evidence_plan": [
-          "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/acceptance.md",
+          "$COLLAB/harness-mc/milestones/kj-glory-lion/acceptance.md",
           "正／側／背三視圖與細節規格",
           "本 task acceptance 結果"
         ],
@@ -185,8 +185,8 @@
             "reason": "Vincent 於 2026-08-03 確認設計摘要並要求開案；本 task 只建立永久角色設定與量產適配基準，不搬動原始 KJ 資料。",
             "evidence_refs": [
               "Vincent 2026-08-03：開案",
-              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/project.json",
-              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/acceptance.md"
+              "$COLLAB/harness-mc/milestones/kj-glory-lion/project.json",
+              "$COLLAB/harness-mc/milestones/kj-glory-lion/acceptance.md"
             ],
             "recorded_at": "2026-08-03"
           },
@@ -196,8 +196,8 @@
             "to_status": "in_progress",
             "reason": "Vincent 於 2026-08-05 核准將原三視圖範圍正式擴充為六面正投影，並逐面重建尾巴、胸章、鬃毛、披風、俯視與仰視。",
             "evidence_refs": [
-              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/acceptance.md",
-              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/character-spec-v0.2.md"
+              "$COLLAB/harness-mc/milestones/kj-glory-lion/acceptance.md",
+              "$COLLAB/harness-mc/milestones/kj-glory-lion/character-spec-v0.2.md"
             ],
             "recorded_at": "2026-08-05"
           },
@@ -207,8 +207,8 @@
             "to_status": "in_progress",
             "reason": "Vincent 於 2026-08-05 指定以附件正面 master 嚴格鎖定全身比例，先建立比例標線／疊圖與腳長驗收規則，再進行局部重建。",
             "evidence_refs": [
-              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/front-proportion-overlay-v0.1.png",
-              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/front-proportion-matrix-v0.1.md"
+              "$COLLAB/harness-mc/milestones/kj-glory-lion/front-proportion-overlay-v0.1.png",
+              "$COLLAB/harness-mc/milestones/kj-glory-lion/front-proportion-matrix-v0.1.md"
             ],
             "recorded_at": "2026-08-05"
           },
@@ -218,8 +218,8 @@
             "to_status": "in_progress",
             "reason": "Vincent 指出腳長仍偏長；重新以附件實際腳底線與身體下緣量測，v0.1 比例標線作廢，改用 v0.2 短腿 anchor。",
             "evidence_refs": [
-              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/front-proportion-overlay-v0.2.png",
-              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/front-proportion-matrix-v0.2.md"
+              "$COLLAB/harness-mc/milestones/kj-glory-lion/front-proportion-overlay-v0.2.png",
+              "$COLLAB/harness-mc/milestones/kj-glory-lion/front-proportion-matrix-v0.2.md"
             ],
             "recorded_at": "2026-08-05"
           },
@@ -229,8 +229,8 @@
             "to_status": "in_progress",
             "reason": "Vincent 釐清披風實際做工：不同粗細／位置的金邊不得硬接成一圈；前肢交界採深藍結構邊，頸肩與下襬金邊分段收尾。",
             "evidence_refs": [
-              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/character-spec-v0.2.md",
-              "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/acceptance.md"
+              "$COLLAB/harness-mc/milestones/kj-glory-lion/character-spec-v0.2.md",
+              "$COLLAB/harness-mc/milestones/kj-glory-lion/acceptance.md"
             ],
             "recorded_at": "2026-08-05"
           }
@@ -238,7 +238,7 @@
       },
       "source_refs": [
         "$COLLAB/CC本機協作_無Git/KJ/260623_KJ_光榮獅_吉祥物",
-        "$COLLAB/harness-mc/milestones/kj/260803-kj-mascot/acceptance.md"
+        "$COLLAB/harness-mc/milestones/kj-glory-lion/acceptance.md"
       ],
       "external_refs": {
         "heptabase": {

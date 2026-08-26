@@ -2,7 +2,7 @@
   "registry_id": "morrowise-project-topology.v1",
   "task_id": "project-topology-architecture-atlas",
   "status": "formal_registry",
-  "updated_at": "2026-08-17",
+  "updated_at": "2026-08-26",
   "inventory_as_of": "2026-08-17",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json",
   "schema_ref": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-project-topology.schema.json",
@@ -97,8 +97,10 @@
     }
   ],
   "records": [
+    {"id":"tsmc-ai","path_label":"$COLLAB/TSMC-AI","classification":"canonical_project","migration_state":"inventory_only","project_home_ref":"$COLLAB/TSMC-AI","topology_profile":"non-git-project","document_ref":"$COLLAB/TSMC-AI/README.md","repo_ref":null,"evidence":["$COLLAB/TSMC-AI"],"last_verified_at":"2026-08-26","notes":"Quick project opening registered this canonical local home; Git, deployment, and external sync remain separate MVP actions."},
     {"id":"tmp-staging","path_label":"$COLLAB/_tmp","classification":"runtime","migration_state":"exempt","project_home_ref":null,"topology_profile":"runtime-local","document_ref":null,"repo_ref":null,"evidence":["$COLLAB/_tmp"],"last_verified_at":"2026-07-20","notes":"Temporary intake area; nested repositories are evidence only and are not auto-promoted."},
     {"id":"agents-runtime","path_label":"$COLLAB/.agents","classification":"runtime","migration_state":"exempt","project_home_ref":null,"topology_profile":"runtime-local","document_ref":null,"repo_ref":null,"evidence":["$COLLAB/.agents"],"last_verified_at":"2026-07-20","notes":"Local agent runtime; not a canonical project home."},
+    {"id":"agent-go","path_label":"$COLLAB/agent-go","classification":"unknown","migration_state":"not_assessed","project_home_ref":null,"topology_profile":null,"document_ref":null,"repo_ref":null,"evidence":["$COLLAB/agent-go","$COLLAB/agent-go/plan"],"last_verified_at":"2026-08-26","notes":"Vincent specified this exact folder as the temporary planning home for Agent Go. It currently has no project entry, Git metadata, or durable artifact; retain it for inventory only and do not infer a canonical project, provision code, or migrate it before the project contract is confirmed."},
     {"id":"claude-runtime","path_label":"$COLLAB/.claude","classification":"runtime","migration_state":"exempt","project_home_ref":null,"topology_profile":"runtime-local","document_ref":null,"repo_ref":null,"evidence":["$COLLAB/.claude"],"last_verified_at":"2026-07-20","notes":"Local Claude runtime; not a canonical project home."},
     {"id":"codex-runtime","path_label":"$COLLAB/.codex","classification":"runtime","migration_state":"exempt","project_home_ref":null,"topology_profile":"runtime-local","document_ref":null,"repo_ref":null,"evidence":["$COLLAB/.codex"],"last_verified_at":"2026-07-20","notes":"Local Codex runtime; not a canonical project home."},
     {"id":"openclaw-historical","path_label":"$COLLAB/.openclaw_260418","classification":"archive","migration_state":"exempt","project_home_ref":null,"topology_profile":"historical-archive","document_ref":"$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md","repo_ref":null,"evidence":["$COLLAB/.openclaw_260418","$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md"],"last_verified_at":"2026-07-20","notes":"Historical OpenClaw material; it may supply patterns but is not current state."},

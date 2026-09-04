@@ -100,13 +100,15 @@
     {
       "id": "mmen-05-contact-form",
       "title": "線上詢價諮詢表單（Inquiry Form）",
-      "status": "todo",
+      "status": "completed",
       "track": "formal",
       "order_label": "MMEN-05",
       "dependencies": [
         "mmen-01-core-scaffold"
       ],
-      "done_condition": "整合 Formspark 靜態詢價表單（姓名、公司、Email、需求項目、預計展期、圖紙上傳引導），並保留直接 Email 與電話直撥通道，送出測試可達指定信箱。"
+      "done_condition": "整合 Formspark 靜態詢價表單（姓名、公司、Email、需求項目、預計展期、圖紙上傳引導），並保留直接 Email 與電話直撥通道，送出測試可達指定信箱。",
+      "completed_at": "2026-09-05",
+      "summary": "2026-09-05：建立 InquiryForm 客製組件並對齊 yutianlaw.com 之 Formspark 零後端與 n8n 自動回覆規格，完整支援姓名、公司、商業 Email、國際電話、8 大領域模型類別選單、預計展期、需求與比例描述、雲端 CAD/3D 圖紙連結引導及個資同意核取方塊，具備非同步 Fetch 送出與即時回饋，同時保留官方直撥電話與工程部 Email 雙軌通道。"
     },
     {
       "id": "mmen-06-seo-og-responsive-audit",

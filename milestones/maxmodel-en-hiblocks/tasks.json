@@ -87,13 +87,15 @@
     {
       "id": "mmen-04-client-logos",
       "title": "客戶見證企業向量 Logo 整合",
-      "status": "todo",
+      "status": "completed",
       "track": "formal",
       "order_label": "MMEN-04",
       "dependencies": [
         "mmen-01-core-scaffold"
       ],
-      "done_condition": "Thermal K、Leica、SolarEdge 三大海外客戶評價替換為高解析向量/透明品牌 Logo，消除文字縮寫佔位符，建立國際級外銷信任感。"
+      "done_condition": "Thermal K、Leica、SolarEdge 三大海外客戶評價替換為高解析向量/透明品牌 Logo，消除文字縮寫佔位符，建立國際級外銷信任感。",
+      "completed_at": "2026-09-05",
+      "summary": "2026-09-05：完成 Section 8 客戶見證區塊企業品牌 Logo 升級，繪製並整合 Thermal K、Leica、SolarEdge 三大海外代表性客戶之高解析向量 SVG 圖標與外銷級立體徽章樣式，取代原本單一字母佔位符，顯著提升國際外銷信任感。"
     },
     {
       "id": "mmen-05-contact-form",

@@ -4,20 +4,24 @@
     {
       "id": "quick-open",
       "title": "完成快速開案流程",
-      "status": "todo",
+      "status": "completed",
       "track": "mvp",
       "order_label": "MMEN-MVP-01",
       "dependencies": [],
-      "done_condition": "README.md、最小 project.json、MVP tasks、formalize checkpoint、專案拓樸與局部驗證均完成，且 tasks 已可在 MC 查看"
+      "done_condition": "README.md、最小 project.json、MVP tasks、formalize checkpoint、專案拓樸與局部驗證均完成，且 tasks 已可在 MC 查看",
+      "completed_at": "2026-08-26",
+      "summary": "2026-08-26：完成 Quick 開案流程，建立 README.md、最小 project.json、MVP tasks 與拓撲登錄。"
     },
     {
       "id": "mmen-mvp-content-inventory",
       "title": "完成英文首頁內容與資產盤點",
-      "status": "todo",
+      "status": "completed",
       "track": "mvp",
       "order_label": "MMEN-MVP-02",
       "dependencies": [],
-      "done_condition": "現有英文首頁的內容群組、文案、圖片、Logo、CTA 與外部連結均有可追溯清單及移植決策，且未寫入正式網站。"
+      "done_condition": "現有英文首頁的內容群組、文案、圖片、Logo、CTA 與外部連結均有可追溯清單及移植決策，且未寫入正式網站。",
+      "completed_at": "2026-09-04",
+      "summary": "2026-09-04：完成 Maxmodel 英文首頁 9 大區塊現況內容與資產盤點（docs/content-inventory.md），包含 64 項文案、圖片、Logo、CTA 及逐項移植決策，徹底排除 Joomla 模板垃圾連結，未寫入正式網站。"
     },
     {
       "id": "mmen-mvp-block-mapping",

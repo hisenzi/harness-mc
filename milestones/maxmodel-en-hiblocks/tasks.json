@@ -26,11 +26,13 @@
     {
       "id": "mmen-mvp-block-mapping",
       "title": "完成英文首頁 HiBlocks 區塊對應",
-      "status": "todo",
+      "status": "completed",
       "track": "mvp",
       "order_label": "MMEN-MVP-03",
       "dependencies": [],
-      "done_condition": "已將核准內容逐段對應至既有 HiBlocks 區塊，並明確標出合作流程等需要下游專屬實作的缺口；未修改上游 HiBlocks。"
+      "done_condition": "已將核准內容逐段對應至既有 HiBlocks 區塊，並明確標出合作流程等需要下游專屬實作的缺口；未修改上游 HiBlocks。",
+      "completed_at": "2026-09-04",
+      "summary": "2026-09-04：完成 Maxmodel 英文首頁 9 大區塊與 HiBlocks 標準區塊對應契約（docs/site-prefill.md），包含品牌視覺 token、導覽/首屏/價值/產業/功能/全球配送/優勢/評價/頁尾之映射規格，並明確定義 ProcessTimeline 為下游專案客製元件以取代脆弱的舊版動態 SVG JS 曲線，建立 AGENTS.md，嚴格保護上游 HiBlocks 不受改動。"
     },
     {
       "id": "formalize",

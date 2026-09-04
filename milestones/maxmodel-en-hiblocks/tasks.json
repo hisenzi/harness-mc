@@ -74,13 +74,15 @@
     {
       "id": "mmen-03-youtube-lightbox",
       "title": "八大模組 YouTube 內嵌彈窗（Lightbox）",
-      "status": "todo",
+      "status": "completed",
       "track": "formal",
       "order_label": "MMEN-03",
       "dependencies": [
         "mmen-01-core-scaffold"
       ],
-      "done_condition": "8 項模組化卡片加入 YouTube 影片 Lightbox 彈窗播放機制，訪客點擊直接在頁面內觀看實機作動影片，徹底解決舊站跳轉外部或中文站之問題。"
+      "done_condition": "8 項模組化卡片加入 YouTube 影片 Lightbox 彈窗播放機制，訪客點擊直接在頁面內觀看實機作動影片，徹底解決舊站跳轉外部或中文站之問題。",
+      "completed_at": "2026-09-05",
+      "summary": "2026-09-05：建立 ModularFeatures 客製組件與純前端 YouTube Lightbox 彈窗播放系統，將 8 大模組功能卡片全面升級：前 6 項卡片具備播放按鈕與點擊自動喚起 16:9 HD YouTube 彈窗，後 2 項卡片提供高解析結構細節彈窗，支援 ESC 鍵與背景點擊關閉，徹底消除舊站跳出外部或中文站迷航問題。"
     },
     {
       "id": "mmen-04-client-logos",

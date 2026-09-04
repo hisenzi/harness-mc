@@ -61,13 +61,15 @@
     {
       "id": "mmen-02-team-banner-equipment",
       "title": "團隊大圖橫幅與設備規格補齊",
-      "status": "todo",
+      "status": "completed",
       "track": "formal",
       "order_label": "MMEN-02",
       "dependencies": [
         "mmen-01-core-scaffold"
       ],
-      "done_condition": "補入「Trusted by Global Industry Leaders」工程師組裝模型現場大圖橫幅（m-index-08-1_260529.jpg），以及 6 項精密製造設備規格清單（3D 列印、雷射切割、UV 固化、噴砂烤漆等），100% 對齊舊站 Section 8。"
+      "done_condition": "補入「Trusted by Global Industry Leaders」工程師組裝模型現場大圖橫幅（m-index-08-1_260529.jpg），以及 6 項精密製造設備規格清單（3D 列印、雷射切割、UV 固化、噴砂烤漆等），100% 對齊舊站 Section 8。",
+      "completed_at": "2026-09-04",
+      "summary": "2026-09-04：完成 Section 8 團隊組裝模型現場大圖橫幅（m-index-08-1_260529.jpg）與 Trusted by Global Industry Leaders 引言導入，並建立包含 6 項精密製造設備（大型 3D 列印、雷射切割、UV 固化、噴砂水幕烤漆、活性碳過濾、超大平台）的硬實力規格網格展示，100% 完整覆蓋舊站 Section 8 內容。"
     },
     {
       "id": "mmen-03-youtube-lightbox",

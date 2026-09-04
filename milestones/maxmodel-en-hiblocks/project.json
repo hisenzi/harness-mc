@@ -9,6 +9,14 @@
   "mvp_goal": "完成英文首頁內容與資產盤點，以及核准內容到 HiBlocks 區塊的可追溯對應。",
   "final_goal": "完成可部署、可維護且保留英文站核心商業內容的 Maxmodel HiBlocks 品牌站。",
   "tracks": {
-    "mvp": "MVP"
-  }
+    "mvp": "MVP",
+    "formal": "正式建構",
+    "deploy": "部署上線"
+  },
+  "goals": [
+    "將 Maxmodel 現有 Joomla 英文站完整移植為 Astro + HiBlocks 現代靜態官網架構",
+    "徹底清除舊版 Joomla 遺留的垃圾導覽項目，確保全站純淨度",
+    "提供同頁 YouTube Lightbox 影片彈窗與流暢 CSS 合作流程，提升海外商業轉換率",
+    "建立 GitHub private repo 與 Zeabur 自動建置部署，接管 en.maxmodel.com.tw 網域與 SSL"
+  ]
 }

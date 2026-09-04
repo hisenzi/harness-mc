@@ -37,11 +37,95 @@
     {
       "id": "formalize",
       "title": "依 MVP 測試結果啟動正式補完",
-      "status": "todo",
+      "status": "completed",
       "track": "mvp",
       "order_label": "MMEN-MVP-04",
       "dependencies": [],
-      "done_condition": "已依 MVP 測試結果與最終目標補齊正式專案內容，並建立內容明確且各有驗收標準的正式 tasks"
+      "done_condition": "已依 MVP 測試結果與最終目標補齊正式專案內容，並建立內容明確且各有驗收標準的正式 tasks",
+      "completed_at": "2026-09-04",
+      "summary": "2026-09-04：完成 Formalize 正式任務補完，將靜態網頁化目標細拆為 7 項具體且具明確 done_condition 的執行 tasks，確立從首頁架構、細部規格、彈窗、表單至 Zeabur 網域接管的上線路徑。"
+    },
+    {
+      "id": "mmen-01-core-scaffold",
+      "title": "首頁核心架構與資產導入",
+      "status": "completed",
+      "track": "formal",
+      "order_label": "MMEN-01",
+      "dependencies": [
+        "formalize"
+      ],
+      "done_condition": "Astro 6 骨架、HiBlocks 區塊與資產就位，Hero 雙比例影片背景、5 大價值、8 大產業、7 步流程、6 大優勢、客戶見證、頁尾均已本機組裝，npm run build 零錯誤通過。",
+      "completed_at": "2026-09-04",
+      "summary": "2026-09-04：完成 Astro 6 專案骨架初始化、HiBlocks 區塊與資產導入，完成 Hero 雙比例背景影片、5 大價值、8 大產業、7 步流程（ProcessTimeline）、6 大優勢、客戶見證與頁尾組裝，npm run build 1.2s 通過，本機 dev server 正常運作。"
+    },
+    {
+      "id": "mmen-02-team-banner-equipment",
+      "title": "團隊大圖橫幅與設備規格補齊",
+      "status": "todo",
+      "track": "formal",
+      "order_label": "MMEN-02",
+      "dependencies": [
+        "mmen-01-core-scaffold"
+      ],
+      "done_condition": "補入「Trusted by Global Industry Leaders」工程師組裝模型現場大圖橫幅（m-index-08-1_260529.jpg），以及 6 項精密製造設備規格清單（3D 列印、雷射切割、UV 固化、噴砂烤漆等），100% 對齊舊站 Section 8。"
+    },
+    {
+      "id": "mmen-03-youtube-lightbox",
+      "title": "八大模組 YouTube 內嵌彈窗（Lightbox）",
+      "status": "todo",
+      "track": "formal",
+      "order_label": "MMEN-03",
+      "dependencies": [
+        "mmen-01-core-scaffold"
+      ],
+      "done_condition": "8 項模組化卡片加入 YouTube 影片 Lightbox 彈窗播放機制，訪客點擊直接在頁面內觀看實機作動影片，徹底解決舊站跳轉外部或中文站之問題。"
+    },
+    {
+      "id": "mmen-04-client-logos",
+      "title": "客戶見證企業向量 Logo 整合",
+      "status": "todo",
+      "track": "formal",
+      "order_label": "MMEN-04",
+      "dependencies": [
+        "mmen-01-core-scaffold"
+      ],
+      "done_condition": "Thermal K、Leica、SolarEdge 三大海外客戶評價替換為高解析向量/透明品牌 Logo，消除文字縮寫佔位符，建立國際級外銷信任感。"
+    },
+    {
+      "id": "mmen-05-contact-form",
+      "title": "線上詢價諮詢表單（Inquiry Form）",
+      "status": "todo",
+      "track": "formal",
+      "order_label": "MMEN-05",
+      "dependencies": [
+        "mmen-01-core-scaffold"
+      ],
+      "done_condition": "整合 Formspark 靜態詢價表單（姓名、公司、Email、需求項目、預計展期、圖紙上傳引導），並保留直接 Email 與電話直撥通道，送出測試可達指定信箱。"
+    },
+    {
+      "id": "mmen-06-seo-og-responsive-audit",
+      "title": "SEO、OG 卡片、Favicon 與多視口驗收",
+      "status": "todo",
+      "track": "formal",
+      "order_label": "MMEN-06",
+      "dependencies": [
+        "mmen-02-team-banner-equipment",
+        "mmen-03-youtube-lightbox",
+        "mmen-04-client-logos",
+        "mmen-05-contact-form"
+      ],
+      "done_condition": "補齊 MaxModel 專屬 SVG Favicon、Open Graph 社群分享大圖、Canonical URL 與結構化資料；通過桌機（1920/1440/1024）與手機（390/414）多視口響應式測試，確認 0 殘留舊 Joomla 垃圾連結。"
+    },
+    {
+      "id": "mmen-07-deploy-zeabur-domain",
+      "title": "GitHub 託管、Zeabur 部署與正式網域接管",
+      "status": "todo",
+      "track": "formal",
+      "order_label": "MMEN-07",
+      "dependencies": [
+        "mmen-06-seo-og-responsive-audit"
+      ],
+      "done_condition": "建立 GitHub private repo、設定 Zeabur 靜態自動構建、綁定 en.maxmodel.com.tw（Cloudflare 灰雲 A 記錄）、自動簽發 SSL，全站路由 HTTP 200，正式取代舊 Joomla 網站。"
     }
   ]
 }

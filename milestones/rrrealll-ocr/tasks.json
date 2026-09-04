@@ -2146,6 +2146,114 @@
         ],
         "source_boundary": "HC is a thinking check, not source of truth；canonical task、seed、runtime code、deterministic verifier 與 acceptance receipt 才是本次完成證據。"
       }
+    },
+    {
+      "id": "rro-sec-01",
+      "title": "輪替 RRREALLL OCR Neon 資料庫憑證並完成事件驗證",
+      "status": "todo",
+      "track": "security",
+      "order_label": "RRO-11",
+      "priority": "P0",
+      "capability_domain": "security-incident-response",
+      "task_kind": "operate",
+      "dependencies": [],
+      "done_condition": "已在 Neon 使外洩的 production 資料庫密碼失效，Zeabur 的 rrrealll-ocr-mvp 使用新 DATABASE_URL 並重新部署成功；健康檢查、資料庫完整性核對與 2026-08-27 至輪替時刻的存取稽核均留有不含憑證值的證據。",
+      "acceptance": [
+        "A01｜Neon 的正式資料庫角色已透過官方重設流程輪替；記錄供應商、角色識別與完成時間，但不記錄密碼或完整連線字串。",
+        "A02｜rrrealll-ocr-mvp production 的 DATABASE_URL 已更新為新憑證，所有使用該連線的正式服務已重新部署，且舊密碼無法再驗證。",
+        "A03｜正式 /health 回傳 database=ok；依 production runbook 完成不寫入的資料庫內容核對，且 runtime 或部署日誌未輸出任何憑證。",
+        "A04｜完成 2026-08-27 至輪替時刻的 Neon／服務存取、未知 role、權限或 schema 異動稽核；可得證據與不可得證據均記錄為事件結論。"
+      ],
+      "acceptance_matrix": [
+        {
+          "id": "A01",
+          "verify": "事件範圍與 P0 邊界",
+          "precondition": "Zeabur 2026-08-27 通知、當前 Zeabur 唯讀盤點與 RRREALLL production runbook。",
+          "steps": "核對通知直接點名的 production service 與 Key；將同服務內其他敏感 Key 僅列為 P1 預防性風險，不讀取值，也不以名稱或格式推論為通知已確認外洩。",
+          "pass": "本 task 只以 rrrealll-ocr-mvp production 的 DATABASE_URL 為已確認 P0；Google service account、R2 與 Judge token 保持獨立 P1 清單與後續 owner／consumer 釐清，不阻塞或混入本 P0 完成證據。",
+          "fail": "把未被通知確認的 Key 宣稱為已外洩，或因而未經 consumer 證據即重設、移除或擴大本 task 範圍。",
+          "evidence": "不含值的 Zeabur service／Key 名稱盤點、原始通知範圍與 $COLLAB/rrrealll-ocr/docs/production-runbook.md。"
+        },
+        {
+          "id": "A02",
+          "verify": "Neon 資料庫密碼真正失效",
+          "precondition": "已識別 RRREALLL production 使用的 Neon database role；可登入 Neon Console。",
+          "steps": "在 Neon 重設該 role 密碼，記錄供應商、role 識別與完成時間；以不含密碼的方式確認舊密碼已失效。",
+          "pass": "舊 production 資料庫密碼已在 Neon 端撤銷，而非只修改 Zeabur 的環境變數文字。",
+          "fail": "只修改 Zeabur 變數、無法證明 Neon role 已重設，或把密碼／完整連線字串寫入任務、repo 或日誌。",
+          "evidence": "Neon 非敏感操作紀錄與舊憑證失效結果。"
+        },
+        {
+          "id": "A03",
+          "verify": "Zeabur runtime 安全恢復",
+          "precondition": "新的 Neon 連線資訊已由受權人員保存在 Zeabur production 環境，且保留 sslmode=require。",
+          "steps": "重新部署 rrrealll-ocr-mvp，檢查 deployment 與 /health；依 production runbook 完成不寫入的資料庫內容核對。",
+          "pass": "production health 顯示 database=ok，資料核對通過，且 deployment／runtime 證據不含憑證值。",
+          "fail": "服務未恢復、health 未通過、資料核對造成寫入，或任一證據輸出秘密。",
+          "evidence": "Zeabur deployment 狀態、/health 結果與 runbook 指定的唯讀核對收據。"
+        },
+        {
+          "id": "A04",
+          "verify": "P1 高權限 Key 的安全邊界",
+          "precondition": "已保留本次 Zeabur key-name inventory。",
+          "steps": "將 GOOGLE_SERVICE_ACCOUNT_JSON、R2_ACCESS_KEY_ID、R2_SECRET_ACCESS_KEY 與 JUDGE_API_TOKEN 的 provider、實際 consumer 與重複使用情形記為獨立 follow-up；Judge token 必須先辨識所有 client。",
+          "pass": "高權限 Key 有不含值的 owner／consumer 釐清或後續 task；未因尚未確認就被標為本 P0 的完成證據或被不安全地批次輪替。",
+          "fail": "遺漏高權限 Key、把內部 Judge token誤判為外部供應商 Key，或以未驗證 consumer 進行輪替。",
+          "evidence": "安全 Key 清單、consumer mapping 與 follow-up task／open loop 連結。"
+        },
+        {
+          "id": "A05",
+          "verify": "事件期間存取稽核結論",
+          "precondition": "Neon 與 Zeabur 可提供的 access／role／schema 觀測資料。",
+          "steps": "稽核 2026-08-27 至輪替時刻的存取、未知 role、權限與 schema 異動；明示任何不可取得的證據。",
+          "pass": "形成不含秘密的事件結論，包含已檢查範圍、資料完整性結果與未解缺口。",
+          "fail": "以服務已啟動取代稽核，或把無法取得的觀測資料誤報為無異常。",
+          "evidence": "Neon／Zeabur 非敏感稽核摘要與資料完整性收據。"
+        }
+      ],
+      "note": "2026-08-29：Zeabur 2026-08-27 安全事件通知將 rrrealll-ocr-mvp production 的 DATABASE_URL 列入新增確認影響範圍；本 task 只追蹤輪替與驗證，不保存任何憑證值。",
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "incident-response",
+          "verification-before-completion"
+        ],
+        "decision_input": [
+          "Vincent 提供的 Zeabur 2026-08-27 安全事件通知",
+          "$COLLAB/rrrealll-ocr/docs/production-runbook.md",
+          "$COLLAB/harness-mc/milestones/rrrealll-ocr/tasks.json"
+        ],
+        "decision_output": "使已外洩的 Neon 資料庫密碼失效，安全恢復正式 runtime，並留下可稽核的事件驗證結論。",
+        "execution_boundary": "只可處理指定 production 資料庫憑證、其 Zeabur runtime 相依、必要重新部署與不含憑證值的驗證證據；不得把密碼、連線字串或其他未通知的秘密寫入 repo、日誌或任務。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Zeabur 2026-08-27 安全事件通知確認 rrrealll-ocr-mvp production 的 DATABASE_URL 落入影響範圍；依 Vincent 要求建立獨立 P0 task，先完成憑證輪替、runtime 恢復與存取稽核。",
+            "evidence_refs": [
+              "Vincent 提供的 Zeabur 2026-08-27 安全事件通知：rrrealll-ocr-mvp production DATABASE_URL",
+              "$COLLAB/rrrealll-ocr/docs/production-runbook.md"
+            ],
+            "recorded_at": "2026-08-29"
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "rrrealll-ocr",
+        "goal_ref": "$COLLAB/harness-mc/milestones/rrrealll-ocr/project.json#/goals",
+        "goal_fingerprint": "sha256:8fb101771c64a805aa9db57d9b269b568f3822d7bb30fdb8de9587cb2d700953",
+        "contribution": "維持正式資料庫判讀管線的機密性與可用性，使既有 consumer scan、canonical data 與 private scan governance 可在已撤銷舊憑證的條件下安全運行。",
+        "evidence_plan": [
+          "Neon 密碼重設與角色範圍的非敏感完成紀錄",
+          "Zeabur rrrealll-ocr-mvp deployment 與 /health 證據",
+          "資料庫內容核對與 2026-08-27 起的存取稽核結論"
+        ],
+        "reviewed_at": "2026-08-29"
+      }
     }
   ]
 }

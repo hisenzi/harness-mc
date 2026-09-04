@@ -516,6 +516,123 @@
         "035b0a5"
       ],
       "summary": "行動選單 CTA 已納入關閉選單 selector；2026-07-18 以 390×844 手機 viewport 驗證，點擊後選單關閉、body overflow 解鎖、URL 到 #contact 且聯絡區位於畫面起點。"
+    },
+    {
+      "id": "yt-sec-01",
+      "title": "輪替雨田 Zeabur PostgreSQL 密碼並驗證表單自動回覆",
+      "status": "todo",
+      "track": "security",
+      "order_label": "YT-SEC-01",
+      "priority": "P0",
+      "capability_domain": "security-incident-response",
+      "task_kind": "operate",
+      "dependencies": [],
+      "done_condition": "已透過 Zeabur PostgreSQL 的正式密碼重設流程使舊 POSTGRES_PASSWORD 失效，所有實際 consumer 已更新並重新部署；資料庫連線與網站表單到自動回覆的端對端驗證成功，且 2026-08-27 至輪替時刻的存取稽核有不含憑證值的結論。",
+      "acceptance": [
+        "A01｜確認 yutianlaw production PostgreSQL 的實際 consumer 清單，包含以 POSTGRES_PASSWORD、POSTGRES_CONNECTION_STRING 或直接連線字串引用的服務；盤點只記名稱與相依關係，不記錄憑證值。",
+        "A02｜使用 Zeabur PostgreSQL 服務的密碼重新產生／重設流程使舊密碼失效，而非只編輯環境變數文字；所有 consumer 已更新為新憑證並重新部署。",
+        "A03｜資料庫連線成功，且雨田聯絡表單、站主通知與填表者自動回覆均以受控測試完成端對端驗證。",
+        "A04｜完成 2026-08-27 至輪替時刻的資料庫存取、未知角色、權限或 schema 異動稽核；確認可能受影響的資料類別與任何待處理缺口。"
+      ],
+      "acceptance_matrix": [
+        {
+          "id": "A01",
+          "verify": "事件範圍與實際 PostgreSQL consumer",
+          "precondition": "Zeabur 2026-08-27 通知、當前 yutianlaw production 的 service／Key-name inventory 與網站原始碼唯讀搜尋。",
+          "steps": "確認 postgresql 的 PASSWORD 到 POSTGRES_PASSWORD、POSTGRES_CONNECTION_STRING 與 POSTGRES_URI 的參照關係；確認 n8n 的 DB_POSTGRESDB_PASSWORD 為資料庫相依。網站與 comingsoon 僅因唯讀參照存在時，不可直接判定為實際 consumer。",
+          "pass": "POSTGRES_PASSWORD 是唯一通知直接確認的 P0；n8n 被列為資料庫重啟與驗證對象；網站、comingsoon 與其他服務是否重啟各自須有程式或 runtime consumer 證據。",
+          "fail": "把所有取得唯讀 PostgreSQL 參照的服務一概當成 consumer，或因 Key 名稱存在即重設未確認服務。",
+          "evidence": "不含值的 Zeabur reference mapping、網站程式搜尋結果與 consumer 判定表。"
+        },
+        {
+          "id": "A02",
+          "verify": "Zeabur PostgreSQL 密碼真正失效",
+          "precondition": "已識別 postgresql service 的密碼來源與所有已確認 consumer。",
+          "steps": "在 Zeabur PostgreSQL 正式服務使用重設／重新產生密碼流程；確認舊 POSTGRES_PASSWORD 已失效，並讓已確認 consumer 在新憑證下重啟。",
+          "pass": "資料庫端舊密碼失效，n8n 使用新資料庫連線並恢復；不以單純編輯 consumer 的環境變數取代供應端輪替。",
+          "fail": "只修改變數文字、未證明舊密碼失效，或讓未確認 consumer 的不必要重啟造成服務風險。",
+          "evidence": "Zeabur 非敏感密碼重設紀錄、n8n deployment／連線驗證與 consumer restart receipt。"
+        },
+        {
+          "id": "A03",
+          "verify": "n8n 憑證與 runner 安全邊界",
+          "precondition": "n8n 與 task-runner 均為 production RUNNING，且其 N8N_RUNNERS_AUTH_TOKEN 已確認為同一組。",
+          "steps": "資料庫輪替時保持 N8N_ENCRYPTION_KEY 與其 master-key source 不變；若另行輪替 N8N_RUNNERS_AUTH_TOKEN，必須在 n8n 與 task-runner 成對更新並重啟。",
+          "pass": "既有 n8n stored credentials 可解密；database recovery 與 runner-token rotation 被區分為兩個操作，沒有直接重設 N8N_ENCRYPTION_KEY。",
+          "fail": "直接變更 N8N_ENCRYPTION_KEY、只更新其中一側 runner token，或以 n8n 啟動成功取代既有 credential 可用性驗證。",
+          "evidence": "n8n credential 安全檢查、兩服務 deployment 狀態與受控 workflow 測試結果。"
+        },
+        {
+          "id": "A04",
+          "verify": "雨田表單端到端恢復",
+          "precondition": "n8n 資料庫連線已恢復；Formspark webhook 與 production workflow 已發布。",
+          "steps": "以受控測試提交一次雨田聯絡表單，核對 Formspark 收件、站主通知與填表者自動回覆；不得將表單個資或 webhook token 寫入任務證據。",
+          "pass": "三段流程都成功，且測試證據僅記結果、時間與非敏感 execution reference。",
+          "fail": "只看到 webhook 啟動、缺站主通知或自動回覆，或在證據中保存表單個資／token。",
+          "evidence": "Formspark dashboard、n8n execution 與兩個收件匣的非敏感驗證收據。"
+        },
+        {
+          "id": "A05",
+          "verify": "未確認高權限 Key 的 P1 邊界",
+          "precondition": "已保留 yutianlaw Zeabur key-name inventory 與 value-blind reference／equality 結果。",
+          "steps": "將 ZEABUR_AI_HUB_API_KEY、YUTIANLAW_FORMSPARK_WEBHOOK_TOKEN、N8N_RUNNERS_AUTH_TOKEN 與一般 PASSWORD 分為個別 P1 follow-up；不得因 AI Hub Key 格式或 PostgreSQL service 中存在副本就宣稱通知已確認外洩或直接移除。",
+          "pass": "P1 項目都有 owner、實際 consumer 與輪替順序的後續記錄；AI Hub Key、Formspark token 與 runner token 僅在證據與授權完整時獨立輪替。",
+          "fail": "把 P1 當 P0、未確認 PostgreSQL service 中 AI Hub Key 的用途就刪除，或批次重設所有 PASSWORD。",
+          "evidence": "不含值的 Key inventory、consumer mapping 與 follow-up task／open loop。"
+        },
+        {
+          "id": "A06",
+          "verify": "事件期間資料庫稽核結論",
+          "precondition": "Zeabur PostgreSQL 可提供的 access、role、權限與 schema 觀測資料。",
+          "steps": "稽核 2026-08-27 至輪替時刻的未知存取、角色、權限與 schema 異動，並標出可得與不可得證據。",
+          "pass": "形成不含憑證與個資的事件結論，包含已檢查資料類別、完整性結果與待處理缺口。",
+          "fail": "僅以服務 RUNNING 或表單成功作為稽核結論，或把不可取得的資料誤報為無異常。",
+          "evidence": "Zeabur PostgreSQL 稽核摘要、資料庫完整性與表單驗證收據。"
+        }
+      ],
+      "note": "2026-08-29：Zeabur 2026-08-27 安全事件通知將 yutianlaw/postgresql production 的 POSTGRES_PASSWORD 列入新增確認影響範圍；本 task 只追蹤輪替、相依服務與驗證，不保存任何憑證值。",
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "incident-response",
+          "verification-before-completion"
+        ],
+        "decision_input": [
+          "Vincent 提供的 Zeabur 2026-08-27 安全事件通知",
+          "$COLLAB/harness-mc/milestones/yutianlaw/tasks.json#yt-c3-mvp-formspark-n8n",
+          "$COLLAB/yutianlaw"
+        ],
+        "decision_output": "使受影響 PostgreSQL 密碼失效，恢復雨田正式相依服務，並驗證聯絡表單與自動回覆沒有因輪替失效。",
+        "execution_boundary": "只可處理 yutianlaw production PostgreSQL、其實際 consumer、必要重新部署與非敏感驗證證據；不得把密碼、連線字串、表單個資或其他秘密寫入 repo、日誌或任務。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Zeabur 2026-08-27 安全事件通知確認 yutianlaw/postgresql production 的 POSTGRES_PASSWORD 落入影響範圍；依 Vincent 要求建立獨立 P0 task，先完成密碼重設、consumer 恢復、表單自動回覆驗證與存取稽核。",
+            "evidence_refs": [
+              "Vincent 提供的 Zeabur 2026-08-27 安全事件通知：yutianlaw/postgresql production POSTGRES_PASSWORD",
+              "$COLLAB/harness-mc/milestones/yutianlaw/tasks.json#yt-c3-mvp-formspark-n8n"
+            ],
+            "recorded_at": "2026-08-29"
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "yutianlaw",
+        "goal_ref": "$COLLAB/harness-mc/milestones/yutianlaw/project.json#/goals",
+        "goal_fingerprint": "sha256:75643a4b8d48062fa7d3bb294846152610dcc77bea59fee04e4d67731445b950",
+        "contribution": "維持公開法律服務網站與聯絡流程的可靠性，並以不暴露表單個資或憑證的方式恢復必要後端相依。",
+        "evidence_plan": [
+          "Zeabur PostgreSQL 密碼重設與 consumer 清單的非敏感完成紀錄",
+          "重新部署後的資料庫連線與表單端對端驗證",
+          "2026-08-27 起的存取稽核與資料類別影響結論"
+        ],
+        "reviewed_at": "2026-08-29"
+      }
     }
   ]
 }

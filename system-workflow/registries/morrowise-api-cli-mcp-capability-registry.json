@@ -1,7 +1,7 @@
 {
   "registry_id": "morrowise-api-cli-mcp-capability-registry.v0",
   "task_id": "api-cli-mcp-capability-registry-v0",
-  "updated_at": "2026-07-08",
+  "updated_at": "2026-09-02",
   "status": "formal_registry",
   "purpose": "Track API / CLI / MCP capabilities as verifiable MorroWise system components with update history, boundaries, owner tasks, and next actions.",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
@@ -97,6 +97,78 @@
           "evidence_ref": "$COLLAB/harness-mc/milestones/dual-blade/tasks.json#heptabase-cli-integration-record",
           "actor_or_task": "heptabase-cli-integration-record",
           "next_action": "Keep MCP/OAuth fallback explicitly labeled legacy when building PAI sync migration."
+        }
+      ]
+    },
+    {
+      "id": "heptabase-notion-card-image-sync",
+      "type": "delivery_adapter",
+      "provider": "Heptabase Desktop Local CLI Server + HiSenzi Sync Notion API",
+      "entrypoint": [
+        "$COLLAB/notyet-harness/000_Agent/scripts/heptabase-notion-card-image-sync.py",
+        "$COLLAB/notyet-harness/000_Agent/config/heptabase-notion-card-image-sync-targets.json",
+        "$COLLAB/notyet-harness/000_Agent/skills/heptabase-notion-sync/SKILL.md"
+      ],
+      "owner_task": "heptabase-notion-card-image-sync-v2",
+      "scope": "cross_project_delivery",
+      "source_of_truth": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#heptabase-notion-card-image-sync-v2",
+        "$COLLAB/notyet-harness/000_Agent/scripts/heptabase-notion-card-image-sync.py",
+        "$COLLAB/notyet-harness/000_Agent/config/heptabase-notion-card-image-sync-targets.json",
+        "$COLLAB/notyet-harness/000_Agent/skills/heptabase-notion-sync/SKILL.md",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json#heptabase-notion-card-image-sync"
+      ],
+      "auth_boundary": "Heptabase local CLI and Notion connector/API auth remain separate. Page mutation and file upload must preflight as the same Notion integration identity with destination access; registry and adapter must not inspect or store auth files, tokens, cookies, or complete connection material.",
+      "read_write_boundary": {
+        "read": [
+          "explicit target mapping, Heptabase whiteboard/card scope and note content",
+          "local hepta-files image metadata and bytes resolved by exact fileId",
+          "explicit Notion destination schema, duplicate candidates, page fetch results, and capability metadata"
+        ],
+        "write": [
+          "only explicitly mapped Notion database pages and image blocks after dry-run approval",
+          "contentMd5/image hash cache, non-secret execution receipt, Skill/version history, and generated capability read model"
+        ],
+        "forbidden": [
+          "treat Heptabase or Notion as the MorroWise task source of truth",
+          "guess a destination from title alone or overwrite manually maintained Notion fields",
+          "attach a file_upload created by a different Notion integration identity",
+          "silently downgrade original images or use a third-party temporary public host without Vincent approval",
+          "read or output tokens, cookies, auth stores, secrets, or private runtime credentials"
+        ]
+      },
+      "secret_policy": "No token, cookie, local auth store, private key, complete connection string, or personal form data may appear in registry, manifests, logs, fixtures, or generated read models.",
+      "status": "ready",
+      "verifier": [
+        "npm run test:capability-registry",
+        "node scripts/verify-heptabase-notion-card-image-sync-v2.mjs",
+        "npm run test:skills"
+      ],
+      "next_action": {
+        "type": "none",
+        "task_id": "api-cli-mcp-capability-registry-v0",
+        "description": "Use an explicit target mapping and rerun the adapter verifier before expanding the shared adapter to another project."
+      },
+      "history": [
+        {
+          "date": "2026-08-31",
+          "event_type": "workflow_observed",
+          "from_state": "unknown",
+          "to_state": "prototype",
+          "reason": "A live KJ pilot proved local fileId image resolution and Notion MCP attachment, while a legacy API integration file upload could not attach to connector-created pages because file_upload objects are integration-scoped. The small UTF-8 SVG/base64 fallback succeeded as an optimized preview but did not satisfy an original-quality completion contract.",
+          "evidence_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#heptabase-notion-card-image-sync-v2",
+          "actor_or_task": "heptabase-notion-card-image-sync-v2",
+          "next_action": "Implement JV-50 with original-first upload, same-integration preflight, cross-workspace image resolution, idempotent writes, full page-fetch verification, Skill v1.3, and pilot evidence."
+        },
+        {
+          "date": "2026-09-02",
+          "event_type": "formalized",
+          "from_state": "prototype",
+          "to_state": "ready",
+          "reason": "JV-50 now has a shared adapter, explicit multi-target mapping, same-integration identity preflight, local-original image upload, cardId/pageId idempotent state, re-fetch verification, Skill v1.3, negative fixtures, and a Vincent-authorized KJ-116 live pilot receipt. Legacy PAI scripts remain lineage only and are not this adapter entrypoint.",
+          "evidence_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#heptabase-notion-card-image-sync-v2",
+          "actor_or_task": "heptabase-notion-card-image-sync-v2",
+          "next_action": "Use explicit --target selection; block on missing originals, ambiguous state, or any identity mismatch rather than guessing or falling back silently."
         }
       ]
     },

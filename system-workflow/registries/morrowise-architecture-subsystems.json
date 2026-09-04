@@ -2,8 +2,8 @@
   "registry_id": "morrowise-architecture-subsystems.v0",
   "task_id": "architecture-subsystem-index-live-sync",
   "status": "formal_registry",
-  "updated_at": "2026-08-18",
-  "generated_at": "2026-08-18",
+  "updated_at": "2026-09-02",
+  "generated_at": "2026-09-02",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json",
   "verifier_ref": "npm run test:architecture-subsystems",
   "sync_ref": "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\"",
@@ -276,6 +276,46 @@
         ],
         "reason": "2026-07-25 將 canonical task title 的繁體中文優先規範、changed-only Han 字元 gate、歷史相容策略與正反 fixtures 納入既有 JV-32 受管 contract，並把 package.json fingerprint 收斂為三個必要 JV-32 prebuild command 的投影，避免無關 script／metadata 造成 Admission Record 假性 stale。2026-07-26 納入 Notion external course mirror 與 MC canonical task 的刪除及生命週期邊界、task ID 唯一性 gate、完整 Notion page ID 同步回歸測試。2026-07-27 依 MW-GIT-AUTH-01 收緊 branch/worktree 精確核准與完整 closeout。2026-07-28 依 Vincent 更正，將單人循序工作固定為 checked-out main + exact scope，移除任何按 branch 存活時間命名的預設或例外；isolation 只保留具名且經精確核准的外部 PR/review、真正並行 owner scope 或緊急 hotfix。同日補上 worktree-commit v2.2 單一 task post-commit 有限狀態機。2026-07-30 將 Harness=mechanism provider／Loop=policy controller 的責任邊界、正式 Loop policy required fields、terminal vocabulary、resource budget shape、不可繞過 Harness invariants 與負向 fixtures 納入同一 workflow schema／registry／verifier；morrowise-live-decision-loop-v1 只登錄 planned binding，不宣稱 runtime 或 P3 E2E 完成。2026-07-31 將 project deadline 與 task review date 的 owner 分離，移除 unchanged MorroWise weekly-core 對其他 project 的隱性 hard-fail，並新增 base-to-HEAD clean CI task validation；MorroWise 自己的 changed／full validation 與 work-anchor 到期 gate 保持不變。2026-08-01 將 closed transition 的 test_contract、Red／Green／regression completion evidence、TDD exemption、fixture／runtime boundary 與歷史 closed-to-closed 相容性納入同一 JV-32 contract；刷新 Admission fingerprint 與 ARCHITECTURE.md 薄索引，不建立新子系統。同日新增 Air Traffic Controller full-delivery continuation：Vincent 一次確認 exact plan 後，有限續跑 C1 交付、single-writer canonical closeout、MC 儀表板、C2 遠端收斂與只讀 Terminal Gate；授權不變量改變即升級，既有薄索引角色與 detail pointer 無需改寫。同日補齊 successful sync request 的 terminal resolver、真實 delivery／exemption evidence、request immutability 與 residual-zero closeout；158 筆歷史 baseline（含 .gitkeep）已用 current-state subsumption、明確 retarget 或能力缺口 exemption 收斂，這是既有子系統的 version improvement，不建立新 task 或新 registry。2026-08-03 JV-48 將 validator、work-anchor 與 task routing 接到共用 grouped milestone discovery；刷新既有 JV-32 contract fingerprint並記錄 no_index_change，既有薄索引名稱、owner、role與 detail pointer 均不變。2026-08-06 JV-40 R18 將 review_date 到期 gate 收斂為 target-scoped preflight 與 changed-only validation：逾期 weekly core 本身仍 blocked，無關 task 可繼續但必須顯示 weekly_core_overdue warning；既有索引名稱、owner、role 與 detail pointer 不變，因此 index_action=no_index_change。2026-08-12 JV-40 R19 在既有 validator 與 task lifecycle contract 補上 order_label 缺少／空值／非字串／同檔重複的 fail-closed 規則、正反 fixtures 與 task 草案模板；canonical identity、owner、detail pointer 與薄索引節點均不變，因此 index_action=no_index_change。2026-08-18 追溯 8906299 的 project-init quick/formalize 對 task validator／work-anchor contract 的更新，以及 d0040eb 對 sync-event replay idempotence contract 的更新；兩筆皆屬既有 JV-32 version improvement，補做 Admission Review、刷新 fingerprint，不改子系統名稱、owner、role 或 detail pointer，因此 index_action=no_index_change。"
       },
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "heptabase-notion-card-image-sync-v2",
+      "name": "Heptabase 卡片＋圖片 → Notion 同步 Adapter",
+      "status": "active",
+      "role": "將明確 Heptabase 白板卡片與原圖安全同步到明確 Notion 資料庫的可重跑 delivery adapter。",
+      "summary": "以 explicit target、同一 Notion integration、cardId/pageId state 與重新 fetch 驗證收斂跨專案同步；ARCHITECTURE.md 只保留薄連結。",
+      "capability": "卡片圖片同步",
+      "source_of_truth": [
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+        "$COLLAB/notyet-harness/000_Agent/scripts/heptabase-notion-card-image-sync.py",
+        "$COLLAB/notyet-harness/000_Agent/config/heptabase-notion-card-image-sync-targets.json"
+      ],
+      "detail_doc": "$COLLAB/notyet-harness/000_Agent/skills/heptabase-notion-sync/SKILL.md",
+      "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#heptabase-notion-card-image-sync-v2",
+      "verifiers": [
+        "node scripts/verify-heptabase-notion-card-image-sync-v2.mjs",
+        "npm run test:capability-registry",
+        "npm run test:skills"
+      ],
+      "allowed_actions": [
+        "依 explicit --target 讀取指定 whiteboard cards、note 與 mapping state",
+        "依 mapping 所列 file roots 解析並驗證原圖 bytes",
+        "經 dry-run 與同一 integration identity preflight 後，只寫入映射的 Notion page body、image blocks 與 state",
+        "重新 fetch 頁面後，持久化不含秘密的 cardId/pageId、content hash 與 image hash state"
+      ],
+      "forbidden_actions": [
+        "依標題猜測 Notion 目的地或將 Heptabase／Notion 當作 MorroWise task source of truth",
+        "讀取或輸出 token、cookie、auth store、runtime credential、私人連線資訊或 browser session",
+        "讓頁面 mutation 與 file upload 使用不同 Notion integration identity",
+        "覆寫受保護人工欄位、靜默降級原圖，或未經 Vincent 核准使用第三方公開圖床",
+        "未指定 target、未 dry-run／--yes 核准或未通過重新 fetch 驗證時宣稱同步完成"
+      ],
+      "safety_boundary": "target registry 是唯一的跨專案選擇入口；每次寫入都先檢查 page/upload 同一 Notion integration 與 cardId/pageId state。既有頁只管理 body 與圖片，保護人工欄位；缺檔、歧義、identity 不一致或 post-fetch 失敗時不更新 state，也不將部分成功誤報為完成。",
+      "degraded_state": "target 未選取／不存在、原圖缺失或歧義、MIME／大小不合格、identity mismatch、Notion upload/mutation 失敗、或任一 page re-fetch 不符時，該 run 必須 blocked；state 保留在最後完整驗證的版本，僅可由明確 target 重試。",
+      "architecture_decision": "promoted",
+      "last_promoted_at": "2026-09-02",
+      "last_verified_at": "2026-09-02",
       "supersedes": [],
       "superseded_by": null
     },

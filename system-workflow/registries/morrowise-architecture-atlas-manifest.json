@@ -2,7 +2,7 @@
   "registry_id": "morrowise-architecture-atlas-manifest.v1",
   "kind": "link_manifest",
   "task_id": "project-topology-architecture-atlas",
-  "updated_at": "2026-08-02",
+  "updated_at": "2026-08-31",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-atlas-manifest.json",
   "verifier_ref": "npm run test:architecture-atlas",
   "write_boundary": {
@@ -99,7 +99,7 @@
       "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync",
       "status_source": { "kind": "task", "field": "status" },
       "freshness_source": { "kind": "static", "field": "last_verified_at" },
-      "last_verified_at": "2026-07-20",
+      "last_verified_at": "2026-08-31",
       "freshness_warn_after_days": 30
     },
     {
@@ -120,7 +120,31 @@
       "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate",
       "status_source": { "kind": "task", "field": "status" },
       "freshness_source": { "kind": "static", "field": "last_verified_at" },
-      "last_verified_at": "2026-08-02",
+      "last_verified_at": "2026-09-02",
+      "freshness_warn_after_days": 30
+    },
+    {
+      "id": "heptabase-notion-card-image-sync-v2",
+      "name": "JV-50 Heptabase 卡片＋圖片 → Notion 同步",
+      "summary": "可重跑的跨專案 delivery adapter：explicit target、原圖優先、同一 Notion integration、cardId/pageId 冪等與重新 fetch 驗證；KJ-116 pilot 已完成。",
+      "source_of_truth_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+      "source_refs": [
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#heptabase-notion-card-image-sync-v2"
+      ],
+      "detail_refs": [
+        "$COLLAB/notyet-harness/000_Agent/skills/heptabase-notion-sync/SKILL.md"
+      ],
+      "verifier_refs": [
+        "npm run test:capability-registry",
+        "node scripts/verify-heptabase-notion-card-image-sync-v2.mjs",
+        "npm run test:skills",
+        "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+      ],
+      "task_anchor": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#heptabase-notion-card-image-sync-v2",
+      "status_source": { "kind": "task", "field": "status" },
+      "freshness_source": { "kind": "static", "field": "last_verified_at" },
+      "last_verified_at": "2026-09-02",
       "freshness_warn_after_days": 30
     }
   ]

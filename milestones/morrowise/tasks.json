@@ -12173,6 +12173,339 @@
         "a8f7846f18a672e4606cd9eb2b3e1bab8116d60f"
       ],
       "summary": "2026-08-26：MW-PI-03 已在本機完成。Q10-A01～Q10-A06 以 fingerprint sha256:8b7e6e740c48f15991bebd968f7f770b918f6b895101eec5c2f1e7ce421d0883 全數 pass；新／原有 Quick verifier、target-scoped admission、topology maintenance／contract 與 project-init Skill 路由均已重跑。全域 topology health 如實維持 degraded，但隔離 Quick fixture 證明合法 target 仍可 ready／created，兩者未混淆。依 Vincent 2026-08-26 的完成邊界，task 已 completed；batch push 是獨立的 pending delivery，不代表功能或 task 尚未完成。"
+    },
+    {
+      "id": "heptabase-notion-card-image-sync-v2",
+      "title": "JV-50 Heptabase 卡片＋圖片 → Notion 資料庫同步 v2",
+      "status": "completed",
+      "track": "governance",
+      "order_label": "JV-50",
+      "priority": "high",
+      "weekly_core": false,
+      "dependencies": [
+        "api-cli-mcp-capability-registry-v0",
+        "notion-sync-read-model-v0"
+      ],
+      "done_condition": "完成一條可重跑的 Heptabase 白板卡片到明確 Notion 資料庫同步流程：批次讀卡、跨 mapping file roots 正確解析 note 內嵌圖片、以同一 Notion integration 身分進行頁面寫入與檔案上傳、原圖優先、cardId/pageId state 冪等、不覆蓋保護人工欄位，並以 page re-fetch、image block、state hash／執行 receipt 共同驗證。缺少可信原圖時 fail-closed。共享 adapter、heptabase-notion-sync Skill v1.3、能力登錄、negative fixtures 與至少一組真實 pilot receipt 均完成後才可標記 completed。",
+      "acceptance": [
+        "JV50-A01｜來源批次化：先鎖定明確 whiteboard、card 集合與 Notion database mapping；一次取得白板 cards metadata，再有界平行讀取 note，保存 cardId、contentMd5、圖片 hash 與 pageId state，禁止依標題猜目的地。",
+        "JV50-A02｜圖片確實解析：將 ProseMirror image node 正規化為穩定 marker，依 fileId 搜尋明確 target mapping 所列的所有 hepta-files roots，驗證 MIME、size、hash 與 card 關聯；不得只取第一個 workspace，也不得以 heptabase file list 對 note 圖片回傳空陣列就判定無圖。",
+        "JV50-A03｜Notion 身分預檢：頁面 mutation 與 file upload 必須使用同一個可存取目的資料庫的 Notion integration；若出現跨 integration 的 object_not_found／404，應停止並回報修正路徑，不讀取或輸出 token、cookie、runtime auth file。",
+        "JV50-A04｜原圖優先路由：本機 binary 走同一 integration 的 Notion File Upload；目前未實作公開 HTTPS／Notion MCP fallback，沒有可信本機原圖即 block。任何未來 fallback 必須另有受控條件、品質標示與 Vincent 明確核准。",
+        "JV50-A05｜安全寫入：每個 target 以顯式 cardId → pageId state 作唯一目的地 mapping；依 marker 保持圖片與文字順序，使用同一 integration upload 後 attach；既有頁只管理 body，不寫入保護的人工欄位；新頁只在明確 target 與 title property 下建立，完成後才持久化 pageId state。",
+        "JV50-A06｜冪等與局部失敗：以 source cardId 為主鍵、contentMd5／image hash 為變更判斷；重跑不得重複建頁或重複圖片。任何單卡／單圖失敗都不得持久化新的 state，因此可從最後完整 state 精準重試，也不得把部分完成誤報成全部成功。",
+        "JV50-A07｜雙重驗證：同步後重新 fetch 每一頁，確認 page id 與 image block 數量符合 manifest；只有所有頁面驗證通過才更新 cardId/pageId、contentMd5 與 image hash state，並保留非秘密 receipt。",
+        "JV50-A08｜效率基準：白板 cards 一次讀取、note reads 有界平行、page mutation 與 uploads 以單一 integration client 執行；以 explicit mapping state 取代 title／schema 探測猜測。瀏覽器 UI 只作 MCP／API／CLI 都無法完成時的最後手段。",
+        "JV50-A09｜負向驗收：涵蓋多 Heptabase file roots、缺檔、錯誤 MIME／超限、target 未選取／不存在、跨 Notion integration identity、重跑冪等與 body marker 不可見；未提供可信原圖時 fail-closed，不以未驗證 fallback 假裝完成。",
+        "JV50-A10｜單一路徑：沿用 ACP-SYNC-03 的 shared library decouple 與 ACP-SYNC-04 的 legacy archive lineage，建立一個 generic adapter；更新 heptabase-notion-sync Skill 至 v1.3、CHANGELOG 與 MorroWise capability read model，不新增平行同步腳本或第二 task source。",
+        "JV50-A11｜正式實作邊界：shared adapter、multi-target mapping、Skill v1.3、capability registry/read model 與 verifier 均已完成；KJ-116 live pilot 只在 Vincent 明確授權的 whiteboard 與資料庫內寫入，不讀取或輸出 credentials，不 commit、不 push、不部署。",
+        "JV50-A12｜架構薄連結：Architecture Atlas 與 Architecture Admission Record 以 task:completed／active 顯示 JV-50，只連到 capability registry、正式 Skill、adapter／mapping source 與 canonical task；不得複製操作 SOP 或把 ARCHITECTURE.md 當成第二正本。"
+      ],
+      "optimized_workflow": [
+        "1. 明確指定來源 whiteboard、卡片範圍、目的 Notion database 與欄位 mapping，先做 dry-run manifest。",
+        "2. 一次讀取 whiteboard cards；只對範圍內 card 平行讀 note，抽出文字、來源 metadata、圖片 marker 與 fileId。",
+        "3. 跨所有 hepta-files workspace 解析 fileId，驗證 MIME、size、hash；缺檔或歧義立即停在該卡並列出原因。",
+        "4. 驗證 explicit target、cardId/pageId state 唯一性、Notion integration identity 與 upload capability；不依 title 或隱式 schema query 猜目的地。",
+        "5. 使用本機原圖 upload；沒有可信原圖即 block，禁止無紀錄的畫質降級或未核准 fallback。",
+        "6. 依 source cardId 進行 idempotent batch create／update，只更新映射欄位並保護人工欄位；圖片依 marker 插入正確位置。",
+        "7. 重新 fetch page 驗證 page id 與 image block 數量；失敗不寫 state，僅重試未完成單元。",
+        "8. 全數通過後才寫 contentMd5／image hash cache、execution log、能力歷史與完成 receipt。"
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/skills/heptabase-notion-sync/SKILL.md",
+        "$COLLAB/notyet-harness/000_Agent/scripts/heptabase-cli-to-pai.py",
+        "$COLLAB/notyet-harness/000_Agent/scripts/heptabase-to-notion.py",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#heptabase-cli-pai-decouple",
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#heptabase-pai-legacy-archive",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#notion-sync-read-model-v0",
+        "https://app.notion.com/p/3cd714fb14c681b1a24bec76def558ed",
+        "https://app.notion.com/p/3cd714fb14c681538f14db791bea22e9"
+      ],
+      "execution_contract": {
+        "owner": "morrowise/heptabase-notion-card-image-sync-v2",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#heptabase-notion-card-image-sync-v2",
+        "inputs": [
+          "明確的 Heptabase whiteboard／card 範圍與 Notion database mapping",
+          "Heptabase card note、fileId、contentMd5 與本機 hepta-files metadata",
+          "Notion explicit target mapping、cardId/pageId state、integration identity 與 file-upload capability"
+        ],
+        "outputs": [
+          "一個 shared、idempotent、image-aware 的 Heptabase → Notion adapter",
+          "原圖優先且可解釋的 upload routing、cardId/pageId state、hash cache 與 partial retry contract",
+          "heptabase-notion-sync Skill v1.3、CHANGELOG、capability registry/read model 與 verifiers",
+          "至少一組真實卡片＋圖片 pilot 的不含秘密完成 receipt"
+        ],
+        "verifiers": [
+          "node scripts/verify-heptabase-notion-card-image-sync-v2.mjs",
+          "npm run test:capability-registry",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "npm run test:skills",
+          "git diff --check"
+        ],
+        "stop_condition": "若目的 database／target mapping 不明、source cardId 無法唯一對應、圖片 bytes 缺失／歧義、Notion integration 身分不一致、pageId state 不確定、人工欄位可能被覆蓋、秘密可能曝光，或無法重新 fetch 證明 image block 可讀，立即停止該單元並回報，不得以最佳猜測繼續。"
+      },
+      "acceptance_matrix": [
+        {
+          "id": "JV50-R1-A01",
+          "what": "建立來源抽取、圖片解析與 deterministic dry-run manifest。",
+          "preconditions": [
+            "明確 whiteboard、card 範圍與 destination mapping",
+            "Heptabase Desktop Local CLI 可唯讀使用"
+          ],
+          "steps": [
+            "批次讀 cards 並有界平行讀 note",
+            "解析 image marker 與跨 workspace fileId",
+            "產出含 cardId、contentMd5、file hash、目的 action 的 dry-run manifest"
+          ],
+          "pass_condition": "每張卡與每張圖都唯一可追溯，dry-run 不產生外部寫入，重跑 manifest 穩定。",
+          "fail_condition": "只靠標題 mapping、漏圖、選到錯 workspace、file list 空值被誤判無圖，或 dry-run 產生外部 mutation。",
+          "verification": [
+            "node scripts/verify-heptabase-notion-card-image-sync-v2.mjs --phase source"
+          ]
+        },
+        {
+          "id": "JV50-R2-A01",
+          "what": "建立同一 Notion integration 下的原圖優先 upload 與安全 page mutation。",
+          "preconditions": [
+            "explicit cardId/pageId state 與 identity preflight 已通過",
+            "原圖 bytes 與 hash 已驗證"
+          ],
+          "steps": [
+            "跑 local original 與 cross-integration／missing-original negative cases",
+            "批次 create／update 並保護人工欄位",
+            "模擬部分 upload 失敗後的精準重試"
+          ],
+          "pass_condition": "原圖正常路徑可用，跨 integration／超限／人工覆蓋均被拒絕，缺少原圖保持 blocked，重跑無重複頁或圖片。",
+          "fail_condition": "把 identity error 當成缺頁重建、靜默畫質降級、使用未核准圖床、覆蓋人工欄位或產生 duplicate。",
+          "verification": [
+            "node scripts/verify-heptabase-notion-card-image-sync-v2.mjs --phase mutation"
+          ]
+        },
+        {
+          "id": "JV50-R3-A01",
+          "what": "以真實 pilot 與重新 fetch 證明端到端同步完整。",
+          "preconditions": [
+            "R1、R2 verifier 通過",
+            "Vincent 明確指定 pilot whiteboard 與 Notion database"
+          ],
+          "steps": [
+            "執行 dry-run 並核對 planned actions",
+            "執行同步後重新 fetch 每頁",
+            "核對 page id、image block 數量、state hash 與 execution receipt"
+          ],
+          "pass_condition": "所有指定卡片與圖片在映射頁面可讀，沒有 duplicate／人工欄位回歸，receipt 不含秘密且可重跑。",
+          "fail_condition": "只以 upload success 或 mutation success 宣稱完成、未重新 fetch、漏圖、錯頁、重複頁或 receipt 含敏感資料。",
+          "verification": [
+            "node scripts/verify-heptabase-notion-card-image-sync-v2.mjs --phase pilot",
+            "manual evidence review: Notion page fetch receipts"
+          ]
+        }
+      ],
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "多 workspace 的相同／不同 fileId 解析 deterministic 且不誤選。",
+          "同一 integration 原圖 upload 成功；跨 integration identity 以明確 blocker 停止。",
+          "cardId/pageId state 讓頁面與圖片重跑冪等，既有頁只管理 body，不覆蓋保護人工欄位。",
+          "缺檔、錯 MIME、超限、target 未選取／不存在、identity mismatch、重跑與不可見 marker 都有負向證據；未有可信原圖時保持 blocked。"
+        ],
+        "test_level": [
+          "unit fixture",
+          "isolated integration fixture",
+          "live pilot verification"
+        ],
+        "red_command": "node scripts/verify-heptabase-notion-card-image-sync-v2.mjs",
+        "expected_red_reason": "JV-50 建立時尚未有 consolidated shared adapter、跨 workspace image resolver、same-integration upload preflight、negative fixtures 與完整 verifier，應以明確缺件失敗。",
+        "green_command": "node scripts/verify-heptabase-notion-card-image-sync-v2.mjs",
+        "full_regression_commands": [
+          "npm run test:capability-registry",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "npm run test:skills",
+          "git diff --check"
+        ],
+        "fixture_refs": [
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#heptabase-notion-card-image-sync-v2.acceptance_matrix",
+          "$COLLAB/notyet-harness/000_Agent/skills/heptabase-notion-sync/SKILL.md"
+        ],
+        "runtime_evidence_required": true,
+        "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#heptabase-notion-card-image-sync-v2.test_contract.evidence_refs",
+        "evidence_refs": [
+          "node scripts/verify-heptabase-notion-card-image-sync-v2.mjs",
+          "npm run test:capability-registry",
+          "npm run test:skills",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "KJ-116 2026-09-02 live pilot: 4 mapped pages re-fetched; forced one-card update then canonical dry-run returned 0 create / 0 update / 4 unchanged."
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "把已驗證但仍依賴人工判斷的 Heptabase 卡片＋圖片同步，收斂成單一、可發現、可驗證且不形成第二 task source 的 MorroWise adapter 能力。",
+        "evidence_plan": [
+          "source／image resolver 與 upload routing 的正負向 fixtures",
+          "同一 Notion integration preflight 與人工欄位保護證據",
+          "真實 pilot 的 page fetch、image block、唯一頁數、hash cache 與 execution receipt"
+        ],
+        "reviewed_at": "2026-08-31"
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/heptabase-notion-card-image-sync-v2",
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#risk",
+          "#optimization",
+          "#evidenceBased"
+        ],
+        "hc_reasoning": "真正問題不是再寫一支一次性同步腳本，而是把來源抽取、圖片 bytes、Notion integration 身分、page mutation 與完成驗證收斂成同一條可重跑 contract。Heptabase 仍是內容來源、Notion 仍是目的行動庫、MorroWise task 與 capability registry 管理流程 owner；原圖優先與負向 fixtures 防止畫質降級、錯 workspace、跨身分 404、duplicate 與人工欄位損失。",
+        "hc_confidence": 0.96,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/000_Agent/skills/heptabase-notion-sync/SKILL.md",
+          "$COLLAB/notyet-harness/000_Agent/scripts/heptabase-cli-to-pai.py",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json"
+        ],
+        "source_boundary": "HC 只是思考檢查；task lifecycle 由 MorroWise tasks.json 管理，操作規範由正式 Skill 管理，可執行行為由 shared adapter／verifier 管理，Notion 與 Heptabase 各自維持內容正本。"
+      },
+      "architecture_decision": {
+        "decision": "promoted",
+        "evaluated_at": "2026-09-02",
+        "registry_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json#heptabase-notion-card-image-sync-v2",
+        "detail_doc": "$COLLAB/notyet-harness/000_Agent/skills/heptabase-notion-sync/SKILL.md",
+        "atlas_link_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-atlas-manifest.json#heptabase-notion-card-image-sync-v2",
+        "atlas_visibility": "task:completed; subsystem:active",
+        "reason": "shared adapter、multi-target mapping、Skill v1.3、negative fixtures 與 KJ-116 live pilot receipt 已具備；以 Architecture Admission Record 收編，ARCHITECTURE.md 只生成薄連結。"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "verification-before-completion",
+          "capability-registry",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "本次 KJ Heptabase 卡片＋圖片同步到 Notion 的成功與失敗經驗",
+          "既有 heptabase-notion-sync Skill、CLI-to-PAI／legacy scripts 與 ACP-SYNC-03／04 lineage",
+          "Notion MCP 小型 UTF-8 attachment 與同 integration file-upload 邊界"
+        ],
+        "decision_output": "一張單一 owner、原圖優先、批次化、idempotent、可驗證的 Heptabase → Notion card-image sync v2 work anchor。",
+        "execution_boundary": "完成 shared adapter、Skill、mapping、registry/read model 與 verifier；外部寫入只限 Vincent 明確授權的 KJ-116 target，使用同一 Notion integration、post-fetch 驗證與非秘密 receipt。未 commit、未 push、未部署。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent 核准把本次 Heptabase 卡片含圖片同步到 Notion 的有效方法固化，讓未來 Agent 可直接依最佳化流程執行，並在 Architecture Atlas 建立 task:todo 薄連結；本次只建立可驗證 task、capability discovery 與架構發現入口，不立即改程式或操作外部資料。",
+            "evidence_refs": [
+              "Vincent 2026-08-31 current session: 以上可以，列出做法，當要使用 Heptabase 卡片同步到 Notion 資料庫時，知道這次優化的流程，寫 task？",
+              "Vincent 2026-08-31 current session: 也會呈現在這邊？ 做薄連結",
+              "$COLLAB/notyet-harness/000_Agent/skills/heptabase-notion-sync/SKILL.md",
+              "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#heptabase-cli-pai-decouple",
+              "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#heptabase-pai-legacy-archive"
+            ],
+            "recorded_at": "2026-08-31",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/api-cli-mcp-capability-registry-v0",
+                "morrowise/notion-sync-read-model-v0",
+                "morrowise/capability-registry-v1-coverage",
+                "harness-mc/heptabase-cli-pai-decouple",
+                "harness-mc/heptabase-pai-legacy-archive"
+              ],
+              "scope_comparison": {
+                "problem": "既有 registry task 只管理能力 metadata，notion-sync read model 只觀測健康，ACP-SYNC-03 只解耦 PAI wrapper，ACP-SYNC-04 只管理 legacy archive；沒有 task 擁有 generic card＋embedded image 的跨 workspace 解析、same-integration upload、原圖優先、人工欄位保護與完整驗證。",
+                "owner_source_of_truth": "JV-50 只擁有 generic sync adapter 與 workflow contract；Heptabase、Notion、正式 Skill、capability registry 與 canonical task 仍各自維持既有正本。",
+                "inputs_outputs": "輸入是明確 whiteboard／database mapping、card notes、fileId、本機 image bytes 與 Notion schema／identity；輸出是 shared adapter、Skill v1.3、registry/read model、fixtures 與 pilot receipt，不建立新 task source 或平行同步管線。",
+                "lifecycle_completion": "只有 source、mutation、negative fixtures、Skill／registry 更新與真實 pilot 全數通過，且重新 fetch 證明圖片與頁面正確後才可 completed；建立 task 不代表同步能力已實作。"
+              },
+              "decision_reason": "本次經驗揭露的是既有任務未覆蓋的通用 card-image transfer 與 integration identity 問題，因此建立 genuinely_new 的 MorroWise work anchor，但明確承接 ACP-SYNC-03／04 lineage，避免重複造輪子。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-08-31",
+                "evidence_refs": [
+                  "Vincent 2026-08-31 current session: 以上可以，列出做法，當要使用 Heptabase 卡片同步到 Notion 資料庫時，知道這次優化的流程，寫 task？",
+                  "Vincent 2026-08-31 current session: 也會呈現在這邊？ 做薄連結"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "complete",
+            "from_status": "todo",
+            "to_status": "completed",
+            "reason": "JV-50 已將 KJ-116 成功 pilot 收斂為可重跑共用 adapter：明確 multi-target mapping、跨 file-root 原圖解析、same-integration identity preflight、cardId/pageId 冪等 state、重新 fetch 驗證、Skill v1.3 與負向 fixtures 均已完成；KJ-116 實際測試後 canonical dry-run 為 0 create／0 update／4 unchanged。",
+            "evidence_refs": [
+              "node scripts/verify-heptabase-notion-card-image-sync-v2.mjs",
+              "npm run test:capability-registry",
+              "npm run test:skills",
+              "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+              "KJ-116 2026-09-02 live pilot: 4 mapped pages re-fetched; one controlled update verified before idempotent final dry-run."
+            ],
+            "recorded_at": "2026-09-02",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/api-cli-mcp-capability-registry-v0",
+                "morrowise/notion-sync-read-model-v0",
+                "morrowise/capability-registry-v1-coverage",
+                "harness-mc/heptabase-cli-pai-decouple",
+                "harness-mc/heptabase-pai-legacy-archive"
+              ],
+              "scope_comparison": {
+                "problem": "既有 registry task 只管理能力 metadata，notion-sync read model 只觀測健康，ACP-SYNC-03 只解耦 PAI wrapper，ACP-SYNC-04 只管理 legacy archive；沒有 task 擁有 generic card＋embedded image 的跨 workspace 解析、same-integration upload、原圖優先、人工欄位保護與完整驗證。",
+                "owner_source_of_truth": "JV-50 只擁有 generic sync adapter 與 workflow contract；Heptabase、Notion、正式 Skill、capability registry 與 canonical task 仍各自維持既有正本。",
+                "inputs_outputs": "輸入是明確 whiteboard／database mapping、card notes、fileId、本機 image bytes 與 Notion identity；輸出是 shared adapter、Skill v1.3、registry/read model、fixtures 與 pilot receipt，不建立新 task source 或平行同步管線。",
+                "lifecycle_completion": "source、mutation、negative fixtures、Skill／registry 更新與真實 pilot 已通過，並以重新 fetch 證明圖片與頁面正確；本次 canonical mutation 同時記錄 task 的建立與完成。"
+              },
+              "decision_reason": "本次經驗揭露既有任務未覆蓋的通用 card＋embedded image transfer 與 integration identity 問題；完成態明確承接 ACP-SYNC-03／04 lineage，避免平行同步管線。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-02",
+                "evidence_refs": [
+                  "Vincent 2026-09-02 current session: 進行『JV-50 同步 adapter 的正式任務』",
+                  "Vincent 2026-09-02 current session: 更新紀錄並作薄連結"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "completed_at": "2026-09-02",
+      "completion_evidence": {
+        "red_evidence": [
+          "2026-09-02：apply fixture 首次揭露 image marker 被誤渲染為可見 fileId paragraph；verifier 以 rendered_text 斷言失敗。"
+        ],
+        "green_evidence": [
+          "node scripts/verify-heptabase-notion-card-image-sync-v2.mjs：source、identity、target selection、idempotency、fake apply 與不可見 marker fixtures 通過。",
+          "KJ-116 2026-09-02：修正後對受控單卡重寫並重新 fetch，確認 1 image block 且沒有可見 source fileId。"
+        ],
+        "regression_evidence": [
+          "npm run test:capability-registry",
+          "npm run test:skills",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "git diff --check"
+        ],
+        "verifier_refs": [
+          "$COLLAB/harness-mc/scripts/verify-heptabase-notion-card-image-sync-v2.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-capability-registry.mjs",
+          "$COLLAB/notyet-harness/000_Agent/skills/heptabase-notion-sync/SKILL.md"
+        ],
+        "runtime_evidence": [
+          "KJ-116 2026-09-02 live pilot: explicit target used the HiSenzi Sync identity; all 4 mapped pages were re-fetched, and a final canonical dry-run reported 0 create / 0 update / 4 unchanged."
+        ],
+        "fixture_runtime_boundary": "Fixtures verify source parsing, image limits, identity mismatch, explicit target selection, idempotent state and mutation rendering without credentials or external writes. Runtime evidence is limited to Vincent-authorized KJ-116 pages and confirms post-fetch image readability plus idempotent replay; no fixture is presented as a remote delivery receipt."
+      },
+      "summary": "2026-09-02：JV-50 completed。KJ-116 pilot 已收斂為 shared adapter、multi-target mapping、Skill v1.3、capability registry/read model、negative fixtures 與 Architecture Admission；正式寫入限 explicit target、same-integration identity、cardId/pageId state 與 re-fetch 驗證。未 commit、未 push、未部署。",
+      "note": "2026-08-31～2026-09-02：本機 hepta-files 可取得 note embedded image；跨 Notion integration 的 file_upload 無法附加於不同 identity 頁面，必須 fail-closed。JV-50 以原圖優先、同身分 preflight、顯式 target、cardId/pageId 冪等與重新 fetch 驗證收斂成單一路徑；缺乏可信原圖時保持 blocked，不假裝 fallback 完成。"
     }
   ]
 }

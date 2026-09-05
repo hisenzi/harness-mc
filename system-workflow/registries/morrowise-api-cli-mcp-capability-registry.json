@@ -1,7 +1,7 @@
 {
   "registry_id": "morrowise-api-cli-mcp-capability-registry.v0",
   "task_id": "api-cli-mcp-capability-registry-v0",
-  "updated_at": "2026-09-02",
+  "updated_at": "2026-09-05",
   "status": "formal_registry",
   "purpose": "Track API / CLI / MCP capabilities as verifiable MorroWise system components with update history, boundaries, owner tasks, and next actions.",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
@@ -595,6 +595,62 @@
           "evidence_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#capability-registry-v1-coverage; https://docs.lottiefiles.com/en/creator/13_ai-tools/lottie-creator-mcp",
           "actor_or_task": "capability-registry-v1-coverage",
           "next_action": "Verify Lottie Creator browser-session pairing in a client session and keep client-specific diagnostics separate from global capability health."
+        }
+      ]
+    },
+    {
+      "id": "heptabase-manual-sync",
+      "type": "cli",
+      "provider": "Heptabase Desktop Local CLI Server",
+      "entrypoint": [
+        "heptabase note",
+        "$COLLAB/harness-mc/scripts/sync-heptabase-manual.mjs"
+      ],
+      "owner_task": "morrowise-manual-live-sync",
+      "scope": "control_plane",
+      "source_of_truth": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-manual-live-sync",
+        "$COLLAB/notyet-harness/000_Agent/docs/morrowise/MANUAL.md",
+        "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md"
+      ],
+      "auth_boundary": "Uses local Heptabase CLI session; registry stores metadata only and must not read CLI auth storage.",
+      "read_write_boundary": {
+        "read": [
+          "notyet-harness/000_Agent/docs/morrowise/MANUAL.md",
+          "harness-mc/public/data/morrowise-system.json",
+          "Heptabase target card 76fcfdca-251c-412f-898c-24512e6ea144"
+        ],
+        "write": [
+          "Heptabase target card 76fcfdca-251c-412f-898c-24512e6ea144 managed region via explicit apply command",
+          "~/Library/Application Support/MorroWise/heptabase-manual-sync/backups"
+        ],
+        "forbidden": [
+          "read Heptabase auth tokens",
+          "treat Heptabase as task or manual source of truth",
+          "write back to tasks.json or MANUAL.md"
+        ]
+      },
+      "secret_policy": "No token or local auth path content may be stored in registry or generated read model.",
+      "status": "prototype",
+      "verifier": [
+        "node scripts/verify-sync-heptabase-manual.mjs",
+        "npm run test:capability-registry"
+      ],
+      "next_action": {
+        "type": "verify",
+        "task_id": "morrowise-manual-live-sync",
+        "description": "Run controlled live E2E verification upon Vincent explicit authorization (Phase 3)."
+      },
+      "history": [
+        {
+          "date": "2026-09-05",
+          "event_type": "adapter_implemented",
+          "from_state": "unknown",
+          "to_state": "prototype",
+          "reason": "Implemented sync-heptabase-manual.mjs and verify-sync-heptabase-manual.mjs with 13 offline TDD test cases.",
+          "evidence_ref": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+          "actor_or_task": "morrowise-manual-live-sync",
+          "next_action": "Execute Phase 3 controlled live E2E verification upon explicit authorization."
         }
       ]
     }

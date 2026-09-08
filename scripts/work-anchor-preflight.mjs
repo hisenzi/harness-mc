@@ -6,6 +6,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { resolveMilestoneProject } from "./lib/milestone-projects.mjs";
 import { sortTasksByPlan } from "../lib/taskOrdering.mjs";
+import { runWorkbookPreflight } from "./lib/workbook-preflight-adapter.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = process.env.HARNESS_MC_ROOT
@@ -41,7 +42,13 @@ function parseArgs(argv) {
 
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
-    if (arg === "--project") args.project = argv[++i];
+    if (arg === "--workbook" || arg.startsWith("--workbook=")) {
+      if (Object.hasOwn(args, "workbook")) throw new Error("duplicate_workbook_argument");
+      const workbook = arg === "--workbook" ? argv[++i] : arg.slice("--workbook=".length);
+      if (!workbook || workbook.startsWith("-")) throw new Error("workbook_path_required");
+      args.workbook = workbook;
+    }
+    else if (arg === "--project") args.project = argv[++i];
     else if (arg === "--tasks") args.tasks = argv[++i];
     else if (arg === "--task-id") args.taskId = argv[++i];
     else if (arg === "--intent") args.intent = argv[++i];
@@ -78,8 +85,10 @@ function parseArgs(argv) {
 function usage() {
   return [
     "Usage: node scripts/work-anchor-preflight.mjs --project <id> [options]",
+    "       node scripts/work-anchor-preflight.mjs --workbook <path> [--event implementation|acceptance] [--json]",
     "",
     "Options:",
+    "  --workbook <path>                      Select the unique workbook; cannot mix tasks override or proposal",
     "  --tasks <path>                         Override milestones/<project>/tasks.json",
     "  --task-id <id>                         Use a specific task as the execution anchor",
     "  --intent <text>                        Execution intent label, e.g. 開始 / 可以",
@@ -99,6 +108,9 @@ function usage() {
     "  --acceptance-result <ID=pass|fail>     acceptance 必填（可重複）：exact matrix result",
     "  --as-of <YYYY-MM-DD>                  Weekly core deadline clock（default: Asia/Taipei today）",
     "  --json                                Output machine-readable JSON",
+    "",
+    "Workbook execution requires a human-supervised in-memory context via runPreflight(args, context).",
+    "The standalone CLI cannot provide authorization; it reports requires_human_approval with a nonzero exit.",
   ].join("\n");
 }
 
@@ -179,7 +191,12 @@ function mostRecentTrack(tasks) {
   return null;
 }
 
-export function runPreflight(args) {
+export function runPreflight(args, context) {
+  // A selected workbook is an exclusive source, including invalid or empty
+  // selections. Never fall back to canonical task discovery for this branch.
+  if (args && (Object.hasOwn(args, "workbook") || Object.hasOwn(args, "workbookPath"))) {
+    return runWorkbookPreflight(args, context, { harnessRoot: root });
+  }
   const taskSource = resolveTaskSource(args);
   const tasks = readTasks(taskSource);
   const orderLabelAsSource = usesOrderLabelSource(taskSource);
@@ -208,12 +225,16 @@ export function runPreflight(args) {
     activeTasks.splice(0, activeTasks.length, ...sortTasksByPlan(activeTasks, { orderLabelAsSource: true }));
   }
 
+  const isProposalIntent = args.intent === "proposal" || (Boolean(args.proposedId) && !args.taskId);
+
   const executionCandidates = orderLabelAsSource
     ? activeTasks.filter((task) => normalizeStatus(task.status) !== "blocked")
     : activeTasks;
-  const targetTask = args.taskId
-    ? executionCandidates.find((task) => task.id === args.taskId) || null
-    : executionCandidates[0] || null;
+  const targetTask = isProposalIntent
+    ? null
+    : args.taskId
+      ? executionCandidates.find((task) => task.id === args.taskId) || null
+      : executionCandidates[0] || null;
   const hcGate = targetTask ? evaluateHcGate(targetTask, project) : null;
   const eventGate = args.event ? evaluateEventGate({ ...args, taskSource }, targetTask, hcGate) : null;
   const weeklyCoreGate = project === "morrowise"
@@ -239,18 +260,33 @@ export function runPreflight(args) {
         && (!weeklyCoreGate || weeklyCoreGate.decision === "allow")
         ? "allow"
         : "blocked",
-    next_required_step: targetTask
-      ? hcGate?.decision === "blocked"
-        ? "先輸出 HC decision block；確認 HC 是 thinking check 且 evidence/source-of-truth 清楚後，才可進入 work-anchor / implementation flow。"
-        : weeklyCoreGate?.decision === "blocked"
-          ? "先由 Vincent 明確選擇 reframe、suspend、cancel 或 complete，更新 canonical task 後才可繼續。"
-        : "進入 execution，並把 active_task 作為 work anchor。"
-      : args.taskId
-        ? "指定 task 不是 active 狀態；先更新或確認 task 狀態，才可開始改檔。"
-        : "先請 Vincent 確認 proposed task；確認後才可寫入 tasks.json 並開始改檔。",
+    next_required_step: isProposalIntent
+      ? "先請 Vincent 確認 proposed task；確認後才可寫入 tasks.json 並開始改檔。"
+      : targetTask
+        ? hcGate?.decision === "blocked"
+          ? "先輸出 HC decision block；確認 HC 是 thinking check 且 evidence/source-of-truth 清楚後，才可進入 work-anchor / implementation flow。"
+          : weeklyCoreGate?.decision === "blocked"
+            ? "先由 Vincent 明確選擇 reframe、suspend、cancel 或 complete，更新 canonical task 後才可繼續。"
+            : "進入 execution，並把 active_task 作為 work anchor。"
+        : args.taskId
+          ? "指定 task 不是 active 狀態；先更新或確認 task 狀態，才可開始改檔。"
+          : "先請 Vincent 確認 proposed task；確認後才可寫入 tasks.json 並開始改檔。",
   };
 
-  if (!targetTask && !args.taskId) {
+  if (isProposalIntent) {
+    result.proposed_task = buildProposedTask(args, project, tasks);
+    const existing = args.proposedId && tasks.some((task) => task.id === args.proposedId);
+    if (existing) {
+      result.blocked_reason = `Proposed task ID ${args.proposedId} already exists in ${path.relative(root, taskSource)}.`;
+      result.next_required_step = "提案 ID 已存在；請更換 ID 或改以 --task-id 指定既有 task 進行執行前預檢。";
+    } else if (!result.proposed_task.complete) {
+      result.blocked_reason = `Missing required proposal fields: ${result.proposed_task.missing.join(", ")}`;
+      result.next_required_step = `補齊 ${result.proposed_task.missing.join(", ")} 後重新執行 proposal preflight。`;
+    } else {
+      result.blocked_reason = "Proposal is structured and pending Vincent approval before writing to tasks.json.";
+      result.next_required_step = "先請 Vincent 確認 proposed task；確認後才可寫入 tasks.json 並開始改檔。";
+    }
+  } else if (!targetTask && !args.taskId) {
     result.proposed_task = buildProposedTask(args, project, tasks);
     result.blocked_reason = "No active task found for execution intent.";
   } else if (!targetTask && args.taskId) {
@@ -487,6 +523,25 @@ function parseAcceptanceResults(entries) {
 }
 
 export function formatMarkdown(result) {
+  if (result.source_kind === "workbook") {
+    const lines = [
+      "## Work Anchor Preflight — Workbook",
+      `workbook: ${result.workbook || "unresolved"}`,
+      `work ID: ${result.work_id || "unresolved"}`,
+      `contract fingerprint: ${result.contract_fingerprint || "unresolved"}`,
+      `supported versions: ${Object.entries(result.supported_versions || {}).map(([kind, version]) => `${kind}=${version}`).join(", ") || "unknown"}`,
+      `read only: ${result.read_only}`,
+      `result: ${result.decision}`,
+      `reason: ${result.reason || "unspecified"}`,
+      `next required step: ${result.next_required_step}`,
+    ];
+    if (typeof result.execution_ready === "boolean") lines.push(`execution ready: ${result.execution_ready}`);
+    if (result.weekly_core_gate) lines.push(`weekly core gate: ${result.weekly_core_gate.decision} (${result.weekly_core_gate.reason})`);
+    if (result.acceptance_receipt) {
+      lines.push(`acceptance results: ${result.acceptance_receipt.results.map(row => `${row.id}=${row.status}`).join(", ")}`);
+    }
+    return lines.join("\n");
+  }
   const lines = [
     "## Work Anchor Preflight",
     `project: ${result.project}`,
@@ -598,7 +653,7 @@ function main() {
 
   const result = runPreflight(args);
   console.log(args.json ? JSON.stringify(result, null, 2) : formatMarkdown(result));
-  if (result.decision === "blocked") process.exitCode = 2;
+  if (result.decision !== "allow") process.exitCode = 2;
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

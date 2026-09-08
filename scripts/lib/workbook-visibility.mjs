@@ -1,4 +1,4 @@
-import { loadWorkbook, evaluateWorkbookGate, workId } from './workbook-anchor.mjs';
+import { getResolvedRepos, loadWorkbook, evaluateWorkbookGate, workId } from './workbook-anchor.mjs';
 import { inspectWorkbookClaims, inspectWorkbookRepo } from './workbook-coordination.mjs';
 
 const observationSources = new WeakMap();
@@ -56,7 +56,7 @@ export function generateWorkbookAttention(options = {}) {
   const gate = evaluateWorkbookGate({ contract: workbook.contract, event: 'implement' }, context);
   const readClaims = context.inspectClaims || inspectWorkbookClaims;
   const readRepo = context.inspectRepo || inspectWorkbookRepo;
-  const repositories = workbook.contract.repos.map(repo => {
+  const repositories = getResolvedRepos(workbook).map(repo => {
     let claims = [], snapshot = {}, observationError = null;
     try { claims = readClaims({ repoPath: repo.checkout_root }); }
     catch (error) { observationError = error.message; }

@@ -22,32 +22,184 @@
     "notes"
   ],
   "properties": {
-    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
-    "phase": { "type": "string" },
-    "source_doc": { "type": "string" },
-    "source_skill": { "type": "string" },
-    "trigger": { "type": "string" },
-    "inputs": { "type": "string" },
-    "process": { "type": "string" },
-    "outputs": { "type": "string" },
-    "writes_to": { "type": "string" },
-    "external_effect": { "type": "string" },
-    "approval_policy": { "type": "string" },
-    "morrowise_stage": { "type": "string" },
-    "close_rule": { "type": "string" },
-    "verifier_ref": { "type": "string" },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "phase": {
+      "type": "string"
+    },
+    "source_doc": {
+      "type": "string"
+    },
+    "source_skill": {
+      "type": "string"
+    },
+    "trigger": {
+      "type": "string"
+    },
+    "inputs": {
+      "type": "string"
+    },
+    "process": {
+      "type": "string"
+    },
+    "outputs": {
+      "type": "string"
+    },
+    "writes_to": {
+      "type": "string"
+    },
+    "external_effect": {
+      "type": "string"
+    },
+    "approval_policy": {
+      "type": "string"
+    },
+    "morrowise_stage": {
+      "type": "string"
+    },
+    "close_rule": {
+      "type": "string"
+    },
+    "verifier_ref": {
+      "type": "string"
+    },
     "full_delivery_continuation": {
       "$ref": "#/$defs/full_delivery_continuation"
     },
     "status": {
       "type": "string",
-      "enum": ["accepted", "prototype", "blocked", "deferred", "adapter_only"]
+      "enum": [
+        "accepted",
+        "prototype",
+        "blocked",
+        "deferred",
+        "adapter_only"
+      ]
     },
-    "owner_task": { "type": "string" },
-    "notes": { "type": "string" }
+    "owner_task": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
   },
   "$defs": {
-    "workbook_contract": { "$ref": "morrowise-workbook.schema.json" },
+    "workbook_contract": {
+      "$ref": "morrowise-workbook.schema.json"
+    },
+    "workbook_source_adapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "status",
+        "default_enabled",
+        "contract_ref",
+        "schema_ref",
+        "implementation_ref",
+        "session_context_ref",
+        "preflight_adapter_ref",
+        "verifier_refs",
+        "pilot_policy",
+        "activation_boundary",
+        "activation_evidence_refs"
+      ],
+      "properties": {
+        "version": {
+          "type": "integer",
+          "const": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "prototype",
+            "accepted",
+            "blocked"
+          ]
+        },
+        "default_enabled": {
+          "type": "boolean"
+        },
+        "contract_ref": {
+          "type": "string",
+          "const": "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-workbook-flow.md"
+        },
+        "schema_ref": {
+          "type": "string",
+          "const": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-workbook.schema.json"
+        },
+        "implementation_ref": {
+          "type": "string",
+          "const": "$COLLAB/harness-mc/scripts/lib/workbook-anchor.mjs"
+        },
+        "session_context_ref": {
+          "type": "string",
+          "const": "$COLLAB/harness-mc/scripts/lib/workbook-session-context.mjs"
+        },
+        "preflight_adapter_ref": {
+          "type": "string",
+          "const": "$COLLAB/harness-mc/scripts/lib/workbook-preflight-adapter.mjs"
+        },
+        "verifier_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "const": [
+            "node scripts/verify-workbook-session-context.mjs",
+            "node scripts/verify-workbook-preflight-adapter.mjs",
+            "npm run test:workbook-flow",
+            "node scripts/verify-workbook-portable-paths.mjs",
+            "node scripts/verify-workbook-intake-adapter.mjs",
+            "node scripts/verify-workbook-acceptance-coverage.mjs"
+          ]
+        },
+        "pilot_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "named_authorization_required",
+            "entry_integration_required",
+            "required_fixtures_required",
+            "full_pilot_required"
+          ],
+          "properties": {
+            "named_authorization_required": {
+              "type": "boolean",
+              "const": true
+            },
+            "entry_integration_required": {
+              "type": "boolean",
+              "const": true
+            },
+            "required_fixtures_required": {
+              "type": "boolean",
+              "const": true
+            },
+            "full_pilot_required": {
+              "type": "boolean",
+              "const": false
+            }
+          }
+        },
+        "activation_boundary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "activation_evidence_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
     "full_delivery_continuation": {
       "type": "object",
       "additionalProperties": false,
@@ -201,17 +353,50 @@
           "type": "string",
           "const": "policy_controller"
         },
-        "trigger": { "type": "string", "minLength": 1 },
-        "objective": { "type": "string", "minLength": 1 },
-        "input_state": { "type": "string", "minLength": 1 },
-        "discovery_policy": { "type": "string", "minLength": 1 },
-        "prioritization_policy": { "type": "string", "minLength": 1 },
-        "execution_roles": { "type": "string", "minLength": 1 },
-        "context_policy": { "type": "string", "minLength": 1 },
-        "verification_policy": { "type": "string", "minLength": 1 },
-        "retry_policy": { "type": "string", "minLength": 1 },
-        "memory_writeback": { "type": "string", "minLength": 1 },
-        "escalation_conditions": { "type": "string", "minLength": 1 },
+        "trigger": {
+          "type": "string",
+          "minLength": 1
+        },
+        "objective": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input_state": {
+          "type": "string",
+          "minLength": 1
+        },
+        "discovery_policy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "prioritization_policy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "execution_roles": {
+          "type": "string",
+          "minLength": 1
+        },
+        "context_policy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "verification_policy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "retry_policy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "memory_writeback": {
+          "type": "string",
+          "minLength": 1
+        },
+        "escalation_conditions": {
+          "type": "string",
+          "minLength": 1
+        },
         "terminal_states": {
           "type": "array",
           "minItems": 7,

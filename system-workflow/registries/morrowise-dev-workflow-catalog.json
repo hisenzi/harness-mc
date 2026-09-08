@@ -2,7 +2,7 @@
   "registry_id": "morrowise-dev-workflow-catalog.v0",
   "task_id": "morrowise-dev-workflow-catalog",
   "status": "governed_catalog",
-  "updated_at": "2026-07-18",
+  "updated_at": "2026-09-08",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
   "schema_ref": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-dev-workflow.schema.json",
   "task_lifecycle_schema_ref": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-task-lifecycle.schema.json",
@@ -515,6 +515,23 @@
     "contract_ref": "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-workbook-flow.md",
     "schema_ref": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-workbook.schema.json",
     "implementation_ref": "$COLLAB/harness-mc/scripts/lib/workbook-anchor.mjs",
-    "activation_boundary": "Named opt-in after entry integration, required fixtures, and two-repo/two-session pilot. Canonical tasks and legacy acceptance remain unchanged."
+    "session_context_ref": "$COLLAB/harness-mc/scripts/lib/workbook-session-context.mjs",
+    "preflight_adapter_ref": "$COLLAB/harness-mc/scripts/lib/workbook-preflight-adapter.mjs",
+    "verifier_refs": [
+      "node scripts/verify-workbook-session-context.mjs",
+      "node scripts/verify-workbook-preflight-adapter.mjs",
+      "npm run test:workbook-flow",
+      "node scripts/verify-workbook-portable-paths.mjs",
+      "node scripts/verify-workbook-intake-adapter.mjs",
+      "node scripts/verify-workbook-acceptance-coverage.mjs"
+    ],
+    "pilot_policy": {
+      "named_authorization_required": true,
+      "entry_integration_required": true,
+      "required_fixtures_required": true,
+      "full_pilot_required": false
+    },
+    "activation_boundary": "入口串接與必要 fixtures 通過後，可依可信來源對具名工作及 session 授權 pilot；pilot 本身不要求先完成全部 pilot。只有 WF-V01–20、真實兩 repo／兩 session pilot、同版規則與入口核對、正式架構版本審查均通過，並具有明確切換授權，才可啟用預設。引用存在或 metadata 驗證通過不構成授權；canonical task 與 legacy 驗收邊界維持不變。",
+    "activation_evidence_refs": []
   }
 }

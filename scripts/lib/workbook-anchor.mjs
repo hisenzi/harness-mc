@@ -1,11 +1,13 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 
 export const WORKBOOK_VERSION = 1;
 const START = '<!-- morrowise:workbook:start -->';
 const END = '<!-- morrowise:workbook:end -->';
+const collaborationRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const keys = ['schema_version','contract_revision','project_id','task_id','title','order_label','home','repos','baseline_refs','canonical_baseline','done_condition','acceptance','dependencies','budget','allowed_actions','approval_refs','stop_resume','formal_target'];
 export const stableJson = value => JSON.stringify(value, function(k,v) {
   return v && typeof v === 'object' && !Array.isArray(v) ? Object.fromEntries(Object.keys(v).sort().map(key=>[key,v[key]])) : v;
@@ -20,6 +22,21 @@ const requireThat = (condition, reason) => { if (!condition) throw new Error(rea
 const text = value => typeof value === 'string' && value.trim().length > 0;
 export const safeRelative = value => text(value) && !path.isAbsolute(value) && !value.includes('\\') && !value.includes('\0') && !value.split('/').some(p=>!p || p==='.' || p==='..') && !value.split('/').includes('.git');
 const unique = values => new Set(values).size === values.length;
+const portableRoot = value => typeof value === 'string' && value.startsWith('$COLLAB/') && safeRelative(value.slice('$COLLAB/'.length));
+const rootReference = value => typeof value === 'string' && (path.isAbsolute(value) || portableRoot(value));
+// Shared contracts retain their portable bytes and fingerprints. Only IO uses
+// roots resolved relative to the installed harness, never caller-supplied env.
+export function resolveWorkbookLocation(value) {
+  requireThat(rootReference(value),'workbook_location_invalid');
+  return portableRoot(value) ? resolveRepoPath(collaborationRoot,value.slice('$COLLAB/'.length)) : value;
+}
+export function getResolvedRepos(workbook) {
+  return workbook.contract.repos.map(repo=>({...repo,canonical_root:resolveWorkbookLocation(repo.canonical_root),checkout_root:resolveWorkbookLocation(repo.checkout_root)}));
+}
+export function getResolvedRepo(workbook,repoId) {
+  const repo=getResolvedRepos(workbook).find(repo=>repo.repo_id===repoId);
+  requireThat(repo,'repo_not_in_contract');return repo;
+}
 
 // JSON.parse discards duplicate keys. Detect them before parsing the contract.
 function strictJson(source) {
@@ -46,7 +63,7 @@ function strictJson(source) {
 }
 export function validateWorkbookContract(c) {
   requireThat(c && typeof c==='object' && !Array.isArray(c),'contract_object_required');
-  requireThat(Object.keys(c).every(k=>keys.includes(k)) && keys.every(k=>Object.hasOwn(c,k)),'contract_fields_invalid');
+  requireThat(Object.keys(c).every(k=>keys.includes(k)||k==='requirement_baseline') && keys.every(k=>Object.hasOwn(c,k)),'contract_fields_invalid');
   requireThat(c.schema_version===1 && Number.isInteger(c.contract_revision) && c.contract_revision>0,'unsupported_contract_version');
   requireThat([c.project_id,c.task_id,c.title,c.done_condition,c.stop_resume,c.formal_target].every(text),'contract_identity_required');
   requireThat(/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(c.project_id) && /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(c.task_id),'identity_invalid');
@@ -54,7 +71,7 @@ export function validateWorkbookContract(c) {
   if(c.canonical_baseline===null) requireThat(/^work-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(c.task_id),'new_work_requires_uuid_v4');
   requireThat(Array.isArray(c.repos)&&c.repos.length>0&&unique(c.repos.map(r=>r.repo_id)),'repos_invalid');
   for(const r of c.repos) {
-    requireThat(text(r.repo_id)&&path.isAbsolute(r.canonical_root||'')&&path.isAbsolute(r.checkout_root||''),'repo_identity_invalid');
+    requireThat(text(r.repo_id)&&rootReference(r.canonical_root)&&rootReference(r.checkout_root),'repo_identity_invalid');
     requireThat(Array.isArray(r.write_paths)&&r.write_paths.length>0&&unique(r.write_paths)&&r.write_paths.every(safeRelative),'write_paths_invalid');
     if(r.control_paths!==undefined)requireThat(Array.isArray(r.control_paths)&&r.control_paths.every(safeRelative)&&unique([...r.write_paths,...r.control_paths]),'control_paths_invalid');
   }
@@ -67,6 +84,14 @@ export function validateWorkbookContract(c) {
     requireThat(/^[0-9a-f]{64}$/.test(a.executable_sha256||'') && safeRelative(a.entrypoint) && a.source_paths.includes(a.entrypoint) && a.args[0]===a.entrypoint && /^[0-9a-f]{64}$/.test(a.entrypoint_sha256||''),'verifier_version_required');
     requireThat(!/^(?:ba|da|z|fi|c|tc|k)?sh$|^cmd(?:\.exe)?$|^powershell(?:\.exe)?$/i.test(path.basename(a.command)),'shell_verifier_rejected');
   }
+  if(c.requirement_baseline!==undefined) {
+    const b=c.requirement_baseline;
+    requireThat(b&&typeof b==='object'&&Object.keys(b).length===4&&c.repos.some(r=>r.repo_id===b.repo_id)&&safeRelative(b.path)&&/^[0-9a-f]{64}$/.test(b.sha256||''),'requirement_baseline_invalid');
+    requireThat(Array.isArray(b.ids)&&b.ids.length>0&&b.ids.every(text)&&unique(b.ids),'requirement_baseline_ids_invalid');
+    requireThat(stableJson([...b.ids].sort())===stableJson(c.acceptance.map(a=>a.id).sort()),'requirement_ids_mismatch');
+    requireThat(c.acceptance.every(a=>/^[0-9a-f]{64}$/.test(a.requirement_fingerprint||'')),'requirement_fingerprint_required');
+  }
+  for(const a of c.acceptance) if(Object.hasOwn(a,'pending_reason'))requireThat(text(a.pending_reason),'pending_reason_invalid');
   if(c.canonical_baseline!==null) {
     const b=c.canonical_baseline;
     requireThat(text(b.task_ref)&&text(b.task_digest)&&Array.isArray(b.acceptance)&&b.acceptance.length>0,'canonical_baseline_invalid');
@@ -105,21 +130,46 @@ export function gitRead(repo,args) {
   requireThat(r.status===0,`git_read_failed:${args[0]}`);return r.stdout.trimEnd();
 }
 export function loadWorkbook(file) {
+  file=resolveWorkbookLocation(typeof file==='string'&&!file.startsWith('$')?path.resolve(file):file);
   const parsed=parseWorkbook(fs.readFileSync(file,'utf8'));
   const c=parsed.contract;
-  for(const r of c.repos) {
+  for(const r of getResolvedRepos(parsed)) {
     requireThat(fs.realpathSync(r.canonical_root)===r.canonical_root&&fs.realpathSync(r.checkout_root)===r.checkout_root,'repo_root_must_be_resolved');
     requireThat(gitRead(r.checkout_root,['rev-parse','--show-toplevel'])===r.checkout_root,'checkout_root_mismatch');
     const common=root=>fs.realpathSync(path.resolve(root,gitRead(root,['rev-parse','--git-common-dir'])));
     requireThat(common(r.canonical_root)===common(r.checkout_root),'checkout_identity_mismatch');
     for(const p of [...r.write_paths,...(r.control_paths||[])])resolveRepoPath(r.checkout_root,p,{allowMissing:true});
   }
-  const homeRepo=c.repos.find(r=>r.repo_id===c.home.repo_id);
+  const homeRepo=getResolvedRepo(parsed,c.home.repo_id);
   // The home is pinned to its canonical repo; another checkout reads this same file.
   const home=resolveRepoPath(homeRepo.canonical_root,c.home.path);
   requireThat(path.resolve(file)===home,'workbook_home_mismatch');
-  return {...parsed,home};
+  const workbook={...parsed,home};
+  verifyRequirementBaseline(workbook);
+  return workbook;
 }
+
+// This optional binding pins original requirements outside the contract block.
+// Progress text remains editable; changing a requirement needs a new contract
+// fingerprint and fresh source approval. Neither parsing nor pending is a pass.
+export function verifyRequirementBaseline(workbook) {
+  const b=workbook.contract.requirement_baseline;if(!b)return;
+  const repo=getResolvedRepo(workbook,b.repo_id);
+  const markdown=fs.readFileSync(resolveRepoPath(repo.checkout_root,b.path),'utf8');
+  const start='<!-- morrowise:requirements:start -->',end='<!-- morrowise:requirements:end -->';
+  requireThat(markdown.split(start).length===2&&markdown.split(end).length===2,'unique_requirement_block_required');
+  const from=markdown.indexOf(start)+start.length,to=markdown.indexOf(end);
+  requireThat(to>from,'requirement_marker_order');
+  const rows=markdown.slice(from,to).trim().split('\n');
+  requireThat(digest(rows.join('\n')+'\n')===b.sha256,'requirement_source_changed');
+  const bindings=rows.map(row=>{
+    const match=/^\|\s*([A-Za-z0-9_-]+)(?:[／/][^|]*)?\s*\|/.exec(row);
+    requireThat(match,'requirement_row_invalid');return {id:match[1],fingerprint:digest(row)};
+  });
+  requireThat(unique(bindings.map(r=>r.id))&&stableJson(bindings.map(r=>r.id).sort())===stableJson([...b.ids].sort()),'requirement_source_ids_mismatch');
+  for(const r of bindings)requireThat(workbook.contract.acceptance.some(a=>a.id===r.id&&a.requirement_fingerprint===r.fingerprint),'requirement_binding_changed');
+}
+
 export function evaluateWorkbookGate({contract,event='implement',operation}, {approvalResolver,dependencyResolver,canonicalResolver}={}) {
   try {validateWorkbookContract(contract);}catch(e){return {decision:'blocked',reason:e.message};}
   const request={work_id:workId(contract),contract_fingerprint:contractFingerprint(contract),action:event,approval_refs:contract.approval_refs};
@@ -148,18 +198,24 @@ export function fileEvidence(root,files,{allowMissing=false}={}) {
   }));
 }
 export function workbookSource(workbook) {
-  return Object.fromEntries(workbook.contract.repos.map(r=>{
+  return Object.fromEntries(getResolvedRepos(workbook).map(r=>{
     const acceptance=workbook.contract.acceptance.filter(a=>a.repo_id===r.repo_id);
-    const inputs=new Set(acceptance.flatMap(a=>a.source_paths)),outputs=new Set(acceptance.flatMap(a=>a.artifact_paths).filter(p=>!inputs.has(p)));
+    const inputs=new Set(acceptance.flatMap(a=>a.source_paths));
+    const baseline=workbook.contract.requirement_baseline;
+    if(baseline?.repo_id===r.repo_id)inputs.add(baseline.path);
+    const outputs=new Set(acceptance.flatMap(a=>a.artifact_paths).filter(p=>!inputs.has(p)));
     for(const output of outputs)requireThat(r.write_paths.includes(output),'artifact_output_outside_scope');
     return [r.repo_id,{head:gitRead(r.checkout_root,['rev-parse','HEAD']),files:fileEvidence(r.checkout_root,[...r.write_paths.filter(p=>!outputs.has(p)),...inputs],{allowMissing:true})}];
   }));
 }
 export function runWorkbookAcceptance({workbook,...context}) {
   const gate=evaluateWorkbookGate({contract:workbook.contract,event:'verify'},context);if(gate.decision!=='allow')return gate;
+  try {verifyRequirementBaseline(workbook);}catch(e){return {decision:'blocked',reason:e.message};}
+  const pending=workbook.contract.acceptance.filter(a=>a.pending_reason);
+  if(pending.length)return {decision:'blocked',reason:'requirements_not_ready',results:workbook.contract.acceptance.map(a=>({id:a.id,status:'not_run',reason:a.pending_reason||'other_required_evidence_pending'}))};
   const started=Date.now(),source=workbookSource(workbook),results=[];
   for(const a of workbook.contract.acceptance) {
-    const repo=workbook.contract.repos.find(r=>r.repo_id===a.repo_id);
+    const repo=getResolvedRepo(workbook,a.repo_id);
     const remaining=workbook.contract.budget.max_wall_time_ms-(Date.now()-started);
     if(remaining<=0)return {decision:'blocked',reason:'verification_budget_exhausted'};
     const executable={path:fs.realpathSync(a.command),sha256:digest(fs.readFileSync(a.command))};
@@ -179,13 +235,16 @@ export function validateAcceptanceEvidence(workbook,receipt) {
   // Consistency only. A consumer must also resolve trusted producer provenance or
   // rerun runWorkbookAcceptance; a JSON file is never proof that a verifier ran.
   try {
+    validateWorkbookContract(workbook.contract);
+    verifyRequirementBaseline(workbook);
+    requireThat(!workbook.contract.acceptance.some(a=>a.pending_reason),'requirements_not_ready');
     requireThat(receipt?.version===1&&receipt.work_id===workId(workbook.contract)&&receipt.contract_fingerprint===contractFingerprint(workbook.contract),'receipt_contract_mismatch');
     requireThat(Number.isFinite(Date.parse(receipt.verified_at)),'receipt_time_invalid');
     requireThat(digest(receipt.source)===digest(workbookSource(workbook)),'receipt_source_changed');
     const ids=workbook.contract.acceptance.map(a=>a.id).sort();
     requireThat(stableJson(receipt.results?.map(r=>r.id).sort())===stableJson(ids),'receipt_ids_mismatch');
     for(const a of workbook.contract.acceptance) {
-      const r=receipt.results.find(r=>r.id===a.id),repo=workbook.contract.repos.find(r=>r.repo_id===a.repo_id);
+      const r=receipt.results.find(r=>r.id===a.id),repo=getResolvedRepo(workbook,a.repo_id);
       requireThat(r.status==='passed'&&r.verifier_fingerprint===digest(a)&&/^[0-9a-f]{64}$/.test(r.output_sha256||''),'receipt_verifier_invalid');
       requireThat(r.executable?.path===fs.realpathSync(a.command)&&r.executable.sha256===digest(fs.readFileSync(a.command)),'verifier_executable_changed');
       requireThat(digest(r.artifacts)===digest(fileEvidence(repo.checkout_root,a.artifact_paths)),'artifact_changed');

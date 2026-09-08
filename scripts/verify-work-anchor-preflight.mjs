@@ -3,6 +3,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { spawnSync } from "node:child_process";
 import { formatMarkdown, runPreflight } from "./work-anchor-preflight.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
@@ -437,4 +438,102 @@ assert.match(nonCoreTargetWithExpiredWeeklyCore.weekly_core_gate.reason, /task-l
 assert.match(nonCoreTargetWithExpiredWeeklyCore.weekly_core_gate.reason, /review_date has arrived/);
 assert.equal(nonCoreTargetWithExpiredWeeklyCore.blocked_reason, undefined);
 
+// A selected workbook must never fall through to an alternative canonical
+// source, even when that source would yield an otherwise valid active task.
+const originalReadFileSync = fs.readFileSync;
+let canonicalFallbackReads = 0;
+try {
+  fs.readFileSync = function (file, ...options) {
+    if (typeof file === "string" && path.resolve(file) === path.resolve(fixturePath)) {
+      canonicalFallbackReads += 1;
+      throw new Error("workbook_canonical_fallback_attempted");
+    }
+    return originalReadFileSync.call(this, file, ...options);
+  };
+  const mixedSource = runPreflight({
+    workbook: path.join(tmpDir, "unread-workbook.md"),
+    tasks: fixturePath,
+    project: "house123-buy",
+    intent: "implementation",
+    proposedAcceptance: [],
+  });
+  assert.equal(mixedSource.decision, "blocked");
+  assert.equal(canonicalFallbackReads, 0, "mixed source must be rejected before reading tasks");
+} finally {
+  fs.readFileSync = originalReadFileSync;
+}
+
+// The native host reader is imported only after a child process installs the
+// test-only OS fixture. No real transcript is read, no production reader seam
+// is exposed, and this exercises the public entry rather than its adapter only.
+const workbookPublicCases = String.raw`
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {spawnSync} from 'node:child_process';
+import {pathToFileURL} from 'node:url';
+const [entry,fixtureModule,sessionModule,adapterModule,coordinationModule]=process.argv.slice(1);
+// Node -e places the first data argument in argv[1]; it is not this module's
+// executable filename and must not trigger an imported module's CLI guard.
+process.argv=[process.execPath,'workbook-public-fixture'];
+const {withHostFixture,contextInput}=await import(pathToFileURL(fixtureModule).href);
+await withHostFixture(async f=>{
+  const h=path.join(f.root,'harness-mc'),dir=path.join(h,'milestones','fixture');fs.mkdirSync(dir,{recursive:true});
+  fs.writeFileSync(path.join(dir,'project.json'),JSON.stringify({name:'Fixture'}));
+  const tasksPath=path.join(dir,'tasks.json'),tasksBytes=JSON.stringify({project:'fixture',tasks:[]});fs.writeFileSync(tasksPath,tasksBytes);
+  const regPath=path.join(h,'system-workflow','registries','morrowise-project-topology.json');fs.mkdirSync(path.dirname(regPath),{recursive:true});
+  fs.writeFileSync(regPath,JSON.stringify({migration_state_vocabulary:['inventory_only','blocked'],records:[{id:'fixture',classification:'canonical_project',migration_state:'inventory_only',repo_ref:'$COLLAB/repo'}]}));
+  // Existing HARNESS_MC_ROOT embedding seam, set before module initialization.
+  process.env.HARNESS_MC_ROOT=h;
+  const {runPreflight,formatMarkdown}=await import(pathToFileURL(entry).href);
+  const session=await import(pathToFileURL(sessionModule).href);
+  const {getWorkbookRuntimeContext}=await import(pathToFileURL(adapterModule).href);
+  const {acquireWorkbookClaim}=await import(pathToFileURL(coordinationModule).href);
+  const context=session.createWorkbookSessionContext(contextInput(session,f));
+  const args={workbook:f.workbook.home,project:'fixture',intent:'implementation',proposedAcceptance:[],scope:[]};
+  for(const untrusted of [undefined,{approved:true},JSON.parse(JSON.stringify(context))]) {
+    const denied=runPreflight(args,untrusted);assert.equal(denied.source_kind,'workbook');assert.equal(denied.decision,'requires_human_approval');
+    assert.doesNotThrow(()=>formatMarkdown(denied));assert.doesNotThrow(()=>JSON.stringify(denied));
+  }
+  const missingTasks=path.join(f.root,'must-not-read.json');
+  for(const extra of [{tasks:missingTasks},{intent:'proposal'},{proposedId:'fake-new-id'},{proposedTitle:'unreviewed replacement'}]) {
+    const denied=runPreflight({...args,...extra},context);assert.equal(denied.source_kind,'workbook');assert.equal(denied.decision,'blocked');assert.match(denied.reason,/mutually_exclusive|proposal/);assert.doesNotThrow(()=>formatMarkdown(denied));
+  }
+  for(const extra of [{project:'other'},{taskId:'other'},{scope:['foreign.txt']}])assert.equal(runPreflight({...args,...extra},context).decision,'blocked');
+  const allowed=runPreflight(args,context);assert.equal(allowed.decision,'allow',JSON.stringify(allowed));assert.equal(allowed.active_task.id,f.contract.task_id);assert.equal(allowed.execution_ready,false);
+  const aliased={...args,workbookPath:args.workbook};delete aliased.workbook;assert.equal(runPreflight(aliased,context).decision,'allow','API alias must route before canonical lookup');
+  const markdown=formatMarkdown(allowed);for(const text of ['workbook',f.contract.task_id,allowed.reason])assert.ok(markdown.includes(text),'Markdown should show source, work ID and reason');
+  assert.match(markdown,/version|版本/i);assert.match(markdown,/next|下一步/i);assert.doesNotMatch(markdown,/undefined|NaN|\[object Object\]/);
+  assert.equal(JSON.parse(JSON.stringify(allowed)).source_kind,'workbook');
+  assert.equal(runPreflight({...args,event:'acceptance'},context).decision,'blocked','public acceptance requires actual owned claim');
+  const runtime=getWorkbookRuntimeContext(context,f.workbook,{harnessRoot:h});
+  const acquired=acquireWorkbookClaim({...runtime,workbook:f.workbook,repoId:'fixture',sessionId:f.sessionId,owner:'Fixture'});assert.equal(acquired.decision,'READY',JSON.stringify(acquired));
+  const accepted=runPreflight({...args,event:'acceptance'},context);assert.equal(accepted.decision,'allow',JSON.stringify(accepted));assert.equal(accepted.acceptance_receipt.results[0].status,'passed');assert.equal(accepted.read_only,false);assert.doesNotThrow(()=>formatMarkdown(accepted));
+  assert.equal(runPreflight({...args,event:'acceptance',acceptanceResults:['A1=pass']},context).decision,'blocked');
+  fs.writeFileSync(path.join(f.repo,'a.txt'),'bad');const failed=runPreflight({...args,event:'acceptance'},context);assert.equal(failed.decision,'blocked');assert.equal(failed.reason,'verifier_failed');fs.writeFileSync(path.join(f.repo,'a.txt'),'base');
+  assert.equal(fs.readFileSync(tasksPath,'utf8'),tasksBytes,'public workbook API must not write central task');
+  const cli=(flags)=>spawnSync(process.execPath,[entry,...flags],{encoding:'utf8',env:{...process.env,HARNESS_MC_ROOT:h}});
+  for(const selector of [['--workbook',f.workbook.home],['--workbook='+f.workbook.home]]) {
+    const json=cli([...selector,'--json']);assert.notEqual(json.status,0);assert.equal(json.signal,null);const body=JSON.parse(json.stdout);assert.equal(body.source_kind,'workbook');assert.equal(body.decision,'requires_human_approval');assert.equal(body.work_id,'fixture/'+f.contract.task_id);assert.doesNotMatch(json.stderr,/TypeError|Unknown argument/);
+    const md=cli(selector);assert.notEqual(md.status,0);assert.ok(md.stdout.includes('workbook'));assert.ok(md.stdout.includes(f.contract.task_id));assert.ok(md.stdout.includes('requires_human_approval'));assert.doesNotMatch(md.stderr,/TypeError|Unknown argument/);
+  }
+  for(const extra of [['--tasks',missingTasks],['--intent','proposal'],['--proposed-id','fake-new-id']]) {
+    const r=cli(['--workbook',f.workbook.home,...extra,'--json']);assert.notEqual(r.status,0);const denied=JSON.parse(r.stdout);assert.equal(denied.source_kind,'workbook');assert.equal(denied.decision,'blocked');assert.doesNotMatch(r.stderr,/ENOENT|TypeError/);
+  }
+  for(const bad of [['--workbook'],['--workbook='],['--workbook','--json'],['--workbook',f.workbook.home,'--workbook',f.workbook.home]]) {
+    const r=cli(bad);assert.notEqual(r.status,0);assert.match(r.stderr,/workbook/i);assert.doesNotMatch(r.stderr,/TypeError/);
+  }
+  const help=cli(['--help']);assert.equal(help.status,0);assert.match(help.stdout,/--workbook/);
+  console.log('PASS public workbook entry: parse/early route, mixed source denial, branded context, CLI fail-closed, Markdown/JSON, claimed real acceptance and unchanged canonical task');
+});
+`;
+const workbookPublicRun=spawnSync(process.execPath,["--input-type=module","-e",workbookPublicCases,
+  path.join(root,"scripts","work-anchor-preflight.mjs"),
+  path.join(root,"scripts","verify-workbook-session-context.mjs"),
+  path.join(root,"scripts","lib","workbook-session-context.mjs"),
+  path.join(root,"scripts","lib","workbook-preflight-adapter.mjs"),
+  path.join(root,"scripts","lib","workbook-coordination.mjs"),
+],{encoding:"utf8",timeout:60000});
+assert.equal(workbookPublicRun.status,0,workbookPublicRun.stderr||workbookPublicRun.stdout||String(workbookPublicRun.error));
+process.stdout.write(workbookPublicRun.stdout);
 console.log("Work-anchor preflight verification OK");

@@ -1,0 +1,73 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+import {digest} from './lib/workbook-anchor.mjs';
+import {acquireWorkbookClaim,releaseWorkbookClaim,handoffWorkbookClaim} from './lib/workbook-coordination.mjs';
+import {withHostFixture,contextInput} from './verify-workbook-session-context.mjs';
+
+async function cases(){await withHostFixture(async f=>{
+  const api=await import('./lib/workbook-preflight-adapter.mjs').catch(e=>{if(e.code==='ERR_MODULE_NOT_FOUND')return {};throw e;});
+  assert.equal(typeof api.runWorkbookPreflight,'function','workbook source preflight must be implemented');
+  const session=await import('./lib/workbook-session-context.mjs');
+  const h=path.join(f.root,'harness-mc'),dir=path.join(h,'milestones','fixture');fs.mkdirSync(dir,{recursive:true});
+  fs.writeFileSync(path.join(dir,'project.json'),JSON.stringify({name:'Fixture'}));
+  const tasks={project:'fixture',tasks:[]};const saveTasks=()=>fs.writeFileSync(path.join(dir,'tasks.json'),JSON.stringify(tasks));saveTasks();
+  const registry={migration_state_vocabulary:['inventory_only','blocked'],records:[{id:'fixture',classification:'canonical_project',migration_state:'inventory_only',path_label:'$COLLAB/repo',repo_ref:'$COLLAB/repo',project_home_ref:'$COLLAB/repo'}]};
+  const regPath=path.join(h,'system-workflow','registries','morrowise-project-topology.json');fs.mkdirSync(path.dirname(regPath),{recursive:true});const saveRegistry=()=>fs.writeFileSync(regPath,JSON.stringify(registry));saveRegistry();
+  const request={workbookPath:f.workbook.home,event:'implementation',project:'fixture'};
+  const newWorkId=f.contract.task_id;
+  const context=session.createWorkbookSessionContext(contextInput(session,f));
+  const before=fs.readFileSync(path.join(dir,'tasks.json'),'utf8');
+  assert.equal(api.runWorkbookPreflight(request,null,{harnessRoot:h}).decision,'requires_human_approval');
+  assert.equal(api.runWorkbookPreflight({...request,tasks:path.join(dir,'tasks.json')},context,{harnessRoot:h}).decision,'blocked');
+  assert.equal(api.runWorkbookPreflight({...request,proposedId:'other'},context,{harnessRoot:h}).decision,'blocked');
+  assert.equal(api.runWorkbookPreflight({...request,intent:'proposal'},context,{harnessRoot:h}).decision,'blocked','proposal intent cannot silently become implementation');
+  assert.equal(api.runWorkbookPreflight({...request,taskId:'other'},context,{harnessRoot:h}).decision,'blocked');
+  assert.equal(api.runWorkbookPreflight({...request,project:'other'},context,{harnessRoot:h}).decision,'blocked');
+  assert.equal(api.runWorkbookPreflight({...request,scope:['foreign.txt']},context,{harnessRoot:h}).decision,'blocked');
+  const allowed=api.runWorkbookPreflight(request,context,{harnessRoot:h});assert.equal(allowed.decision,'allow',JSON.stringify(allowed));
+  assert.equal(allowed.source_kind,'workbook');assert.equal(allowed.active_task.id,f.contract.task_id);
+  assert.equal(fs.readFileSync(path.join(dir,'tasks.json'),'utf8'),before,'new work preflight must not write central task');
+  assert.equal(api.runWorkbookPreflight({...request,event:'acceptance',acceptanceResults:['A1=pass']},context,{harnessRoot:h}).decision,'blocked','caller result flags cannot replace real acceptance');
+  assert.equal(api.runWorkbookPreflight({...request,event:'acceptance'},context,{harnessRoot:h}).decision,'blocked','verifier must not run without an owned claim');
+  const runtime=api.getWorkbookRuntimeContext(context,f.workbook,{harnessRoot:h});
+  const owned={...runtime,workbook:f.workbook,repoId:'fixture',sessionId:f.sessionId,owner:'Fixture'};
+  assert.equal(acquireWorkbookClaim(owned).decision,'READY');
+  const verified=api.runWorkbookPreflight({...request,event:'acceptance'},context,{harnessRoot:h});assert.equal(verified.decision,'allow',JSON.stringify(verified));assert.equal(verified.acceptance_receipt.results[0].status,'passed');
+  fs.writeFileSync(path.join(f.repo,'a.txt'),'bad');assert.equal(api.runWorkbookPreflight({...request,event:'acceptance'},context,{harnessRoot:h}).decision,'blocked');fs.writeFileSync(path.join(f.repo,'a.txt'),'base');
+  tasks.tasks.push({id:f.contract.task_id,status:'cancelled',acceptance_matrix:[]});saveTasks();assert.equal(api.runWorkbookPreflight(request,context,{harnessRoot:h}).decision,'blocked','cancelled UUID cannot masquerade as new');tasks.tasks=[];saveTasks();
+  registry.records[0].migration_state='blocked';saveRegistry();assert.equal(api.runWorkbookPreflight(request,context,{harnessRoot:h}).decision,'blocked');registry.records[0].migration_state='inventory_only';saveRegistry();
+  registry.records=[];saveRegistry();assert.equal(api.runWorkbookPreflight(request,context,{harnessRoot:h}).decision,'blocked');registry.records=[{id:'fixture',classification:'canonical_project',migration_state:'inventory_only',repo_ref:'$COLLAB/repo'}];saveRegistry();
+  f.rows.push(f.human('msg-stop','Stop the fixture.'));f.save();assert.notEqual(api.runWorkbookPreflight(request,context,{harnessRoot:h}).decision,'allow');f.rows.pop();f.save();
+  assert.equal(handoffWorkbookClaim({...owned,toSessionId:'other-session',toOwner:'Other'}).decision,'READY');
+  assert.equal(api.runWorkbookPreflight({...request,event:'acceptance'},context,{harnessRoot:h}).decision,'blocked');
+  assert.equal(handoffWorkbookClaim({...owned,sessionId:'other-session',toSessionId:f.sessionId,toOwner:'Fixture'}).decision,'READY');
+  assert.equal(releaseWorkbookClaim(owned).decision,'READY');
+  const original={id:'existing-work',status:'todo',done_condition:'Original requirement',acceptance_matrix:[{id:'A1',criterion:'Original complete requirement'}]};tasks.tasks=[original];saveTasks();
+  f.contract.task_id=original.id;f.contract.canonical_baseline={task_ref:'fixture/existing-work',task_digest:digest(original),acceptance:original.acceptance_matrix};f.contract.acceptance[0].requirement_fingerprint=digest(original.acceptance_matrix[0]);f.reload();
+  const existingContext=session.createWorkbookSessionContext(contextInput(session,f));
+  assert.equal(api.runWorkbookPreflight({...request,workbookPath:f.workbook.home},existingContext,{harnessRoot:h}).decision,'allow');
+  original.acceptance_matrix[0].criterion='Changed full requirement';saveTasks();assert.equal(api.runWorkbookPreflight(request,existingContext,{harnessRoot:h}).decision,'blocked');
+  original.acceptance_matrix[0].criterion='Original complete requirement';original.track='morrowise-system';saveTasks();f.contract.canonical_baseline.task_digest=digest(original);f.reload();
+  let bound=session.createWorkbookSessionContext(contextInput(session,f));assert.equal(api.runWorkbookPreflight(request,bound,{harnessRoot:h}).decision,'blocked','original HC gate must remain');
+  original.track='ordinary';original.dependencies=['prerequisite'];tasks.tasks.push({id:'prerequisite',status:'completed'});saveTasks();f.contract.canonical_baseline.task_digest=digest(original);f.reload();bound=session.createWorkbookSessionContext(contextInput(session,f));assert.equal(api.runWorkbookPreflight(request,bound,{harnessRoot:h}).decision,'blocked','cannot omit canonical dependency');
+  f.contract.dependencies=[{ref:'fixture/prerequisite',digest:digest(tasks.tasks[1])}];f.reload();bound=session.createWorkbookSessionContext(contextInput(session,f));assert.equal(api.runWorkbookPreflight(request,bound,{harnessRoot:h}).decision,'allow');tasks.tasks[1].status='todo';saveTasks();assert.equal(api.runWorkbookPreflight(request,bound,{harnessRoot:h}).decision,'blocked');
+  const mw=path.join(h,'milestones','morrowise');fs.mkdirSync(mw);fs.writeFileSync(path.join(mw,'project.json'),JSON.stringify({name:'MorroWise'}));
+  const core={id:'existing-work',status:'in_progress',weekly_core:true,review_date:'2000-01-01',acceptance_matrix:original.acceptance_matrix};fs.writeFileSync(path.join(mw,'tasks.json'),JSON.stringify({tasks:[core]}));
+  f.contract.project_id='morrowise';f.contract.formal_target='morrowise';f.contract.dependencies=[];f.contract.canonical_baseline={task_ref:'morrowise/existing-work',task_digest:digest(core),acceptance:core.acceptance_matrix};f.reload();bound=session.createWorkbookSessionContext(contextInput(session,f));
+  assert.equal(api.runWorkbookPreflight({...request,project:'morrowise'},bound,{harnessRoot:h}).decision,'blocked','expired weekly core cannot bypass original gate');
+  f.contract.task_id=newWorkId;f.contract.canonical_baseline=null;f.reload();bound=session.createWorkbookSessionContext(contextInput(session,f));
+  const saveCore=()=>fs.writeFileSync(path.join(mw,'tasks.json'),JSON.stringify({tasks:[core]}));
+  core.status='todo';saveCore();const newCoreStatus=api.runWorkbookPreflight({...request,project:'morrowise'},bound,{harnessRoot:h}).decision;
+  core.status='in_progress';core.review_date='invalid';saveCore();const newCoreDate=api.runWorkbookPreflight({...request,project:'morrowise'},bound,{harnessRoot:h}).decision;
+  assert.deepEqual([newCoreStatus,newCoreDate],['blocked','blocked'],'new UUID must retain both project-level weekly core status and valid date gates');
+  core.review_date='2000-01-01';saveCore();const newNonCore=api.runWorkbookPreflight({...request,project:'morrowise'},bound,{harnessRoot:h});assert.equal(newNonCore.decision,'allow',JSON.stringify(newNonCore));assert.equal(newNonCore.weekly_core_gate.warning_code,'weekly_core_overdue','new noncore work retains original overdue warning without inheriting legacy missing-task denial');
+  fs.rmSync(path.join(mw,'project.json'));assert.equal(api.runWorkbookPreflight({...request,project:'morrowise'},bound,{harnessRoot:h}).decision,'blocked','unregistered project cannot infer absence');
+  console.log('PASS workbook preflight: source routing, fixed registered sources, exact scope, owned real acceptance, source/claim drift, cancelled UUID, original matrix, HC, dependencies and weekly core');
+});}
+if(process.argv[1]===fileURLToPath(import.meta.url)){
+  if(process.argv[2]==='--isolated')await cases();
+  else{const r=spawnSync(process.execPath,[fileURLToPath(import.meta.url),'--isolated'],{encoding:'utf8'});process.stdout.write(r.stdout||'');process.stderr.write(r.stderr||'');process.exitCode=r.status??1;}
+}

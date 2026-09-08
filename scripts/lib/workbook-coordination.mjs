@@ -3,7 +3,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import os from 'node:os';
 import {spawnSync} from 'node:child_process';
-import {loadWorkbook,workId,digest,stableJson,gitRead,resolveRepoPath,fileEvidence,workbookSource,evaluateWorkbookGate,runWorkbookAcceptance} from './workbook-anchor.mjs';
+import {getResolvedRepo,loadWorkbook,workId,digest,stableJson,gitRead,resolveRepoPath,fileEvidence,workbookSource,evaluateWorkbookGate,runWorkbookAcceptance} from './workbook-anchor.mjs';
 
 const blocked=(reason,details)=>({decision:'BLOCKED',reason,...(details?{details}: {})});
 const ready=(reason,data={})=>({decision:'READY',reason,...data});
@@ -27,7 +27,7 @@ function live(options) {
   check(w.contract_fingerprint===options.workbook.contract_fingerprint,'workbook_contract_changed');return w;
 }
 function selected(options) {
-  const r=options.workbook.contract.repos.find(r=>r.repo_id===options.repoId);check(r,'repo_not_in_contract');return r;
+  return getResolvedRepo(options.workbook,options.repoId);
 }
 function authorization(options,action,operation) {
   const gate=evaluateWorkbookGate({contract:options.workbook.contract,event:action,operation},options);

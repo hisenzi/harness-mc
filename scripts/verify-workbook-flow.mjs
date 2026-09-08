@@ -4,11 +4,17 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const programs = [
+  'verify-workbook-requirement-binding.mjs',
+  'verify-workbook-session-context.mjs',
+  'verify-workbook-preflight-adapter.mjs',
   'verify-workbook-anchor.mjs',
   'verify-workbook-coordination.mjs',
   'verify-workbook-workers.mjs',
   'verify-local-task-handoff.mjs',
   'verify-workbook-visibility.mjs',
+  'verify-workbook-portable-paths.mjs',
+  'verify-workbook-intake-adapter.mjs',
+  'verify-workbook-acceptance-coverage.mjs',
 ];
 const results = programs.map(program => {
   const started = Date.now();

@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { spawnSync } from 'node:child_process';
-import { stableJson, digest, loadWorkbook, contractFingerprint, evaluateWorkbookGate, workbookSource, fileEvidence, resolveRepoPath, gitRead } from './workbook-anchor.mjs';
+import { getResolvedRepo, getResolvedRepos, resolveWorkbookLocation, stableJson, digest, loadWorkbook, contractFingerprint, evaluateWorkbookGate, workbookSource, fileEvidence, resolveRepoPath, gitRead } from './workbook-anchor.mjs';
 import { resolveMilestoneProject } from './milestone-projects.mjs';
 import { validateTaskCandidate } from '../validate-tasks.mjs';
 import { TASK_STATE_FIELDS, stateFromTask } from '../task-state.mjs';
@@ -24,7 +24,8 @@ export function validateLocalTaskHandoff(h) {
   ensure(hex(h.contract_fingerprint) && Number.isInteger(h.result_version) && h.result_version>0,'handoff_version_invalid');
   ensure(['completed','cancelled','deferred','blocked'].includes(h.outcome),'handoff_outcome_invalid');
   ensure(h.expected && ['definition_fingerprint','state_fingerprint'].every(k=>Object.hasOwn(h.expected,k)&&(h.expected[k]===null||hex(h.expected[k]))),'handoff_baseline_required');
-  ensure(path.isAbsolute(h.workbook_path) && Number.isFinite(Date.parse(h.created_at)),'handoff_source_invalid');
+  ensure((path.isAbsolute(h.workbook_path)||h.workbook_path.startsWith('$COLLAB/')) && Number.isFinite(Date.parse(h.created_at)),'handoff_source_invalid');
+  resolveWorkbookLocation(h.workbook_path);
   ensure(h.task_candidate && h.task_candidate.id===h.task_id && h.task_candidate.status===h.outcome,'handoff_candidate_identity_mismatch');
   ensure(Array.isArray(h.evidence_refs)&&h.evidence_refs.length>0 && Array.isArray(h.commit_receipts),'handoff_evidence_required');
   if(h.outcome==='completed') ensure(h.acceptance_receipt,'handoff_acceptance_required');
@@ -33,10 +34,10 @@ export function validateLocalTaskHandoff(h) {
 
 export function writeLocalTaskHandoff({outputPath,handoff,authorizationContext={}}) {
   validateLocalTaskHandoff(handoff);
-  ensure(authorizationContext.allowedWorkbookPaths?.includes(handoff.workbook_path),'workbook_path_not_authorized');
+  ensure(authorizationContext.allowedWorkbookPaths?.map(resolveWorkbookLocation).includes(resolveWorkbookLocation(handoff.workbook_path)),'workbook_path_not_authorized');
   const workbook=loadWorkbook(handoff.workbook_path);
   ensure(workbook.contract_fingerprint===handoff.contract_fingerprint,'handoff_contract_changed');
-  const home=workbook.contract.repos.find(r=>r.repo_id===workbook.contract.home.repo_id);
+  const home=getResolvedRepo(workbook,workbook.contract.home.repo_id);
   ensure(path.isAbsolute(outputPath||''),'local_output_required');
   const relative=path.relative(home.canonical_root,outputPath);
   const target=resolveRepoPath(home.canonical_root,relative,{allowMissing:true});
@@ -125,13 +126,14 @@ function treeEvidence(repo,sha,relative) {
 }
 function sourcePaths(c,repo) {
   const acceptance=c.acceptance.filter(a=>a.repo_id===repo.repo_id),inputs=new Set(acceptance.flatMap(a=>a.source_paths));
+  if(c.requirement_baseline?.repo_id===repo.repo_id)inputs.add(c.requirement_baseline.path);
   const outputs=new Set(acceptance.flatMap(a=>a.artifact_paths).filter(p=>!inputs.has(p)));
   return [...new Set([...repo.write_paths.filter(p=>!outputs.has(p)),...inputs])].sort();
 }
 function evidence(workbook,h,context) {
   const c=workbook.contract,commits=new Map();
   for(const receipt of h.commit_receipts) {
-    const repo=c.repos.find(r=>r.repo_id===receipt.repo_id);ensure(repo&&/^[0-9a-f]{40,64}$/.test(receipt.c1_sha||''),'commit_receipt_invalid');
+    const repo=getResolvedRepos(workbook).find(r=>r.repo_id===receipt.repo_id);ensure(repo&&/^[0-9a-f]{40,64}$/.test(receipt.c1_sha||''),'commit_receipt_invalid');
     gitRead(repo.checkout_root,['cat-file','-e',`${receipt.c1_sha}^{commit}`]);
     const changed=gitRead(repo.checkout_root,['diff-tree','--no-commit-id','--name-only','--no-renames','-z','-r',receipt.c1_sha]).split('\0').filter(Boolean);
     ensure(changed.length>0&&changed.every(p=>[...repo.write_paths,...(repo.control_paths||[])].includes(p)),'commit_scope_mismatch');
@@ -139,19 +141,20 @@ function evidence(workbook,h,context) {
     commits.set(repo.repo_id,receipt.c1_sha);
   }
   for(const ref of h.evidence_refs) {
-    const repo=c.repos.find(r=>r.repo_id===ref.repo_id);ensure(repo&&hex(ref.digest),'evidence_ref_invalid');
+    const repo=getResolvedRepos(workbook).find(r=>r.repo_id===ref.repo_id);ensure(repo&&hex(ref.digest),'evidence_ref_invalid');
     const declared=new Set([...sourcePaths(c,repo),...c.acceptance.filter(a=>a.repo_id===repo.repo_id).flatMap(a=>a.artifact_paths)]);
     ensure(declared.has(ref.path),'evidence_path_not_declared');
     const sha=commits.get(repo.repo_id),value=sha&&sourcePaths(c,repo).includes(ref.path)?treeEvidence(repo,sha,ref.path):fileEvidence(repo.checkout_root,[ref.path])[ref.path];
     ensure(value?.sha256===ref.digest,'evidence_changed');
   }
   if(h.outcome!=='completed')return;
+  ensure(!c.acceptance.some(a=>a.pending_reason),'requirements_not_ready');
   const receipt=h.acceptance_receipt;
   ensure(receipt?.version===1&&receipt.work_id===`${h.project}/${h.task_id}`&&receipt.contract_fingerprint===h.contract_fingerprint,'receipt_contract_mismatch');
   ensure(Number.isFinite(Date.parse(receipt.verified_at)),'receipt_time_invalid');
   ensure(stableJson(Object.keys(receipt.source||{}).sort())===stableJson(c.repos.map(r=>r.repo_id).sort()),'receipt_source_repos_mismatch');
   let current;
-  for(const repo of c.repos) {
+  for(const repo of getResolvedRepos(workbook)) {
     const source=receipt.source[repo.repo_id],paths=sourcePaths(c,repo),sha=commits.get(repo.repo_id);
     ensure(stableJson(Object.keys(source?.files||{}).sort())===stableJson(paths),'receipt_source_paths_mismatch');
     if(sha) {
@@ -165,7 +168,7 @@ function evidence(workbook,h,context) {
   }
   ensure(stableJson(receipt.results?.map(r=>r.id).sort())===stableJson(c.acceptance.map(a=>a.id).sort()),'receipt_ids_mismatch');
   for(const a of c.acceptance) {
-    const result=receipt.results.find(r=>r.id===a.id),repo=c.repos.find(r=>r.repo_id===a.repo_id),sha=commits.get(repo.repo_id);
+    const result=receipt.results.find(r=>r.id===a.id),repo=getResolvedRepo(workbook,a.repo_id),sha=commits.get(repo.repo_id);
     ensure(result.status==='passed'&&result.verifier_fingerprint===digest(a)&&hex(result.output_sha256),'receipt_verifier_invalid');
     ensure(result.executable?.path===fs.realpathSync(a.command)&&result.executable.sha256===a.executable_sha256,'verifier_executable_changed');
     const expected=Object.fromEntries(a.artifact_paths.map(relative=>[relative,sha&&sourcePaths(c,repo).includes(relative)?treeEvidence(repo,sha,relative):fileEvidence(repo.checkout_root,[relative])[relative]]));
@@ -190,7 +193,7 @@ function allocateLabel(project,candidate,context) {
   return `${policy.prefix}-${String(next).padStart(policy.width,'0')}`;
 }
 function prepare(root,h,context,existingJournal=null) {
-  ensure(context.allowedWorkbookPaths?.includes(h.workbook_path),'workbook_path_not_authorized');
+  ensure(context.allowedWorkbookPaths?.map(resolveWorkbookLocation).includes(resolveWorkbookLocation(h.workbook_path)),'workbook_path_not_authorized');
   const workbook=loadWorkbook(h.workbook_path),c=workbook.contract;
   ensure(c.project_id===h.project&&c.task_id===h.task_id&&c.formal_target===h.project&&contractFingerprint(c)===h.contract_fingerprint,'handoff_contract_mismatch');
   const project=loadProject(root,h.project),liveTarget=targetOf(project,h.task_id);

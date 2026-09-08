@@ -242,3 +242,22 @@ test('candidate validation retains the MorroWise weekly core project invariant',
   const issues=validator.validateTaskCandidate({task,project:'morrowise'});
   assert.ok(issues.some(issue=>issue.includes('weekly_core=true requires status in_progress')),JSON.stringify(issues));
 }));
+
+
+test('external original requirement source survives completed handoff and pending cannot be laundered',()=>withFixture(f=>{
+  const row='| A1／P2 | input must be ok | verify actual input |';
+  fs.writeFileSync(path.join(f.product,'requirements.md'),`<!-- morrowise:requirements:start -->\n${row}\n<!-- morrowise:requirements:end -->\n`);
+  f.contract.requirement_baseline={repo_id:'product',path:'requirements.md',sha256:digest(row+'\n'),ids:['A1']};
+  f.contract.acceptance[0].requirement_fingerprint=digest(row);f.saveContract();
+  const receipt=runWorkbookAcceptance({workbook:loadWorkbook(f.workbookPath),...f.context});assert.equal(receipt.decision,'allow');
+  f.handoff.contract_fingerprint=contractFingerprint(f.contract);f.handoff.acceptance_receipt=receipt.receipt;
+  f.context.evidenceResolver=req=>({verified:true,receipt_digest:req.receipt_digest,contract_fingerprint:req.contract_fingerprint,result_digest:req.result_digest,task_candidate_digest:req.task_candidate_digest,source_ref:'isolated-test-producer'});
+  const before=tree(f.root);const good=f.run({mode:'preview'});assert.equal(good.results[0].status,'preview_ready',JSON.stringify(good));assert.deepEqual(tree(f.root),before);
+  f.contract.acceptance[0].pending_reason='missing actual work observation';f.saveContract();
+  f.handoff.contract_fingerprint=contractFingerprint(f.contract);
+  // Explicit adversarial fixture: make a structurally consistent copy of a
+  // previous receipt and an overly permissive low-level test producer.
+  f.handoff.acceptance_receipt.contract_fingerprint=contractFingerprint(f.contract);
+  f.handoff.acceptance_receipt.results[0].verifier_fingerprint=digest(f.contract.acceptance[0]);
+  const bad=f.run();assert.equal(bad.results[0].status,'blocked');assert.match(JSON.stringify(bad),/requirements_not_ready/);assert.deepEqual(tree(f.root),before);
+}));

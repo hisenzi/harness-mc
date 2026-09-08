@@ -153,6 +153,54 @@ const FULL_DELIVERY_ESCALATION_CONDITIONS = [
   "ownership_conflict",
   "human_decision_required",
 ];
+const WORKBOOK_METADATA_FIELDS = [
+  "version", "status", "default_enabled", "contract_ref", "schema_ref", "implementation_ref",
+  "session_context_ref", "preflight_adapter_ref", "verifier_refs", "pilot_policy",
+  "activation_boundary", "activation_evidence_refs",
+];
+const WORKBOOK_TEST_CONTRACT_REF = "$COLLAB/harness-mc/package.json#workbook-test-contract";
+const WORKBOOK_VERIFIER_REFS = [
+  "node scripts/verify-workbook-session-context.mjs",
+  "node scripts/verify-workbook-preflight-adapter.mjs",
+  "npm run test:workbook-flow",
+  "node scripts/verify-workbook-portable-paths.mjs",
+  "node scripts/verify-workbook-intake-adapter.mjs",
+  "node scripts/verify-workbook-acceptance-coverage.mjs",
+];
+const WORKBOOK_ARCHITECTURE_REFS = [
+  "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-workbook-flow.md",
+  "$COLLAB/harness-mc/system-workflow/schemas/morrowise-workbook.schema.json",
+  "$COLLAB/harness-mc/scripts/lib/workbook-anchor.mjs",
+  "$COLLAB/harness-mc/scripts/lib/workbook-session-context.mjs",
+  "$COLLAB/harness-mc/scripts/lib/workbook-preflight-adapter.mjs",
+  "$COLLAB/harness-mc/scripts/verify-workbook-session-context.mjs",
+  "$COLLAB/harness-mc/scripts/verify-workbook-preflight-adapter.mjs",
+  "$COLLAB/harness-mc/scripts/verify-workbook-flow.mjs",
+  "$COLLAB/harness-mc/scripts/verify-workbook-requirement-binding.mjs",
+  "$COLLAB/harness-mc/scripts/lib/workbook-coordination.mjs",
+  "$COLLAB/harness-mc/scripts/lib/milestone-projects.mjs",
+  "$COLLAB/harness-mc/lib/taskOrdering.mjs",
+  "$COLLAB/harness-mc/scripts/lib/repo-coordination-runtime.mjs",
+  "$COLLAB/harness-mc/scripts/repo-coordination-runtime.mjs",
+  "$COLLAB/harness-mc/scripts/lib/local-task-handoff.mjs",
+  "$COLLAB/harness-mc/scripts/apply-task-events.mjs",
+  "$COLLAB/harness-mc/scripts/task-event-outbox.mjs",
+  "$COLLAB/harness-mc/scripts/task-state.mjs",
+  "$COLLAB/harness-mc/scripts/lib/workbook-visibility.mjs",
+  "$COLLAB/harness-mc/scripts/generate-commit-attention.mjs",
+  "$COLLAB/harness-mc/scripts/generate-commit-cleanup-plan.mjs",
+  "$COLLAB/harness-mc/scripts/generate-data.mjs",
+  "$COLLAB/harness-mc/scripts/verify-workbook-anchor.mjs",
+  "$COLLAB/harness-mc/scripts/verify-workbook-coordination.mjs",
+  "$COLLAB/harness-mc/scripts/verify-workbook-workers.mjs",
+  "$COLLAB/harness-mc/scripts/verify-local-task-handoff.mjs",
+  "$COLLAB/harness-mc/scripts/verify-workbook-visibility.mjs",
+  "$COLLAB/harness-mc/scripts/lib/workbook-intake-adapter.mjs",
+  "$COLLAB/harness-mc/scripts/verify-workbook-portable-paths.mjs",
+  "$COLLAB/harness-mc/scripts/verify-workbook-intake-adapter.mjs",
+  "$COLLAB/harness-mc/scripts/verify-workbook-acceptance-coverage.mjs",
+  WORKBOOK_TEST_CONTRACT_REF,
+];
 const JV32_PREBUILD_CONTRACT_REF = "$COLLAB/harness-mc/package.json#jv32-prebuild-contract";
 const ARCHITECTURE_VERSION_REVIEW_REFS = [
   "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
@@ -173,6 +221,7 @@ const ARCHITECTURE_VERSION_REVIEW_REFS = [
   "$COLLAB/harness-mc/scripts/verify-morrowise-dev-workflow-catalog.mjs",
   "$COLLAB/harness-mc/scripts/sync-event-queue.mjs",
   "$COLLAB/harness-mc/scripts/verify-sync-event-queue.mjs",
+  ...WORKBOOK_ARCHITECTURE_REFS,
 ];
 
 const packageJson = readJson(packageJsonPath);
@@ -218,6 +267,14 @@ const taskWriteMap = fs.readFileSync(taskWriteMapPath, "utf8");
 const approvalPolicy = readJson(approvalPolicyPath);
 const taskIds = new Set(tasks.map((task) => task.id));
 
+if (process.argv.includes("--workbook-metadata-only")) {
+  assert.deepEqual(process.argv.slice(2), ["--workbook-metadata-only"], "metadata-only 不接受其他參數");
+  verifyWorkbookMetadataFixtures(registry.workbook_source_adapter, schema);
+  console.log("Workbook metadata verification OK — metadata fixtures only; not Architecture Admission, runtime authorization or pilot acceptance");
+  process.exit(0);
+}
+
+verifyWorkbookMetadataFixtures(registry.workbook_source_adapter, schema);
 verifyPortableSourceReferenceFixtures(registry);
 verifyRegistry(registry);
 verifySchema(schema);
@@ -235,6 +292,127 @@ verifyControlPlaneNegativeFixtures(schema);
 verifyArchitectureFingerprintBoundary();
 
 console.log("MorroWise dev workflow catalog verification OK");
+
+function verifyWorkbookMetadataFixtures(value, schemaValue) {
+  const definition = schemaValue.$defs?.workbook_source_adapter;
+  assert.ok(definition, "workbook metadata schema required");
+  assert.equal(definition.additionalProperties, false, "workbook metadata schema must be closed");
+  assert.deepEqual(definition.required, WORKBOOK_METADATA_FIELDS, "workbook metadata required fields changed");
+  assert.deepEqual(definition.properties.verifier_refs.const, WORKBOOK_VERIFIER_REFS, "workbook verifier references changed");
+  validateWorkbookSourceAdapter(value, schemaValue);
+  for (const field of WORKBOOK_METADATA_FIELDS) {
+    const missing = structuredClone(value);
+    delete missing[field];
+    assert.throws(() => validateSchemaFixture(missing, definition, "workbook metadata"), new RegExp(`missing required ${field}`));
+  }
+  for (const invalidBoolean of ["false", 0, null, [], {}]) {
+    assert.throws(
+      () => validateSchemaFixture({ ...value, default_enabled: invalidBoolean }, definition, "workbook metadata"),
+      /default_enabled must be boolean/,
+      "序列化字串或其他型別不能冒充預設啟用旗標",
+    );
+  }
+  assert.throws(
+    () => validateSchemaFixture({ ...value, approved: true }, definition, "workbook metadata"),
+    /additional property approved/,
+  );
+  for (const field of definition.properties.pilot_policy.required) {
+    const missing = structuredClone(value);
+    delete missing.pilot_policy[field];
+    assert.throws(() => validateSchemaFixture(missing, definition, "workbook metadata"), new RegExp(`missing required ${field}`));
+    const inverted = structuredClone(value);
+    inverted.pilot_policy[field] = !inverted.pilot_policy[field];
+    assert.throws(() => validateSchemaFixture(inverted, definition, "workbook metadata"), /does not match const/);
+    const serialized = structuredClone(value);
+    serialized.pilot_policy[field] = String(serialized.pilot_policy[field]);
+    assert.throws(() => validateSchemaFixture(serialized, definition, "workbook metadata"), /must be boolean/);
+  }
+  for (const field of ["contract_ref", "schema_ref", "implementation_ref", "session_context_ref", "preflight_adapter_ref"]) {
+    assert.throws(
+      () => validateSchemaFixture({ ...value, [field]: "$COLLAB/harness-mc/unreviewed-entry.mjs" }, definition, "workbook metadata"),
+      /does not match const/,
+    );
+  }
+  assert.throws(
+    () => validateSchemaFixture({ ...value, verifier_refs: value.verifier_refs.slice(1) }, definition, "workbook metadata"),
+    /does not match const/,
+  );
+  const pilot = { ...structuredClone(value), status: "prototype", default_enabled: false, activation_evidence_refs: [] };
+  assert.doesNotThrow(() => validateWorkbookSourceAdapter(pilot, schemaValue), "具名 pilot 不需先取得完整 pilot 證據");
+  assert.throws(
+    () => validateWorkbookSourceAdapter({ ...pilot, default_enabled: true }, schemaValue),
+    /default_enabled requires accepted status/,
+    "metadata 引用存在不能將 prototype 啟用為預設",
+  );
+  assert.throws(
+    () => validateWorkbookSourceAdapter({ ...pilot, status: "accepted", default_enabled: true }, schemaValue),
+    /default_enabled requires activation evidence/,
+  );
+  const before = JSON.stringify(pilot);
+  validateWorkbookSourceAdapter(pilot, schemaValue);
+  assert.equal(JSON.stringify(pilot), before, "metadata 驗證不可啟用或改寫輸入");
+  for (const ref of WORKBOOK_ARCHITECTURE_REFS) {
+    assert.ok(ARCHITECTURE_VERSION_REVIEW_REFS.includes(ref), `workbook source missing from architecture fingerprint: ${ref}`);
+  }
+  assert.equal(packageJson.scripts?.["test:workbook-flow"], "node scripts/verify-workbook-flow.mjs", "workbook test entry must run the governed suite");
+  const sourceRef = "$COLLAB/harness-mc/scripts/lib/workbook-anchor.mjs";
+  const source = fs.readFileSync(resolveCollabRef(sourceRef), "utf8");
+  assert.notEqual(
+    architectureContractFingerprint([sourceRef]),
+    architectureContractFingerprint([sourceRef], { sourceOverrides: new Map([[sourceRef, `${source}\n// fixture source change\n`]]) }),
+    "工作本來源內容改變必須改變指紋；此 fixture 只在記憶體替換來源",
+  );
+  const sourceOverrides = new Map(WORKBOOK_ARCHITECTURE_REFS
+    .filter(ref => ref !== WORKBOOK_TEST_CONTRACT_REF)
+    .map(ref => [ref, `原始 fixture 來源：${ref}`]));
+  const baseline = architectureContractFingerprint(ARCHITECTURE_VERSION_REVIEW_REFS, { sourceOverrides });
+  for (const [ref, original] of sourceOverrides) {
+    const changed = new Map(sourceOverrides);
+    changed.set(ref, `${original}\n變更後的來源`);
+    assert.notEqual(
+      architectureContractFingerprint(ARCHITECTURE_VERSION_REVIEW_REFS, { sourceOverrides: changed }),
+      baseline,
+      `工作本受管來源不能漏出指紋：${ref}`,
+    );
+  }
+  const changedEntry = structuredClone(packageJson);
+  changedEntry.scripts["test:workbook-flow"] = "node scripts/unreviewed-workbook-suite.mjs";
+  assert.notEqual(
+    architectureContractFingerprint(ARCHITECTURE_VERSION_REVIEW_REFS, { sourceOverrides, packageManifest: changedEntry }),
+    baseline,
+    "npm 工作本測試入口改變必須重新版本審查",
+  );
+  const unrelatedEntry = structuredClone(packageJson);
+  unrelatedEntry.scripts["test:unrelated-workbook-fixture"] = "node unrelated.mjs";
+  assert.equal(
+    architectureContractFingerprint(ARCHITECTURE_VERSION_REVIEW_REFS, { sourceOverrides, packageManifest: unrelatedEntry }),
+    baseline,
+    "無關 npm script 不應造成工作本 Admission drift",
+  );
+  verifyWorkbookReviewEvidence(WORKBOOK_VERIFIER_REFS);
+  for (const missing of WORKBOOK_VERIFIER_REFS) {
+    assert.throws(
+      () => verifyWorkbookReviewEvidence(WORKBOOK_VERIFIER_REFS.filter(ref => ref !== missing)),
+      /workbook review evidence missing/,
+      `正式審查不可漏掉 verifier：${missing}`,
+    );
+  }
+}
+
+function verifyWorkbookReviewEvidence(refs) {
+  assert.ok(Array.isArray(refs), "workbook review evidence must be an array");
+  for (const ref of WORKBOOK_VERIFIER_REFS) {
+    assert.ok(refs.includes(ref), `workbook review evidence missing: ${ref}`);
+  }
+}
+
+function validateWorkbookSourceAdapter(value, schemaValue) {
+  validateSchemaFixture(value, schemaValue.$defs.workbook_source_adapter, "workbook metadata");
+  if (value.default_enabled) {
+    assert.equal(value.status, "accepted", "default_enabled requires accepted status");
+    assert.ok(value.activation_evidence_refs.length > 0, "default_enabled requires activation evidence");
+  }
+}
 
 function verifyPortableSourceReferenceFixtures(value) {
   const first = structuredClone(value.workflows[0]);
@@ -520,6 +698,8 @@ function validateSchemaFixture(value, schemaNode, label) {
   } else if (schemaNode.type === "integer") {
     assert.equal(Number.isInteger(value), true, `${label} must be integer`);
     if (schemaNode.minimum !== undefined) assert.ok(value >= schemaNode.minimum, `${label} below minimum`);
+  } else if (schemaNode.type === "boolean") {
+    assert.equal(typeof value, "boolean", `${label} must be boolean`);
   }
   if (schemaNode.const !== undefined) assert.deepEqual(value, schemaNode.const, `${label} does not match const`);
   if (schemaNode.enum) assert.ok(schemaNode.enum.includes(value), `${label} value ${value} not in enum`);
@@ -703,6 +883,7 @@ function verifyArchitectureAdmission(value) {
   assert.equal(review.sync_check_ref, "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check");
   assert.ok(review.evidence_refs?.includes("node scripts/verify-morrowise-dev-workflow-catalog.mjs"));
   assert.ok(review.evidence_refs?.includes("node scripts/verify-sync-event-queue.mjs"));
+  verifyWorkbookReviewEvidence(review.evidence_refs);
   assert.ok(review.reason, "version_review requires a reason");
 }
 
@@ -789,14 +970,19 @@ function verifyArchitectureFingerprintBoundary() {
   );
 }
 
-function architectureContractFingerprint(refs, { packageManifest = packageJson } = {}) {
+function architectureContractFingerprint(refs, { packageManifest = packageJson, sourceOverrides = new Map() } = {}) {
   const source = refs.map((ref) => {
-    return `${ref}\n${architectureContractSource(ref, { packageManifest })}`;
+    return `${ref}\n${architectureContractSource(ref, { packageManifest, sourceOverrides })}`;
   }).join("\n---\n");
   return crypto.createHash("sha256").update(source).digest("hex").slice(0, 16);
 }
 
-function architectureContractSource(ref, { packageManifest }) {
+function architectureContractSource(ref, { packageManifest, sourceOverrides }) {
+  // 負向 fixture 才傳入記憶體來源；正式 Admission 不接受 CLI／環境變數覆寫。
+  if (sourceOverrides.has(ref)) return sourceOverrides.get(ref);
+  if (ref === WORKBOOK_TEST_CONTRACT_REF) {
+    return JSON.stringify({ contract: "workbook-test-contract-v1", command: packageManifest?.scripts?.["test:workbook-flow"] || null });
+  }
   if (ref === JV32_PREBUILD_CONTRACT_REF) {
     const commands = String(packageManifest?.scripts?.prebuild || "")
       .split("&&")

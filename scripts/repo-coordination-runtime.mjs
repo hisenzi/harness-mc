@@ -3,6 +3,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { writeTaskEvent } from "./task-event-outbox.mjs";
+import {loadWorkbook, evaluateWorkbookGate} from './lib/workbook-anchor.mjs';
+import {inspectWorkbookRepo,inspectWorkbookClaims} from './lib/workbook-coordination.mjs';
 import {
   acquireRemoteClaim,
   classifyRepoSnapshot,
@@ -26,8 +28,15 @@ import {
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const options = parseArgs(process.argv.slice(2));
 let result;
+if(options.workbookPath && options.command!=='workbook-inspect') throw new Error('workbook_cli_is_read_only_use_trusted_session_adapter');
 
-if (options.command === "event") {
+if (options.command === 'workbook-inspect') {
+  requireOption(options.workbookPath, '--workbook <path>');
+  const workbook=loadWorkbook(options.workbookPath);
+  result={version:1,read_only:true,workbook:workbook.home,gate:evaluateWorkbookGate({contract:workbook.contract,event:'implement'}),repositories:workbook.contract.repos.map(repo=>({repo_id:repo.repo_id,...inspectWorkbookRepo({workbook,repoId:repo.repo_id,sessionId:options.sessionId})}))};
+} else if (options.command === 'workbook-claims') {
+  requireOption(options.repoPath,'--repo <path>');result={version:1,read_only:true,claims:inspectWorkbookClaims({repoPath:options.repoPath})};
+} else if (options.command === "event") {
   const input = readJson(options.inputPath);
   const event = writeTaskEvent({ ...input, root: options.root });
   result = { decision: "READY", reason: "coordination_event_written", event };
@@ -260,6 +269,7 @@ function parseArgs(argv) {
     else if (arg === "--signed-observation") options.signedObservationPath = argv[++index] || null;
     else if (arg === "--root") options.root = path.resolve(argv[++index] || ".");
     else if (arg === "--repo") options.repoPath = path.resolve(argv[++index] || ".");
+    else if (arg === '--workbook') options.workbookPath = path.resolve(argv[++index] || '.');
     else if (arg === "--tasks") options.tasksPath = path.resolve(argv[++index] || "");
     else if (arg === "--project") options.projectId = argv[++index] || null;
     else if (arg === "--task") options.taskId = argv[++index] || null;

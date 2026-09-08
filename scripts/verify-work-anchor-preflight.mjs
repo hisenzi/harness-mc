@@ -16,7 +16,6 @@ const reviewSkill = fs.readFileSync(
 );
 
 for (const phrase of [
-  "version: 1.5",
   "--event acceptance",
   "--matrix-fingerprint",
   "--acceptance-result",
@@ -25,13 +24,15 @@ for (const phrase of [
   assert.ok(executionSkill.includes(phrase), `execution skill missing acceptance contract phrase: ${phrase}`);
 }
 for (const phrase of [
-  'version: "1.1"',
-  "version: 1.1",
   "--event acceptance",
   "task.acceptance_matrix",
   "acceptance_receipt",
 ]) {
   assert.ok(reviewSkill.includes(phrase), `review skill missing acceptance contract phrase: ${phrase}`);
+}
+for (const source of [executionSkill, reviewSkill]) {
+  assert.match(source, /version: ["']?\d+\.\d+/, 'skills must remain versioned');
+  assert.ok(source.includes('morrowise-workbook-flow.md'), 'explicit workbook route must point to its shared contract');
 }
 
 const allowResult = runPreflight({

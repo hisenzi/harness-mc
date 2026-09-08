@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from 'node:util';
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
@@ -630,7 +631,7 @@ function validateTaskLifecycleEvidence(task, { previousTask = null } = {}) {
   if (Array.isArray(previousHistory)) {
     if (history.length <= previousHistory.length) {
       problems.push("task_lifecycle.history must append a new event for every canonical task mutation");
-    } else if (previousHistory.some((event, index) => JSON.stringify(event) !== JSON.stringify(history[index]))) {
+    } else if (previousHistory.some((event, index) => !isDeepStrictEqual(event, history[index]))) {
       problems.push("task_lifecycle.history is append-only; prior events must not be rewritten");
     }
   }
@@ -660,7 +661,7 @@ function validateTaskLifecycleEvidence(task, { previousTask = null } = {}) {
     problems.push("archived task lifecycle mutations require operation archive");
   }
   const isCompletionTransition = CLOSED_STATUSES.has(task.status) && previousStatus !== task.status;
-  if (isCompletionTransition && !task.jv32_route.workflows.includes("closeout-commit-routing")) {
+  if (isCompletionTransition && !task.jv32_route?.workflows?.includes("closeout-commit-routing")) {
     problems.push("completed task lifecycle mutations require jv32_route.workflows to include closeout-commit-routing");
   }
   if (isCompletionTransition) {
@@ -1089,6 +1090,30 @@ function validateMorrowiseWeeklyCore(tasks, { asOf, changedOnly = false, previou
   }
 
   return diagnostics;
+}
+
+// 純候選驗證：不讀寫檔案，也不依賴 Git dirty 狀態。
+export function validateTaskCandidate({ task, previousTask = null, project = "", projectMeta = {}, projectGoalAnchor = null, canonicalTaskRefs = new Map(), peerTasks = [] } = {}) {
+  const diagnostics = validateTask(task, { project, changed: true, changedOnly: true, previousTask, canonicalTaskRefs, projectGoalAnchor, quickProject: isQuickProject(projectMeta), projectInitProject: isProjectInitProject(projectMeta) });
+  if (!task || typeof task !== "object" || Array.isArray(task)) return diagnostics;
+  // 新交接即使屬 Quick 專案，也不能省略已承諾的生命週期及完成證據。
+  if (isProjectInitProject(projectMeta)) {
+    diagnostics.push(...validateTaskLifecycleRoute(task), ...validateTaskLifecycleEvidence(task, { previousTask }));
+  }
+  if (CLOSED_STATUSES.has(task.status)) {
+    diagnostics.push(...validateCompletionTestContract(task.test_contract), ...validateCompletionEvidence(task.completion_evidence, { testContract: task.test_contract || {} }));
+  }
+  const peers = peerTasks.filter(item => item.id !== previousTask?.id);
+  if (peers.some(item => item.id === task.id)) diagnostics.push("duplicate task id");
+  if (nonEmptyString(task.order_label) && peers.some(item => item.order_label === task.order_label)) diagnostics.push("duplicate order_label");
+  if (project === "morrowise") {
+    const previous = new Map(peers.map(item => [item.id, item]));
+    if (previousTask) previous.set(previousTask.id, previousTask);
+    diagnostics.push(...validateMorrowiseWeeklyCore([...peers, task], { asOf: todayInTaipei(), changedOnly: true, previous, fileChanged: true }).filter(item => !item.taskId || item.taskId === task.id).map(item => item.message));
+  }
+  if (isQuickProject(projectMeta)) diagnostics.push(...validateQuickProjectTasks([{ task }], projectMeta).map(item => item.message));
+  if (isFormalizedProject(projectMeta)) diagnostics.push(...validateFormalizedProjectTasks([{ task }], projectMeta).map(item => item.message));
+  return [...new Set(diagnostics)];
 }
 
 export function validateTasks({

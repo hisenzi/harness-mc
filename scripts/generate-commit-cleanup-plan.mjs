@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { generateWorkbookAttention, generateWorkbookCleanupPlan, isWorkbookCli, workbookCliOptions } from "./lib/workbook-visibility.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -15,7 +16,9 @@ const DEFAULT_VERIFICATION_COMMANDS = [
 ];
 
 export function generateCommitCleanupPlan(options = {}) {
+  if (Object.hasOwn(options, "workbook")) return generateWorkbookCleanupPlan(generateWorkbookAttention(options), options);
   const commitAttention = options.commitAttention || readJson(attentionPath);
+  if (commitAttention?.source?.kind === "workbook") return generateWorkbookCleanupPlan(commitAttention, options);
   const registry = options.registry || readJson(registryPath);
   const plans = (commitAttention.repositories || []).map((repo) => buildPlan(repo, registry));
   const summary = summarize(plans);
@@ -189,4 +192,10 @@ function readJson(file) {
 }
 
 const isCli = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
-if (isCli) generateCommitCleanupPlan();
+if (isCli) {
+  const args = process.argv.slice(2);
+  if (isWorkbookCli(args)) {
+    try { process.stdout.write(`${JSON.stringify(generateCommitCleanupPlan(workbookCliOptions(args)), null, 2)}\n`); }
+    catch (error) { process.stdout.write(`${JSON.stringify({ decision: "blocked", reason: error.message })}\n`); process.exitCode = 2; }
+  } else generateCommitCleanupPlan();
+}

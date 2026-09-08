@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { generateWorktreeStatus } from "./generate-worktree-status.mjs";
 import { discoverMilestoneProjects } from "./lib/milestone-projects.mjs";
+import { generateWorkbookAttention, isWorkbookCli, workbookCliOptions } from "./lib/workbook-visibility.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -12,6 +13,7 @@ const outPath = path.join(root, "public", "data", "commit-attention.json");
 const notifyScript = path.join(collabRoot, "notyet-harness", "schedule", "lib", "notify.sh");
 
 export function generateCommitAttention(options = {}) {
+  if (Object.hasOwn(options, "workbook")) return generateWorkbookAttention(options);
   const worktrees = options.worktrees || generateWorktreeStatus({ write: false, scanRoot: options.scanRoot });
   const taskIndex = readTaskIndex(options.root || root);
   const repositories = worktrees.repositories
@@ -198,7 +200,9 @@ function readJson(file) {
 
 const isCli = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
 if (isCli) {
-  generateCommitAttention({
-    notify: process.argv.includes("--notify"),
-  });
+  const args = process.argv.slice(2);
+  if (isWorkbookCli(args)) {
+    try { process.stdout.write(`${JSON.stringify(generateCommitAttention(workbookCliOptions(args)), null, 2)}\n`); }
+    catch (error) { process.stdout.write(`${JSON.stringify({ decision: "blocked", reason: error.message })}\n`); process.exitCode = 2; }
+  } else generateCommitAttention({ notify: args.includes("--notify") });
 }

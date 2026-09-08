@@ -3,6 +3,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { commitWorkbookC1 } from './workbook-coordination.mjs';
+export { acquireWorkbookClaim, inspectWorkbookClaims, inspectWorkbookRepo, handoffWorkbookClaim, releaseWorkbookClaim, markWorkbookPending, recoverWorkbookLocks, setWorkbookAdmissionPolicy } from './workbook-coordination.mjs';
 
 const REQUIRED_CLAIM_FIELDS = [
   "claim_id",
@@ -1191,6 +1193,7 @@ export function releaseLocalC1Lock(options = {}) {
 }
 
 export function commitLocalC1(options = {}) {
+  if (options.workbook) return commitWorkbookC1(options);
   const repoPath = path.resolve(options.repoPath || ".");
   const scopePaths = normalizeScopePaths(options.scopePaths);
   const input = validateLocalC1Input({ ...options, scopePaths });

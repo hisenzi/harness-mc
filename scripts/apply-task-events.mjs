@@ -1,3 +1,4 @@
+import { processLocalTaskHandoffs } from "./lib/local-task-handoff.mjs";
 import { spawnSync } from "node:child_process";
 import crypto from "node:crypto";
 import fs from "node:fs";
@@ -24,6 +25,13 @@ const SUPPORTED_TYPES = new Set([
 ]);
 
 export function applyTaskEvents(options = {}) {
+  if (Object.hasOwn(options, "localHandoffs")) {
+    if (options.eventIds || options.manualRejections?.size) throw new Error("local_handoff_legacy_options_conflict");
+    if (!["preview", "apply"].includes(options.mode)) throw new Error("local_handoff_mode_required");
+    if (options.mode === "preview") return processLocalTaskHandoffs(options);
+    const lock = acquireApplyLock(path.join(options.root || process.cwd(), "task-events", ".jv37-apply.lock"));
+    try { return processLocalTaskHandoffs(options); } finally { releaseApplyLock(lock); }
+  }
   const lockRoot = options.root || process.cwd();
   const lockDir = path.join(lockRoot, "task-events", ".jv37-apply.lock");
   const lock = acquireApplyLock(lockDir);

@@ -195,7 +195,7 @@ assert.match(
 );
 assert.match(
   read(notyetRoot, "000_Agent/skills/executing-plans/SKILL.md"),
-  /Execute the plan in the checked-out `main` working directory by default/,
+  /(?:Execute the plan in the checked-out `main` working directory by default|stay on the checked-out `main` by default)/,
   "executing-plans must not force a branch or worktree",
 );
 assert.deepEqual(

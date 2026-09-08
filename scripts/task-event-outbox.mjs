@@ -1,3 +1,4 @@
+export { writeLocalTaskHandoff } from "./lib/local-task-handoff.mjs";
 import fs from "node:fs";
 import path from "node:path";
 

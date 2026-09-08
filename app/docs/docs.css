@@ -1,0 +1,117 @@
+/* Fumadocs' bundled style entry registers its Tailwind v4 utilities before the preset. */
+@import "fumadocs-ui/css/style.css";
+
+:root {
+  --fd-layout-width: 1440px;
+}
+
+/* The dashboard keeps a dark global canvas. Scope the documentation shell to
+ * Fumadocs' own theme tokens so the read-only manual stays legible in both
+ * light and dark modes without changing the dashboard surface. */
+body:has(#nd-page) {
+  background: var(--color-fd-background);
+  color: var(--color-fd-foreground);
+}
+
+#nd-page {
+  background: var(--color-fd-background);
+  color: var(--color-fd-foreground);
+}
+
+#nd-page .prose {
+  --tw-prose-body: var(--color-fd-foreground);
+  --tw-prose-headings: var(--color-fd-foreground);
+  --tw-prose-lead: var(--color-fd-foreground);
+  --tw-prose-links: var(--color-fd-primary);
+  --tw-prose-bold: var(--color-fd-foreground);
+  --tw-prose-counters: var(--color-fd-muted-foreground);
+  --tw-prose-bullets: var(--color-fd-muted-foreground);
+  --tw-prose-hr: var(--color-fd-border);
+  --tw-prose-quotes: var(--color-fd-foreground);
+  --tw-prose-quote-borders: var(--color-fd-border);
+  --tw-prose-captions: var(--color-fd-muted-foreground);
+  --tw-prose-code: var(--color-fd-foreground);
+  --tw-prose-pre-code: var(--color-fd-foreground);
+  --tw-prose-pre-bg: var(--color-fd-muted);
+  --tw-prose-th-borders: var(--color-fd-border);
+  --tw-prose-td-borders: var(--color-fd-border);
+  color: var(--color-fd-foreground);
+}
+
+.morrowise-doc-meta {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0 0 1.75rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--fd-border);
+  border-radius: 0.75rem;
+  color: var(--fd-muted-foreground);
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.morrowise-doc-meta span {
+  overflow-wrap: anywhere;
+}
+
+.morrowise-doc-home-link {
+  width: fit-content;
+  color: var(--fd-primary);
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.morrowise-doc-home-link:focus-visible {
+  outline: 2px solid var(--fd-ring);
+  outline-offset: 3px;
+}
+
+.morrowise-page-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--fd-border);
+  font-size: 0.875rem;
+}
+
+.morrowise-page-nav a {
+  max-width: 48%;
+  overflow-wrap: anywhere;
+  color: var(--fd-primary);
+}
+
+.morrowise-page-nav a:focus-visible {
+  outline: 2px solid var(--fd-ring);
+  outline-offset: 3px;
+}
+
+#nd-page .prose table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+#nd-page .morrowise-version-entry {
+  margin: 0.75rem 0;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 0.75rem;
+  background: var(--color-fd-card);
+  overflow-wrap: anywhere;
+}
+
+#nd-page .morrowise-version-entry > summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--color-fd-foreground);
+}
+
+#nd-page .morrowise-version-entry > summary:focus-visible {
+  outline: 2px solid var(--color-fd-ring);
+  outline-offset: 4px;
+  border-radius: 0.25rem;
+}

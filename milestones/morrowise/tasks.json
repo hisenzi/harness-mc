@@ -4411,6 +4411,40 @@
               "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate.acceptance_matrix"
             ],
             "recorded_at": "2026-08-26"
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "在既有 Git lifecycle owner 記錄未來具名優化隔離與整合／runtime 採用的設計要求；不改現行分支政策、原 acceptance matrix 或建立第二 promotion registry。",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+              "Vincent 2026-09-06 current session: 先把能力、架構、項目、功能先寫入指定計劃，完成後回寫 milestones/morrowise task，文件與 task 名稱或編號一致；本次僅規格與 task 契約，不含 runtime 實作或 Git 交付。"
+            ],
+            "recorded_at": "2026-09-06",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/practice-adoption-evidence-read-model-v1",
+                "morrowise/morrowise-dev-workflow-catalog",
+                "morrowise/trusted-heartbeat-runtime-v1"
+              ],
+              "scope_comparison": {
+                "problem": "既有隔離與 Git 生命週期的未來應用，政策若制度化須由同 owner 一致修訂。",
+                "owner_source_of_truth": "JV-37 仍管 Git/remote；方法效益、能力與 runtime 保留各原 owner。",
+                "inputs_outputs": "新增計劃／證據引用和待政策設計，不新增 runtime、registry 或 branch 操作。",
+                "lifecycle_completion": "todo；原 matrix、dependencies、P3 seam 不變，不以本次規格冒稱實測或完整交付。"
+              },
+              "decision_reason": "在既有 Git lifecycle owner 記錄未來具名優化隔離與整合／runtime 採用的設計要求；不改現行分支政策、原 acceptance matrix 或建立第二 promotion registry。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-06",
+                "evidence_refs": [
+                  "Vincent 2026-09-06 current session: 先把能力、架構、項目、功能先寫入指定計劃，完成後回寫 milestones/morrowise task，文件與 task 名稱或編號一致；本次僅規格與 task 契約，不含 runtime 實作或 Git 交付。"
+                ]
+              }
+            }
           }
         ]
       },
@@ -4628,12 +4662,14 @@
         "project_id": "morrowise",
         "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
         "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
-  "contribution": "讓 MorroWise 在任何受支援工作環境中以 remote truth、唯一 integrator 與可續跑 closeout 協調多 session，而不以固定硬體數量或裝置登錄阻塞自用工作。",
+        "contribution": "讓 MorroWise 在任何受支援工作環境中以 remote truth、唯一 integrator 與可續跑 closeout 協調多 session，而不以固定硬體數量或裝置登錄阻塞自用工作。",
         "evidence_plan": [
           "npm run test:project-init-admission",
-          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate.acceptance"
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate.acceptance",
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md"
         ],
-  "reviewed_at": "2026-08-14"
+        "reviewed_at": "2026-09-06",
+        "amendment_contribution": "在既有 Git lifecycle owner 記錄未來具名優化隔離與整合／runtime 採用的設計要求；不改現行分支政策、原 acceptance matrix 或建立第二 promotion registry。"
       },
       "source_refs": [
         "$COLLAB/notyet-harness/000_Agent/CORE.md",
@@ -4734,8 +4770,8 @@
           "multi_clone_e2e",
           "real_pilot"
         ],
-    "red_command": "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case device-free-identity-contract",
-    "expected_red_reason": "2026-08-14 migration red：固定 machine_id／machine-key identity 尚未移除，device-free claim 與 session observation 仍被 runtime 拒絕。",
+        "red_command": "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case device-free-identity-contract",
+        "expected_red_reason": "2026-08-14 migration red：固定 machine_id／machine-key identity 尚未移除，device-free claim 與 session observation 仍被 runtime 拒絕。",
         "green_command": "npm run test:repo-coordination-runtime",
         "full_regression_commands": [
           "npm run test:repo-coordination-runtime",
@@ -4803,6 +4839,36 @@
           "node scripts/verify-closeout-residual-ledger.mjs"
         ],
         "runtime_boundary": "Current device-free local RC only. It verifies two fresh-session observations without device registration or hardware fingerprint. E2E06 still requires a real source-bound pilot receipt, canonical task_completed and P3 Final Admission; JV-37 and P3 remain todo."
+      },
+      "planned_optimization_isolation": {
+        "plan_ref": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+        "state": "design_requirement_only",
+        "intent": "未來具名能力優化以隔離試驗、技術／效益驗證、target main 整合、runtime 採用與可回復清理形成一條生命週期。",
+        "policy_boundary": "本次不更改 CORE／MW-GIT-AUTH-01，也不建立或切換 branch／worktree。若制度化所有能力優化必用分支，先在此既有 owner 提出 CORE／skill／gate 的一致 policy diff；未採用前保留現行 direct-main 規則。",
+        "required_named_plan": [
+          "repo/task",
+          "branch/worktree name and path",
+          "target main",
+          "runtime pinned adopted version",
+          "test output and external side-effect boundary",
+          "baseline/candidate evidence refs",
+          "technical and benefit thresholds",
+          "integration/rollback/cleanup"
+        ],
+        "ownership": "JV-37 管 Git/remote/isolation；MW-PRACTICE-01 管效益與歷史；原 runtime task 管實際採用。",
+        "runtime_boundary": "固定 scheduler checkout 不得在未採用前切到實驗版本；branch 本身不提供 runtime 或外部副作用隔離。",
+        "evidence_boundary": "experiment verified、integrated remote main、runtime observed/adopted 分開；刪分支前持久保存失敗 patch／版本及 evidence。",
+        "completion_boundary": "原 JV37-E2E-01～06、source-bound 多 session、remote terminal truth 與 P3 seam 完整保留；此設計引用不產生新的通過 evidence。"
+      },
+      "external_refs": {
+        "mvp_plan": {
+          "path": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+          "as_of": "2026-09-06",
+          "role": "execution_spec_only",
+          "canonical_task_ref": "morrowise/multi-machine-repo-coordination-gate",
+          "order_label": "JV-37",
+          "title": "JV-37 不限裝置的 Repo Freshness、Claim 與 Remote Truth Gate"
+        }
       }
     },
     {
@@ -7708,6 +7774,15 @@
           "enforcement": "informational_only",
           "does_not_change_weekly_core": true,
           "basis": "依 critical path、start/completion dependencies 與 estimated_hours 安排下一個人工規劃檢查點。"
+        },
+        "mvp_scope": {
+          "plan_ref": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+          "evidence_snapshot_as_of": "2026-09-06",
+          "observed_problem": "原盤點三個既有 launchd label 最近 exit 126；原因尚未確認，不能僅據 exit code 判定 TCC。",
+          "implementation_focus": "單一指定環境沿用既有 scheduler，安全 probe 區分 declared／loaded／success／freshness；缺 timeout 不允許無限制 fallback；至少一次自然觸發證據。",
+          "owner_boundary": "schedule-health 共用修正由本 task 實作，JV-36 引用；不增加第二 scheduler 或通知。",
+          "baseline": "從第一個修復／觀察案例記錄時間、人工介入與可得成本；已知故障不等於已證明主要交付瓶頸。",
+          "completion_boundary": "THB1-P2-01 與原 runtime、fresh-build、正負向驗收全部保留；此次只有規格。"
         }
       },
       "estimated_hours": 12,
@@ -7721,7 +7796,8 @@
           ],
           "steps": [
             "執行 loaded、unloaded、missing、stale 與 fixture-only cases",
-            "核對 freshness、status、degraded reason 與 write boundary"
+            "核對 freshness、status、degraded reason 與 write boundary",
+            "在指定環境核對受限真實 probe、至少一次自然 scheduler 觸發與 timeout evidence；保留 exit 126 根因調查及修復前後證據，不把 fixture 算自然成功。"
           ],
           "pass_condition": "只有真實且新鮮 evidence 可標 verified；其他情況固定映射為 degraded／blocked。",
           "fail_condition": "以 plist-only、fixture-only、秘密值或未載入 scheduler 假綠燈。",
@@ -7951,6 +8027,39 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "補足既有 heartbeat 真實證據、timeout 與自然觸發的 MVP 驗證步驟，未增加 scheduler 或減少原 acceptance。",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+              "Vincent 2026-09-06 current session: 先把能力、架構、項目、功能先寫入指定計劃，完成後回寫 milestones/morrowise task，文件與 task 名稱或編號一致；本次僅規格與 task 契約，不含 runtime 實作或 Git 交付。"
+            ],
+            "recorded_at": "2026-09-06",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/system-pulse-schedule-task",
+                "morrowise/document-source-registry-and-human-sync"
+              ],
+              "scope_comparison": {
+                "problem": "仍是 trusted heartbeat 如何證明真實 runtime。",
+                "owner_source_of_truth": "scheduler／safe run evidence authority 不變，本 task 擁有 schedule-health 可信判定。",
+                "inputs_outputs": "原輸入輸出不變，補指定自然觸發與失敗 evidence。",
+                "lifecycle_completion": "todo；局部修复／probe 不代替完整 acceptance。"
+              },
+              "decision_reason": "補足既有 heartbeat 真實證據、timeout 與自然觸發的 MVP 驗證步驟，未增加 scheduler 或減少原 acceptance。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-06",
+                "evidence_refs": [
+                  "Vincent 2026-09-06 current session: 先把能力、架構、項目、功能先寫入指定計劃，完成後回寫 milestones/morrowise task，文件與 task 名稱或編號一致；本次僅規格與 task 契約，不含 runtime 實作或 Git 交付。"
+                ]
+              }
+            }
           }
         ]
       },
@@ -7975,6 +8084,27 @@
         "decision": "deferred",
         "evaluated_at": "2026-07-21",
         "reason": "新 runtime/read-model 邊界可能影響既有 runtime subsystem；待真實 runtime、fresh-build、負向 fixture 與 Admission Review 證據完成後才裁決。"
+      },
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "補足既有 heartbeat 真實證據、timeout 與自然觸發的 MVP 驗證步驟，未增加 scheduler 或減少原 acceptance。",
+        "evidence_plan": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1.acceptance"
+        ],
+        "reviewed_at": "2026-09-06"
+      },
+      "external_refs": {
+        "mvp_plan": {
+          "path": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+          "as_of": "2026-09-06",
+          "role": "execution_spec_only",
+          "canonical_task_ref": "morrowise/trusted-heartbeat-runtime-v1",
+          "order_label": "MW-HEARTBEAT-V1",
+          "title": "可信心跳 Runtime v1"
+        }
       }
     },
     {
@@ -8487,6 +8617,15 @@
           "enforcement": "informational_only",
           "does_not_change_weekly_core": true,
           "basis": "依 critical path、start/completion dependencies 與 estimated_hours 安排下一個人工規劃檢查點。"
+        },
+        "mvp_integration": {
+          "plan_ref": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+          "source_authority_owner": "morrowise/canonical-task-state-read-boundary-repair-v1",
+          "handoff_owner": "morrowise/approved-work-handoff-feedback-v1",
+          "read_boundary": "只消費明確 source authority、原工作 task 結果及安全 evidence refs；輸出決策與人工 next action，不直接執行或寫 task。",
+          "feedback_contract": "下一輪記錄實際消費的 result_ref，依原 task 結果抑制重複、更新候選或保留阻塞；缺結果明標 unknown。",
+          "scope_boundary": "Priority v2 保持 MorroWise task selection；其他 project 案例只允許具名人工交接，不新增跨專案自動 selector。",
+          "gate_boundary": "原 start_requires／completion_requires 不变；指定 state authority 未驗證時不接受輸入。"
         }
       },
       "estimated_hours": 12,
@@ -8500,7 +8639,8 @@
           ],
           "steps": [
             "執行 priority verified／blocked 與 heartbeat verified／degraded 組合",
-            "核對 action、reason、freshness、replacement lineage 與 next action"
+            "核對 action、reason、freshness、replacement lineage 與 next action",
+            "以已驗證的原工作 result_ref 驗證下一輪消費、抑制重複與保留阻塞；缺結果／衝突來源必須明標，handoff 另由 MW-HANDOFF-01 驗收。"
           ],
           "pass_condition": "相同 input 得到相同每日決策；不可信 evidence 明確拒絕，且沒有第二 scheduler 或 task writer。",
           "fail_condition": "自動延期、背景改 task state、建立平行 daily loop，或 missing evidence 仍輸出 accepted。",
@@ -8736,6 +8876,39 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "把原 Daily 的來源與 feedback 接回唯一 state／handoff owner，維持 read-only 與原 upstream，不吸收 executor。",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+              "Vincent 2026-09-06 current session: 先把能力、架構、項目、功能先寫入指定計劃，完成後回寫 milestones/morrowise task，文件與 task 名稱或編號一致；本次僅規格與 task 契約，不含 runtime 實作或 Git 交付。"
+            ],
+            "recorded_at": "2026-09-06",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/action-priority-read-model-v2",
+                "morrowise/approved-work-handoff-feedback-v1"
+              ],
+              "scope_comparison": {
+                "problem": "同一每日唯讀決策，需要來源 authority 與回饋引用清楚。",
+                "owner_source_of_truth": "Daily 只擁有讀取與判斷；state 修復與 handoff 分別有 owner。",
+                "inputs_outputs": "輸入增加明確 result_ref 引用，輸出仍為唯一 decision／reason／人工下一步。",
+                "lifecycle_completion": "todo；Priority／Heartbeat 的 start 與 completion requirements 不縮小。"
+              },
+              "decision_reason": "把原 Daily 的來源與 feedback 接回唯一 state／handoff owner，維持 read-only 與原 upstream，不吸收 executor。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-06",
+                "evidence_refs": [
+                  "Vincent 2026-09-06 current session: 先把能力、架構、項目、功能先寫入指定計劃，完成後回寫 milestones/morrowise task，文件與 task 名稱或編號一致；本次僅規格與 task 契約，不含 runtime 實作或 Git 交付。"
+                ]
+              }
+            }
           }
         ]
       },
@@ -8760,6 +8933,27 @@
         "decision": "deferred",
         "evaluated_at": "2026-07-21",
         "reason": "此 task 取代既有 daily runtime 構想且新增 read-model consumer；待上游、真實 runtime、E2E 與 Admission Review 完成後裁決。"
+      },
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "把原 Daily 的來源與 feedback 接回唯一 state／handoff owner，維持 read-only 與原 upstream，不吸收 executor。",
+        "evidence_plan": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-live-decision-loop-v1.acceptance"
+        ],
+        "reviewed_at": "2026-09-06"
+      },
+      "external_refs": {
+        "mvp_plan": {
+          "path": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+          "as_of": "2026-09-06",
+          "role": "execution_spec_only",
+          "canonical_task_ref": "morrowise/morrowise-live-decision-loop-v1",
+          "order_label": "MW-DECISION-V1",
+          "title": "MorroWise 每日決策迴圈 v1"
+        }
       }
     },
     {
@@ -9937,7 +10131,8 @@
         "PRACTICE-EVIDENCE-A07｜文章候選只提案：只有出現新應用情境、新證據、mixed／failed 修正或達到預先定義的重複驗證門檻時，才能輸出 successor article candidate；候選不修改文章 Markdown、publication state、task state、commit、push 或 deploy。",
         "PRACTICE-EVIDENCE-A08｜既有 wiring：需納入 MorroWise wiring gate，可追到 canonical task／rule、schema、generator、generated read model、verifier、degraded state、notyet.md consumer 與 next action；generated JSON 是 mirror，不可手改。",
         "PRACTICE-EVIDENCE-A09｜TDD／負向驗證：fixtures 至少覆蓋未核准不得加入採用、unknown rule ref、verified 無 evidence、mixed／failed 保留、私人資料拒絕／脫敏、重跑 deterministic、網站反向寫入拒絕及 article candidate 未核准禁止寫檔。",
-        "PRACTICE-EVIDENCE-A10｜跨 repo two-phase export：producer 固定輸出 `$COLLAB/harness-mc/public/data/morrowise-practice-impact.json`；record 至少含 schema_version、generated_at、as_of、source_digest、freshness_state、practice_task_ref、origin_article_slug、theme_id、applications、article_candidates。notyet.md 只透過明確核准的 sync 更新 committed snapshot；source／snapshot drift、schema mismatch 或非 fresh 狀態必須由 `--check` 抓出，不得由 scheduler 自動 copy、commit、push 或 deploy。"
+        "PRACTICE-EVIDENCE-A10｜跨 repo two-phase export：producer 固定輸出 `$COLLAB/harness-mc/public/data/morrowise-practice-impact.json`；record 至少含 schema_version、generated_at、as_of、source_digest、freshness_state、practice_task_ref、origin_article_slug、theme_id、applications、article_candidates。notyet.md 只透過明確核准的 sync 更新 committed snapshot；source／snapshot drift、schema mismatch 或非 fresh 狀態必須由 `--check` 抓出，不得由 scheduler 自動 copy、commit、push 或 deploy。",
+        "PRACTICE-EVIDENCE-A11｜能力優化歷史：沿用原 capability／rule／task ref，保存 baseline source SHA、candidate SHA 或可取回 patch、假說、適用情境、比較案例與控制條件、預定指標／門檻／停止條件、全部嘗試的人力注意力／總時間／成本／紀錄維護成本、觀察與限制、採用／修訂／退回理由。只引用 JV-37 的 main／remote 證據及各 runtime owner 的實際採用證據；失敗歷史須在刪除分支前持久保存。fixture 通過、合併 main、runtime 採用與後續效益分開；不新增 registry 或改變 task 狀態。"
       ],
       "source_refs": [
         "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
@@ -10019,7 +10214,52 @@
           "public-safe／approval／evidence／determinism negative fixtures",
           "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py\" --check"
         ],
-        "stop_condition": "若找不到既有 practice task／rule 正本、需新增第二 tracker 或 registry、採用未經 Vincent 核准、結果無真實 evidence、public output 無法脫敏、會污染 task-events，或候選會自動改 task／規則／文章／commit／push／發布時停止並保持 todo／degraded。"
+        "stop_condition": "若找不到既有 practice task／rule 正本、需新增第二 tracker 或 registry、採用未經 Vincent 核准、結果無真實 evidence、public output 無法脫敏、會污染 task-events，或候選會自動改 task／規則／文章／commit／push／發布時停止並保持 todo／degraded。",
+        "optimization_history_contract": {
+          "plan_ref": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+          "identity": "原 capability／rule／component ref + 原改進 project/task-id；不以名稱建立第二身份",
+          "storage": "原工作 task 的既有 evidence／notes 路徑與 application refs；聚合仍由此原 producer contract 管理",
+          "required_fields": [
+            "capability_or_rule_ref",
+            "improvement_task_ref",
+            "hypothesis",
+            "baseline_version_ref",
+            "candidate_version_or_patch_ref",
+            "context",
+            "comparison_cases",
+            "controls",
+            "predefined_metrics_and_threshold",
+            "budget_and_stop_condition",
+            "all_attempts_evidence_refs",
+            "attention_time",
+            "total_time_and_available_cost",
+            "recording_maintenance_cost",
+            "observed_result",
+            "limitation",
+            "adoption_decision_and_reason"
+          ],
+          "stage_aware_evidence": {
+            "baseline": "正式比較前 baseline_version_ref 與比較條件必填；尚在準備可為 null，但必須附 not_observed 原因與補齊條件，不能進入效益判定。",
+            "candidate": "修改前 candidate_version_or_patch_ref 可為 null 並記 planned；一旦執行試驗，不論成功失敗都須有可取回版本／patch／artifact。",
+            "integration_receipt_ref": "只有宣稱已整合 main 時必填；planned／failed／rejected／not_integrated 可為 null，須附 reason 與下一步。",
+            "runtime_adoption_ref": "只有宣稱 runtime 已採用時必填；未整合／未採用可為 null，須附 reason；純文件等不適用者記 not_applicable 與理由。",
+            "followup_case_refs": "新案例尚未發生可為空陣列，必須保留 not_observed、原因與下次觀察條件；宣稱跨案例改善時必須有真實引用。",
+            "gate": "null／not_applicable／空陣列必須有對應原因，不得通過依賴該證據的 gate，也不得被聚合器當成資料遺失後自動補綠。"
+          },
+          "negative_cases": [
+            "unknown baseline 不造數字",
+            "missing evidence 不標 verified",
+            "失敗版本／patch 與理由可取回",
+            "只測一例／只 merge main 不宣稱效益或 runtime 已採用",
+            "多因素改變明標歸因限制",
+            "刪除隔離前 evidence 持久存在",
+            "未整合的 failed／rejected 案例允許 integration/runtime ref 為 null 加 reason 並持久保存",
+            "宣稱 integrated/adopted 卻 ref 為 null、或宣稱跨案例效益而 followup 為空必須拒絕"
+          ],
+          "staging": "MVP 從第一件原工作開始保留最小 baseline／history；完整 schema／public-safe 聚合及 export 稍後依原驗收實作，母 task 維持 todo。",
+          "causal_boundary": "三件／三日只驗可用性；效益在後續不同案例按預定條件觀察。單次 verified outcome 仍保留原 A05 因果限制。",
+          "git_runtime_owner_boundary": "本 task 只引用版本／整合／runtime evidence，不接管 Git lifecycle、能力狀態或 runtime 正本。"
+        }
       },
       "jv32_route": {
         "workflows": [
@@ -10107,6 +10347,40 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "既有方法成效契約補入能力優化的版本、baseline、成本、失敗歷史及採用證據引用；保留全部 public-safe／文章 export acceptance，不新建能力／實驗 registry。",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+              "Vincent 2026-09-06 current session: 先把能力、架構、項目、功能先寫入指定計劃，完成後回寫 milestones/morrowise task，文件與 task 名稱或編號一致；本次僅規格與 task 契約，不含 runtime 實作或 Git 交付。"
+            ],
+            "recorded_at": "2026-09-06",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/multi-machine-repo-coordination-gate",
+                "morrowise/morrowise-system-json-generator-v0",
+                "morrowise/skill-candidate-review-gate"
+              ],
+              "scope_comparison": {
+                "problem": "原方法採用與成效追蹤問題，增加可比較的優化歷史，不是另建能力治理。",
+                "owner_source_of_truth": "原 rule／task 擁有方法及應用；本 task 擁有共通契約／read model，Git 與 runtime owner 不變。",
+                "inputs_outputs": "原 producer／consumer 不變；新增 baseline、版本、比較與採用 evidence refs。",
+                "lifecycle_completion": "todo；最小紀錄不代表完整 schema／public-safe／export／真實成效已完成。"
+              },
+              "decision_reason": "既有方法成效契約補入能力優化的版本、baseline、成本、失敗歷史及採用證據引用；保留全部 public-safe／文章 export acceptance，不新建能力／實驗 registry。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-06",
+                "evidence_refs": [
+                  "Vincent 2026-09-06 current session: 先把能力、架構、項目、功能先寫入指定計劃，完成後回寫 milestones/morrowise task，文件與 task 名稱或編號一致；本次僅規格與 task 契約，不含 runtime 實作或 Git 交付。"
+                ]
+              }
+            }
           }
         ]
       },
@@ -10136,7 +10410,28 @@
         "evaluated_at": "2026-07-26",
         "reason": "本 task 計畫新增共通 schema、generator、verifier、public-safe read model 與跨專案 consumer，具 Architecture Admission 候選性；現階段只建立 todo contract，待 TDD fixtures 與 implementation evidence 完成後再決定 promoted／version improvement，禁止先寫 ARCHITECTURE.md managed block。"
       },
-      "note": "2026-07-26 已建立 MorroWise work anchor 與責任邊界；第二次 amend 已定錨 producer schema／output、public／internal fields、freshness／degraded 與 explicit approved two-phase consumer，但所有 implementation 與 runtime evidence 仍不存在。依唯一 weekly core 規則維持 todo；未被正式 admit 前不得進入 implementation。"
+      "note": "2026-07-26 已建立 MorroWise work anchor 與責任邊界；第二次 amend 已定錨 producer schema／output、public／internal fields、freshness／degraded 與 explicit approved two-phase consumer，但所有 implementation 與 runtime evidence 仍不存在。依唯一 weekly core 規則維持 todo；未被正式 admit 前不得進入 implementation。",
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "既有方法成效契約補入能力優化的版本、baseline、成本、失敗歷史及採用證據引用；保留全部 public-safe／文章 export acceptance，不新建能力／實驗 registry。",
+        "evidence_plan": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#practice-adoption-evidence-read-model-v1.acceptance"
+        ],
+        "reviewed_at": "2026-09-06"
+      },
+      "external_refs": {
+        "mvp_plan": {
+          "path": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+          "as_of": "2026-09-06",
+          "role": "execution_spec_only",
+          "canonical_task_ref": "morrowise/practice-adoption-evidence-read-model-v1",
+          "order_label": "MW-PRACTICE-01",
+          "title": "方法採用與成效證據 Read Model v1"
+        }
+      }
     },
     {
       "id": "grouped-nested-milestone-support-v1",
@@ -12506,6 +12801,1164 @@
       },
       "summary": "2026-09-02：JV-50 completed。KJ-116 pilot 已收斂為 shared adapter、multi-target mapping、Skill v1.3、capability registry/read model、negative fixtures 與 Architecture Admission；正式寫入限 explicit target、same-integration identity、cardId/pageId state 與 re-fetch 驗證。未 commit、未 push、未部署。",
       "note": "2026-08-31～2026-09-02：本機 hepta-files 可取得 note embedded image；跨 Notion integration 的 file_upload 無法附加於不同 identity 頁面，必須 fail-closed。JV-50 以原圖優先、同身分 preflight、顯式 target、cardId/pageId 冪等與重新 fetch 驗證收斂成單一路徑；缺乏可信原圖時保持 blocked，不假裝 fallback 完成。"
+    },
+    {
+      "id": "canonical-task-state-read-boundary-repair-v1",
+      "title": "任務正本與狀態投影讀取邊界修復 v1",
+      "status": "todo",
+      "track": "governance",
+      "order_label": "MW-STATE-01",
+      "priority": "high",
+      "summary": "規格已定義，待實作與驗收；舊 state overlay authority 與現行 canonical task lifecycle 不一致，會讓判斷、畫面與接續讀到不同狀態。",
+      "dependencies": [
+        "task-lifecycle-jv32-gate"
+      ],
+      "done_condition": "逐欄定義並修復指定 pilot 消費鏈的 task authority：canonical task lifecycle、合法 coordination／事件／歷史各有 owner；取消、取代與完成不被舊 overlay 復活，未知衝突明確拒絕。完成需受限 reconciliation、真實指定資料、回歸與重跑證據；不得全刪 state 或全面改 task 狀態。",
+      "source_refs": [
+        "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+        "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#acp-task-state-split",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+        "$COLLAB/harness-mc/scripts/task-state.mjs",
+        "$COLLAB/harness-mc/scripts/generate-data.mjs",
+        "$COLLAB/harness-mc/scripts/generate-visual-sync-coverage.mjs",
+        "$COLLAB/harness-mc/scripts/apply-task-events.mjs"
+      ],
+      "acceptance": [
+        "STATE-A01｜逐欄 authority 清楚且衝突不假成功；指定 consumer 引用同一來源版本；取消／取代／完成不復活，未知衝突拒絕並有理由。",
+        "STATE-A02｜安全 reconciliation 保留合法歷史與回復能力；只修核准衝突，保留原身份與合法歷史；重跑無額外修改，回復方式可重現。",
+        "STATE-A03｜指定下游對相同輸入判斷一致；指定既有消費鏈的身份、來源與 lifecycle 判斷一致，真實範圍與 fixture 明確區分；本 task 不等待未來 Priority／Daily task 完成，下游 live adoption 仍由原 task 驗收。"
+      ],
+      "execution_contract": {
+        "owner": "morrowise/canonical-task-state-read-boundary-repair-v1",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#canonical-task-state-read-boundary-repair-v1",
+        "inputs": [
+          "現行 CORE／task lifecycle authority 與歷史 harness-mc/acp-task-state-split 契約",
+          "MorroWise／harness-mc 指定 task definitions、state projection、reducer 與 consumer 讀取鏈；合法 event／coordination history"
+        ],
+        "outputs": [
+          "逐欄 source-of-truth 與衝突處置規格",
+          "指定 consumer／reducer 修復與 dry-run reconciliation diff、可回復備份引用",
+          "來源一致、歷史保留與 deterministic 正負向 evidence"
+        ],
+        "verifiers": [
+          "node scripts/verify-canonical-task-state-read-boundary.mjs"
+        ],
+        "stop_condition": "scope、source、有效授權或必要 evidence 不足時停止並保留阻塞與下一步；不得藉本 task 新增平行 task writer、scheduler 或未核准外部副作用。",
+        "dependency_gates": {
+          "start_requires": [
+            "task-lifecycle-jv32-gate"
+          ],
+          "completion_requires": [
+            "task-lifecycle-jv32-gate"
+          ]
+        },
+        "planned_write_scope": [
+          "指定 shared task-state reader 與受影響 consumer／reducer／verifier",
+          "逐 task／欄位核准的 reconciliation 及安全 evidence；先列 exact file diff，不把所有 state.json 納入"
+        ]
+      },
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "STATE-A01｜逐欄 authority 清楚且衝突不假成功；指定 consumer 引用同一來源版本；取消／取代／完成不復活，未知衝突拒絕並有理由。",
+          "STATE-A02｜安全 reconciliation 保留合法歷史與回復能力；只修核准衝突，保留原身份與合法歷史；重跑無額外修改，回復方式可重現。",
+          "STATE-A03｜指定下游對相同輸入判斷一致；指定既有消費鏈的身份、來源與 lifecycle 判斷一致，真實範圍與 fixture 明確區分；本 task 不等待未來 Priority／Daily task 完成，下游 live adoption 仍由原 task 驗收。"
+        ],
+        "test_level": [
+          "unit",
+          "integration",
+          "negative_fixture"
+        ],
+        "red_command": "node scripts/verify-canonical-task-state-read-boundary.mjs",
+        "expected_red_reason": "先建立契約所列負向案例；新行為尚未實作時應以預期缺口失敗。",
+        "green_command": "node scripts/verify-canonical-task-state-read-boundary.mjs",
+        "full_regression_commands": [
+          "node scripts/verify-canonical-task-state-read-boundary.mjs",
+          "npm run test:task-state",
+          "npm run test:apply-task-events",
+          "npm run test:task-event-outbox",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+        ],
+        "fixture_refs": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md"
+        ],
+        "runtime_evidence_required": true,
+        "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#canonical-task-state-read-boundary-repair-v1.test_contract.evidence_refs",
+        "evidence_refs": [],
+        "implementation_status": "planned; verifier command is a planned interface, not evidence of an existing script",
+        "planned_regression_selection": "實作前依 exact diff 補列既有 task-state、reducer、generator 的適用可執行回歸指令與範圍；未補齊或未執行不能通過 STATE-A03。此欄是待選擇說明，不是 verifier 或驗收 evidence。"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md"
+        ],
+        "decision_output": "逐欄定義並修復指定 pilot 消費鏈的 task authority：canonical task lifecycle、合法 coordination／事件／歷史各有 owner；取消、取代與完成不被舊 overlay 復活，未知衝突明確拒絕。完成需受限 reconciliation、真實指定資料、回歸與重跑證據；不得全刪 state 或全面改 task 狀態。",
+        "execution_boundary": "本次建立 todo 契約；實作前以原 task 的具名 scope、dependency gate、Repo Ready 與有效授權進場。"
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/canonical-task-state-read-boundary-repair-v1",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#hypothesisDriven",
+          "#optimization"
+        ],
+        "hc_reasoning": "舊 state overlay authority 與現行 canonical task lifecycle 不一致，會讓判斷、畫面與接續讀到不同狀態。；先讓原交付閉環可信，再用基準、負向案例、真實證據判斷是否改善，不以文件或 fixture 完成冒稱 runtime 成功。",
+        "hc_confidence": 0.85,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md"
+        ],
+        "source_boundary": "HC 是思考檢查，並非正本；任務、實作、runtime 與驗收各保留原 owner。"
+      },
+      "architecture_decision": {
+        "decision": "deferred",
+        "evaluated_at": "2026-09-06",
+        "reason": "先建立 todo 規格；待實作與真實證據後，檢查既有 subsystem 的 version improvement／Admission Review，不先改 ARCHITECTURE.md。"
+      },
+      "acceptance_matrix": [
+        {
+          "id": "STATE-A01",
+          "what": "逐欄 authority 清楚且衝突不假成功",
+          "preconditions": [
+            "現行與歷史契約可讀"
+          ],
+          "steps": [
+            "列出 status／lifecycle、coordination、事件與歷史欄位的 owner",
+            "測試 tasks/state 相反狀態及 unknown authority"
+          ],
+          "pass_condition": "指定 consumer 引用同一來源版本；取消／取代／完成不復活，未知衝突拒絕並有理由。",
+          "fail_condition": "仍以通用 spread 覆蓋 lifecycle、未知欄位默認成功或以改畫面掩蓋衝突。",
+          "verification": [
+            "node scripts/verify-canonical-task-state-read-boundary.mjs",
+            "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+          ]
+        },
+        {
+          "id": "STATE-A02",
+          "what": "安全 reconciliation 保留合法歷史與回復能力",
+          "preconditions": [
+            "指定資料與逐欄 authority 通過",
+            "確切寫入範圍及有效授權"
+          ],
+          "steps": [
+            "先產出逐 task／欄位 dry-run diff",
+            "檢查合法 coordination、task/sync events 與歷史不遺失",
+            "對核准小範圍套用後再讀，驗證重跑及備份回復"
+          ],
+          "pass_condition": "只修核准衝突，保留原身份與合法歷史；重跑無額外修改，回復方式可重現。",
+          "fail_condition": "全刪 state、全域重設 status、吸收其他 owner 修改、破壞歷史或重跑再變。",
+          "verification": [
+            "node scripts/verify-canonical-task-state-read-boundary.mjs",
+            "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+          ]
+        },
+        {
+          "id": "STATE-A03",
+          "what": "指定下游對相同輸入判斷一致",
+          "preconditions": [
+            "STATE-A01／02 通過"
+          ],
+          "steps": [
+            "對指定取消、取代、完成、活動、衝突資料執行既有 reader／generator／reducer 回歸",
+            "用 fresh session 讀取相同 input，核對既有 consumer 的 source ref 與 authority；未實作 Priority／Daily 用輸入契約案例檢查相容性，live 驗收留原 owner"
+          ],
+          "pass_condition": "指定既有消費鏈的身份、來源與 lifecycle 判斷一致，真實範圍與 fixture 明確區分；本 task 不等待未來 Priority／Daily task 完成，下游 live adoption 仍由原 task 驗收。",
+          "fail_condition": "任一指定 consumer 仍採舊 authority，或 fixture 代替真實 reconciliation。",
+          "verification": [
+            "node scripts/verify-canonical-task-state-read-boundary.mjs",
+            "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+          ]
+        }
+      ],
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "讓 MorroWise source -> read model -> surface -> next action 使用一致 authority，修復歷史 lineage 而不建立第二正本。",
+        "evidence_plan": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#canonical-task-state-read-boundary-repair-v1.acceptance"
+        ],
+        "reviewed_at": "2026-09-06"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "現行 authority 與歷史 ACP-MC-15 不一致，涉及共用 reader／reducer；Priority 只擁有候選讀取、JV-40 已完成治理，故建立獨立且受限的系統修復 task。",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+              "Vincent 2026-09-06 current session: 先把能力、架構、項目、功能先寫入指定計劃，完成後回寫 milestones/morrowise task，文件與 task 名稱或編號一致；本次僅規格與 task 契約，不含 runtime 實作或 Git 交付。"
+            ],
+            "recorded_at": "2026-09-06",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "harness-mc/acp-task-state-split",
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/action-priority-read-model-v2"
+              ],
+              "scope_comparison": {
+                "problem": "修正共用讀取 authority 的歷史契約衝突，非單一 Priority 排序。",
+                "owner_source_of_truth": "狀態正本與合法 event／coordination authority 分開，MorroWise 擁有修復；舊 ACP task 僅 lineage。",
+                "inputs_outputs": "輸入現行與歷史契約及指定 projection；輸出逐欄規格、reader／reducer 修復及 reconciliation evidence。",
+                "lifecycle_completion": "todo；須指定真實資料、歷史保留、負向回歸、重跑與復原驗證，不重開 JV-40 或更動 Priority 到期日期。"
+              },
+              "decision_reason": "現行 authority 與歷史 ACP-MC-15 不一致，涉及共用 reader／reducer；Priority 只擁有候選讀取、JV-40 已完成治理，故建立獨立且受限的系統修復 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-06",
+                "evidence_refs": [
+                  "Vincent 2026-09-06 current session: 先把能力、架構、項目、功能先寫入指定計劃，完成後回寫 milestones/morrowise task，文件與 task 名稱或編號一致；本次僅規格與 task 契約，不含 runtime 實作或 Git 交付。"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "external_refs": {
+        "mvp_plan": {
+          "path": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+          "as_of": "2026-09-06",
+          "role": "execution_spec_only",
+          "canonical_task_ref": "morrowise/canonical-task-state-read-boundary-repair-v1",
+          "order_label": "MW-STATE-01",
+          "title": "任務正本與狀態投影讀取邊界修復 v1"
+        }
+      }
+    },
+    {
+      "id": "approved-work-handoff-feedback-v1",
+      "title": "核准工作交接與執行回饋 v1",
+      "status": "todo",
+      "track": "runtime-delivery",
+      "order_label": "MW-HANDOFF-01",
+      "priority": "high",
+      "summary": "規格已定義，待實作與驗收；Daily 唯讀決策到原工作 session、產物驗收、結果回收與 fresh-session 接續尚缺具體接線。",
+      "dependencies": [
+        "task-lifecycle-jv32-gate",
+        "morrowise-dev-workflow-catalog",
+        "morrowise-live-decision-loop-v1"
+      ],
+      "done_condition": "在單一指定環境，以人啟動現有 Codex／CC workflow，把 verified Daily 候選與有效授權綁定原 canonical 工作 task，回收真實產物、domain verifier 與下一步，驗證 fresh-session 接續、去重及下一輪結果消費。至少三件真實工作、三個工作日自然觀察通過；不建立通用 executor、scheduler、task writer 或自動 closeout，也不代替完整 P3。",
+      "source_refs": [
+        "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-live-decision-loop-v1"
+      ],
+      "acceptance": [
+        "HANDOFF-A01｜身份、授權、預算及範圍綁定；同 scope 有效授權可續跑；變更必重判；read-only Daily 不產生寫入，跨 project 不假稱自動選路。",
+        "HANDOFF-A02｜實際工作產物與 verifier 回收到原 task；receipt 可追到原 task、版本、核准、實際產物及驗收；fixture／摘要／排隊不能作真實完成。",
+        "HANDOFF-A03｜中斷接續、副作用去重及下一輪結果消費；從首個未滿足步驟續跑，不需重述整段背景；不盲目重播副作用，結果確實被下一輪引用。",
+        "HANDOFF-A04｜單環境真實可用性觀察完整；有自然 runtime 與實際 artifact/verifier 記錄；三件／三日只證明可用性，既有 UI、P3、JV-36／37 完整 acceptance 保留。"
+      ],
+      "execution_contract": {
+        "owner": "morrowise/approved-work-handoff-feedback-v1",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#approved-work-handoff-feedback-v1",
+        "inputs": [
+          "verified Daily decision／trusted heartbeat；具名原工作 project/task-id 與 source fingerprint",
+          "有效核准、exact scope、workflow、domain verifier、明確案例預算",
+          "原工作 artifact／verifier／既有 evidence refs"
+        ],
+        "outputs": [
+          "可直接交給既有 session 的 handoff 契約與受控接線",
+          "結果 receipt、接續位置、去重與下一輪消費 evidence",
+          "三件／三工作日單環境可用性證據"
+        ],
+        "verifiers": [
+          "node scripts/verify-approved-work-handoff-feedback.mjs"
+        ],
+        "stop_condition": "scope、source、有效授權或必要 evidence 不足時停止並保留阻塞與下一步；不得藉本 task 新增平行 task writer、scheduler 或未核准外部副作用。",
+        "dependency_gates": {
+          "start_requires": [
+            "task-lifecycle-jv32-gate",
+            "morrowise-dev-workflow-catalog"
+          ],
+          "completion_requires": [
+            "morrowise-live-decision-loop-v1",
+            "trusted-heartbeat-runtime-v1",
+            "canonical-task-state-read-boundary-repair-v1"
+          ]
+        },
+        "stage_boundary": "契約設計與手动 fixture 排演可在 upstream 未完成時進行；live daily acceptance 必須先有 verified Daily／Heartbeat 及指定 source authority。",
+        "handoff_fields": [
+          "decision_ref",
+          "task_ref",
+          "source_fingerprint",
+          "approval_ref",
+          "allowed_read_write_scope",
+          "workflow_ref",
+          "expected_artifact",
+          "verifier_ref",
+          "max_wall_time",
+          "max_attempts",
+          "model_cost_limit_or_unknown",
+          "stop_condition",
+          "resume_point"
+        ],
+        "feedback_owner": "原工作 task 的執行者經既有受管 evidence／lifecycle 路徑寫入；handoff 只引用，不新增 task writer。",
+        "scope_boundary": "Priority 目前只讀 MorroWise tasks；跨 project 案例須人指定既有 canonical task，標 manual input，不宣稱自動跨專案 selection。",
+        "budget_boundary": "同時一件工作；開跑前具名環境、時間／attempts／可用模型成本上限與停止責任必填。缺少必填上限不開跑；無法量測模型/token 時標 unknown，不冒稱背景模型政策通過。"
+      },
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "HANDOFF-A01｜身份、授權、預算及範圍綁定；同 scope 有效授權可續跑；變更必重判；read-only Daily 不產生寫入，跨 project 不假稱自動選路。",
+          "HANDOFF-A02｜實際工作產物與 verifier 回收到原 task；receipt 可追到原 task、版本、核准、實際產物及驗收；fixture／摘要／排隊不能作真實完成。",
+          "HANDOFF-A03｜中斷接續、副作用去重及下一輪結果消費；從首個未滿足步驟續跑，不需重述整段背景；不盲目重播副作用，結果確實被下一輪引用。",
+          "HANDOFF-A04｜單環境真實可用性觀察完整；有自然 runtime 與實際 artifact/verifier 記錄；三件／三日只證明可用性，既有 UI、P3、JV-36／37 完整 acceptance 保留。"
+        ],
+        "test_level": [
+          "unit",
+          "integration",
+          "negative_fixture",
+          "real_session_e2e",
+          "natural_runtime_observation"
+        ],
+        "red_command": "node scripts/verify-approved-work-handoff-feedback.mjs",
+        "expected_red_reason": "先建立契約所列負向案例；新行為尚未實作時應以預期缺口失敗。",
+        "green_command": "node scripts/verify-approved-work-handoff-feedback.mjs",
+        "full_regression_commands": [
+          "node scripts/verify-approved-work-handoff-feedback.mjs",
+          "node scripts/verify-morrowise-live-decision-loop.mjs",
+          "node scripts/verify-morrowise-approval-policy.mjs",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+        ],
+        "fixture_refs": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md"
+        ],
+        "runtime_evidence_required": true,
+        "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#approved-work-handoff-feedback-v1.test_contract.evidence_refs",
+        "evidence_refs": [],
+        "implementation_status": "planned; verifier command is a planned interface, not evidence of an existing script"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md"
+        ],
+        "decision_output": "在單一指定環境，以人啟動現有 Codex／CC workflow，把 verified Daily 候選與有效授權綁定原 canonical 工作 task，回收真實產物、domain verifier 與下一步，驗證 fresh-session 接續、去重及下一輪結果消費。至少三件真實工作、三個工作日自然觀察通過；不建立通用 executor、scheduler、task writer 或自動 closeout，也不代替完整 P3。",
+        "execution_boundary": "本次建立 todo 契約；實作前以原 task 的具名 scope、dependency gate、Repo Ready 與有效授權進場。"
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/approved-work-handoff-feedback-v1",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#hypothesisDriven",
+          "#optimization"
+        ],
+        "hc_reasoning": "Daily 唯讀決策到原工作 session、產物驗收、結果回收與 fresh-session 接續尚缺具體接線。；先讓原交付閉環可信，再用基準、負向案例、真實證據判斷是否改善，不以文件或 fixture 完成冒稱 runtime 成功。",
+        "hc_confidence": 0.85,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md"
+        ],
+        "source_boundary": "HC 是思考檢查，並非正本；任務、實作、runtime 與驗收各保留原 owner。"
+      },
+      "architecture_decision": {
+        "decision": "deferred",
+        "evaluated_at": "2026-09-06",
+        "reason": "先建立 todo 規格；待實作與真實證據後，檢查既有 subsystem 的 version improvement／Admission Review，不先改 ARCHITECTURE.md。"
+      },
+      "acceptance_matrix": [
+        {
+          "id": "HANDOFF-A01",
+          "what": "身份、授權、預算及範圍綁定",
+          "preconditions": [
+            "具名原 task、workflow、可驗收產物、預算及有效授權"
+          ],
+          "steps": [
+            "對同一授權續跑與 source/scope 變更執行正負向案例",
+            "核對未核准、過期輸入、缺預算、跨 project 手動輸入的拒絕或標示"
+          ],
+          "pass_condition": "同 scope 有效授權可續跑；變更必重判；read-only Daily 不產生寫入，跨 project 不假稱自動選路。",
+          "fail_condition": "同名誤配 task、挪用授權、缺預算執行或 Daily 直接寫 task。",
+          "verification": [
+            "node scripts/verify-approved-work-handoff-feedback.mjs",
+            "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+          ]
+        },
+        {
+          "id": "HANDOFF-A02",
+          "what": "實際工作產物與 verifier 回收到原 task",
+          "preconditions": [
+            "HANDOFF-A01 通過",
+            "live acceptance 前 Daily／Heartbeat 已 verified"
+          ],
+          "steps": [
+            "人啟動原 task workflow 取得 artifact",
+            "由事先指定的 domain verifier／人工 rubric 驗收",
+            "循既有路徑留下成功／失敗 receipt 與下一步"
+          ],
+          "pass_condition": "receipt 可追到原 task、版本、核准、實際產物及驗收；fixture／摘要／排隊不能作真實完成。",
+          "fail_condition": "以自述代替驗收、失敗標完成、未承諾卻自行 commit／push／外部同步，或新建第二 writer。",
+          "verification": [
+            "node scripts/verify-approved-work-handoff-feedback.mjs",
+            "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+          ]
+        },
+        {
+          "id": "HANDOFF-A03",
+          "what": "中斷接續、副作用去重及下一輪結果消費",
+          "preconditions": [
+            "持久 receipt 與安全 evidence 路徑可用"
+          ],
+          "steps": [
+            "中斷 session 後用新 session 讀取同一 task",
+            "重送事件及模擬副作用結果不明",
+            "讓下一輪 Daily 讀到結果、抑制重複或保留阻塞"
+          ],
+          "pass_condition": "從首個未滿足步驟續跑，不需重述整段背景；不盲目重播副作用，結果確實被下一輪引用。",
+          "fail_condition": "只存報告沒消費、重做已完成工作、副作用不明仍重播或漏失失敗原因。",
+          "verification": [
+            "node scripts/verify-approved-work-handoff-feedback.mjs",
+            "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+          ]
+        },
+        {
+          "id": "HANDOFF-A04",
+          "what": "單環境真實可用性觀察完整",
+          "preconditions": [
+            "HANDOFF-A01～03 通過",
+            "指定最小繁中入口可讀同一系統輸出",
+            "Daily／Heartbeat／source authority 已 verified"
+          ],
+          "steps": [
+            "觀察至少三個工作日自然觸發並完成至少三件核准真實工作，至少一件日常交付",
+            "包含一次 fresh-session 接續與下一輪結果消費",
+            "記錄成功、失敗、無任務、睡眠及人工介入／成本 baseline"
+          ],
+          "pass_condition": "有自然 runtime 與實際 artifact/verifier 記錄；三件／三日只證明可用性，既有 UI、P3、JV-36／37 完整 acceptance 保留。",
+          "fail_condition": "全是健康摘要／fixture、補造自然成功或把局部 pilot 當完整 P3／效益已證實。",
+          "verification": [
+            "node scripts/verify-approved-work-handoff-feedback.mjs",
+            "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+          ]
+        }
+      ],
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "把 MorroWise sense／decide／act／report／feedback 接成真實交付，沿用原工作 task 與受管 workflow，降低人工重述與重播風險。",
+        "evidence_plan": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#approved-work-handoff-feedback-v1.acceptance"
+        ],
+        "reviewed_at": "2026-09-06"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "既有 Daily 只讀、JV-32／40 管 workflow／lifecycle，均不擁有核准候選到 session 再回收結果的可用接線；新 task 僅補此缺口。",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+              "Vincent 2026-09-06 current session: 先把能力、架構、項目、功能先寫入指定計劃，完成後回寫 milestones/morrowise task，文件與 task 名稱或編號一致；本次僅規格與 task 契約，不含 runtime 實作或 Git 交付。"
+            ],
+            "recorded_at": "2026-09-06",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/morrowise-live-decision-loop-v1",
+                "morrowise/morrowise-dev-workflow-catalog",
+                "morrowise/task-lifecycle-jv32-gate",
+                "morrowise/system-pulse-feedback-loop"
+              ],
+              "scope_comparison": {
+                "problem": "已核准工作到真實 session／artifact／結果回收缺具體 binding，非新增決策或 task lifecycle。",
+                "owner_source_of_truth": "原 task、授權、workflow 及 evidence 各保留原 owner；本 task 只擁有交接接線。",
+                "inputs_outputs": "輸入具體決策、原 task 與授權；輸出 handoff、receipt refs、接續與去重，非通用 executor。",
+                "lifecycle_completion": "todo；三件真實工作／三日自然觀察、fresh session 與反向案例均驗證後才按自身契約完成；不降低 P3。"
+              },
+              "decision_reason": "既有 Daily 只讀、JV-32／40 管 workflow／lifecycle，均不擁有核准候選到 session 再回收結果的可用接線；新 task 僅補此缺口。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-06",
+                "evidence_refs": [
+                  "Vincent 2026-09-06 current session: 先把能力、架構、項目、功能先寫入指定計劃，完成後回寫 milestones/morrowise task，文件與 task 名稱或編號一致；本次僅規格與 task 契約，不含 runtime 實作或 Git 交付。"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "external_refs": {
+        "mvp_plan": {
+          "path": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+          "as_of": "2026-09-06",
+          "role": "execution_spec_only",
+          "canonical_task_ref": "morrowise/approved-work-handoff-feedback-v1",
+          "order_label": "MW-HANDOFF-01",
+          "title": "核准工作交接與執行回饋 v1"
+        }
+      }
+    },
+    {
+      "id": "write-temporary-doc-skill-v1",
+      "order_label": "JV-51",
+      "title": "跨專案臨時文件撰寫 Skill v1",
+      "status": "in_progress",
+      "track": "governance",
+      "priority": "medium",
+      "done_condition": "保留跨專案臨時文件撰寫 v1，依核准試點規格補強用途對應 Ready、來源與正反驗收、有限修訂、review／execution 交接、no_change 與回饋流程；完成基線／新版／獨立唯讀驗證及真實本地自我試用。A01–A04 舊能力不回歸，新增 TDL-A01–A08 逐項有版本綁定證據；本地交付與正式 remote closeout 分開，不含 Git mutation、外部操作、同步或部署。",
+      "acceptance_matrix": [
+        {
+          "id": "A01",
+          "criterion": "依六類專案性質與六類文件用途獨立分類；軟體、網站、研究、品牌、行政與混合情境選用適當模組，不強制八章。",
+          "verification": "相同文字情境的未套用基線與套用後測試，另做缺資料及用途辨識測試。",
+          "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md"
+        },
+        {
+          "id": "A02",
+          "criterion": "更新保留有效內容與歷史收據；同檔重疊停止。寫文件不擴張成程式、task、外部系統、Git 或部署授權。",
+          "verification": "既有文件更新與唯讀反例測試；核對 baseline dirty hashes 與 canonical 既有 task hashes。",
+          "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md"
+        },
+        {
+          "id": "A03",
+          "criterion": "temporary/non-canonical、來源與資料齡、scope、事實與假設、結論、失效與退場條件完整；其他專案不被強制套用 MorroWise 契約。",
+          "verification": "逐項閱讀 SKILL.md、profiles 與跨專案輸出；對照來源與授權邊界。",
+          "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md"
+        },
+        {
+          "id": "A04",
+          "criterion": "frontmatter、命名、版本、引用、共享路徑與必要 generated skill index 合規；只修改 execution_contract.outputs 及本 task 的核准範圍，保留舊 skill 與 task 歷史。",
+          "verification": "build-skill 七項檢查、update-skills-index.py --check、validate-tasks.mjs --changed-only --project morrowise、git diff --check、scope diff。",
+          "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md"
+        },
+        {
+          "id": "TDL-A01",
+          "criterion": "工作範圍有正式承接，Ready 與批准分離；缺 owner／授權卻實作即 fail",
+          "verification": "前置：核准 scope、task 與角色；操作：核對 semantic intake、writer/checker、版本／輪數／預算及授權；證據：task refs、approval refs、scope 與基線 hash",
+          "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md"
+        },
+        {
+          "id": "TDL-A02",
+          "criterion": "錯例抓到或漏抓均如實記；不得靠舊 17/17 或事後編基線",
+          "verification": "前置：舊版 skills、凍結 cases／expected；操作：跑 C1–C6 與保留案例的基線，逐案保存 verdict 與理由；證據：版本綁定輸入、實際輸出及評分",
+          "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md"
+        },
+        {
+          "id": "TDL-A03",
+          "criterion": "每項必要需求有承接，無關鍵猜測；新增章節不冒充完整性",
+          "verification": "前置：新版 writer 與本規格；操作：需求正反追蹤、六項 Ready 核對、接手演練；證據：requirements-to-output/acceptance 對照、演練結果",
+          "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md"
+        },
+        {
+          "id": "TDL-A04",
+          "criterion": "固定錯例均被指出、合法對照不誤擋；看見 receipt 就 pass 即 fail",
+          "verification": "前置：新版 checker、C1–C4；操作：執行至少八個正反輸入及 blocked-with-receipt 反例；證據：每案 verdict、finding、expected/observed、trial 分歧",
+          "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md"
+        },
+        {
+          "id": "TDL-A05",
+          "criterion": "裁剪、舊收據與原安全行為保留；誤擋盤點、越權或回歸即 fail",
+          "verification": "前置：C5–C6、既有 v1 情境；操作：重跑非軟體、授權、同檔／版本情境及舊 S1–S6／V1–V4；證據：before/after 輸出、受測 skill hash",
+          "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md"
+        },
+        {
+          "id": "TDL-A06",
+          "criterion": "正確停止／回正確環節，未弱化判準或自動追加授權；無止境迭代即 fail",
+          "verification": "前置：凍結 scope／rubric，受控失敗情境；操作：模擬兩輪同 blocker、新需求、資料變更、超時與無外部權限；證據：finding 處置、停止原因與最小 next action",
+          "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md"
+        },
+        {
+          "id": "TDL-A07",
+          "criterion": "repair_required 以修訂與重驗證據通過；no_change 以原文不變、獨立重驗及 synthetic 修復證據通過；blocked、假 diff、只有描述／自評或循環引用即 fail",
+          "verification": "前置：核准 implementation、獨立接手者；操作：依 §5.1 跑本文件分支；另跑保留案例，不供原聊天答案；證據：分支、正文／整檔 hash、finding 或 no_change 理由、實際重驗、獨立 review、必要 synthetic evidence",
+          "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md"
+        },
+        {
+          "id": "TDL-A08",
+          "criterion": "歷史證據保留、舊項不回歸、無 scope 外寫入；本地／remote／部署狀態分開",
+          "verification": "前置：最終版本、核准 exact scope；操作：重讀檔案、查引用／路徑／秘密樣式／diff；重跑適用既有 validators，將回饋承接原 task；證據：檢查結果、scope diff、task evidence refs、維護／退場交接",
+          "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md"
+        }
+      ],
+      "source_refs": [
+        "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/SKILL.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/profiles.md",
+        "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md",
+        "Vincent 2026-09-06 本 task：可以『同意新增這個 task，讓我接續建立及驗證 skill』",
+        "$COLLAB/notyet-harness/100_Todo/plan/2026-09-07-temporary-document-closed-loop-pilot-spec.md",
+        "Vincent 2026-09-07 本 task：核准「沿用 JV-51 擴充，由 Codex 依修訂規格做本地實作，另一個獨立 Agent 唯讀驗證，不含 Git 或外部操作」"
+      ],
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "將跨專案臨時文件撰寫行為收斂為共享 skill，維持 canonical sources 與 temporary workbench 的邊界；不建立第二套文件或 task registry。",
+        "evidence_plan": [
+          "A01–A04 本地驗證",
+          "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md",
+          "TDL-A01–TDL-A08 本地試點與獨立唯讀驗證"
+        ],
+        "reviewed_at": "2026-09-07"
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/write-temporary-doc-skill-v1",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#risk",
+          "#confirmationBias"
+        ],
+        "hc_reasoning": "保留雙軸裁剪而非增加固定章節；把來源一致性、唯一生成者、階段收據及程式變更對文件影響變成正反案例。先固定判準與舊版基線，再補既有技能；獨立 checker、防 no_change 假修訂、兩輪停止與回饋歸位，避免自己寫自己判成功。只延伸既有 task 與 skills，不新建 runtime／tracker。",
+        "hc_confidence": 0.88,
+        "evidence_refs": [
+          "Vincent 2026-09-06 本 task：可以『同意新增這個 task，讓我接續建立及驗證 skill』",
+          "morrowise/document-source-registry-and-human-sync",
+          "morrowise/skill-candidate-review-gate",
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-07-temporary-document-closed-loop-pilot-spec.md",
+          "Vincent 2026-09-07 本 task：核准「沿用 JV-51 擴充，由 Codex 依修訂規格做本地實作，另一個獨立 Agent 唯讀驗證，不含 Git 或外部操作」"
+        ],
+        "source_boundary": "HC is a thinking check, not source of truth；task 正本是本 tasks.json，skill 行為以指定 SKILL.md 為準。"
+      },
+      "architecture_decision": {
+        "decision": "not_required",
+        "evaluated_at": "2026-09-07",
+        "reason": "既有 skills 的本地方法與薄路由補強；沿用同一 task、正本、執行器及 gate，未新增 runtime／registry／scheduler 或架構正本。規格 proposed version_improvement 不等於授權改架構索引。"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "execution_boundary": "僅 execution_contract.outputs 所列九個檔案與 JV-51；Codex 單一 writer，tdl_independent_checker 唯讀驗證；不修改其他 task、adapter、原說明書、外部鏡像、Git 或部署。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 明確核准新增指定 task 並接續建立及驗證 skill。",
+            "evidence_refs": [
+              "Vincent 2026-09-06 本 task：可以『同意新增這個 task，讓我接續建立及驗證 skill』"
+            ],
+            "recorded_at": "2026-09-06",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/document-source-registry-and-human-sync",
+                "morrowise/skill-candidate-review-gate"
+              ],
+              "scope_comparison": {
+                "problem": "JV-36 管理 MorroWise 文件來源治理與同步；JV-41 管理 skill 候選提醒。本 task 是已核准跨專案臨時文件 authoring skill，非以上兩者實作。",
+                "owner_source_of_truth": "共用 Agent 行為由 MorroWise task 追蹤；生成的各專案文件仍依自己的 owner 與正本，不移交 MorroWise。",
+                "inputs_outputs": "輸入是使用者需求、專案規則與來源；輸出是可裁剪的临時文件撰寫 skill 和本地驗證證據，不產出同步 runtime 或 registry。",
+                "lifecycle_completion": "本地建立、情境驗證、skill 格式與索引通過後交付使用者；task 正式 closeout 另依既有授權與 remote truth 規則，不提前宣稱完成。"
+              },
+              "decision_reason": "相關但責任、輸入輸出與完成邊界不同；新增一個已核准的 authoring skill task，不擴張 JV-36 或 JV-41。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-06",
+                "evidence_refs": [
+                  "Vincent 2026-09-06 本 task：可以『同意新增這個 task，讓我接續建立及驗證 skill』"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "依 Vincent 允許接手當前 tasks.json 的授權，以最新基準保留所有其他 task，回填本地 skill 驗證收據；不提前完成 remote closeout。",
+            "evidence_refs": [
+              "Vincent 2026-09-07 本 task：你可以修改 tasks.json 接續完成 skill",
+              "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md"
+            ],
+            "recorded_at": "2026-09-07",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/document-source-registry-and-human-sync",
+                "morrowise/skill-candidate-review-gate"
+              ],
+              "scope_comparison": {
+                "problem": "JV-36 管理 MorroWise 文件來源治理與同步；JV-41 管理 skill 候選提醒。本 task 是已核准跨專案臨時文件 authoring skill，非以上兩者實作。",
+                "owner_source_of_truth": "共用 Agent 行為由 MorroWise task 追蹤；生成的各專案文件仍依自己的 owner 與正本，不移交 MorroWise。",
+                "inputs_outputs": "輸入是使用者需求、專案規則與來源；輸出是可裁剪的临時文件撰寫 skill 和本地驗證證據，不產出同步 runtime 或 registry。",
+                "lifecycle_completion": "本地建立、情境驗證、skill 格式與索引通過後交付使用者；task 正式 closeout 另依既有授權與 remote truth 規則，不提前宣稱完成。"
+              },
+              "decision_reason": "相較目前 Git HEAD，本 task 仍是尚未 commit 的 genuinely_new task；本輪僅補同一已核准 task 的本地驗證 bookkeeping，不改身份、scope、驗收矩陣或建立其他 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-07",
+                "evidence_refs": [
+                  "Vincent 2026-09-07 本 task：你可以修改 tasks.json 接續完成 skill"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准沿用 JV-51 擴充閉環本地試點；保留 v1 正本身份、舊矩陣與本地驗證歷史，新增獨立驗證範圍，不做 remote closeout。",
+            "evidence_refs": [
+              "Vincent 2026-09-07 本 task：核准「沿用 JV-51 擴充，由 Codex 依修訂規格做本地實作，另一個獨立 Agent 唯讀驗證，不含 Git 或外部操作」",
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-09-07-temporary-document-closed-loop-pilot-spec.md"
+            ],
+            "recorded_at": "2026-09-07",
+            "previous_acceptance_matrix": [
+              {
+                "id": "A01",
+                "criterion": "依六類專案性質與六類文件用途獨立分類；軟體、網站、研究、品牌、行政與混合情境選用適當模組，不強制八章。",
+                "verification": "相同文字情境的未套用基線與套用後測試，另做缺資料及用途辨識測試。",
+                "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md"
+              },
+              {
+                "id": "A02",
+                "criterion": "更新保留有效內容與歷史收據；同檔重疊停止。寫文件不擴張成程式、task、外部系統、Git 或部署授權。",
+                "verification": "既有文件更新與唯讀反例測試；核對 baseline dirty hashes 與 canonical 既有 task hashes。",
+                "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md"
+              },
+              {
+                "id": "A03",
+                "criterion": "temporary/non-canonical、來源與資料齡、scope、事實與假設、結論、失效與退場條件完整；其他專案不被強制套用 MorroWise 契約。",
+                "verification": "逐項閱讀 SKILL.md、profiles 與跨專案輸出；對照來源與授權邊界。",
+                "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md"
+              },
+              {
+                "id": "A04",
+                "criterion": "frontmatter、命名、版本、引用、共享路徑與 generated skill index 合規；只新增指定 skill、必要索引及本 task。",
+                "verification": "build-skill 七項檢查、update-skills-index.py --check、validate-tasks.mjs --changed-only --project morrowise、git diff --check、scope diff。",
+                "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md"
+              }
+            ],
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/document-source-registry-and-human-sync",
+                "morrowise/skill-candidate-review-gate"
+              ],
+              "scope_comparison": {
+                "problem": "既有 JV-51 的臨時文件撰寫擴充為可執行檢查及有限回饋；JV-36 是文件同步，JV-41 是候選提醒，均不取代本責任。",
+                "owner_source_of_truth": "同一 MorroWise JV-51 管理技能範圍／驗收；方法正本回既有 skills，個案臨時文件保持 non-canonical。",
+                "inputs_outputs": "輸入核准試點與舊版技能，輸出現有技能補強、兩份 reference 與驗證證據；不產出新 runtime 或同步工具。",
+                "lifecycle_completion": "只完成本地更新與独立驗證；task in_progress，Git／remote closeout 另依授權。"
+              },
+              "decision_reason": "操作上 amend 已存在工作樹中的 JV-51，非新增 task；它尚未存在 Git HEAD，依現行 validator 的 HEAD 比較保留 genuinely_new intake，並保存原身份及 v1 證據。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-07",
+                "evidence_refs": [
+                  "Vincent 2026-09-07 本 task：核准「沿用 JV-51 擴充，由 Codex 依修訂規格做本地實作，另一個獨立 Agent 唯讀驗證，不含 Git 或外部操作」"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "依原核准本地協作更新已交還 ownership 及實際階段結果，移除過時同檔暫停現況；保留完整歷史及未完成驗收，不執行正式 closeout。",
+            "evidence_refs": [
+              "Vincent 2026-09-07 本 task：接下來可在scope 內，一口氣完成協作？及驗收標準驗收？",
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-09-07-temporary-document-closed-loop-pilot-spec.md#9.5"
+            ],
+            "recorded_at": "2026-09-07",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/document-source-registry-and-human-sync",
+                "morrowise/skill-candidate-review-gate"
+              ],
+              "scope_comparison": {
+                "problem": "既有 JV-51 的臨時文件撰寫擴充為可執行檢查及有限回饋；JV-36 是文件同步，JV-41 是候選提醒，均不取代本責任。",
+                "owner_source_of_truth": "同一 MorroWise JV-51 管理技能範圍／驗收；方法正本回既有 skills，個案臨時文件保持 non-canonical。",
+                "inputs_outputs": "輸入核准試點與舊版技能，輸出現有技能補強、兩份 reference 與驗證證據；不產出新 runtime 或同步工具。",
+                "lifecycle_completion": "只完成本地更新與独立驗證；task in_progress，Git／remote closeout 另依授權。"
+              },
+              "decision_reason": "操作上只 amend 工作樹既有 JV-51 的交還／實測 evidence；不新增 task、不變更 scope 或矩陣。它仍尚未存在 Git HEAD，依現有 validator 保留 genuinely_new intake 的 HEAD 比較語意。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-07",
+                "evidence_refs": [
+                  "Vincent 2026-09-07 本 task：接下來可在scope 內，一口氣完成協作？及驗收標準驗收？",
+                  "$COLLAB/notyet-harness/100_Todo/plan/2026-09-07-temporary-document-closed-loop-pilot-spec.md#9.5"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "完成原核准閉環本地協作與獨立驗收，保存真實12-ID acceptance receipt及F-B01修訂重驗；只更新JV-51，不提前remote closeout。",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md",
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-09-07-temporary-document-closed-loop-pilot-spec.md#9.7",
+              "Vincent 2026-09-07 本 task：接下來可在scope 內，一口氣完成協作？及驗收標準驗收？",
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-09-07-temporary-document-closed-loop-pilot-spec.md#9.5"
+            ],
+            "recorded_at": "2026-09-07",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/document-source-registry-and-human-sync",
+                "morrowise/skill-candidate-review-gate"
+              ],
+              "scope_comparison": {
+                "problem": "既有 JV-51 的臨時文件撰寫擴充為可執行檢查及有限回饋；JV-36 是文件同步，JV-41 是候選提醒，均不取代本責任。",
+                "owner_source_of_truth": "同一 MorroWise JV-51 管理技能範圍／驗收；方法正本回既有 skills，個案臨時文件保持 non-canonical。",
+                "inputs_outputs": "輸入核准試點與舊版技能，輸出現有技能補強、兩份 reference 與驗證證據；不產出新 runtime 或同步工具。",
+                "lifecycle_completion": "只完成本地更新與独立驗證；task in_progress，Git／remote closeout 另依授權。"
+              },
+              "decision_reason": "只 amend 工作樹既有 JV-51 的本地驗收／協作證據與交付摘要，身份／scope／12項矩陣不变、不新增task。它仍未存在Git HEAD，沿現有validator的HEAD比較保留genuinely_new intake；不代表本輪重新立項。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-07",
+                "evidence_refs": [
+                  "Vincent 2026-09-07 本 task：接下來可在scope 內，一口氣完成協作？及驗收標準驗收？",
+                  "$COLLAB/notyet-harness/100_Todo/plan/2026-09-07-temporary-document-closed-loop-pilot-spec.md#9.5"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "test_contract": {
+        "applicability": "exempt",
+        "tdd_exemption_reason": "本次仍無新可執行程式；依 writing-skills 對舊版／新版 skills 跑凍結的 Agent 正反情境、獨立 checker 與本文件實際試點，並沿用格式檢查；非免驗收。",
+        "alternative_verification_commands": [
+          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/update-skills-index.py\" --check",
+          "node \"$COLLAB/harness-mc/scripts/validate-tasks.mjs\" --changed-only --project morrowise",
+          "依 references/verification.md 重跑隔離 Agent 情境"
+        ],
+        "test_level": [
+          "document_structure",
+          "agent_scenario"
+        ],
+        "fixture_refs": [
+          "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md",
+          "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/closed-loop-cases.md",
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-07-temporary-document-closed-loop-pilot-spec.md"
+        ],
+        "runtime_evidence_required": false,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md"
+        ]
+      },
+      "note": "2026-09-06：核准建立及本地驗證。Repo Ready 原始結果 needs_push；fetch 成功，兩 repo 均 main、ahead 1 / behind 0，既有 commits 與本 scope 無重疊。依 Vincent 先前『該 commit 有沒有 push 不影響你的作業』指示保留，不 push、不改 gate。未將此例外宣稱為 Repo Ready 原生通過。\n2026-09-07：本次沿用先前未 push 不影響作業的本地邊界與最新明確本地實作授權；不 fetch、push 或 remote claim，不稱原生 Repo Ready／Remote Closeout 通過。",
+      "summary": "2026-09-07：JV-51閉環本地協作完成，原12項獨立實證與真實acceptance通過；writer v1.1／review v1.3／execution v1.7，F-B01一輪修復且兩位重驗通過，原工作本六項相容保留。task維持in_progress，local_verified與remote closeout分開；全域3個scope外既有格式fail如實保留。",
+      "execution_contract": {
+        "owner": "morrowise/write-temporary-doc-skill-v1",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#write-temporary-doc-skill-v1",
+        "inputs": [
+          "Vincent 已核准的跨專案雙軸選型與臨時文件邊界",
+          "canonical A01–A04、當輪 task／dirty 基準、build-skill 與 writing-skills",
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-07-temporary-document-closed-loop-pilot-spec.md",
+          "Vincent 2026-09-07 本 task：核准「沿用 JV-51 擴充，由 Codex 依修訂規格做本地實作，另一個獨立 Agent 唯讀驗證，不含 Git 或外部操作」"
+        ],
+        "outputs": [
+          "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/SKILL.md",
+          "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/profiles.md",
+          "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/closed-loop.md",
+          "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/closed-loop-cases.md",
+          "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md",
+          "$COLLAB/notyet-harness/000_Agent/skills/review/SKILL.md",
+          "$COLLAB/notyet-harness/000_Agent/skills/vincent-superpowers/03-execution/SKILL.md",
+          "$COLLAB/notyet-harness/000_Agent/skills/SKILLS-INDEX.md",
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-07-temporary-document-closed-loop-pilot-spec.md"
+        ],
+        "stop_condition": "同檔併發變動、scope 擴張、格式／引用／驗收失敗或所需權限未核准時停止對應寫入；未核准不 commit、push、同步、部署或改其他 task。",
+        "write_boundary": "九個 outputs 加本 tasks.json 的 JV-51；更新前核對整檔基線，同檔他人變動即停止；不含 Git mutation、外部同步／服務、其他 tasks、記憶與客戶端設定。",
+        "format_maintenance": {
+          "status": "passed_format_only",
+          "verified_at": "2026-09-08",
+          "approval_ref": "Vincent 本 task：可以依 3 → 4 → 1 → 6 提交；限本機 exact-scope commits，含第 4 組四行格式修正與必要相依證據維護；不含 push、預設啟用或 task terminal transition。",
+          "scope": "profiles.md 第 46–49 行以反斜線取代兩個尾端空白，保留四個 Markdown hard breaks；verification.md 追加本次限定複驗，其他功能與原矩陣不變。",
+          "historical_behavior_ref": "execution_contract.local_verification；2026-09-07T14:36:00.513Z 的原始物件原位保留，source_sha256 與 acceptance_receipt 未倒填；須與本格式維護的等價證據一併解讀。",
+          "current_source_sha256": {
+            "write-temporary-doc/SKILL.md": "7ba6916f3e029ac8a148863feb0f42a353c36ecccf6b9a9441df8cc20864a4c7",
+            "write-temporary-doc/references/profiles.md": "b3b5028d008c5669273e5046d6fed0fde54c8e519d36ef02f70c460f96109f2d",
+            "write-temporary-doc/references/closed-loop.md": "325e5763e6fb2f17e8db0078d8c8de51edbb5a4a479a65097545d4166d4aab41",
+            "review/SKILL.md": "ed89a1d62c6a64da6f10bc2a679ec9e34e46bd17bd310782d003dda4a608f87d",
+            "vincent-superpowers/03-execution/SKILL.md": "2d50dd755ecc3cc5e2e29db0a1414078b949dba112af63b46a9f744792b8041b"
+          },
+          "previous_profiles_sha256": "2c324964a0c1732eb9ff342805ae5f277ffed1edb8c2715710246af64adf9483",
+          "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md#格式維護與本機提交前複驗2026-09-08",
+          "evidence_sha256": "60b55d606a9812e788f01200b58303e663c0fbe0e39ab78771075a858d0a99d7",
+          "checks": {
+            "whitespace": "RED exit 3：四行 trailing whitespace；GREEN no-index --check exit 1 且無 diagnostics，表示新檔有 diff，非 whitespace failure。九個第 4 組檔案逐檔檢查通過。",
+            "render_equivalence": "獨立 checker 用 Pandoc 3.9 的 CommonMark／GFM；主 Agent 用既有 Marked。各 renderer 修前後完整 HTML 均 byte-identical，保留四個 hard breaks；反向 byte 還原精確得到舊 hash。",
+            "s2_regression": "tdl_independent_checker 重新產出固定 S2 評估暫稿並判 pass；保留過期／幣別未知／條件比較／owner 待定／正式承接／未採購邊界。已曝光案例的限定重驗，非 fresh-context 盲測。",
+            "structural": "既有 validator 對三份 exact skill problems=[]；verify-validate-skills、index --check 與 MorroWise changed-only task validator exit 0；無 index 漂移。"
+          },
+          "historical_claim_correction": "原 local_verification.structural_checks／verification 的全檔空白通過敘述不能證明未追蹤 profiles 的四行；本輪才重現負例並修正。保留原收據供追溯，不宣稱全域 skill 檢查通過。",
+          "limitations": "完整 CL-1／SEALED-02／P3 Agent campaign 未重跑，未新造或重跑正式 acceptance gate；原行為證據只依四行語意等價承接。task status、12 項矩陣、其他 92 tasks 與舊 local_verification 皆不改。"
+        },
+        "local_verification": {
+          "status": "passed",
+          "verified_at": "2026-09-07T14:36:00.513Z",
+          "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md",
+          "source_sha256": {
+            "write-temporary-doc/SKILL.md": "7ba6916f3e029ac8a148863feb0f42a353c36ecccf6b9a9441df8cc20864a4c7",
+            "write-temporary-doc/references/profiles.md": "2c324964a0c1732eb9ff342805ae5f277ffed1edb8c2715710246af64adf9483",
+            "write-temporary-doc/references/closed-loop.md": "325e5763e6fb2f17e8db0078d8c8de51edbb5a4a479a65097545d4166d4aab41",
+            "review/SKILL.md": "ed89a1d62c6a64da6f10bc2a679ec9e34e46bd17bd310782d003dda4a608f87d",
+            "vincent-superpowers/03-execution/SKILL.md": "2d50dd755ecc3cc5e2e29db0a1414078b949dba112af63b46a9f744792b8041b"
+          },
+          "pilot": {
+            "version": "v0.5",
+            "branch": "repair_required",
+            "finding": "F-B01 resolved",
+            "repair_rounds": 1,
+            "body_sha256": "04def2f829985b82f7bdb59c12e1f59886893d534b2737ffc5131434ad31a195",
+            "receipt_appended_file_sha256": "1fc9aecb897768a5929650ca90dc02379843aeb2d7e992564a71d9816dee4ab3",
+            "evidence_ref": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-07-temporary-document-closed-loop-pilot-spec.md#9.6"
+          },
+          "acceptance_gate": {
+            "exit_code": 0,
+            "decision": "allow",
+            "event_decision": "allow"
+          },
+          "acceptance_receipt": {
+            "matrix_ref": "milestones/morrowise/tasks.json#write-temporary-doc-skill-v1.acceptance_matrix",
+            "matrix_fingerprint": "sha256:3072b6b5807fb0d818755126bb9ccfdbffc3a66c1f389fd7157bcc94dcb66392",
+            "caller_matrix_fingerprint": "sha256:3072b6b5807fb0d818755126bb9ccfdbffc3a66c1f389fd7157bcc94dcb66392",
+            "required_ids": [
+              "A01",
+              "A02",
+              "A03",
+              "A04",
+              "TDL-A01",
+              "TDL-A02",
+              "TDL-A03",
+              "TDL-A04",
+              "TDL-A05",
+              "TDL-A06",
+              "TDL-A07",
+              "TDL-A08"
+            ],
+            "results": [
+              {
+                "id": "A01",
+                "status": "pass"
+              },
+              {
+                "id": "A02",
+                "status": "pass"
+              },
+              {
+                "id": "A03",
+                "status": "pass"
+              },
+              {
+                "id": "A04",
+                "status": "pass"
+              },
+              {
+                "id": "TDL-A01",
+                "status": "pass"
+              },
+              {
+                "id": "TDL-A02",
+                "status": "pass"
+              },
+              {
+                "id": "TDL-A03",
+                "status": "pass"
+              },
+              {
+                "id": "TDL-A04",
+                "status": "pass"
+              },
+              {
+                "id": "TDL-A05",
+                "status": "pass"
+              },
+              {
+                "id": "TDL-A06",
+                "status": "pass"
+              },
+              {
+                "id": "TDL-A07",
+                "status": "pass"
+              },
+              {
+                "id": "TDL-A08",
+                "status": "pass"
+              }
+            ],
+            "exact_id_coverage": true,
+            "all_passed": true
+          },
+          "agent_scenarios": {
+            "CL1_baseline": [
+              {
+                "trial": "cl1_baseline_a",
+                "passed": 10,
+                "total": 12
+              },
+              {
+                "trial": "cl1_baseline_b",
+                "passed": 10,
+                "total": 12
+              }
+            ],
+            "CL1_green": [
+              {
+                "trial": "cl1_green_a",
+                "passed": 12,
+                "total": 12
+              },
+              {
+                "trial": "cl1_green_b",
+                "passed": 12,
+                "total": 12
+              }
+            ],
+            "legacy_regression": "S1-S6/V1-V4 重跑；S5缺owner變體另列，原S5由兩fresh trials補驗通過；S2示例曝光只算歷史回歸。",
+            "CR1": {
+              "trials": 2,
+              "passed_per_trial": 5,
+              "total_per_trial": 5
+            },
+            "SEALED02": {
+              "baseline_passed": 4,
+              "green_passed": 4,
+              "input_sha256": "d347f847435ccb1d9a014072227eca83237fb5ce611e4443ef702bdb3bbad1e0",
+              "note": "修改者未在新版測完前見題；舊新版都通過，只算回歸與受測泛化。"
+            },
+            "fresh_handoff": "兩fresh reviewer各走七步，B發現F-B01、A漏抓；保留分歧，v0.5修後兩者N/P共4/4，均判resolved。"
+          },
+          "independent_review": {
+            "reviewer": "tdl_independent_checker",
+            "reviewed_at": "2026-09-07T14:35:06Z",
+            "result": "12/12 local evidence sufficient; no scoped blocker",
+            "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md"
+          },
+          "collaboration": {
+            "peer_title": "MorroWise 開發",
+            "peer_thread_id": "01a0751a-e91b-7d91-9b07-c1c2b361a7e7",
+            "evidence_ref": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md#10",
+            "compatibility": "6/6 file-contract review passed on same five candidate hashes; no runtime/pilot claim",
+            "ownership": "JV-51 single writer for approved shared skills; peer owns original workbook/runtime; task file window serialized"
+          },
+          "structural_checks": {
+            "exact_skills": "3/3 problems=[] using existing validateSkillFile",
+            "fixture_verifier": "exit 0",
+            "index_check": "exit 0; unchanged 52 skills / 1 archive",
+            "task_validator": "exit 0; 0 issues / 0 warnings",
+            "scope_diff": "exact checks passed; other 92 tasks unchanged",
+            "global_changed_skills": "exit 1; pre-existing out-of-scope cc-push/executing-plans/multi-machine-repo-coordination format failures unchanged; not repaired or reported green"
+          },
+          "fixture_runtime_boundary": "本地技能文件、合成文字情境、真實唯讀gate與獨立檢查；不宣稱production E2E、客戶端自動載入、remote closeout、外部同步、部署或另一案真實pilot。",
+          "scope_evidence": {
+            "other_tasks_sha256": "8c43c039abaad4588cc68b0031e75cbc44e5ce26f85262ebb9cfcb4bdf70791b",
+            "untouched_dirty_files": 63,
+            "peer_owned_workbook_change_excluded": true,
+            "git_heads_unchanged": true,
+            "state_override_present": false
+          }
+        },
+        "verifiers": [
+          "node \"$COLLAB/harness-mc/scripts/verify-validate-skills.mjs\"",
+          "node \"$COLLAB/harness-mc/scripts/validate-skills.mjs\" --changed-only",
+          "python3 \"$COLLAB/notyet-harness/000_Agent/scripts/update-skills-index.py\" --check",
+          "node \"$COLLAB/harness-mc/scripts/validate-tasks.mjs\" --changed-only --project morrowise",
+          "git diff --check（各 repo exact scope）"
+        ],
+        "delivery_state": "local_verified_pending_remote_closeout",
+        "next_action": "本輪核准本地協作與12項驗收已完成，方法由原skill owner維護；來源／skill／rubric改版時重驗相依案例。是否進一步Git／remote closeout或其他專案套用由Vincent另核准；不自動commit、push、同步、部署、關task或承接另一案runtime/pilot。",
+        "local_verification_history": [
+          {
+            "status": "passed",
+            "verified_at": "2026-09-07",
+            "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md",
+            "source_sha256": {
+              "SKILL.md": "bbc7d85b384ffc5d5e6cf4a325aa84b65b71d868e3ccd497a6978a5275c8a9ac",
+              "references/profiles.md": "e4001e39a41d15c60e0ae5d6c178cb83aec2cc372a7836774b2793371995fa32"
+            },
+            "acceptance_receipt": {
+              "matrix_ref": "milestones/morrowise/tasks.json#write-temporary-doc-skill-v1.acceptance_matrix",
+              "matrix_fingerprint": "sha256:c05dc48c40bcd2c7b05dd67998a38a51ad1c7e4329ec7d3b371628a0815a2c43",
+              "caller_matrix_fingerprint": "sha256:c05dc48c40bcd2c7b05dd67998a38a51ad1c7e4329ec7d3b371628a0815a2c43",
+              "required_ids": [
+                "A01",
+                "A02",
+                "A03",
+                "A04"
+              ],
+              "results": [
+                {
+                  "id": "A01",
+                  "status": "pass"
+                },
+                {
+                  "id": "A02",
+                  "status": "pass"
+                },
+                {
+                  "id": "A03",
+                  "status": "pass"
+                },
+                {
+                  "id": "A04",
+                  "status": "pass"
+                }
+              ],
+              "exact_id_coverage": true,
+              "all_passed": true
+            },
+            "agent_scenarios": {
+              "primary_cases": 6,
+              "variant_cases": 4,
+              "final_passed": 10,
+              "refactor": "V4 初輪混淆文件／活動日期；規則澄清並重跑通過。"
+            },
+            "structural_checks": "build-skill 七項通過；共享路徑／秘密字樣／本地引用檢查通過；skill validator 與 generated index check 通過。",
+            "fixture_runtime_boundary": "獨立 Agent 的文字情境與本地檔案檢查；不宣稱真實專案落檔、生產 E2E、客戶端自動觸發或 remote closeout。"
+          },
+          {
+            "status": "not_run",
+            "verified_at": "2026-09-07",
+            "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md",
+            "note": "P0 本地 task validator／work-anchor 與獨立接手核對已做；完整 12 項驗收未執行。P1 固定 12 正反輸入，另有兩個保留案例舊版 trial 封存。review/execution 在基線後被另一工作本 session 修改，停止 skill 寫入；舊基線不能代表新版本。",
+            "delivery_state": "local_paused_same_file_overlap",
+            "next_action": "確認修改 review/SKILL.md 與 vincent-superpowers/03-execution/SKILL.md 的工作本 session 已交還唯一 writer，再重讀最新兩檔與來源規則、核定目標版本並重建受影響基線；不覆寫、不同 hunk 合併或另建副本繞過。"
+          },
+          {
+            "status": "partial",
+            "verified_at": "2026-09-07",
+            "evidence_ref": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/verification.md",
+            "note": "同檔 ownership 已明確交還；新舊 CL-1 兩 trials 完成，baseline 各10/12、新版各12/12；原跨專案十情境回歸已跑。独立保留題、文件接手及補充相容案例仍驗證中，不填整體 pass 或正式 acceptance receipt。",
+            "delivery_state": "local_implementation_verified_independent_review_pending"
+          }
+        ]
+      }
     }
   ]
 }

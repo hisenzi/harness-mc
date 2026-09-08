@@ -3508,7 +3508,7 @@
     },
     {
       "id": "document-source-registry-and-human-sync",
-      "status": "todo",
+      "status": "in_progress",
       "commits": [
         "9d11047"
       ],
@@ -3722,18 +3722,50 @@
         ],
         "runtime_evidence_required": true,
         "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync.test_contract.evidence_refs",
-        "evidence_refs": []
+        "evidence_refs": [
+          "node scripts/verify-morrowise-document-sources.mjs — exit 0；24/24 source／negative cases",
+          "node scripts/generate-morrowise-documentation.mjs --local --check — exit 0；bundle fresh、source-bound、read_only",
+          "OPERATOR-GUIDE.md sha256:5371dde6fe2666bf8b0ff8e7f23974acd4a86e07d34cb77d827a42b116d38b00；source spec sha256:924b1e6d310bd2f950f5b9424eb636fcea778fc7d125db10f6bfd5aae8892464",
+          "首章 local slice 已供 MC-DOCS-01 唯讀消費；JV-36 完整矩陣、R5、Heptabase／MANUAL 外部同步與整案正式驗收仍未完成",
+          "以上為 v0.1.0 歷史基線；2026-09-08 Vincent 要求補 Agent 建制檔案／步驟、版本編號與 toggle，沿原第一章本地 scope 修訂。",
+          "v0.2.0 OPERATOR-GUIDE.md sha256:b23f98c8f2c170c6ae20f29b2d3fc3088c778718deb2bff0ab7e0e33cbb346c2；source spec 未變。增加 7 步／12 類檔案、輸入操作產物驗收與失敗去向、文件／runtime 分流、preview 啟停、acceptance event／slice 邊界及版本歷史；registry 摘要人工 review 與 hash 同步。",
+          "v0.2.0 接手檢查發現並修正 3 項：只補指南跳過 runtime、build 後 loopback 預覽入口與停止、整案 receipt gate 與 slice 分流。Avicenna 最終獨立 PASS；docs:check、source 24/24、surface、tsc 均 exit 0，完整 AST 的 text/code/link 保留。",
+          "v0.2.0 仍只提供 JV36-P2-01 首章階段 evidence；不把指南補完當協作 runtime 建置完成，未修改完整矩陣／R5／task status，無 Git 或外部操作。",
+          "2026-09-08 manual-local-v2／guide v0.3.0 本地階段收據；Vincent 已核准原兩 task amendment及六章實作。本輪status保留in_progress，舊v0.1/v0.2 evidence是歷史，未發送偽造全矩陣acceptance event。",
+          "固定來源：spec v3.2 sha256:824f33a60e0c15b0dfe3b0d5d76637455da96cd14808ade51a42a2676fd2dd94；guide sha256:81d60b440f27abc8ac249356ec534c316b0aa80e1702be8b873e45363d298ddf；registry sha256:f5c74a7e55b64697b05e1540889122373104765a4b45a20f82d9cb8b456c1914；bundle sha256:35b723d79acfcce9969e41c9a887e97029c2ca955aebcf1ba4b980cc8c2a7c90；payload sha256:04b46db8ed1956e0fdacae0cfc2a155b7a6ca61658a3c47065efdac6ef81e43f。",
+          "Avicenna /root/avicenna_independent_review 唯讀獨立驗收：六章只靠文件接手、必要canonical來源與命令、source52/52、impact25/25、surface23checks、current impact allow、sync7產物/12頁/save_count0。最終artifact驗證2026-09-08 20:17:30 +08；browser/build由Codex root另實跑，不冒稱獨立視覺驗收。",
+          "scope限制：六章的23個精確capability來源受本地gate檢查，不是全repo間接依賴或自動merge gate。未改依賴、MANUAL、ARCHITECTURE、runtime、skills、排程或global gates；未Git stage/commit/push/fetch/merge/branch/worktree、Heptabase apply、外部同步或Zeabur部署。generated outputs僅.tmp；public read model未重建。",
+          "JV36-P2-01 僅本地R1–R4切片：六個精確chapter markers、六個reviewed摘要、單一正文、逐章合法SemVer/header/maintenance/latest-history一致。node scripts/verify-morrowise-document-sources.mjs exit0 52/52，保留舊24回歸；缺來源、錯hash/marker/version、未知CLI flags、symlink/public模式拒絕；只改一章可獨立升版。",
+          "文件影響TDD：先重現工具來源改動而正文不變，缺review拒絕；node scripts/verify-morrowise-documentation-impact.mjs --self-test exit0 25/25。獨立A→B→C fixture曾可重用B正文假稱updated，修復有效HEAD review baseline後拒絕entry:document_not_updated；合法獨立no-impact與真正正文再修訂均通過。初次uncommitted seed由checker核實，不透過刷新mapping hash消除差異。",
+          "本次 documentation update_required 的實際review evidence：writer Codex /root；reviewer Avicenna /root/avicenna_independent_review；理由是A→B→C有效基準修復及相應章節操作說明更新。四source SHA256：generator366e699732df0dcf8586e54d97ecdb25bada77444ae9260034469d8229a086aa、schema91c6474762f0ef65479fe422bfd5ccfd264ad2e12ed1b127951206ea23d42b35、impactlib522736ae6fd4b7ea766c8bfed5670a13d18bf2727445477f998a8123fa93cc13、syncverifier593bcc72435a82d96ac0dc39972439849b4958229be8dd1a091ed08ed16d5b94；相應chapter SHA256 81d81269a029481849481716e36102a74b9e5d63859950d3c2bb4b2338585470。以上與registry impact_reviews逐一核實，機械欄位不能取代這次真實審查。",
+          "node scripts/generate-morrowise-documentation.mjs --local --changed-only exit0；最後二跑save_count=0/hasChange=false。node scripts/verify-morrowise-documentation-sync.mjs exit0，synced=true/checked7/pages12。CLI在生成前驗impact；7檔stage/atomic rename/bundle-last，中段與末段失敗fixture均回復前一組bytes；--check不写入；未手改generated正文。",
+          "JV36-P2-01完整cross-repo正式outputs、MANUAL compatibility migration與ARCHITECTURE薄入口尚未全驗；JV36-P2-02/R5 NOT_RUN。此證據不修復或關閉Heptabase舊source parity問題，不宣稱JV-36整案完成。",
+          "2026-09-08 提交前來源補正與重驗：Vincent 本次要求 commit；本地提交範圍另依 exact commit plan 確認，不沿用原 manual_phase2 排除 Git 的實作授權擴權。舊證據保留為當時版本歷史，本次亦維持 task in_progress / manual_phase2 local_verified，不宣告完整矩陣完成。",
+          "本次固定來源：spec v3.3 sha256:fd88764129aee262b37c779d22c0e78692f64b54275abea3a7f17afdf8c28ca2；guide sha256:52f6513fefa57c7cd3d483c0b70f509fe9337e86bfc882e16a6fc035b1828077；registry sha256:b8427633608599f594be9128afcbd0b5b99699be342227c5355ea3a814133e5c；bundle sha256:ae3921d807aeb151938eea3cc9a1ca253980dd74f79d32a2cf1ad048fa320dbe；payload sha256:f2539b47df4af5abd43fd6893ce4b2e03ea5f6ccea52f12705a0294b3cb96d76。",
+          "上游由 MorroWise 開發自行提交 harness-mc 279f4e088b501462c555fa19345ed1509ed05d49；四項精確 prerequisite 目前 bytes 等於該 commit。只補 guide collaboration v0.4.0，另五章保持 v0.3.0；沒有接管上游 runtime、skill 或 ownership。",
+          "本輪重跑 npm run test:morrowise-documentation exit0：source 52/52、impact self-test 25/25、surface 23/23、actual sync synced=true/hasChange=false/save_count=0/checked=7/pages=12/impact=allow。generator --local --changed-only 首跑 save_count=5、二跑 save_count=0；未手改 generated 內容。",
+          "提交前 Repo Ready 已重新 fetch 兩 repo：notyet-harness main ahead10/behind0、harness-mc main ahead5/behind0；scope_owned_with_exclusions，唯一 needs_push 沿用 Vincent 已核准的本地作業豁免，不能描述為遠端已同步或完整 READY。index 空；不 push、部署、Heptabase apply、重建 public、修改 runtime 或建立新追蹤系統。",
+          "獨立內容審查 Avicenna /root/avicenna_independent_review 實讀並通過：optional requirement_baseline 的來源 marker 範圍與逐列 fingerprint、pending_reason 導致 verification 前 requirements_not_ready / not_run、回原 owner 補齊來源/判定/verifier再批准；legacy 未選欄位及原 runtime_evidence_unverified gate 仍保留。新協作章 sha256:18863a206da6c1d4e1a0e03c9d05197494da3537c02ea4ee2200db0d0789fed0；上游 workbook spec sha256:46bd42541798c7bc4881a5e4cbb2b1f4d18fb4d8c3dc2466f3741df02cc07266。",
+          "Registry 僅更新六 records 全檔來源/摘要審查指紋、協作章版本並 append 一筆真實 update_required review；全部凍結 capability mappings baseline 與舊 documentation review deep-equal。Avicenna 另驗目前 impact allow、產物冪等與 registry 成為未來 HEAD baseline 的純記憶體模擬 allow；不是重設 hash 掩蓋漂移，也不是正式 merge gate。",
+          "此補正不擴大 JV36 本地 R1–R4 切片；完整跨 repo 正式 outputs、MANUAL 遷移、ARCHITECTURE 薄入口、R5 及 Heptabase 舊 source parity 問題均不在本輪完成宣稱。"
+        ]
       },
       "jv32_route": {
         "workflows": [
-          "task-lifecycle"
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review"
         ],
         "decision_input": [
           "既有 JV-36 文件治理、Document Source Registry、generated document index 與 ARCHITECTURE.md managed-block 合約",
-          "MC-DASH-V2-A06 的文獻、演進與文章素材保存要求，以及 Vincent 對 ARCHITECTURE.md 薄連結的新增要求"
+          "MC-DASH-V2-A06 的文獻、演進與文章素材保存要求，以及 Vincent 對 ARCHITECTURE.md 薄連結的新增要求",
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+          "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent 2026-09-08：「可以同意修訂 JV-36、新增上述網站 task，接續本地實作與獨立驗收」",
+          "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent：「依照臨時文件至 v3.1 進行第二階段」，並回覆「可以～」核准六章、本地實作、原規格及兩 task amendment與獨立驗收。"
         ],
-        "decision_output": "擴充 JV-36 seed inventory 與 generated document index 合約，使 task-linked 長期議題紀錄可登錄並在 ARCHITECTURE.md 產生不複製正文的薄連結。",
-        "execution_boundary": "本次 amend 只更新 canonical task 的治理範圍與 lineage；不實作 registry、generator，不手改 ARCHITECTURE.md managed block，也不授權 commit、push 或部署。"
+        "decision_output": "由原 JV-36 與 MC-DOCS-01 承接 manual-local-v2 六章／六頁摘要、本地生成、文件影響與唯讀呈現。",
+        "execution_boundary": "依 manual_phase2 執行本地六章切片，local_manual_slice保留首章歷史；不Git/外部/R5/政策runtime/整案closeout。"
       },
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
@@ -3908,6 +3940,77 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准先實作 Fumadocs 與多人協作第一能力；人讀來源交付沿用 JV-36，不擴做整案。",
+            "recorded_at": "2026-09-08",
+            "evidence_refs": [
+              "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent 2026-09-08：「可以同意修訂 JV-36、新增上述網站 task，接續本地實作與獨立驗收」",
+              "同一 Codex task；Vincent 2026-09-08：「同意本案不因既有未 push commit 阻擋本地實作」",
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md"
+            ],
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/document-source-registry-and-human-sync",
+                "morrowise/morrowise-manual-live-sync",
+                "harness-mc/morrowise-live-dashboard-doc-routing",
+                "harness-mc/morrowise-priority-dashboard-surface-v2",
+                "harness-mc/inf-4"
+              ],
+              "scope_comparison": {
+                "problem": "文件身份、人讀來源、生成 lineage 為原 JV-36 問題。",
+                "owner_source_of_truth": "JV-36 擁有 registry/generator；政策仍歸原 owner。",
+                "inputs_outputs": "增加首章 body/visibility/bundle seam；原 MANUAL writer 不變。",
+                "lifecycle_completion": "首章 local_verified 不等於完整 JV36-P2-01/02 或 task completed。"
+              },
+              "decision_reason": "沿用同一來源治理責任，不建第二 registry。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-08",
+                "evidence_refs": [
+                  "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent 2026-09-08：「可以同意修訂 JV-36、新增上述網站 task，接續本地實作與獨立驗收」",
+                  "同一 Codex task；Vincent 2026-09-08：「同意本案不因既有未 push commit 阻擋本地實作」"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准第二階段六情境及六頁摘要、版本維護、多頁來源與漏更新機械檢查；原首章歷史保留，網站及原來源治理持續承接。",
+            "recorded_at": "2026-09-08",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+              "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent：「依照臨時文件至 v3.1 進行第二階段」，並回覆「可以～」核准六章、本地實作、原規格及兩 task amendment與獨立驗收。"
+            ],
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/document-source-registry-and-human-sync",
+                "harness-mc/morrowise-fumadocs-manual-surface-v0"
+              ],
+              "scope_comparison": {
+                "problem": "同一說明書與文件來源治理問題，從首章擴為已凍結六情境。",
+                "owner_source_of_truth": "JV-36 擁有正文/registry/生成/impact，MC-DOCS-01唯讀呈現；policy/runtime owner不變。",
+                "inputs_outputs": "既有唯一正文與原生成器擴為六章、六頁導航、逐章版本及機械impact，不另建tracker。",
+                "lifecycle_completion": "兩task保持in_progress；本地驗證、全量JV36、Git、runtime與線上驗收分離。"
+              },
+              "decision_reason": "reuse身份、amend既有範圍；不新增task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-08",
+                "evidence_refs": [
+                  "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent：「依照臨時文件至 v3.1 進行第二階段」，並回覆「可以～」核准六章、本地實作、原規格及兩 task amendment與獨立驗收。"
+                ]
+              }
+            }
           }
         ]
       },
@@ -3921,7 +4024,7 @@
           "#constraints",
           "#evidenceBased"
         ],
-        "hc_reasoning": "真正問題不是新增 human 資料夾、再寫一份 ARCHITECTURE.md 或另造一套健康檢查，而是 shared 文件缺少可機械驗證的身份、架構分類、正本索引、衍生關係與每日可觀測性。#rightProblem 將需求收斂成 Document Source Registry、deterministic sync 與 21:00 report-only health pulse；#sourceBoundary 將 canonical source、document registry、Architecture Admission、generated read model、ARCHITECTURE.md、人讀 surface、health report 與 task state 分層，避免 human/ 或報告成為第二正本；#systemDynamics 要求 source 變更能造成 closeout drift gate，並由晚間健檢暴露漏網狀態；#risk 防止漏登記、跨 repo 半套 commit、AI 靜默改寫摘要、排程背景改 shared docs、plist 存在卻未載入及 scanner 讀敏感 runtime；#constraints 沿用 JV-29 marker/--check/self-test 與現有 scheduler/system-pulse/schedule-health，不回到 OpenClaw jobs.json；#evidenceBased 要求 source-change、unregistered、semantic-review、launchd-loaded、cross-repo mismatch 與 idempotency fixtures。",
+        "hc_reasoning": "真正問題不是新增 human 資料夾、再寫一份 ARCHITECTURE.md 或另造一套健康檢查，而是 shared 文件缺少可機械驗證的身份、架構分類、正本索引、衍生關係與每日可觀測性。#rightProblem 將需求收斂成 Document Source Registry、deterministic sync 與 21:00 report-only health pulse；#sourceBoundary 將 canonical source、document registry、Architecture Admission、generated read model、ARCHITECTURE.md、人讀 surface、health report 與 task state 分層，避免 human/ 或報告成為第二正本；#systemDynamics 要求 source 變更能造成 closeout drift gate，並由晚間健檢暴露漏網狀態；#risk 防止漏登記、跨 repo 半套 commit、AI 靜默改寫摘要、排程背景改 shared docs、plist 存在卻未載入及 scanner 讀敏感 runtime；#constraints 沿用 JV-29 marker/--check/self-test 與現有 scheduler/system-pulse/schedule-health，不回到 OpenClaw jobs.json；#evidenceBased 要求 source-change、unregistered、semantic-review、launchd-loaded、cross-repo mismatch 與 idempotency fixtures。 本輪 #constraints 限首章必要來源交付，#sourceBoundary 保持唯一人讀正文，#risk 將 local-only bundle 與公開 production artifacts 隔離。 第二階段 #constraints 固定六情境；#sourceBoundary 維持單一正文與原task，#risk 以真實source變更、逐文件no-impact及版本拒絕案例防止假完成。",
         "hc_confidence": 0.94,
         "evidence_refs": [
           "$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md",
@@ -3933,7 +4036,8 @@
           "$COLLAB/harness-mc/scripts/run-system-pulse.mjs",
           "$COLLAB/harness-mc/scripts/generate-schedule-health.mjs",
           "$COLLAB/harness-mc/public/data/schedule-health.json",
-          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#architecture-subsystem-index-live-sync"
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#architecture-subsystem-index-live-sync",
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md"
         ],
         "source_boundary": "HC 只負責思考檢查，不是正本。Task state 由 MorroWise tasks.json 管理；文件身份與衍生關係正本在 document source registry；架構收編決策仍在 Architecture Admission Record；ARCHITECTURE.md、human/、documentation read model 與 daily health report 都是可重建的 managed/read-only surfaces。"
       },
@@ -3942,7 +4046,148 @@
         "evaluated_at": "2026-07-11",
         "reason": "JV-36 目前只建立 Roadmap-in-Anchor task。實作將新增正式 document registry、schema、verifier、generator、read model、human surface、跨 repo sync gate 與每日 21:00 health pulse，預期可能形成新的 MorroWise 文件治理子系統；待 source boundary、negative fixtures、同步證據、scheduler loaded evidence 與 closeout gate 完成後，再裁決 promoted 或併入既有 architecture-subsystem-index/system-pulse 子系統。"
       },
-      "note": "Roadmap-in-Anchor Task：目前只開 JV-36，不提前拆滿 future tasks。JV-36.R1 folder/taxonomy contract：升級 folder contract v1，固定 exact managed roots/exclusions、architecture layers、document roles、audience、write policy 與量化 seed inventory。JV-36.R2 registry/schema/coverage：建立 document/source_family registry、source relation、generated target contract、fingerprint policy、summary review metadata、schema/verifier、unregistered/ambiguous detector、lifecycle 與 symlink/secret 安全 fixtures。JV-36.R3 read model/output sync：建立 deterministic documentation CLI/read model、ARCHITECTURE.md managed block、固定 human/README＋01~05 分層人讀頁，定義 MANUAL.md migration、generated/manual 邊界與 semantic review command。JV-36.R4 drift/closeout hardening：建立 git-diff + registry documentation-impact gate、changed-only author-time sync、two-phase cross-repo replacement/rollback、sync_lineage_id、工作樹 closeout gate 與端到端 source-change fixture；不宣稱跨 repo Git commit 原子性。JV-36.R5 daily documentation health：新增 single-writer documentation-health-pulse.yaml，由 owner_role=morrowise-primary 在 Asia/Taipei 每日 21:00、timeout 600 執行真實 check；先寫符合 schema 的 latest report/previous baseline 與 schedule run evidence，再依 healthy=0/degraded=1/blocked=2/unknown=3 結束，degraded/blocked 才透過既有 adapter 通知，不自動修檔；schedule-health 分離 host_role/plist_present/launchd_loaded/missed_schedule。Split gate：只有當某一 slice 的 input/output、安全邊界、驗收方式與 Vincent implementation approval 均已明確，且單一 task 無法維持可審計邊界時才拆新 task；拆出時取得下一個 JV-xx，並回填 origin_anchor=JV-36、origin_slice=JV-36.Rn、origin_task_id=document-source-registry-and-human-sync。同步的定義是 source 變更被 impact gate 機械辨識後，在 task closeout 前執行 deterministic changed-only regenerate 並通過真實 drift gate；21:00 排程是 detection/reporting safety net，不是未經授權持續改寫 shared files 的背景 daemon。"
+      "note": "Roadmap-in-Anchor Task：目前只開 JV-36，不提前拆滿 future tasks。JV-36.R1 folder/taxonomy contract：升級 folder contract v1，固定 exact managed roots/exclusions、architecture layers、document roles、audience、write policy 與量化 seed inventory。JV-36.R2 registry/schema/coverage：建立 document/source_family registry、source relation、generated target contract、fingerprint policy、summary review metadata、schema/verifier、unregistered/ambiguous detector、lifecycle 與 symlink/secret 安全 fixtures。JV-36.R3 read model/output sync：建立 deterministic documentation CLI/read model、ARCHITECTURE.md managed block、固定 human/README＋01~05 分層人讀頁，定義 MANUAL.md migration、generated/manual 邊界與 semantic review command。JV-36.R4 drift/closeout hardening：建立 git-diff + registry documentation-impact gate、changed-only author-time sync、two-phase cross-repo replacement/rollback、sync_lineage_id、工作樹 closeout gate 與端到端 source-change fixture；不宣稱跨 repo Git commit 原子性。JV-36.R5 daily documentation health：新增 single-writer documentation-health-pulse.yaml，由 owner_role=morrowise-primary 在 Asia/Taipei 每日 21:00、timeout 600 執行真實 check；先寫符合 schema 的 latest report/previous baseline 與 schedule run evidence，再依 healthy=0/degraded=1/blocked=2/unknown=3 結束，degraded/blocked 才透過既有 adapter 通知，不自動修檔；schedule-health 分離 host_role/plist_present/launchd_loaded/missed_schedule。Split gate：只有當某一 slice 的 input/output、安全邊界、驗收方式與 Vincent implementation approval 均已明確，且單一 task 無法維持可審計邊界時才拆新 task；拆出時取得下一個 JV-xx，並回填 origin_anchor=JV-36、origin_slice=JV-36.Rn、origin_task_id=document-source-registry-and-human-sync。同步的定義是 source 變更被 impact gate 機械辨識後，在 task closeout 前執行 deterministic changed-only regenerate 並通過真實 drift gate；21:00 排程是 detection/reporting safety net，不是未經授權持續改寫 shared files 的背景 daemon。",
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "沿 JV-36 維護唯一首章人讀正文與可重建 bundle，不讓網站或 MANUAL 成為政策/task 的第二正本。 第二階段補六情境操作、Agent建制及原來源鏈的漏更新檢查，不另建系統。",
+        "evidence_plan": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+          "node scripts/verify-morrowise-document-sources.mjs",
+          "node scripts/verify-morrowise-docs-surface.mjs"
+        ],
+        "reviewed_at": "2026-09-08"
+      },
+      "local_manual_slice": {
+        "approval": {
+          "status": "approved",
+          "approved_by": "Vincent",
+          "approved_at": "2026-09-08",
+          "evidence_refs": [
+            "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent 2026-09-08：「可以同意修訂 JV-36、新增上述網站 task，接續本地實作與獨立驗收」",
+            "同一 Codex task；Vincent 2026-09-08：「同意本案不因既有未 push commit 阻擋本地實作」"
+          ]
+        },
+        "writer": "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68",
+        "independent_checker": "/root/tdl_independent_checker（Avicenna）；唯讀驗收，不撰寫產品或測試",
+        "source_spec": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+        "source_spec_sha256": "sha256:924b1e6d310bd2f950f5b9424eb636fcea778fc7d125db10f6bfd5aae8892464",
+        "visibility": "local_only",
+        "repo_ready_exception": {
+          "scope": "只有既有 needs_push 不阻擋本案本地寫入；behind、版本、同檔 ownership 與驗收仍必須通過。不改 gate。",
+          "evidence_ref": "同一 Codex task；Vincent 2026-09-08：「同意本案不因既有未 push commit 阻擋本地實作」"
+        },
+        "exclusions": [
+          "commit/push/merge/branch/worktree",
+          "Heptabase/Notion/Canvas 外部同步與 Zeabur 部署",
+          "R5 排程",
+          "協作 runtime/skills/gates/ARCHITECTURE managed blocks/MANUAL",
+          "第二階段完整 corpus 與 impact 自動化"
+        ],
+        "output_bundle": "$COLLAB/harness-mc/.tmp/morrowise-docs/bundle.json",
+        "artifact_policy": "local-only bundle 與其 generated human pages 只落 gitignored .tmp/morrowise-docs，不進 public。production surface 不載入本地正文；exact public/private target 未核准前不發布。",
+        "planned_commands": {
+          "source": "node scripts/verify-morrowise-document-sources.mjs",
+          "generate": "node scripts/generate-morrowise-documentation.mjs --local",
+          "check": "node scripts/generate-morrowise-documentation.mjs --local --check",
+          "surface": "node scripts/verify-morrowise-docs-surface.mjs",
+          "typecheck": "npx --no-install tsc --noEmit --incremental false",
+          "build": "npm run docs:build:local"
+        },
+        "scope_paths": [
+          "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-document-sources.json",
+          "$COLLAB/harness-mc/system-workflow/schemas/morrowise-document-source.schema.json",
+          "$COLLAB/harness-mc/scripts/generate-morrowise-documentation.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-document-sources.mjs"
+        ],
+        "evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync.test_contract.evidence_refs",
+        "status": "implementation_authorized",
+        "matrix_boundary": "首章 slice 僅提供 JV36-P2-01 部分 evidence；不修改完整矩陣、R5/dependencies、runtime_evidence_required。",
+        "source_requirements": [
+          "A05",
+          "A06",
+          "A09",
+          "A11",
+          "A13",
+          "A14",
+          "A15",
+          "A16",
+          "A27",
+          "A28",
+          "A30",
+          "A31"
+        ]
+      },
+      "manual_phase2": {
+        "status": "local_verified",
+        "verified_at": "2026-09-08T13:43:55.287Z",
+        "result_boundary": "僅已核准六章本地slice；完整canonical matrices及所有WEB未全驗，不是completed或部署。",
+        "approval": {
+          "status": "approved",
+          "approved_by": "Vincent",
+          "approved_at": "2026-09-08",
+          "evidence_refs": [
+            "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent：「依照臨時文件至 v3.1 進行第二階段」，並回覆「可以～」核准六章、本地實作、原規格及兩 task amendment與獨立驗收。"
+          ]
+        },
+        "source_spec": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+        "approved_spec_sha256": "sha256:8661f9b66836bddbebe94f1baece63ead8f8fff3d842f06bfe7784b19323e6ec",
+        "scope_version": "manual-local-v2",
+        "chapter_ids": [
+          "entry",
+          "collaboration",
+          "execution",
+          "delivery",
+          "documentation",
+          "troubleshooting"
+        ],
+        "overview_pages": [
+          "README",
+          "01-entry",
+          "02-rules",
+          "03-capabilities",
+          "04-runtime",
+          "05-governance"
+        ],
+        "writer": "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68",
+      "independent_checker": "Avicenna /root/avicenna_independent_review; read-only",
+        "visibility": "local_only",
+        "canonical_body": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
+        "scope_paths": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+          "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
+          "$COLLAB/harness-mc/system-workflow/registries/morrowise-document-sources.json",
+          "$COLLAB/harness-mc/system-workflow/schemas/morrowise-document-source.schema.json",
+          "$COLLAB/harness-mc/scripts/generate-morrowise-documentation.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-document-sources.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-documentation-impact.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-documentation-sync.mjs",
+          "$COLLAB/harness-mc/scripts/lib/morrowise-documentation-impact.mjs"
+        ],
+        "generated_root": "$COLLAB/harness-mc/.tmp/morrowise-docs",
+        "artifact_policy": "六頁摘要、六操作章及bundle只由原generator生成到local-only .tmp；不寫public、out或shared human/，不作全JV36 R3產物完成宣稱。",
+        "evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync.test_contract.evidence_refs",
+        "exclusions": [
+          "Git stage/commit/push/merge/branch/worktree",
+          "external sync/deployment",
+          "R5 scheduler",
+          "MANUAL/ARCHITECTURE managed blocks",
+          "collaboration runtime/skills/global gates",
+          "other tools full tutorials/productization"
+        ],
+        "matrix_boundary": "本地切片證據沿原IDs；WEB與完整JV36 R1–R5未跑者保留not_run，不改completed。",
+        "planned_commands": [
+          "node scripts/verify-morrowise-document-sources.mjs",
+          "node scripts/verify-morrowise-documentation-impact.mjs --self-test",
+          "node scripts/generate-morrowise-documentation.mjs --local --changed-only",
+          "node scripts/verify-morrowise-documentation-sync.mjs",
+          "node scripts/verify-morrowise-docs-surface.mjs",
+          "npx --no-install tsc --noEmit --incremental false",
+          "npm run docs:build:local"
+        ]
+      }
     },
     {
       "id": "multi-machine-repo-coordination-gate",

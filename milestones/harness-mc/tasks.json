@@ -2839,6 +2839,774 @@
       "note": "2026-07-22 根因已重現並修正：live rrrealll-ocr 為 active、2/2；原 default all 不顯示它，修正後 all 與領域篩選都保留它。"
     },
     {
+      "id": "morrowise-fumadocs-manual-surface-v0",
+      "order_label": "MC-DOCS-01",
+      "title": "MorroWise Fumadocs 說明書網站與六情境操作指南",
+      "status": "in_progress",
+      "track": "morrowise-system",
+      "priority": "high",
+      "done_condition": "首頁、能力入口、完整六情境操作章與搜尋可使用；核准本版 corpus 的 DOC-A00–A15、WEB-A01–A08 與四情境獨立驗收通過，GitHub exact SHA/bundle digest/Zeabur deployment/HTTPS live 一致。local_verified 僅階段結果，未批准或未跑線上驗收不得 completed。",
+      "source_refs": [
+        "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync"
+      ],
+      "goal_alignment": {
+        "project_id": "harness-mc",
+        "goal_ref": "$COLLAB/harness-mc/milestones/harness-mc/project.json#/goals",
+        "goal_fingerprint": "sha256:63e26badb1609ed0f4af30b7ec69030a6e2103d1e34ec657351800a8a483b168",
+        "contribution": "提供 MorroWise 唯讀人讀 surface，延續既有文件入口與觀測目標；不宣稱既有 project goals 已核定 Zeabur，不更改原 Pages。 第二階段補六情境操作、Agent建制及原來源鏈的漏更新檢查，不另建系統。",
+        "evidence_plan": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+          "node scripts/verify-morrowise-document-sources.mjs",
+          "node scripts/verify-morrowise-docs-surface.mjs"
+        ],
+        "reviewed_at": "2026-09-08"
+      },
+      "execution_contract": {
+        "owner": "harness-mc/morrowise-fumadocs-manual-surface-v0",
+        "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-document-sources.json",
+        "inputs": [
+          "JV-36 已審查的核准本版六章／六頁摘要 self-contained bundle",
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+          "鎖版依賴的實際相容測試"
+        ],
+        "outputs": [
+          "$COLLAB/harness-mc/package.json",
+          "$COLLAB/harness-mc/package-lock.json",
+          "$COLLAB/harness-mc/app/docs/layout.tsx",
+          "$COLLAB/harness-mc/app/docs/[[...slug]]/page.tsx",
+          "$COLLAB/harness-mc/app/docs/version-history.mjs",
+          "$COLLAB/harness-mc/app/docs/providers.tsx",
+          "$COLLAB/harness-mc/app/docs/search-dialog.tsx",
+          "$COLLAB/harness-mc/app/docs/docs.css",
+          "$COLLAB/harness-mc/lib/morrowise-docs-source.ts",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-docs-surface.mjs"
+        ],
+        "verifiers": [
+          "node scripts/verify-morrowise-docs-surface.mjs",
+          "npx --no-install tsc --noEmit --incremental false",
+          "npm run docs:build:local"
+        ],
+        "stop_condition": "來源、visibility、ownership 或安全 gate 失敗停止受影響步驟；禁止第二正文、task/policy/MANUAL write-back 或未核准 Git/外部。",
+        "dependency_gates": {
+          "start_requires": [],
+          "completion_requires": [],
+          "staged_dependencies": [
+            {
+              "stage": "local_docs",
+              "start_requires": [
+                "JV-36 首章 schema/semantic review/bundle check 通過，不要求整個 JV-36 completed"
+              ],
+              "completion_requires": [
+                "本地適用 DOC 與四情境獨立驗收"
+              ]
+            },
+            {
+              "stage": "online_docs",
+              "start_requires": [
+                "local_docs",
+                "exact target/access/外部授權"
+              ],
+              "completion_requires": [
+                "首章 DOC/WEB 全部必要實測"
+              ]
+            }
+          ]
+        }
+      },
+      "local_manual_slice": {
+        "approval": {
+          "status": "approved",
+          "approved_by": "Vincent",
+          "approved_at": "2026-09-08",
+          "evidence_refs": [
+            "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent 2026-09-08：「可以同意修訂 JV-36、新增上述網站 task，接續本地實作與獨立驗收」",
+            "同一 Codex task；Vincent 2026-09-08：「同意本案不因既有未 push commit 阻擋本地實作」"
+          ]
+        },
+        "writer": "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68",
+        "independent_checker": "/root/tdl_independent_checker（Avicenna）；唯讀驗收，不撰寫產品或測試",
+        "source_spec": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+        "source_spec_sha256": "sha256:924b1e6d310bd2f950f5b9424eb636fcea778fc7d125db10f6bfd5aae8892464",
+        "visibility": "local_only",
+        "repo_ready_exception": {
+          "scope": "只有既有 needs_push 不阻擋本案本地寫入；behind、版本、同檔 ownership 與驗收仍必須通過。不改 gate。",
+          "evidence_ref": "同一 Codex task；Vincent 2026-09-08：「同意本案不因既有未 push commit 阻擋本地實作」"
+        },
+        "exclusions": [
+          "commit/push/merge/branch/worktree",
+          "Heptabase/Notion/Canvas 外部同步與 Zeabur 部署",
+          "R5 排程",
+          "協作 runtime/skills/gates/ARCHITECTURE managed blocks/MANUAL",
+          "第二階段完整 corpus 與 impact 自動化"
+        ],
+        "output_bundle": "$COLLAB/harness-mc/.tmp/morrowise-docs/bundle.json",
+        "artifact_policy": "local-only bundle 與其 generated human pages 只落 gitignored .tmp/morrowise-docs；local static export 透過 local preview 的 custom distDir 直接寫入 .tmp/morrowise-docs/site，禁止建立 out/ 或進 public。production surface 無 preview flag 時 fail closed；exact public/private target 未核准前不發布。",
+        "planned_commands": {
+          "source": "node scripts/verify-morrowise-document-sources.mjs",
+          "generate": "node scripts/generate-morrowise-documentation.mjs --local",
+          "check": "node scripts/generate-morrowise-documentation.mjs --local --check",
+          "surface": "node scripts/verify-morrowise-docs-surface.mjs",
+          "typecheck": "npx --no-install tsc --noEmit --incremental false",
+          "build": "npm run docs:build:local"
+        },
+        "scope_paths": [
+          "$COLLAB/harness-mc/package.json",
+          "$COLLAB/harness-mc/package-lock.json",
+          "$COLLAB/harness-mc/next.config.mjs",
+          "$COLLAB/harness-mc/app/layout.tsx",
+          "$COLLAB/harness-mc/app/docs/layout.tsx",
+          "$COLLAB/harness-mc/app/docs/[[...slug]]/page.tsx",
+          "$COLLAB/harness-mc/app/docs/version-history.mjs",
+          "$COLLAB/harness-mc/app/docs/providers.tsx",
+          "$COLLAB/harness-mc/app/docs/search-dialog.tsx",
+          "$COLLAB/harness-mc/app/docs/docs.css",
+          "$COLLAB/harness-mc/lib/morrowise-docs-source.ts",
+          "$COLLAB/harness-mc/scripts/build-morrowise-local-docs.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-docs-surface.mjs"
+        ],
+        "status": "implementation_authorized"
+      },
+      "acceptance_matrix": [
+        {
+          "id": "DOC-A00",
+          "what": "記錄 GitHub → Zeabur target 與 content/access mode；缺 exact target 或可見性決策時 real-content 發布 fail closed。",
+          "preconditions": [
+            "適用的核准本版來源、版本、ownership/visibility 和動作核准"
+          ],
+          "steps": [
+            "依原規格 DOC-A00 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "記錄 GitHub → Zeabur target 與 content/access mode；缺 exact target 或可見性決策時 real-content 發布 fail closed。",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#DOC-A00"
+          ]
+        },
+        {
+          "id": "DOC-A01",
+          "what": "所有 `/docs` 內容可追溯到 JV-36 registry／approved outputs，沒有人工維護的第二份正文。",
+          "preconditions": [
+            "適用的核准本版來源、版本、ownership/visibility 和動作核准"
+          ],
+          "steps": [
+            "依原規格 DOC-A01 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "所有 `/docs` 內容可追溯到 JV-36 registry／approved outputs，沒有人工維護的第二份正文。",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#DOC-A01"
+          ]
+        },
+        {
+          "id": "DOC-A02",
+          "what": "Consumer bundle 對每頁提供 body／immutable content ref、slug、visibility、source refs、fingerprints、freshness、write policy 與 task anchor；缺任一安全欄位即拒絕。",
+          "preconditions": [
+            "適用的核准本版來源、版本、ownership/visibility 和動作核准"
+          ],
+          "steps": [
+            "依原規格 DOC-A02 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "Consumer bundle 對每頁提供 body／immutable content ref、slug、visibility、source refs、fingerprints、freshness、write policy 與 task anchor；缺任一安全欄位即拒絕。",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#DOC-A02"
+          ]
+        },
+        {
+          "id": "DOC-A03",
+          "what": "Fresh clone／CI 可從 pinned inputs 重建相同 bundle；不得依賴未 checkout 的 sibling working tree。",
+          "preconditions": [
+            "適用的核准本版來源、版本、ownership/visibility 和動作核准"
+          ],
+          "steps": [
+            "依原規格 DOC-A03 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "Fresh clone／CI 可從 pinned inputs 重建相同 bundle；不得依賴未 checkout 的 sibling working tree。",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#DOC-A03"
+          ]
+        },
+        {
+          "id": "DOC-A04",
+          "what": "每頁顯示 source、document role、write policy、visibility、freshness 與 task anchor。",
+          "preconditions": [
+            "適用的核准本版來源、版本、ownership/visibility 和動作核准"
+          ],
+          "steps": [
+            "依原規格 DOC-A04 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "每頁顯示 source、document role、write policy、visibility、freshness 與 task anchor。",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#DOC-A04"
+          ]
+        },
+        {
+          "id": "DOC-A05",
+          "what": "Registry、source、summary review 或 generated output fingerprint 漂移時，build／verification fail，不能顯示為 fresh。",
+          "preconditions": [
+            "適用的核准本版來源、版本、ownership/visibility 和動作核准"
+          ],
+          "steps": [
+            "依原規格 DOC-A05 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "Registry、source、summary review 或 generated output fingerprint 漂移時，build／verification fail，不能顯示為 fresh。",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#DOC-A05"
+          ]
+        },
+        {
+          "id": "DOC-A06",
+          "what": "`/docs`、search 與所有 page actions 唯讀，無 task／文件／registry write-back。",
+          "preconditions": [
+            "適用的核准本版來源、版本、ownership/visibility 和動作核准"
+          ],
+          "steps": [
+            "依原規格 DOC-A06 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "`/docs`、search 與所有 page actions 唯讀，無 task／文件／registry write-back。",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#DOC-A06"
+          ]
+        },
+        {
+          "id": "DOC-A07",
+          "what": "Sidebar 順序只來自 JV-36 `human_navigation`；未正式登記的 Operator Guide 不出現。",
+          "preconditions": [
+            "適用的核准本版來源、版本、ownership/visibility 和動作核准"
+          ],
+          "steps": [
+            "依原規格 DOC-A07 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "Sidebar 順序只來自 JV-36 `human_navigation`；未正式登記的 Operator Guide 不出現。",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#DOC-A07"
+          ]
+        },
+        {
+          "id": "DOC-A08",
+          "what": "以至少 10 組繁中、英文／核准 task ID 與中英混合查詢驗證搜尋；測試前固定 query→expected route/heading/zero-result，不以『有任一結果』算 pass。第一階段至少涵蓋協作／ownership／同檔／交接／獨立驗收、中文＋英文混合及不存在詞；若 ID 不在公開 allowlist，預期不得命中而非強行公開。私人內容不得進 public index。",
+          "preconditions": [
+            "適用的核准本版來源、版本、ownership/visibility 和動作核准"
+          ],
+          "steps": [
+            "依原規格 DOC-A08 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "以至少 10 組繁中、英文／核准 task ID 與中英混合查詢驗證搜尋；測試前固定 query→expected route/heading/zero-result，不以『有任一結果』算 pass。第一階段至少涵蓋協作／ownership／同檔／交接／獨立驗收、中文＋英文混合及不存在詞；若 ID 不在公開 allowlist，預期不得命中而非強行公開。私人內容不得進 public index。",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#DOC-A08"
+          ]
+        },
+        {
+          "id": "DOC-A09",
+          "what": "Zeabur 核准 base URL／prefix 下所有 slugs、links、images 與 search 通過測試；如保留 Pages，另驗 `/harness-mc` build 不受影響。",
+          "preconditions": [
+            "適用的核准本版來源、版本、ownership/visibility 和動作核准"
+          ],
+          "steps": [
+            "依原規格 DOC-A09 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "Zeabur 核准 base URL／prefix 下所有 slugs、links、images 與 search 通過測試；如保留 Pages，另驗 `/harness-mc` build 不受影響。",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#DOC-A09"
+          ]
+        },
+        {
+          "id": "DOC-A10",
+          "what": "至少在 390px 手機與 1440px 桌機寬度驗 sidebar、TOC、表格、圖片與前後頁；鍵盤可開啟／關閉搜尋、操作導覽且 focus 可見，標題層級與連結名稱可辨識。正文不得水平溢出；寬表可局部捲動。首／末頁的不存在前後頁應隱藏而非死連結。",
+          "preconditions": [
+            "適用的核准本版來源、版本、ownership/visibility 和動作核准"
+          ],
+          "steps": [
+            "依原規格 DOC-A10 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "至少在 390px 手機與 1440px 桌機寬度驗 sidebar、TOC、表格、圖片與前後頁；鍵盤可開啟／關閉搜尋、操作導覽且 focus 可見，標題層級與連結名稱可辨識。正文不得水平溢出；寬表可局部捲動。首／末頁的不存在前後頁應隱藏而非死連結。",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#DOC-A10"
+          ]
+        },
+        {
+          "id": "DOC-A11",
+          "what": "Public artifacts 全檔 allowlist／敏感內容掃描通過，任何 private body／ID 不得公開；protected server artifacts 仍禁止 secret、raw log、runtime auth 或本機專屬路徑，並證明 private body 無匿名可下載副本。",
+          "preconditions": [
+            "適用的核准本版來源、版本、ownership/visibility 和動作核准"
+          ],
+          "steps": [
+            "依原規格 DOC-A11 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "Public artifacts 全檔 allowlist／敏感內容掃描通過，任何 private body／ID 不得公開；protected server artifacts 仍禁止 secret、raw log、runtime auth 或本機專屬路徑，並證明 private body 無匿名可下載副本。",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#DOC-A11"
+          ]
+        },
+        {
+          "id": "DOC-A12",
+          "what": "首版 `llms.txt`、`llms-full.txt`、`*.md`／`*.mdx`、Accept negotiation、AI Page Actions、Ask AI 與 `/api/chat` 均不存在或回傳 404。",
+          "preconditions": [
+            "適用的核准本版來源、版本、ownership/visibility 和動作核准"
+          ],
+          "steps": [
+            "依原規格 DOC-A12 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "首版 `llms.txt`、`llms-full.txt`、`*.md`／`*.mdx`、Accept negotiation、AI Page Actions、Ask AI 與 `/api/chat` 均不存在或回傳 404。",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#DOC-A12"
+          ]
+        },
+        {
+          "id": "DOC-A13",
+          "what": "在 P0 核准 package root，鎖版後 `npm ci`、已核對的 typecheck、production build 與待建 docs verifier 全綠。若整合既有 app，核對現行 route 清單並回歸（第 13.3.3 六條為歷史基線）；若核准獨立服務，驗未修改原 app/Pages，不能把既有站搬遷當隱含工作。",
+          "preconditions": [
+            "適用的核准本版來源、版本、ownership/visibility 和動作核准"
+          ],
+          "steps": [
+            "依原規格 DOC-A13 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "在 P0 核准 package root，鎖版後 `npm ci`、已核對的 typecheck、production build 與待建 docs verifier 全綠。若整合既有 app，核對現行 route 清單並回歸（第 13.3.3 六條為歷史基線）；若核准獨立服務，驗未修改原 app/Pages，不能把既有站搬遷當隱含工作。",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#DOC-A13"
+          ]
+        },
+        {
+          "id": "DOC-A14",
+          "what": "相同 source 與 visibility inputs 連跑兩次，content payload 與 navigation 不產生語意 diff。",
+          "preconditions": [
+            "適用的核准本版來源、版本、ownership/visibility 和動作核准"
+          ],
+          "steps": [
+            "依原規格 DOC-A14 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "相同 source 與 visibility inputs 連跑兩次，content payload 與 navigation 不產生語意 diff。",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#DOC-A14"
+          ]
+        },
+        {
+          "id": "DOC-A15",
+          "what": "導入不修改 canonical task state、approval policy、runner、MANUAL generated blocks 或既有 dashboard 行為。",
+          "preconditions": [
+            "適用的核准本版來源、版本、ownership/visibility 和動作核准"
+          ],
+          "steps": [
+            "依原規格 DOC-A15 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "導入不修改 canonical task state、approval policy、runner、MANUAL generated blocks 或既有 dashboard 行為。",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#DOC-A15"
+          ]
+        },
+        {
+          "id": "WEB-A01",
+          "what": "核准 exact target、content/access mode；讀回 GitHub／Zeabur 設定 | repo、branch、root、service、URL、build mode 與核准一致；原 Pages 無意外變更 | 缺值、錯 service、把 GitHub 當 Pages、擅自更動既有站；保留去敏設定與 approval refs",
+          "preconditions": [
+            "exact GitHub/Zeabur target、access、release owner 與所需外部動作已另行核准"
+          ],
+          "steps": [
+            "依原規格 WEB-A01 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "核准 exact target、content/access mode；讀回 GitHub／Zeabur 設定 | repo、branch、root、service、URL、build mode 與核准一致；原 Pages 無意外變更 | 缺值、錯 service、把 GitHub 當 Pages、擅自更動既有站；保留去敏設定與 approval refs",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#WEB-A01"
+          ]
+        },
+        {
+          "id": "WEB-A02",
+          "what": "全新 checkout；取得 pinned bundle 並驗 hash，再 build 兩次 | 不依賴本機路徑，content／navigation／visibility digests 一致；缺 source 或 hash mismatch 即 build fail | 偷讀另一 repo 浮動 main、漏 body、找不到 sibling 後用舊副本 fallback；提供 manifest 與 build evidence",
+          "preconditions": [
+            "exact GitHub/Zeabur target、access、release owner 與所需外部動作已另行核准"
+          ],
+          "steps": [
+            "依原規格 WEB-A02 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "全新 checkout；取得 pinned bundle 並驗 hash，再 build 兩次 | 不依賴本機路徑，content／navigation／visibility digests 一致；缺 source 或 hash mismatch 即 build fail | 偷讀另一 repo 浮動 main、漏 body、找不到 sibling 後用舊副本 fallback；提供 manifest 與 build evidence",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#WEB-A02"
+          ]
+        },
+        {
+          "id": "WEB-A03",
+          "what": "核准一次 GitHub push；查看 trigger 與 Zeabur deployment，再讀 live URL | 部署紀錄綁同一 exact source SHA／bundle digest；平台 terminal success 且 HTTPS 實際載入正確 MorroWise 頁面 | 只有 push 成功、綠燈但錯 SHA、網址 404 或錯站；保存 deployment ID、SHA、URL 與實測時間",
+          "preconditions": [
+            "exact GitHub/Zeabur target、access、release owner 與所需外部動作已另行核准"
+          ],
+          "steps": [
+            "依原規格 WEB-A03 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "核准一次 GitHub push；查看 trigger 與 Zeabur deployment，再讀 live URL | 部署紀錄綁同一 exact source SHA／bundle digest；平台 terminal success 且 HTTPS 實際載入正確 MorroWise 頁面 | 只有 push 成功、綠燈但錯 SHA、網址 404 或錯站；保存 deployment ID、SHA、URL 與實測時間",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#WEB-A03"
+          ]
+        },
+        {
+          "id": "WEB-A04",
+          "what": "先按第 12.6 節測能力變更→受影響文件：漏更新且無有效 no-impact 的負例、合法 no-impact 對照與正確更新正例；再在核准 source 改非敏感正文／導覽，更新 manifest、push、部署，以全新 session 搜尋 | 漏更新會阻擋文件就緒／發布；合法 no-impact 不強制正文 diff；更新後 live 正文、TOC/sidebar、搜尋同版。首階段人工檢查、次階段機械 gate 證據分開；merged、enabled、docs/deployed version 可區分 | 只測已修改 Markdown、任意 no-impact 放行、把 merge 當已啟用、跨 repo 未觸發或索引混版即 fail；保存變更映射、reviewer、正反例、before/after fingerprints 與去敏 live evidence",
+          "preconditions": [
+            "exact GitHub/Zeabur target、access、release owner 與所需外部動作已另行核准"
+          ],
+          "steps": [
+            "依原規格 WEB-A04 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "先按第 12.6 節測能力變更→受影響文件：漏更新且無有效 no-impact 的負例、合法 no-impact 對照與正確更新正例；再在核准 source 改非敏感正文／導覽，更新 manifest、push、部署，以全新 session 搜尋 | 漏更新會阻擋文件就緒／發布；合法 no-impact 不強制正文 diff；更新後 live 正文、TOC/sidebar、搜尋同版。首階段人工檢查、次階段機械 gate 證據分開；merged、enabled、docs/deployed version 可區分 | 只測已修改 Markdown、任意 no-impact 放行、把 merge 當已啟用、跨 repo 未觸發或索引混版即 fail；保存變更映射、reviewer、正反例、before/after fingerprints 與去敏 live evidence",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#WEB-A04"
+          ]
+        },
+        {
+          "id": "WEB-A05",
+          "what": "以匿名及核准身份測直接深連結、search、assets、page tree、JSON／JS、Markdown／LLM 端點與 cache | private mode 無匿名內文／索引／附件洩漏，核准身份可閱讀；public mode 全部輸出僅含 allowlist。登出／撤權後不能再取得 private response | 只擋首頁、靠 CSS/noindex、public bundle 含 private body、共用 cache 洩漏；保留 response status／去敏結果，禁止記 credential",
+          "preconditions": [
+            "exact GitHub/Zeabur target、access、release owner 與所需外部動作已另行核准"
+          ],
+          "steps": [
+            "依原規格 WEB-A05 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "以匿名及核准身份測直接深連結、search、assets、page tree、JSON／JS、Markdown／LLM 端點與 cache | private mode 無匿名內文／索引／附件洩漏，核准身份可閱讀；public mode 全部輸出僅含 allowlist。登出／撤權後不能再取得 private response | 只擋首頁、靠 CSS/noindex、public bundle 含 private body、共用 cache 洩漏；保留 response status／去敏結果，禁止記 credential",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#WEB-A05"
+          ]
+        },
+        {
+          "id": "WEB-A06",
+          "what": "使用核准測試環境故意讓來源 digest／visibility gate 失敗，再觀察發布結果 | 該 deployment 不成為成功版本；上一個成功站點維持可用且仍標示其真實版本，失敗可在部署記錄辨識 | 默默用 stale source、發布空站／半成品、仍宣稱最新；保存 failed deployment 與 last-success refs",
+          "preconditions": [
+            "exact GitHub/Zeabur target、access、release owner 與所需外部動作已另行核准"
+          ],
+          "steps": [
+            "依原規格 WEB-A06 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "使用核准測試環境故意讓來源 digest／visibility gate 失敗，再觀察發布結果 | 該 deployment 不成為成功版本；上一個成功站點維持可用且仍標示其真實版本，失敗可在部署記錄辨識 | 默默用 stale source、發布空站／半成品、仍宣稱最新；保存 failed deployment 與 last-success refs",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#WEB-A06"
+          ]
+        },
+        {
+          "id": "WEB-A07",
+          "what": "取得回復核准；選上一個已驗證 commit/bundle 重建或還原部署，再重讀 URL | live version、正文、搜尋及 access 邊界回到該已驗證版本；不修改 canonical source 歷史或外部卡片 | 任意 latest artifact、回復後索引混版、auto rollback 無核准；保存 rollback target 與 read-back evidence",
+          "preconditions": [
+            "exact GitHub/Zeabur target、access、release owner 與所需外部動作已另行核准"
+          ],
+          "steps": [
+            "依原規格 WEB-A07 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "取得回復核准；選上一個已驗證 commit/bundle 重建或還原部署，再重讀 URL | live version、正文、搜尋及 access 邊界回到該已驗證版本；不修改 canonical source 歷史或外部卡片 | 任意 latest artifact、回復後索引混版、auto rollback 無核准；保存 rollback target 與 read-back evidence",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#WEB-A07"
+          ]
+        },
+        {
+          "id": "WEB-A08",
+          "what": "以手機／桌機與至少 10 組中英查詢走 DOC-A08–A10；核對出口收據 | route、返回 MC、links、圖片、表格、搜尋可用；DOC 與 WEB 必驗項有 source-bound 證據，Heptabase 狀態分別標示 | 用 adapter 17/17 代替網站驗收、未同步卡片卻宣稱兩端完成、只有 local build；保留矩陣 fingerprint 與證據 refs",
+          "preconditions": [
+            "exact GitHub/Zeabur target、access、release owner 與所需外部動作已另行核准"
+          ],
+          "steps": [
+            "依原規格 WEB-A08 的完整操作及正反案例驗收；逐項保存 inputs/expected/observed/fingerprints/checker/evidence。"
+          ],
+          "pass_condition": "以手機／桌機與至少 10 組中英查詢走 DOC-A08–A10；核對出口收據 | route、返回 MC、links、圖片、表格、搜尋可用；DOC 與 WEB 必驗項有 source-bound 證據，Heptabase 狀態分別標示 | 用 adapter 17/17 代替網站驗收、未同步卡片卻宣稱兩端完成、只有 local build；保留矩陣 fingerprint 與證據 refs",
+          "fail_condition": "原必要條件未滿足、證據缺失/過期、反例未拒絕、越權，或以 fixture/自填 pass 代替實際產物。",
+          "verification": [
+            "node scripts/verify-morrowise-docs-surface.mjs",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#WEB-A08"
+          ]
+        }
+      ],
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "錯 hash/缺 visibility/錯 lineage 拒絕，合法 bundle 可讀",
+          "10 組預先固定繁中/英文/混合查詢對應 route/heading/零結果",
+          "local-only body 不得進公開 production artifacts",
+          "唯讀、既有 routes 回歸、390px/1440px/鍵盤操作"
+        ],
+        "test_level": [
+          "unit",
+          "negative_fixture",
+          "integration",
+          "browser_e2e",
+          "runtime"
+        ],
+        "red_command": "node scripts/verify-morrowise-docs-surface.mjs",
+        "expected_red_reason": "目前不存在 /docs、嚴格 bundle consumer 與搜尋行為，預定 surface 斷言失敗。",
+        "green_command": "node scripts/verify-morrowise-docs-surface.mjs",
+        "full_regression_commands": [
+          "node scripts/verify-morrowise-document-sources.mjs",
+          "node scripts/generate-morrowise-documentation.mjs --local --check",
+          "node scripts/verify-morrowise-docs-surface.mjs",
+          "npx --no-install tsc --noEmit --incremental false",
+          "npm run docs:build:local"
+        ],
+        "fixture_refs": [
+          "$COLLAB/harness-mc/scripts/verify-morrowise-docs-surface.mjs"
+        ],
+        "runtime_evidence_required": true,
+        "planned_evidence_location": "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-fumadocs-manual-surface-v0.test_contract.evidence_refs",
+        "evidence_refs": [
+          "node scripts/verify-morrowise-document-sources.mjs — exit 0；24/24 source／negative cases",
+          "node scripts/generate-morrowise-documentation.mjs --local --check — exit 0；bundle fresh、source-bound、read_only",
+          "node scripts/verify-morrowise-docs-surface.mjs — exit 0；registry、consumer、theme hydration、10 組固定查詢契約與 artifact boundary",
+          "npx --no-install tsc --noEmit --incremental false — exit 0",
+          "npm run docs:build:local — exit 0；Next 16.2.6 export 直接落 $COLLAB/harness-mc/.tmp/morrowise-docs/site；144 files；out/ 不存在；manifest sha256:2b082ea1ae23c1f0f244872c90f8a4a7546671bdabd5299a410914f6e3f14d07",
+          "env -u MORROWISE_DOCS_LOCAL_PREVIEW npm --ignore-scripts run build — expected exit 1；local_only_docs_requires_preview_flag",
+          "主 writer 本地瀏覽器回讀：localhost:3001/docs/capabilities/collaboration；桌機／手機、TOC 22 targets、表格、返回 Mission Control、上一頁、10 組 query→route／heading、zero-result／Escape 通過；hydration overlay 修正後消失",
+          "獨立檢查者 Avicenna：PASS；surface sha256:bc4ce09c034af5cbaa5b1f56972c2ba1c4b1e6883dbdbd985fd0717fed925169，builder sha256:40514ce7bd693e51c6559eb247091a92b95ce5ce9b4f74836762d4c90c58efa8，next config sha256:6300d614f91f5002bfaf80f3dbb44ec127c6cee3c10bfa19718e52d68f960cd6，root layout sha256:891621f0dd5efe121fca51e8d2591ff6ac1e437dd053a5c894af8bcca5f85153，docs CSS sha256:5b0012d53c7cad31007ae62fa10c15c9bbcdb91896fd48c0b77fed6e98c3641b",
+          "WEB-A01–WEB-A08、GitHub／Zeabur、部署與整案正式驗收：NOT_RUN；本輪沒有外部操作",
+          "以上為 v0.1.0 首章基線證據，不能代替下列 v0.2.0 新版驗證。",
+          "2026-09-08 Vincent 本輪要求補 AI Agent 從零到完成能力之建制做法／檔案、版本編號及歷史 toggle；沿原本地 slice 修訂，不擴 runtime 或外部 scope。",
+          "v0.2.0 source sha256:b23f98c8f2c170c6ae20f29b2d3fc3088c778718deb2bff0ab7e0e33cbb346c2；新增原生 history renderer、7 步建制／12 類檔案、版本與維護編號、4 個搜尋詞。",
+          "v0.2.0 TDD：history rendering 2 cases 先因缺少 details 失敗（exit 1），實作後通過；最終 source verifier 24/24、surface verifier（含真實 Markdown 渲染／版本一致／引用路徑）、docs:check、tsc 全部 exit 0。",
+          "v0.2.0 主 writer CUA：localhost:3001/docs/capabilities/collaboration 回讀 v0.2.0、7 步建制與 2 筆歷史；初始均收合；滑鼠展開、Enter 收合、Space 展開，焦點可見；390px/1440px scrollWidth 等於 viewport，桌機 33 個 h2/h3 的 TOC 無死目標。",
+          "v0.2.0 主 writer CUA：AI Agent 建制／從零／檔案／版本歷史四 query 各有預期章節命中，未知詞零結果；點擊版本歷史結果回正確首章，兩筆 details 存在。此為本輪新增詞實測，舊十詞契約仍由 verifier 回歸。",
+          "v0.2.0 獨立 Avicenna PASS：固定 guide hash、docs:check、24/24 source、surface、tsc；另比對完整 Markdown AST 轉換前後 text/code/link payload 無遺失，raw HTML/javascript URL 未可執行。未跑 build／browser，不冒稱獨立視覺驗收。",
+          "v0.2.0 最後固定版 docs:build:local exit 0；144 files 只在 .tmp/morrowise-docs/site，out/ 不存在；排序 {path,sha256} 陣列 compact JSON manifest sha256:12c482b16f86a20484b6d589948e8330f088ec76642c4f52b3ed3bb167289e04。history renderer sha256:3206265a0a39de4870af8e1e86a20fff71c4286223ea448e0b2db0d2b5a34516；consumer sha256:45b67355633757b23bbda5dfe6d818c8f26408dec8737a40187b3dd0c1651649；surface verifier sha256:344c73836d210c0f6c101c47c43610d263092be528ed3f68c315b8ee23772ce8。初次 sandbox 禁止 compiler loopback，不算程式失敗；允許本地建置權限後以同命令成功。",
+          "v0.2.0 僅文件／本地網站 refinement 完成；DOC 本地適用證據回原矩陣，WEB/部署/runtime 整案條件仍 NOT_RUN，task 維持 in_progress。",
+          "2026-09-08 manual-local-v2／guide v0.3.0 本地階段收據；Vincent 已核准原兩 task amendment及六章實作。本輪status保留in_progress，舊v0.1/v0.2 evidence是歷史，未發送偽造全矩陣acceptance event。",
+          "固定來源：spec v3.2 sha256:824f33a60e0c15b0dfe3b0d5d76637455da96cd14808ade51a42a2676fd2dd94；guide sha256:81d60b440f27abc8ac249356ec534c316b0aa80e1702be8b873e45363d298ddf；registry sha256:f5c74a7e55b64697b05e1540889122373104765a4b45a20f82d9cb8b456c1914；bundle sha256:35b723d79acfcce9969e41c9a887e97029c2ca955aebcf1ba4b980cc8c2a7c90；payload sha256:04b46db8ed1956e0fdacae0cfc2a155b7a6ca61658a3c47065efdac6ef81e43f。",
+          "Avicenna /root/avicenna_independent_review 唯讀獨立驗收：六章只靠文件接手、必要canonical來源與命令、source52/52、impact25/25、surface23checks、current impact allow、sync7產物/12頁/save_count0。最終artifact驗證2026-09-08 20:17:30 +08；browser/build由Codex root另實跑，不冒稱獨立視覺驗收。",
+          "scope限制：六章的23個精確capability來源受本地gate檢查，不是全repo間接依賴或自動merge gate。未改依賴、MANUAL、ARCHITECTURE、runtime、skills、排程或global gates；未Git stage/commit/push/fetch/merge/branch/worktree、Heptabase apply、外部同步或Zeabur部署。generated outputs僅.tmp；public read model未重建。",
+          "DOC-A01/A02/A04/A05/A07/A14本地適用切片：六摘要+六操作章，source/registry/bundle/頁面同版；node scripts/verify-morrowise-docs-surface.mjs exit0 23checks，npm run test:morrowise-documentation整合source52/impact25/sync/surface回歸通過。來源gate也由實際consumer重驗，不接受stale fallback。",
+          "DOC-A06/A08/A10本地CUA（Codex root）：12頁1440px與390px回讀H1/metadata/導航/版本；六章75個TOC targets均存在。15固定查詢登入/ownership/同檔/read_thread/獨立驗收/AI Agent/task/執行/commit/push/source parity/說明書/除錯/回復/版本歷史均含預定章節，未知詞0結果、Escape關閉、點結果到正確route；側欄切章自動關閉、前後頁、正文摘要link及返回Mission Control實測成功。歷史共8個details預設收合，協作章滑鼠/Enter/Space切換且focus-visible。",
+          "本轮必要修復與重驗：prerelease/build版本原無toggle，以真ReactMarkdown render負例重現後修復；另獨立artifact發現21個摘要正文href漏basePath，改實際a renderer走Next Link，root與/fixture-docs正例及external/fragment/mailto保留通過。手機table原.fd-article selector未命中，改#nd-page .prose table；390px實測寬表client356/scrollWidth453、ArrowRight後scrollLeft40，12頁無root溢出/錯table selector。上述新2case先RED後GREEN，未降低expected或修改正文來源。",
+          "DOC-A13本地子集：npx --no-install tsc --noEmit --incremental false exit0；npm run docs:build:local exit0，Next16.2.6保留既有MC routes、20/20 static pages，12 docs頁。初次sandbox EPERM為cache/compiler loopback限制；授予所需本地權限後原命令成功，無dependency install/upgrade。production公開build/fresh cloneCI非本輪驗收。",
+          "最後獨立export稽核：12/12 docs HTML，160個頁內去重root-relative href targets有效，原21個缺prefix為0；18個scope source與232個generated files敏感樣式finding0。site225檔manifest sha256:cad00cc93c23c274bf7620f04efc3fbd449afa08f67ea8e32c6b811c8b9408e2；site+bundle+6human232檔manifest sha256:8c6ee82b02350063c5df22294d622f0efff67363b2ed08e6b51aba5d29992d79。算法UTF-8 JSON.stringify([{path,sha256}])，按path JS code-unit升冪、無尾換行；前者path相對site，後者相對harness-mc。此模式掃描不是完整public/auth安全測試。",
+          "實際程式SHA256：page436cb9f0201c455da3e88596aaaa108f3fc4c7b2a45e722f49f2f30f1a5938b1；CSS8124ce0c5d99f7e19c704a67703cf139351539be525a6713b68c50334bb326ed；surface416dbb5ef0b80a1e39d66795c086bd5cba9a4cb10eb4ce7543ef130969b45d12；historya8992e68261f4b8a4e7e560b23a3dbaf078798af753e29e5c2783cea412c0536。",
+          "本地實測URL http://127.0.0.1:3002/harness-mc/docs；僅loopback供閱讀最新static export，未重啟既有3001舊快取dev。UI桌機/手機與明暗主題已實看，結束恢復light及原viewport。out/public/docs/public/data/morrowise-documentation.json不存在；本次未重建public資料。",
+          "DOC-A00公開模式決策、DOC-A03fresh checkoutCI、DOC-A09Zeabur/baseURL正式target、DOC-A11公開存取邊界與全部WEB-A01–WEB-A08均NOT_RUN；DOC-A12未開AI/LLM服務但未做public攻防；DOC-A15原task scope/evidence有核准修改、status仍in_progress，public dashboard未宣稱已同步。MC-DOCS-01未整案closeout。",
+          "2026-09-08 提交前來源補正與重驗：Vincent 本次要求 commit；本地提交範圍另依 exact commit plan 確認，不沿用原 manual_phase2 排除 Git 的實作授權擴權。舊證據保留為當時版本歷史，本次亦維持 task in_progress / manual_phase2 local_verified，不宣告完整矩陣完成。",
+          "本次固定來源：spec v3.3 sha256:fd88764129aee262b37c779d22c0e78692f64b54275abea3a7f17afdf8c28ca2；guide sha256:52f6513fefa57c7cd3d483c0b70f509fe9337e86bfc882e16a6fc035b1828077；registry sha256:b8427633608599f594be9128afcbd0b5b99699be342227c5355ea3a814133e5c；bundle sha256:ae3921d807aeb151938eea3cc9a1ca253980dd74f79d32a2cf1ad048fa320dbe；payload sha256:f2539b47df4af5abd43fd6893ce4b2e03ea5f6ccea52f12705a0294b3cb96d76。",
+          "上游由 MorroWise 開發自行提交 harness-mc 279f4e088b501462c555fa19345ed1509ed05d49；四項精確 prerequisite 目前 bytes 等於該 commit。只補 guide collaboration v0.4.0，另五章保持 v0.3.0；沒有接管上游 runtime、skill 或 ownership。",
+          "本輪重跑 npm run test:morrowise-documentation exit0：source 52/52、impact self-test 25/25、surface 23/23、actual sync synced=true/hasChange=false/save_count=0/checked=7/pages=12/impact=allow。generator --local --changed-only 首跑 save_count=5、二跑 save_count=0；未手改 generated 內容。",
+          "提交前 Repo Ready 已重新 fetch 兩 repo：notyet-harness main ahead10/behind0、harness-mc main ahead5/behind0；scope_owned_with_exclusions，唯一 needs_push 沿用 Vincent 已核准的本地作業豁免，不能描述為遠端已同步或完整 READY。index 空；不 push、部署、Heptabase apply、重建 public、修改 runtime 或建立新追蹤系統。",
+          "新版 fresh build：npx --no-install tsc --noEmit --incremental false exit0；npm run docs:build:local 原命令在允許所需本地 cache 寫入後 exit0，20 static pages / 12 docs pages，未安裝或升級依賴。仍只接受 local-preview build；fresh-clone/public CI/deploy 未驗。",
+          "Codex root 本輪 CUA 對重建後既有 loopback preview reload：首頁及協作章 v0.4.0、其餘五章 v0.3.0；新歷史預設收合，滑鼠展開、Return 收合、Space 展開/收合均成功；搜尋 requirements_not_ready 精確回傳多人協作。返回 http://127.0.0.1:3002/harness-mc/docs。此為受影響頁面重驗，不冒稱重跑前輪全部手機/桌面視覺驗收。",
+          "新版 artifact 唯讀稽核：site225檔、docs12/12頁、160個去重頁內 root-relative href targets 有效；18個 source +232個 generated 檔敏感字面 finding0，非完整安全稽核。site manifest sha256:21cfe9d236d9cdaaed7786162bf6c06af0f2202e3980c1abdb12ff904cd9a364；site+bundle+6human232檔 manifest sha256:4894368f0663ce40395fd7e6c91aeeb8fc66ab86ba310005a1969bb51def0467；算法沿前輪 UTF-8 JSON.stringify([{path,sha256}]) 按 path JS code-unit 升冪無尾換行，前者相對 site、後者相對 harness-mc。out、public/docs、public/data/morrowise-documentation.json 均不存在。",
+          "Pascal /root/manual_status_audit 唯讀獨立 H20 diff review：19個非registry檔指紋維持已審版本；registry最小差異與 ownership 通過；tracked/untracked whitespace、surface23/23與字面安全檢查通過。build/UI由root實跑，不冒稱獨立視覺驗收；所有未執行公開矩陣項仍 NOT_RUN，MC-DOCS-01 保留 in_progress。"
+        ]
+      },
+      "hc_decision": {
+        "task_scope": "harness-mc/morrowise-fumadocs-manual-surface-v0",
+        "hc_refs": [
+          "#rightProblem",
+          "#sourceBoundary",
+          "#constraints",
+          "#risk"
+        ],
+        "hc_reasoning": "先交能照做的首章與真實文件頁，唯讀消費 JV-36 bundle；不以展示需要為由擴做系統，不把 local-only 內容帶進公開 Pages。 第二階段 #constraints 固定六情境；#sourceBoundary 維持單一正文與原task，#risk 以真實source變更、逐文件no-impact及版本拒絕案例防止假完成。",
+        "hc_confidence": 0.9,
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync"
+        ],
+        "source_boundary": "HC 是思考檢查，不是正本。Task state 在 canonical tasks，政策在 CORE/contracts；Fumadocs 唯讀。"
+      },
+      "architecture_decision": {
+        "decision": "not_required",
+        "evaluated_at": "2026-09-08",
+        "reason": "本 task 為唯讀文件 surface；來源治理的 Architecture 判定沿 JV-36，不新增協作 runtime。"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "tdd",
+          "code-review"
+        ],
+        "decision_input": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+          "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent 2026-09-08：「可以同意修訂 JV-36、新增上述網站 task，接續本地實作與獨立驗收」",
+          "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent：「依照臨時文件至 v3.1 進行第二階段」，並回覆「可以～」核准六章、本地實作、原規格及兩 task amendment與獨立驗收。"
+        ],
+        "decision_output": "由原 JV-36 與 MC-DOCS-01 承接 manual-local-v2 六章／六頁摘要、本地生成、文件影響與唯讀呈現。",
+        "execution_boundary": "依 manual_phase2 執行本地六章切片，local_manual_slice保留首章歷史；不Git/外部/R5/政策runtime/整案closeout。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "四面向比較後既有 dashboard routing、priority UI 與 Pages 不含 Fumadocs 首章網站，經 Vincent 核准新增。",
+            "recorded_at": "2026-09-08",
+            "evidence_refs": [
+              "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent 2026-09-08：「可以同意修訂 JV-36、新增上述網站 task，接續本地實作與獨立驗收」",
+              "同一 Codex task；Vincent 2026-09-08：「同意本案不因既有未 push commit 阻擋本地實作」",
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md"
+            ],
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/document-source-registry-and-human-sync",
+                "morrowise/morrowise-manual-live-sync",
+                "harness-mc/morrowise-live-dashboard-doc-routing",
+                "harness-mc/morrowise-priority-dashboard-surface-v2",
+                "harness-mc/inf-4"
+              ],
+              "scope_comparison": {
+                "problem": "需人讀操作章、導覽與搜尋，不是 priority dashboard。",
+                "owner_source_of_truth": "H 負責顯示，JV-36 仍負責來源。",
+                "inputs_outputs": "只消費首章合格 bundle，輸出 /docs 與本案驗收。",
+                "lifecycle_completion": "網站 local 與另行核准的 Zeabur live；不吸收其他 UI/Pages task。"
+              },
+              "decision_reason": "現有 dashboard/Pages task 不含本案文件呈現及發布邊界，只新增一個網站 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-08",
+                "evidence_refs": [
+                  "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent 2026-09-08：「可以同意修訂 JV-36、新增上述網站 task，接續本地實作與獨立驗收」",
+                  "同一 Codex task；Vincent 2026-09-08：「同意本案不因既有未 push commit 阻擋本地實作」"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 核准第二階段六情境及六頁摘要、版本維護、多頁來源與漏更新機械檢查；原首章歷史保留，網站及原來源治理持續承接。",
+            "recorded_at": "2026-09-08",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+              "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent：「依照臨時文件至 v3.1 進行第二階段」，並回覆「可以～」核准六章、本地實作、原規格及兩 task amendment與獨立驗收。"
+            ],
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/document-source-registry-and-human-sync",
+                "harness-mc/morrowise-fumadocs-manual-surface-v0"
+              ],
+              "scope_comparison": {
+                "problem": "同一說明書與文件來源治理問題，從首章擴為已凍結六情境。",
+                "owner_source_of_truth": "JV-36 擁有正文/registry/生成/impact，MC-DOCS-01唯讀呈現；policy/runtime owner不變。",
+                "inputs_outputs": "既有唯一正文與原生成器擴為六章、六頁導航、逐章版本及機械impact，不另建tracker。",
+                "lifecycle_completion": "兩task保持in_progress；本地驗證、全量JV36、Git、runtime與線上驗收分離。"
+              },
+              "decision_reason": "reuse身份、amend既有範圍；不新增task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-08",
+                "evidence_refs": [
+                  "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent：「依照臨時文件至 v3.1 進行第二階段」，並回覆「可以～」核准六章、本地實作、原規格及兩 task amendment與獨立驗收。"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "manual_phase2": {
+        "status": "local_verified",
+        "verified_at": "2026-09-08T13:43:55.287Z",
+        "result_boundary": "僅已核准六章本地slice；完整canonical matrices及所有WEB未全驗，不是completed或部署。",
+        "approval": {
+          "status": "approved",
+          "approved_by": "Vincent",
+          "approved_at": "2026-09-08",
+          "evidence_refs": [
+            "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent：「依照臨時文件至 v3.1 進行第二階段」，並回覆「可以～」核准六章、本地實作、原規格及兩 task amendment與獨立驗收。"
+          ]
+        },
+        "source_spec": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+        "approved_spec_sha256": "sha256:8661f9b66836bddbebe94f1baece63ead8f8fff3d842f06bfe7784b19323e6ec",
+        "scope_version": "manual-local-v2",
+        "chapter_ids": [
+          "entry",
+          "collaboration",
+          "execution",
+          "delivery",
+          "documentation",
+          "troubleshooting"
+        ],
+        "overview_pages": [
+          "README",
+          "01-entry",
+          "02-rules",
+          "03-capabilities",
+          "04-runtime",
+          "05-governance"
+        ],
+        "writer": "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68",
+      "independent_checker": "Avicenna /root/avicenna_independent_review; read-only",
+        "visibility": "local_only",
+        "canonical_body": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
+        "scope_paths": [
+          "$COLLAB/harness-mc/app/docs/[[...slug]]/page.tsx",
+          "$COLLAB/harness-mc/app/docs/layout.tsx",
+          "$COLLAB/harness-mc/app/docs/version-history.mjs",
+          "$COLLAB/harness-mc/app/docs/providers.tsx",
+          "$COLLAB/harness-mc/app/docs/search-dialog.tsx",
+          "$COLLAB/harness-mc/app/docs/docs.css",
+          "$COLLAB/harness-mc/lib/morrowise-docs-source.ts",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-docs-surface.mjs",
+          "$COLLAB/harness-mc/package.json"
+        ],
+        "generated_root": "$COLLAB/harness-mc/.tmp/morrowise-docs",
+        "artifact_policy": "六頁摘要、六操作章及bundle只由原generator生成到local-only .tmp；不寫public、out或shared human/，不作全JV36 R3產物完成宣稱。",
+        "evidence_location": "$COLLAB/harness-mc/milestones/harness-mc/tasks.json#morrowise-fumadocs-manual-surface-v0.test_contract.evidence_refs",
+        "exclusions": [
+          "Git stage/commit/push/merge/branch/worktree",
+          "external sync/deployment",
+          "R5 scheduler",
+          "MANUAL/ARCHITECTURE managed blocks",
+          "collaboration runtime/skills/global gates",
+          "other tools full tutorials/productization"
+        ],
+        "matrix_boundary": "本地切片證據沿原IDs；WEB與完整JV36 R1–R5未跑者保留not_run，不改completed。",
+        "planned_commands": [
+          "node scripts/verify-morrowise-document-sources.mjs",
+          "node scripts/verify-morrowise-documentation-impact.mjs --self-test",
+          "node scripts/generate-morrowise-documentation.mjs --local --changed-only",
+          "node scripts/verify-morrowise-documentation-sync.mjs",
+          "node scripts/verify-morrowise-docs-surface.mjs",
+          "npx --no-install tsc --noEmit --incremental false",
+          "npm run docs:build:local"
+        ]
+      }
+    },
+    {
       "id": "future-practice-domain-tracking-v1",
       "title": "Future Practice｜沿用既有 /projects 的領域追蹤顯示",
       "status": "completed",

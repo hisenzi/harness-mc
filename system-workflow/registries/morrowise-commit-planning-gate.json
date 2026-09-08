@@ -83,5 +83,15 @@
   ],
   "generator": "$COLLAB/harness-mc/scripts/generate-commit-cleanup-plan.mjs",
   "read_model": "$COLLAB/harness-mc/public/data/commit-cleanup-plan.json",
-  "verifier": "npm run test:commit-planning-gate && npm run test:commit-cleanup-plan"
+  "verifier": "npm run test:commit-planning-gate && npm run test:commit-cleanup-plan",
+  "workbook_route": {
+    "version": 1,
+    "status": "prototype",
+    "default_enabled": false,
+    "contract_ref": "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-workbook-flow.md",
+    "input": "explicit workbook path and trusted in-process workbookContext",
+    "output": "read-only local JSON; no central generated write or notification",
+    "classification": "selected work scope and active owner; pending push and other disjoint work do not block local planning",
+    "approval_boundary": "serialized read models cannot authorize work; reread the original source"
+  }
 }

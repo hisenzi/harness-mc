@@ -1,5 +1,7 @@
 # MorroWise Approval Policy
 
+> 工作本 v1 預備 opt-in 路徑：`$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-workbook-flow.md`。目前預設不變；具名啟用後，該來源的開工、驗收、commit 與延後登錄依此契約；原 canonical／remote 完成條件保留。
+
 > Task: `morrowise-approval-policy` (`MC-LIVE-18`)
 > Status: formal policy
 > Contract: `MW-GIT-AUTH-01`

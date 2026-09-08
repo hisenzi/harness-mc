@@ -507,5 +507,14 @@
       "source": "$COLLAB/.tmp/skills-main/skills/deprecated",
       "reason": "Deprecated skills are intake evidence only and are not routed."
     }
-  ]
+  ],
+  "workbook_source_adapter": {
+    "version": 1,
+    "status": "prototype",
+    "default_enabled": false,
+    "contract_ref": "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-workbook-flow.md",
+    "schema_ref": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-workbook.schema.json",
+    "implementation_ref": "$COLLAB/harness-mc/scripts/lib/workbook-anchor.mjs",
+    "activation_boundary": "Named opt-in after entry integration, required fixtures, and two-repo/two-session pilot. Canonical tasks and legacy acceptance remain unchanged."
+  }
 }

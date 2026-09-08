@@ -47,6 +47,7 @@
     "notes": { "type": "string" }
   },
   "$defs": {
+    "workbook_contract": { "$ref": "morrowise-workbook.schema.json" },
     "full_delivery_continuation": {
       "type": "object",
       "additionalProperties": false,

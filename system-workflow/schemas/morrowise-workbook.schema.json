@@ -216,6 +216,17 @@
             "type": "string",
             "minLength": 1,
             "description": "Unimplemented or unavailable required evidence; blocks full acceptance until a newly approved contract removes it."
+          },
+          "runtime_observation": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "A reviewed domain verifier must observe this environment and every check during the actual invocation. This binding never turns fixture output into live evidence.",
+            "required": ["environment_ref", "check_ids", "max_age_ms"],
+            "properties": {
+              "environment_ref": {"type": "string", "minLength": 1},
+              "check_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+              "max_age_ms": {"type": "integer", "minimum": 1}
+            }
           }
         },
         "required": [

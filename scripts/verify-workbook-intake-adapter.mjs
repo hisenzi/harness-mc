@@ -24,7 +24,15 @@ async function cases(){await withHostFixture(async f=>{
   json(registry,{migration_state_vocabulary:['inventory_only'],records:[{id:'fixture',classification:'canonical_project',migration_state:'inventory_only',repo_ref:'$COLLAB/repo',project_home_ref:'$COLLAB/repo'}]});
   const centralGit=(...args)=>{const r=spawnSync('git',args,{cwd:h,encoding:'utf8',env:{...process.env,GIT_CONFIG_GLOBAL:'/dev/null',GIT_CONFIG_NOSYSTEM:'1'}});assert.equal(r.status,0,r.stderr);return r.stdout.trim();};
   centralGit('init','-q');centralGit('config','user.name','Fixture');centralGit('config','user.email','fixture@example.invalid');centralGit('config','commit.gpgsign','false');centralGit('config','core.hooksPath',path.join(f.root,'no-hooks'));centralGit('add','.');centralGit('commit','-qm','fixture central');
-  const verifier=path.join(f.repo,'verify.mjs');fs.appendFileSync(verifier,"console.log('實跑時間='+Date.now());\n");f.git('add','verify.mjs');f.git('commit','-qm','fixture verifier with nondeterministic stdout');f.contract.acceptance[0].entrypoint_sha256=digest(fs.readFileSync(verifier));
+  const verifier=path.join(f.repo,'verify.mjs');fs.appendFileSync(verifier,`console.log('實跑時間='+Date.now());
+import crypto from 'node:crypto';
+if(process.env.MORROWISE_OBSERVATION_CONTEXT){
+ const binding=JSON.parse(process.env.MORROWISE_OBSERVATION_CONTEXT);
+ const artifacts={'a.txt':{mode:fs.statSync('a.txt').mode&0o111,sha256:crypto.createHash('sha256').update(fs.readFileSync('a.txt')).digest('hex')}};
+ console.log('MORROWISE_RUNTIME_OBSERVATION '+JSON.stringify({schema_version:1,...binding,execution_kind:'runtime',observed_at:new Date().toISOString(),checks:[{id:'file-readback',status:'passed'}],artifacts}));
+}\n`);f.git('add','verify.mjs');f.git('commit','-qm','fixture verifier with nondeterministic stdout');f.contract.acceptance[0].entrypoint_sha256=digest(fs.readFileSync(verifier));
+  // Synthetic adapter observation: exercises the transport, not a real P8 task.
+  f.contract.acceptance[0].runtime_observation={environment_ref:'fixture-file-readback',check_ids:['file-readback'],max_age_ms:600000};
   f.contract.title='人監督承接驗證';f.contract.allowed_actions=['implement','verify','handoff','integrate'];f.contract.repos[0].control_paths=['handoff.json'];f.reload();
   f.rows[1].payload.content[0].text='核准此 fixture 精確 scope 的實作、驗收與中央承接；既有內容仍須逐項審閱。';f.save();
   const initial=session.createWorkbookSessionContext(contextInput(session,f));
@@ -59,6 +67,14 @@ async function cases(){await withHostFixture(async f=>{
     assert.throws(()=>build({handoff:needsRuntime,sessionContext:authorize(needsRuntime)}),/runtime_evidence_unverified/,'verifier producer不能升格成可信live producer');
     assert.throws(()=>build({purpose:'handoff',outputPath:path.join(f.repo,'handoff.json'),handoff:needsRuntime,sessionContext:authorize(needsRuntime),review:undefined}),/runtime_evidence_unverified/,'缺live也不能先產生completed本地包');
   }
+  const observedRuntime=structuredClone(handoff);observedRuntime.task_candidate.test_contract.runtime_evidence_required=true;
+  observedRuntime.task_candidate.completion_evidence.runtime_evidence=produced.runtime_evidence_refs;
+  const observedContext=build({handoff:observedRuntime,sessionContext:authorize(observedRuntime)});
+  const runtimePreview=applyTaskEvents({root:h,mode:'preview',localHandoffs:[observedRuntime],authorizationContext:observedContext});
+  assert.equal(runtimePreview.results[0].status,'preview_ready',JSON.stringify(runtimePreview));
+  assert.doesNotThrow(()=>build({purpose:'handoff',outputPath:path.join(f.repo,'handoff.json'),handoff:observedRuntime,sessionContext:authorize(observedRuntime),review:undefined}));
+  for(const producer of [{},JSON.parse(JSON.stringify(produced.producer))])assert.throws(()=>build({handoff:observedRuntime,sessionContext:authorize(observedRuntime),producer}),/untrusted_acceptance_producer|runtime_evidence_unverified/);
+  assert.equal(fs.readFileSync(tasksPath,'utf8'),before,'runtime preview must remain read only');
   fs.writeFileSync(path.join(f.repo,'a.txt'),'changed');assert.equal(preview().results[0].status,'blocked');fs.writeFileSync(path.join(f.repo,'a.txt'),'base');
   json(tasksPath,{tasks:[{id:'unrelated',title:'真正新狀態',status:'todo'}]});assert.equal(preview().results[0].status,'blocked');fs.writeFileSync(tasksPath,before);
   const claimDir=path.join(h,'.git','morrowise-workbooks-v1','claims');fs.mkdirSync(claimDir,{recursive:true});const claim=path.join(claimDir,'foreign.json');

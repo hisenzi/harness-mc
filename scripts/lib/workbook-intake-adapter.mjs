@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {digest,stableJson,workId,loadWorkbook,resolveRepoPath,resolveWorkbookLocation,gitRead,getResolvedRepo,getResolvedRepos,workbookSource,fileEvidence,runWorkbookAcceptance,evaluateWorkbookGate} from './workbook-anchor.mjs';
+import {digest,stableJson,workId,loadWorkbook,resolveRepoPath,resolveWorkbookLocation,gitRead,getResolvedRepo,getResolvedRepos,workbookSource,fileEvidence,runWorkbookAcceptance,evaluateWorkbookGate,workbookRuntimeEvidence} from './workbook-anchor.mjs';
 import {getWorkbookSessionResolvers} from './workbook-session-context.mjs';
 import {getWorkbookRuntimeContext,runWorkbookPreflight,inspectWorkbookRegisteredRepos} from './workbook-preflight-adapter.mjs';
 import {inspectWorkbookClaims,inspectWorkbookRepo} from './workbook-coordination.mjs';
@@ -20,10 +20,15 @@ const text=v=>typeof v==='string'&&v.trim().length>0;
 const same=(a,b)=>stableJson(a)===stableJson(b);
 const overlap=(a,b)=>a===b||a.startsWith(b+'/')||b.startsWith(a+'/');
 const nullableDigest=v=>v===null||v===undefined?null:digest(v);
-function runtimeBoundary(h,original){
-  // 本 adapter 只證明契約 verifier 的實跑；尚無專用可信 live producer。
-  // 非空字串／fixture receipt 不能替代原 runtime 要求，也不能先存假 completed 包。
-  if(h.outcome==='completed')check(h.task_candidate?.test_contract?.runtime_evidence_required!==true&&original?.test_contract?.runtime_evidence_required!==true,'runtime_evidence_unverified');
+function runtimeBoundary(h,original,run){
+  if(h.outcome!=='completed')return;
+  const required=h.task_candidate?.test_contract?.runtime_evidence_required===true||original?.test_contract?.runtime_evidence_required===true;
+  if(!required&&!run?.workbook.contract.acceptance.some(a=>a.runtime_observation))return;
+  check(run,'untrusted_acceptance_producer');
+  check(run.workbook.contract_fingerprint===h.contract_fingerprint&&workId(run.workbook.contract)===`${h.project}/${h.task_id}`&&same(run.receipt,h.acceptance_receipt),'producer_receipt_mismatch');
+  const refs=workbookRuntimeEvidence(run.workbook,run.executed);
+  if(required)check(Array.isArray(h.task_candidate?.completion_evidence?.runtime_evidence)&&same([...h.task_candidate.completion_evidence.runtime_evidence].sort(),[...refs].sort()),'runtime_evidence_unverified');
+  if(original?.test_contract?.runtime_evidence_required===true)check(h.task_candidate?.test_contract?.runtime_evidence_required===true,'runtime_requirement_downgraded');
 }
 function directoryIdentity(file){const real=fs.realpathSync(file),s=fs.statSync(real);check(s.isDirectory(),'intake_directory_required');return {path:real,dev:s.dev,ino:s.ino};}
 function resultDigest(h){const {handoff_id,created_at,...result}=h;return digest(result);}
@@ -149,7 +154,8 @@ export function runWorkbookIntakeAcceptance({workbook,sessionContext,handoff},{h
   }
   const producer=Object.freeze({kind:'executed_workbook_intake_acceptance',version:1});
   producers.set(producer,{workbook,sessionContext,receipt:structuredClone(receipt),executed:structuredClone(executed)});
-  return {acceptance_receipt:structuredClone(receipt),executed_receipt:structuredClone(executed),producer};
+  const runtime_evidence_refs=workbook.contract.acceptance.some(a=>a.runtime_observation)?workbookRuntimeEvidence(workbook,executed):[];
+  return {acceptance_receipt:structuredClone(receipt),executed_receipt:structuredClone(executed),runtime_evidence_refs,producer};
 }
 function localHandoffContext({workbook,sessionContext,handoff,producer,outputPath},root){
   workbook=live(workbook);validateLocalTaskHandoff(handoff);handoff=structuredClone(handoff);
@@ -160,7 +166,7 @@ function localHandoffContext({workbook,sessionContext,handoff,producer,outputPat
   const refresh=()=>{
     const runtime=getWorkbookRuntimeContext(sessionContext,workbook,{harnessRoot:root});
     const gate=evaluateWorkbookGate({contract:workbook.contract,event:'handoff',operation:op},runtime);check(gate.decision==='allow',gate.reason||'intake_handoff_operation_not_verified');
-    runtimeBoundary(handoff,central(root,workbook).target.definition);
+    runtimeBoundary(handoff,central(root,workbook).target.definition,run);
     requireClaims(workbook,runtime.session_id);
     if(handoff.outcome==='completed'){
       check(run,'untrusted_acceptance_producer');check(run.workbook.home===workbook.home&&run.workbook.contract_fingerprint===workbook.contract_fingerprint&&same(run.receipt,handoff.acceptance_receipt),'producer_receipt_mismatch');
@@ -216,14 +222,14 @@ export function createWorkbookIntakeContext({workbook,sessionContext,handoff,pro
   initial=checkSnapshot();
   const isRecovery=!same(initial.data.expected,handoff.expected);
   if(isRecovery)recovery(root,workbook,handoff);
-  runtimeBoundary(handoff,isRecovery?recovery(root,workbook,handoff).original:initial.observed.target.definition);
+  const run=producers.get(producer);
+  runtimeBoundary(handoff,isRecovery?recovery(root,workbook,handoff).original:initial.observed.target.definition,run);
   const originalRuntime=isRecovery?recoveryRuntime(root,workbook,sessionContext,handoff):getWorkbookRuntimeContext(sessionContext,workbook,{harnessRoot:root});
   const originalGate=evaluateWorkbookGate({contract:workbook.contract,event:'integrate',operation:op},originalRuntime);check(originalGate.decision==='allow',originalGate.reason||'intake_original_gate_blocked');
   if(!workbook.contract.canonical_baseline){
     const peers=initial.observed.canonical_tasks.filter(t=>t.id!==handoff.task_id);
     check(review.semantic?.decision==='distinct'&&text(review.semantic.reason)&&review.semantic.canonical_tasks_fingerprint===digest(peers)&&same(review.semantic.reviewed_task_ids,peers.map(t=>t.id).sort()),'intake_semantic_review_required');
   }
-  const run=producers.get(producer);
   if(handoff.outcome==='completed'){
     check(run,'untrusted_acceptance_producer');check(run.workbook.home===workbook.home&&run.workbook.contract_fingerprint===workbook.contract_fingerprint&&same(run.receipt,handoff.acceptance_receipt),'producer_receipt_mismatch');
     getWorkbookSessionResolvers(run.sessionContext,run.workbook);
@@ -250,6 +256,7 @@ export function createWorkbookIntakeContext({workbook,sessionContext,handoff,pro
     semanticResolver(request){checkSnapshot();check(same(request.handoff,handoff)&&digest(request.canonical_tasks)===review.semantic.canonical_tasks_fingerprint,'intake_semantic_source_changed');return {decision:'distinct',evidence_ref:review.source_ref};},
     evidenceResolver(request){
       boundRequest(request);checkApproval();check(run,'untrusted_acceptance_producer');getWorkbookSessionResolvers(run.sessionContext,run.workbook);requireClaims(workbook,runtime.session_id);
+      runtimeBoundary(handoff,isRecovery?recovery(root,workbook,handoff).original:initial.observed.target.definition,run);
       check(request.receipt_digest===digest(run.receipt)&&request.result_digest===resultDigest(handoff)&&request.handoff_digest===digest(handoff)&&request.task_candidate_digest===digest(handoff.task_candidate),'producer_result_binding_changed');
       return {verified:true,receipt_digest:request.receipt_digest,contract_fingerprint:request.contract_fingerprint,result_digest:request.result_digest,task_candidate_digest:request.task_candidate_digest,source_ref:`executed-workbook-acceptance:${digest(run.executed)}`};
     },

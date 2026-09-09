@@ -83,6 +83,10 @@ export function validateWorkbookContract(c) {
     requireThat(Array.isArray(a.source_paths)&&a.source_paths.length>0&&a.source_paths.every(safeRelative)&&Array.isArray(a.artifact_paths)&&a.artifact_paths.length>0&&a.artifact_paths.every(safeRelative),'evidence_paths_invalid');
     requireThat(/^[0-9a-f]{64}$/.test(a.executable_sha256||'') && safeRelative(a.entrypoint) && a.source_paths.includes(a.entrypoint) && a.args[0]===a.entrypoint && /^[0-9a-f]{64}$/.test(a.entrypoint_sha256||''),'verifier_version_required');
     requireThat(!/^(?:ba|da|z|fi|c|tc|k)?sh$|^cmd(?:\.exe)?$|^powershell(?:\.exe)?$/i.test(path.basename(a.command)),'shell_verifier_rejected');
+    if(a.runtime_observation!==undefined){
+      const r=a.runtime_observation;
+      requireThat(r&&Object.keys(r).length===3&&text(r.environment_ref)&&Array.isArray(r.check_ids)&&r.check_ids.length>0&&r.check_ids.every(text)&&unique(r.check_ids)&&Number.isInteger(r.max_age_ms)&&r.max_age_ms>0,'runtime_observation_contract_invalid');
+    }
   }
   if(c.requirement_baseline!==undefined) {
     const b=c.requirement_baseline;
@@ -208,6 +212,31 @@ export function workbookSource(workbook) {
     return [r.repo_id,{head:gitRead(r.checkout_root,['rev-parse','HEAD']),files:fileEvidence(r.checkout_root,[...r.write_paths.filter(p=>!outputs.has(p)),...inputs],{allowMissing:true})}];
   }));
 }
+function checkRuntimeObservation(workbook,a,observation,artifacts,{nonce,started}={}) {
+  const binding=a.runtime_observation;
+  requireThat(observation?.schema_version===1&&observation.execution_kind==='runtime','runtime_observation_required');
+  requireThat(observation.work_id===workId(workbook.contract)&&observation.acceptance_id===a.id&&observation.contract_fingerprint===workbook.contract_fingerprint,'runtime_observation_work_changed');
+  requireThat(typeof observation.nonce==='string'&&/^[0-9a-f-]{36}$/.test(observation.nonce)&&(!nonce||observation.nonce===nonce),'runtime_observation_replayed');
+  requireThat(observation.environment_ref===binding.environment_ref,'runtime_observation_environment_changed');
+  const observed=Date.parse(observation.observed_at),now=Date.now();
+  requireThat(Number.isFinite(observed)&&observed<=now&&now-observed<=binding.max_age_ms&&(!started||observed>=started),'runtime_observation_stale');
+  requireThat(Array.isArray(observation.checks)&&stableJson(observation.checks.map(c=>c.id).sort())===stableJson([...binding.check_ids].sort())&&observation.checks.every(c=>c.status==='passed'),'runtime_observation_checks_failed');
+  requireThat(stableJson(observation.artifacts)===stableJson(artifacts),'runtime_observation_artifact_changed');
+}
+// Receipt consistency only; the intake adapter additionally requires its private
+// producer from an actual execution. A copied JSON observation grants nothing.
+export function workbookRuntimeEvidence(workbook,receipt) {
+  const requirements=workbook.contract.acceptance.filter(a=>a.runtime_observation);
+  requireThat(requirements.length>0,'runtime_evidence_unverified');
+  requireThat(receipt?.work_id===workId(workbook.contract)&&receipt.contract_fingerprint===workbook.contract_fingerprint,'runtime_observation_work_changed');
+  return requirements.map(a=>{
+    const result=receipt.results?.find(r=>r.id===a.id);
+    requireThat(result?.status==='passed'&&result.verifier_fingerprint===digest(a),'runtime_observation_verifier_changed');
+    checkRuntimeObservation(workbook,a,result.runtime_observation,result.artifacts);
+    const {environment_ref,checks,artifacts}=result.runtime_observation;
+    return `workbook-runtime:${workId(workbook.contract)}/${a.id}:sha256:${digest({contract_fingerprint:workbook.contract_fingerprint,verifier_fingerprint:result.verifier_fingerprint,environment_ref,checks,artifacts})}`;
+  });
+}
 export function runWorkbookAcceptance({workbook,...context}) {
   const gate=evaluateWorkbookGate({contract:workbook.contract,event:'verify'},context);if(gate.decision!=='allow')return gate;
   try {verifyRequirementBaseline(workbook);}catch(e){return {decision:'blocked',reason:e.message};}
@@ -220,9 +249,19 @@ export function runWorkbookAcceptance({workbook,...context}) {
     if(remaining<=0)return {decision:'blocked',reason:'verification_budget_exhausted'};
     const executable={path:fs.realpathSync(a.command),sha256:digest(fs.readFileSync(a.command))};
     if(executable.sha256!==a.executable_sha256 || digest(fs.readFileSync(resolveRepoPath(repo.checkout_root,a.entrypoint)))!==a.entrypoint_sha256)return {decision:'blocked',reason:'approved_verifier_changed',id:a.id};
-    const result=spawnSync(a.command,a.args,{cwd:repo.checkout_root,encoding:'utf8',shell:false,timeout:remaining,maxBuffer:4*1024*1024});
+    const observationContext=a.runtime_observation?{nonce:crypto.randomUUID(),work_id:workId(workbook.contract),acceptance_id:a.id,contract_fingerprint:workbook.contract_fingerprint,environment_ref:a.runtime_observation.environment_ref}:null;
+    const invocationStarted=Date.now();
+    const env={...process.env};delete env.MORROWISE_OBSERVATION_CONTEXT;
+    if(observationContext)env.MORROWISE_OBSERVATION_CONTEXT=JSON.stringify(observationContext);
+    const result=spawnSync(a.command,a.args,{cwd:repo.checkout_root,encoding:'utf8',shell:false,timeout:remaining,maxBuffer:4*1024*1024,env});
     if(result.status!==0)return {decision:'blocked',reason:'verifier_failed',id:a.id,exit_code:result.status};
-    results.push({id:a.id,status:'passed',verifier_fingerprint:digest(a),executable,output_sha256:digest(`${result.stdout||''}${result.stderr||''}`),artifacts:fileEvidence(repo.checkout_root,a.artifact_paths)});
+    const artifacts=fileEvidence(repo.checkout_root,a.artifact_paths);let runtime_observation;
+    if(observationContext)try{
+      const prefix='MORROWISE_RUNTIME_OBSERVATION ',lines=(result.stdout||'').split('\n').filter(line=>line.startsWith(prefix));
+      requireThat(lines.length===1,'runtime_observation_output_invalid');runtime_observation=JSON.parse(lines[0].slice(prefix.length));
+      checkRuntimeObservation(workbook,a,runtime_observation,artifacts,{nonce:observationContext.nonce,started:invocationStarted});
+    }catch(e){return {decision:'blocked',reason:e.message,id:a.id};}
+    results.push({id:a.id,status:'passed',verifier_fingerprint:digest(a),executable,output_sha256:digest(`${result.stdout||''}${result.stderr||''}`),artifacts,...(runtime_observation?{runtime_observation}:{})});
   }
   if(digest(source)!==digest(workbookSource(workbook)))return {decision:'blocked',reason:'source_changed_during_verification'};
   for(const result of results) {
@@ -248,6 +287,7 @@ export function validateAcceptanceEvidence(workbook,receipt) {
       requireThat(r.status==='passed'&&r.verifier_fingerprint===digest(a)&&/^[0-9a-f]{64}$/.test(r.output_sha256||''),'receipt_verifier_invalid');
       requireThat(r.executable?.path===fs.realpathSync(a.command)&&r.executable.sha256===digest(fs.readFileSync(a.command)),'verifier_executable_changed');
       requireThat(digest(r.artifacts)===digest(fileEvidence(repo.checkout_root,a.artifact_paths)),'artifact_changed');
+      if(a.runtime_observation)checkRuntimeObservation(workbook,a,r.runtime_observation,r.artifacts);
     }
     return {decision:'allow',reason:'acceptance_matches_current_source'};
   }catch(e){return {decision:'blocked',reason:e.message};}

@@ -70,7 +70,11 @@ implementation preflight 只讀，`allow` 與 `execution_ready` 分開：未有 
 
 換 session 或程序後不還原 JSON producer。排隊但尚無 journal 時，先核原 handoff 與未變的正式 before、當前依賴／原 gate 及明確移交的 claim，再重跑原驗收；已有部分 apply／projection_pending 時，先從固定中央路徑查原 journal、candidate 與 before／after，僅以已核定的原 before 重驗。新實跑結果必須與原受測 source files、verifier 與 artifact 一致，正常 C1 帶來的 HEAD 差由原 commit tree 證據核對，驗收時間與 stdout hash 可跨 run 不同，保留原、新兩份結果並將 producer ref 綁新實跑，不能宣稱證明舊 stdout 曾被產生；已變的產品不自動還原或補假 PASS。pending_writeback 只允許這項承接重驗，不因此重新開發。這些流程的隔離跨程序案例不計作 P8 人啟動的真實 session 試行。 中央 repo 若不屬於產品工作本的 repo 清單，也要在正式審閱快照綁其 root／common Gitdir 實體 identity；同路徑換 repo 後原審閱失效。
 
-**目前的 runtime 限制**：此 adapter 的 producer 證明工作本 verifier 真正執行，尚不提供通用可信 live producer。candidate 或原 canonical task 的 `test_contract.runtime_evidence_required:true` 若要求 completed，`handoff` 與 `integrate` 都回 `runtime_evidence_unverified`；不能靠非空字串、fixture 收據或自填旗標替代。local-only 合法工作可承接；需要 runtime 的工作保留原完成條件及既有 canonical／remote 路由，待具名能力的可信 live producer 接妥後再驗，不藉此切換全域預設。
+**Runtime 觀測接線（2026-09-09）**：具名工作可在原 acceptance row 宣告 `runtime_observation: {environment_ref, check_ids, max_age_ms}`；此欄位納入契約／verifier 指紋，必須審查該 verifier 確實觀測指定環境與原要求。runner 以 `MORROWISE_OBSERVATION_CONTEXT` 提供單次 nonce、工作／驗收 ID、契約指紋與環境引用；原核准 verifier 在 stdout 輸出唯一 `MORROWISE_RUNTIME_OBSERVATION ` JSON 行，內容包含 `schema_version:1`、上述綁定、`execution_kind:runtime`、當次 `observed_at`、精確 `checks:[{id,status:passed}]` 及實際 `artifacts` 路徑／SHA／mode。runner 查核當次執行、逐項结果、時效與產物 bytes，通過才附入原 acceptance receipt。
+
+`runWorkbookIntakeAcceptance` 回傳該次實跑的私有 producer 與 `runtime_evidence_refs`。candidate／原 task 要求 runtime 時，完成引用必須對應同工作、同契約及實跑結果；handoff 與 integrate 每次使用均重驗。重開程序須沿原恢復機制重新執行，引用保留可重現的觀測內容指紋，當次 nonce／時間各自留存；不得重建 JSON producer，亦不得降低原 task 的 runtime 必要條件。未宣告具名 runtime binding、fixture 類型、假引用、換環境、過期、失敗或缺漏結果仍拒絕。
+
+此接線只處理已審查 verifier 的觀測傳遞；nonce 和雜湊不能判定 verifier 的方法是否足以驗收產品，也不能把合成測試變成 P8 真實試行。隔離 adapter 正例只證明成功路徑可走；每件真實工作仍須自己的具名觀測與原產品驗收。本次不新增通用 executor、排程或預設啟用。
 
 開發完成、本地 commit／main 整合、中央承接、中央紀錄 commit、遠端／runtime 分欄報告。中央 owner 未交接時包留本地排隊，不否定已成立的本地成果，也不宣稱正式 task 已完成。證據承接前不刪工作本、note、intent 或交接包。
 

@@ -46,5 +46,25 @@ try {
   fs.writeFileSync(path.join(root,'requirements.md'),requirements);write(external);
   w=api.loadWorkbook(path.join(root,'work.md'));assert.ok(api.workbookSource(w).fixture.files['requirements.md']);
   fs.unlinkSync(path.join(root,'requirements.md'));fs.symlinkSync('work.md',path.join(root,'requirements.md'));assert.throws(()=>api.loadWorkbook(path.join(root,'work.md')),/symlink/);
+  // This is an isolated protocol test, never evidence for the real P8 pilot.
+  const observed=structuredClone(c);
+  observed.acceptance[0].runtime_observation={environment_ref:'fixture-local-file',check_ids:['actual-output'],max_age_ms:60000};
+  const observerSource=override=>`import fs from 'node:fs';import crypto from 'node:crypto';
+const expected=JSON.parse(process.env.MORROWISE_OBSERVATION_CONTEXT||'{}');
+const bytes=fs.readFileSync('input.txt');if(bytes.toString()!=='ok')process.exit(2);
+const observation={schema_version:1,...expected,execution_kind:'runtime',observed_at:new Date().toISOString(),checks:[{id:'actual-output',status:'passed'}],artifacts:{'input.txt':{sha256:crypto.createHash('sha256').update(bytes).digest('hex'),mode:fs.statSync('input.txt').mode&0o111}}};
+${override}
+console.log('MORROWISE_RUNTIME_OBSERVATION '+JSON.stringify(observation));\n`;
+  const observe=override=>{fs.writeFileSync(path.join(root,'verify.mjs'),observerSource(override));observed.acceptance[0].entrypoint_sha256=fileHash(path.join(root,'verify.mjs'));write(observed);w=api.loadWorkbook(path.join(root,'work.md'));return api.runWorkbookAcceptance({workbook:w,...context});};
+  const observedGood=observe('');assert.equal(observedGood.decision,'allow',JSON.stringify(observedGood));
+  assert.equal(observedGood.receipt.results[0].runtime_observation?.environment_ref,'fixture-local-file','actual observed result must be bound to the executed receipt');
+  assert.equal(api.validateAcceptanceEvidence(w,observedGood.receipt).decision,'allow');
+  for(const override of ["observation.nonce='replayed';","observation.work_id='other/work';","observation.acceptance_id='A2';","observation.environment_ref='other';","observation.execution_kind='fixture';","observation.observed_at='2000-01-01T00:00:00Z';","observation.observed_at='2999-01-01T00:00:00Z';","observation.checks=[];","observation.checks.push(observation.checks[0]);","observation.checks[0].status='failed';","observation.artifacts['input.txt'].sha256='0'.repeat(64);","console.log('MORROWISE_RUNTIME_OBSERVATION '+JSON.stringify(observation));"]){
+    const denied=observe(override);assert.equal(denied.decision,'blocked',`invalid observation was accepted: ${override}`);
+  }
+  const restored=observe('');const copied=structuredClone(restored.receipt);delete copied.results[0].runtime_observation;
+  assert.equal(api.validateAcceptanceEvidence(w,copied).decision,'blocked','missing runtime binding cannot be accepted as a legacy receipt');
+  const invalidObservation=structuredClone(observed);invalidObservation.acceptance[0].runtime_observation.check_ids=[];write(invalidObservation);assert.throws(()=>api.loadWorkbook(path.join(root,'work.md')),/runtime_observation/);
+  console.log('PASS runtime observation protocol: real invocation binding, artifact bytes, exact checks, replay/environment/fixture/stale/failed/copied-report rejection (isolated fixture only)');
   console.log('PASS original requirement binding: valid source, exact IDs, drift, duplicate markers, pending live rejection, copied receipt rejection, external source and symlink');
 } finally {fs.rmSync(root,{recursive:true,force:true});}

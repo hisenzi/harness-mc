@@ -4,8 +4,9 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import crypto from "node:crypto";
-import { execFileSync, spawnSync } from "node:child_process";
+import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { isDeepStrictEqual } from "node:util";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const collabRoot = path.resolve(__dirname, "..", "..");
@@ -19,7 +20,9 @@ export const END_SENTINEL = "<!-- morrowise-manual-sync:end:v1 -->";
 
 export const SOURCE_MANUAL_PATH = path.join(collabRoot, "notyet-harness", "000_Agent", "docs", "morrowise", "MANUAL.md");
 export const SYSTEM_JSON_PATH = path.join(collabRoot, "harness-mc", "public", "data", "morrowise-system.json");
-export const BACKUP_ROOT = path.join(os.homedir(), "Library", "Application Support", "MorroWise", "heptabase-manual-sync", "backups");
+export const SYSTEM_VERIFIER_PATH = path.join(collabRoot, "harness-mc", "scripts", "verify-morrowise-system-json.mjs");
+export const MANUAL_SYNC_SCRIPT_PATH = path.join(collabRoot, "notyet-harness", "000_Agent", "scripts", "sync-morrowise-manual.py");
+export const BACKUP_ROOT = process.env.HEPTABASE_BACKUP_DIR || path.join(os.homedir(), "Library", "Application Support", "MorroWise", "heptabase-manual-sync", "backups");
 
 // Exit Codes
 export const EXIT_SUCCESS = 0;
@@ -51,9 +54,36 @@ export function parseArgs(argv) {
     manualPath: SOURCE_MANUAL_PATH,
     cardId: TARGET_CARD_ID,
   };
+  const primaryModeFlags = new Set(["--render-only", "--dry-run", "--check", "--apply"]);
+  const nonRepeatableFlags = new Set([
+    ...primaryModeFlags,
+    "--yes",
+    "--initialize-markers",
+    "--json",
+    "--manual-path",
+    "--card-id",
+  ]);
+  const seenFlags = new Set();
+  let selectedModeFlag = null;
+  let manualPathExplicit = false;
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
+    if (nonRepeatableFlags.has(arg)) {
+      if (seenFlags.has(arg)) {
+        console.error(`Error: repeated option ${arg}`);
+        process.exit(EXIT_USAGE);
+      }
+      seenFlags.add(arg);
+    }
+    if (primaryModeFlags.has(arg)) {
+      if (selectedModeFlag !== null) {
+        console.error(`Error: mode ${arg} conflicts with ${selectedModeFlag}`);
+        process.exit(EXIT_USAGE);
+      }
+      selectedModeFlag = arg;
+    }
+
     if (arg === "--render-only") {
       options.renderOnly = true;
     } else if (arg === "--dry-run") {
@@ -69,8 +99,17 @@ export function parseArgs(argv) {
     } else if (arg === "--json") {
       options.json = true;
     } else if (arg === "--manual-path") {
+      if (i + 1 >= argv.length || argv[i + 1].startsWith("--")) {
+        console.error("Error: --manual-path requires a path value");
+        process.exit(EXIT_USAGE);
+      }
       options.manualPath = argv[++i];
+      manualPathExplicit = true;
     } else if (arg === "--card-id") {
+      if (i + 1 >= argv.length || argv[i + 1].startsWith("--")) {
+        console.error("Error: --card-id requires an ID value");
+        process.exit(EXIT_USAGE);
+      }
       options.cardId = argv[++i];
     } else if (arg === "--help" || arg === "-h") {
       printUsage();
@@ -81,10 +120,19 @@ export function parseArgs(argv) {
     }
   }
 
+  if (
+    manualPathExplicit &&
+    !options.renderOnly &&
+    path.resolve(options.manualPath) !== path.resolve(SOURCE_MANUAL_PATH)
+  ) {
+    console.error("Error: --manual-path may override the canonical source only in --render-only mode");
+    process.exit(EXIT_USAGE);
+  }
+
   // Validate combinations
   if (options.renderOnly) {
-    if (options.apply || options.check || options.initializeMarkers) {
-      console.error("Error: --render-only cannot be combined with --apply, --check, or --initialize-markers");
+    if (options.apply || options.check || options.initializeMarkers || options.yes) {
+      console.error("Error: --render-only cannot be combined with --apply, --check, --initialize-markers, or --yes");
       process.exit(EXIT_USAGE);
     }
     options.mode = "render-only";
@@ -92,8 +140,8 @@ export function parseArgs(argv) {
   }
 
   if (options.check) {
-    if (options.apply || options.initializeMarkers) {
-      console.error("Error: --check cannot be combined with --apply or --initialize-markers");
+    if (options.apply || options.initializeMarkers || options.yes) {
+      console.error("Error: --check cannot be combined with --apply, --initialize-markers, or --yes");
       process.exit(EXIT_USAGE);
     }
     options.mode = "check";
@@ -136,7 +184,7 @@ Modes:
 
 Options:
   --json                            Output results in JSON format
-  --manual-path <path>              Override path to MANUAL.md
+  --manual-path <path>              Override input only for --render-only; live-card modes require canonical MANUAL.md
   --card-id <id>                    Override target Card ID (must match expected identity)
 `);
 }
@@ -148,55 +196,147 @@ Options:
 export function parseInline(text) {
   if (!text) return [];
 
-  const tokens = [];
-  const regex = /(`[^`]+`)|(\[[^\]]+\]\([^)]+\))|(\*\*[^*]+\*\*)|(\*[^*]+\*)|(_[^_]+_)/g;
-  let lastIndex = 0;
-  let match;
+  // Step 1: Extract code spans first so their contents are completely protected
+  const codePlaceholders = [];
+  const protectedText = text.replace(/`([^`]+)`/g, (match, codeContent) => {
+    const placeholder = `\x00CODE_${codePlaceholders.length}\x00`;
+    codePlaceholders.push({
+      type: "text",
+      text: codeContent,
+      marks: [{ type: "code" }]
+    });
+    return placeholder;
+  });
 
-  while ((match = regex.exec(text)) !== null) {
-    if (match.index > lastIndex) {
-      tokens.push({ type: "text", text: text.slice(lastIndex, match.index) });
-    }
-    const full = match[0];
-    if (full.startsWith("`")) {
-      tokens.push({
-        type: "text",
-        text: full.slice(1, -1),
-        marks: [{ type: "code" }]
-      });
-    } else if (full.startsWith("[")) {
-      const linkMatch = full.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
-      if (linkMatch) {
-        tokens.push({
-          type: "text",
-          text: linkMatch[1],
-          marks: [{ type: "link", attrs: { href: linkMatch[2] } }]
-        });
+  // Helper to parse links, bold, italics, plain text
+  function parseSegment(input, inheritedMarks = []) {
+    const tokens = [];
+    // Link: [text](url)
+    // Strong: **text**
+    // Italic with *: *text* (word boundary or punctuation)
+    // Italic with _: (?<![a-zA-Z0-9])_(?!\s)(.+?)(?<!\s)_(?![a-zA-Z0-9]) (intra-word \w_\w is preserved)
+    const regex = /(\[([^\]]+)\]\(([^)]+)\))|(\*\*([^*]+)\*\*)|((?<!\*)\*(?!\*)([^*]+)(?<!\*)\*(?!\*))|((?<![a-zA-Z0-9])_(?!\s)(.+?)(?<!\s)_(?![a-zA-Z0-9]))/g;
+    let lastIndex = 0;
+    let match;
+
+    while ((match = regex.exec(input)) !== null) {
+      if (match.index > lastIndex) {
+        const rawSlice = input.slice(lastIndex, match.index);
+        tokens.push(...resolvePlaceholders(rawSlice, inheritedMarks));
       }
-    } else if (full.startsWith("**")) {
-      tokens.push({
-        type: "text",
-        text: full.slice(2, -2),
-        marks: [{ type: "strong" }]
-      });
-    } else if (full.startsWith("*") || full.startsWith("_")) {
-      tokens.push({
-        type: "text",
-        text: full.slice(1, -1),
-        marks: [{ type: "em" }]
-      });
+
+      if (match[1]) {
+        // Link: [text](url)
+        const linkText = match[2];
+        const href = match[3];
+        const linkMark = { type: "link", attrs: { href } };
+        tokens.push(...resolvePlaceholders(linkText, [...inheritedMarks, linkMark]));
+      } else if (match[4]) {
+        // Strong: **text**
+        const strongText = match[5];
+        const strongMark = { type: "strong" };
+        tokens.push(...parseSegment(strongText, [...inheritedMarks, strongMark]));
+      } else if (match[6]) {
+        // Italic with *: *text*
+        const emText = match[7];
+        const emMark = { type: "em" };
+        tokens.push(...parseSegment(emText, [...inheritedMarks, emMark]));
+      } else if (match[8]) {
+        // Italic with _: _text_
+        const emText = match[9];
+        const emMark = { type: "em" };
+        tokens.push(...parseSegment(emText, [...inheritedMarks, emMark]));
+      }
+
+      lastIndex = regex.lastIndex;
     }
-    lastIndex = regex.lastIndex;
+
+    if (lastIndex < input.length) {
+      const rawSlice = input.slice(lastIndex);
+      tokens.push(...resolvePlaceholders(rawSlice, inheritedMarks));
+    }
+
+    return tokens;
   }
 
-  if (lastIndex < text.length) {
-    tokens.push({ type: "text", text: text.slice(lastIndex) });
+  function resolvePlaceholders(str, marks = []) {
+    if (!str) return [];
+    const parts = str.split(/(\x00CODE_\d+\x00)/);
+    const result = [];
+    for (const part of parts) {
+      const codeMatch = part.match(/^\x00CODE_(\d+)\x00$/);
+      if (codeMatch) {
+        const idx = parseInt(codeMatch[1], 10);
+        const node = codePlaceholders[idx];
+        // In ProseMirror, code mark is exclusive
+        result.push({
+          type: "text",
+          text: node.text,
+          marks: [{ type: "code" }]
+        });
+      } else if (part.length > 0) {
+        const token = { type: "text", text: part };
+        if (marks && marks.length > 0) {
+          token.marks = marks;
+        }
+        result.push(token);
+      }
+    }
+    return result;
   }
 
-  return tokens;
+  const rawTokens = parseSegment(protectedText);
+
+  // Merge adjacent plain text tokens with identical marks
+  const mergedTokens = [];
+  for (const token of rawTokens) {
+    if (mergedTokens.length === 0) {
+      mergedTokens.push(token);
+      continue;
+    }
+    const prev = mergedTokens[mergedTokens.length - 1];
+    const prevMarks = JSON.stringify(prev.marks || []);
+    const currMarks = JSON.stringify(token.marks || []);
+    if (prevMarks === currMarks) {
+      prev.text += token.text;
+    } else {
+      mergedTokens.push(token);
+    }
+  }
+
+  return mergedTokens;
+}
+
+export function assertSupportedMarkdownSyntax(markdown) {
+  let inFence = false;
+
+  for (const line of markdown.replace(/\r\n/g, "\n").split("\n")) {
+    if (line.includes(START_SENTINEL) || line.includes(END_SENTINEL)) {
+      throw new Error("Unsupported Markdown syntax: reserved sync sentinel");
+    }
+    if (line.trim().startsWith("```")) {
+      inFence = !inFence;
+      continue;
+    }
+    if (inFence) continue;
+
+    const unescapedBackticks = [...line.matchAll(/(?<!\\)`/g)].length;
+    if (unescapedBackticks % 2 !== 0) {
+      throw new Error("Unsupported Markdown syntax: unclosed inline code");
+    }
+
+    const outsideCode = line.replace(/(?<!\\)`[^`]*?(?<!\\)`/g, "");
+    if (/!\[[^\]]*\]\([^)]+\)/.test(outsideCode)) {
+      throw new Error("Unsupported Markdown syntax: image");
+    }
+    if (outsideCode.includes("~~")) {
+      throw new Error("Unsupported Markdown syntax: strikethrough");
+    }
+  }
 }
 
 export function markdownToProseMirror(markdown) {
+  assertSupportedMarkdownSyntax(markdown);
   const clean = markdown.replace(/\r\n/g, "\n");
 
   const markersToRemove = new Set([
@@ -369,6 +509,17 @@ export function markdownToProseMirror(markdown) {
 // Marker Contract & AST Manipulation
 // ---------------------------------------------------------------------------
 
+export const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export function isValidMarkerAttrs(attrs) {
+  if (!attrs || Object.keys(attrs).length === 0) return true;
+  const keys = Object.keys(attrs);
+  if (keys.length === 1 && keys[0] === "id") {
+    return typeof attrs.id === "string" && UUID_REGEX.test(attrs.id);
+  }
+  return false;
+}
+
 export function isSentinelNode(node, sentinelText) {
   if (!node || node.type !== "paragraph") return false;
   if (!Array.isArray(node.content) || node.content.length !== 1) return false;
@@ -388,21 +539,62 @@ export function createSentinelNode(sentinelText) {
 export function findMarkers(contentNodes) {
   const startIndices = [];
   const endIndices = [];
+  const invalidMarkers = [];
 
   for (let idx = 0; idx < contentNodes.length; idx++) {
     const node = contentNodes[idx];
-    if (isSentinelNode(node, START_SENTINEL)) {
+    const isStart = isSentinelNode(node, START_SENTINEL);
+    const isEnd = isSentinelNode(node, END_SENTINEL);
+
+    if (isStart) {
+      if (!isValidMarkerAttrs(node.attrs)) {
+        invalidMarkers.push({
+          idx,
+          reason: `Invalid marker attributes on sentinel node at index ${idx}: only optional server UUID 'attrs.id' is allowed; found ${JSON.stringify(node.attrs)}`
+        });
+      }
       startIndices.push(idx);
-    } else if (isSentinelNode(node, END_SENTINEL)) {
+    } else if (isEnd) {
+      if (!isValidMarkerAttrs(node.attrs)) {
+        invalidMarkers.push({
+          idx,
+          reason: `Invalid marker attributes on sentinel node at index ${idx}: only optional server UUID 'attrs.id' is allowed; found ${JSON.stringify(node.attrs)}`
+        });
+      }
       endIndices.push(idx);
     }
   }
 
-  return { startIndices, endIndices };
+  const countSentinelText = (value, sentinel) => {
+    if (Array.isArray(value)) {
+      return value.reduce((count, item) => count + countSentinelText(item, sentinel), 0);
+    }
+    if (!value || typeof value !== "object") return 0;
+    const own = value.type === "text" && value.text === sentinel ? 1 : 0;
+    return own + Object.values(value).reduce((count, item) => count + countSentinelText(item, sentinel), 0);
+  };
+
+  const startOccurrences = countSentinelText(contentNodes, START_SENTINEL);
+  const endOccurrences = countSentinelText(contentNodes, END_SENTINEL);
+  if (startOccurrences !== startIndices.length) {
+    invalidMarkers.push({ reason: "Nested or malformed start sentinel detected" });
+  }
+  if (endOccurrences !== endIndices.length) {
+    invalidMarkers.push({ reason: "Nested or malformed end sentinel detected" });
+  }
+
+  return { startIndices, endIndices, invalidMarkers };
 }
 
 export function validateMarkers(contentNodes, mode) {
-  const { startIndices, endIndices } = findMarkers(contentNodes);
+  const { startIndices, endIndices, invalidMarkers } = findMarkers(contentNodes);
+
+  if (invalidMarkers.length > 0) {
+    return {
+      valid: false,
+      reason: invalidMarkers[0].reason
+    };
+  }
 
   if (mode === "initialize") {
     if (startIndices.length === 0 && endIndices.length === 0) {
@@ -453,26 +645,32 @@ export function initializeMarkers(docContent, managedNodes) {
   return [...docContent, startNode, ...managedNodes, endNode];
 }
 
-export function stripNodeIds(node) {
-  if (Array.isArray(node)) return node.map(stripNodeIds);
+export function normalizeManagedNodeIds(node) {
+  if (Array.isArray(node)) return node.map(normalizeManagedNodeIds);
   if (!node || typeof node !== "object") return node;
   const copy = {};
   const keys = Object.keys(node).sort();
   for (const key of keys) {
     if (key === "attrs" && node.attrs && typeof node.attrs === "object") {
       const { id, ...restAttrs } = node.attrs;
-      if (Object.keys(restAttrs).length > 0) {
-        copy.attrs = stripNodeIds(restAttrs);
+      if (id !== undefined && (typeof id !== "string" || !UUID_REGEX.test(id))) {
+        copy.attrs = normalizeManagedNodeIds(node.attrs);
+      } else if (Object.keys(restAttrs).length > 0) {
+        copy.attrs = normalizeManagedNodeIds(restAttrs);
       }
     } else {
-      copy[key] = stripNodeIds(node[key]);
+      copy[key] = normalizeManagedNodeIds(node[key]);
     }
   }
   return copy;
 }
 
+export function areManagedNodesEqual(nodesA, nodesB) {
+  return JSON.stringify(normalizeManagedNodeIds(nodesA)) === JSON.stringify(normalizeManagedNodeIds(nodesB));
+}
+
 export function areNodesEqual(nodesA, nodesB) {
-  return JSON.stringify(stripNodeIds(nodesA)) === JSON.stringify(stripNodeIds(nodesB));
+  return areManagedNodesEqual(nodesA, nodesB);
 }
 
 // ---------------------------------------------------------------------------
@@ -482,13 +680,27 @@ export function areNodesEqual(nodesA, nodesB) {
 export function createBackup(cardId, contentMd5, rawReadPayload) {
   const cardBackupDir = path.join(BACKUP_ROOT, cardId);
   fs.mkdirSync(cardBackupDir, { recursive: true, mode: 0o700 });
+  fs.chmodSync(cardBackupDir, 0o700);
+  if ((fs.statSync(cardBackupDir).mode & 0o777) !== 0o700) {
+    throw new Error("Backup directory permissions must be 0700");
+  }
 
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
   const backupFileName = `${timestamp}-${contentMd5}.json`;
   const backupFilePath = path.join(cardBackupDir, backupFileName);
+  const tmpBackupPath = path.join(cardBackupDir, `.${backupFileName}.tmp-${Date.now()}-${crypto.randomBytes(4).toString("hex")}`);
 
   const payloadStr = typeof rawReadPayload === "string" ? rawReadPayload : JSON.stringify(rawReadPayload, null, 2);
-  fs.writeFileSync(backupFilePath, payloadStr, { encoding: "utf-8", mode: 0o600 });
+
+  try {
+    fs.writeFileSync(tmpBackupPath, payloadStr, { encoding: "utf-8", mode: 0o600 });
+    fs.renameSync(tmpBackupPath, backupFilePath);
+  } catch (err) {
+    if (fs.existsSync(tmpBackupPath)) {
+      try { fs.unlinkSync(tmpBackupPath); } catch {}
+    }
+    throw err;
+  }
 
   // Read back and verify sha256
   const written = fs.readFileSync(backupFilePath, "utf-8");
@@ -539,6 +751,102 @@ export function runCli(args, timeoutMs = 15000) {
   };
 }
 
+export function runLocalCommand(command, args, timeoutMs = 30000) {
+  try {
+    const result = spawnSync(command, args, {
+      encoding: "utf-8",
+      maxBuffer: 10 * 1024 * 1024,
+      timeout: timeoutMs,
+      env: process.env,
+    });
+    if (result.error) {
+      return {
+        status: result.error.code === "ETIMEDOUT" ? 124 : EXIT_SAFETY_GATE,
+        stdout: result.stdout || "",
+        stderr: result.error.code === "ETIMEDOUT" ? "Timeout" : String(result.error),
+      };
+    }
+    return {
+      status: result.status,
+      stdout: result.stdout || "",
+      stderr: result.stderr || "",
+    };
+  } catch (error) {
+    return { status: EXIT_SAFETY_GATE, stdout: "", stderr: String(error) };
+  }
+}
+
+export function runSourceGates(commandRunner = runLocalCommand) {
+  const gates = [
+    {
+      name: "system-json",
+      command: process.execPath,
+      args: [SYSTEM_VERIFIER_PATH],
+    },
+    {
+      name: "manual-check",
+      command: "python3",
+      args: [MANUAL_SYNC_SCRIPT_PATH, "--check"],
+    },
+  ];
+
+  for (const gate of gates) {
+    const result = commandRunner(gate.command, gate.args, 30000);
+    if (!result || result.status !== 0) {
+      return {
+        success: false,
+        exitCode: EXIT_SAFETY_GATE,
+        gate: gate.name,
+        error: `${gate.name} source gate failed`,
+      };
+    }
+  }
+
+  return { success: true };
+}
+
+export function verifyCliVersion(cliRunner = runCli) {
+  const result = cliRunner(["--version"], 5000);
+  if (!result || result.status !== 0) {
+    const stderr = result?.stderr || "";
+    const isOffline = result?.status === EXIT_OFFLINE || result?.status === 126 || /ECONNREFUSED|offline|connect|ENOENT/i.test(stderr);
+    return {
+      success: false,
+      exitCode: isOffline ? EXIT_OFFLINE : EXIT_SAFETY_GATE,
+      error: "Unable to verify Heptabase CLI version",
+    };
+  }
+
+  const match = result.stdout.trim().match(/(?:^|\s)(\d+\.\d+\.\d+)(?:\s|$)/);
+  if (!match || match[1] !== SUPPORTED_CLI_VERSION) {
+    return {
+      success: false,
+      exitCode: EXIT_SAFETY_GATE,
+      error: `Unsupported Heptabase CLI version; expected ${SUPPORTED_CLI_VERSION}`,
+    };
+  }
+  return { success: true, version: match[1] };
+}
+
+const MD5_REGEX = /^[0-9a-f]{32}$/i;
+const STALE_MD5_CONFLICT_REGEX = /^Error: Note content MD5 mismatch\. Conflict detected\. Stale content-md5: expected ([0-9a-f]{32}), got ([0-9a-f]{32})\s*$/i;
+
+export function validateTargetCard(card, { previousMd5 = null, requireChangedMd5 = false } = {}) {
+  if (!card || card.id !== TARGET_CARD_ID) {
+    return { valid: false, reason: "Target Card ID mismatch" };
+  }
+  if (card.title !== EXPECTED_TITLE) {
+    return { valid: false, reason: "Target title mismatch" };
+  }
+  if (typeof card.contentMd5 !== "string" || !MD5_REGEX.test(card.contentMd5)) {
+    return { valid: false, reason: "Target contentMd5 is missing or malformed" };
+  }
+  if (requireChangedMd5 && card.contentMd5 === previousMd5) {
+    return { valid: false, reason: "Target contentMd5 did not change after save" };
+  }
+  return { valid: true };
+}
+
 export function readNote(cardId) {
   const res = runCli(["note", "read", cardId]);
   if (res.status !== 0) {
@@ -576,7 +884,7 @@ export function saveNote(cardId, contentMd5, newDoc) {
     const res = runCli(["note", "save", cardId, "--content-md5", contentMd5, "--content-file", tmpFile]);
 
     if (res.status !== 0) {
-      if (res.stderr.includes("Conflict") || res.stderr.includes("mismatch") || res.stderr.includes("Stale content-md5")) {
+      if (STALE_MD5_CONFLICT_REGEX.test(res.stderr.trim())) {
         return { success: false, exitCode: EXIT_CONFLICT, error: res.stderr };
       }
       if (res.status === 124 || res.stderr.includes("timed out")) {
@@ -628,6 +936,20 @@ export async function main(argv = process.argv.slice(2)) {
     return EXIT_SUCCESS;
   }
 
+  if (options.mode === "apply" || options.mode === "initialize") {
+    const sourceGate = runSourceGates();
+    if (!sourceGate.success) {
+      console.error(`Safety gate error: ${sourceGate.error}`);
+      return sourceGate.exitCode;
+    }
+  }
+
+  const cliVersionGate = verifyCliVersion();
+  if (!cliVersionGate.success) {
+    console.error(`Safety gate error: ${cliVersionGate.error}`);
+    return cliVersionGate.exitCode;
+  }
+
   // 2. Read live card
   const readRes = readNote(options.cardId);
   if (!readRes.success) {
@@ -638,12 +960,9 @@ export async function main(argv = process.argv.slice(2)) {
   const card = readRes.card;
 
   // 3. Identity Verification
-  if (card.id !== TARGET_CARD_ID) {
-    console.error(`Safety gate error: Target Card ID mismatch. Expected ${TARGET_CARD_ID}, got ${card.id}`);
-    return EXIT_SAFETY_GATE;
-  }
-  if (card.title !== EXPECTED_TITLE) {
-    console.error(`Safety gate error: Target Title mismatch. Expected "${EXPECTED_TITLE}", got "${card.title}"`);
+  const targetCheck = validateTargetCard(card);
+  if (!targetCheck.valid) {
+    console.error(`Safety gate error: ${targetCheck.reason}`);
     return EXIT_SAFETY_GATE;
   }
 
@@ -685,12 +1004,26 @@ export async function main(argv = process.argv.slice(2)) {
 
   // 6. Check Mode
   if (options.mode === "check") {
-    if (hasChange) {
-      console.log("Drift detected: Heptabase card managed region is out of sync with local MANUAL.md");
-      return EXIT_DRIFT;
+    const result = {
+      mode: "check",
+      synced: !hasChange,
+      hasChange,
+      target: {
+        id: card.id,
+        title: card.title,
+        contentMd5: card.contentMd5,
+      },
+    };
+    if (options.json) {
+      console.log(JSON.stringify(result, null, 2));
+    } else {
+      if (hasChange) {
+        console.log("Drift detected: Heptabase card managed region is out of sync with local MANUAL.md");
+      } else {
+        console.log("Heptabase card is in sync with local MANUAL.md");
+      }
     }
-    console.log("Heptabase card is in sync with local MANUAL.md");
-    return EXIT_SUCCESS;
+    return hasChange ? EXIT_DRIFT : EXIT_SUCCESS;
   }
 
   // 7. Dry Run Mode
@@ -730,6 +1063,12 @@ export async function main(argv = process.argv.slice(2)) {
     return EXIT_SAFETY_GATE;
   }
 
+  // Pre/post boundaries for comparison
+  const preOriginal = options.mode === "initialize" ? currentDoc.content : currentDoc.content.slice(0, markerCheck.startIndex);
+  const postOriginal = options.mode === "initialize" ? [] : currentDoc.content.slice(markerCheck.endIndex + 1);
+  const originalStartMarker = options.mode === "initialize" ? null : currentDoc.content[markerCheck.startIndex];
+  const originalEndMarker = options.mode === "initialize" ? null : currentDoc.content[markerCheck.endIndex];
+
   // B. Save
   const saveRes = saveNote(card.id, card.contentMd5, newDoc);
   if (!saveRes.success) {
@@ -738,15 +1077,40 @@ export async function main(argv = process.argv.slice(2)) {
     if (saveRes.exitCode === EXIT_INDETERMINATE) {
       const recon = readNote(card.id);
       if (recon.success) {
-        const reconDoc = typeof recon.card.content === "string" ? JSON.parse(recon.card.content) : recon.card.content;
-        if (areNodesEqual(reconDoc.content, newDoc.content)) {
-          console.log("Reconciliation: Save was confirmed applied.");
-          return EXIT_SUCCESS;
-        }
-        if (recon.card.contentMd5 === card.contentMd5) {
-          console.log("Reconciliation: Save confirmed not applied.");
-          return EXIT_OFFLINE;
-        }
+        const reconTarget = validateTargetCard(recon.card);
+        if (!reconTarget.valid) return EXIT_INDETERMINATE;
+        try {
+          const reconDoc = typeof recon.card.content === "string" ? JSON.parse(recon.card.content) : recon.card.content;
+          if (reconDoc?.type === "doc" && Array.isArray(reconDoc.content)) {
+            if (recon.card.contentMd5 === card.contentMd5) {
+              if (isDeepStrictEqual(currentDoc, reconDoc)) {
+                console.log("Reconciliation: Save confirmed not applied.");
+                return EXIT_OFFLINE;
+              }
+              console.error("Reconciliation: MD5 remained unchanged but AST changed; state is indeterminate.");
+              return EXIT_INDETERMINATE;
+            }
+            const reconMarkerCheck = validateMarkers(reconDoc.content, "apply");
+            if (reconMarkerCheck.valid) {
+              const reconPre = reconDoc.content.slice(0, reconMarkerCheck.startIndex);
+              const reconPost = reconDoc.content.slice(reconMarkerCheck.endIndex + 1);
+              const reconManaged = reconDoc.content.slice(reconMarkerCheck.startIndex + 1, reconMarkerCheck.endIndex);
+              const markersMatch = options.mode === "initialize" || (
+                isDeepStrictEqual(originalStartMarker, reconDoc.content[reconMarkerCheck.startIndex]) &&
+                isDeepStrictEqual(originalEndMarker, reconDoc.content[reconMarkerCheck.endIndex])
+              );
+              if (
+                markersMatch &&
+                isDeepStrictEqual(preOriginal, reconPre) &&
+                isDeepStrictEqual(postOriginal, reconPost) &&
+                areManagedNodesEqual(reconManaged, managedNodes)
+              ) {
+                console.log("Reconciliation: Save was confirmed applied.");
+                return EXIT_SUCCESS;
+              }
+            }
+          }
+        } catch {}
       }
     }
     return saveRes.exitCode;
@@ -759,9 +1123,61 @@ export async function main(argv = process.argv.slice(2)) {
     return EXIT_INDETERMINATE;
   }
 
-  const postDoc = typeof postRead.card.content === "string" ? JSON.parse(postRead.card.content) : postRead.card.content;
-  if (!areNodesEqual(postDoc.content, newDoc.content)) {
-    console.error("Post-fetch verification failed: AST content does not match expected state.");
+  const postTargetCheck = validateTargetCard(postRead.card, {
+    previousMd5: card.contentMd5,
+    requireChangedMd5: true,
+  });
+  if (!postTargetCheck.valid) {
+    console.error(`Post-fetch verification failed: ${postTargetCheck.reason}`);
+    return EXIT_INDETERMINATE;
+  }
+
+  let postDoc;
+  try {
+    postDoc = typeof postRead.card.content === "string" ? JSON.parse(postRead.card.content) : postRead.card.content;
+  } catch {
+    console.error("Post-fetch verification failed: returned content is malformed");
+    return EXIT_INDETERMINATE;
+  }
+  if (!postDoc || postDoc.type !== "doc" || !Array.isArray(postDoc.content)) {
+    console.error("Post-fetch verification failed: returned content is not a valid ProseMirror doc");
+    return EXIT_INDETERMINATE;
+  }
+
+  const postMarkerCheck = validateMarkers(postDoc.content, "apply");
+  if (!postMarkerCheck.valid) {
+    console.error(`Post-fetch verification failed on markers: ${postMarkerCheck.reason}`);
+    return EXIT_INDETERMINATE;
+  }
+
+  if (options.mode !== "initialize") {
+    if (
+      !isDeepStrictEqual(originalStartMarker, postDoc.content[postMarkerCheck.startIndex]) ||
+      !isDeepStrictEqual(originalEndMarker, postDoc.content[postMarkerCheck.endIndex])
+    ) {
+      console.error("Post-fetch verification failed: Routine marker nodes changed.");
+      return EXIT_INDETERMINATE;
+    }
+  }
+
+  // Pre-marker outside AST: 100% deep strict equality preserving all original IDs
+  const prePost = postDoc.content.slice(0, postMarkerCheck.startIndex);
+  if (!isDeepStrictEqual(preOriginal, prePost)) {
+    console.error("Post-fetch verification failed: Pre-marker outside AST or node IDs were modified.");
+    return EXIT_INDETERMINATE;
+  }
+
+  // Post-marker outside AST: 100% deep strict equality preserving all original IDs
+  const postPost = postDoc.content.slice(postMarkerCheck.endIndex + 1);
+  if (!isDeepStrictEqual(postOriginal, postPost)) {
+    console.error("Post-fetch verification failed: Post-marker outside AST or node IDs were modified.");
+    return EXIT_INDETERMINATE;
+  }
+
+  // Managed segment: compare newly rendered managedNodes with postDoc managed segment (normalized server UUIDs)
+  const postManaged = postDoc.content.slice(postMarkerCheck.startIndex + 1, postMarkerCheck.endIndex);
+  if (!areManagedNodesEqual(postManaged, managedNodes)) {
+    console.error("Post-fetch verification failed: Managed AST content does not match expected state.");
     return EXIT_INDETERMINATE;
   }
 

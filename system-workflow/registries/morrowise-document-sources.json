@@ -2,11 +2,18 @@
   "schema_version": "1.0",
   "scope_version": "manual-local-v2",
   "registry_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-document-sources.json",
-  "reviewed_at": "2026-09-09",
+  "reviewed_at": "2026-09-10",
   "source_allowlist": [
-    "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md"
+    "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md"
   ],
-  "public_allowlist": [],
+  "public_allowlist": [
+    "operator-guide-entry",
+    "operator-guide-collaboration",
+    "operator-guide-execution",
+    "operator-guide-delivery",
+    "operator-guide-documentation",
+    "operator-guide-troubleshooting"
+  ],
   "records": [
     {
       "id": "operator-guide-entry",
@@ -17,12 +24,12 @@
       "document_role": "human_guide",
       "audience": "both",
       "status": "conditional",
-      "visibility": "local_only",
+      "visibility": "public",
       "source_refs": [
         {
-          "path": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
+          "path": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
           "relation": "canonical",
-          "fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c"
+          "fingerprint": "c8f8872524dda1ad005b98221d261ae47830335038acd01337d588cff18b64e0"
         }
       ],
       "member_globs": [],
@@ -41,15 +48,15 @@
       "summary_impact": "human",
       "architecture_summary": "登入後唯讀判定、必讀來源、當次授權與安全接手；ready 不代表已核准工作。",
       "human_summary": "登入後唯讀判定、必讀來源、當次授權與安全接手；ready 不代表已核准工作。",
-      "human_content_ref": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
-      "summary_reviewed_source_fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c",
-      "summary_reviewed_at": "2026-09-09",
-      "summary_reviewed_by": "Codex; independent review: Avicenna",
-      "last_verified_at": "2026-09-09",
+      "human_content_ref": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
+      "summary_reviewed_source_fingerprint": "c8f8872524dda1ad005b98221d261ae47830335038acd01337d588cff18b64e0",
+      "summary_reviewed_at": "2026-09-10",
+      "summary_reviewed_by": "Codex; independent content review: Kant",
+      "last_verified_at": "2026-09-10",
       "supersedes": [],
       "superseded_by": [],
       "chapter_id": "entry",
-      "document_version": "v0.3.0"
+      "document_version": "v0.4.0"
     },
     {
       "id": "operator-guide-collaboration",
@@ -60,12 +67,12 @@
       "document_role": "human_guide",
       "audience": "both",
       "status": "conditional",
-      "visibility": "local_only",
+      "visibility": "public",
       "source_refs": [
         {
-          "path": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
+          "path": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
           "relation": "canonical",
-          "fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c"
+          "fingerprint": "c8f8872524dda1ad005b98221d261ae47830335038acd01337d588cff18b64e0"
         }
       ],
       "member_globs": [],
@@ -84,15 +91,15 @@
       "summary_impact": "human",
       "architecture_summary": "一人協調、單檔單 writer、四種接手情境與独立驗收；workbook 仍為具名 opt-in。",
       "human_summary": "一人協調、單檔單 writer、四種接手情境與独立驗收；workbook 仍為具名 opt-in。",
-      "human_content_ref": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
-      "summary_reviewed_source_fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c",
-      "summary_reviewed_at": "2026-09-09",
-      "summary_reviewed_by": "Codex; independent review: Avicenna",
-      "last_verified_at": "2026-09-09",
+      "human_content_ref": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
+      "summary_reviewed_source_fingerprint": "c8f8872524dda1ad005b98221d261ae47830335038acd01337d588cff18b64e0",
+      "summary_reviewed_at": "2026-09-10",
+      "summary_reviewed_by": "Codex; independent content review: Kant",
+      "last_verified_at": "2026-09-10",
       "supersedes": [],
       "superseded_by": [],
       "chapter_id": "collaboration",
-      "document_version": "v0.4.1"
+      "document_version": "v0.5.0"
     },
     {
       "id": "operator-guide-execution",
@@ -103,12 +110,12 @@
       "document_role": "human_guide",
       "audience": "both",
       "status": "active",
-      "visibility": "local_only",
+      "visibility": "public",
       "source_refs": [
         {
-          "path": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
+          "path": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
           "relation": "canonical",
-          "fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c"
+          "fingerprint": "c8f8872524dda1ad005b98221d261ae47830335038acd01337d588cff18b64e0"
         }
       ],
       "member_globs": [],
@@ -127,15 +134,15 @@
       "summary_impact": "human",
       "architecture_summary": "從原需求到實作、驗收、no_change／blocked 及正式證據回寫；不另建追蹤器。",
       "human_summary": "從原需求到實作、驗收、no_change／blocked 及正式證據回寫；不另建追蹤器。",
-      "human_content_ref": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
-      "summary_reviewed_source_fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c",
-      "summary_reviewed_at": "2026-09-09",
-      "summary_reviewed_by": "Codex; independent review: Avicenna",
-      "last_verified_at": "2026-09-09",
+      "human_content_ref": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
+      "summary_reviewed_source_fingerprint": "c8f8872524dda1ad005b98221d261ae47830335038acd01337d588cff18b64e0",
+      "summary_reviewed_at": "2026-09-10",
+      "summary_reviewed_by": "Codex; independent content review: Kant",
+      "last_verified_at": "2026-09-10",
       "supersedes": [],
       "superseded_by": [],
       "chapter_id": "execution",
-      "document_version": "v0.3.0"
+      "document_version": "v0.4.0"
     },
     {
       "id": "operator-guide-delivery",
@@ -146,12 +153,12 @@
       "document_role": "human_guide",
       "audience": "both",
       "status": "active",
-      "visibility": "local_only",
+      "visibility": "public",
       "source_refs": [
         {
-          "path": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
+          "path": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
           "relation": "canonical",
-          "fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c"
+          "fingerprint": "c8f8872524dda1ad005b98221d261ae47830335038acd01337d588cff18b64e0"
         }
       ],
       "member_globs": [],
@@ -170,15 +177,15 @@
       "summary_impact": "human",
       "architecture_summary": "本機完成、精確 commit 與另核准的遠端交付分開；先查版本及 ownership。",
       "human_summary": "本機完成、精確 commit 與另核准的遠端交付分開；先查版本及 ownership。",
-      "human_content_ref": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
-      "summary_reviewed_source_fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c",
-      "summary_reviewed_at": "2026-09-09",
-      "summary_reviewed_by": "Codex; independent review: Avicenna",
-      "last_verified_at": "2026-09-09",
+      "human_content_ref": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
+      "summary_reviewed_source_fingerprint": "c8f8872524dda1ad005b98221d261ae47830335038acd01337d588cff18b64e0",
+      "summary_reviewed_at": "2026-09-10",
+      "summary_reviewed_by": "Codex; independent content review: Kant",
+      "last_verified_at": "2026-09-10",
       "supersedes": [],
       "superseded_by": [],
       "chapter_id": "delivery",
-      "document_version": "v0.3.0"
+      "document_version": "v0.4.0"
     },
     {
       "id": "operator-guide-documentation",
@@ -189,12 +196,12 @@
       "document_role": "human_guide",
       "audience": "both",
       "status": "active",
-      "visibility": "local_only",
+      "visibility": "public",
       "source_refs": [
         {
-          "path": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
+          "path": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
           "relation": "canonical",
-          "fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c"
+          "fingerprint": "c8f8872524dda1ad005b98221d261ae47830335038acd01337d588cff18b64e0"
         }
       ],
       "member_globs": [],
@@ -211,17 +218,17 @@
       "fingerprint_policy": "full_content",
       "fingerprint_fields": [],
       "summary_impact": "human",
-      "architecture_summary": "能力變更先做文件影響審查，再生成單一來源的本地正文、導航與搜尋。",
-      "human_summary": "能力變更先做文件影響審查，再生成單一來源的本地正文、導航與搜尋。",
-      "human_content_ref": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
-      "summary_reviewed_source_fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c",
-      "summary_reviewed_at": "2026-09-09",
-      "summary_reviewed_by": "Codex; independent review: Avicenna",
-      "last_verified_at": "2026-09-09",
+      "architecture_summary": "能力變更先做文件影響審查，再生成單一來源的已審查正文、導航與搜尋。",
+      "human_summary": "能力變更先做文件影響審查，再生成單一來源的已審查正文、導航與搜尋。",
+      "human_content_ref": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
+      "summary_reviewed_source_fingerprint": "c8f8872524dda1ad005b98221d261ae47830335038acd01337d588cff18b64e0",
+      "summary_reviewed_at": "2026-09-10",
+      "summary_reviewed_by": "Codex; independent content review: Kant",
+      "last_verified_at": "2026-09-10",
       "supersedes": [],
       "superseded_by": [],
       "chapter_id": "documentation",
-      "document_version": "v0.3.1"
+      "document_version": "v0.4.0"
     },
     {
       "id": "operator-guide-troubleshooting",
@@ -232,12 +239,12 @@
       "document_role": "human_guide",
       "audience": "both",
       "status": "active",
-      "visibility": "local_only",
+      "visibility": "public",
       "source_refs": [
         {
-          "path": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
+          "path": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
           "relation": "canonical",
-          "fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c"
+          "fingerprint": "c8f8872524dda1ad005b98221d261ae47830335038acd01337d588cff18b64e0"
         }
       ],
       "member_globs": [],
@@ -256,15 +263,15 @@
       "summary_impact": "human",
       "architecture_summary": "定位可重現斷點、分清文件／程式／權限問題，核准後最小修正與安全接續。",
       "human_summary": "定位可重現斷點、分清文件／程式／權限問題，核准後最小修正與安全接續。",
-      "human_content_ref": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
-      "summary_reviewed_source_fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c",
-      "summary_reviewed_at": "2026-09-09",
-      "summary_reviewed_by": "Codex; independent review: Avicenna",
-      "last_verified_at": "2026-09-09",
+      "human_content_ref": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
+      "summary_reviewed_source_fingerprint": "c8f8872524dda1ad005b98221d261ae47830335038acd01337d588cff18b64e0",
+      "summary_reviewed_at": "2026-09-10",
+      "summary_reviewed_by": "Codex; independent content review: Kant",
+      "last_verified_at": "2026-09-10",
       "supersedes": [],
       "superseded_by": [],
       "chapter_id": "troubleshooting",
-      "document_version": "v0.3.0"
+      "document_version": "v0.4.0"
     }
   ],
   "human_navigation": [
@@ -536,48 +543,136 @@
   ],
   "impact_reviews": [
     {
-      "mapping_id": "documentation",
+      "mapping_id": "entry",
       "source_fingerprints": {
-        "$COLLAB/harness-mc/scripts/generate-morrowise-documentation.mjs": "366e699732df0dcf8586e54d97ecdb25bada77444ae9260034469d8229a086aa",
-        "$COLLAB/harness-mc/system-workflow/schemas/morrowise-document-source.schema.json": "91c6474762f0ef65479fe422bfd5ccfd264ad2e12ed1b127951206ea23d42b35",
-        "$COLLAB/harness-mc/scripts/lib/morrowise-documentation-impact.mjs": "522736ae6fd4b7ea766c8bfed5670a13d18bf2727445477f998a8123fa93cc13",
-        "$COLLAB/harness-mc/scripts/verify-morrowise-documentation-sync.mjs": "593bcc72435a82d96ac0dc39972439849b4958229be8dd1a091ed08ed16d5b94"
+        "$COLLAB/harness-mc/system-workflow/docs/specs/account-login-sync-start.md": "21a90d7b42453273230a03363ff8ffa514bfa151932854b7da93657c94dd5f03",
+        "$COLLAB/harness-mc/scripts/account-login-sync-start.mjs": "a11c64c9db33cc76422dee8752da18a23d27c9d0fdf45fe801797b6c685ba362"
       },
       "document_fingerprints": {
-        "operator-guide-documentation": "29913e39c4cdd05145fba41548889b2d7d0266c7919f0ede026f3fd7f50590a3"
+        "operator-guide-entry": "df8a825c094af6bb18b4fc49841a13b75f0548b9b48abc2691937d9ec97825de"
       },
       "decision": "update_required",
-      "reason": "本輪建置隔離的指南路徑／操作邊界更新；Avicenna 獨立確認摘要仍準確、上游來源未變。前版 review 為 2026-09-08，正文指紋 81d81269a029481849481716e36102a74b9e5d63859950d3c2bb4b2338585470，完整歷史保留於 Git c48c909 的本 registry；原 runtime 證據不冒稱本輪重跑。",
+      "reason": "2026-09-10 正文遷移與公開候選邊界更新；Kant 獨立六章語意審查通過。collaboration 補 runtime observation 與狹義本地承接；delivery 對齊 cc-push v2.3；documentation 區分本地與固定發布來源。其他章保持能力邊界，修訂來源定位及版本。非 runtime 或部署驗收；既有 review 歷史保留於 Git。",
       "evidence_refs": [
-        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync.test_contract.evidence_refs",
-        "$COLLAB/harness-mc/.tmp/morrowise-docs/build-isolation-review.json"
+        "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#1510-本地實作收據2026-09-10"
       ],
       "author": "Codex /root",
-      "reviewer": "Avicenna /root/avicenna_independent_review",
-      "reviewed_at": "2026-09-09"
+      "reviewer": "Kant /root/predeploy_independent_review",
+      "reviewed_at": "2026-09-10"
     },
     {
       "mapping_id": "collaboration",
       "source_fingerprints": {
-        "$COLLAB/notyet-harness/000_Agent/CORE.md": "d3884b765959bcf7151ed8a191c96a5d8342ca4953d08a423d0a28fd215d8b67",
-        "$COLLAB/notyet-harness/000_Agent/skills/multi-machine-repo-coordination/SKILL.md": "8e3effa91a4e4167e820e1d090eee401ea80670e23ceb7d3e1d2347b598ea771",
-        "$COLLAB/harness-mc/system-workflow/docs/specs/repo-coordination-gate.md": "d2a193bb1b37bdb25fa117eb762fbe21f234046decf1ac6f6ba7094f51706464",
-        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-workbook-flow.md": "46bd42541798c7bc4881a5e4cbb2b1f4d18fb4d8c3dc2466f3741df02cc07266",
-        "$COLLAB/harness-mc/scripts/repo-coordination-runtime.mjs": "e07f63496162e8b60deff9971742358e9715800e29a9aecdc1b81fa746b5d6bd",
+        "$COLLAB/notyet-harness/000_Agent/CORE.md": "55877cf707a6338fa6969fe779d42710ec9e1a57764b8daf9a350ae1b4aab361",
+        "$COLLAB/notyet-harness/000_Agent/skills/multi-machine-repo-coordination/SKILL.md": "e421aee6cf37d736e303767e66050dc3303c993dbc7abff08fd744cafa1ead20",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/repo-coordination-gate.md": "7cc07d43301b31eddf952d3665c97d0340e2caa9af93980d71cd9505ea8cfcb6",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-workbook-flow.md": "41cc2b2dea2beca372e9882525d17243661346fdeaec397b11b9ca7ccc221287",
+        "$COLLAB/harness-mc/scripts/repo-coordination-runtime.mjs": "2ac100fd6e8b97f03b9be45b8a2c651518473ae22f25afbe3b5a8994950cc0e2",
         "$COLLAB/harness-mc/scripts/lib/workbook-coordination.mjs": "eddd180dadccc00755b7a710981246aff726e749b5798bd4a3e8ded03b7ce369"
       },
       "document_fingerprints": {
-        "operator-guide-collaboration": "8096d33c82677827ddc15b6db2946dcf6e4e96d32bc6eef548abae331d7281f9"
+        "operator-guide-collaboration": "38941d398e10de394cba5a30c33372e8a2fd2fb176b042c771414fcf52d680d3"
       },
       "decision": "update_required",
-      "reason": "本輪建置隔離的指南路徑／操作邊界更新；Avicenna 獨立確認摘要仍準確、上游來源未變。前版 review 為 2026-09-08，正文指紋 18863a206da6c1d4e1a0e03c9d05197494da3537c02ea4ee2200db0d0789fed0，完整歷史保留於 Git c48c909 的本 registry；原 runtime 證據不冒稱本輪重跑。",
+      "reason": "2026-09-10 正文遷移與公開候選邊界更新；Kant 獨立六章語意審查通過。collaboration 補 runtime observation 與狹義本地承接；delivery 對齊 cc-push v2.3；documentation 區分本地與固定發布來源。其他章保持能力邊界，修訂來源定位及版本。非 runtime 或部署驗收；既有 review 歷史保留於 Git。",
       "evidence_refs": [
-        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync.test_contract.evidence_refs",
-        "$COLLAB/harness-mc/.tmp/morrowise-docs/build-isolation-review.json"
+        "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#1510-本地實作收據2026-09-10"
       ],
       "author": "Codex /root",
-      "reviewer": "Avicenna /root/avicenna_independent_review",
-      "reviewed_at": "2026-09-09"
+      "reviewer": "Kant /root/predeploy_independent_review",
+      "reviewed_at": "2026-09-10"
+    },
+    {
+      "mapping_id": "execution",
+      "source_fingerprints": {
+        "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md": "47d19a9f1ffa148efc4de42dfb5d756a39129dafe813d7511831b1f9b815dfb3",
+        "$COLLAB/harness-mc/system-workflow/docs/task-write-command-map.md": "877a830051a6efb8891344ce7643b74d1a1e0562998389ee2153c5c43ce10e13",
+        "$COLLAB/notyet-harness/000_Agent/skills/vincent-superpowers/03-execution/SKILL.md": "2d50dd755ecc3cc5e2e29db0a1414078b949dba112af63b46a9f744792b8041b",
+        "$COLLAB/notyet-harness/000_Agent/skills/review/SKILL.md": "ed89a1d62c6a64da6f10bc2a679ec9e34e46bd17bd310782d003dda4a608f87d",
+        "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/closed-loop.md": "325e5763e6fb2f17e8db0078d8c8de51edbb5a4a479a65097545d4166d4aab41",
+        "$COLLAB/harness-mc/scripts/work-anchor-preflight.mjs": "5353c6444dbde9a41479834f7d9c10565379db1f074e799c472cacb228297072"
+      },
+      "document_fingerprints": {
+        "operator-guide-execution": "e2f0935cb84f3e8ceb0f7193f0878b183815be345c1f85f47a49e229f327b8bd"
+      },
+      "decision": "update_required",
+      "reason": "2026-09-10 正文遷移與公開候選邊界更新；Kant 獨立六章語意審查通過。collaboration 補 runtime observation 與狹義本地承接；delivery 對齊 cc-push v2.3；documentation 區分本地與固定發布來源。其他章保持能力邊界，修訂來源定位及版本。非 runtime 或部署驗收；既有 review 歷史保留於 Git。",
+      "evidence_refs": [
+        "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#1510-本地實作收據2026-09-10"
+      ],
+      "author": "Codex /root",
+      "reviewer": "Kant /root/predeploy_independent_review",
+      "reviewed_at": "2026-09-10"
+    },
+    {
+      "mapping_id": "delivery",
+      "source_fingerprints": {
+        "$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/SKILL.md": "a16cf2c786065d9caecec6dc3d699d0bb19e2c5eb33a8151f8e3f36e70359950",
+        "$COLLAB/notyet-harness/000_Agent/skills/cc-push/SKILL.md": "a00fbf6dcfb1d3b1624785c38da90cec0cbcbebd5af09639872dcf306ac604ce",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json": "a2e8b7fad7b15b19aeebfa87c14175c4ad6952d64db7666be4333913b2cdd93e",
+        "$COLLAB/harness-mc/system-workflow/docs/task-write-command-map.md": "877a830051a6efb8891344ce7643b74d1a1e0562998389ee2153c5c43ce10e13"
+      },
+      "document_fingerprints": {
+        "operator-guide-delivery": "e7afcaa31b7856dd4b48542370d2db295ae6fb1a07d04da9e0604ab2bead6aba"
+      },
+      "decision": "update_required",
+      "reason": "2026-09-10 正文遷移與公開候選邊界更新；Kant 獨立六章語意審查通過。collaboration 補 runtime observation 與狹義本地承接；delivery 對齊 cc-push v2.3；documentation 區分本地與固定發布來源。其他章保持能力邊界，修訂來源定位及版本。非 runtime 或部署驗收；既有 review 歷史保留於 Git。",
+      "evidence_refs": [
+        "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#1510-本地實作收據2026-09-10"
+      ],
+      "author": "Codex /root",
+      "reviewer": "Kant /root/predeploy_independent_review",
+      "reviewed_at": "2026-09-10"
+    },
+    {
+      "mapping_id": "documentation",
+      "source_fingerprints": {
+        "$COLLAB/harness-mc/scripts/generate-morrowise-documentation.mjs": "48e021e5ad0a236f1d3b8b5a186708b4fd8685c8b38171458d111ce3df13ba8f",
+        "$COLLAB/harness-mc/system-workflow/schemas/morrowise-document-source.schema.json": "4a9d19c1471b9fbeceaf6fadff15fd1c5ecdef2d3e579fae69df57fc67ed28be",
+        "$COLLAB/harness-mc/scripts/lib/morrowise-documentation-impact.mjs": "522736ae6fd4b7ea766c8bfed5670a13d18bf2727445477f998a8123fa93cc13",
+        "$COLLAB/harness-mc/scripts/verify-morrowise-documentation-sync.mjs": "593bcc72435a82d96ac0dc39972439849b4958229be8dd1a091ed08ed16d5b94"
+      },
+      "document_fingerprints": {
+        "operator-guide-documentation": "e12afdd11c70a30ce50a9bae8d789d163ee59401199d817a195cd27ccc8aba14"
+      },
+      "decision": "update_required",
+      "reason": "2026-09-10 正文遷移與公開候選邊界更新；Kant 獨立六章語意審查通過。collaboration 補 runtime observation 與狹義本地承接；delivery 對齊 cc-push v2.3；documentation 區分本地與固定發布來源。其他章保持能力邊界，修訂來源定位及版本。非 runtime 或部署驗收；既有 review 歷史保留於 Git。 追加：Kant 實際審查確認 inputs_fingerprint schema 強化對現有公開 review 操作正文無新增語意影響；原 update_required 遷移證據與章hash保留。",
+      "evidence_refs": [
+        "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#1510-本地實作收據2026-09-10"
+      ],
+      "author": "Codex /root",
+      "reviewer": "Kant /root/predeploy_independent_review",
+      "reviewed_at": "2026-09-10"
+    },
+    {
+      "mapping_id": "troubleshooting",
+      "source_fingerprints": {
+        "$COLLAB/notyet-harness/000_Agent/skills/systematic-debugging/SKILL.md": "4999cb851360485eca5074e727bbdd62ef20549c5d5b01216fcbf5831badb473",
+        "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/closed-loop.md": "325e5763e6fb2f17e8db0078d8c8de51edbb5a4a479a65097545d4166d4aab41",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json": "a2e8b7fad7b15b19aeebfa87c14175c4ad6952d64db7666be4333913b2cdd93e",
+        "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-adapter-contract.json": "8def41a8ce01928bc355f0e5bc9a460cef83ff05a74e811865d7e0f9b5c2cf82"
+      },
+      "document_fingerprints": {
+        "operator-guide-troubleshooting": "b184cd23633ea19227ffaee925e3220f2329e5359becf6eb03c9baa966714d00"
+      },
+      "decision": "update_required",
+      "reason": "2026-09-10 正文遷移與公開候選邊界更新；Kant 獨立六章語意審查通過。collaboration 補 runtime observation 與狹義本地承接；delivery 對齊 cc-push v2.3；documentation 區分本地與固定發布來源。其他章保持能力邊界，修訂來源定位及版本。非 runtime 或部署驗收；既有 review 歷史保留於 Git。",
+      "evidence_refs": [
+        "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#1510-本地實作收據2026-09-10"
+      ],
+      "author": "Codex /root",
+      "reviewer": "Kant /root/predeploy_independent_review",
+      "reviewed_at": "2026-09-10"
     }
-  ]
+  ],
+  "public_release_review": {
+    "approved_by": "Vincent: same repo / same public site decision; no deployment this run",
+    "reviewed_by": "Kant /root/predeploy_independent_review",
+    "reviewed_at": "2026-09-10",
+    "source_fingerprint": "c8f8872524dda1ad005b98221d261ae47830335038acd01337d588cff18b64e0",
+    "evidence_refs": [
+      "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#1510-本地實作收據2026-09-10"
+    ],
+    "inputs_fingerprint": "19fb6aa36b9a8a8a805c78bf5c7cbbdf4f35a94ec8ba27e7b272a54df78737e5"
+  }
 }

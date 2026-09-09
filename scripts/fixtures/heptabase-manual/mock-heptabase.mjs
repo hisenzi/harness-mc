@@ -5,9 +5,16 @@ import path from "node:path";
 
 function main() {
   const args = process.argv.slice(2);
+  const ledgerPath = process.env.MOCK_CALL_LEDGER;
+  if (ledgerPath) {
+    fs.appendFileSync(ledgerPath, `${JSON.stringify({ args })}\n`, {
+      encoding: "utf-8",
+      mode: 0o600,
+    });
+  }
 
   if (args.includes("--version")) {
-    console.log("heptabase 0.6.0");
+    console.log(`heptabase ${process.env.MOCK_CLI_VERSION || "0.6.0"}`);
     process.exit(0);
   }
 
@@ -38,6 +45,33 @@ function main() {
         process.exit(0);
       }
       const cardData = JSON.parse(fs.readFileSync(mockFile, "utf-8"));
+      const postReadMode = cardData.__mockPostReadMode;
+      if (postReadMode) {
+        delete cardData.__mockPostReadMode;
+        const beforeMd5 = cardData.__mockBeforeMd5;
+        delete cardData.__mockBeforeMd5;
+
+        if (postReadMode === "identity_changed") {
+          cardData.id = "00000000-0000-4000-8000-000000000000";
+        } else if (postReadMode === "md5_missing") {
+          delete cardData.contentMd5;
+        } else if (postReadMode === "md5_unchanged") {
+          cardData.contentMd5 = beforeMd5;
+        } else if (postReadMode === "malformed_content") {
+          cardData.content = "{ malformed";
+          cardData.contentMd5 = crypto.createHash("md5").update(cardData.content).digest("hex");
+        } else if (postReadMode === "marker_id_changed" || postReadMode === "outside_id_changed") {
+          const doc = JSON.parse(cardData.content);
+          if (postReadMode === "marker_id_changed") {
+            const marker = doc.content.find((node) => node.type === "paragraph" && node.content?.[0]?.text === "<!-- morrowise-manual-sync:start:v1 -->");
+            marker.attrs = { id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa" };
+          } else {
+            doc.content[0].attrs.id = "cccccccc-cccc-4ccc-8ccc-cccccccccccc";
+          }
+          cardData.content = JSON.stringify(doc);
+          cardData.contentMd5 = crypto.createHash("md5").update(cardData.content).digest("hex");
+        }
+      }
       process.stdout.write(JSON.stringify(cardData, null, 2) + "\n", () => {
         process.exit(0);
       });
@@ -62,9 +96,9 @@ function main() {
         process.exit(1);
       }
 
-      if (process.env.MOCK_CLI_MODE === "timeout") {
-        console.error("Error: save timed out");
-        process.exit(124);
+      if (process.env.MOCK_CLI_MODE === "generic_mismatch") {
+        console.error("Error: response schema mismatch while saving note");
+        process.exit(1);
       }
 
       const currentCard = JSON.parse(fs.readFileSync(mockFile, "utf-8"));
@@ -75,9 +109,32 @@ function main() {
 
       const newContent = fs.readFileSync(contentFile, "utf-8");
       const newMd5 = crypto.createHash("md5").update(newContent).digest("hex");
+      const timeoutMode = process.env.MOCK_CLI_MODE;
+      if (["timeout", "timeout_expected", "timeout_before", "timeout_neither", "timeout_same_md5_changed_ast"].includes(timeoutMode)) {
+        if (timeoutMode === "timeout_expected") {
+          currentCard.content = newContent;
+          currentCard.contentMd5 = newMd5;
+          fs.writeFileSync(mockFile, JSON.stringify(currentCard, null, 2), "utf-8");
+        } else if (timeoutMode === "timeout_neither" || timeoutMode === "timeout_same_md5_changed_ast") {
+          currentCard.content = JSON.stringify({
+            type: "doc",
+            content: [{ type: "paragraph", content: [{ type: "text", text: "Indeterminate third state" }] }],
+          });
+          if (timeoutMode === "timeout_neither") {
+            currentCard.contentMd5 = crypto.createHash("md5").update(currentCard.content).digest("hex");
+          }
+          fs.writeFileSync(mockFile, JSON.stringify(currentCard, null, 2), "utf-8");
+        }
+        console.error("Error: save timed out");
+        process.exit(124);
+      }
 
       currentCard.content = newContent;
       currentCard.contentMd5 = newMd5;
+      if (process.env.MOCK_POST_READ_MODE) {
+        currentCard.__mockPostReadMode = process.env.MOCK_POST_READ_MODE;
+        currentCard.__mockBeforeMd5 = contentMd5;
+      }
 
       fs.writeFileSync(mockFile, JSON.stringify(currentCard, null, 2), "utf-8");
 

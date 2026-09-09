@@ -46,6 +46,7 @@ if (options.command === 'workbook-inspect') {
   requireOption(options.repoPath, "--repo <path>");
   result = repoReady(options.repoPath, {
     autoFf: options.autoFf,
+    localCommit: options.localCommit,
     exclusions: options.exclusions,
     commitScope: options.commitScope,
     signedRecord: options.signedObservationPath ? readJson(options.signedObservationPath) : null,
@@ -257,6 +258,7 @@ function parseArgs(argv) {
     observedAt: null,
     remote: "origin",
     autoFf: false,
+    localCommit: false,
     exclusions: [],
     commitScope: [],
   };
@@ -290,6 +292,7 @@ function parseArgs(argv) {
     else if (arg === "--observed-at") options.observedAt = argv[++index] || null;
     else if (arg === "--remote") options.remote = argv[++index] || "origin";
     else if (arg === "--auto-ff") options.autoFf = true;
+    else if (arg === "--local-commit") options.localCommit = true;
     else if (arg === "--exclude") options.exclusions.push(argv[++index] || "");
     else if (arg === "--scope-path") options.commitScope.push(argv[++index] || "");
     else throw new Error(`unknown argument: ${arg}`);

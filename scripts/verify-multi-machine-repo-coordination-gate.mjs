@@ -461,6 +461,32 @@ async function verifyMultiCloneNegativeFixtures() {
   git(sessionB, ["add", "local-ahead.txt"]);
   git(sessionB, ["commit", "-m", "test: local ahead"]);
   assert.equal(inspectRepo(sessionB).reason, "needs_push");
+  assert.equal(
+    repoReady(sessionB, { localCommit: true, commitScope: ["next-local-c1.txt"] }).reason,
+    "local_commit_pending_push",
+    "an ahead-only main may admit a new exact local C1 without sending the existing chain",
+  );
+  assert.equal(
+    repoReady(sessionB, { localCommit: true, commitScope: [] }).reason,
+    "local_commit_scope_missing",
+    "local commit admission must require a non-empty exact scope",
+  );
+  fs.writeFileSync(path.join(sessionB, "foreign-dirty.txt"), "preserve\n");
+  assert.equal(
+    repoReady(sessionB, { localCommit: true, commitScope: ["next-local-c1.txt"] }).reason,
+    "dirty_blocked",
+    "ahead-only must not hide an unknown foreign dirty path",
+  );
+  assert.equal(
+    repoReady(sessionB, {
+      localCommit: true,
+      commitScope: ["next-local-c1.txt"],
+      exclusions: ["foreign-dirty.txt"],
+    }).reason,
+    "local_commit_pending_push",
+    "a named foreign exclusion may coexist with a new exact local C1",
+  );
+  fs.unlinkSync(path.join(sessionB, "foreign-dirty.txt"));
   fs.writeFileSync(path.join(sessionC, "remote-race.txt"), "remote\n");
   git(sessionC, ["add", "remote-race.txt"]);
   git(sessionC, ["commit", "-m", "test: remote race"]);
@@ -614,9 +640,32 @@ async function verifyMultiCloneNegativeFixtures() {
 }
 
 async function verifyRuntimeCli() {
+  const localAdmissionFixture = createFixture("jv37-runtime-cli-local-commit");
+  const localAdmissionRepo = localAdmissionFixture.clones.sessionA;
+  const runtimePath = fileURLToPath(new URL("./repo-coordination-runtime.mjs", import.meta.url));
+  fs.writeFileSync(path.join(localAdmissionRepo, "existing-local-c1.txt"), "C1\n");
+  git(localAdmissionRepo, ["add", "existing-local-c1.txt"]);
+  git(localAdmissionRepo, ["commit", "-m", "test: existing local C1"]);
+  const rawAhead = spawnSync(process.execPath, [
+    runtimePath,
+    "repo-ready",
+    "--repo", localAdmissionRepo,
+    "--scope-path", "next-local-c1.txt",
+  ], { encoding: "utf8" });
+  assert.equal(rawAhead.status, 2, rawAhead.stderr || rawAhead.stdout);
+  assert.equal(JSON.parse(rawAhead.stdout).reason, "needs_push");
+  const localAdmission = spawnSync(process.execPath, [
+    runtimePath,
+    "repo-ready",
+    "--repo", localAdmissionRepo,
+    "--scope-path", "next-local-c1.txt",
+    "--local-commit",
+  ], { encoding: "utf8" });
+  assert.equal(localAdmission.status, 0, localAdmission.stderr || localAdmission.stdout);
+  assert.equal(JSON.parse(localAdmission.stdout).reason, "local_commit_pending_push");
+
   const fixture = createFixture("jv37-runtime-cli");
   const repo = fixture.clones.sessionA;
-  const runtimePath = fileURLToPath(new URL("./repo-coordination-runtime.mjs", import.meta.url));
   const claim = makeClaim("runtime-cli", revParse(repo, "HEAD"), "claim-cli");
   const claimPath = writeJson(path.join(fixture.tmp, "claim.json"), claim);
   const acquired = spawnSync(process.execPath, [runtimePath, "remote-claim", "--repo", repo, "--input", claimPath], { encoding: "utf8" });

@@ -153,17 +153,65 @@ Before the first file mutation:
 | --- | --- | --- |
 | clean, checked-out `main`, ahead `0`, behind `0` | `READY` | Continue without switching refs. |
 | clean, behind-only on checked-out `main` | recoverable | Run fast-forward-only update, verify `0/0`, then continue. |
-| ahead-only with durable exact-scope approval and unchanged remote commit SHA | recoverable | Retry a normal exact-ref push; never force. |
+| ahead-only in raw/delivery observation | `needs_push` | Preserve the local commit chain; do not present it as remote-ready or push without batch authorization. |
+| ahead-only in explicit local-commit admission, with a nonempty exact scope, `behind=0`, and clean/classified owned dirty | `READY` / `local_commit_pending_push` | Make the exact local commit only; it neither pushes nor claims remote delivery. |
 | generated-only dirty proven by deterministic verifier | warning | Continue only when classifier evidence exists. |
 | classified unrelated manual dirty with approved exclusions | warning | Preserve it and use an exact path scope on the current branch. |
 | target scope overlaps manual, mixed, or unknown dirty | `BLOCKED` | Preserve files and report the owner. |
 | branch/worktree creation or switching lacks exact Vincent approval | `BLOCKED` | Stay read-only and request one bounded authorization. |
-| unauthorized ahead, diverged, detached, unknown upstream/base, auth/fetch failure | `BLOCKED` | Stop and report one reversible next action. |
+| diverged, detached, unknown upstream/base, auth/fetch failure, or ahead without local-commit conditions | `BLOCKED` | Stop and report one reversible next action. |
+
+### Local commit admission
+
+The default `inspectRepo` and ordinary `repo-ready` view intentionally keep an
+ahead-only checkout at `needs_push`: that is the correct strict observation for
+remote delivery and pilots. A session that Vincent has authorized to complete an
+exact local C1 before the evening batch may opt into a narrower admission:
+
+```bash
+node "$COLLAB/harness-mc/scripts/repo-coordination-runtime.mjs" repo-ready \
+  --repo "$REPO_PATH" \
+  --local-commit \
+  --scope-path exact/path/owned-by-this-task \
+  --exclude exact/path/proven-owned-by-other-session
+```
+
+`--local-commit` requires at least one nonempty `--scope-path`; it reuses the
+normal fetch, checked-out `main`, upstream, worktree and `behind=0` gates. The
+only relaxed outcome is an otherwise admissible ahead-only checkout, returned
+as `READY` with reason `local_commit_pending_push`. The returned snapshot still
+shows its true ahead count. The mode never performs `git push`, remote claim,
+task event, deployment, C2, or a remote-complete assertion.
+
+Dirty ownership is reclassified for the exact scope before this result: clean,
+scope-owned, deterministic generated-only, or scope-owned with explicit
+proven-unrelated exclusions may proceed. Unknown, mixed, overlapping, or
+unproven manual dirt remains `BLOCKED`. Divergence, a changed upstream/base,
+or a remote race is never relaxed.
 
 ## Remote Closeout
 
-Work is not complete at `committed_local`, on an approved isolation branch, or with a
-pending governance event.
+`local_commit_pending_push` is a valid local-stage receipt, not remote delivery.
+For a task whose agreed done condition is local work it may be reported as locally
+verified and queued for batch push. It is never `remote_synced`, `fully synced`,
+or a substitute for the Remote Closeout conditions below. Work that claims remote
+completion is not complete at `committed_local`, on an approved isolation branch,
+or with a pending governance event.
+
+### Nightly batch delivery
+
+The evening coordinator receives Vincent's explicit batch authorization per
+repository. It audits the whole contiguous local chain `origin/main..HEAD`, its
+current local tip and each commit's exact scope/owner; this is not limited to a
+single pre-named SHA. An unknown or unapproved interleaved commit blocks that
+repository only. A blocked repository never authorizes repair, history rewrite,
+or scope absorption, and does not prevent another independently authorized,
+ready repository from a normal `git push origin main`.
+
+After each successful push, fetch and prove that `origin/main` contains the
+audited chain and parity is `0/0`. Run C2 only when the original task's canonical
+closeout contract requires canonical/task-state mutations; ordinary product or
+documentation delivery does not invent a C2 merely because it is in the batch.
 
 ### Air Traffic Controller Full-delivery Continuation
 

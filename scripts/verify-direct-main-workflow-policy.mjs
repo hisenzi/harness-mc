@@ -34,6 +34,7 @@ const fullDeliveryContinuationTestPath = path.join(
   notyetRoot,
   "000_Agent/skills/worktree-commit/tests/verify-full-delivery-continuation.test.mjs",
 );
+const ccPushSkill = read(notyetRoot, "000_Agent/skills/cc-push/SKILL.md");
 const legacyManifest = JSON.parse(
   read(notyetRoot, "000_Agent/skills/git-worktree/dist/manifest.json"),
 );
@@ -85,6 +86,32 @@ assert.match(
   spec,
   /single-developer sequential work stays on the checked-out `main`/,
   "Repo Coordination Gate must make direct main the solo sequential default",
+);
+assert.match(
+  spec,
+  /local_commit_pending_push/,
+  "Repo Coordination Gate must distinguish ahead-only local admission from remote delivery",
+);
+assert.match(
+  spec,
+  /--local-commit/,
+  "Repo Coordination Gate must make the ahead-only local admission mode explicit",
+);
+assert(
+  task.acceptance.some(
+    (item) => item.includes("local_commit_pending_push") && item.includes("ahead-only"),
+  ),
+  "JV-37 acceptance must preserve local commit progress while delivery is pending",
+);
+assert.match(
+  ccPushSkill,
+  /origin\/main\.\.HEAD/,
+  "cc-push must audit the full approved local commit chain before normal main push",
+);
+assert.match(
+  ccPushSkill,
+  /只阻擋該 repo/,
+  "cc-push must report a failed repo without turning a multi-repo batch into a destructive repair",
 );
 assert.match(
   approvalPolicy.core_rules?.git_workflow_default || "",

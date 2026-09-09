@@ -913,6 +913,20 @@ function verifyManagedBlock(filePath, entry) {
 
 export function repoReady(repoPath, options = {}) {
   const initial = inspectRepo(repoPath, options);
+  if (initial.reason === "needs_push" && options.localCommit === true) {
+    const scopePaths = normalizeScopePaths(options.commitScope);
+    if (scopePaths.length === 0) return { ...blocked("local_commit_scope_missing"), snapshot: initial.snapshot };
+    const localSnapshot = { ...initial.snapshot, ahead: 0, commit_scope: scopePaths };
+    const localAdmission = classifyRepoSnapshot(localSnapshot);
+    if (localAdmission.decision !== "READY") return { ...localAdmission, snapshot: initial.snapshot };
+    return {
+      ...localAdmission,
+      reason: "local_commit_pending_push",
+      pending_push: true,
+      local_admission_reason: localAdmission.reason,
+      snapshot: initial.snapshot,
+    };
+  }
   if (initial.reason !== "ff_only_required" || options.autoFf !== true) return initial;
   const ff = git(path.resolve(repoPath), ["merge", "--ff-only", initial.snapshot.upstream]);
   if (ff.status !== 0) return blocked("ff_only_failed", trimEvidence(ff.stderr || ff.stdout));

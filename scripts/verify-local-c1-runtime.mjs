@@ -19,7 +19,7 @@ const cases = [
   ["rejects every mandatory local C1 receipt field", rejectsMissingReceiptFields],
   ["rejects a failed verifier before staging or committing", rejectsFailedVerifier],
   ["rejects a receipt whose paths differ from its C1", rejectsScopeMismatch],
-  ["serializes two local C1 sessions without cross-scope commits", serializesConcurrentSessions],
+  ["serializes two pending local C1 sessions without cross-scope commits", serializesConcurrentSessions],
   ["rejects terminal state in a local C1 receipt", rejectsTerminalState],
   ["creates a local C1 through the JV-37 CLI without a remote", createsLocalC1ThroughCli],
 ];
@@ -118,6 +118,7 @@ function serializesConcurrentSessions() {
       message: "test: session A local C1",
     });
     assert.equal(first.decision, "READY", first.details);
+    assert.equal(first.receipt.pending_delivery, true, "first C1 remains queued for the later batch");
 
     fs.writeFileSync(path.join(fixture.repo, "session-b.txt"), "B\n");
     const second = commitLocalC1({
@@ -126,6 +127,7 @@ function serializesConcurrentSessions() {
       message: "test: session B local C1",
     });
     assert.equal(second.decision, "READY", second.details);
+    assert.equal(second.receipt.pending_delivery, true, "second C1 is also local-only until delivery");
     assert.deepEqual(commitPaths(fixture.repo, first.receipt.c1_sha), ["session-a.txt"]);
     assert.deepEqual(commitPaths(fixture.repo, second.receipt.c1_sha), ["session-b.txt"]);
     assert.deepEqual(listLocalC1Receipts({ repoPath: fixture.repo }).map((receipt) => receipt.event_id).sort(), ["event-session-a", "event-session-b"]);

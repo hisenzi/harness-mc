@@ -2,6 +2,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -20,9 +21,24 @@ function pathExists(file) {
   }
 }
 
-if (pathExists(outPath)) {
-  throw new Error('local_export_path_occupied');
+// A preceding public build may own out/. Never delete or overwrite it.
+// Hash the full tree (including modes and symlinks without following them).
+function publicSnapshot() {
+  if (!pathExists(outPath)) return null;
+  const entries = [];
+  function visit(file, relative) {
+    const stat = fs.lstatSync(file);
+    if (stat.isSymbolicLink()) entries.push([relative, stat.mode, 'link', fs.readlinkSync(file)]);
+    else if (stat.isDirectory()) {
+      entries.push([relative, stat.mode, 'directory']);
+      for (const name of fs.readdirSync(file).sort()) visit(path.join(file, name), `${relative}/${name}`);
+    } else if (stat.isFile()) entries.push([relative, stat.mode, crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')]);
+    else throw new Error('local_export_unsafe_public_path');
+  }
+  visit(outPath, 'out');
+  return JSON.stringify(entries);
 }
+const publicBefore = publicSnapshot();
 
 fs.mkdirSync(path.dirname(target), { recursive: true });
 fs.rmSync(target, { recursive: true, force: true });
@@ -32,20 +48,17 @@ const result = spawnSync(process.execPath, [nextBin, 'build'], {
   stdio: 'inherit',
 });
 
+const publicAfter = publicSnapshot();
+if (publicAfter !== publicBefore) {
+  // Keep unexpected output as evidence. This wrapper does not own public out/.
+  throw new Error(publicBefore === null ? 'local_export_path_leaked' : 'local_export_path_changed');
+}
 if (result.error) throw result.error;
 if (result.status !== 0) {
   fs.rmSync(target, { recursive: true, force: true });
-  if (pathExists(outPath)) {
-    fs.rmSync(outPath, { recursive: true, force: true });
-    throw new Error('local_export_path_created_on_failed_build');
-  }
   process.exit(result.status ?? 1);
 }
 
-if (pathExists(outPath)) {
-  fs.rmSync(outPath, { recursive: true, force: true });
-  throw new Error('local_export_path_leaked');
-}
 if (!pathExists(target) || fs.readdirSync(target).length === 0) {
   throw new Error('local_export_missing');
 }

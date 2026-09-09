@@ -151,7 +151,7 @@ check('public release is denied before any content can be emitted', () => {
 });
 
 check('Fumadocs route consumes bundle metadata and has no write action', () => {
-  const page = read('app/docs/[[...slug]]/page.tsx');
+  const page = read('app/docs/[[...slug]]/page.local.tsx');
   assert.match(page, /ReactMarkdown/);
   assert.match(page, /remarkPlugins=\{\[remarkGfm, remarkVersionHistory\]\}/);
   assert.match(page, /DocsPage/);
@@ -178,7 +178,7 @@ check('actual Markdown anchor renderer respects Next basePath and preserves exte
     import { renderToStaticMarkup } from 'react-dom/server';
     import ReactMarkdown from 'react-markdown';
     import Link from 'next/link.js';
-    const text = fs.readFileSync('app/docs/[[...slug]]/page.tsx', 'utf8');
+    const text = fs.readFileSync('app/docs/[[...slug]]/page.local.tsx', 'utf8');
     const source = ts.createSourceFile('page.tsx', text, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
     let anchor;
     const visit = node => {
@@ -216,7 +216,7 @@ check('mobile Markdown tables target the real docs article and own their horizon
 });
 
 check('Fumadocs layout is registry-bound and search is static', () => {
-  const layout = read('app/docs/layout.tsx');
+  const layout = read('app/docs/layout.local.tsx');
   const provider = read('app/docs/providers.tsx');
   assert.match(layout, /docsTree/);
   assert.match(layout, /docsSearchLinks/);
@@ -285,15 +285,16 @@ check('local build routes export through the isolated artifact wrapper', () => {
   assert.match(nextConfig, /MORROWISE_DOCS_LOCAL_PREVIEW/);
   assert.match(nextConfig, /\.tmp\/morrowise-docs\/site/);
   const builder = read('scripts/build-morrowise-local-docs.mjs');
-  assert.match(builder, /local_export_path_occupied/);
+  assert.match(builder, /publicSnapshot/);
   assert.match(builder, /MORROWISE_DOCS_LOCAL_PREVIEW/);
   assert.match(builder, /local_export_path_leaked/);
-  assert.match(builder, /local_export_path_created_on_failed_build/);
-  assert.match(builder, /rmSync\(outPath/);
+  assert.match(builder, /local_export_path_changed/);
+  assert.doesNotMatch(builder, /rmSync\(outPath/);
 });
 
 check('local-only static export does not remain in the public out directory', () => {
-  assert.equal(fs.existsSync(path.join(ROOT, 'out')), false, 'local preview export must be isolated under .tmp/morrowise-docs/site');
+  // Public out/ may coexist. Full-build acceptance must separately scan its
+  // contents; the local wrapper verifies byte-for-byte preservation.
   const isolatedSite = path.join(ROOT, '.tmp/morrowise-docs/site');
   if (!fs.existsSync(isolatedSite)) return;
   const files = [];
@@ -334,8 +335,8 @@ check('in-scope source files contain no machine-specific absolute path or secret
     'scripts/verify-morrowise-documentation-sync.mjs',
     'scripts/verify-morrowise-docs-surface.mjs',
     'scripts/build-morrowise-local-docs.mjs',
-    'app/docs/layout.tsx',
-    'app/docs/[[...slug]]/page.tsx',
+    'app/docs/layout.local.tsx',
+    'app/docs/[[...slug]]/page.local.tsx',
     'app/docs/providers.tsx',
     'app/docs/search-dialog.tsx',
     'app/docs/docs.css',

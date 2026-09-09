@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "scope_version": "manual-local-v2",
   "registry_ref": "$COLLAB/harness-mc/system-workflow/registries/morrowise-document-sources.json",
-  "reviewed_at": "2026-09-08",
+  "reviewed_at": "2026-09-09",
   "source_allowlist": [
     "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md"
   ],
@@ -22,7 +22,7 @@
         {
           "path": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
           "relation": "canonical",
-          "fingerprint": "52f6513fefa57c7cd3d483c0b70f509fe9337e86bfc882e16a6fc035b1828077"
+          "fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c"
         }
       ],
       "member_globs": [],
@@ -42,10 +42,10 @@
       "architecture_summary": "登入後唯讀判定、必讀來源、當次授權與安全接手；ready 不代表已核准工作。",
       "human_summary": "登入後唯讀判定、必讀來源、當次授權與安全接手；ready 不代表已核准工作。",
       "human_content_ref": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
-      "summary_reviewed_source_fingerprint": "52f6513fefa57c7cd3d483c0b70f509fe9337e86bfc882e16a6fc035b1828077",
-      "summary_reviewed_at": "2026-09-08",
+      "summary_reviewed_source_fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c",
+      "summary_reviewed_at": "2026-09-09",
       "summary_reviewed_by": "Codex; independent review: Avicenna",
-      "last_verified_at": "2026-09-08",
+      "last_verified_at": "2026-09-09",
       "supersedes": [],
       "superseded_by": [],
       "chapter_id": "entry",
@@ -65,7 +65,7 @@
         {
           "path": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
           "relation": "canonical",
-          "fingerprint": "52f6513fefa57c7cd3d483c0b70f509fe9337e86bfc882e16a6fc035b1828077"
+          "fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c"
         }
       ],
       "member_globs": [],
@@ -85,14 +85,14 @@
       "architecture_summary": "一人協調、單檔單 writer、四種接手情境與独立驗收；workbook 仍為具名 opt-in。",
       "human_summary": "一人協調、單檔單 writer、四種接手情境與独立驗收；workbook 仍為具名 opt-in。",
       "human_content_ref": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
-      "summary_reviewed_source_fingerprint": "52f6513fefa57c7cd3d483c0b70f509fe9337e86bfc882e16a6fc035b1828077",
-      "summary_reviewed_at": "2026-09-08",
+      "summary_reviewed_source_fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c",
+      "summary_reviewed_at": "2026-09-09",
       "summary_reviewed_by": "Codex; independent review: Avicenna",
-      "last_verified_at": "2026-09-08",
+      "last_verified_at": "2026-09-09",
       "supersedes": [],
       "superseded_by": [],
       "chapter_id": "collaboration",
-      "document_version": "v0.4.0"
+      "document_version": "v0.4.1"
     },
     {
       "id": "operator-guide-execution",
@@ -108,7 +108,7 @@
         {
           "path": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
           "relation": "canonical",
-          "fingerprint": "52f6513fefa57c7cd3d483c0b70f509fe9337e86bfc882e16a6fc035b1828077"
+          "fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c"
         }
       ],
       "member_globs": [],
@@ -128,10 +128,10 @@
       "architecture_summary": "從原需求到實作、驗收、no_change／blocked 及正式證據回寫；不另建追蹤器。",
       "human_summary": "從原需求到實作、驗收、no_change／blocked 及正式證據回寫；不另建追蹤器。",
       "human_content_ref": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
-      "summary_reviewed_source_fingerprint": "52f6513fefa57c7cd3d483c0b70f509fe9337e86bfc882e16a6fc035b1828077",
-      "summary_reviewed_at": "2026-09-08",
+      "summary_reviewed_source_fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c",
+      "summary_reviewed_at": "2026-09-09",
       "summary_reviewed_by": "Codex; independent review: Avicenna",
-      "last_verified_at": "2026-09-08",
+      "last_verified_at": "2026-09-09",
       "supersedes": [],
       "superseded_by": [],
       "chapter_id": "execution",
@@ -151,7 +151,7 @@
         {
           "path": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
           "relation": "canonical",
-          "fingerprint": "52f6513fefa57c7cd3d483c0b70f509fe9337e86bfc882e16a6fc035b1828077"
+          "fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c"
         }
       ],
       "member_globs": [],
@@ -171,10 +171,10 @@
       "architecture_summary": "本機完成、精確 commit 與另核准的遠端交付分開；先查版本及 ownership。",
       "human_summary": "本機完成、精確 commit 與另核准的遠端交付分開；先查版本及 ownership。",
       "human_content_ref": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
-      "summary_reviewed_source_fingerprint": "52f6513fefa57c7cd3d483c0b70f509fe9337e86bfc882e16a6fc035b1828077",
-      "summary_reviewed_at": "2026-09-08",
+      "summary_reviewed_source_fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c",
+      "summary_reviewed_at": "2026-09-09",
       "summary_reviewed_by": "Codex; independent review: Avicenna",
-      "last_verified_at": "2026-09-08",
+      "last_verified_at": "2026-09-09",
       "supersedes": [],
       "superseded_by": [],
       "chapter_id": "delivery",
@@ -194,7 +194,7 @@
         {
           "path": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
           "relation": "canonical",
-          "fingerprint": "52f6513fefa57c7cd3d483c0b70f509fe9337e86bfc882e16a6fc035b1828077"
+          "fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c"
         }
       ],
       "member_globs": [],
@@ -214,14 +214,14 @@
       "architecture_summary": "能力變更先做文件影響審查，再生成單一來源的本地正文、導航與搜尋。",
       "human_summary": "能力變更先做文件影響審查，再生成單一來源的本地正文、導航與搜尋。",
       "human_content_ref": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
-      "summary_reviewed_source_fingerprint": "52f6513fefa57c7cd3d483c0b70f509fe9337e86bfc882e16a6fc035b1828077",
-      "summary_reviewed_at": "2026-09-08",
+      "summary_reviewed_source_fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c",
+      "summary_reviewed_at": "2026-09-09",
       "summary_reviewed_by": "Codex; independent review: Avicenna",
-      "last_verified_at": "2026-09-08",
+      "last_verified_at": "2026-09-09",
       "supersedes": [],
       "superseded_by": [],
       "chapter_id": "documentation",
-      "document_version": "v0.3.0"
+      "document_version": "v0.3.1"
     },
     {
       "id": "operator-guide-troubleshooting",
@@ -237,7 +237,7 @@
         {
           "path": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
           "relation": "canonical",
-          "fingerprint": "52f6513fefa57c7cd3d483c0b70f509fe9337e86bfc882e16a6fc035b1828077"
+          "fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c"
         }
       ],
       "member_globs": [],
@@ -257,10 +257,10 @@
       "architecture_summary": "定位可重現斷點、分清文件／程式／權限問題，核准後最小修正與安全接續。",
       "human_summary": "定位可重現斷點、分清文件／程式／權限問題，核准後最小修正與安全接續。",
       "human_content_ref": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
-      "summary_reviewed_source_fingerprint": "52f6513fefa57c7cd3d483c0b70f509fe9337e86bfc882e16a6fc035b1828077",
-      "summary_reviewed_at": "2026-09-08",
+      "summary_reviewed_source_fingerprint": "cdec994dcc32ec0e3a8f6e9d9e125a112ac615c6937cd390722be7f28b17709c",
+      "summary_reviewed_at": "2026-09-09",
       "summary_reviewed_by": "Codex; independent review: Avicenna",
-      "last_verified_at": "2026-09-08",
+      "last_verified_at": "2026-09-09",
       "supersedes": [],
       "superseded_by": [],
       "chapter_id": "troubleshooting",
@@ -544,16 +544,17 @@
         "$COLLAB/harness-mc/scripts/verify-morrowise-documentation-sync.mjs": "593bcc72435a82d96ac0dc39972439849b4958229be8dd1a091ed08ed16d5b94"
       },
       "document_fingerprints": {
-        "operator-guide-documentation": "81d81269a029481849481716e36102a74b9e5d63859950d3c2bb4b2338585470"
+        "operator-guide-documentation": "29913e39c4cdd05145fba41548889b2d7d0266c7919f0ede026f3fd7f50590a3"
       },
       "decision": "update_required",
-      "reason": "修復連續版本 A→B→C 基線漏驗；正文已加入上一有效 review 的比較基準與本次能力更新但正文停留上一版的拒絕條件。Avicenna 已重讀語意並獨立重現拒絕與合法 no-impact 對照。",
+      "reason": "本輪建置隔離的指南路徑／操作邊界更新；Avicenna 獨立確認摘要仍準確、上游來源未變。前版 review 為 2026-09-08，正文指紋 81d81269a029481849481716e36102a74b9e5d63859950d3c2bb4b2338585470，完整歷史保留於 Git c48c909 的本 registry；原 runtime 證據不冒稱本輪重跑。",
       "evidence_refs": [
-        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync.test_contract.evidence_refs"
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync.test_contract.evidence_refs",
+        "$COLLAB/harness-mc/.tmp/morrowise-docs/build-isolation-review.json"
       ],
       "author": "Codex /root",
       "reviewer": "Avicenna /root/avicenna_independent_review",
-      "reviewed_at": "2026-09-08"
+      "reviewed_at": "2026-09-09"
     },
     {
       "mapping_id": "collaboration",
@@ -566,16 +567,17 @@
         "$COLLAB/harness-mc/scripts/lib/workbook-coordination.mjs": "eddd180dadccc00755b7a710981246aff726e749b5798bd4a3e8ded03b7ce369"
       },
       "document_fingerprints": {
-        "operator-guide-collaboration": "18863a206da6c1d4e1a0e03c9d05197494da3537c02ea4ee2200db0d0789fed0"
+        "operator-guide-collaboration": "8096d33c82677827ddc15b6db2946dcf6e4e96d32bc6eef548abae331d7281f9"
       },
       "decision": "update_required",
-      "reason": "上游279f4e0新增條件式原要求綁定與pending驗收拒絕；協作章v0.4.0已補原文區段／IDs／指紋、requirements_not_ready／not_run與原owner回流、既有verifier路徑。Avicenna獨立核對三項語意及舊契約相容；其餘五章未改，既有摘要仍準確。",
+      "reason": "本輪建置隔離的指南路徑／操作邊界更新；Avicenna 獨立確認摘要仍準確、上游來源未變。前版 review 為 2026-09-08，正文指紋 18863a206da6c1d4e1a0e03c9d05197494da3537c02ea4ee2200db0d0789fed0，完整歷史保留於 Git c48c909 的本 registry；原 runtime 證據不冒稱本輪重跑。",
       "evidence_refs": [
-        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync.test_contract.evidence_refs"
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#document-source-registry-and-human-sync.test_contract.evidence_refs",
+        "$COLLAB/harness-mc/.tmp/morrowise-docs/build-isolation-review.json"
       ],
       "author": "Codex /root",
       "reviewer": "Avicenna /root/avicenna_independent_review",
-      "reviewed_at": "2026-09-08"
+      "reviewed_at": "2026-09-09"
     }
   ]
 }

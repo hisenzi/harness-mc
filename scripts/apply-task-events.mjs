@@ -1,11 +1,12 @@
 import { processLocalTaskHandoffs } from "./lib/local-task-handoff.mjs";
 import { spawnSync } from "node:child_process";
 import crypto from "node:crypto";
+import {isDeepStrictEqual} from "node:util";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { mergeTaskDefinitionsWithState, stateFromTask } from "./task-state.mjs";
+import { mergeTaskDefinitionsWithState, stateFromTask, usesCanonicalTaskLifecycle } from "./task-state.mjs";
 import { writeSyncEvent } from "./sync-event-queue.mjs";
 import { resolveMilestoneProject } from "./lib/milestone-projects.mjs";
 import {
@@ -40,6 +41,11 @@ export function applyTaskEvents(options = {}) {
   } finally {
     releaseApplyLock(lock);
   }
+}
+
+export function withTaskEventApplyLock(root, action) {
+  const lock=acquireApplyLock(path.join(root, 'task-events', '.jv37-apply.lock'));
+  try { return action(); } finally { releaseApplyLock(lock); }
 }
 
 function acquireApplyLock(lockDir) {
@@ -180,6 +186,20 @@ function applyTaskEventsUnlocked(options = {}) {
       continue;
     }
 
+    if (usesCanonicalTaskLifecycle(event.project) && ['task.completed', 'task.reopened', 'task.blocked'].includes(event.type)) {
+      // The existing reviewed JV-32/local-handoff writer owns lifecycle changes.
+      // A proven completion event may acknowledge an already canonical result.
+      const definition = projectTasks.definitions.tasks.find(item => item.id === event.task_id);
+      const canonicalCompletionReceipt = event.type === 'task.completed'
+        && ['completed', 'done'].includes(definition.status)
+        && task.coordination?.active_claim;
+      if (!canonicalCompletionReceipt) {
+        seenEventIds.add(eventId);
+        rejectEvent({source, fileName, event, reason:'canonical_lifecycle_requires_reviewed_intake', rejectedDir, report});
+        continue;
+      }
+    }
+
     const coordinationRejection = coordinationRejectionReason(task, event, { ...options, root });
     if (coordinationRejection) {
       seenEventIds.add(eventId);
@@ -187,20 +207,39 @@ function applyTaskEventsUnlocked(options = {}) {
       continue;
     }
 
+    const projectionBefore = structuredClone(projectTasks.state.tasks[task.id] ?? null);
     applyEventToTask(task, event);
+    if (usesCanonicalTaskLifecycle(event.project)) {
+      const definition = projectTasks.definitions.tasks.find(item => item.id === event.task_id);
+      task.status = definition.status;
+      if (Object.hasOwn(definition, 'completed_at')) task.completed_at = definition.completed_at;
+      else delete task.completed_at;
+    }
     enqueueSyncRequests(root, event, task);
-    projectTasks.state.tasks[task.id] = stateFromTask(task);
+    if (usesCanonicalTaskLifecycle(event.project)) {
+      // Update only event-owned fields; preserve existing history and shadows
+      // until an exact reconciliation has been reviewed.
+      const projection = {...(projectTasks.state.tasks[task.id] || {})};
+      for (const field of ['commits', 'coordination']) {
+        if (task[field] !== undefined) projection[field] = structuredClone(task[field]);
+      }
+      projectTasks.state.tasks[task.id] = projection;
+    } else projectTasks.state.tasks[task.id] = stateFromTask(task);
     seenEventIds.add(eventId);
 
     const transactionPath = path.join(transactionsDir, fileName);
     const transaction = {
-      version: 1,
+      version: usesCanonicalTaskLifecycle(event.project) ? 2 : 1,
       phase: "prepared",
       event_id: eventId,
       event,
       source_file: fileName,
       state_path: path.relative(root, projectTasks.statePath),
-      state_payload: projectTasks.state,
+      ...(usesCanonicalTaskLifecycle(event.project) ? {
+        task_before:projectionBefore,
+        task_after:structuredClone(projectTasks.state.tasks[task.id]),
+        definition_digest:crypto.createHash('sha256').update(JSON.stringify(projectTasks.definitions.tasks.find(t=>t.id===task.id))).digest('hex'),
+      } : {state_payload:projectTasks.state}),
     };
     writeJsonAtomic(transactionPath, transaction);
     writeJsonAtomic(projectTasks.statePath, projectTasks.state);
@@ -233,14 +272,33 @@ function recoverInterruptedTransactions({ transactionsDir, pendingDir, appliedDi
   for (const fileName of fs.readdirSync(transactionsDir).filter((name) => name.endsWith(".json")).sort()) {
     const transactionPath = path.join(transactionsDir, fileName);
     const transaction = readJson(transactionPath);
-    if (transaction?.version !== 1 || !transaction.event_id || !transaction.event || !transaction.state_path || !transaction.state_payload) {
+    if (![1, 2].includes(transaction?.version) || !transaction.event_id || !transaction.event || !transaction.state_path || (transaction.version === 1 && !transaction.state_payload)) {
       throw new Error(`invalid task event transaction: ${fileName}`);
     }
     const root = path.dirname(path.dirname(transactionsDir));
     const statePath = path.resolve(root, transaction.state_path);
     const relativeState = path.relative(root, statePath);
     if (relativeState.startsWith("..") || path.isAbsolute(relativeState)) throw new Error(`transaction state path escaped root: ${fileName}`);
-    writeJsonAtomic(statePath, transaction.state_payload);
+    if (usesCanonicalTaskLifecycle(transaction.event.project)) {
+      if (transaction.version !== 2) throw Error('canonical_legacy_transaction_requires_review');
+      const descriptor = resolveMilestoneProject({repoRoot:root, projectId:transaction.event.project});
+      if (!descriptor || descriptor.statePath !== statePath || !transaction.task_after
+        || !Object.hasOwn(transaction, 'task_before')
+        || path.basename(transaction.source_file || '') !== transaction.source_file) throw Error('invalid_canonical_state_transaction');
+      const definition = readJson(descriptor.tasksPath).tasks.find(t=>t.id===transaction.event.task_id);
+      if (!definition || crypto.createHash('sha256').update(JSON.stringify(definition)).digest('hex') !== transaction.definition_digest) throw Error('canonical_definition_changed_during_recovery');
+      const current = fs.existsSync(statePath) ? readJson(statePath) : {tasks:{}};
+      const currentTask = current.tasks?.[transaction.event.task_id] ?? null;
+      if (!isDeepStrictEqual(currentTask, transaction.task_after)) {
+        if (!isDeepStrictEqual(currentTask, transaction.task_before)) throw Error('canonical_state_recovery_conflict');
+        current.tasks ||= {};
+        current.tasks[transaction.event.task_id] = transaction.task_after;
+        writeJsonAtomic(statePath, current);
+      }
+    } else {
+      if (transaction.version !== 1) throw Error('unsupported_legacy_state_transaction');
+      writeJsonAtomic(statePath, transaction.state_payload);
+    }
     const source = path.join(pendingDir, transaction.source_file);
     const target = path.join(appliedDir, transaction.source_file);
     if (fs.existsSync(source)) {
@@ -350,7 +408,7 @@ function loadProjectTasks(root, project, tasksCache) {
   if (!projectTasks.state.tasks) projectTasks.state.tasks = {};
   projectTasks.data = {
     ...projectTasks.definitions,
-    tasks: mergeTaskDefinitionsWithState(projectTasks.definitions.tasks || [], projectTasks.state),
+    tasks: mergeTaskDefinitionsWithState(projectTasks.definitions.tasks || [], projectTasks.state, {projectId:project}),
   };
   tasksCache.set(project, projectTasks);
   return projectTasks;
@@ -452,7 +510,8 @@ function coordinationRejectionReason(task, event, options) {
     const proof = verifyProof({ event, expectedState: "canonical_applied" });
     return proof.decision === "BLOCKED" ? proof.reason : null;
   }
-  if (active.state !== "canonical_applied" || task.status !== "completed") return "closeout_not_terminal";
+  const terminal = task.status === 'completed' || (usesCanonicalTaskLifecycle(event.project) && task.status === 'done');
+  if (active.state !== "canonical_applied" || !terminal) return "closeout_not_terminal";
   const proof = verifyProof({ event, expectedState: "released" });
   return proof.decision === "BLOCKED" ? proof.reason : null;
 }

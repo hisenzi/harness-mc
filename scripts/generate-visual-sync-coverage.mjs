@@ -1,7 +1,8 @@
 import fs from "node:fs";
+import crypto from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { mergeTaskDefinitionsWithState } from "./task-state.mjs";
+import { mergeTaskDefinitionsWithState, usesCanonicalTaskLifecycle } from "./task-state.mjs";
 import { discoverMilestoneProjects } from "./lib/milestone-projects.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -68,16 +69,24 @@ function readProjects(root) {
   return discoverMilestoneProjects({ repoRoot: root })
     .map((descriptor) => {
       const projectId = descriptor.projectId;
-      const raw = readJson(descriptor.tasksPath);
+      const definitionsBytes = fs.readFileSync(descriptor.tasksPath);
+      const raw = JSON.parse(definitionsBytes.toString("utf8").replace(/^﻿/, ""));
       const projectMeta = fs.existsSync(descriptor.projectPath) ? readJson(descriptor.projectPath) : {};
-      const state = fs.existsSync(descriptor.statePath) ? readJson(descriptor.statePath) : {};
+      const stateBytes = fs.existsSync(descriptor.statePath) ? fs.readFileSync(descriptor.statePath) : null;
+      const state = stateBytes ? JSON.parse(stateBytes.toString('utf8').replace(/^﻿/, '')) : {};
+      const taskAuthority = usesCanonicalTaskLifecycle(projectId) ? {
+        lifecycle_source: `${descriptor.relativeDir}/tasks.json`,
+        definitions_sha256: crypto.createHash('sha256').update(definitionsBytes).digest('hex'),
+        state_source: `${descriptor.relativeDir}/state.json`,
+        state_sha256: stateBytes ? crypto.createHash('sha256').update(stateBytes).digest('hex') : null,
+      } : null;
       const tasks = extractTasks(raw);
-      const merged = mergeTaskDefinitionsWithState(tasks, state);
+      const merged = mergeTaskDefinitionsWithState(tasks, state, {projectId});
 
       return {
         project: projectId,
         name: projectMeta.name || projectId,
-        tasks: merged.map((task) => normalizeTask(task, projectId, projectMeta.name || projectId)),
+        tasks: merged.map((task) => ({...normalizeTask(task, projectId, projectMeta.name || projectId), ...(taskAuthority ? {task_authority:taskAuthority} : {})})),
       };
     });
 }
@@ -97,6 +106,7 @@ function normalizeTask(task, project, projectName) {
     id: task.id || "",
     title: task.title || task.description || "",
     status: task.status || "todo",
+    ...(task.replaced_by ? {replaced_by:task.replaced_by} : {}),
     track: task.track || "",
     order_label: task.order_label || "",
     completed_at: task.completed_at || null,
@@ -189,6 +199,8 @@ function classifyTask(task, syncEvents) {
     task_id: task.id,
     title: task.title,
     status: task.status,
+    ...(task.replaced_by ? {replaced_by:task.replaced_by} : {}),
+    ...(task.task_authority ? {task_authority:task.task_authority} : {}),
     track: task.track,
     order_label: task.order_label,
     heptabase: {

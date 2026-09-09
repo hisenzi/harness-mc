@@ -195,7 +195,7 @@
       "summary": "完成 Reality Tax Gate 通用工作流協定：同一概念研究或討論超過 30 分鐘且沒有 24 小時內實質 output 時，Agent 必須選擇 attach_output、create_task_anchor、make_small_demo、kill_loop 或 mark_reality_gap；協定已明確區分 workflow gate 與 daily review scheduler task，並以 HC refs 作 reasoning layer 而非 task state authority。"
     },
     "reality-tax-daily-review-task": {
-      "status": "in_progress",
+      "status": "cancelled",
       "commits": [
         "5e65726"
       ]
@@ -332,7 +332,7 @@
       "summary": "Completed verifier suite health read model v0: added generator/verifier, tracked public/data/verifier-suite-health.json, prebuild trigger, live-system admission record, sanitized failure excerpts, recursive self-test exclusion, and task-level evidence. Latest suite run reports 42/43 package test:* verifiers passing and routes next_action to test:hc-framing-gate for the existing red light; dashboard UI remains a separate harness-mc surface task."
     },
     "memory-health-read-model": {
-      "status": "todo",
+      "status": "completed",
       "completed_at": "2026-07-05",
       "commits": [
         "617435a"

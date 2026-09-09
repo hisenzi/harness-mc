@@ -89,6 +89,9 @@ function runGit(args, { allowFail = false } = {}) {
     return execSync(`git ${args}`, {
       cwd: root,
       encoding: "utf-8",
+      // Canonical tasks.json now exceeds Node's 1 MiB default. A truncated
+      // baseline must not make every existing task appear newly created.
+      maxBuffer: 16 * 1024 * 1024,
       stdio: ["ignore", "pipe", "ignore"],
     }).trim();
   } catch (error) {

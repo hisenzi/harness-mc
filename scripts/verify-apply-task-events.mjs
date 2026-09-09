@@ -140,14 +140,31 @@ writeJson(path.join(coordinationPendingDir, "005-release.json"), {
     remote_state: "released",
   },
 });
-const coordinationReport = applyTaskEvents({
+const coordinationOptions = {
   root: coordinationRoot,
   runGenerateData: false,
   writeLatestReport: false,
   coordinationProofVerifier: ({ event, expectedState }) => event.coordination?.remote_state === expectedState
     ? { decision: "READY" }
     : { decision: "BLOCKED", reason: "remote_claim_proof_mismatch" },
+};
+const coordinationBeforeApply = applyTaskEvents({
+  ...coordinationOptions,
+  eventIds: new Set(['evt-claim-a', 'evt-claim-b', 'evt-remote-a']),
 });
+assert.equal(JSON.parse(fs.readFileSync(path.join(coordinationProjectDir, 'tasks.json'))).tasks[0].status, 'todo');
+// Fixture for the existing reviewed canonical writer's result, before the
+// completion receipt arrives. The legacy event reducer cannot grant lifecycle.
+writeJson(path.join(coordinationProjectDir, 'tasks.json'), {
+  tasks: [{id:'jv37', title:'Repo coordination', status:'completed', completed_at:'2026-08-12'}],
+});
+const coordinationAfterApply = applyTaskEvents(coordinationOptions);
+const coordinationReport = {
+  applied:[...coordinationBeforeApply.applied, ...coordinationAfterApply.applied],
+  rejected:[...coordinationBeforeApply.rejected, ...coordinationAfterApply.rejected],
+};
+assert.equal(JSON.parse(fs.readFileSync(path.join(coordinationProjectDir, 'tasks.json'))).tasks[0].status, 'completed');
+assert.equal(Object.hasOwn(JSON.parse(fs.readFileSync(path.join(coordinationProjectDir, 'state.json'))).tasks.jv37, 'status'), false);
 assert.deepEqual(coordinationReport.applied.map((item) => item.type), ["task.claimed", "task.remote_synced", "task.completed", "task.released"]);
 assert.equal(coordinationReport.rejected.find((item) => item.event_id === "evt-claim-b").reason, "claim_conflict");
 const coordinationState = JSON.parse(fs.readFileSync(path.join(coordinationProjectDir, "state.json"), "utf8"));

@@ -378,7 +378,7 @@
       }
     },
     "morrowise-proactive-loop-dashboard": {
-      "status": "completed",
+      "status": "in_progress",
       "completed_at": "2026-06-21",
       "commits": [
         "acf4787"

@@ -1,8 +1,9 @@
 import fs from "fs";
+import crypto from "node:crypto";
 import path from "path";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
-import { mergeTaskDefinitionsWithState } from "./task-state.mjs";
+import { mergeTaskDefinitionsWithState, usesCanonicalTaskLifecycle } from "./task-state.mjs";
 import { discoverMilestoneProjects } from "./lib/milestone-projects.mjs";
 import { sortTasksByPlan } from "../lib/taskOrdering.mjs";
 
@@ -50,6 +51,8 @@ function normalize(t) {
     completed_at: t.completed_at || null,
     commits: t.commits || [],
     summary: t.summary || "",
+    ...(t.coordination ? {coordination:t.coordination} : {}),
+    ...(t.replaced_by ? {replaced_by:t.replaced_by} : {}),
     ...(t.canonical_ref ? { canonical_ref: t.canonical_ref } : {}),
     ...(t.output_ref ? { output_ref: t.output_ref } : {}),
     external_refs: t.external_refs || {},
@@ -63,19 +66,20 @@ for (const descriptor of discoverMilestoneProjects({ repoRoot: root })) {
   const tasksPath = descriptor.tasksPath;
 
   try {
-    const raw = JSON.parse(fs.readFileSync(tasksPath, "utf-8").replace(/^﻿/, ""));
+    const definitionsBytes = fs.readFileSync(tasksPath);
+    const raw = JSON.parse(definitionsBytes.toString("utf8").replace(/^﻿/, ""));
     const tasks = [];
 
     if (Array.isArray(raw)) {
-      for (const t of raw) tasks.push(normalize(t));
+      for (const t of raw) tasks.push(t);
     } else if (Array.isArray(raw.tasks)) {
-      for (const t of raw.tasks) tasks.push(normalize(t));
+      for (const t of raw.tasks) tasks.push(t);
     } else if (Array.isArray(raw.dev)) {
-      for (const t of [...raw.dev, ...(raw.ops || [])]) tasks.push(normalize(t));
+      for (const t of [...raw.dev, ...(raw.ops || [])]) tasks.push(t);
     } else if (Array.isArray(raw.phases)) {
       for (const phase of raw.phases) {
         if (Array.isArray(phase.tasks)) {
-          for (const t of phase.tasks) tasks.push(normalize({ ...t, track: t.track || phase.id }));
+          for (const t of phase.tasks) tasks.push({ ...t, track: t.track || phase.id });
         }
       }
     }
@@ -83,12 +87,17 @@ for (const descriptor of discoverMilestoneProjects({ repoRoot: root })) {
     if (tasks.length === 0) continue;
 
     const statePath = descriptor.statePath;
-    if (fs.existsSync(statePath)) {
-      const state = JSON.parse(fs.readFileSync(statePath, "utf-8").replace(/^﻿/, ""));
-      const mergedTasks = mergeTaskDefinitionsWithState(tasks, state);
-      tasks.length = 0;
-      tasks.push(...mergedTasks);
-    }
+    const stateBytes = fs.existsSync(statePath) ? fs.readFileSync(statePath) : null;
+    const state = stateBytes ? JSON.parse(stateBytes.toString('utf8').replace(/^﻿/, '')) : {};
+    const canonical = usesCanonicalTaskLifecycle(projectId);
+    const merged = mergeTaskDefinitionsWithState(canonical ? tasks : tasks.map(normalize), state, {projectId});
+    const normalizedTasks = canonical ? merged.map(normalize) : merged;
+    const taskAuthority = canonical ? {
+      lifecycle_source: `${descriptor.relativeDir}/tasks.json`,
+      definitions_sha256: crypto.createHash('sha256').update(definitionsBytes).digest('hex'),
+      state_source: `${descriptor.relativeDir}/state.json`,
+      state_sha256: stateBytes ? crypto.createHash('sha256').update(stateBytes).digest('hex') : null,
+    } : null;
 
     let meta = {};
     const projectPath = descriptor.projectPath;
@@ -97,7 +106,7 @@ for (const descriptor of discoverMilestoneProjects({ repoRoot: root })) {
     }
 
     const usesOrderLabel = typeof meta.project_code === "string" && meta.project_code.trim().length > 0;
-    const orderedTasks = sortTasksByPlan(tasks, { orderLabelAsSource: usesOrderLabel });
+    const orderedTasks = sortTasksByPlan(normalizedTasks, { orderLabelAsSource: usesOrderLabel });
     const stat = fs.statSync(tasksPath);
     const done = orderedTasks.filter((t) => ["done", "completed", "fixed"].includes(t.status)).length;
 
@@ -107,6 +116,7 @@ for (const descriptor of discoverMilestoneProjects({ repoRoot: root })) {
 
     results.push({
       project: projectId,
+      ...(taskAuthority ? {task_authority:taskAuthority} : {}),
       name: meta.name || projectId,
       description: meta.description || "",
       status: projectStatus,
@@ -127,8 +137,9 @@ for (const descriptor of discoverMilestoneProjects({ repoRoot: root })) {
         : {}),
       ...(descriptor.group ? { group: descriptor.group, milestone_ref: descriptor.relativeDir } : {}),
     });
-  } catch {
-    // skip malformed
+  } catch (error) {
+    if (usesCanonicalTaskLifecycle(projectId)) throw error;
+    // skip malformed legacy projects
   }
 }
 

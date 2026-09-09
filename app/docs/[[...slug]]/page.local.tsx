@@ -63,6 +63,9 @@ export default async function DocumentationPage({ params }: { params: Promise<{ 
       breadcrumb={{ enabled: true }}
     >
       <DocsBody>
+        <aside role="note" data-testid="morrowise-local-prerequisites">
+          操作前提：$COLLAB 是本地來源標籤，不是公開網址。命令需要既有 MorroWise 環境、指定檔案及相應權限；本文不是空白環境安裝指南，也不授予操作權限。
+        </aside>
         <div className="morrowise-doc-meta" data-testid="morrowise-doc-meta">
           <Link href="/" className="morrowise-doc-home-link">↩ 返回 Mission Control</Link>
           <span>source: {page.source_ref}</span>

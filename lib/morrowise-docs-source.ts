@@ -3,6 +3,7 @@ import path from "node:path";
 import type * as PageTree from "fumadocs-core/page-tree";
 import { validateBundle } from "../scripts/generate-morrowise-documentation.mjs";
 import { evaluateDocumentationImpact } from "../scripts/lib/morrowise-documentation-impact.mjs";
+import { validatePublicRelease } from "../scripts/lib/morrowise-public-release.mjs";
 
 export type DocumentationPage = {
   slug: string;
@@ -16,7 +17,7 @@ export type DocumentationPage = {
   chapter_id?: string | null;
   document_version?: string | null;
   records?: Array<{id: string; document_version: string; source_fingerprint: string}>;
-  visibility: "local_only";
+  visibility: "local_only" | "public";
   source_ref: string;
   source_fingerprint: string;
   document_role: string;
@@ -35,7 +36,7 @@ type DocumentationBundle = {
   human_navigation: Array<{ id: string; slug: string; title: string; kind: DocumentationPage["kind"]; record_id?: string; record_ids?: string[] }>;
   pages: DocumentationPage[];
   drift_state: "fresh";
-  visibility: "local_only";
+  visibility: "local_only" | "public";
   write_boundary: "read_only";
   generated_at: string;
   payload_fingerprint: string;
@@ -44,6 +45,27 @@ type DocumentationBundle = {
 const bundlePath = path.resolve(process.cwd(), ".tmp/morrowise-docs/bundle.json");
 
 function loadBundle(): DocumentationBundle {
+  if (process.env.MORROWISE_SITE_TARGET === "zeabur") {
+    if (process.env.MORROWISE_DOCS_LOCAL_PREVIEW === "1") throw new Error("conflicting_documentation_modes");
+    const read = (relative: string): string => {
+      let file = process.cwd();
+      for (const part of relative.split("/")) {
+        file = path.join(file, part);
+        if (fs.lstatSync(file).isSymbolicLink()) throw new Error("public_release_symlink_rejected");
+      }
+      if (!fs.statSync(file).isFile()) throw new Error("public_release_regular_file_required");
+      return fs.readFileSync(file, "utf8");
+    };
+    const registry = JSON.parse(read("system-workflow/registries/morrowise-document-sources.json"));
+    const body = read("docs/morrowise/OPERATOR-GUIDE.md");
+    const release = {
+      manifest: JSON.parse(read("release/morrowise-docs/manifest.json")),
+      bundle: JSON.parse(read("release/morrowise-docs/bundle.json")),
+    };
+    const verifyRelease = validatePublicRelease as unknown as (candidate: unknown, options: {registry: unknown; body: string; allowCandidate: boolean}) => true;
+    verifyRelease(release, {registry, body, allowCandidate: process.env.MORROWISE_PUBLIC_CANDIDATE === "1"});
+    return release.bundle as DocumentationBundle;
+  }
   if (process.env.NODE_ENV === "production" && process.env.MORROWISE_DOCS_LOCAL_PREVIEW !== "1") {
     throw new Error("local_only_docs_requires_preview_flag");
   }

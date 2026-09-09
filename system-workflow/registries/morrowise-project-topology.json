@@ -2,7 +2,7 @@
   "registry_id": "morrowise-project-topology.v1",
   "task_id": "project-topology-architecture-atlas",
   "status": "formal_registry",
-  "updated_at": "2026-09-04",
+  "updated_at": "2026-09-08",
   "inventory_as_of": "2026-08-26",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json",
   "schema_ref": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-project-topology.schema.json",
@@ -311,19 +311,19 @@
       "notes": "Canonical Git repository; existing untracked content requires normal Git preflight before any migration."
     },
     {
-      "id": "eddy-chatbot-web",
-      "path_label": "$COLLAB/Eddy_chatbot_web",
-      "classification": "unknown",
-      "migration_state": "not_assessed",
-      "project_home_ref": null,
-      "topology_profile": null,
-      "document_ref": null,
-      "repo_ref": null,
+      "id": "eddy-ai-chatbot-web",
+      "path_label": "$COLLAB/Eddy_AI_chatbot_web",
+      "classification": "canonical_project",
+      "migration_state": "verified",
+      "project_home_ref": "$COLLAB/Eddy_AI_chatbot_web",
+      "topology_profile": "git-repository",
+      "document_ref": "$COLLAB/Eddy_AI_chatbot_web/AGENTS.md",
+      "repo_ref": "$COLLAB/Eddy_AI_chatbot_web",
       "evidence": [
-        "$COLLAB/Eddy_chatbot_web"
+        "$COLLAB/Eddy_AI_chatbot_web"
       ],
-      "last_verified_at": "2026-07-25",
-      "notes": "Root directory exists; no root Git metadata or recognized project entry was detected. Retain for owner and type assessment; do not infer a canonical home."
+      "last_verified_at": "2026-09-08",
+      "notes": "Canonical Git repository initialized on branch main; downstream HiBlocks Astro sales site with AGENTS.md verified."
     },
     {
       "id": "english-future-work",
@@ -848,16 +848,16 @@
       "id": "maxmodel-en-hiblocks",
       "path_label": "$COLLAB/maxmodel-en-hiblocks",
       "classification": "canonical_project",
-      "migration_state": "inventory_only",
+      "migration_state": "verified",
       "project_home_ref": "$COLLAB/maxmodel-en-hiblocks",
-      "topology_profile": "non-git-project",
+      "topology_profile": "git-repository",
       "document_ref": "$COLLAB/maxmodel-en-hiblocks/README.md",
-      "repo_ref": null,
+      "repo_ref": "$COLLAB/maxmodel-en-hiblocks",
       "evidence": [
         "$COLLAB/maxmodel-en-hiblocks"
       ],
-      "last_verified_at": "2026-08-26",
-      "notes": "Quick project opening registered this canonical local home; Git, deployment, and external sync remain separate MVP actions."
+      "last_verified_at": "2026-09-08",
+      "notes": "Canonical Git repository initialized on branch main; Astro scaffold and project documentation verified."
     }
   ]
 }

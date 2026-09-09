@@ -2840,6 +2840,78 @@
     },
     {
       "id": "morrowise-fumadocs-manual-surface-v0",
+      "manual_predeploy": {
+        "version": "manual-predeploy-v1",
+        "spec_ref": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+        "approval": {
+          "status": "approved",
+          "approved_by": "Vincent",
+          "approved_at": "2026-09-10",
+          "evidence_refs": [
+            "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent：「可以開始進行」，續示「不是叫你進行嗎？」；依已確認本地範圍，不commit/push/部署。",
+            "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md"
+          ]
+        },
+        "writer": "Codex / 01a070ec-a18f-7931-b458-bb13b5fd6b68",
+        "independent_checker": "Kant / predeploy_independent_review",
+        "scope_paths": [
+          "$COLLAB/harness-mc/app/page.tsx",
+          "$COLLAB/harness-mc/app/docs/[[...slug]]/page.local.tsx",
+          "$COLLAB/harness-mc/app/docs/layout.local.tsx",
+          "$COLLAB/harness-mc/app/docs/providers.tsx",
+          "$COLLAB/harness-mc/app/docs/search-dialog.tsx",
+          "$COLLAB/harness-mc/app/docs/version-history.mjs",
+          "$COLLAB/harness-mc/app/docs/docs.css",
+          "$COLLAB/harness-mc/lib/morrowise-docs-source.ts",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-docs-surface.mjs",
+          "$COLLAB/harness-mc/scripts/build-morrowise-public-site.mjs",
+          "$COLLAB/harness-mc/scripts/serve-morrowise-public-site.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-public-site.mjs",
+          "$COLLAB/harness-mc/scripts/build-morrowise-local-docs.mjs",
+          "$COLLAB/harness-mc/package.json",
+          "$COLLAB/harness-mc/next.config.mjs",
+          "$COLLAB/harness-mc/Dockerfile",
+          "$COLLAB/harness-mc/docker/nginx.conf",
+          "$COLLAB/harness-mc/.dockerignore",
+          "$COLLAB/harness-mc/docs/morrowise/DEPLOYMENT.md"
+        ],
+        "control_paths": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+          "$COLLAB/harness-mc/milestones/harness-mc/tasks.json"
+        ],
+        "status": "local_partial_verified",
+        "evidence_refs": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md#1510-本地實作收據2026-09-10"
+        ],
+        "excluded_actions": [
+          "commit",
+          "push",
+          "Zeabur",
+          "Pages cutover",
+          "Heptabase",
+          "R5",
+          "login"
+        ],
+        "source_commit_status": "pending_separate_git_authorization",
+        "acceptance": {
+          "source_tests": "52/52",
+          "public_release_tests": "15/15",
+          "impact_tests": "25/25",
+          "surface_tests": "23/23",
+          "local_build": "exit_0",
+          "independent_candidate_review": "pass; Kant",
+          "public_inputs_fingerprint": "19fb6aa36b9a8a8a805c78bf5c7cbbdf4f35a94ec8ba27e7b272a54df78737e5",
+          "public_site_build": "not_run",
+          "browser_acceptance": "not_run",
+          "deployment_ready": false
+        },
+        "remaining": [
+          "MC public data project/field scope approval: current local inputs include 44 projects and runtime details",
+          "isolated public inputs/build, artifact safety and output alternation verification",
+          "trusted source commit-tree binding and separate Git authorization",
+          "Zeabur deployment and live acceptance: outside current execution"
+        ]
+      },
       "order_label": "MC-DOCS-01",
       "title": "MorroWise Fumadocs 說明書網站與六情境操作指南",
       "status": "in_progress",
@@ -3531,6 +3603,40 @@
                 "approved_at": "2026-09-08",
                 "evidence_refs": [
                   "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent：「依照臨時文件至 v3.1 進行第二階段」，並回覆「可以～」核准六章、本地實作、原規格及兩 task amendment與獨立驗收。"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "依v3.6接續同repo同站部署前本地實作；保留歷史與整案未完成條件。",
+            "recorded_at": "2026-09-10",
+            "evidence_refs": [
+              "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+              "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent：「可以開始進行」，續示「不是叫你進行嗎？」；依已確認本地範圍，不commit/push/部署。"
+            ],
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/document-source-registry-and-human-sync",
+                "harness-mc/morrowise-fumadocs-manual-surface-v0"
+              ],
+              "scope_comparison": {
+                "problem": "同一說明書治理與呈現，不新增task。",
+                "owner_source_of_truth": "JV-36管正文來源；MC-DOCS-01管呈現建置。",
+                "inputs_outputs": "唯一正文遷入harness-mc，公開生成輸入與同站MC/docs。",
+                "lifecycle_completion": "本地證據不替代Git/live/R5；status不變。"
+              },
+              "decision_reason": "amend原切片，不降低整案矩陣。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-10",
+                "evidence_refs": [
+                  "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68；Vincent：「可以開始進行」，續示「不是叫你進行嗎？」；依已確認本地範圍，不commit/push/部署。",
+                  "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md"
                 ]
               }
             }

@@ -1730,6 +1730,9 @@ export default function HomePage() {
                 </p>
               </div>
               <div className="flex flex-wrap gap-2 text-[11px] text-[var(--text-muted)]">
+                {process.env.NEXT_PUBLIC_MORROWISE_DOCS_ENABLED === "1" && (
+                  <Link href="/docs" className="rounded-full border border-[var(--border)] px-3 py-1">MorroWise 使用說明書 →</Link>
+                )}
                 <span className="rounded-full border border-[var(--border)] px-3 py-1">read-only homepage</span>
                 <span className="rounded-full border border-[var(--border)] px-3 py-1">source: morrowise-live-dashboard.json</span>
               </div>

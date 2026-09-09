@@ -20,7 +20,7 @@ const read = relative => fs.readFileSync(path.join(ROOT, relative), 'utf8');
 const registry = JSON.parse(read('system-workflow/registries/morrowise-document-sources.json'));
 const registrySchema = JSON.parse(read('system-workflow/schemas/morrowise-document-source.schema.json'));
 const bundleFile = path.join(ROOT, '.tmp/morrowise-docs/bundle.json');
-const guideFile = path.join(COLLAB_ROOT, 'notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md');
+const guideFile = path.join(ROOT, 'docs/morrowise/OPERATOR-GUIDE.md');
 const bundle = JSON.parse(fs.readFileSync(bundleFile, 'utf8'));
 const failures = [];
 const historyModule = path.join(ROOT, 'app/docs/version-history.mjs');

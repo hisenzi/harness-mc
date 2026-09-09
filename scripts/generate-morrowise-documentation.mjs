@@ -57,7 +57,8 @@ function validateRegistry(registry) {
     assertSafeRef(ref, 'source_allowlist');
     allowed.add(ref);
   }
-  if (!Array.isArray(registry.public_allowlist) || registry.public_allowlist.length !== 0) fail('public_release_not_authorized');
+  if (!Array.isArray(registry.public_allowlist)) fail('public_release_not_authorized');
+  if (registry.public_allowlist.length && (!registry.public_release_review || registry.public_release_review.source_fingerprint !== registry.records?.[0]?.source_refs?.[0]?.fingerprint)) fail('public_release_not_authorized:public_review');
   if (!Array.isArray(registry.records) || registry.records.length === 0) fail('registry_invalid:records');
   if (!Array.isArray(registry.human_navigation) || registry.human_navigation.length === 0) fail('registry_invalid:human_navigation');
   for (const field of ['capability_mappings', 'impact_reviews']) {
@@ -69,7 +70,8 @@ function validateRegistry(registry) {
     for (const field of ['id', 'system_id', 'title', 'owner', 'task_anchor', 'architecture_summary', 'human_summary', 'human_content_ref', 'summary_reviewed_by']) text(record[field], field);
     if (recordIds.has(record.id)) fail(`duplicate_record:${record.id}`);
     recordIds.add(record.id);
-    if (record.record_kind !== 'document' || record.system_id !== 'morrowise' || !LAYERS.has(record.architecture_layer) || !ROLES.has(record.document_role) || record.audience !== 'both' || !(v2 ? ['active', 'conditional'].includes(record.status) : record.status === 'active') || record.visibility !== 'local_only' || record.write_policy !== 'manual' || record.fingerprint_policy !== 'full_content' || record.summary_impact !== 'human') fail(`registry_invalid:${record.id}`);
+    if (record.record_kind !== 'document' || record.system_id !== 'morrowise' || !LAYERS.has(record.architecture_layer) || !ROLES.has(record.document_role) || record.audience !== 'both' || !(v2 ? ['active', 'conditional'].includes(record.status) : record.status === 'active') || !['local_only', 'public'].includes(record.visibility) || record.write_policy !== 'manual' || record.fingerprint_policy !== 'full_content' || record.summary_impact !== 'human') fail(`registry_invalid:${record.id}`);
+    if (record.visibility === 'public' && !registry.public_allowlist.includes(record.id)) fail(`public_release_not_authorized:${record.id}`);
     if (v2 && (record.document_role !== 'human_guide' || !CHAPTER_IDS.includes(record.chapter_id) || typeof record.document_version !== 'string' || !DOCUMENT_VERSION_RE.test(record.document_version))) fail(`registry_invalid:${record.id}:chapter_contract`);
     if (!Array.isArray(record.member_globs) || record.member_globs.length || !Array.isArray(record.generated_targets) || record.generated_targets.length) fail(`registry_invalid:${record.id}:targets`);
     if (!Array.isArray(record.verifiers) || record.verifiers.length === 0 || !Array.isArray(record.fingerprint_fields) || record.fingerprint_fields.length || !Array.isArray(record.supersedes) || record.supersedes.length || !Array.isArray(record.superseded_by) || record.superseded_by.length) fail(`registry_invalid:${record.id}:contract`);
@@ -219,7 +221,7 @@ function sourcePage(record, nav, body, sourceRef, sourceFingerprint) {
     kind: nav.kind,
     body,
     content_fingerprint: contentFingerprint,
-    visibility: record.visibility,
+    visibility: 'local_only', // Local consumers remain explicitly local, even for approved public sources.
     source_ref: sourceRef,
     source_fingerprint: sourceFingerprint,
     document_role: record.document_role,
@@ -293,6 +295,22 @@ function buildFromContext(registry, sourceCache) {
 export function createBundle({ registry, collabRoot = COLLAB_ROOT, mode = 'local' } = {}) {
   if (mode !== 'local') fail('public_release_not_authorized:local_only');
   return buildFromContext(registry, sourceContext(registry, collabRoot));
+}
+
+// Deterministic projection of a pinned body. This does not assert current external
+// capability freshness: the local impact gate owns that separate release step.
+export function createBundleFromBody({registry, body} = {}) {
+  validateRegistry(registry);
+  if (typeof body !== 'string') fail('source_missing:body');
+  const normalized = normalize(body);
+  if (registry.source_allowlist.length !== 1) fail('source_body_count');
+  const ref = registry.source_allowlist[0];
+  for (const record of registry.records) {
+    if (record.source_refs[0].path !== ref || record.human_content_ref !== ref) fail('source_body_ref');
+    if (record.source_refs[0].fingerprint !== digest(normalized) || record.summary_reviewed_source_fingerprint !== digest(normalized)) fail('source_fingerprint_mismatch');
+  }
+  validateCorpus(normalized, registry);
+  return buildFromContext(registry, new Map([[ref, {body: normalized}]]));
 }
 
 export function validateBundle(bundle, { registry, collabRoot = COLLAB_ROOT, mode = 'local' } = {}) {

@@ -1,7 +1,7 @@
 {
   "registry_id": "morrowise-api-cli-mcp-capability-registry.v0",
   "task_id": "api-cli-mcp-capability-registry-v0",
-  "updated_at": "2026-09-05",
+  "updated_at": "2026-09-06",
   "status": "formal_registry",
   "purpose": "Track API / CLI / MCP capabilities as verifiable MorroWise system components with update history, boundaries, owner tasks, and next actions.",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
@@ -639,7 +639,7 @@
       "next_action": {
         "type": "verify",
         "task_id": "morrowise-manual-live-sync",
-        "description": "Run controlled live E2E verification upon Vincent explicit authorization (Phase 3)."
+        "description": "Complete canonical A01/A14 verification and Git history/C1 remediation before promoting this capability to ready."
       },
       "history": [
         {
@@ -651,6 +651,36 @@
           "evidence_ref": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
           "actor_or_task": "morrowise-manual-live-sync",
           "next_action": "Execute Phase 3 controlled live E2E verification upon explicit authorization."
+        },
+        {
+          "date": "2026-09-05",
+          "event_type": "live_initialization_blocked",
+          "from_state": "prototype",
+          "to_state": "prototype",
+          "reason": "Live initialization established contentMd5 79cd3b77da9f0cb06e29e68fcbdd24c2 as an initialized-but-blocked baseline. It did not satisfy the complete canonical acceptance contract and must not be treated as full live E2E verification.",
+          "evidence_ref": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+          "actor_or_task": "morrowise-manual-live-sync",
+          "next_action": "Complete canonical acceptance and reproducibility verification before any ready promotion."
+        },
+        {
+          "date": "2026-09-06",
+          "event_type": "verification_reopened",
+          "from_state": "prototype",
+          "to_state": "prototype",
+          "reason": "Read-only live inspection found card 76fcfdca-251c-412f-898c-24512e6ea144 at contentMd5 531cddc9571d7c93f78c0161ac04f3f6 with no observed structural or identifier drift. Canonical A01/A14 acceptance, strict safety gates and test reproducibility, and Git history remediation remain incomplete.",
+          "evidence_ref": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+          "actor_or_task": "morrowise-manual-live-sync",
+          "next_action": "Verify canonical A01/A14, strict safety gates and test reproducibility, and Git history remediation before any ready promotion."
+        },
+        {
+          "date": "2026-09-06",
+          "event_type": "local_adapter_verifier_passed",
+          "from_state": "prototype",
+          "to_state": "prototype",
+          "reason": "The current implementation and sanitized offline verifier passed 17/17 in both the default environment and a clean external backup root. Verified cases include repeated/conflicting mode rejection, canonical-source enforcement for live-card modes, independent CLI read/save call-ledger assertions, source parity, supported CLI version, reserved/nested/malformed marker rejection, strict conflict classification, backup permissions, bounded timeout reconciliation, and post-fetch identity, MD5, marker, outside-AST, and managed-region invariants. A final read-only live --check --json returned exit 0, synced true, hasChange false, and contentMd5 531cddc9571d7c93f78c0161ac04f3f6. This is local verifier evidence only; no live apply or save was performed, and canonical A01/A14 plus C1/history remain incomplete.",
+          "evidence_ref": "$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md",
+          "actor_or_task": "morrowise-manual-live-sync",
+          "next_action": "Complete canonical A01/A14 verification and Git history/C1 remediation before any ready promotion."
         }
       ]
     }

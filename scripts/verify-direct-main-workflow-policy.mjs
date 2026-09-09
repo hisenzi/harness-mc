@@ -99,11 +99,49 @@ assert(
   ),
   "JV-37 acceptance must encode the solo direct-main route",
 );
-assert.match(
-  read(notyetRoot, "000_Agent/CORE.md"),
-  /單人循序工作預設留在目前 checked-out `main`/,
-  "CORE must expose the direct-main default",
-);
+const core = read(notyetRoot, "000_Agent/CORE.md");
+function verifyCoreGitEntry(source) {
+  const entry = source.match(/## Git 工作流\n([\s\S]*?)\n### Project Topology Operation Gate/)?.[1];
+  assert(entry, "CORE must expose a bounded Git entry");
+  const routes = [
+    ["只讀查詢", "harness-mc/system-workflow/docs/specs/repo-coordination-gate.md"],
+    ["首次準備修改", "notyet-harness/000_Agent/skills/multi-machine-repo-coordination/SKILL.md"],
+    ["階段驗收後準備 commit", "notyet-harness/000_Agent/skills/worktree-commit/SKILL.md"],
+    ["夜間", "notyet-harness/000_Agent/skills/cc-push/SKILL.md"],
+    ["具名", "harness-mc/system-workflow/docs/specs/morrowise-workbook-flow.md"],
+    ["Quick bootstrap", "notyet-harness/000_Agent/skills/project-init/SKILL.md"],
+    ["非 Git 目標", "notyet-harness/000_Agent/skills/write-temporary-doc/SKILL.md"],
+  ];
+  for (const [trigger, target] of routes) {
+    const row = entry.split("\n").find((line) => line.startsWith("|") && line.split("|")[1].includes(trigger));
+    assert(row?.includes(`$COLLAB/${target}`), `CORE route missing: ${trigger} -> ${target}`);
+    assert(fs.statSync(path.join(root, "..", target)).isFile(), `CORE target missing: ${target}`);
+  }
+  assert.match(entry, /Quick 與具名工作本優先/, "source selection must precede ordinary Repo Ready");
+  assert.match(entry, /寫入 Git repo 時回到上述修改入口/, "document type must not exempt Git repository writes");
+  assert.match(entry, /MW-GIT-AUTH-01/, "CORE must route isolation authorization to the canonical contract");
+  for (const forbidden of [/```/, /git\s+(?:push|commit|fetch|diff|reset)\b/, /origin\/main\.\.HEAD/, /committed_local\s*->/, /ahead\s*\/\s*behind/, /dirty classifier/i, /\/Users\//]) {
+    assert.doesNotMatch(entry, forbidden, `CORE Git entry repeats implementation rules: ${forbidden}`);
+  }
+  for (const section of [
+    source.match(/### 路徑檢查（commit 前必跑）\n([\s\S]*?)\n## 協作節奏/)?.[1],
+    source.match(/### Task 完成紀錄（commit → tasks.json 同步）\n([\s\S]*?)\n## 安全原則/)?.[1],
+  ]) {
+    assert(section?.includes("$COLLAB/notyet-harness/000_Agent/skills/worktree-commit/SKILL.md"), "commit checks and closeout must route to worktree-commit");
+    assert.doesNotMatch(section, /```|git\s+(?:diff|commit|push)\b|"status"\s*:\s*"completed"/, "commit subsections must not duplicate commands or completion templates");
+  }
+}
+verifyCoreGitEntry(core);
+// Mutate strings in memory only: broken routing and copied policy must fail.
+for (const invalid of [
+  core.replaceAll("skills/cc-push/SKILL.md", "skills/missing-push/SKILL.md"),
+  core.replaceAll("skills/project-init/SKILL.md", "skills/missing-init/SKILL.md"),
+  core.replace("### Project Topology Operation Gate", "git push origin main\n\n### Project Topology Operation Gate"),
+  core.replace("### Project Topology Operation Gate", "committed_local -> remote_synced\n\n### Project Topology Operation Gate"),
+  core.replace("## 安全原則", '"status": "completed"\n\n## 安全原則'),
+]) {
+  assert.throws(() => verifyCoreGitEntry(invalid), "invalid CORE routing must be rejected");
+}
 assert.match(
   spec,
   /committed_local\s*->\s*commit_reviewed\s*->\s*integrated_main\s*->\s*delivery_verified\s*->\s*canonical_applied\s*->\s*closeout_remote_synced\s*->\s*residual_zero\s*->\s*task_completed/,

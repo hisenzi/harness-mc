@@ -1,6 +1,6 @@
 # MorroWise 操作指南
 
-文件集版本：**v0.4.0** · 更新日期：2026-09-10 · 狀態：六情境公開候選，尚未提交或部署；各章版本獨立編號
+文件集版本：**v0.5.0** · 更新日期：2026-09-10 · 狀態：六情境公開候選，尚未提交或部署；各章版本獨立編號
 
 > Status: public release candidate；not deployed
 > Owner: Vincent
@@ -543,11 +543,11 @@ canonical task 已有 acceptance_matrix 時，從當前來源解析完整 ID 集
 <!-- chapter:start delivery -->
 # 版本交付與接續：本機完成和送到遠端分開看
 
-文件版本：**v0.4.0** · 更新日期：2026-09-10 · 狀態：公開候選（未部署）
+文件版本：**v0.5.0** · 更新日期：2026-09-10 · 狀態：公開候選（未部署）
 
 > 文件識別碼：operator-guide-delivery；章節鍵：delivery
 > 內容 owner：Vincent／JV-36；能力 owner：JV-32 與原交付 task
-> 適用版本：worktree-commit v2.8、cc-push v2.3；不改 MW-GIT-AUTH-01 或原 done condition
+> 適用版本：worktree-commit v2.8、cc-push v2.3；local-c1-commit 已定案（2026-09-10）；不改 MW-GIT-AUTH-01 或原 done condition
 
 ## 這項能力能做什麼？
 
@@ -596,6 +596,60 @@ git -C "$COLLAB/harness-mc" diff --cached --stat
 
 實際 staging／commit／push 命令與鎖程序依當前 worktree-commit／cc-push；不在本章複製成另一份 Git 政策。
 
+## 本機階段 commit（local-c1-commit）
+
+已驗收的單一 task scope，可用 `local-c1-commit` 建立精確的本機 commit receipt。這是 `worktree-commit` 的 `--local-commit` 入口，不是一般 commit 的替代品。
+
+### 使用條件
+
+- 該 task 的精確 scope、ownership 與 4C 檢查已完成。
+- 指定 verifier 已通過，且結果可重跑。
+- 不得把他方 staged、untracked 或中央 registry 的變更納入同一 C1。
+
+### CLI 操作
+
+```bash
+node "$COLLAB/harness-mc/scripts/repo-coordination-runtime.mjs" local-c1-commit \
+  --repo "$REPO" \
+  --event "<stable-event-id>" \
+  --project "<project-id>" \
+  --task "<task-id>" \
+  --session "<session-id>" \
+  --actor "<actor>" \
+  --message "<approved conventional-commit message>" \
+  --scope-path "<exact-owned-path>" \
+  --verifier-id "<verifier-id>" \
+  --verifier-command "<command>" \
+  --verifier-arg "<argument>"
+```
+
+`--scope-path` 只接受本 task ownership 內的精確路徑，可多次指定。runtime 在 `git add → commit → receipt` 短區段取得 repo-local lock，完成後立即釋放。commit 使用 `git commit --only -- <scopePaths>`，確保他方已 staged 檔案不被吸收（LC-02 防護）。
+
+### receipt 內容
+
+receipt 附在本機 `refs/notes/jv37-local-c1`，必含：event、project、task、session、actor、base SHA、C1 SHA、精確 paths、verifier 結果、時間戳，狀態為 `committed_local` 且 `pending_delivery=true`。
+
+### `local_commit_pending_push` 生命週期
+
+```text
+本機 task completion：local verification → local review/commit → canonical task_completed
+遠端 delivery：      pending_push → pushed → remote_verified
+```
+
+- **task_completed**：已滿足 task 的 done condition，且本機驗收、完整 verifier 與 completion evidence 可重跑。對本機完成的 task，這就是完成。
+- **pending_push**：只表示尚未依 Vincent 的批次授權交付到遠端；不是功能缺口，也不得把 completed task 降回 in_progress。
+- **remote_verified**：只允許宣稱「已交付／已上線」時使用。
+
+兩者是獨立狀態，不可互相冒充。task 標完成不需要先 push；delivery 標 pending 不否定 task completion。
+
+### 查詢待交付項目
+
+```bash
+node "$COLLAB/harness-mc/scripts/repo-coordination-runtime.mjs" local-c1-pending --repo "$REPO"
+```
+
+此模式禁止自行 `fetch`、`push`、remote comparison、C2 或 task event apply。
+
 ## 必要檔案與 ownership
 
 | 檔案／用途 | Owner 與讀寫邊界 |
@@ -617,19 +671,45 @@ git -C "$COLLAB/harness-mc" diff --cached --stat
 
 ## 版本與維護
 
-1. 文件 ID `operator-guide-delivery`、目前 v0.4.0；D-01–D-04 是本章維護／情境引用，不另配 task 編號。
+1. 文件 ID `operator-guide-delivery`、目前 v0.5.0；D-01–D-04 是本章維護／情境引用，不另配 task 編號。
 2. worktree-commit、cc-push 或 closeout contract 改動時，作者核對兩條路由、授權與 first unmet state；具名 reviewer 查實際 diff，記更新／no-impact。
 3. 新版本正文與歷史一起更新；指南證據回 JV-36，實際 Git／交付證據回原 task。本文不存其他專案的 commit 清單或 runtime 私人資料。
 
 
-### 夜間批次交付的範圍
+### 夜間批次交付的範圍與隔離原則
 
-每個 repo 先核准並審查連續的 `origin/main..HEAD` commit chain、audited tip、逐筆 owner 與 exact scope。未知或未核准的 interleaved commit 只阻擋該 repo；其他已核准且 ready 的 repo 可繼續正常 push。C2 只依原 task 的必要 closeout 契約，不因批次而自造；本地完成與遠端驗證分開。完整命令與規則薄連結回原 `cc-push`，不在本文重建政策。
+多個 session 或多個 task 於日間完成本機 C1 後，夜間由 Vincent 集中呼叫 `cc-push` 或批次交付流程進行推送。
+
+#### 1. 逐 repo 審查與阻擋隔離
+每個 repo 先核准並審查連續的 `origin/main..HEAD` commit chain、audited tip、逐筆 owner 與 exact scope。
+- **隔離原則**：若某單一 repo 出現未知／未核准的 interleaved commit、衝突或 lock 阻擋（`needs_push` 但非 clean ready），該 repo 立即被**單獨隔離並阻擋（Blocked）**。
+- **其餘暢通**：其他審查通過且狀態為 ready 的 repos 繼續正常執行 push，不受被阻擋 repo 拖累。
+
+#### 2. LC-02 外層暫存區防吸收機制
+在執行任何交付前，必須確保本機 C1 提交已嚴格依 `--scope-path` 限制範圍。任何外部工作區檔案（foreign staged 或 untracked）均不得被當前 task 的 commit 吸收或覆蓋，維持工作樹乾淨隔離。
+
+#### 3. 批次交付報告格式
+批次推送完成後，必須產出結構化之逐 repo 狀態報告，清晰呈現哪些已送出、哪些被阻擋：
+
+```text
+[Batch Delivery Report] 2026-09-10 23:00
+- notyet-harness: PUSHED (main: abc1234..def5678, 2 commits)
+- harness-mc:     BLOCKED (reason: unapproved commit by external session, local tip: 7890abc)
+- hisenzi-site:   SKIPPED (clean, no pending commits)
+```
+
+C2 只依原 task 的必要 closeout 契約，不因批次而自造；本地完成與遠端驗證分開。完整命令與規則薄連結回原 `cc-push`，不在本文重建政策。
 
 ## 版本歷史
 
-### v0.4.0 — 2026-09-10｜同 repo 正文遷移與部署前接線
+### v0.5.0 — 2026-09-10｜local-c1 準入與夜間批次交付隔離
 
+- 補入 `--local-commit` CLI 參數規格與 `local_commit_pending_push` 生命週期。
+- 明確批次交付時單一 repo blocked 隔離原則、LC-02 外層暫存防吸收機制與結構化報告格式。
+- 更新交付維護版本至 v0.5.0。
+
+
+### v0.4.0 — 2026-09-10｜同 repo 正文遷移與部署前接線
 - 更新唯一正文定位與公開候選邊界；保留章節 ID、薄來源引用與所有歷史。
 - 接上 cc-push v2.3 的每 repo 批次範圍與 task-specific C2。
 
@@ -645,11 +725,11 @@ git -C "$COLLAB/harness-mc" diff --cached --stat
 <!-- chapter:start documentation -->
 # 文件更新與同步：能力變了，說明書也要接上
 
-文件版本：**v0.4.0** · 更新日期：2026-09-10 · 狀態：公開候選（未部署）
+文件版本：**v0.5.0** · 更新日期：2026-09-10 · 狀態：公開候選（未部署）
 
 > 文件識別碼：operator-guide-documentation；章節鍵：documentation
 > 內容／來源與生成 owner：Vincent／JV-36；網站 owner：MC-DOCS-01
-> 適用版本：manual-local-v2 本地六章契約；impact／changed-only 本地入口已實作，本輪完整驗收以原 task evidence 為準
+> 適用版本：manual-local-v2 本地六章契約；薄連結 Marker 自動同步已整合；impact／changed-only 本地入口已實作，本輪完整驗收以原 task evidence 為準
 
 ## 這項能力能做什麼？
 
@@ -707,6 +787,9 @@ canonical capability／規則／程式差異
 | `$COLLAB/harness-mc/app/docs/[[...slug]]/page.local.tsx`、`$COLLAB/harness-mc/app/docs/version-history.mjs`、`$COLLAB/harness-mc/lib/morrowise-docs-source.ts` | MC-DOCS-01；只有呈現契約受影響才改，不在 UI 另存正文 |
 | `$COLLAB/harness-mc/.tmp/morrowise-docs/bundle.json`、`$COLLAB/harness-mc/.tmp/morrowise-docs/human/`、`$COLLAB/harness-mc/.tmp/morrowise-docs/site/` | generated-only；human/ 下固定 README.md、01-entry.md、02-rules.md、03-capabilities.md、04-runtime.md、05-governance.md；不寫 shared human/ 或 public/out |
 | `$COLLAB/notyet-harness/100_Todo/plan/2026-09-05-heptabase-morrowise-manual-sync-spec.md` | 本案規格 owner；只改核准範圍，原 task／規格不是第二份操作正文 |
+| `$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md` | Vincent／共享治理；架構導覽地圖正本，內部 Marker 區塊由腳本維護，嚴禁手寫長篇程式碼 |
+| `$COLLAB/notyet-harness/000_Agent/skills/SKILLS-INDEX.md` | 共享治理；52 skills 薄索引正本，技能清單 Marker 區塊由腳本自動同步 |
+| `$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json` | JV-29；子系統 Admission Record 正本，唯有通過審查方可標 promoted |
 
 ## 本地影響審查記錄
 
@@ -746,6 +829,59 @@ npm --prefix "$COLLAB/harness-mc" run docs:build:local
 
 任一 gate 失敗就停相關生成／呈現，回 source／review／generator owner；不使用忽略未知旗標的舊入口、也不停用 gate。部署未批准時止於本地產物，不能把這組命令當發布流程。
 
+## 系統優化與架構薄連結同步（Marker-based Sync）
+
+當 MorroWise 子系統完成能力優化、修復或新增時，除了更新操作正文與 Fumadocs 網站之外，還必須同步控制平面之架構導覽地圖（`ARCHITECTURE.md`）與技能索引（`SKILLS-INDEX.md`）。
+
+### 1. 「地圖不是倉庫」（Map is not a warehouse）原則
+`ARCHITECTURE.md` 是導向正本的「薄索引地圖」，絕不是實作細節的倉庫。
+- 嚴禁在 `ARCHITECTURE.md` 手寫詳細程式碼、長篇 SOP 或第二份 task 清單。
+- 架構文件的動態區塊必須由機械化腳本讀取正本 registry 自動填入標記區塊，人工只維護大綱與非動態說明。
+
+### 2. 核心 Marker 標記區塊三件組
+系統透過專屬 Marker 註解實現非破壞性的局部自動同步：
+1. **技能清單**：`$COLLAB/notyet-harness/000_Agent/skills/SKILLS-INDEX.md`
+   - 標記：`<!-- marker:skills-list:start -->` ... `<!-- marker:skills-list:end -->`
+   - 維護腳本：`python3 000_Agent/scripts/update-skills-index.py`
+2. **架構子系統清單**：`$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md`
+   - 標記：`<!-- marker:architecture-subsystems:start -->` ... `<!-- marker:architecture-subsystems:end -->`
+   - 維護腳本：`python3 000_Agent/scripts/sync-architecture-subsystems.py`
+   - 資料正本：`$COLLAB/harness-mc/system-workflow/registries/morrowise-architecture-subsystems.json`
+3. **架構當前狀態與拓撲 Inbox**：`$COLLAB/notyet-harness/000_Agent/ARCHITECTURE.md`
+   - 標記：`<!-- marker:architecture-current-state:start -->` ... `<!-- marker:architecture-current-state:end -->`
+   - 維護腳本：`python3 000_Agent/scripts/sync-architecture-current-state.py`
+
+### 3. 四組必備防漂移檢驗指令（--check）
+完成同步後，或於提交前，必須依序執行下列唯讀檢驗，確保無未提交漂移：
+
+```bash
+# 1. 檢驗子系統標記區塊是否同版
+python3 "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-subsystems.py" --check
+
+# 2. 檢驗當前狀態標記區塊是否同版
+python3 "$COLLAB/notyet-harness/000_Agent/scripts/sync-architecture-current-state.py" --check
+
+# 3. 檢驗技能索引清單是否同版
+python3 "$COLLAB/notyet-harness/000_Agent/scripts/update-skills-index.py" --check
+
+# 4. 系統脈搏綜合健康檢查
+npm --prefix "$COLLAB/harness-mc" run test:system-pulse
+```
+
+任一指令回傳非 0（Drift detected）即代表投影與正本不同版，禁止進行 Git 提交。
+
+### 4. 優化收尾六步閉環（Closeout Seam）
+子系統優化或 bug 修復完成後，Agent 必須執行標準六步收尾：
+
+| 步驟 | 動作對象 | 工具／指令 | 產物與預期 |
+|---|---|---|---|
+| **Step 1: 功能驗收** | 實作檔案與測試腳本 | `node scripts/verify-<name>.mjs` | 功能驗收通過，確認改動無 regression。 |
+| **Step 2: Admission 審核** | Architecture Registry | `morrowise-architecture-subsystems.json` | 若為 `promoted` 或既有 entry 邊界變更，更新其 Admission Record。 |
+| **Step 3: 標記區塊同步** | Markdown 人讀入口 | `sync-architecture-subsystems.py`<br>`update-skills-index.py` | 自動更新 `ARCHITECTURE.md` 與 `SKILLS-INDEX.md` 的 Marker 區塊。 |
+| **Step 4: 防漂移檢驗** | 4 組 `--check` 指令 | 上述四組 `--check` 命令 | 全部通過（exit code 0），確認 100% 同步。 |
+| **Step 5: Task 結案** | MC Task 正本 | `milestones/morrowise/tasks.json` | 填入 `status: completed`、`completed_at`、verifier 結果與 C1 SHA。 |
+| **Step 6: 本機 C1 提交** | Git 寫入區 | `local-c1-commit` | 建立本機 C1 receipt，delivery 維持 `pending_push`，等晚間集中 push。 |
+
 ## 本地預覽與發布邊界
 
 同一 harness-mc repo 的唯一正文經 registry／impact 審查，產生公開候選 release；正式站為同一 origin 的 `/`（MC）與 `/docs`（說明書）。本地 3001 保留開發用途；既有 Pages 在正式切換驗收前保留。公開方向已核准，不等於本機候選已部署。
@@ -775,12 +911,19 @@ Heptabase adapter 仍為 prototype；MANUAL 是另一薄入口，不能要求它
 
 ## 版本與維護
 
-1. 文件 ID `operator-guide-documentation`、目前 v0.4.0；M-01–M-05 是章內引用，實測仍沿原 DOC／WEB／JV36 IDs。
+1. 文件 ID `operator-guide-documentation`、目前 v0.5.0；M-01–M-05 是章內引用，實測仍沿原 DOC／WEB／JV36 IDs。
 2. 變更作者記 affected chapter、來源 diff、更新／no-impact、reviewer 與證據；generator 只能核證據完整及版本綁定，不替代 reviewer 判斷語意。
 3. 正文、章內維護版號、首筆歷史與 registry／bundle metadata 同版；runtime 啟用、Main SHA、部署 ID／URL 各自記錄，不從 v0.4.0 推定。
 4. 本地成果回原 JV-36／MC-DOCS-01；WEB／GitHub／Zeabur 未實跑就保留未完成，不為文件補漏擴做發布。
 
 ## 版本歷史
+
+### v0.5.0 — 2026-09-10｜架構薄連結標記同步與優化收尾閉環
+
+- 增補「系統優化與架構薄連結同步」專節，落實「地圖不是倉庫」原則。
+- 規範三大 Marker 標記區塊、四組 `--check` 防漂移檢驗指令及優化收尾六步閉環。
+- 更新文檔維護版本至 v0.5.0。
+
 
 ### v0.4.0 — 2026-09-10｜同 repo 正文遷移與部署前接線
 

@@ -56,6 +56,7 @@
     "test:commit-cleanup-plan": "node scripts/verify-morrowise-commit-cleanup-plan.mjs",
     "test:closeout-residual-ledger": "node scripts/verify-closeout-residual-ledger.mjs",
     "test:schedule-health": "node scripts/verify-schedule-health.mjs",
+    "test:schedule-liveness": "node scripts/verify-schedule-liveness.mjs",
     "test:system-pulse": "node scripts/verify-system-pulse.mjs",
     "test:notification-adapter-contract": "node scripts/verify-morrowise-notification-adapter-contract.mjs",
     "test:notification-outbox": "node scripts/verify-notification-outbox-contract.mjs",

@@ -8052,7 +8052,11 @@
     {
       "id": "trusted-heartbeat-runtime-v1",
       "title": "可信心跳 Runtime v1",
-      "status": "todo",
+      "status": "in_progress",
+      "commits": [
+        "b3cb89d"
+      ],
+      "note": "2026-09-12 部分實作，未完成。(1) 觸發層修復：三個 com.hisenzi.schedule.* job 自 2026-07-03 起每次 exit 126，根因為 plist 的 ProgramArguments[0] 是 /bin/bash，無法讀取位於受隱私保護使用者資料夾中的 $COLLAB；同機以 node 為執行體的 LaunchAgent（com.hisenzi.harness-mc、gold-observer）讀寫 $COLLAB 正常。新增 $COLLAB/notyet-harness/schedule/launchd-entry.mjs，install.sh 產生的 plist 改由 node 啟動既有 dispatch.sh；以唯讀臨時任務經 launchd kickstart 實測，dispatch 與其 bash 子行程皆可讀取 $COLLAB，run status=success，三個排程退出碼由 126 變為 0（notyet-harness 6c5fe7b）。(2) 新增 npm run test:schedule-liveness（harness-mc b3cb89d）：讀 schedule/runs/*.log 的 run header 與 tasks/*.yaml 的 cron，判定 live／stale／no_success_recorded，不再以檔案存在或 fixture 通過充當排程健康。尚缺：heartbeat read model 與 verify-trusted-heartbeat-runtime.mjs、declared／loaded／successful／freshness／degraded／next_action 的完整判定、以及自然觸發（非 kickstart）的成功證據，最早 2026-09-13 08:30 之後可取得。在取得自然觸發證據前不得標 completed。",
       "track": "runtime-delivery",
       "order_label": "MW-HEARTBEAT-V1",
       "priority": "high",
@@ -8403,6 +8407,43 @@
                 "approved_at": "2026-09-06",
                 "evidence_refs": [
                   "Vincent 2026-09-06 current session: 先把能力、架構、項目、功能先寫入指定計劃，完成後回寫 milestones/morrowise task，文件與 task 名稱或編號一致；本次僅規格與 task 契約，不含 runtime 實作或 Git 交付。"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 2026-09-12 核准加速本 task 並先標 in_progress。本輪完成觸發層修復與真實存活檢查，尚缺 heartbeat read model、verify-trusted-heartbeat-runtime.mjs 與自然觸發的成功證據，故不標 completed。",
+            "recorded_at": "2026-09-12",
+            "evidence_refs": [
+              "Vincent 2026-09-12 current session：「應加速 trusted-heartbeat-runtime-v1 完成」「可以先標 in_progress 並記上這五筆 commit」",
+              "notyet-harness 6c5fe7b：launchd 改以 node 啟動 dispatch，解除 exit 126",
+              "harness-mc b3cb89d：新增 npm run test:schedule-liveness",
+              "$COLLAB/notyet-harness/schedule/launchd-entry.mjs",
+              "$COLLAB/harness-mc/scripts/verify-schedule-liveness.mjs"
+            ],
+            "semantic_intake": {
+              "outcome": "amend",
+              "decision_reason": "本輪工作落在既有 trusted heartbeat runtime 的 scope 內：修復其依賴的觸發層，並補上以真實 run evidence 判定的存活檢查；不構成新 task，也不改變原 done condition，因此 amend 既有 task 並轉 in_progress，而非另開平行 task。",
+              "compared_task_refs": [
+                "morrowise/runtime-scheduler-v0",
+                "morrowise/system-pulse-schedule-task",
+                "morrowise/dual-machine-trigger-install"
+              ],
+              "scope_comparison": {
+                "problem": "本輪處理既有 scheduler 在本機無法被 launchd 觸發，以及沒有任何檢查會因排程停擺而變紅；不是新增排程或通知系統。",
+                "owner_source_of_truth": "scheduler 與 runs evidence 的正本仍在 $COLLAB/notyet-harness/schedule；本 task 只負責其上的 heartbeat 判定與 read model。",
+                "inputs_outputs": "輸入為既有 tasks/*.yaml 的 cron 與 runs/*.log 的 run header；本輪輸出為可執行的觸發路徑與 live／stale／no_success_recorded 判定，heartbeat read model 尚未產出。",
+                "lifecycle_completion": "completion 仍需自然觸發的成功證據與完整 read model／verifier，最早 2026-09-13 08:30 之後可取得。"
+              },
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-12",
+                "evidence_refs": [
+                  "Vincent 2026-09-12 current session：「可以先標 in_progress 並記上這五筆 commit」"
                 ]
               }
             }

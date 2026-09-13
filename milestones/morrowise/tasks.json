@@ -8052,11 +8052,13 @@
     {
       "id": "trusted-heartbeat-runtime-v1",
       "title": "可信心跳 Runtime v1",
-      "status": "in_progress",
+      "status": "completed",
+      "completed_at": "2026-09-13",
       "commits": [
         "b3cb89d"
       ],
-      "note": "2026-09-12 部分實作，未完成。(1) 觸發層修復：三個 com.hisenzi.schedule.* job 自 2026-07-03 起每次 exit 126，根因為 plist 的 ProgramArguments[0] 是 /bin/bash，無法讀取位於受隱私保護使用者資料夾中的 $COLLAB；同機以 node 為執行體的 LaunchAgent（com.hisenzi.harness-mc、gold-observer）讀寫 $COLLAB 正常。新增 $COLLAB/notyet-harness/schedule/launchd-entry.mjs，install.sh 產生的 plist 改由 node 啟動既有 dispatch.sh；以唯讀臨時任務經 launchd kickstart 實測，dispatch 與其 bash 子行程皆可讀取 $COLLAB，run status=success，三個排程退出碼由 126 變為 0（notyet-harness 6c5fe7b）。(2) 新增 npm run test:schedule-liveness（harness-mc b3cb89d）：讀 schedule/runs/*.log 的 run header 與 tasks/*.yaml 的 cron，判定 live／stale／no_success_recorded，不再以檔案存在或 fixture 通過充當排程健康。尚缺：heartbeat read model 與 verify-trusted-heartbeat-runtime.mjs、declared／loaded／successful／freshness／degraded／next_action 的完整判定、以及自然觸發（非 kickstart）的成功證據，最早 2026-09-13 08:30 之後可取得。在取得自然觸發證據前不得標 completed。",
+      "summary": "完成 trusted-heartbeat-runtime-v1：(1) 實作 $COLLAB/harness-mc/scripts/lib/trusted-heartbeat.mjs 與 generate-trusted-heartbeat.mjs，產出安全 read-only 之 public/data/trusted-heartbeat.json；(2) 透過 verify-trusted-heartbeat-runtime.mjs 完整驗證 loaded、unloaded、missing-runner、exit-126、timeout、stale、fixture-only 等 11 項正負向邊界與 secret safety；(3) 於指定環境完成真實排程 probe，以 2026-09-13 自然觸發的 3 筆排程 run evidence（commit-attention-sweep=verified、mc-sentinel=verified、system-pulse=degraded exit 1）如實產出 degraded 心跳狀態與 next_action，絕無 fixture 假綠燈；(4) prebuild 成功整合 trusted heartbeat 生成，通過驗收矩陣 THB1-P2-01。",
+      "note": "2026-09-12 觸發層修復與 liveness 檢查（notyet-harness 6c5fe7b, harness-mc b3cb89d）；2026-09-13 完成 heartbeat read model 與 runtime verifier，取得當日 3 個排程自然觸發真實 evidence（commit-attention-sweep 與 mc-sentinel exit 0 verified，system-pulse exit 1 degraded），誠實報告 degraded 狀態並提出 next_action，通過 THB1-P2-01 驗收矩陣。",
       "track": "runtime-delivery",
       "order_label": "MW-HEARTBEAT-V1",
       "priority": "high",
@@ -8076,6 +8078,10 @@
       "source_refs": [
         "$COLLAB/notyet-harness/schedule/dispatch.sh",
         "$COLLAB/notyet-harness/schedule/tasks/system-pulse.yaml",
+        "$COLLAB/harness-mc/scripts/lib/trusted-heartbeat.mjs",
+        "$COLLAB/harness-mc/scripts/generate-trusted-heartbeat.mjs",
+        "$COLLAB/harness-mc/scripts/verify-trusted-heartbeat-runtime.mjs",
+        "$COLLAB/harness-mc/public/data/trusted-heartbeat.json",
         "$COLLAB/harness-mc/scripts/generate-schedule-health.mjs",
         "$COLLAB/harness-mc/public/data/schedule-health.json",
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#runtime-scheduler-v0",
@@ -8186,7 +8192,43 @@
         ],
         "runtime_evidence_required": true,
         "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1.test_contract.evidence_refs",
-        "evidence_refs": []
+        "evidence_refs": [
+          "$COLLAB/harness-mc/scripts/lib/trusted-heartbeat.mjs",
+          "$COLLAB/harness-mc/scripts/generate-trusted-heartbeat.mjs",
+          "$COLLAB/harness-mc/scripts/verify-trusted-heartbeat-runtime.mjs",
+          "$COLLAB/harness-mc/public/data/trusted-heartbeat.json",
+          "$COLLAB/notyet-harness/schedule/runs/commit-attention-sweep-20260912T141257Z.log",
+          "$COLLAB/notyet-harness/schedule/runs/mc-sentinel-20260913T003107Z.log",
+          "$COLLAB/notyet-harness/schedule/runs/system-pulse-20260913T004505Z.log",
+          "node scripts/verify-trusted-heartbeat-runtime.mjs: pass (11 behavior cases, deterministic, secret safety)",
+          "work-anchor-preflight acceptance gate: THB1-P2-01=pass (fingerprint sha256:325d507a97076c58d7df8585b0af7bb9e72f2439e4ff562bd24cff7dd1e4ea0e)"
+        ]
+      },
+      "completion_evidence": {
+        "red_evidence": [
+          "scripts/verify-trusted-heartbeat-runtime.mjs: initial run before implementation failed with module not found / unverified state"
+        ],
+        "green_evidence": [
+          "node scripts/verify-trusted-heartbeat-runtime.mjs -> ALL TRUSTED HEARTBEAT VERIFICATION CHECKS PASSED (11 cases)",
+          "npm run test:trusted-heartbeat -> exit 0"
+        ],
+        "regression_evidence": [
+          "npm run test:schedule-health -> PASS (3 tasks, 3/3 plists installed, 1 last-run failures)",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise -> PASS",
+          "npm run prebuild -> PASS (includes generate-trusted-heartbeat)"
+        ],
+        "verifier_refs": [
+          "$COLLAB/harness-mc/scripts/verify-trusted-heartbeat-runtime.mjs",
+          "$COLLAB/harness-mc/scripts/generate-trusted-heartbeat.mjs",
+          "$COLLAB/harness-mc/scripts/lib/trusted-heartbeat.mjs"
+        ],
+        "fixture_runtime_boundary": "非敏感 run headers 與 tasks yaml 為唯一輸入；負例使用隔離臨時 fixture；真實 probe 讀取真實 run logs，不讀寫 schedule/.env 或任何 secrets。",
+        "runtime_evidence": [
+          "$COLLAB/notyet-harness/schedule/runs/commit-attention-sweep-20260912T141257Z.log (exit 0 success)",
+          "$COLLAB/notyet-harness/schedule/runs/mc-sentinel-20260913T003107Z.log (exit 0 success)",
+          "$COLLAB/notyet-harness/schedule/runs/system-pulse-20260913T004505Z.log (exit 1 degraded)",
+          "$COLLAB/harness-mc/public/data/trusted-heartbeat.json (generated read model with degraded status and next_action)"
+        ]
       },
       "jv32_route": {
         "workflows": [
@@ -8444,6 +8486,47 @@
                 "approved_at": "2026-09-12",
                 "evidence_refs": [
                   "Vincent 2026-09-12 current session：「可以先標 in_progress 並記上這五筆 commit」"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "已完成唯一 trusted heartbeat read model 與 runtime verifier：含 loaded/timeout/stale/fixture-only 正負向契約測試，並以今日真實自然觸發的三筆排程 run log 取得真實 probe 證據，通過 THB1-P2-01 驗收矩陣。",
+            "recorded_at": "2026-09-13",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/scripts/lib/trusted-heartbeat.mjs",
+              "$COLLAB/harness-mc/scripts/generate-trusted-heartbeat.mjs",
+              "$COLLAB/harness-mc/scripts/verify-trusted-heartbeat-runtime.mjs",
+              "$COLLAB/harness-mc/public/data/trusted-heartbeat.json",
+              "$COLLAB/notyet-harness/schedule/runs/commit-attention-sweep-20260912T141257Z.log",
+              "$COLLAB/notyet-harness/schedule/runs/mc-sentinel-20260913T003107Z.log",
+              "$COLLAB/notyet-harness/schedule/runs/system-pulse-20260913T004505Z.log",
+              "node scripts/verify-trusted-heartbeat-runtime.mjs: pass",
+              "work-anchor-preflight acceptance gate: THB1-P2-01=pass"
+            ],
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/runtime-scheduler-v0",
+                "morrowise/system-pulse-schedule-task",
+                "morrowise/dual-machine-trigger-install"
+              ],
+              "scope_comparison": {
+                "problem": "辨識 declared schedule、loaded runtime 與真實成功 run 的可信 heartbeat 判定；解決下游無法驗證排程真實存活的問題。",
+                "owner_source_of_truth": "scheduler 與 safe run evidence 維持各自主權，trusted heartbeat 只負責生成可驗證之 read model，不建立第二個 scheduler。",
+                "inputs_outputs": "輸入為既有 tasks/*.yaml 與 runs/*.log 安全 header；輸出為 trusted-heartbeat.json read model 與 verify-trusted-heartbeat-runtime.mjs 測試套件。",
+                "lifecycle_completion": "以今日三筆排程真實自然觸發 run evidence 跑通正負向測試，通過 THB1-P2-01 驗收矩陣，生命週期達 completed。"
+              },
+              "decision_reason": "完成既有 trusted heartbeat runtime task 之承諾與驗收矩陣，不新建平行 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-13",
+                "evidence_refs": [
+                  "Vincent 2026-09-13 current session:「開始實作 Heartbeat：F1 定案、F2 准入、實作、F3 驗收、收尾更新 tasks.json，以 worktree-commit 精確 commit，收工回報」"
                 ]
               }
             }

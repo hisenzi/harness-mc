@@ -8582,7 +8582,7 @@
       "title": "行動優先級唯讀模型 v2",
       "status": "completed",
       "completed_at": "2026-09-13",
-      "summary": "完成 action-priority-read-model-v2：(1) 實作 $COLLAB/harness-mc/scripts/lib/action-priority.mjs 與 generate-action-priority.mjs，生成 public/data/action-priority.json 唯讀模型；(2) 透過 verify-action-priority-read-model.mjs 完整驗證 12 項行為契約（terminal 狀態排除、依賴阻擋、加權計分、洗牌確定性、tie-breaker 排序、Reality Tax 繼承追溯）；(3) 解決 Telegram 早報純量計數雜訊問題，產出唯一確定性的 eligible/blocked/suppressed 清單與 top focus action；(4) prebuild 成功整合 generate:action-priority，通過 APV2-P2-01 驗收矩陣。",
+      "summary": "完成 action-priority-read-model-v2：(1) 實作 $COLLAB/harness-mc/scripts/lib/action-priority.mjs 與 generate-action-priority.mjs，生成 public/data/action-priority.json 唯讀模型；(2) 透過 verify-action-priority-read-model.mjs 完整驗證 12 項行為契約（terminal 狀態排除、依賴阻擋、加權計分、洗牌確定性、tie-breaker 排序、Reality Tax 繼承追溯）；(3) 產出晨報可用的唯一確定性 eligible/blocked/suppressed 清單與 top focus action（尚未接上 Telegram 推送，推送屬 morrowise-live-decision-loop-v1 後續）；(4) prebuild 成功整合 generate:action-priority，通過 APV2-P2-01 驗收矩陣；(5) 2026-09-13 CC 驗收修正：done／fixed 與 completed 同樣視為結案並滿足依賴，取代關係改由 tasks.json 的 replaces_task_refs／replacement_task_id 動態讀取，verifier 改為規則不變量斷言且輸出至暫存目錄。",
       "track": "governance",
       "order_label": "MW-PRIORITY-V2",
       "priority": "high",
@@ -9106,6 +9106,39 @@
                 "work-anchor-preflight acceptance gate: APV2-P2-01=pass"
               ]
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "completed",
+            "to_status": "completed",
+            "reason": "CC 獨立驗收修正：done／fixed 未被視為結案，造成 4 筆已結案 task 被列為 eligible、morrowise-product-promotion-gate 被誤判阻塞；取代關係原為寫死常數；summary 宣稱已解決 Telegram 晨報雜訊，但 sentinel-diff.mjs 未接上此模型。修正分類與動態取代關係，summary 改為如實描述推送尚未接上。",
+            "recorded_at": "2026-09-13",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/scripts/lib/action-priority.mjs",
+              "$COLLAB/harness-mc/scripts/verify-action-priority-read-model.mjs",
+              "node scripts/verify-action-priority-read-model.mjs: pass (93 tasks: 16 eligible, 10 blocked, 67 suppressed)"
+            ],
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/morrowise-live-decision-loop-v1"
+              ],
+              "scope_comparison": {
+                "problem": "同一 action priority 唯讀模型的分類正確性與完成紀錄準確性，不新增能力。",
+                "owner_source_of_truth": "tasks.json 保持任務正本；action-priority.json 為可重建唯讀模型。",
+                "inputs_outputs": "輸入與輸出不變；結案狀態集合對齊 validate-tasks.mjs 的 done／completed／fixed。",
+                "lifecycle_completion": "維持 completed；修正屬已完成 task 的缺陷修補。"
+              },
+              "decision_reason": "缺陷修補與紀錄更正，不開平行 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-13",
+                "evidence_refs": [
+                  "Vincent 2026-09-13 current session:「以下你完結」（CC 驗收待裁決 1–3）"
+                ]
+              }
+            }
           }
         ]
       },
@@ -9146,7 +9179,8 @@
     {
       "id": "morrowise-live-decision-loop-v1",
       "title": "MorroWise 每日決策迴圈 v1",
-      "status": "todo",
+      "status": "in_progress",
+      "summary": "進行中（2026-09-13 CC 驗收退回完成宣稱）：已實作 $COLLAB/harness-mc/scripts/lib/morrowise-live-decision.mjs、generate-morrowise-live-decision.mjs 與 verify-morrowise-live-decision-loop.mjs 並接入 prebuild，以 trusted-heartbeat 與 action-priority 為唯一輸入，輸出焦點任務、排程心跳警示（第 1 優先）、人工 next action 與 Reality Tax 取代繼承。尚未滿足 done condition：(1) Reality Tax 30 分鐘／24 小時檢查沒有機器可讀的 gate record 來源（協定紀錄在 task note／decision log／task proposal），目前如實輸出 not_evaluable；(2) 驗收要求的多 Agent／fresh-session 與 result_ref 下一輪消費驗證未執行；(3) brief_message 尚未接上 sentinel-diff.mjs 推送。",
       "track": "runtime-delivery",
       "order_label": "MW-DECISION-V1",
       "priority": "high",
@@ -9279,7 +9313,12 @@
         ],
         "runtime_evidence_required": true,
         "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-live-decision-loop-v1.test_contract.evidence_refs",
-        "evidence_refs": []
+        "evidence_refs": [
+          "$COLLAB/harness-mc/scripts/lib/morrowise-live-decision.mjs",
+          "$COLLAB/harness-mc/scripts/generate-morrowise-live-decision.mjs",
+          "$COLLAB/harness-mc/scripts/verify-morrowise-live-decision-loop.mjs",
+          "$COLLAB/harness-mc/public/data/morrowise-live-decision.json"
+        ]
       },
       "jv32_route": {
         "workflows": [
@@ -9509,6 +9548,40 @@
                 ]
               }
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "in_progress",
+            "reason": "Vincent 2026-09-13 核准「可以進行」；前置依賴 Action Priority v2 與 Trusted Heartbeat v1 已全數完成，正式啟動 morrowise-live-decision-loop-v1 實作與驗收（DDV1-P2-01）。",
+            "recorded_at": "2026-09-13",
+            "evidence_refs": [
+              "Vincent 2026-09-13 current session:「可以進行」",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#trusted-heartbeat-runtime-v1"
+            ],
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/action-priority-read-model-v2",
+                "morrowise/trusted-heartbeat-runtime-v1"
+              ],
+              "scope_comparison": {
+                "problem": "建立單一、唯讀且具證據支持之每日決策迴圈，整合心跳狀態與行動優先級，正式取代舊 Reality Tax 日檢。",
+                "owner_source_of_truth": "tasks.json 為任務正本；本 task 產出 morrowise-live-decision.json 唯讀模型，不回寫正本。",
+                "inputs_outputs": "輸入為 trusted-heartbeat.json 與 action-priority.json；輸出為 morrowise-live-decision.json 與 verify-morrowise-live-decision-loop.mjs。",
+                "lifecycle_completion": "由 todo 轉為 in_progress；依 DDV1-P2-01 驗收矩陣完成實作與回歸測試後結案。"
+              },
+              "decision_reason": "前置依賴已全數交付，依核准之範圍進入實作，不新增平行 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-13",
+                "evidence_refs": [
+                  "Vincent 2026-09-13 current session:「可以進行」"
+                ]
+              }
+            }
           }
         ]
       },
@@ -9538,12 +9611,12 @@
         "project_id": "morrowise",
         "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
         "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
-        "contribution": "把原 Daily 的來源與 feedback 接回唯一 state／handoff owner，維持 read-only 與原 upstream，不吸收 executor。",
+        "contribution": "以 action-priority-read-model-v2 與 trusted-heartbeat-runtime-v1 為唯一輸入，建立單一 MorroWise 每日決策唯讀迴圈，整合心跳與行動優先級，產出晨報所需結構化唯讀模型契約（尚未修改 sentinel-diff.mjs 串接推播）並取代舊 Reality Tax。",
         "evidence_plan": [
-          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-06-MorroWise-MVP-可行性計劃.md",
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-13-MorroWise-P3計畫與現況對照.md",
           "$COLLAB/harness-mc/milestones/morrowise/tasks.json#morrowise-live-decision-loop-v1.acceptance"
         ],
-        "reviewed_at": "2026-09-06"
+        "reviewed_at": "2026-09-13"
       },
       "external_refs": {
         "mvp_plan": {

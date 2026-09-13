@@ -16,6 +16,76 @@ export function evaluateHeartbeat(options = {}) {
   const schedulerRoot = path.resolve(options.schedulerRoot || defaultSchedulerRoot);
   const launchAgentsDir = path.resolve(options.launchAgentsDir || path.join(os.homedir(), "Library", "LaunchAgents"));
   const fixtureOnly = Boolean(options.fixtureOnly);
+  // Only an explicit CI environment may skip local scheduler checks. On a workstation a missing
+  // or unreadable scheduler root (moved path, macOS TCC denial — existsSync returns false on
+  // EACCES) must surface as blocked, never as a skipped check.
+  const ciEnvironment = options.ci ?? (process.env.CI === "true" || process.env.GITHUB_ACTIONS === "true");
+
+  if (ciEnvironment) {
+    const runtime = {
+      scheduler_root_ref: "$COLLAB/notyet-harness/schedule",
+      dispatch_present: false,
+      install_present: false,
+      tasks_dir_present: false,
+      runs_dir_present: false,
+      runners: [],
+      environment: "ci_headless",
+    };
+    const summary = {
+      tasks_total: 0,
+      declared_count: 0,
+      loaded_count: 0,
+      missing_plists: 0,
+      missing_runners: 0,
+      verified_count: 0,
+      degraded_count: 0,
+      blocked_count: 0,
+      fixture_only_count: 0,
+      natural_successes_count: 0,
+    };
+    return {
+      schema_version: "trusted-heartbeat.v1",
+      generated_at: generatedAt,
+      read_only: true,
+      source_of_truth: {
+        schedule_specs: "$COLLAB/notyet-harness/schedule/tasks/*.yaml",
+        runtime_scripts: "$COLLAB/notyet-harness/schedule/{dispatch.sh,install.sh,runners/*.sh}",
+        run_logs: "$COLLAB/notyet-harness/schedule/runs/*.log",
+        launchd_plists: "$HOME/Library/LaunchAgents/com.hisenzi.schedule.*.plist",
+      },
+      write_boundary: {
+        allowed: [
+          "read scheduler task specs",
+          "read scheduler run headers",
+          "check local plist presence",
+          "write generated trusted heartbeat read model",
+        ],
+        forbidden: [
+          "read schedule/.env",
+          "load launchd jobs",
+          "execute scheduled tasks",
+          "send notifications",
+          "modify task states",
+          "select weekly core",
+          "change review_date",
+          "extend due tasks",
+          "commit",
+          "push",
+        ],
+      },
+      stale_rule: "Regenerate after schedule task edits, scheduler runs, launchd install/load changes, or agent handoff.",
+      evaluation_mode: "ci_headless",
+      overall_status: "ci_headless",
+      runtime,
+      summary,
+      tasks: [],
+      next_action: {
+        type: "monitor",
+        target: "scheduler",
+        label: "Headless CI environment detected (no scheduler specs). Runtime heartbeat check skipped.",
+      },
+    };
+  }
 
   const runtime = evaluateRuntime(schedulerRoot);
   const tasks = readScheduleSpecs(schedulerRoot).map((spec) =>
@@ -290,11 +360,11 @@ export function calculatePreviousFireAt(cron, nowMs) {
   if (parts.length !== 5) return null;
   const [minute, hour, dom, month, dow] = parts;
 
-  // Standard daily: "<minute> <hour> * * *"
+  // Standard daily: "<minute> <hour> * * *" in the machine's local time zone, matching
+  // launchd StartCalendarInterval. A fixed zone would misjudge runs on a machine abroad.
   if (dom === "*" && month === "*" && dow === "*") {
     if (!/^\d+$/.test(minute) || !/^\d+$/.test(hour)) return null;
     const fire = new Date(nowMs);
-    fire.setSeconds(0, 0);
     fire.setHours(Number(hour), Number(minute), 0, 0);
     if (fire.getTime() > nowMs) {
       fire.setDate(fire.getDate() - 1);
@@ -334,6 +404,14 @@ function determineOverallStatus(tasks, evaluationMode) {
 }
 
 function determineNextAction(tasks, overallStatus, runtime) {
+  if (!runtime.tasks_dir_present) {
+    return {
+      type: "repair",
+      target: "scheduler-root",
+      label: "Scheduler tasks directory is missing or unreadable on this machine. Check the $COLLAB path and macOS file access (TCC); heartbeat cannot be trusted.",
+    };
+  }
+
   if (!runtime.dispatch_present || !runtime.install_present) {
     return {
       type: "task",

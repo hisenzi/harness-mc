@@ -8,6 +8,9 @@ const defaultTasksPath = path.join(mcRoot, "milestones", "morrowise", "tasks.jso
 const defaultHeartbeatPath = path.join(mcRoot, "public", "data", "trusted-heartbeat.json");
 const defaultOutPath = path.join(mcRoot, "public", "data", "action-priority.json");
 
+export const TERMINAL_CLOSED_SUCCESS_STATUSES = new Set(["done", "completed", "fixed"]);
+export const TERMINAL_SUPPRESSED_STATUSES = new Set(["done", "completed", "fixed", "archived", "cancelled"]);
+
 export function evaluateActionPriority(options = {}) {
   const generatedAt = options.generatedAt || new Date().toISOString();
   const asOf = options.asOf || todayInTaipei();
@@ -25,7 +28,7 @@ export function evaluateActionPriority(options = {}) {
   // Count active/todo dependents for priority weighting
   const dependentCounts = new Map();
   for (const t of rawTasks) {
-    if (t.status === "completed" || t.status === "cancelled" || t.status === "archived") continue;
+    if (TERMINAL_SUPPRESSED_STATUSES.has(t.status) || t.status === "deferred") continue;
     const deps = Array.isArray(t.dependencies) ? t.dependencies : [];
     for (const depId of deps) {
       dependentCounts.set(depId, (dependentCounts.get(depId) || 0) + 1);
@@ -37,8 +40,8 @@ export function evaluateActionPriority(options = {}) {
   const suppressedActions = [];
 
   for (const task of rawTasks) {
-    // 1. Terminal status suppression
-    if (["completed", "archived", "cancelled"].includes(task.status)) {
+    // 1. Terminal status suppression (done, completed, fixed, archived, cancelled)
+    if (TERMINAL_SUPPRESSED_STATUSES.has(task.status)) {
       suppressedActions.push({
         id: task.id,
         order_label: task.order_label || null,
@@ -74,7 +77,7 @@ export function evaluateActionPriority(options = {}) {
       const depTask = taskMap.get(depId);
       if (!depTask) {
         blockers.push(`missing_dependency_${depId}`);
-      } else if (depTask.status !== "completed") {
+      } else if (!TERMINAL_CLOSED_SUCCESS_STATUSES.has(depTask.status)) {
         blockers.push(`uncompleted_dependency_${depId}(status:${depTask.status})`);
       }
     }
@@ -86,7 +89,7 @@ export function evaluateActionPriority(options = {}) {
         const gateTask = taskMap.get(gateId);
         if (!gateTask) {
           blockers.push(`missing_gate_${gateId}`);
-        } else if (gateTask.status !== "completed") {
+        } else if (!TERMINAL_CLOSED_SUCCESS_STATUSES.has(gateTask.status)) {
           blockers.push(`uncompleted_gate_${gateId}(status:${gateTask.status})`);
         }
       }
@@ -97,7 +100,7 @@ export function evaluateActionPriority(options = {}) {
       blockers.push(`weekly_core_review_overdue(date:${task.review_date},as_of:${asOf})`);
     }
 
-    // Check runtime health dependency if applicable
+    // Check runtime health dependency if applicable (skip blocking in CI headless environment)
     if (task.track === "runtime-delivery" && heartbeat?.overall_status === "blocked") {
       blockers.push("runtime_heartbeat_blocked");
     }
@@ -154,17 +157,40 @@ export function evaluateActionPriority(options = {}) {
   // Sort suppressed actions for stable output
   suppressedActions.sort((a, b) => a.id.localeCompare(b.id));
 
-  const weeklyCoreTask = rawTasks.find((t) => t.weekly_core && t.status !== "completed");
+  const weeklyCoreTask = rawTasks.find((t) => t.weekly_core && !TERMINAL_SUPPRESSED_STATUSES.has(t.status));
   const focus = eligibleActions[0] || null;
 
-  const supersessions = [
-    {
-      legacy_task_id: "reality-tax-daily-review-task",
-      successor_task_id: "morrowise-live-decision-loop-v1",
-      status: "cancelled",
-      reason: "Reality Tax daily review cadence superseded by unified MorroWise live decision loop v1.",
-    },
-  ];
+  // Dynamic supersession scanning from canonical task relationships (replaces_task_refs / replacement_task_id)
+  const supersessionMap = new Map();
+  for (const t of rawTasks) {
+    if (Array.isArray(t.replaces_task_refs)) {
+      for (const ref of t.replaces_task_refs) {
+        const legacyTask = taskMap.get(ref);
+        const key = `${ref}::${t.id}`;
+        supersessionMap.set(key, {
+          legacy_task_id: ref,
+          successor_task_id: t.id,
+          status: legacyTask ? legacyTask.status : "unknown",
+          reason: t.summary || `${ref} superseded by ${t.id}`,
+        });
+      }
+    }
+    if (t.replacement_task_id) {
+      const key = `${t.id}::${t.replacement_task_id}`;
+      supersessionMap.set(key, {
+        legacy_task_id: t.id,
+        successor_task_id: t.replacement_task_id,
+        status: t.status,
+        reason: t.summary || `${t.id} replaced by ${t.replacement_task_id}`,
+      });
+    }
+  }
+
+  const supersessions = Array.from(supersessionMap.values()).sort((a, b) => {
+    const keyA = `${a.legacy_task_id}::${a.successor_task_id}`;
+    const keyB = `${b.legacy_task_id}::${b.successor_task_id}`;
+    return keyA.localeCompare(keyB);
+  });
 
   const nextAction = determineNextAction({ focus, blockedActions, weeklyCoreTask, asOf });
 

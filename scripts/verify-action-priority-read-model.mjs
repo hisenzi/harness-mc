@@ -25,6 +25,20 @@ const fixtureTasks = [
     dependencies: [],
   },
   {
+    id: "task-done",
+    title: "Done Task",
+    status: "done",
+    priority: "high",
+    dependencies: [],
+  },
+  {
+    id: "task-fixed",
+    title: "Fixed Task",
+    status: "fixed",
+    priority: "medium",
+    dependencies: [],
+  },
+  {
     id: "task-deferred",
     title: "Deferred Task",
     status: "deferred",
@@ -37,6 +51,14 @@ const fixtureTasks = [
     status: "cancelled",
     replacement_task_id: "task-daily-loop",
     dependencies: [],
+  },
+  {
+    id: "task-daily-loop",
+    title: "Daily Loop Successor",
+    status: "in_progress",
+    priority: "high",
+    replaces_task_refs: ["task-cancelled-legacy"],
+    dependencies: ["task-done"],
   },
   {
     id: "task-blocked-by-dep",
@@ -93,16 +115,18 @@ assert.equal(syntheticResult.read_only, true);
 assert.ok(syntheticResult.write_boundary.forbidden.includes("modify task state"));
 assert.ok(syntheticResult.write_boundary.forbidden.includes("modify tasks.json"));
 
-// Case 2: Suppression rules
+// Case 2: Suppression rules (completed, done, fixed, deferred, cancelled)
 const suppressedIds = syntheticResult.suppressed_actions.map((t) => t.id);
 assert.ok(suppressedIds.includes("task-completed"), "Completed task must be suppressed");
+assert.ok(suppressedIds.includes("task-done"), "Done task must be suppressed");
+assert.ok(suppressedIds.includes("task-fixed"), "Fixed task must be suppressed");
 assert.ok(suppressedIds.includes("task-deferred"), "Deferred task must be suppressed");
 assert.ok(suppressedIds.includes("task-cancelled-legacy"), "Cancelled task must be suppressed");
 
 const cancelledTask = syntheticResult.suppressed_actions.find((t) => t.id === "task-cancelled-legacy");
 assert.equal(cancelledTask.replacement_task_id, "task-daily-loop");
 
-// Case 3: Blocked rules
+// Case 3: Blocked rules & Done/Fixed dependency satisfaction
 const blockedMap = new Map(syntheticResult.blocked_actions.map((t) => [t.id, t]));
 assert.ok(blockedMap.has("task-blocked-by-dep"), "Task with uncompleted dep must be blocked");
 assert.ok(
@@ -116,9 +140,13 @@ assert.ok(
   "Blocker reason must name overdue review_date"
 );
 
+// Crucial: task-daily-loop depends on task-done. Since task-done is "done", task-daily-loop must NOT be blocked!
+assert.ok(!blockedMap.has("task-daily-loop"), "Task depending on done task must NOT be blocked");
+
 // Case 4: Eligible ranking & Top Focus
 const eligibleIds = syntheticResult.eligible_actions.map((t) => t.id);
 assert.ok(eligibleIds.includes("task-weekly-core-active"));
+assert.ok(eligibleIds.includes("task-daily-loop"), "task-daily-loop must be eligible");
 assert.ok(eligibleIds.includes("task-uncompleted-parent"));
 assert.ok(eligibleIds.includes("task-independent-todo"));
 
@@ -148,66 +176,97 @@ for (let i = 0; i < 5; i++) {
   );
 }
 
-// Case 7: Reality Tax Supersession Lineage
+// Case 7: Dynamic Supersession Lineage (replaces_task_refs & replacement_task_id)
 assert.ok(syntheticResult.supersessions.length > 0);
-const rtSupersession = syntheticResult.supersessions.find(
-  (s) => s.legacy_task_id === "reality-tax-daily-review-task"
+const fixtureSupersession = syntheticResult.supersessions.find(
+  (s) => s.legacy_task_id === "task-cancelled-legacy"
 );
-assert.ok(rtSupersession, "Must track reality-tax-daily-review-task supersession");
-assert.equal(rtSupersession.successor_task_id, "morrowise-live-decision-loop-v1");
+assert.ok(fixtureSupersession, "Must dynamically track task-cancelled-legacy supersession");
+assert.equal(fixtureSupersession.successor_task_id, "task-daily-loop");
 
 console.log("✔ Suite 1: Synthetic Fixtures & Algorithmic Contract Tests PASSED");
 
 // -------------------------------------------------------------
-// Suite 2: Real Environment Canonical Task Evaluation
+// Suite 2: Real Environment Canonical Task Evaluation (Temp Dir Isolation)
 // -------------------------------------------------------------
 console.log("\n=== Checking Real Environment Canonical Evaluation ===");
 
-const liveOutPath = path.join(mcRoot, "public", "data", "action-priority.json");
-const liveResult = generateActionPriority({
-  tasksPath: realTasksPath,
-  heartbeatPath: realHeartbeatPath,
-  asOf: asOfDate,
-  outPath: liveOutPath,
-  write: true,
-});
+const tmpOutDir = fs.mkdtempSync(path.join(os.tmpdir(), "action-priority-out."));
+const testOutPath = path.join(tmpOutDir, "action-priority.json");
 
-assert.equal(liveResult.schema_version, "action-priority.v2");
-assert.ok(liveResult.summary.total_tasks > 50, "Must load full canonical task list");
-assert.ok(liveResult.summary.eligible_count > 0, "Must identify eligible actions");
-assert.ok(liveResult.summary.blocked_count > 0, "Must identify blocked actions");
-assert.ok(liveResult.summary.suppressed_count > 0, "Must identify suppressed actions");
+try {
+  const liveResult = generateActionPriority({
+    tasksPath: realTasksPath,
+    heartbeatPath: realHeartbeatPath,
+    outPath: testOutPath,
+    write: true,
+  });
 
-// Verify that completed action-priority-read-model-v2 is safely suppressed
-const suppressedTask = liveResult.suppressed_actions.find(
-  (t) => t.id === "action-priority-read-model-v2"
-);
-assert.ok(suppressedTask, "action-priority-read-model-v2 must be suppressed after completion");
-assert.equal(suppressedTask.status, "completed");
+  assert.equal(liveResult.schema_version, "action-priority.v2");
+  assert.ok(liveResult.summary.total_tasks > 50, "Must load full canonical task list");
 
-// Verify that downstream task morrowise-live-decision-loop-v1 is unblocked and eligible
-const liveDecisionTask = liveResult.eligible_actions.find(
-  (t) => t.id === "morrowise-live-decision-loop-v1"
-);
-assert.ok(liveDecisionTask, "morrowise-live-decision-loop-v1 must become eligible once dependencies complete");
+  // Invariant: sum of categories equals total tasks
+  const sumTasks =
+    liveResult.summary.eligible_count +
+    liveResult.summary.blocked_count +
+    liveResult.summary.suppressed_count;
+  assert.equal(sumTasks, liveResult.summary.total_tasks, "Summary counts must sum up to total tasks");
 
-// Verify valid focus & next action
-assert.ok(liveResult.summary.top_focus_task, "Must pick a top focus task");
-assert.ok(liveResult.focus && liveResult.focus.task_id, "Focus must have a valid task_id");
-assert.ok(liveResult.next_action && liveResult.next_action.label, "Next action must have a label");
+  // Verify that all done tasks in canonical tasks.json are suppressed
+  for (const doneId of [
+    "v0-boundary-lineage-map",
+    "mc-morrowise-v0-card",
+    "notification-first-delivery",
+    "launchd-tcc-downloads-access",
+  ]) {
+    const task = liveResult.suppressed_actions.find((t) => t.id === doneId);
+    assert.ok(task, `${doneId} (status: done) must be suppressed in read model`);
+    assert.equal(task.status, "done");
+  }
 
-// Verify file written to disk
-assert.ok(fs.existsSync(liveOutPath), "public/data/action-priority.json must be written");
-const writtenData = JSON.parse(fs.readFileSync(liveOutPath, "utf8"));
-assert.equal(writtenData.schema_version, "action-priority.v2");
-assert.equal(writtenData.summary.top_focus_task, liveResult.summary.top_focus_task);
+  // Verify that morrowise-product-promotion-gate is NOT blocked by notification-first-delivery
+  const promoGateBlocked = liveResult.blocked_actions.find((t) => t.id === "morrowise-product-promotion-gate");
+  assert.ok(
+    !promoGateBlocked,
+    "morrowise-product-promotion-gate must NOT be blocked (notification-first-delivery dependency is done)"
+  );
+  const promoGateEligible = liveResult.eligible_actions.find((t) => t.id === "morrowise-product-promotion-gate");
+  assert.ok(promoGateEligible, "morrowise-product-promotion-gate must be eligible");
 
-console.log(`✔ Real Canonical Evaluation:`);
-console.log(`  - Total tasks:       ${liveResult.summary.total_tasks}`);
-console.log(`  - Eligible actions:  ${liveResult.summary.eligible_count}`);
-console.log(`  - Blocked actions:   ${liveResult.summary.blocked_count}`);
-console.log(`  - Suppressed:        ${liveResult.summary.suppressed_count}`);
-console.log(`  - Top focus task:    ${liveResult.summary.top_focus_task} (${liveResult.focus.order_label})`);
-console.log(`  - Next action label: ${liveResult.next_action.label}`);
+  // Verify that completed action-priority-read-model-v2 is safely suppressed
+  const suppressedTask = liveResult.suppressed_actions.find(
+    (t) => t.id === "action-priority-read-model-v2"
+  );
+  assert.ok(suppressedTask, "action-priority-read-model-v2 must be suppressed after completion");
+  assert.equal(suppressedTask.status, "completed");
+
+  // Verify dynamic Reality Tax supersession lineage from canonical tasks.json
+  const rtSupersession = liveResult.supersessions.find(
+    (s) => s.legacy_task_id === "reality-tax-daily-review-task"
+  );
+  assert.ok(rtSupersession, "Must dynamically find reality-tax-daily-review-task supersession");
+  assert.equal(rtSupersession.successor_task_id, "morrowise-live-decision-loop-v1");
+
+  // Verify valid focus & next action
+  assert.ok(liveResult.summary.top_focus_task, "Must pick a top focus task");
+  assert.ok(liveResult.focus && liveResult.focus.task_id, "Focus must have a valid task_id");
+  assert.ok(liveResult.next_action && liveResult.next_action.label, "Next action must have a label");
+
+  // Verify file written safely to temp destination
+  assert.ok(fs.existsSync(testOutPath), "Temp action-priority.json must be written");
+  const writtenData = JSON.parse(fs.readFileSync(testOutPath, "utf8"));
+  assert.equal(writtenData.schema_version, "action-priority.v2");
+  assert.equal(writtenData.summary.top_focus_task, liveResult.summary.top_focus_task);
+
+  console.log(`✔ Real Canonical Evaluation (Temp-Isolated):`);
+  console.log(`  - Total tasks:       ${liveResult.summary.total_tasks}`);
+  console.log(`  - Eligible actions:  ${liveResult.summary.eligible_count}`);
+  console.log(`  - Blocked actions:   ${liveResult.summary.blocked_count}`);
+  console.log(`  - Suppressed:        ${liveResult.summary.suppressed_count}`);
+  console.log(`  - Top focus task:    ${liveResult.summary.top_focus_task} (${liveResult.focus.order_label || liveResult.focus.task_id})`);
+  console.log(`  - Next action label: ${liveResult.next_action.label}`);
+} finally {
+  fs.rmSync(tmpOutDir, { recursive: true, force: true });
+}
 
 console.log("\nALL ACTION PRIORITY VERIFICATION CHECKS (APV2-P2-01) PASSED!");

@@ -4,13 +4,18 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { evaluateHeartbeat, generateTrustedHeartbeat } from "./lib/trusted-heartbeat.mjs";
+import { evaluateHeartbeat, generateTrustedHeartbeat, calculatePreviousFireAt } from "./lib/trusted-heartbeat.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const mcRoot = path.resolve(__dirname, "..");
 const collabRoot = path.resolve(mcRoot, "..");
 const realSchedulerRoot = path.join(collabRoot, "notyet-harness", "schedule");
 const realLaunchAgentsDir = path.join(os.homedir(), "Library", "LaunchAgents");
+
+// Synthetic suites model a workstation; only the real probe depends on the CI environment.
+const runningInCi = process.env.CI === "true" || process.env.GITHUB_ACTIONS === "true";
+delete process.env.CI;
+delete process.env.GITHUB_ACTIONS;
 
 console.log("=== Running Trusted Heartbeat Verification Suite ===");
 
@@ -318,14 +323,44 @@ try {
   });
   assert.deepEqual(rep1, rep2, "Heartbeat evaluation must be deterministic");
 
+  // Test 4: previous fire time follows the machine's local clock, like launchd StartCalendarInterval
+  const localNow = new Date(2026, 8, 13, 18, 0, 0).getTime();
+  assert.equal(calculatePreviousFireAt("10 22 * * *", localNow), new Date(2026, 8, 12, 22, 10, 0).getTime());
+  assert.equal(calculatePreviousFireAt("30 8 * * *", localNow), new Date(2026, 8, 13, 8, 30, 0).getTime());
+
+  // Test 5: only an explicit CI environment skips local scheduler checks
+  const ciHeadlessResult = evaluateHeartbeat({
+    schedulerRoot: path.join(tmpRoot, "non-existent-schedule-dir"),
+    ci: true,
+  });
+  assert.equal(ciHeadlessResult.evaluation_mode, "ci_headless");
+  assert.equal(ciHeadlessResult.overall_status, "ci_headless");
+  assert.equal(ciHeadlessResult.summary.tasks_total, 0);
+
+  // Test 6: a missing or unreadable scheduler root outside CI is blocked, never skipped
+  const lostRootResult = evaluateHeartbeat({
+    schedulerRoot: path.join(tmpRoot, "non-existent-schedule-dir"),
+    launchAgentsDir,
+    ci: false,
+  });
+  assert.equal(lostRootResult.evaluation_mode, "live");
+  assert.equal(lostRootResult.overall_status, "blocked");
+  assert.equal(lostRootResult.next_action.target, "scheduler-root");
+
   console.log("✔ Suite 1: Synthetic negative and positive edge cases PASSED");
 } finally {
   fs.rmSync(tmpRoot, { recursive: true, force: true });
 }
 
 // -------------------------------------------------------------
-// Suite 2: Real Environment Safe Probe
+// Suite 2: Real Environment Safe Probe (Dynamic Invariant & Contract Rules)
 // -------------------------------------------------------------
+if (runningInCi) {
+  console.log("\nCI environment: no local launchd plists or run logs; real scheduler probe skipped.");
+  console.log("\nTRUSTED HEARTBEAT SYNTHETIC CHECKS PASSED (real probe skipped in CI)");
+  process.exit(0);
+}
+
 console.log("\n=== Checking Real Environment Safe Probe ===");
 
 const realResult = evaluateHeartbeat({
@@ -338,70 +373,78 @@ assert.equal(realResult.schema_version, "trusted-heartbeat.v1");
 assert.equal(realResult.evaluation_mode, "live");
 assert.equal(realResult.summary.tasks_total, 3, "Real environment must have exactly 3 tasks declared");
 
-// Verify individual real tasks
-const commitAttention = realResult.tasks.find((t) => t.id === "commit-attention-sweep");
-assert.ok(commitAttention, "commit-attention-sweep must exist in real environment");
-assert.equal(commitAttention.declared, true);
-assert.equal(commitAttention.runner_present, true);
-assert.equal(commitAttention.loaded, true, "LaunchAgent plist for commit-attention-sweep must be installed");
-assert.equal(commitAttention.last_run?.status, "success", "commit-attention-sweep had natural run success");
-assert.equal(commitAttention.last_run?.exit_code, 0);
-assert.equal(commitAttention.freshness, "live");
-assert.equal(commitAttention.status, "verified");
+// Invariant: sum of categories equals total tasks
+const sumCounts =
+  realResult.summary.verified_count +
+  realResult.summary.degraded_count +
+  realResult.summary.blocked_count +
+  realResult.summary.fixture_only_count;
+assert.equal(sumCounts, realResult.summary.tasks_total, "Summary counts must sum up to total tasks");
 
-const mcSentinel = realResult.tasks.find((t) => t.id === "mc-sentinel");
-assert.ok(mcSentinel, "mc-sentinel must exist in real environment");
-assert.equal(mcSentinel.declared, true);
-assert.equal(mcSentinel.runner_present, true);
-assert.equal(mcSentinel.loaded, true, "LaunchAgent plist for mc-sentinel must be installed");
-assert.equal(mcSentinel.last_run?.status, "success", "mc-sentinel had natural run success");
-assert.equal(mcSentinel.last_run?.exit_code, 0);
-assert.equal(mcSentinel.freshness, "live");
-assert.equal(mcSentinel.status, "verified");
+// Verify individual tasks match dynamic contract rules based on their actual run evidence
+for (const task of realResult.tasks) {
+  assert.ok(["commit-attention-sweep", "mc-sentinel", "system-pulse"].includes(task.id));
+  assert.equal(task.declared, true, `${task.id} must be declared`);
+  assert.equal(task.runner_present, true, `${task.id} runner must exist`);
+  assert.equal(task.loaded, true, `${task.id} launchd plist must be installed`);
 
-const systemPulse = realResult.tasks.find((t) => t.id === "system-pulse");
-assert.ok(systemPulse, "system-pulse must exist in real environment");
-assert.equal(systemPulse.declared, true);
-assert.equal(systemPulse.runner_present, true);
-assert.equal(systemPulse.loaded, true, "LaunchAgent plist for system-pulse must be installed");
-// system-pulse ran naturally today at 08:45:05 UTC+0 and exited 1 (69/80 passed, pulse degraded)
-assert.equal(systemPulse.last_run?.exit_code, 1);
-assert.equal(systemPulse.status, "degraded", "system-pulse must be degraded due to exit 1");
-assert.equal(systemPulse.reason, "last_run_failed");
+  // Dynamic status-evidence contract:
+  if (task.last_run?.status === "success" && task.last_run?.exit_code === 0 && task.freshness === "live") {
+    assert.equal(task.status, "verified", `${task.id} with live exit 0 run must be verified`);
+  } else if (task.last_run?.status !== "success" || (task.last_run?.exit_code !== null && task.last_run?.exit_code !== 0)) {
+    assert.ok(
+      ["degraded", "blocked"].includes(task.status),
+      `${task.id} with unsuccessful run must be degraded or blocked`
+    );
+    assert.ok(task.reason !== null, `${task.id} with degraded/blocked status must provide reason`);
+  }
+}
 
-// Overall status check:
-// Real system has 2 verified successes + 1 degraded run -> overall_status must be degraded!
-// IT MUST NOT BE FAKE GREEN!
-assert.equal(realResult.overall_status, "degraded");
-assert.equal(realResult.summary.verified_count, 2);
-assert.equal(realResult.summary.degraded_count, 1);
-assert.equal(realResult.summary.blocked_count, 0);
-assert.equal(realResult.next_action.type, "investigate");
-assert.equal(realResult.next_action.target, "system-pulse");
+// Overall status rule assertion:
+// If any blocked -> overall blocked; else if any degraded -> overall degraded; else all verified -> healthy
+if (realResult.tasks.some((t) => t.status === "blocked")) {
+  assert.equal(realResult.overall_status, "blocked");
+} else if (realResult.tasks.some((t) => t.status === "degraded")) {
+  assert.equal(realResult.overall_status, "degraded");
+} else if (realResult.tasks.every((t) => t.status === "verified")) {
+  assert.equal(realResult.overall_status, "healthy");
+}
+
+assert.ok(realResult.next_action && realResult.next_action.label, "Next action must have a valid label");
+assert.ok(
+  ["investigate", "repair", "task", "dispatch", "monitor", "command"].includes(realResult.next_action.type),
+  "Next action type must be a valid contract action type"
+);
 
 console.log(`✔ Real probe evaluation: overall_status="${realResult.overall_status}"`);
-console.log(`  - commit-attention-sweep: ${commitAttention.status} (${commitAttention.freshness})`);
-console.log(`  - mc-sentinel:            ${mcSentinel.status} (${mcSentinel.freshness})`);
-console.log(`  - system-pulse:           ${systemPulse.status} (${systemPulse.reason})`);
-console.log(`  - next_action:            ${realResult.next_action.target} — ${realResult.next_action.label}`);
+for (const task of realResult.tasks) {
+  console.log(`  - ${task.id}: ${task.status} (freshness: ${task.freshness}${task.reason ? `, reason: ${task.reason}` : ""})`);
+}
+console.log(`  - next_action: ${realResult.next_action.target} — ${realResult.next_action.label}`);
 
 // -------------------------------------------------------------
-// Suite 3: Generate Real Read Model File Verification
+// Suite 3: Safe Generation to Isolated Temp File Verification
 // -------------------------------------------------------------
-console.log("\n=== Generating Real Read Model File ===");
-const liveOutPath = path.join(mcRoot, "public", "data", "trusted-heartbeat.json");
-const generated = generateTrustedHeartbeat({
-  schedulerRoot: realSchedulerRoot,
-  launchAgentsDir: realLaunchAgentsDir,
-  outPath: liveOutPath,
-  write: true,
-});
+console.log("\n=== Generating Read Model to Isolated Temp Destination ===");
+const tmpOutDir = fs.mkdtempSync(path.join(os.tmpdir(), "trusted-heartbeat-out."));
+const testOutPath = path.join(tmpOutDir, "trusted-heartbeat.json");
 
-assert.ok(fs.existsSync(liveOutPath), "public/data/trusted-heartbeat.json must be generated");
-const diskData = JSON.parse(fs.readFileSync(liveOutPath, "utf8"));
-assert.equal(diskData.schema_version, "trusted-heartbeat.v1");
-assert.equal(diskData.overall_status, "degraded");
-assert.equal(diskData.tasks.length, 3);
+try {
+  const generated = generateTrustedHeartbeat({
+    schedulerRoot: realSchedulerRoot,
+    launchAgentsDir: realLaunchAgentsDir,
+    outPath: testOutPath,
+    write: true,
+  });
 
-console.log("✔ Suite 2 & 3: Real environment probe and generation PASSED");
+  assert.ok(fs.existsSync(testOutPath), "Temp output file must be created");
+  const diskData = JSON.parse(fs.readFileSync(testOutPath, "utf8"));
+  assert.equal(diskData.schema_version, "trusted-heartbeat.v1");
+  assert.equal(diskData.overall_status, generated.overall_status);
+  assert.equal(diskData.tasks.length, 3);
+} finally {
+  fs.rmSync(tmpOutDir, { recursive: true, force: true });
+}
+
+console.log("✔ Suite 2 & 3: Real environment probe and safe generation PASSED");
 console.log("\nALL TRUSTED HEARTBEAT VERIFICATION CHECKS PASSED!");

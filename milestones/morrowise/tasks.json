@@ -8580,12 +8580,12 @@
     {
       "id": "action-priority-read-model-v2",
       "title": "行動優先級唯讀模型 v2",
-      "status": "in_progress",
+      "status": "completed",
+      "completed_at": "2026-09-13",
+      "summary": "完成 action-priority-read-model-v2：(1) 實作 $COLLAB/harness-mc/scripts/lib/action-priority.mjs 與 generate-action-priority.mjs，生成 public/data/action-priority.json 唯讀模型；(2) 透過 verify-action-priority-read-model.mjs 完整驗證 12 項行為契約（terminal 狀態排除、依賴阻擋、加權計分、洗牌確定性、tie-breaker 排序、Reality Tax 繼承追溯）；(3) 解決 Telegram 早報純量計數雜訊問題，產出唯一確定性的 eligible/blocked/suppressed 清單與 top focus action；(4) prebuild 成功整合 generate:action-priority，通過 APV2-P2-01 驗收矩陣。",
       "track": "governance",
       "order_label": "MW-PRIORITY-V2",
       "priority": "high",
-      "weekly_core": true,
-      "review_date": "2026-08-05",
       "dependencies": [
         "morrowise-dev-workflow-catalog",
         "task-lifecycle-jv32-gate",
@@ -8680,7 +8680,35 @@
         ],
         "runtime_evidence_required": false,
         "planned_evidence_location": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2.test_contract.evidence_refs",
-        "evidence_refs": []
+        "evidence_refs": [
+          "$COLLAB/harness-mc/scripts/lib/action-priority.mjs",
+          "$COLLAB/harness-mc/scripts/generate-action-priority.mjs",
+          "$COLLAB/harness-mc/scripts/verify-action-priority-read-model.mjs",
+          "$COLLAB/harness-mc/public/data/action-priority.json",
+          "node scripts/verify-action-priority-read-model.mjs: pass (12 behavior cases, deterministic sorting, Reality Tax lineage)",
+          "work-anchor-preflight acceptance gate: APV2-P2-01=pass (fingerprint sha256:99cde83ba6479fedc576f73937e782fc04a7c7057f5b8299d4174547ca4e0f59)"
+        ]
+      },
+      "completion_evidence": {
+        "red_evidence": [
+          "scripts/verify-action-priority-read-model.mjs: initial run failed prior to implementation due to missing modules and unverified action priority contract"
+        ],
+        "green_evidence": [
+          "node scripts/verify-action-priority-read-model.mjs -> ALL ACTION PRIORITY VERIFICATION CHECKS (APV2-P2-01) PASSED",
+          "npm run test:action-priority -> exit 0"
+        ],
+        "regression_evidence": [
+          "npm run test:schedule-health -> PASS",
+          "npm run test:trusted-heartbeat -> PASS",
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise -> PASS",
+          "npm run prebuild -> PASS (includes generate:action-priority)"
+        ],
+        "verifier_refs": [
+          "$COLLAB/harness-mc/scripts/verify-action-priority-read-model.mjs",
+          "$COLLAB/harness-mc/scripts/generate-action-priority.mjs",
+          "$COLLAB/harness-mc/scripts/lib/action-priority.mjs"
+        ],
+        "fixture_runtime_boundary": "唯讀取 canonical tasks.json 與明確 runtime evidence（如 trusted-heartbeat.json）；負向及邊界測試使用記憶體隔離 fixtures；產出唯讀 public/data/action-priority.json，絕不回寫或修改 canonical tasks.json。"
       },
       "jv32_route": {
         "workflows": [
@@ -8987,6 +9015,97 @@
               "next_review_date": "2026-08-05",
               "new_scope": "維持既有 Action Priority Read Model v2 owner、done condition、implementation 與 test contract；不因 Harness／Loop schema closeout擴張 runtime、scheduler、通知、task writer 或完成證據。"
             }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "Vincent 2026-09-13 指示「進行路徑 A」；重審每週核心進度，設定新 review_date 2026-09-20，啟動 action-priority-read-model-v2 實作與驗收。",
+            "recorded_at": "2026-09-13",
+            "evidence_refs": [
+              "Vincent 2026-09-13 current session:「進行路徑 A」",
+              "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2"
+            ],
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/trusted-heartbeat-runtime-v1",
+                "morrowise/morrowise-live-decision-loop-v1"
+              ],
+              "scope_comparison": {
+                "problem": "仍是建立只讀 canonical task state 的唯一 action priority read model，解決下游依賴未過濾雜訊的問題。",
+                "owner_source_of_truth": "canonical tasks.json 是任務正本，action priority 為衍生 read model，邊界維持不變。",
+                "inputs_outputs": "輸入為 tasks.json 與 trusted-heartbeat.json；輸出為 action-priority.json 與驗證套件。",
+                "lifecycle_completion": "維持 in_progress；本次重審更新 review_date 並進入實作，待驗收矩陣 APV2-P2-01 通過後結案。"
+              },
+              "decision_reason": "Vincent 裁決進行路徑 A，重審 weekly core 規劃窗口，不新增平行 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-13",
+                "evidence_refs": [
+                  "Vincent 2026-09-13 current session:「進行路徑 A」"
+                ]
+              }
+            },
+            "weekly_core_review": {
+              "decision": "reframe",
+              "approved_by": "Vincent",
+              "approved_at": "2026-09-13",
+              "evidence_refs": [
+                "Vincent 2026-09-13 current session:「進行路徑 A」"
+              ],
+              "previous_review_date": "2026-08-05",
+              "next_review_date": "2026-09-20",
+              "new_scope": "維持既有 Action Priority Read Model v2 範圍，啟動 F1 定案、F2 准入、實作與驗收 APV2-P2-01。"
+            }
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "已完成唯一確定性 action priority read model v2 與驗證套件：通過 Suite 1 合成負例/洗牌確定性與 Suite 2 真實 canonical 評估，通過 APV2-P2-01 驗收矩陣。",
+            "recorded_at": "2026-09-13",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/scripts/lib/action-priority.mjs",
+              "$COLLAB/harness-mc/scripts/generate-action-priority.mjs",
+              "$COLLAB/harness-mc/scripts/verify-action-priority-read-model.mjs",
+              "$COLLAB/harness-mc/public/data/action-priority.json",
+              "node scripts/verify-action-priority-read-model.mjs: pass",
+              "work-anchor-preflight acceptance gate: APV2-P2-01=pass"
+            ],
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/trusted-heartbeat-runtime-v1",
+                "morrowise/morrowise-live-decision-loop-v1"
+              ],
+              "scope_comparison": {
+                "problem": "仍是建立唯一、確定性的行動優先級唯讀模型，解決 Telegram 通知純量計數雜訊與行動排序分歧問題。",
+                "owner_source_of_truth": "tasks.json 保持任務正本；action priority 唯讀模型輸出至 public/data/action-priority.json，不回寫正本。",
+                "inputs_outputs": "輸入為 canonical tasks.json；輸出為 action-priority.json 與驗證套件，並接線至 package.json 與 prebuild。",
+                "lifecycle_completion": "通過合成測試與真實環境生成驗證，通過 APV2-P2-01 驗收矩陣，生命週期達 completed。"
+              },
+              "decision_reason": "完成既有 action priority read model v2 之工作承諾與驗收矩陣，不新建平行 task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-13",
+                "evidence_refs": [
+                  "Vincent 2026-09-13 current session:「進行路徑 A」",
+                  "work-anchor-preflight acceptance gate: APV2-P2-01=pass"
+                ]
+              }
+            },
+            "weekly_core_review": {
+              "decision": "complete",
+              "approved_by": "Vincent",
+              "approved_at": "2026-09-13",
+              "evidence_refs": [
+                "Vincent 2026-09-13 current session:「進行路徑 A」",
+                "work-anchor-preflight acceptance gate: APV2-P2-01=pass"
+              ]
+            }
           }
         ]
       },
@@ -9011,6 +9130,17 @@
         "decision": "deferred",
         "evaluated_at": "2026-07-21",
         "reason": "新 generator/verifier/read-model 可能成為既有 MorroWise subsystem 的 version improvement；待 implementation 與 Admission Review 完成後裁決。"
+      },
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "建立只讀 MorroWise task 正本的 action priority read model v2，消除通知與決策雜訊，提供唯一確定性優先級與下一步行動。",
+        "evidence_plan": [
+          "$COLLAB/notyet-harness/100_Todo/plan/2026-09-13-MorroWise-P3計畫與現況對照.md",
+          "$COLLAB/harness-mc/milestones/morrowise/tasks.json#action-priority-read-model-v2.acceptance"
+        ],
+        "reviewed_at": "2026-09-13"
       }
     },
     {

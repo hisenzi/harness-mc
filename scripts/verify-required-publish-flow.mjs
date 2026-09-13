@@ -31,7 +31,7 @@ includes(projectInit, /v3\.8（2026-06-21）：開案後 task 發布必須先取
 includes(projectInit, /不得預設 `MC 儀表版`/, "project-init must not default to MC dashboard whiteboard");
 includes(projectInit, /同時作為 Obsidian Canvas 名稱/, "project-init must bind whiteboard name to Canvas name");
 
-includes(heptabaseSkill, /version: 1\.5/, "heptabase-task-cards must record the publish-flow gate version");
+includes(heptabaseSkill, /v1\.5（2026-06-21）：白板名稱改為發布前必問/, "heptabase-task-cards must record the publish-flow gate version");
 includes(heptabaseSkill, /必須停下來問 Vincent/, "heptabase-task-cards must stop and ask when whiteboard is missing");
 includes(heptabaseSkill, /不得用 project id、預設白板或搜尋結果推論/, "heptabase-task-cards must forbid inferred whiteboards");
 includes(heptabaseSkill, /same whiteboard name/, "coverage report must mention same-name Canvas");

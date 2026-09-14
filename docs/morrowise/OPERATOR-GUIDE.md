@@ -543,7 +543,7 @@ canonical task 已有 acceptance_matrix 時，從當前來源解析完整 ID 集
 <!-- chapter:start delivery -->
 # 版本交付與接續：本機完成和送到遠端分開看
 
-文件版本：**v0.5.0** · 更新日期：2026-09-10 · 狀態：公開候選（未部署）
+文件版本：**v0.6.0** · 更新日期：2026-09-14 · 狀態：公開候選（未部署）
 
 > 文件識別碼：operator-guide-delivery；章節鍵：delivery
 > 內容 owner：Vincent／JV-36；能力 owner：JV-32 與原交付 task
@@ -595,6 +595,19 @@ git -C "$COLLAB/harness-mc" diff --cached --stat
 ```
 
 實際 staging／commit／push 命令與鎖程序依當前 worktree-commit／cc-push；不在本章複製成另一份 Git 政策。
+
+## GitHub PR 的 CI 與正式 Review（小範圍試行）
+
+狀態：導入中；修復 PR #1 已合併，唯讀 secret 名稱已核對。首次 CI 執行與合併證據以本次 CI PR 為準，未成功前不得標為啟用完成。
+
+- **入口與範圍**：`$COLLAB/harness-mc/.github/workflows/required-publish-flow.yml`。同 repo、目標為 main 且改動此 workflow、`scripts/verify-required-publish-flow.mjs` 或 `scripts/collab-root.mjs` 的 PR 會觸發；人工入口是 Actions → Required publish flow → Run workflow，須先將設定交付到預設分支。只跑發布守門 verifier（內含 Adapter 測試），不跑整站 prebuild，也不執行發布。
+- **前置**：修復後的 verifier 需在受測版本中；共享 `hisenzi/notyet-harness` 固定為 workflow 的 `NOTYET_REF`。Vincent 在 harness-mc 的 Settings → Secrets and variables → Actions 設定 `NOTYET_HARNESS_READ_TOKEN`，僅授予指定共享 repo 的 Contents read 權限。token 值只放 GitHub secret，不貼聊天或文件。此試行只接受同 repo PR；fork、缺少憑證、checkout 失敗均拒絕，不略過測試當成功。
+- **最小操作與預期**：依原核准範圍 commit／push PR 分支後，在 PR Checks 打開該 run；或在設定進 main 後人工 Run workflow。確認輸出列出實際受測程式 SHA、共享 SHA，以及成功的 verifier 和完整 job 結果。修改共享來源不會自動更新固定版本；需要時審查並更新 `NOTYET_REF` 再重跑，不能拿固定版本結果冒充最新共享來源健康。
+- **正式 Review**：在 PR 的 Files changed → Review changes 提交 Comment／Approve／Request changes，或使用 `gh pr review`；記受審 SHA、方法、結果與限制。若作者和審查 Agent 共用同一個 GitHub 帳號，Comment 是可追溯的審查紀錄，但不是另一帳號的 Approve；本機驗收也不等於 CI 通過。
+- **失敗與恢復**：看第一個失敗步驟；憑證缺失／到期回 Vincent 更新，來源版本錯誤回原 writer，規則或 Adapter 測試失敗回功能 owner。修正後才重新執行，不反覆空跑。Cancel workflow 停止單次 run；停用整個試行須依原授權選 Disable workflow，保留歷史證據與人工 Review 途徑。
+- **完成與交接**：首次真實 run 的 URL、兩個來源 SHA、結果與必要反例證據回原工作 Issue／PR；指引與必要薄連結及生成版本同步後才算收尾。只更新本機檔案、設定 secret 或留下 Review 都不算 CI 已啟用。首次完成回報附文件證據與提醒次數，未完成的前置不記成零提醒成功。
+
+CI 通過不授權 merge 或部署；目前不啟用 required checks。Git branch、commit、push、PR 與 merge 仍沿原具體批准。本試行不要求每個專案套用，也不擴入原單檔 verifier 修復 PR。
 
 ## 本機階段 commit（local-c1-commit）
 
@@ -671,7 +684,7 @@ node "$COLLAB/harness-mc/scripts/repo-coordination-runtime.mjs" local-c1-pending
 
 ## 版本與維護
 
-1. 文件 ID `operator-guide-delivery`、目前 v0.5.0；D-01–D-04 是本章維護／情境引用，不另配 task 編號。
+1. 文件 ID `operator-guide-delivery`、目前 v0.6.0；D-01–D-04 是本章維護／情境引用，不另配 task 編號。
 2. worktree-commit、cc-push 或 closeout contract 改動時，作者核對兩條路由、授權與 first unmet state；具名 reviewer 查實際 diff，記更新／no-impact。
 3. 新版本正文與歷史一起更新；指南證據回 JV-36，實際 Git／交付證據回原 task。本文不存其他專案的 commit 清單或 runtime 私人資料。
 
@@ -701,6 +714,11 @@ node "$COLLAB/harness-mc/scripts/repo-coordination-runtime.mjs" local-c1-pending
 C2 只依原 task 的必要 closeout 契約，不因批次而自造；本地完成與遠端驗證分開。完整命令與規則薄連結回原 `cc-push`，不在本文重建政策。
 
 ## 版本歷史
+
+### v0.6.0 — 2026-09-14｜小範圍 CI 與正式 Review 指引草稿
+
+- 補必要測試、固定共享依賴、最小權限、PR 操作及故障恢復入口；明示尚未遠端啟用。
+- 保留本機驗收、GitHub CI、正式 Review、merge 與文件收尾的個別證據邊界。
 
 ### v0.5.0 — 2026-09-10｜local-c1 準入與夜間批次交付隔離
 
@@ -872,6 +890,8 @@ npm --prefix "$COLLAB/harness-mc" run test:system-pulse
 
 ### 4. 優化收尾六步閉環（Closeout Seam）
 子系統優化或 bug 修復完成後，Agent 必須執行標準六步收尾：
+
+功能驗收後，Agent 須自行判斷說明書影響，完成必要正文、薄連結及對應驗證；無影響須附理由。未處理前不得回報整體收尾完成。依本章[既有文件更新流程](#文件更新與同步能力變了說明書也要接上)辦理。
 
 | 步驟 | 動作對象 | 工具／指令 | 產物與預期 |
 |---|---|---|---|

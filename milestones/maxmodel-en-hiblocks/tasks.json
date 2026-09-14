@@ -134,6 +134,17 @@
         "mmen-06-seo-og-responsive-audit"
       ],
       "done_condition": "建立 GitHub private repo、設定 Zeabur 靜態自動構建、綁定 en.maxmodel.com.tw（Cloudflare 灰雲 A 記錄）、自動簽發 SSL，全站路由 HTTP 200，正式取代舊 Joomla 網站。"
+    },
+    {
+      "id": "mmen-08-auto-issue-workflow",
+      "title": "建立 GitHub Actions 自動建立版本變更 Issue 工作流",
+      "status": "todo",
+      "track": "formal",
+      "order_label": "MMEN-08",
+      "dependencies": [
+        "mmen-07-deploy-zeabur-domain"
+      ],
+      "done_condition": "配置 GitHub Actions 工作流（.github/workflows/release-issue.yml），在推播版本 Tag 或釋出新版本時，自動擷取變更紀錄（Changelog）並透過 GitHub CLI/API 建立對應的版本追蹤 Issue。"
     }
   ]
 }

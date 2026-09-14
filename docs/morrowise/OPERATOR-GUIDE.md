@@ -598,7 +598,7 @@ git -C "$COLLAB/harness-mc" diff --cached --stat
 
 ## GitHub PR 的 CI 與正式 Review（小範圍試行）
 
-狀態：導入中；修復 PR #1 已合併，唯讀 secret 名稱已核對。首次 CI 執行與合併證據以本次 CI PR 為準，未成功前不得標為啟用完成。
+驗證入口：[CI PR #2](https://github.com/hisenzi/harness-mc/pull/2)；[首次 PR 檢查](https://github.com/hisenzi/harness-mc/actions/runs/34800140780) 已於 2026-09-14 通過。最新受測版本、合併及 main 人工執行結果見 PR 證據；不可把舊 run 當成之後每個版本都通過。
 
 - **入口與範圍**：`$COLLAB/harness-mc/.github/workflows/required-publish-flow.yml`。同 repo、目標為 main 且改動此 workflow、`scripts/verify-required-publish-flow.mjs` 或 `scripts/collab-root.mjs` 的 PR 會觸發；人工入口是 Actions → Required publish flow → Run workflow，須先將設定交付到預設分支。只跑發布守門 verifier（內含 Adapter 測試），不跑整站 prebuild，也不執行發布。
 - **前置**：修復後的 verifier 需在受測版本中；共享 `hisenzi/notyet-harness` 固定為 workflow 的 `NOTYET_REF`。Vincent 在 harness-mc 的 Settings → Secrets and variables → Actions 設定 `NOTYET_HARNESS_READ_TOKEN`，僅授予指定共享 repo 的 Contents read 權限。token 值只放 GitHub secret，不貼聊天或文件。此試行只接受同 repo PR；fork、缺少憑證、checkout 失敗均拒絕，不略過測試當成功。
@@ -715,9 +715,9 @@ C2 只依原 task 的必要 closeout 契約，不因批次而自造；本地完�
 
 ## 版本歷史
 
-### v0.6.0 — 2026-09-14｜小範圍 CI 與正式 Review 指引草稿
+### v0.6.0 — 2026-09-14｜小範圍 CI 與正式 Review 操作指引
 
-- 補必要測試、固定共享依賴、最小權限、PR 操作及故障恢復入口；明示尚未遠端啟用。
+- 補必要測試、固定共享依賴、最小權限、PR 操作、故障恢復及實際 CI 證據入口。
 - 保留本機驗收、GitHub CI、正式 Review、merge 與文件收尾的個別證據邊界。
 
 ### v0.5.0 — 2026-09-10｜local-c1 準入與夜間批次交付隔離
@@ -743,7 +743,7 @@ C2 只依原 task 的必要 closeout 契約，不因批次而自造；本地完�
 <!-- chapter:start documentation -->
 # 文件更新與同步：能力變了，說明書也要接上
 
-文件版本：**v0.5.0** · 更新日期：2026-09-10 · 狀態：公開候選（未部署）
+文件版本：**v0.5.1** · 更新日期：2026-09-14 · 狀態：公開候選（未部署）
 
 > 文件識別碼：operator-guide-documentation；章節鍵：documentation
 > 內容／來源與生成 owner：Vincent／JV-36；網站 owner：MC-DOCS-01
@@ -931,12 +931,16 @@ Heptabase adapter 仍為 prototype；MANUAL 是另一薄入口，不能要求它
 
 ## 版本與維護
 
-1. 文件 ID `operator-guide-documentation`、目前 v0.5.0；M-01–M-05 是章內引用，實測仍沿原 DOC／WEB／JV36 IDs。
+1. 文件 ID `operator-guide-documentation`、目前 v0.5.1；M-01–M-05 是章內引用，實測仍沿原 DOC／WEB／JV36 IDs。
 2. 變更作者記 affected chapter、來源 diff、更新／no-impact、reviewer 與證據；generator 只能核證據完整及版本綁定，不替代 reviewer 判斷語意。
 3. 正文、章內維護版號、首筆歷史與 registry／bundle metadata 同版；runtime 啟用、Main SHA、部署 ID／URL 各自記錄，不從 v0.4.0 推定。
 4. 本地成果回原 JV-36／MC-DOCS-01；WEB／GitHub／Zeabur 未實跑就保留未完成，不為文件補漏擴做發布。
 
 ## 版本歷史
+
+### v0.5.1 — 2026-09-14｜功能完成時自行處理文件影響
+
+- 六步收尾明訂正文、薄連結、對應驗證與 no-impact 理由；未處理前不得回報整體收尾完成。
 
 ### v0.5.0 — 2026-09-10｜架構薄連結標記同步與優化收尾閉環
 

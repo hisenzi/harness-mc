@@ -145,6 +145,32 @@
         "mmen-07-deploy-zeabur-domain"
       ],
       "done_condition": "配置 GitHub Actions 工作流（.github/workflows/release-issue.yml），在推播版本 Tag 或釋出新版本時，自動擷取變更紀錄（Changelog）並透過 GitHub CLI/API 建立對應的版本追蹤 Issue。"
+    },
+    {
+      "id": "mmen-09-image-optimization",
+      "title": "全站圖檔深度瘦身與架構優化（消除重複媒體、案例庫 1280px / q75 轉換）",
+      "status": "completed",
+      "track": "formal",
+      "order_label": "MMEN-09",
+      "dependencies": [
+        "mmen-01-core-scaffold"
+      ],
+      "done_condition": "徹底移除 content/cases/media/ 重複快取，全站統一以 public/images/cases/ 為單一來源（0 軟連結）；案例庫 2,211 張圖全面轉為 1280px / q75 / effort 6，同步重算 186 個案例的 CAS 雜湊鏈，全站體積縮減 52%（省下 214+ MB）；首頁死檔清理與流程圖示 WebP 化；npm test 75/75 與 npm run build 375 頁均零錯誤通過。",
+      "completed_at": "2026-09-15",
+      "summary": "2026-09-15：完成全站圖檔深度瘦身與架構重構（GitHub Issue #3）。徹底移除本機 content/cases/media/（418 MB），統一至 public/images/cases/；將 2,211 張 WebP 圖片由 1600px 轉為 1280px / q75，案例庫體積由 413.45 MB 降至 198.53 MB（-52%），同步重算 186 個案例的 CAS 密碼學雜湊；刪除首頁 19.5 MB 未引用 CUB 大圖，流程圖示轉為 260px WebP（39 KB）；npm test 75/75 通過（5.1s），npm run build 375 頁完整建置零錯誤。"
+    },
+    {
+      "id": "mmen-10-ui-refinements",
+      "title": "案例頁底部模組化橫幅、相片燈箱雙向導覽、首頁排版修復與深底對比度優化",
+      "status": "completed",
+      "track": "formal",
+      "order_label": "MMEN-10",
+      "dependencies": [
+        "mmen-01-core-scaffold"
+      ],
+      "done_condition": "案例詳情頁底部導入模組化 CaseFeedbackBanner 組件；CaseInteractions 燈箱補齊左右切換箭頭、照片計數器、鍵盤與手勢導覽；修正首頁 What We Do 卡片重疊、Modular Features 6 影片網格與 Showcase CTA 按鈕；修復 Equipment Advantages 深底對比度；dev 伺服器加入 ENOENT 容錯；npm test 75/75 與 npm run build 375 頁完整建置零錯誤通過。",
+      "completed_at": "2026-09-15",
+      "summary": "2026-09-15：完成案例頁模組化回饋橫幅、燈箱雙向切換導覽、首頁排版遮擋修復與深底文字對比優化（GitHub Issue #4）。全站 186 個案例頁結尾統一引用 CaseFeedbackBanner；相片燈箱支援左右箭頭、1 of N 計數器、鍵盤左右鍵與手機滑動手勢；修正 What We Do 卡片負 margin 遮擋；Modular Features 重構為 6 影片卡片並新增 Explore All Showcase 按鈕；修復 Equipment Advantages 深底文字與圖示顏色；npm test 75/75 全數通過，全站 375 頁 build 零錯誤。"
     }
   ]
 }

@@ -73,7 +73,7 @@
 
   <!-- Header -->
   <text x="36" y="38" class="text-title">MorroWise 啟動與解析鏈架構</text>
-  <text x="36" y="58" class="text-subtitle">對齊 Issue #5 正本架構：工具入口、每機唯一錨點與 CORE.md 三階導引關係（規範來源：Issue #5）</text>
+  <text x="36" y="58" class="text-subtitle">入口分流、每機唯一錨點與 CORE.md 三階導引關係（對齊 Issue #5 規範）</text>
 
   <rect x="726" y="24" width="178" height="24" rx="12" class="version-bg" />
   <text x="815" y="40" text-anchor="middle" class="version-tag">OPERATOR-GUIDE · Ch.1 v0.4.1</text>
@@ -83,66 +83,66 @@
     <rect x="0" y="0" width="868" height="150" rx="8" class="group-entries" />
     <text x="434" y="22" text-anchor="middle" class="group-label-entries">工具入口（薄路由）</text>
 
-    <!-- Entry 1: Codex -->
+    <!-- Entry 1: Codex (依賴錨點群組) -->
     <g transform="translate(16, 32)">
-      <rect x="0" y="0" width="180" height="102" rx="6" class="card-entry" />
-      <text x="90" y="36" text-anchor="middle" class="card-title-code">~/.codex/AGENTS.md</text>
-      <line x1="20" y1="48" x2="160" y2="48" class="card-divider" />
-      <text x="90" y="68" text-anchor="middle" class="card-desc">→ $COLLAB/AGENTS.md</text>
-      <text x="90" y="86" text-anchor="middle" class="card-desc">（薄轉接導向錨點）</text>
+      <rect x="0" y="0" width="195" height="102" rx="6" class="card-entry" />
+      <text x="97" y="32" text-anchor="middle" class="card-title-code">~/.codex/AGENTS.md</text>
+      <line x1="20" y1="44" x2="175" y2="44" class="card-divider" />
+      <text x="97" y="64" text-anchor="middle" class="card-desc">→ $COLLAB/AGENTS.md</text>
+      <text x="97" y="82" text-anchor="middle" class="card-desc">（全域薄轉接導向錨點）</text>
     </g>
 
-    <!-- Entry 2: Claude Code -->
-    <g transform="translate(212, 32)">
-      <rect x="0" y="0" width="220" height="102" rx="6" class="card-entry" />
-      <text x="110" y="24" text-anchor="middle" class="card-title-code">~/.claude/CLAUDE.md</text>
-      <text x="110" y="40" text-anchor="middle" class="card-desc" style="font-size:10.5px;">(symlink → cc-claude-md.md)</text>
-      <line x1="20" y1="48" x2="200" y2="48" class="card-divider" />
-      <text x="110" y="66" text-anchor="middle" class="card-desc">引用 CORE 解析順序</text>
-      <text x="110" y="84" text-anchor="middle" class="card-desc">+ readlink fallback</text>
+    <!-- Entry 2: Antigravity (依賴錨點群組：相鄰並排) -->
+    <g transform="translate(226, 32)">
+      <rect x="0" y="0" width="195" height="102" rx="6" class="card-entry" />
+      <text x="97" y="32" text-anchor="middle" class="card-title-text" style="font-size:13.5px;">Antigravity</text>
+      <line x1="20" y1="44" x2="175" y2="44" class="card-divider" />
+      <text x="97" y="64" text-anchor="middle" class="card-desc">workspace URI</text>
+      <text x="97" y="82" text-anchor="middle" class="card-desc">（開啟根目錄即載入錨點）</text>
     </g>
 
-    <!-- Entry 3: notyet-harness Repo -->
-    <g transform="translate(448, 32)">
+    <!-- Entry 3: Claude Code (自帶定位群組) -->
+    <g transform="translate(447, 32)">
       <rect x="0" y="0" width="200" height="102" rx="6" class="card-entry" />
-      <text x="100" y="30" text-anchor="middle" class="card-title-code">notyet-harness/AGENTS.md</text>
+      <text x="100" y="24" text-anchor="middle" class="card-title-code">~/.claude/CLAUDE.md</text>
+      <text x="100" y="40" text-anchor="middle" class="card-desc" style="font-size:10.5px;">(symlink → cc-claude-md.md)</text>
       <line x1="20" y1="48" x2="180" y2="48" class="card-divider" />
-      <text x="100" y="66" text-anchor="middle" class="card-desc">引用 CORE 路徑規範</text>
-      <text x="100" y="84" text-anchor="middle" class="card-desc">的解析順序</text>
+      <text x="100" y="66" text-anchor="middle" class="card-desc">readlink 反推 $COLLAB</text>
+      <text x="100" y="84" text-anchor="middle" class="card-desc">引用 CORE 解析順序</text>
     </g>
 
-    <!-- Entry 4: Antigravity -->
-    <g transform="translate(664, 32)">
-      <rect x="0" y="0" width="188" height="102" rx="6" class="card-entry" />
-      <text x="94" y="30" text-anchor="middle" class="card-title-text" style="font-size:13.5px;">Antigravity</text>
-      <line x1="20" y1="42" x2="168" y2="42" class="card-divider" />
-      <text x="94" y="58" text-anchor="middle" class="card-desc">workspace URI</text>
-      <text x="94" y="74" text-anchor="middle" class="card-desc">載入 $COLLAB 錨點</text>
-      <text x="94" y="90" text-anchor="middle" class="card-desc">導引至 CORE (滿足順序 1)</text>
+    <!-- Entry 4: notyet-harness Repo (自帶定位群組) -->
+    <g transform="translate(657, 32)">
+      <rect x="0" y="0" width="195" height="102" rx="6" class="card-entry" />
+      <text x="97" y="30" text-anchor="middle" class="card-title-code">notyet-harness/AGENTS.md</text>
+      <line x1="20" y1="48" x2="175" y2="48" class="card-divider" />
+      <text x="97" y="66" text-anchor="middle" class="card-desc">同 repo 相對路徑</text>
+      <text x="97" y="84" text-anchor="middle" class="card-desc">直讀 000_Agent/CORE.md</text>
     </g>
   </g>
 
   <!-- ==================== 2. ANCHOR SUBGRAPH (MIDDLE LEFT) ==================== -->
+  <!-- 覆蓋 Codex 與 Antigravity 正下方，收斂兩大根目錄入口 -->
   <g transform="translate(36, 270)">
-    <rect x="0" y="0" width="230" height="120" rx="8" class="group-anchor" />
-    <text x="115" y="22" text-anchor="middle" class="group-label-anchor">錨點（每台機器唯一）</text>
+    <rect x="0" y="0" width="405" height="112" rx="8" class="group-anchor" />
+    <text x="202" y="22" text-anchor="middle" class="group-label-anchor">錨點（每台機器唯一）</text>
 
-    <g transform="translate(14, 32)">
-      <rect x="0" y="0" width="202" height="74" rx="6" class="card-anchor" />
-      <text x="101" y="24" text-anchor="middle" class="card-title-code">$COLLAB/AGENTS.md</text>
-      <line x1="15" y1="33" x2="187" y2="33" class="card-divider" />
-      <text x="101" y="49" text-anchor="middle" class="card-desc" style="font-weight:600;">$COLLAB resolves to:</text>
-      <text x="101" y="64" text-anchor="middle" class="card-desc" style="font-family:monospace;font-size:10px;">/Users/.../Claude_協作</text>
+    <g transform="translate(18, 32)">
+      <rect x="0" y="0" width="369" height="68" rx="6" class="card-anchor" />
+      <text x="184" y="24" text-anchor="middle" class="card-title-code">$COLLAB/AGENTS.md</text>
+      <line x1="30" y1="33" x2="339" y2="33" class="card-divider" />
+      <text x="184" y="48" text-anchor="middle" class="card-desc" style="font-weight:600;">$COLLAB resolves to: /Users/.../Claude_協作</text>
+      <text x="184" y="62" text-anchor="middle" class="card-desc" style="font-size:10px;">（宣告本機唯一絕對路徑，提供 Startup Routing 導向 CORE）</text>
     </g>
   </g>
 
   <!-- ==================== 3. CORE SUBGRAPH (BOTTOM) ==================== -->
-  <g transform="translate(100, 435)">
-    <rect x="0" y="0" width="740" height="350" rx="8" class="group-core" />
-    <text x="370" y="24" text-anchor="middle" class="group-label-core">CORE.md（唯一正本）</text>
+  <g transform="translate(36, 435)">
+    <rect x="0" y="0" width="868" height="350" rx="8" class="group-core" />
+    <text x="434" y="24" text-anchor="middle" class="group-label-core">CORE.md（唯一正本）</text>
 
-    <!-- Block 1: Resolve Order -->
-    <g transform="translate(170, 36)">
+    <!-- Block 1: Resolve Order (Center: x=234..634, mid=434) -->
+    <g transform="translate(234, 36)">
       <rect x="0" y="0" width="400" height="84" rx="6" class="card-core" />
       <text x="200" y="22" text-anchor="middle" class="card-title-text">路徑規範 · 解析順序</text>
       <text x="200" y="42" text-anchor="middle" class="card-desc">(1) 平台入口 / workspace URI</text>
@@ -151,10 +151,10 @@
     </g>
 
     <!-- Internal Connector 1 -> 2 -->
-    <path d="M 370 120 L 370 138" class="arrow-line" marker-end="url(#arrow)" />
+    <path d="M 434 120 L 434 138" class="arrow-line" marker-end="url(#arrow)" />
 
     <!-- Block 2: On-demand Reading -->
-    <g transform="translate(170, 138)">
+    <g transform="translate(234, 138)">
       <rect x="0" y="0" width="400" height="88" rx="6" class="card-core" />
       <text x="200" y="22" text-anchor="middle" class="card-title-text">按需閱讀</text>
       <line x1="60" y1="30" x2="340" y2="30" class="card-divider" />
@@ -164,10 +164,10 @@
     </g>
 
     <!-- Internal Connector 2 -> 3 -->
-    <path d="M 370 226 L 370 244" class="arrow-line" marker-end="url(#arrow)" />
+    <path d="M 434 226 L 434 244" class="arrow-line" marker-end="url(#arrow)" />
 
     <!-- Block 3: Task Routing & Stop Boundaries -->
-    <g transform="translate(170, 244)">
+    <g transform="translate(234, 244)">
       <rect x="0" y="0" width="400" height="88" rx="6" class="card-core" />
       <text x="200" y="22" text-anchor="middle" class="card-title-text">任務分流與停止邊界</text>
       <line x1="60" y1="30" x2="340" y2="30" class="card-divider" />
@@ -178,29 +178,29 @@
   </g>
 
   <!-- ==================== CONNECTORS & ROUTING ARROWS ==================== -->
-  <!-- 1. Codex -> Anchor (透過 root) -->
-  <path d="M 142 209 L 142 268" class="arrow-line" marker-end="url(#arrow)" />
-  <rect x="108" y="230" width="68" height="18" rx="3" class="arrow-label-bg" />
-  <text x="142" y="243" text-anchor="middle" class="arrow-label-text">透過 root</text>
+  <!-- 1. Codex -> Anchor (直落垂直線) -->
+  <path d="M 149 209 L 149 268" class="arrow-line" marker-end="url(#arrow)" />
+  <rect x="115" y="230" width="68" height="18" rx="3" class="arrow-label-bg" />
+  <text x="149" y="243" text-anchor="middle" class="arrow-label-text">透過 root</text>
 
-  <!-- 2. Anchor -> Core RESOLVE ($COLLAB 絕對路徑) -->
-  <path d="M 151 390 L 151 490 L 268 490" class="arrow-line" marker-end="url(#arrow)" />
-  <rect x="150" y="428" width="112" height="18" rx="3" class="arrow-label-bg" />
-  <text x="206" y="441" text-anchor="middle" class="arrow-label-text">$COLLAB 絕對路徑</text>
+  <!-- 2. Antigravity -> Anchor (直落垂直線) -->
+  <path d="M 359 209 L 359 268" class="arrow-line" marker-end="url(#arrow)" />
+  <rect x="303" y="230" width="112" height="18" rx="3" class="arrow-label-bg" />
+  <text x="359" y="243" text-anchor="middle" class="arrow-label-text">workspace URI 載入</text>
 
-  <!-- 3. Claude Code -> Core RESOLVE (引用) -->
-  <path d="M 358 209 L 358 470" class="arrow-line" marker-end="url(#arrow)" />
-  <rect x="340" y="328" width="36" height="18" rx="3" class="arrow-label-bg" />
-  <text x="358" y="341" text-anchor="middle" class="arrow-label-text">引用</text>
+  <!-- 3. Anchor -> CORE Block 1 ($COLLAB 絕對路徑導引) -->
+  <path d="M 238 382 L 238 513 L 268 513" class="arrow-line" marker-end="url(#arrow)" />
+  <rect x="180" y="415" width="116" height="18" rx="3" class="arrow-label-bg" />
+  <text x="238" y="428" text-anchor="middle" class="arrow-label-text">$COLLAB 絕對路徑</text>
 
-  <!-- 4. notyet-harness Repo -> Core RESOLVE (引用) -->
-  <path d="M 584 209 L 584 470" class="arrow-line" marker-end="url(#arrow)" />
-  <rect x="566" y="328" width="36" height="18" rx="3" class="arrow-label-bg" />
-  <text x="584" y="341" text-anchor="middle" class="arrow-label-text">引用</text>
+  <!-- 4. Claude Code -> CORE Block 1 (直落垂直線，引用解析順序) -->
+  <path d="M 547 209 L 547 469" class="arrow-line" marker-end="url(#arrow)" />
+  <rect x="495" y="328" width="104" height="18" rx="3" class="arrow-label-bg" />
+  <text x="547" y="341" text-anchor="middle" class="arrow-label-text">symlink 反推路徑</text>
 
-  <!-- 5. Antigravity -> Core RESOLVE (workspace URI 滿足 (1)) -->
-  <path d="M 794 209 L 794 490 L 672 490" class="arrow-line" marker-end="url(#arrow)" />
-  <rect x="716" y="328" width="156" height="18" rx="3" class="arrow-label-bg" />
-  <text x="794" y="341" text-anchor="middle" class="arrow-label-text">workspace URI 滿足 (1)</text>
+  <!-- 5. notyet-harness -> CORE Block 1 (同 repo 相對路徑直連) -->
+  <path d="M 754 209 L 754 513 L 672 513" class="arrow-line" marker-end="url(#arrow)" />
+  <rect x="696" y="328" width="116" height="18" rx="3" class="arrow-label-bg" />
+  <text x="754" y="341" text-anchor="middle" class="arrow-label-text">同 repo 相對路徑</text>
 
 </svg>

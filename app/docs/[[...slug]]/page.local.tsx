@@ -82,6 +82,13 @@ export default async function DocumentationPage({ params }: { params: Promise<{ 
             a: ({ href, title, children }) => href?.startsWith("/") && !href.startsWith("//")
               ? <Link href={href} title={title}>{children}</Link>
               : <a href={href} title={title}>{children}</a>,
+            img: ({ src, alt, ...props }) => {
+              const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+              const resolvedSrc = typeof src === "string" && src.startsWith("/") && !src.startsWith("//") && basePath && !src.startsWith(`${basePath}/`)
+                ? `${basePath}${src}`
+                : src;
+              return <img src={resolvedSrc} alt={alt} {...props} />;
+            },
             h2: ({ children }) => {
               const title = headingText(children);
               return <h2 id={headingId(title)}>{children}</h2>;

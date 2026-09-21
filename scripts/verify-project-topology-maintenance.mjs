@@ -28,12 +28,17 @@ assert.equal(packageJson.scripts["health:project-topology"], "node scripts/proje
 assert.equal(packageJson.scripts["test:project-topology-maintenance"], "node scripts/verify-project-topology-maintenance.mjs");
 
 const agentGuide = fs.readFileSync(rootAgentGuide, "utf8");
-assert.match(agentGuide, /npm run health:project-topology/, "startup guide must require the topology health check");
-assert.match(agentGuide, /Maintenance Inbox/, "startup guide must route agents to the Maintenance Inbox");
-assert.match(fs.readFileSync(notyetAgentGuide, "utf8"), /Project Topology Startup Gate/, "notyet-harness entry must route direct sessions to the root topology gate");
+assert.match(agentGuide, /Project\s+Topology\s+Operation\s+Gate/, "startup guide must delegate to CORE Project Topology Operation Gate");
+assert.doesNotMatch(agentGuide, /Project\s+Topology\s+Startup\s+Gate/, "startup guide must not trigger topology check on startup");
+
+const notyetAgent = fs.readFileSync(notyetAgentGuide, "utf8");
+assert.match(notyetAgent, /Project\s+Topology\s+Operation\s+Gate/, "notyet-harness entry must delegate to CORE Project Topology Operation Gate");
+assert.doesNotMatch(notyetAgent, /Project\s+Topology\s+Startup\s+Gate/, "notyet-harness entry must not maintain startup gate");
+
 const coreRules = fs.readFileSync(coreGuide, "utf8");
-assert.match(coreRules, /Project Topology Operation Gate/, "versioned CORE rules must contain the portable topology gate");
+assert.match(coreRules, /Project\s+Topology\s+Operation\s+Gate/, "versioned CORE rules must contain the portable topology gate");
 assert.match(coreRules, /npm run health:project-topology/, "versioned CORE rules must require the canonical topology health command");
+assert.match(coreRules, /Maintenance Inbox/, "versioned CORE rules must require checking the Maintenance Inbox");
 
 const architecture = fs.readFileSync(architectureDoc, "utf8");
 assert.match(architecture, /<!-- project-topology-maintenance:start -->/, "ARCHITECTURE.md must contain the generated Maintenance Inbox");

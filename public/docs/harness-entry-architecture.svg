@@ -1,0 +1,206 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 820" width="100%" height="100%" style="display:block;margin:0 auto;max-width:100%;">
+  <defs>
+    <style><![CDATA[
+      .canvas-bg { fill: #ffffff; stroke: #e2e8f0; stroke-width: 1.5; }
+      .text-title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif; font-size: 18px; font-weight: 700; fill: #0f172a; }
+      .text-subtitle { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif; font-size: 13px; fill: #64748b; }
+      .version-tag { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; fill: #64748b; }
+      .version-bg { fill: #f1f5f9; stroke: #cbd5e1; stroke-width: 1; }
+
+      /* Outer Group Containers */
+      .group-entries { fill: #fff7ed; stroke: #f97316; stroke-width: 1.5; }
+      .group-anchor { fill: #f0fdf4; stroke: #16a34a; stroke-width: 1.5; }
+      .group-core { fill: #f0f9ff; stroke: #0284c7; stroke-width: 1.5; }
+
+      .group-label-entries { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif; font-size: 13px; font-weight: 700; fill: #c2410c; }
+      .group-label-anchor { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif; font-size: 13px; font-weight: 700; fill: #15803d; }
+      .group-label-core { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif; font-size: 14px; font-weight: 700; fill: #0369a1; }
+
+      /* Cards inside Containers */
+      .card-entry { fill: #ede9fe; stroke: #8b5cf6; stroke-width: 1; }
+      .card-anchor { fill: #dcfce7; stroke: #22c55e; stroke-width: 1; }
+      .card-core { fill: #e0f2fe; stroke: #38bdf8; stroke-width: 1; }
+
+      .card-title-code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace; font-size: 12px; font-weight: 700; fill: #1e1b4b; }
+      .card-title-text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif; font-size: 12.5px; font-weight: 700; fill: #0f172a; }
+      .card-desc { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif; font-size: 11px; fill: #334155; }
+      .card-divider { stroke: #cbd5e1; stroke-width: 1; }
+
+      /* Connectors & Arrows */
+      .arrow-line { stroke: #475569; stroke-width: 1.5; fill: none; }
+      .arrow-head { fill: #475569; }
+      .arrow-label-bg { fill: #f1f5f9; stroke: #cbd5e1; stroke-width: 1; }
+      .arrow-label-text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif; font-size: 11px; fill: #334155; font-weight: 500; }
+
+      /* Dark mode support */
+      @media (prefers-color-scheme: dark) {
+        .canvas-bg { fill: #0f172a; stroke: #334155; }
+        .text-title { fill: #f8fafc; }
+        .text-subtitle { fill: #94a3b8; }
+        .version-bg { fill: #1e293b; stroke: #475569; }
+        .version-tag { fill: #94a3b8; }
+
+        .group-entries { fill: #431407; fill-opacity: 0.3; stroke: #ea580c; }
+        .group-anchor { fill: #052e16; fill-opacity: 0.3; stroke: #16a34a; }
+        .group-core { fill: #082f49; fill-opacity: 0.3; stroke: #0284c7; }
+
+        .group-label-entries { fill: #fdba74; }
+        .group-label-anchor { fill: #86efac; }
+        .group-label-core { fill: #7dd3fc; }
+
+        .card-entry { fill: #2e1065; fill-opacity: 0.6; stroke: #a78bfa; }
+        .card-anchor { fill: #064e3b; fill-opacity: 0.6; stroke: #4ade80; }
+        .card-core { fill: #0c4a6e; fill-opacity: 0.6; stroke: #38bdf8; }
+
+        .card-title-code { fill: #ede9fe; }
+        .card-title-text { fill: #f8fafc; }
+        .card-desc { fill: #cbd5e1; }
+        .card-divider { stroke: #475569; }
+
+        .arrow-line { stroke: #94a3b8; }
+        .arrow-head { fill: #94a3b8; }
+        .arrow-label-bg { fill: #1e293b; stroke: #475569; }
+        .arrow-label-text { fill: #cbd5e1; }
+      }
+    ]]></style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" class="arrow-head" />
+    </marker>
+  </defs>
+
+  <!-- Canvas Frame -->
+  <rect x="2" y="2" width="936" height="816" rx="12" class="canvas-bg" />
+
+  <!-- Header -->
+  <text x="36" y="38" class="text-title">MorroWise 啟動與解析鏈架構</text>
+  <text x="36" y="58" class="text-subtitle">對齊 Issue #5 正本架構：工具入口、每機唯一錨點與 CORE.md 三階導引關係（規範來源：Issue #5）</text>
+
+  <rect x="726" y="24" width="178" height="24" rx="12" class="version-bg" />
+  <text x="815" y="40" text-anchor="middle" class="version-tag">OPERATOR-GUIDE · Ch.1 v0.4.1</text>
+
+  <!-- ==================== 1. ENTRIES SUBGRAPH (TOP) ==================== -->
+  <g transform="translate(36, 75)">
+    <rect x="0" y="0" width="868" height="150" rx="8" class="group-entries" />
+    <text x="434" y="22" text-anchor="middle" class="group-label-entries">工具入口（薄路由）</text>
+
+    <!-- Entry 1: Codex -->
+    <g transform="translate(16, 32)">
+      <rect x="0" y="0" width="180" height="102" rx="6" class="card-entry" />
+      <text x="90" y="36" text-anchor="middle" class="card-title-code">~/.codex/AGENTS.md</text>
+      <line x1="20" y1="48" x2="160" y2="48" class="card-divider" />
+      <text x="90" y="68" text-anchor="middle" class="card-desc">→ $COLLAB/AGENTS.md</text>
+      <text x="90" y="86" text-anchor="middle" class="card-desc">（薄轉接導向錨點）</text>
+    </g>
+
+    <!-- Entry 2: Claude Code -->
+    <g transform="translate(212, 32)">
+      <rect x="0" y="0" width="220" height="102" rx="6" class="card-entry" />
+      <text x="110" y="24" text-anchor="middle" class="card-title-code">~/.claude/CLAUDE.md</text>
+      <text x="110" y="40" text-anchor="middle" class="card-desc" style="font-size:10.5px;">(symlink → cc-claude-md.md)</text>
+      <line x1="20" y1="48" x2="200" y2="48" class="card-divider" />
+      <text x="110" y="66" text-anchor="middle" class="card-desc">引用 CORE 解析順序</text>
+      <text x="110" y="84" text-anchor="middle" class="card-desc">+ readlink fallback</text>
+    </g>
+
+    <!-- Entry 3: notyet-harness Repo -->
+    <g transform="translate(448, 32)">
+      <rect x="0" y="0" width="200" height="102" rx="6" class="card-entry" />
+      <text x="100" y="30" text-anchor="middle" class="card-title-code">notyet-harness/AGENTS.md</text>
+      <line x1="20" y1="48" x2="180" y2="48" class="card-divider" />
+      <text x="100" y="66" text-anchor="middle" class="card-desc">引用 CORE 路徑規範</text>
+      <text x="100" y="84" text-anchor="middle" class="card-desc">的解析順序</text>
+    </g>
+
+    <!-- Entry 4: Antigravity -->
+    <g transform="translate(664, 32)">
+      <rect x="0" y="0" width="188" height="102" rx="6" class="card-entry" />
+      <text x="94" y="30" text-anchor="middle" class="card-title-text" style="font-size:13.5px;">Antigravity</text>
+      <line x1="20" y1="42" x2="168" y2="42" class="card-divider" />
+      <text x="94" y="58" text-anchor="middle" class="card-desc">workspace URI</text>
+      <text x="94" y="74" text-anchor="middle" class="card-desc">載入 $COLLAB 錨點</text>
+      <text x="94" y="90" text-anchor="middle" class="card-desc">導引至 CORE (滿足順序 1)</text>
+    </g>
+  </g>
+
+  <!-- ==================== 2. ANCHOR SUBGRAPH (MIDDLE LEFT) ==================== -->
+  <g transform="translate(36, 270)">
+    <rect x="0" y="0" width="230" height="120" rx="8" class="group-anchor" />
+    <text x="115" y="22" text-anchor="middle" class="group-label-anchor">錨點（每台機器唯一）</text>
+
+    <g transform="translate(14, 32)">
+      <rect x="0" y="0" width="202" height="74" rx="6" class="card-anchor" />
+      <text x="101" y="24" text-anchor="middle" class="card-title-code">$COLLAB/AGENTS.md</text>
+      <line x1="15" y1="33" x2="187" y2="33" class="card-divider" />
+      <text x="101" y="49" text-anchor="middle" class="card-desc" style="font-weight:600;">$COLLAB resolves to:</text>
+      <text x="101" y="64" text-anchor="middle" class="card-desc" style="font-family:monospace;font-size:10px;">/Users/.../Claude_協作</text>
+    </g>
+  </g>
+
+  <!-- ==================== 3. CORE SUBGRAPH (BOTTOM) ==================== -->
+  <g transform="translate(100, 435)">
+    <rect x="0" y="0" width="740" height="350" rx="8" class="group-core" />
+    <text x="370" y="24" text-anchor="middle" class="group-label-core">CORE.md（唯一正本）</text>
+
+    <!-- Block 1: Resolve Order -->
+    <g transform="translate(170, 36)">
+      <rect x="0" y="0" width="400" height="84" rx="6" class="card-core" />
+      <text x="200" y="22" text-anchor="middle" class="card-title-text">路徑規範 · 解析順序</text>
+      <text x="200" y="42" text-anchor="middle" class="card-desc">(1) 平台入口 / workspace URI</text>
+      <text x="200" y="58" text-anchor="middle" class="card-desc">(2) symlink target 反推</text>
+      <text x="200" y="74" text-anchor="middle" class="card-desc">(3) 向 Vincent 確認</text>
+    </g>
+
+    <!-- Internal Connector 1 -> 2 -->
+    <path d="M 370 120 L 370 138" class="arrow-line" marker-end="url(#arrow)" />
+
+    <!-- Block 2: On-demand Reading -->
+    <g transform="translate(170, 138)">
+      <rect x="0" y="0" width="400" height="88" rx="6" class="card-core" />
+      <text x="200" y="22" text-anchor="middle" class="card-title-text">按需閱讀</text>
+      <line x1="60" y1="30" x2="340" y2="30" class="card-divider" />
+      <text x="200" y="47" text-anchor="middle" class="card-desc" style="font-weight:600;">Session 必讀：CORE + SOUL + USER</text>
+      <text x="200" y="64" text-anchor="middle" class="card-desc">按需：MEMORY / ARCHITECTURE</text>
+      <text x="200" y="79" text-anchor="middle" class="card-desc">SKILLS-INDEX / identity</text>
+    </g>
+
+    <!-- Internal Connector 2 -> 3 -->
+    <path d="M 370 226 L 370 244" class="arrow-line" marker-end="url(#arrow)" />
+
+    <!-- Block 3: Task Routing & Stop Boundaries -->
+    <g transform="translate(170, 244)">
+      <rect x="0" y="0" width="400" height="88" rx="6" class="card-core" />
+      <text x="200" y="22" text-anchor="middle" class="card-title-text">任務分流與停止邊界</text>
+      <line x1="60" y1="30" x2="340" y2="30" class="card-divider" />
+      <text x="200" y="47" text-anchor="middle" class="card-desc">唯讀 → 結論即交付</text>
+      <text x="200" y="64" text-anchor="middle" class="card-desc">有限修改 → 完成即停</text>
+      <text x="200" y="79" text-anchor="middle" class="card-desc">多步 / 跨系統 → 補規劃</text>
+    </g>
+  </g>
+
+  <!-- ==================== CONNECTORS & ROUTING ARROWS ==================== -->
+  <!-- 1. Codex -> Anchor (透過 root) -->
+  <path d="M 142 209 L 142 268" class="arrow-line" marker-end="url(#arrow)" />
+  <rect x="108" y="230" width="68" height="18" rx="3" class="arrow-label-bg" />
+  <text x="142" y="243" text-anchor="middle" class="arrow-label-text">透過 root</text>
+
+  <!-- 2. Anchor -> Core RESOLVE ($COLLAB 絕對路徑) -->
+  <path d="M 151 390 L 151 490 L 268 490" class="arrow-line" marker-end="url(#arrow)" />
+  <rect x="150" y="428" width="112" height="18" rx="3" class="arrow-label-bg" />
+  <text x="206" y="441" text-anchor="middle" class="arrow-label-text">$COLLAB 絕對路徑</text>
+
+  <!-- 3. Claude Code -> Core RESOLVE (引用) -->
+  <path d="M 358 209 L 358 470" class="arrow-line" marker-end="url(#arrow)" />
+  <rect x="340" y="328" width="36" height="18" rx="3" class="arrow-label-bg" />
+  <text x="358" y="341" text-anchor="middle" class="arrow-label-text">引用</text>
+
+  <!-- 4. notyet-harness Repo -> Core RESOLVE (引用) -->
+  <path d="M 584 209 L 584 470" class="arrow-line" marker-end="url(#arrow)" />
+  <rect x="566" y="328" width="36" height="18" rx="3" class="arrow-label-bg" />
+  <text x="584" y="341" text-anchor="middle" class="arrow-label-text">引用</text>
+
+  <!-- 5. Antigravity -> Core RESOLVE (workspace URI 滿足 (1)) -->
+  <path d="M 794 209 L 794 490 L 672 490" class="arrow-line" marker-end="url(#arrow)" />
+  <rect x="716" y="328" width="156" height="18" rx="3" class="arrow-label-bg" />
+  <text x="794" y="341" text-anchor="middle" class="arrow-label-text">workspace URI 滿足 (1)</text>
+
+</svg>

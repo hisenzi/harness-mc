@@ -18,7 +18,7 @@
 <!-- chapter:start entry -->
 # 首次啟動與接手：先知道能不能安全開始
 
-文件版本：**v0.4.0** · 更新日期：2026-09-10 · 狀態：公開候選（未部署）
+文件版本：**v0.4.1** · 更新日期：2026-09-21 · 狀態：公開候選（未部署）
 
 > 文件識別碼：operator-guide-entry；章節鍵：entry
 > 內容 owner：Vincent／JV-36；能力 owner：JV-45（account-login-sync-start-v1）
@@ -48,6 +48,24 @@ node "$COLLAB/harness-mc/scripts/account-login-sync-start.mjs" \
 6. `ready` 後仍要過原 task 的 work-anchor、scope 與 ownership 檢查；`blocked`／`degraded` 時保存安全摘要，交原 owner 決定下一步。
 
 沒有 remote read 權限時不執行上述遠端查詢；只能報告本地資訊與 `remote_truth_not_probed` 的限制，不宣稱 remote 已同步。
+
+### 啟動與解析鏈架構
+
+> 規範依據：本架構為 GitHub Issue #5（$COLLAB 解析鏈與啟動路由試行）審查通過之正式規範。各工具入口透過薄轉接或環境變數對齊 `000_Agent/CORE.md`，消除舊有 6 項必讀與各處路徑漂移。
+
+換環境或從任何入口（工具入口、CLI、平台）啟動時，路徑解析與規則讀取依循以下架構：
+
+![MorroWise 啟動與解析鏈架構](/docs/harness-entry-architecture.svg)
+
+#### 解析職責與入口對照表
+
+| 層級 | 檔案／入口 | 角色與職責 | 解析方式與 Fallback |
+|---|---|---|---|
+| **錨點層** | `$COLLAB/AGENTS.md` | 本機絕對路徑錨點 | 頂部宣告 `$COLLAB resolves to:`；消除舊 6 項必讀，改以 Startup Routing 導引至 CORE |
+| **核心層** | `000_Agent/CORE.md` | 規則唯一正本 | 定義三步解析順序：(1) 平台入口/工作區 → (2) symlink 反推 → (3) 問 Vincent |
+| **工具層** | `~/.claude/CLAUDE.md` | Claude Code 入口 | 引用 CORE；本檔為 symlink 時由 `readlink` 上四層反推 `$COLLAB` |
+| **Repo 層** | `notyet-harness/AGENTS.md` | 倉庫薄入口 | 引用 CORE 路徑規範的解析順序，不維護第二份清單 |
+| **IDE 層** | Antigravity / Codex | 編輯器工作區入口 | 由平台工作區 URI 載入根目錄錨點 `$COLLAB/AGENTS.md`（滿足解析順序 1），或由 `~/.codex/AGENTS.md` 轉接導引至 CORE |
 
 ## 給 AI Agent：從零建制到完成
 
@@ -88,11 +106,16 @@ node "$COLLAB/harness-mc/scripts/account-login-sync-start.mjs" \
 
 ## 版本與維護
 
-1. 文件 ID `operator-guide-entry`、目前 v0.4.0；版本描述本章內容，不是本機 ready 或 runtime 啟用版本。
+1. 文件 ID `operator-guide-entry`、目前 v0.4.1；版本描述本章內容，不是本機 ready 或 runtime 啟用版本。
 2. E-03 維護：JV-45 契約、CLI 或 freshness 規則變更時，作者記 affected chapter `entry`；具名 reviewer 核對更新／no-impact，更新文件版本、歷史與來源審查後重建。
 3. E-01–E-03 是章內引用，不是新 task／驗收矩陣；正文證據回 JV-36，實際能力驗收回原 task 的既有 acceptance IDs。
 
 ## 版本歷史
+
+### v0.4.1 — 2026-09-21｜補入啟動與解析鏈架構圖與三步解析順序
+
+- 新增啟動與解析鏈 SVG 向量架構圖，視覺化呈現錨點層、核心層與各入口分流階層。
+- 補入三步解析順序與解析職責對照表，對齊 CORE.md 的 $COLLAB 解析規範。
 
 ### v0.4.0 — 2026-09-10｜同 repo 正文遷移與部署前接線
 
@@ -110,11 +133,13 @@ node "$COLLAB/harness-mc/scripts/account-login-sync-start.mjs" \
 <!-- chapter:start collaboration -->
 # 多人協作：一起完成工作，不互相覆蓋
 
-文件版本：**v0.5.0** · 更新日期：2026-09-10 · 狀態：公開候選（未部署）
+文件版本：**v0.5.1** · 更新日期：2026-09-14 · 狀態：公開候選（未部署）
 
 > 文件識別碼：operator-guide-collaboration；章節鍵：collaboration
 > 內容 owner：Vincent／JV-36；能力 owner：JV-37／JV-32
 > 適用版本：multi-machine-repo-coordination v1.4；workbook v1 為具名 opt-in，非預設
+
+GitHub Issue／PR 協作中的 CI 與正式 Review，請見[版本交付章](/docs/capabilities/delivery)。文件更新與頁面不同步時，請見[文件更新流程](/docs/capabilities/documentation)。
 
 ### 這項能力解決什麼問題？
 
@@ -389,7 +414,7 @@ Git commit、push、部署、預設啟用不是這份指南的隱含授權。後
 | 項目 | 本章定義 |
 | --- | --- |
 | 文件識別碼 | `operator-guide-collaboration`，沿用文件來源登錄 ID，不新增 task ID |
-| 目前文件版本 | `v0.5.0`；版本描述正文內容，不代表協作 runtime 的版本 |
+| 目前文件版本 | `v0.5.1`；版本描述正文內容，不代表協作 runtime 的版本 |
 | 維護 owner | Vincent／JV-36；本次文字修訂者為 Codex |
 | 唯一正文 | `$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md` |
 | 來源指紋 | 由文件 registry 的 `source_refs[].fingerprint` 與 `summary_reviewed_source_fingerprint` 綁定本檔；不在正文內放自身 hash |
@@ -407,6 +432,10 @@ Git commit、push、部署、預設啟用不是這份指南的隱含授權。後
 合入 Main 不代表 runtime 已啟用。發布時另記 exact commit SHA、bundle digest、deployment ID、URL 與 live 驗收；回退只能採已審查的相容版本，仍依發布授權執行。本章沒有授權部署或變更工作本預設值。
 
 ## 版本歷史
+
+### v0.5.1 — 2026-09-14｜協作頁薄接 CI 操作入口
+
+- CI 設定、Checks、Review 與故障恢復只維護於交付章，本章以薄連結接入。
 
 ### v0.5.0 — 2026-09-10｜同 repo 正文遷移與部署前接線
 
@@ -543,7 +572,7 @@ canonical task 已有 acceptance_matrix 時，從當前來源解析完整 ID 集
 <!-- chapter:start delivery -->
 # 版本交付與接續：本機完成和送到遠端分開看
 
-文件版本：**v0.6.0** · 更新日期：2026-09-14 · 狀態：公開候選（未部署）
+文件版本：**v0.6.1** · 更新日期：2026-09-20 · 狀態：公開候選（未部署）
 
 > 文件識別碼：operator-guide-delivery；章節鍵：delivery
 > 內容 owner：Vincent／JV-36；能力 owner：JV-32 與原交付 task
@@ -608,6 +637,28 @@ git -C "$COLLAB/harness-mc" diff --cached --stat
 - **完成與交接**：首次真實 run 的 URL、兩個來源 SHA、結果與必要反例證據回原工作 Issue／PR；指引與必要薄連結及生成版本同步後才算收尾。只更新本機檔案、設定 secret 或留下 Review 都不算 CI 已啟用。首次完成回報附文件證據與提醒次數，未完成的前置不記成零提醒成功。
 
 CI 通過不授權 merge 或部署；目前不啟用 required checks。Git branch、commit、push、PR 與 merge 仍沿原具體批准。本試行不要求每個專案套用，也不擴入原單檔 verifier 修復 PR。
+
+## GitHub Issue／PR 自動觸發 Agent 接續指引（候選規範）
+
+> **候選原則已補；可執行規格與新手實測待具名試行**。本節僅定義治理原則與防循環邊界，尚未接線啟用程式化自動喚醒；目前環境仍維持人工轉交與通知，不冒充 runtime 已具備自動觸發能力。
+
+- **觸發情境與授權邊界**：
+  1. 僅在 Vincent 已明確交辦或授權之具名 Issue／PR 發生指定事件時觸發（如：指定 Label、Reviewer 指派、或具名審查留言需修正）。
+  2. 收到通知或事件本身**不構成新授權**；不得執行未授權之任意外部命令。若原任務終點僅核准「開 PR 待審查」，Agent 達成後即停，不得擅自 merge 或部署。
+- **Agent 接續與排程邊界**：
+  1. 優先使用現有可信入口；目前環境尚未啟用全自動喚醒，缺乏程式化啟動管道時維持人工轉交與通知。
+  2. 執行前必先重讀最新狀態、確認無同檔並行衝突與 ownership。
+- **跨 Agent 具名交接情境（允許接續）**：
+  1. 已授權、具名且明確綁定受審版本的跨 Agent 修正／複驗可接續執行（例如：「Codex 提出具體修正要求 → 指定 Antigravity 修正 → 交付後由 Codex 複驗」之具名交接流程）。
+- **防循環與過濾反例（禁止觸發）**：
+  1. **純進度回報不觸發**：無新指示、純 status/progress 回報或無具體 action 的留言，嚴格禁止再次觸發任何 Agent，避免無效空跑或反覆喚醒。
+  2. **重送不重做（防重放）**：同一事件、相同 commit SHA 或相同留言內容若無新變更，不重複執行。
+  3. **未授權事件不執行**：未包含明確交辦授權或目標超出已核准邊界時，不得自動執行外部或破壞性命令。
+  4. **不以單一 GitHub 帳號判定**：因目前留言共用同一 `hisenzi` 帳號，不得只靠 author 判斷實際 Agent，必須解析留言內容之具名角色標記（例如 `[Codex → Antigravity]`、`[Codex 複驗結果]`）與受審版本指紋比對。
+- **唯讀與可逆性**：
+  1. 自動觸發時先執行唯讀 preflight；遇到阻擋或未知 dirty 時立即停止並回報，不執行破壞性指令。
+- **收尾與自覺驗證**：
+  1. 執行完成後，成果一律回原 Issue／PR，並以 0 次提醒自主完成說明書影響判斷與薄連結收尾。
 
 ## 本機階段 commit（local-c1-commit）
 
@@ -684,7 +735,7 @@ node "$COLLAB/harness-mc/scripts/repo-coordination-runtime.mjs" local-c1-pending
 
 ## 版本與維護
 
-1. 文件 ID `operator-guide-delivery`、目前 v0.6.0；D-01–D-04 是本章維護／情境引用，不另配 task 編號。
+1. 文件 ID `operator-guide-delivery`、目前 v0.6.1；D-01–D-04 是本章維護／情境引用，不另配 task 編號。
 2. worktree-commit、cc-push 或 closeout contract 改動時，作者核對兩條路由、授權與 first unmet state；具名 reviewer 查實際 diff，記更新／no-impact。
 3. 新版本正文與歷史一起更新；指南證據回 JV-36，實際 Git／交付證據回原 task。本文不存其他專案的 commit 清單或 runtime 私人資料。
 
@@ -715,6 +766,10 @@ C2 只依原 task 的必要 closeout 契約，不因批次而自造；本地完�
 
 ## 版本歷史
 
+### v0.6.1 — 2026-09-20｜增補 Issue／PR 自動觸發候選原則與跨 Agent 交接邊界
+
+- 增補 GitHub Issue／PR 自動觸發候選原則（標示待具名試行）、防循環過濾反例、跨 Agent 具名交接情境與新手 Agent 操作邊界。
+
 ### v0.6.0 — 2026-09-14｜小範圍 CI 與正式 Review 操作指引
 
 - 補必要測試、固定共享依賴、最小權限、PR 操作、故障恢復及實際 CI 證據入口。
@@ -743,7 +798,7 @@ C2 只依原 task 的必要 closeout 契約，不因批次而自造；本地完�
 <!-- chapter:start documentation -->
 # 文件更新與同步：能力變了，說明書也要接上
 
-文件版本：**v0.5.1** · 更新日期：2026-09-14 · 狀態：公開候選（未部署）
+文件版本：**v0.5.2** · 更新日期：2026-09-14 · 狀態：公開候選（未部署）
 
 > 文件識別碼：operator-guide-documentation；章節鍵：documentation
 > 內容／來源與生成 owner：Vincent／JV-36；網站 owner：MC-DOCS-01
@@ -825,6 +880,15 @@ reviewer 不得等同 author；來源或正文再改，原 review 的指紋綁�
 v2 首次尚未 commit 的 mapping，須由獨立 reviewer 核實初始來源、章節與版本基準；之後 production 以已 commit registry 中最近一次有效 review 的來源／章節指紋為 baseline，沒有既有 review 才使用初始 mapping。不能刷新 fingerprints 掩蓋漏更新，也不能在能力第二次變更時，沿用上次正文卻宣稱本次已更新。讀取 Git 現況只提供差異證據，不代表已 merge、啟用或取得 Git 寫入授權。
 
 ## 本地命令與驗收邊界
+
+### 唯一正文與同步完成條件
+
+只修改 `$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md`；舊入口與其他章只留薄連結，不複製正文、版本號或完成狀態。registry 保存來源／章節與審查證據；bundle、六摘要、網站及搜尋皆是工具生成的投影。
+
+GitHub 上合併正文不會自動更新本機 checkout，也不會自動重建 bundle。Agent 依本次授權整合正文、完成受影響來源的獨立審查，再執行下列既有同步與檢查命令；最後開啟使用者實際使用的網址，核對 HTTP 成功、章節版號與新增內容，才可回報該頁已更新。只改 Markdown、只合併 PR 或只通過 schema 都未完成這條鏈。
+
+本機預覽使用 local-only registry／bundle；修改中的正文不得沿用舊公開核准。舊 `public_release_review` 僅保留原版本證據，新的公開候選需另行審查；本機同步不改寫 `release/` 或表示已部署。
+
 
 下列本地入口已實作；先完成來源／reviewer 審查，再按順序檢查與生成。本輪完整驗收結果仍以原 JV-36／MC-DOCS-01 evidence 為準，寫出命令不等於所有驗收已通過：
 
@@ -931,12 +995,16 @@ Heptabase adapter 仍為 prototype；MANUAL 是另一薄入口，不能要求它
 
 ## 版本與維護
 
-1. 文件 ID `operator-guide-documentation`、目前 v0.5.1；M-01–M-05 是章內引用，實測仍沿原 DOC／WEB／JV36 IDs。
+1. 文件 ID `operator-guide-documentation`、目前 v0.5.2；M-01–M-05 是章內引用，實測仍沿原 DOC／WEB／JV36 IDs。
 2. 變更作者記 affected chapter、來源 diff、更新／no-impact、reviewer 與證據；generator 只能核證據完整及版本綁定，不替代 reviewer 判斷語意。
 3. 正文、章內維護版號、首筆歷史與 registry／bundle metadata 同版；runtime 啟用、Main SHA、部署 ID／URL 各自記錄，不從 v0.4.0 推定。
 4. 本地成果回原 JV-36／MC-DOCS-01；WEB／GitHub／Zeabur 未實跑就保留未完成，不為文件補漏擴做發布。
 
 ## 版本歷史
+
+### v0.5.2 — 2026-09-14｜明定本機說明書同步的完成邊界
+
+- 沿用唯一正文、來源審查與既有生成器；補正文整合到實際頁面驗證的收尾規則，區分本機預覽及公開核准。
 
 ### v0.5.1 — 2026-09-14｜功能完成時自行處理文件影響
 
@@ -971,7 +1039,7 @@ Heptabase adapter 仍為 prototype；MANUAL 是另一薄入口，不能要求它
 <!-- chapter:start troubleshooting -->
 # 故障處理與交接：先找斷點，再做可驗證的修正
 
-文件版本：**v0.4.0** · 更新日期：2026-09-10 · 狀態：公開候選（未部署）
+文件版本：**v0.4.1** · 更新日期：2026-09-14 · 狀態：公開候選（未部署）
 
 > 文件識別碼：operator-guide-troubleshooting；章節鍵：troubleshooting
 > 內容 owner：Vincent／JV-36；診斷路由 owner：JV-32，實際修復回原能力 task
@@ -1042,16 +1110,20 @@ npm --prefix "$COLLAB/harness-mc" run docs:check
 - T-02 負例：把來源 hash 換成新值、關閉驗證或重跑直到碰巧綠；原需求未被證明，不算修好。
 - T-03 合法無修改：問題來自已查明的來源／環境限制，本文無缺陷；保留相同正文 hash、no_change 理由、待解 owner 與 next action，不製造空 diff。
 - T-04 回復：只回復本次核准 diff／產物；來源已被他方改動先交接，不整檔覆蓋、reset 或擅自回退線上部署。
-- T-05 停止：本案依 CLM-1 的預算與最多兩輪針對性修訂；同 blocker 無改善、來源／ownership 變更或新人工決策需求即交接，不無限修補。
+- T-05 停止：依原任務約定的預算；同一 blocker 兩輪無改善、來源／ownership 變更或新人工決策需求時，停止受影響 slice 並交接。CLM-1 的預設至多兩輪只適用於全案反覆文件驗證；一般更新只重驗受影響項，其文件驗證預算不作為工程總時限。
 
 ## 版本與維護
 
-1. 文件 ID `operator-guide-troubleshooting`、目前 v0.4.0；T-01–T-05 是章內維護引用，結果仍回原 acceptance IDs。
+1. 文件 ID `operator-guide-troubleshooting`、目前 v0.4.1；T-01–T-05 是章內維護引用，結果仍回原 acceptance IDs。
 2. 方法、失敗碼或安全邊界改變時，作者記受影響章節，具名 reviewer 對照來源版本審查更新／no-impact；不把未知診斷升格成正式規則。
 3. 指南改版更新正文／歷史及 JV-36 metadata；bug fix 證據留原能力 task，環境／權限缺口留可逆下一步，不複製 raw logs。
 4. 故障處理完成不自動觸發改 skill／記憶、新 task、Git、外部同步或部署；需要時回原決策者。
 
 ## 版本歷史
+
+### v0.4.1 — 2026-09-14｜對齊閉環方法的驗證範圍
+
+- 全案文件反覆驗證與一般修正的預算分開，避免把兩輪文件審查誤作工程執行上限。
 
 ### v0.4.0 — 2026-09-10｜同 repo 正文遷移與部署前接線
 

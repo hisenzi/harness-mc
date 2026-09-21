@@ -409,7 +409,7 @@
       "source_refs": [
         {
           "path": "$COLLAB/notyet-harness/000_Agent/CORE.md",
-          "fingerprint": "d3884b765959bcf7151ed8a191c96a5d8342ca4953d08a423d0a28fd215d8b67"
+          "fingerprint": "7c234879ba9417007bc5208453286d554a33d7e451fa76a11e501c314c2ccea9"
         },
         {
           "path": "$COLLAB/notyet-harness/000_Agent/skills/multi-machine-repo-coordination/SKILL.md",
@@ -453,7 +453,7 @@
         },
         {
           "path": "$COLLAB/notyet-harness/000_Agent/skills/review/SKILL.md",
-          "fingerprint": "ed89a1d62c6a64da6f10bc2a679ec9e34e46bd17bd310782d003dda4a608f87d"
+          "fingerprint": "e9f822c30d753bc32e8433c1144915fdf58eb2b887746f40c0c57ed4990eba03"
         },
         {
           "path": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/closed-loop.md",
@@ -563,7 +563,7 @@
     {
       "mapping_id": "collaboration",
       "source_fingerprints": {
-        "$COLLAB/notyet-harness/000_Agent/CORE.md": "55877cf707a6338fa6969fe779d42710ec9e1a57764b8daf9a350ae1b4aab361",
+        "$COLLAB/notyet-harness/000_Agent/CORE.md": "7c234879ba9417007bc5208453286d554a33d7e451fa76a11e501c314c2ccea9",
         "$COLLAB/notyet-harness/000_Agent/skills/multi-machine-repo-coordination/SKILL.md": "e421aee6cf37d736e303767e66050dc3303c993dbc7abff08fd744cafa1ead20",
         "$COLLAB/harness-mc/system-workflow/docs/specs/repo-coordination-gate.md": "7cc07d43301b31eddf952d3665c97d0340e2caa9af93980d71cd9505ea8cfcb6",
         "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-workbook-flow.md": "41cc2b2dea2beca372e9882525d17243661346fdeaec397b11b9ca7ccc221287",
@@ -573,14 +573,14 @@
       "document_fingerprints": {
         "operator-guide-collaboration": "1ccca1a16bee0844ade1e0461514787518a25c245a793ed31a9231d2c3a4b143"
       },
-      "decision": "update_required",
-      "reason": "新增 delivery／documentation 薄連結，協作正文不複製 CI 操作規則；既有協作能力來源未變。",
+      "decision": "no_impact",
+      "reason": "CORE.md 補足三步解析順序與按需閱讀路由（Issue #5）；多人協作機制與既有 Git 協調契約未受影響。",
       "evidence_refs": [
         "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md"
       ],
       "author": "Codex /root",
       "reviewer": "Codex /root/ci_review",
-      "reviewed_at": "2026-09-14"
+      "reviewed_at": "2026-09-21"
     },
     {
       "mapping_id": "execution",
@@ -588,7 +588,7 @@
         "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md": "47d19a9f1ffa148efc4de42dfb5d756a39129dafe813d7511831b1f9b815dfb3",
         "$COLLAB/harness-mc/system-workflow/docs/task-write-command-map.md": "877a830051a6efb8891344ce7643b74d1a1e0562998389ee2153c5c43ce10e13",
         "$COLLAB/notyet-harness/000_Agent/skills/vincent-superpowers/03-execution/SKILL.md": "2d50dd755ecc3cc5e2e29db0a1414078b949dba112af63b46a9f744792b8041b",
-        "$COLLAB/notyet-harness/000_Agent/skills/review/SKILL.md": "ed89a1d62c6a64da6f10bc2a679ec9e34e46bd17bd310782d003dda4a608f87d",
+        "$COLLAB/notyet-harness/000_Agent/skills/review/SKILL.md": "e9f822c30d753bc32e8433c1144915fdf58eb2b887746f40c0c57ed4990eba03",
         "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/closed-loop.md": "9948b43738ec6813e02d8900374bda3a087fa97a78e89b841552baa6ee2b8afd",
         "$COLLAB/harness-mc/scripts/work-anchor-preflight.mjs": "5353c6444dbde9a41479834f7d9c10565379db1f074e799c472cacb228297072"
       },
@@ -596,14 +596,14 @@
         "operator-guide-execution": "e2f0935cb84f3e8ceb0f7193f0878b183815be345c1f85f47a49e229f327b8bd"
       },
       "decision": "no_impact",
-      "reason": "closed-loop v1.5 改為按用途閱讀與條件式三階段；本章已區分純文件與工程、授權及受影響 slice 停止，X-03 依原約定預算而非文件審查上限，既有方法入口足夠；保留正文不重複抄錄。",
+      "reason": "review skill 對齊 CORE 唯一正本；執行驗收契約與既有步驟未受影響。",
       "evidence_refs": [
         "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
         "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/closed-loop.md"
       ],
       "author": "Codex /root",
       "reviewer": "Codex /root/ci_review",
-      "reviewed_at": "2026-09-14"
+      "reviewed_at": "2026-09-21"
     },
     {
       "mapping_id": "delivery",

@@ -18,7 +18,7 @@
       "completed_at": "2026-06-29",
       "commits": ["58b2cee", "4c89162", "9f39387", "945a70b"],
       "summary": "Supabase 專案 ref wgxnvfaqykbgbqmfdzoe 已確認存在且 DNS/Management API 可達；live REST probe 可用 anon key 讀到 families/settings（200 []），schema/RLS 離線 contract 與 Supabase-only gate 通過。",
-      "note": "2026-06-29 收斂驗收：node scripts/verify-p1-2.mjs 通過，包含 schema contract、Supabase-only contract、family-scoped child login、project-ref gate、live Supabase probe。更嚴格的 seeded cross-family/child permission RLS 實測清單保留在 docs/p1-2-supabase-rls-verification.md，作為後續帳號/資料流實測的驗收依據。"
+      "note": "2026-06-29 收斂驗收：node scripts/verify-p1-2.mjs 通過。後續正式版架構決策將評估遷移至 Neon/PostgreSQL 並移除 Supabase。"
     },
     {
       "id": "p1-3",
@@ -29,104 +29,174 @@
       "done_condition": "家長可註冊/登入；家長端可新增/停用/重設小孩帳密；小孩帳密可登入且只見自己資料、無審核與設定權限",
       "completed_at": "2026-06-29",
       "commits": ["01aede0"],
-      "summary": "家長註冊/登入、家庭代碼、小孩 Edge Function 建帳、child login、重設密碼、停用後 RLS 隔離與 child 無設定/小孩管理權限皆已用 live Supabase disposable account flow 驗證通過。",
-      "note": "2026-06-29 live 驗證：部署 create-child-account、套用 supabase/schema.sql，修正 schema login_code idempotency 順序與 verifier normalize/curl fallback 後，node scripts/verify-p1-3-live-account-flow.mjs --write-live-account-test 通過。verifier 已清掉 disposable family/table rows；disposable Auth users 可能需 Dashboard/service-role cleanup。"
+      "summary": "家長註冊/登入、家庭代碼、小孩 Edge Function 建帳、child login、重設密碼、停用後 RLS 隔離與 child 無設定/小孩管理權限皆已用 live Supabase disposable account flow 驗證通過。"
     },
     {
-      "id": "p1-4",
-      "title": "資料層遷移 localStorage → Supabase + 歷史紀錄統計",
-      "status": "todo",
-      "track": "phase-1",
-      "depends_on": ["p1-3"],
-      "done_condition": "讀寫全走 Supabase；舊版 JSON 匯出檔可匯入新 schema；紀錄/統計（累計獲得/已兌換/餘額）讀雲端資料正確"
+      "id": "proto-core",
+      "title": "核心流程 Prototype 交付（P01–P07 驗收通過）",
+      "status": "done",
+      "track": "phase-2",
+      "done_condition": "大人與小孩前台介面統一且權限清楚，完成「填願望 → 審核 → 得點 → 足額兌換 → 帳本」，後台獨立管理，P01–P07 全部通過",
+      "completed_at": "2026-09-22",
+      "commits": ["7f91d2b"],
+      "summary": "願望提報與雙軌模式（體驗約定免自付 vs 方式 A 有價商品自動折抵）、家長審核核定、得點申報與快捷晶片、全域自訂換算設定、足額兌換、不可篡改帳本流水、手機端 App 感佈局（底部 Tab 與抽屜）全流程已由 Claude Code 真實瀏覽器手動複驗通過 (Issue #1)。",
+      "note": "2026-09-22 CC 第二輪複驗確認 F01–F05 全數修復結案，P01–P07 全數勾選通過。"
     },
     {
       "id": "p2-1",
-      "title": "願望流程（提交＋理由＋建議點數 → 家長審核可調 → 進度追蹤）",
-      "status": "todo",
+      "title": "願望流程（雙軌模式：體驗約定 vs 方式 A 有價商品折抵）",
+      "status": "done",
       "track": "phase-2",
-      "depends_on": ["p1-4"],
-      "done_condition": "小孩提交願望（內容＋為什麼想要＋建議點數）→ 家長待審核列表 → 家長可調整點數後核定 → 進度條按核定點數計算"
+      "depends_on": ["p1-1"],
+      "done_condition": "小孩提交願望（內容＋為什麼想要＋建議點數）→ 家長審核核定 → 進度條按核定點數計算",
+      "completed_at": "2026-09-22",
+      "commits": ["7f91d2b"],
+      "summary": "雙軌願望模式：體驗約定型純努力達成免現金自付；方式 A 有價商品輸入金額自動依折抵率計算實扣點數與自付額，審核核定與進度計算完全自洽。"
     },
     {
       "id": "p2-2",
-      "title": "得點申報流程（含舊版得分項目規則）",
-      "status": "todo",
+      "title": "得點申報流程（含常用努力快捷晶片與日期防護）",
+      "status": "done",
       "track": "phase-2",
-      "depends_on": ["p1-4"],
-      "done_condition": "小孩申報 → 家長批准入帳/拒絕不入帳；計分規則與舊版一致：小考（一般/理化加倍）、段考（國中/高中）、模擬考、複習講義、自訂加點"
+      "depends_on": ["p1-1"],
+      "done_condition": "小孩申報 → 家長批准入帳/拒絕不入帳；計分規則包含小考、段考、模擬考、複習講義、自訂加點，得點日防禦驗證",
+      "completed_at": "2026-09-22",
+      "commits": ["7f91d2b"],
+      "summary": "孩子端提供常見努力雙列快捷晶片秒填，得點日期限制不可晚於今天，家長批准後點數即時入帳並寫入帳本流水。"
+    },
+    {
+      "id": "p2-4",
+      "title": "兌換流程接全域參數（方式 A 即時換算與足額兌換）",
+      "status": "done",
+      "track": "phase-2",
+      "depends_on": ["p2-1"],
+      "done_condition": "兌換計算讀 settings（預設 1 點=$5、折抵 70%），核定點數/商品金額 × 參數計算正確，足額兌換扣點與餘額連動",
+      "completed_at": "2026-09-22",
+      "commits": ["7f91d2b"],
+      "summary": "即時套用家長全域設定，足額兌換產生詳細兌換收據（商品總額、折抵金額、自付額、實扣點數），點數不足時按鈕禁用並明確提示差額。"
+    },
+    {
+      "id": "p3-2",
+      "title": "自訂兌換規則設定頁（家長後台換算全域參數）",
+      "status": "done",
+      "track": "phase-3",
+      "depends_on": ["p2-4"],
+      "done_condition": "家長可修改「1 點 = $X」「折抵 Y%」，改動後新兌換即套用新參數，既有紀錄不回溯",
+      "completed_at": "2026-09-22",
+      "commits": ["7f91d2b"],
+      "summary": "家長後台可自訂每點金額與折抵比例，提供即時試算預覽卡片，儲存後前台願望卡片即時無重整重繪，F01 結案通過。"
+    },
+    {
+      "id": "p3-4",
+      "title": "JSON 匯出匯入（原型資料備份／還原／重設）",
+      "status": "done",
+      "track": "phase-3",
+      "depends_on": ["p1-1"],
+      "done_condition": "家長端可匯出全家資料 JSON、匯入還原及重設示範資料",
+      "completed_at": "2026-09-22",
+      "commits": ["7f91d2b"],
+      "summary": "前台後台皆支援一鍵匯出完整 JSON 備份、匯入還原及恢復種子測試資料。"
+    },
+    {
+      "id": "p1-4",
+      "title": "資料層遷移 localStorage → Supabase",
+      "status": "deferred",
+      "track": "phase-1",
+      "depends_on": ["p1-3"],
+      "replaced_by": "prod-db",
+      "done_condition": "讀寫全走雲端資料庫",
+      "note": "依 Issue #1 決策：移除 Supabase，改由正式版後端資料庫（Neon/PostgreSQL）直接承接。"
+    },
+    {
+      "id": "d-1",
+      "title": "部署（啟用 GitHub Pages）",
+      "status": "deferred",
+      "track": "deploy",
+      "replaced_by": "prod-zeabur",
+      "done_condition": "GitHub Pages 啟用且線上可用",
+      "note": "依 Issue #1 決策：正式架構改採 Zeabur 部署，不使用 GitHub Pages。"
+    },
+    {
+      "id": "d-keepalive",
+      "title": "每日 API ping 排程，防 Supabase 休眠",
+      "status": "deferred",
+      "track": "deploy",
+      "done_condition": "每日一次 API ping 排程啟用",
+      "note": "依 Issue #1 決策：移除 Supabase，不需休眠防護。"
     },
     {
       "id": "p2-3",
       "title": "email 通知（Edge Function + 寄信服務）＋ 站內通知",
       "status": "todo",
       "track": "phase-2",
-      "depends_on": ["p2-1", "p2-2"],
+      "depends_on": ["proto-core"],
       "done_condition": "小孩提交願望/申報得點 → 家長信箱收到通知信；家長審核後產生站內通知給小孩"
-    },
-    {
-      "id": "p2-4",
-      "title": "兌換流程接全域參數",
-      "status": "todo",
-      "track": "phase-2",
-      "depends_on": ["p2-1"],
-      "done_condition": "兌換計算讀 settings（預設 1 點=$5、折抵 70%），核定點數 × 參數計算正確，70/30 顯示與入帳一致"
     },
     {
       "id": "p3-1",
       "title": "CRUD 完善（小孩/願望/得分項目/紀錄 增刪改查）",
       "status": "todo",
       "track": "phase-3",
-      "depends_on": ["p2-1", "p2-2"],
-      "done_condition": "家長端：小孩增刪改、願望編輯、得分項目增刪改（含倍率設定）、紀錄刪除，全部可操作且即時同步"
-    },
-    {
-      "id": "p3-2",
-      "title": "自訂兌換規則設定頁（全域參數）",
-      "status": "todo",
-      "track": "phase-3",
-      "depends_on": ["p2-4"],
-      "done_condition": "家長可修改「1 點 = $X」「折抵 Y%」，改動後新兌換即套用新參數，既有紀錄不回溯"
+      "depends_on": ["proto-core"],
+      "done_condition": "家長端：小孩增刪改、願望編輯、得分項目增刪改（含倍率設定）、紀錄維護"
     },
     {
       "id": "p3-3",
       "title": "使用規則說明頁",
       "status": "todo",
       "track": "phase-3",
-      "depends_on": ["p3-2"],
-      "done_condition": "含六區塊：基本規則（顯示當前全域參數）、願望定價說明（建議點數機制）、閱讀加成規則（對話加成/洞見紀錄/多元加成）、教學加倍、得分項目說明、季度規則會議"
+      "depends_on": ["proto-core"],
+      "done_condition": "含基本規則、願望定價說明、閱讀加成規則、教學加倍、得分項目說明"
     },
     {
-      "id": "p3-4",
-      "title": "JSON 匯出匯入（雲端資料備份/還原）",
-      "status": "todo",
-      "track": "phase-3",
-      "depends_on": ["p1-4"],
-      "done_condition": "家長端可匯出全家資料 JSON、匯入還原，格式與 Supabase schema 對應"
+      "id": "prod-d1",
+      "title": "正式版架構與技術棧定案（D1 裁決：方案 B Next.js + Neon PostgreSQL）",
+      "status": "done",
+      "track": "deploy",
+      "done_condition": "澄清 Issue #1 矛盾，確立正式版資料庫（Neon PostgreSQL）與前後端技術棧（純 HTML/JS vs Next.js）",
+      "completed_at": "2026-09-23T09:05:00+08:00",
+      "summary": "依 Vincent 裁決（方案 B），正式版技術棧確定為 Next.js (App Router) + Neon PostgreSQL。確立多用戶家庭 SaaS 化路線，後續將建立 Next.js 專案架構、Neon Schema、React 元件重構與端到端複驗。"
     },
     {
-      "id": "d-1",
-      "title": "部署（啟用 GitHub Pages）＋ repos.json 登錄 + push",
+      "id": "prod-d2",
+      "title": "移除 Supabase 目錄與相容代碼（D2 裁決：選項 1 立即清理）",
+      "status": "done",
+      "track": "deploy",
+      "done_condition": "移除 supabase/ 目錄與 db.js 內舊版 Supabase 相容引用，精簡資料層",
+      "completed_at": "2026-09-22T23:05:00+08:00",
+      "summary": "依 Vincent 裁決（選項 1 立即清理），已完整移除 supabase/ 目錄、docs/ 舊文件與 8 個舊測試腳本；db.js 精簡為直接由 PrototypeStore 承接，刪除 dead Supabase 配置；所有原型與 CDP 測試通過。"
+    },
+    {
+      "id": "prod-db",
+      "title": "正式版資料庫建立（Schema / 權限 / 多租戶家庭隔離）",
       "status": "todo",
       "track": "deploy",
-      "depends_on": ["p2-3", "p3-1", "p3-2", "p3-3", "p3-4"],
-      "done_condition": "GitHub Pages 啟用且線上可用（2026-06-10 確認目前未啟用）；000_Agent/config/repos.json 加入 kids-reward 條目；GitHub main 為最新版本"
+      "depends_on": ["prod-d1"],
+      "done_condition": "在選定資料庫建立正式 Schema，落實家庭多租戶資料隔離與帳本不可篡改性",
+      "note": "2026-09-24：改回 todo。先前 done 標記缺乏可驗證的 Neon provisioning 證據（本機 repo 於 a7ae63d 仍為純 HTML/JS 原型，見 Issue #2 複驗）；正式 Neon Schema 建置與多租戶隔離待正式版階段實作與驗收。"
     },
     {
-      "id": "d-keepalive",
-      "title": "每日 API ping 排程，防 Supabase 免費層 7 天無活動休眠",
+      "id": "prod-auth",
+      "title": "正式身分驗證（家長主 Email 登入 + 小孩家庭內帳密）",
       "status": "todo",
       "track": "deploy",
-      "depends_on": ["p1-2"],
-      "done_condition": "每日一次 API ping 排程啟用（GitHub Actions schedule 或 OC cron 擇一）且實際成功執行 ≥1 次；確認 ping 會重置 inactivity 計時器（任何 API 請求皆可）",
-      "note": "起因：260611 發現 nsg-system 暫停且 90 天復原視窗只剩 6 天。免費層 7 天無 API/連線/dashboard 活動即暫停。若選 OC cron 需 HiSenzi 配置（CC 邊界不可改 OC cron）；GitHub Actions 路線 CC 可全做"
+      "depends_on": ["prod-db"],
+      "done_condition": "家長以 Email + 密碼登入，小孩以家長主 Email + 帳號 + 密碼登入，替換原型模擬登入"
+    },
+    {
+      "id": "prod-zeabur",
+      "title": "Zeabur 網站與後端部署 + 環境變數配置",
+      "status": "todo",
+      "track": "deploy",
+      "depends_on": ["prod-db", "prod-auth"],
+      "done_condition": "Zeabur 部署上線，正確連接雲端資料庫，前後台正常運作"
     },
     {
       "id": "d-verify",
-      "title": "驗收（5 條 success criteria）",
+      "title": "正式版整站上線驗收（5 條 success criteria）",
       "status": "todo",
       "track": "deploy",
-      "depends_on": ["d-1"],
+      "depends_on": ["prod-zeabur"],
       "done_condition": "project.json 5 條 success_criteria 全部通過"
     },
     {
@@ -134,9 +204,8 @@
       "title": "邀請碼註冊閘門",
       "status": "todo",
       "track": "trial",
-      "depends_on": ["p1-3"],
-      "done_condition": "家長註冊需輸入有效邀請碼，無碼或失效碼被擋；邀請碼可產生/停用（Vincent 端管理）；invite_codes 表＋RLS 入 schema",
-      "note": "目的：控試用量＋控濫用面＋間接控 email 額度。260611 公開試用評估產出"
+      "depends_on": ["prod-auth"],
+      "done_condition": "家長註冊需輸入有效邀請碼，無碼或失效碼被擋"
     },
     {
       "id": "trial-2",
@@ -144,17 +213,15 @@
       "status": "todo",
       "track": "trial",
       "depends_on": ["p2-3"],
-      "done_condition": "試用家庭預設只有站內通知；email 通知為家長設定頁明確開啟才寄；Resend 100 封/天額度有保護（超量靜默降級不報錯）",
-      "note": "Resend 免費層 100 封/天是公開試用第一道隱形牆，先於所有 Supabase 額度"
+      "done_condition": "試用家庭預設只有站內通知；email 通知為家長設定頁明確開啟才寄"
     },
     {
       "id": "trial-3",
       "title": "Realtime 輪詢降級",
       "status": "todo",
       "track": "trial",
-      "depends_on": ["p2-1", "p2-2"],
-      "done_condition": "Realtime 連線失敗或超量時自動 fallback 輪詢（30s 級）；可全域關閉 Realtime 純輪詢運行；家長待審核列表兩種模式下行為一致",
-      "note": "免費層 Realtime 並發 200 是第一道會撞的 Supabase 額度牆；待審核列表是唯一 realtime 用點，降級成本低"
+      "depends_on": ["prod-db"],
+      "done_condition": "連線超量時自動 fallback 輪詢，家長待審核列表行為一致"
     }
   ]
 }

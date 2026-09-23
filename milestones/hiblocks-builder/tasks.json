@@ -1,0 +1,104 @@
+{
+  "project": "hiblocks-builder",
+  "tasks": [
+    {
+      "id": "quick-open",
+      "title": "完成快速開案流程",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "HIBLOCKS-BUILDER-MVP-01",
+      "dependencies": [],
+      "done_condition": "README.md、最小 project.json、MVP tasks、formalize checkpoint、專案拓樸與局部驗證均完成，且 tasks 已可在 MC 查看"
+    },
+    {
+      "id": "site-spec-contract",
+      "title": "網站規格模組：定義 SiteSpec 與兩組完整範例",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "HIBLOCKS-BUILDER-MVP-02",
+      "dependencies": [],
+      "done_condition": "定義 SiteSpec v1（網站、頁面、section ID、block/recipe/theme 版本、typed props、素材 ID、內容來源、revision）；以原創的專業服務頁與作品展示頁兩組資料通過驗證。缺少必要文案時回傳 needs_input，不捏造案例或見證；錯誤型別、未知 schema 版本、重複 section ID、未知 block、非法 URL/路徑均拒絕。前置：確認本案管理 Builder 產品，$COLLAB/hiblocks 保持元件與 recipe 正本，既有客戶網站不被覆寫。"
+    },
+    {
+      "id": "catalog-adapter",
+      "title": "元件能力模組：建立版本固定的 HiBlocks catalog adapter",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "HIBLOCKS-BUILDER-MVP-03",
+      "dependencies": [],
+      "done_condition": "前置 site-spec-contract。讀取 $COLLAB/hiblocks/src/components/blocks/blocks.manifest.json 與 layout-recipes.manifest.json，提供 listBlocks/listRecipes/getBlockContract；只開放第一版實際需要且通過 props/素材來源檢查的元件，保留 catalog/component/theme 指紋。正確解析 required slot 及 allowed replacements；專業服務 recipe 的合法 proof 替換可通過，非法替換被拒。sample 缺口元件不得冒充正式能力；不複製或另立上游登錄正本。"
+    },
+    {
+      "id": "astro-renderer",
+      "title": "真實網站生成模組：SiteSpec 編譯為 Astro 元件與成品",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "HIBLOCKS-BUILDER-MVP-04",
+      "dependencies": [],
+      "done_condition": "前置 site-spec-contract、catalog-adapter。以固定元件白名單與受控 templates 將兩組 SiteSpec 轉成可建置的 Astro 網站，實際 import/render HiHero 等元件，不輸出 generic section 示意替代品。props、links、assets 及頁面順序與 spec 一致；同一 spec 與固定依賴得到相同的規範化輸出；未知 import、raw code、越界路徑與不允許的 URL 不進生成器。390px/1440px 可讀、CTA 正確、FAQ 可操作，阻斷動畫 JS 仍可讀關鍵內容。"
+    },
+    {
+      "id": "revision-store",
+      "title": "專案版本模組：保存原稿、變更提案、核准及回復",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "HIBLOCKS-BUILDER-MVP-05",
+      "dependencies": [],
+      "done_condition": "前置 site-spec-contract。以持久化 repository 保存 SiteSpec、素材指紋、ChangeProposal、Approval、Build/Release 記錄；重啟仍能完整讀回。變更帶 baseRevision，兩筆同基底並行修改只能一筆成功，過期提案需重做。核准綁 spec/catalog/assets 指紋，內容改變後舊核准失效；缺 evidence_ref 的核准拒絕。可回復 v1 並重新取得正確內容；本機操作者模式明示限制，不假裝已具 SaaS 身份隔離。"
+    },
+    {
+      "id": "preview-workspace",
+      "title": "預覽工作台模組：需求、頁面、差異與版本同處操作",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "HIBLOCKS-BUILDER-MVP-06",
+      "dependencies": [],
+      "done_condition": "前置 astro-renderer、revision-store。管理台提供需求與素材、真正頁面預覽、變更差異、版本紀錄；使用者可建立兩種範例並完成預覽。建置具有 queued/running/succeeded/failed 狀態與失敗原因；build timeout 或錯誤不得顯示成功，也不得覆蓋上一個可用預覽。分離 preview 與管理台執行環境，受控資料不得變成任意程式執行；不同 site ID 使用各自建置目錄。"
+    },
+    {
+      "id": "agent-change-tools",
+      "title": "AI 操作模組：自然語言只產生可驗證的網站變更",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "HIBLOCKS-BUILDER-MVP-07",
+      "dependencies": [],
+      "done_condition": "前置 catalog-adapter、revision-store、preview-workspace。提供 proposeSite/proposeChanges/validateProposal 等具型別工具；LLM 只能提出 spec 或受控 patch，不直接寫元件、任意檔案或發布。至少實測：改標題、換 CTA、調順序、補缺內容、要求不存在元件；顯示將改什麼與原因，確認後才建立新 revision。修改 CTA 後其他 props 與順序不變；模型格式錯誤/超時有可重試錯誤且無部分寫入。分列 deterministic fixture 測試與至少一次真實模型整合證據。"
+    },
+    {
+      "id": "release-adapter",
+      "title": "發布模組：核准版本、成品讀回與回復",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "HIBLOCKS-BUILDER-MVP-08",
+      "dependencies": [],
+      "done_condition": "前置 astro-renderer、revision-store、preview-workspace。定義 publish(siteId, revisionId, artifactHash, approvalId, idempotencyKey) 與 rollback 介面，先以本機發布目錄驗證 approved→building→verified→released。未核准、舊核准、hash 不符、重複請求和中斷均有正確結果；重新讀回的成品符合核准內容，失敗保留上版。只留下目標主機 adapter 邊界，本機發布不冒充公開 URL，正式主機/網域及部署另行確認後才執行。"
+    },
+    {
+      "id": "usage-ledger",
+      "title": "用量紀錄模組：分開記生成、建置、發布與人工修正",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "HIBLOCKS-BUILDER-MVP-09",
+      "dependencies": [],
+      "done_condition": "前置 revision-store、agent-change-tools、release-adapter。每個 operation ID 紀錄 site/revision、生成呼叫、provider 回報用量或 unavailable、建置耗時、發布結果、人工修正原因；重試不重複累加同一事件。能輸出兩個範例各自的成本/次數報告；有已定義的生成額度耗盡拒絕與失敗重試規則。本期無真實扣款，不把模擬用量稱為真實模型成本。"
+    },
+    {
+      "id": "two-site-product-acceptance",
+      "title": "產品整合驗收：兩種網站建立、修改、發布及回復",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "HIBLOCKS-BUILDER-MVP-10",
+      "dependencies": [],
+      "done_condition": "前置所有上述 MVP modules。以同一套程式、兩份不同 SiteSpec 跑完需求→補資料→AI 提案→確認→真實網站預覽→局部修改→本機發布→回復；第二案不用修改核心程式。保留 spec/元件/成品版本、390px/1440px 瀏覽器證據、實際操作與失敗紀錄。缺 props、合法 recipe 替換、過期核准、建置失敗、中斷重試、非法 path 等負例通過；使用者能親自操作。評估下一階段多租戶及付費試點，但不將本機驗收稱為正式 SaaS、公開部署、成交或第二大腦收錄。"
+    },
+    {
+      "id": "formalize",
+      "title": "依 MVP 測試結果啟動正式補完",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "HIBLOCKS-BUILDER-MVP-11",
+      "dependencies": [],
+      "done_condition": "已依 MVP 測試結果與最終目標補齊正式專案內容，並建立內容明確且各有驗收標準的正式 tasks"
+    }
+  ]
+}

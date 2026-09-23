@@ -1,0 +1,77 @@
+{
+  "project": "fj-en-website",
+  "tasks": [
+    {
+      "id": "quick-open",
+      "title": "完成快速開案流程",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "FJ-EN-MVP-01",
+      "dependencies": [],
+      "done_condition": "README.md、最小 project.json、MVP tasks、formalize checkpoint、專案拓樸與局部驗證均完成，且 tasks 已可在 MC 查看"
+    },
+    {
+      "id": "source-reconciliation",
+      "title": "核對新舊素材並建立內容更新對照",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "FJ-EN-MVP-02",
+      "dependencies": [],
+      "done_condition": "逐張核讀 $COLLAB/FJ/FJ_EN_website/JPG參考/old 的 6 張與 new 的 2 張圖；每項記錄來源、舊文、新資訊、保留／更新／刪除／待校方確認；核對新 DM 檔名 115 與圖面 116 的差異，不以檔名批次改年；新版未涵蓋內容不得推論已停辦。盤點 or 原圖可用性與圖片用途。"
+    },
+    {
+      "id": "english-copy",
+      "title": "整理英文網站架構與英文文案初稿",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "FJ-EN-MVP-03",
+      "dependencies": [],
+      "done_condition": "依內容更新對照產出英文頁面清單、導覽、標題、正文、圖片說明與行動連結，保留中文核對欄及來源；確認主要讀者、學部範圍、正式英文校名與專有名詞；優先呈現學校特色與國際交流，未核定年份、數據、合作學校及招生承諾清楚標示，不自行補造。"
+    },
+    {
+      "id": "platform-feasibility",
+      "title": "確認學校現有平台的嵌入與互動限制",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "FJ-EN-MVP-04",
+      "dependencies": [],
+      "done_condition": "以 https://www.shsh.kl.edu.tw/ischool/publish_page/91/ 作已知平台參考（目前是國中部招生頁）；確認英文網站另開頁或取代既有頁、可控 HTML 區塊、CSS 範圍、圖片路徑、自訂 JavaScript／iframe 許可與手機容器。前台觀察與後台實測分開記錄；未取得編輯環境者標示待驗證，不因前台有 JavaScript 推定自訂腳本可用。"
+    },
+    {
+      "id": "layout-discussion",
+      "title": "提出具國際感的桌機與手機版面供討論",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "FJ-EN-MVP-05",
+      "dependencies": [],
+      "done_condition": "依英文文案與平台限制提出兩個精簡視覺方向及一份首頁區塊線框，呈現真實校園影像、清楚英文層級、留白與簡潔導覽；說明 About／Learning／International Exchange／School Life／Contact 等候選區塊的內容依據，經 Vincent 選定方向後才擴大製作。"
+    },
+    {
+      "id": "interactive-prototype",
+      "title": "製作響應式互動樣頁並保留無腳本閱讀方式",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "FJ-EN-MVP-06",
+      "dependencies": [],
+      "done_condition": "依選定版面完成首頁與國際交流代表區塊；從頁內導覽、卡片回饋、原生展開內容、輕量照片互動選用少量適合的功能；支援鍵盤、可見焦點與減少動態效果偏好，手機無橫向溢出；JavaScript 不可用仍能讀取主要內容，使用限定範圍 CSS，與平台既有樣式共存。"
+    },
+    {
+      "id": "mvp-validation",
+      "title": "驗收英文文案、響應式樣頁與平台適配證據",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "FJ-EN-MVP-07",
+      "dependencies": [],
+      "done_condition": "完成來源核對、文案審閱、桌機與手機檢視、連結與基本無障礙檢查，記錄 Vincent 回饋及待修項；分別列明本機驗證與學校平台實測結果，無平台權限不得宣称通過；整理後續完整頁面、學校審核與上架需求供正式補完決策，本項不含公開發布。"
+    },
+    {
+      "id": "formalize",
+      "title": "依 MVP 測試結果啟動正式補完",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "FJ-EN-MVP-08",
+      "dependencies": [],
+      "done_condition": "已依 MVP 測試結果與最終目標補齊正式專案內容，並建立內容明確且各有驗收標準的正式 tasks"
+    }
+  ]
+}

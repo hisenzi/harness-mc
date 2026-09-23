@@ -2,8 +2,8 @@
   "registry_id": "morrowise-project-topology.v1",
   "task_id": "project-topology-architecture-atlas",
   "status": "formal_registry",
-  "updated_at": "2026-09-08",
-  "inventory_as_of": "2026-08-26",
+  "updated_at": "2026-09-23",
+  "inventory_as_of": "2026-09-23",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json",
   "schema_ref": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-project-topology.schema.json",
   "verifier_ref": "npm run test:project-topology",
@@ -858,6 +858,66 @@
       ],
       "last_verified_at": "2026-09-08",
       "notes": "Canonical Git repository initialized on branch main; Astro scaffold and project documentation verified."
+    },
+    {
+      "id": "hiblocks-builder",
+      "path_label": "$COLLAB/hiblocks-builder",
+      "classification": "canonical_project",
+      "migration_state": "inventory_only",
+      "project_home_ref": "$COLLAB/hiblocks-builder",
+      "topology_profile": "non-git-project",
+      "document_ref": "$COLLAB/hiblocks-builder/README.md",
+      "repo_ref": null,
+      "evidence": [
+        "$COLLAB/hiblocks-builder"
+      ],
+      "last_verified_at": "2026-09-20",
+      "notes": "Quick project opening registered this canonical local home; Git, deployment, and external sync remain separate MVP actions."
+    },
+    {
+      "id": "supaquiz",
+      "path_label": "$COLLAB/SupaQuiz",
+      "classification": "canonical_project",
+      "migration_state": "inventory_only",
+      "project_home_ref": "$COLLAB/SupaQuiz",
+      "topology_profile": "non-git-project",
+      "document_ref": "$COLLAB/SupaQuiz/README.md",
+      "repo_ref": null,
+      "evidence": [
+        "$COLLAB/SupaQuiz"
+      ],
+      "last_verified_at": "2026-09-23",
+      "notes": "Quick project opening registered this canonical local home; Git, deployment, and external sync remain separate MVP actions."
+    },
+    {
+      "id": "fj-en-website",
+      "path_label": "$COLLAB/fj-en-website",
+      "classification": "canonical_project",
+      "migration_state": "inventory_only",
+      "project_home_ref": "$COLLAB/fj-en-website",
+      "topology_profile": "non-git-project",
+      "document_ref": "$COLLAB/fj-en-website/README.md",
+      "repo_ref": null,
+      "evidence": [
+        "$COLLAB/fj-en-website"
+      ],
+      "last_verified_at": "2026-09-23",
+      "notes": "Quick project opening registered this canonical local home; Git, deployment, and external sync remain separate MVP actions."
+    },
+    {
+      "id": "classic-fontcards-120",
+      "path_label": "$COLLAB/classic-fontcards-120",
+      "classification": "canonical_project",
+      "migration_state": "inventory_only",
+      "project_home_ref": "$COLLAB/classic-fontcards-120",
+      "topology_profile": "non-git-project",
+      "document_ref": "$COLLAB/classic-fontcards-120/README.md",
+      "repo_ref": null,
+      "evidence": [
+        "$COLLAB/classic-fontcards-120"
+      ],
+      "last_verified_at": "2026-09-23",
+      "notes": "Quick project opening registered this canonical local home; Git, deployment, and external sync remain separate MVP actions."
     }
   ]
 }

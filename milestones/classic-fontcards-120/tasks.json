@@ -1,0 +1,77 @@
+{
+  "project": "classic-fontcards-120",
+  "tasks": [
+    {
+      "id": "quick-open",
+      "title": "完成快速開案流程",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "FONT120-MVP-01",
+      "dependencies": [],
+      "done_condition": "README.md、最小 project.json、MVP tasks、formalize checkpoint、專案拓樸與局部驗證均完成，且 tasks 已可在 MC 查看"
+    },
+    {
+      "id": "product-definition",
+      "title": "確認選字情境與第一版產品範圍",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "FONT120-MVP-02",
+      "dependencies": [],
+      "done_condition": "以 docs/plans/2026-09-23-product-plan.md 為唯一規劃稿；確認首要選字情境、使用環境、核心功能及暫不做項目，留下 Vincent 的明確決策；規劃草案存在不等於本任務完成。"
+    },
+    {
+      "id": "catalog-contract",
+      "title": "建立 120 字卡與來源資料契約",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "FONT120-MVP-03",
+      "dependencies": [],
+      "done_condition": "在產品範圍確認後產出 docs/catalog-contract.md 與 data/catalog.json；001–120 各有唯一名稱、分類與兩張可追溯原圖，缺件／來源未驗證逐筆列出；原始資料不改寫，沒有把檔案數當成字體家族數。"
+    },
+    {
+      "id": "filter-taxonomy",
+      "title": "驗證設計選字用的分類與標籤",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "FONT120-MVP-04",
+      "dependencies": [],
+      "done_condition": "在資料契約完成後產出 docs/filter-taxonomy.md；保留原 17 類，定義中文顯示、搜尋別名、多選規則與未分類狀態；以涵蓋至少 6 類的 12 張字卡讓 Vincent 確認，主觀風格／用途與原始資料分開標示。"
+    },
+    {
+      "id": "interaction-design",
+      "title": "確認圖庫、字卡詳情與候選比較介面",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "FONT120-MVP-05",
+      "dependencies": [],
+      "done_condition": "依核准範圍產出 docs/interaction-design.md 與可檢視的 wireframes；覆蓋圖庫／詳情／候選比較、無結果、圖片缺失與回到篩選結果；Vincent 確認資訊層級與主要操作，才開始程式實作。"
+    },
+    {
+      "id": "prototype-build",
+      "title": "製作經核准的私人字卡選用原型",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "FONT120-MVP-06",
+      "dependencies": [],
+      "done_condition": "僅於 Vincent 核准介面與實作後啟動；完成 120 卡搜尋、分類篩選、正反面查看、2–4 張候選比較及本機收藏／匯出匯入；無字型檔仍可完整看卡，未納入核准範圍的試排／部署不實作。"
+    },
+    {
+      "id": "usage-acceptance",
+      "title": "以真實設計情境驗收第一版",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "FONT120-MVP-07",
+      "dependencies": [],
+      "done_condition": "以 docs/plans/2026-09-23-product-plan.md 的驗收矩陣實測並產出 docs/acceptance.md；至少三個真實選字情境由 Vincent 走完，記錄找到的候選、操作問題與調整決定；失敗項保留未通過，不以 build 成功取代使用驗收。"
+    },
+    {
+      "id": "formalize",
+      "title": "依 MVP 測試結果啟動正式補完",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "FONT120-MVP-08",
+      "dependencies": [],
+      "done_condition": "已依 MVP 測試結果與最終目標補齊正式專案內容，並建立內容明確且各有驗收標準的正式 tasks"
+    }
+  ]
+}

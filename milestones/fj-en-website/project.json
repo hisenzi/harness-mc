@@ -1,0 +1,14 @@
+{
+  "name": "輔大聖心英文網站改版",
+  "description": "以新舊資料核對為基礎，製作具國際感、少量互動且適配學校現有平台的英文網站。",
+  "status": "active",
+  "created": "2026-09-23",
+  "project_code": "FJ-EN",
+  "project_folder": "$COLLAB/fj-en-website",
+  "why_opened": "既有中英文介紹與新版資料並存，需要整理英文敘事、更新過時內容，並依學校平台能力討論版面與互動。來源保留於 $COLLAB/FJ/FJ_EN_website/JPG參考（old 6 張、new 2 張），原始照片與設計檔位於 $COLLAB/FJ/FJ_EN_website/or；製作主目錄為 $COLLAB/fj-en-website，不移動或覆寫來源。新版國中部 DM 的檔名為 115，已目視封面為 116 學年度，須逐項核對。",
+  "mvp_goal": "依序完成新舊內容對照、英文文案初稿、平台限制確認、桌機與手機版面討論及少量互動樣頁，經內容與視覺審閱後整理實測結果。視覺先朝真實校園照片、清楚英文層級、留白與簡潔導覽；讀者與全校／學部涵蓋範圍在文案階段確認。",
+  "final_goal": "在學校既有 iSchool 平台提供內容正確、方便海外讀者理解、支援手機且易於維護的英文網站。平台參考為 https://www.shsh.kl.edu.tw/ischool/publish_page/91/，於 2026-09-23 前台核對為國中部招生專頁；英文版另開頁或取代該頁仍待確認，自訂 JavaScript、iframe 與後台編輯限制尚未驗證。完成文案與視覺核定、平台驗收及明確發布授權後才上架。",
+  "tracks": {
+    "mvp": "MVP"
+  }
+}

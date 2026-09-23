@@ -1,0 +1,14 @@
+{
+  "name": "HiBlocks Builder：對話式網站產品",
+  "description": "把需求與素材轉成能修改、預覽、版本發布的 HiBlocks 網站，形成可演進為 SaaS 的產品。",
+  "status": "active",
+  "created": "2026-09-20",
+  "project_code": "HIBLOCKS-BUILDER",
+  "project_folder": "$COLLAB/hiblocks-builder",
+  "why_opened": "Vincent 要把 Base44 研究轉成可開發模組，而非只有商業方向。借鏡是把通用能力固定、AI 經工具介面提案、在同一處完成建造與修改。現有 $COLLAB/hiblocks 已有 blocks/recipes/runtime spike，但 runtime 尚未輸出真 Astro 元件；本案補產品管理台、SiteSpec、編譯、版本、建置/發布及用量。\n\n責任邊界：$COLLAB/hiblocks 保持 blocks、tokens、recipes 與其測試的唯一上游；本案消費版本固定的資產，不另養區塊庫、不覆寫客戶站。既有 hiblocks 任務（內容 schema、AI 生成驗證、CMS）只作依賴與既有證據，執行前對照 owner，不在兩邊重複標示完成。MorroWise 仍負責內部 Agent 治理，本案不建立平行任務/排程/通知系統。\n\n工作正本：$COLLAB/harness-mc/milestones/hiblocks-builder/project.json 與 tasks.json。開案不等於模組已實作、MC 畫面已同步或已部署。",
+  "mvp_goal": "以一位本機操作者、兩組原創資料（專業服務頁／作品展示頁），完成需求→結構化網站規格 SiteSpec→AI 變更提案→確認→真 Astro 預覽→局部修改→本機發布與回復。第二案沿用同一引擎，不修改核心程式。\n\n模組：網站規格、HiBlocks 能力目錄、Astro 編譯、專案版本、預覽工作台、AI 變更工具、發布 adapter、用量紀錄。先驗 strict spec 與真 renderer，再接對話及工作台；帳號、多租戶、正式金流留到後續階段。\n\n開發順序：site-spec-contract → catalog-adapter → astro-renderer → revision-store → preview-workspace → agent-change-tools → release-adapter → usage-ledger → two-site-product-acceptance。Quick tasks 的 dependencies 由既有工具設為空；上述順序與各 done_condition 的前置是本期執行依據，尚未宣稱自動排程依賴已接線。\n\n共同契約：SiteSpec 是網站內容正本；產生程式及成品為衍生物。AI 不直接寫任意程式或發布。核准綁定內容與素材版本。MVP 只驗本機發布；真實部署與收款不得冒充已完成。",
+  "final_goal": "讓設計師或小型團隊在同一工作台建立並持續管理網站，按站點/工作空間與用量形成訂閱產品。通過 MVP 後，再做帳號與 workspace 隔離、私有素材儲存、受限背景 worker、正式主機 adapter、方案額度與金流事件。Thinking Gym 獨立實作自己的練習循環；兩產品驗證後才抽共用身份、版本、工作及用量介面，題目/回饋與 SiteSpec/renderer 保持各自所有。此為產品目標，非目前已存在能力。",
+  "tracks": {
+    "mvp": "MVP"
+  }
+}

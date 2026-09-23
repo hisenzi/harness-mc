@@ -1,0 +1,41 @@
+{
+  "project": "supaquiz",
+  "tasks": [
+    {
+      "id": "quick-open",
+      "title": "完成快速開案流程",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SPQ-MVP-01",
+      "dependencies": [],
+      "done_condition": "README.md、最小 project.json、MVP tasks、formalize checkpoint、專案拓樸與局部驗證均完成，且 tasks 已可在 MC 查看"
+    },
+    {
+      "id": "build-question-bank",
+      "title": "建立 AI Agents Cheat Sheet 結構化題庫資料（JSON）",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SPQ-MVP-02",
+      "dependencies": [],
+      "done_condition": "完成 AI Agents 測驗題庫 JSON 檔，包含單選、多選、情境題與詳細解析，可供測驗系統調用"
+    },
+    {
+      "id": "create-quiz-web-ui",
+      "title": "建立 SupaQuiz 輕量 Web 測驗介面與即時批改機制",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SPQ-MVP-03",
+      "dependencies": [],
+      "done_condition": "完成單頁 Web 測驗介面，支援使用者答題、交卷即時評分、對錯題檢視與弱點解析回饋"
+    },
+    {
+      "id": "formalize",
+      "title": "依 MVP 測試結果啟動正式補完",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SPQ-MVP-04",
+      "dependencies": [],
+      "done_condition": "已依 MVP 測試結果與最終目標補齊正式專案內容，並建立內容明確且各有驗收標準的正式 tasks"
+    }
+  ]
+}

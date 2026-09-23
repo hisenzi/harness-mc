@@ -1,0 +1,14 @@
+{
+  "name": "線上小測驗系統",
+  "description": "短時間測試小範圍知識的線上小測驗系統",
+  "status": "active",
+  "created": "2026-09-23",
+  "project_code": "SPQ",
+  "project_folder": "$COLLAB/SupaQuiz",
+  "why_opened": "許多重要報告或文件篇幅長但很有價值，使用者在沒有足夠時間通讀全文時，希望透過短時間測驗快速檢測自己對該範圍知識的理解程度與盲點",
+  "mvp_goal": "建立可載入 AI Agents Cheat Sheet 考題的輕量線上測驗 Web MVP，具備即時批改、分數統計與錯題解析功能",
+  "final_goal": "支援任意文件或報告自動解析出題、多向度能力診斷、個人化複習自學建議的輕量化自學測驗系統",
+  "tracks": {
+    "mvp": "MVP"
+  }
+}

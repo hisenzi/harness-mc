@@ -193,11 +193,12 @@
     },
     {
       "id": "d-verify",
-      "title": "正式版整站上線驗收（5 條 success criteria）",
+      "title": "正式版整站上線驗收（對齊後 5 條 success_criteria）",
       "status": "todo",
       "track": "deploy",
       "depends_on": ["prod-zeabur"],
-      "done_condition": "project.json 5 條 success_criteria 全部通過"
+      "done_condition": "project.json 5 條有效 success_criteria 全部通過（小孩獨立登入與提案、家長審核、雙軌換算自洽、帳本不可篡改性、Neon 多租戶跨裝置同步與備份）",
+      "note": "等級畢業制與八角 8 級徽章保留於 Phase 4 進階範圍，不列入首期正式版上線阻擋條件"
     },
     {
       "id": "trial-1",

@@ -15110,6 +15110,48 @@
         ]
       },
       "note": "Issue #3 為工作與協作入口。正式 task 於結案時回補登錄。試辦通過後，歷史資料逐批處理依同一流程進行。"
+    },
+    {
+      "id": "cross-project-release-tracking",
+      "title": "建立跨專案版本發布與變更自動建立 GitHub Issue 之工作流機制（Issue #2）",
+      "status": "in_progress",
+      "track": "delivery",
+      "priority": "high",
+      "started_at": "2026-09-26",
+      "summary": "跨專案版本發布與變更自動追蹤工作流機制（scripts/release-tracking.mjs）：Phase A 本機全套 15 案驗收（RT01–RT15）全數通過且通過 Codex 獨立複驗；A2 操作手冊與復原規範已完備；Phase B 待 activation.json 明確授權試行 repo、Tag 與權限後啟動。",
+      "done_condition": "Phase A 15 案驗收全數通過且通過獨立複驗；OPERATOR-GUIDE.md 完備；A2 登錄 capability registry；Phase B 依 activation.json 試行驗證完成並由 Vincent 確認結案。",
+      "acceptance": [
+        "A1｜本機功能驗證：RT01–RT15 全數通過（含空目的地 BLOCKED exit 3、突變驗證 RT01 內容斷言失敗 exit 1、故障注入等）。",
+        "A2｜交接整合：OPERATOR-GUIDE.md 提供設定、操作、測試、停用與復原 5 大章節，登錄 capability registry 且驗證全綠。",
+        "B｜正式工作流：於授權試行 repo 實施真實 Tag 觸發、冪等分頁、改指向警示與停用驗證。"
+      ],
+      "source_refs": [
+        "https://github.com/hisenzi/notyet-harness/issues/2",
+        "$COLLAB/harness-mc/scripts/release-tracking.mjs",
+        "$COLLAB/harness-mc/scripts/lib/release-tracking.mjs",
+        "$COLLAB/harness-mc/scripts/verify-release-tracking.mjs",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/release-tracking.md",
+        "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md"
+      ],
+      "jv32_route": "JV-32/task-lifecycle",
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "Vincent 於 2026-09-27 核准在 milestones/morrowise/tasks.json 建立專屬 canonical task anchor，承接 Issue #2 跨專案發布追蹤工作流。",
+            "evidence_refs": [
+              "https://github.com/hisenzi/notyet-harness/issues/2",
+              "https://github.com/hisenzi/notyet-harness/issues/2#issuecomment-5855707466",
+              "https://github.com/hisenzi/notyet-harness/issues/2#issuecomment-5856676882"
+            ],
+            "recorded_at": "2026-09-27"
+          }
+        ]
+      },
+      "goal_alignment": "建立安全、原子化、防重複且具可審計性之跨專案版本發布與變更自動追蹤機制，解耦本機完成與遠端交付，確保發布歷史具備真實依據與故障復原能力。"
     }
   ]
 }

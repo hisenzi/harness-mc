@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "description": "Release tracking acceptance test cases and subcases catalog",
+  "cases": [
+    {
+      "id": "RT01",
+      "name": "Minimal full delivery flow (existing Issue #101)",
+      "required": true,
+      "subcases": ["RT01"]
+    },
+    {
+      "id": "RT02",
+      "name": "Target entrypoint variations (PR #102 and 404 not found)",
+      "required": true,
+      "subcases": ["RT02-pr", "RT02-not-found"]
+    },
+    {
+      "id": "RT03",
+      "name": "Deduplication and paginated remote marker lookup",
+      "required": true,
+      "subcases": ["RT03-resend", "RT03-pagination"]
+    },
+    {
+      "id": "RT04",
+      "name": "Followup issue routing and validation",
+      "required": true,
+      "subcases": ["RT04-followup", "RT04-blank-acceptance", "RT04-dual-target"]
+    },
+    {
+      "id": "RT05",
+      "name": "Release creation and gate on pass status",
+      "required": true,
+      "subcases": ["RT05-release", "RT05-fail-release", "RT05-notrun-release"]
+    },
+    {
+      "id": "RT06",
+      "name": "Tag peel to commit SHA and SHA validation",
+      "required": true,
+      "subcases": [
+        "RT06-lightweight",
+        "RT06-annotated",
+        "RT06-short-sha",
+        "RT06-object-sha",
+        "RT06-sha-mismatch"
+      ]
+    },
+    {
+      "id": "RT07",
+      "name": "Evidence integrity and case contract negative variants",
+      "required": true,
+      "subcases": [
+        "RT07-missing-file",
+        "RT07-hash-mismatch",
+        "RT07-escape-root",
+        "RT07-symlink-escape",
+        "RT07-missing-case",
+        "RT07-duplicate-case",
+        "RT07-unknown-case",
+        "RT07-unknown-status",
+        "RT07-pass-nonzero-exit",
+        "RT07-empty-evidence"
+      ]
+    },
+    {
+      "id": "RT08",
+      "name": "Honest reporting of unexecuted or failed cases",
+      "required": true,
+      "subcases": [
+        "RT08-fail-report",
+        "RT08-notrun-report",
+        "RT08-blocked-report",
+        "RT08-false-exit0"
+      ]
+    },
+    {
+      "id": "RT09",
+      "name": "Fault injection and uncertain delivery reconciliation",
+      "required": true,
+      "subcases": [
+        "RT09-post-disconnect-reconcile",
+        "RT09-refused-pending-reconcile",
+        "RT09-readback-corrupted"
+      ]
+    },
+    {
+      "id": "RT10",
+      "name": "Concurrent apply processes on same host with lock",
+      "required": true,
+      "subcases": ["RT10-concurrency"]
+    },
+    {
+      "id": "RT11",
+      "name": "Tag repointing handling and review notification",
+      "required": true,
+      "subcases": ["RT11-existing-repoint", "RT11-release-repoint"]
+    },
+    {
+      "id": "RT12",
+      "name": "Ignored events and deletion tombstone",
+      "required": true,
+      "subcases": [
+        "RT12-pr-merge",
+        "RT12-release-publish",
+        "RT12-branch-push",
+        "RT12-invalid-tag",
+        "RT12-tag-deleted"
+      ]
+    },
+    {
+      "id": "RT13",
+      "name": "Anti-tampering and ledger corruption handling",
+      "required": true,
+      "subcases": [
+        "RT13-tamper-evidence",
+        "RT13-tamper-target",
+        "RT13-corrupt-ledger"
+      ]
+    },
+    {
+      "id": "RT14",
+      "name": "Side-effect-free plan and network isolation",
+      "required": true,
+      "subcases": [
+        "RT14-plan-noop",
+        "RT14-unknown-routing",
+        "RT14-cross-repo",
+        "RT14-empty-dest",
+        "RT14-non-loopback"
+      ]
+    },
+    {
+      "id": "RT15",
+      "name": "Runner credibility and mutation verification",
+      "required": true,
+      "subcases": ["RT15-runner-checks"]
+    }
+  ]
+}

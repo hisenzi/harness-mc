@@ -572,7 +572,7 @@ canonical task 已有 acceptance_matrix 時，從當前來源解析完整 ID 集
 <!-- chapter:start delivery -->
 # 版本交付與接續：本機完成和送到遠端分開看
 
-文件版本：**v0.6.1** · 更新日期：2026-09-20 · 狀態：公開候選（未部署）
+文件版本：**v0.6.2** · 更新日期：2026-09-27 · 狀態：公開候選（未部署）
 
 > 文件識別碼：operator-guide-delivery；章節鍵：delivery
 > 內容 owner：Vincent／JV-36；能力 owner：JV-32 與原交付 task
@@ -735,7 +735,7 @@ node "$COLLAB/harness-mc/scripts/repo-coordination-runtime.mjs" local-c1-pending
 
 ## 版本與維護
 
-1. 文件 ID `operator-guide-delivery`、目前 v0.6.1；D-01–D-04 是本章維護／情境引用，不另配 task 編號。
+1. 文件 ID `operator-guide-delivery`、目前 v0.6.2；D-01–D-04 是本章維護／情境引用，不另配 task 編號。
 2. worktree-commit、cc-push 或 closeout contract 改動時，作者核對兩條路由、授權與 first unmet state；具名 reviewer 查實際 diff，記更新／no-impact。
 3. 新版本正文與歷史一起更新；指南證據回 JV-36，實際 Git／交付證據回原 task。本文不存其他專案的 commit 清單或 runtime 私人資料。
 
@@ -764,7 +764,61 @@ node "$COLLAB/harness-mc/scripts/repo-coordination-runtime.mjs" local-c1-pending
 
 C2 只依原 task 的必要 closeout 契約，不因批次而自造；本地完成與遠端驗證分開。完整命令與規則薄連結回原 `cc-push`，不在本文重建政策。
 
+## 發布追蹤工作流（Release Tracking）
+
+跨專案版本發布與變更自動追蹤工作流（`scripts/release-tracking.mjs`）提供將 Tag push、版本驗收契約及測試結果自動化整理並投遞至 GitHub Issue 留言、PR 留言或 GitHub Release 的標準化機制。目前處於 Phase A 本機試行與隔離驗證階段。
+
+### 1. 設定與前置契約
+- **專案契約 (Contract)**：專案根目錄必須具備 `contract.json`，聲明 `schema_version`、`required_cases`（如 `F-PASS-01`）與 `cases` 清單。
+- **測試結果 (Result)**：測試產出之 `result.json` 必須包含 `contract_sha256`、`source_commit`（40 位 commit SHA）及每案之狀態（`PASS`/`FAIL`/`NOT_RUN`/`BLOCKED`）與 `evidence` 檔案路徑與 SHA-256。
+- **事件輸入 (Event)**：`event.json` 記錄 Tag 事件、peel 出的 40 位 `commit_sha` 及 `routing` 規則（`existing` 留言於原 Issue/PR、`followup` 開立後續 Issue、`release` 建立 GitHub Release）。
+
+### 2. 操作指令
+所有命令工作目錄為 `$COLLAB/harness-mc`：
+
+```bash
+# 1. Plan 階段：唯讀校驗與訊息渲染（零外部 API、無副作用）
+node scripts/release-tracking.mjs plan \
+  --event <path-to-event.json> \
+  --contract <path-to-contract.json> \
+  --result <path-to-result.json> \
+  --evidence-root <path-to-evidence-dir> \
+  --out <path-to-plan-dir>
+
+# 2. Apply 階段：原子鎖、防重複 Marker 查核、POST 投遞與 GET 回讀核對
+node scripts/release-tracking.mjs apply \
+  --plan <path-to-plan-dir/plan.json> \
+  --mode fixture \
+  --api-base <loopback-url> \
+  --state-dir <path-to-state-dir> \
+  --out <path-to-apply-dir>
+```
+
+### 3. 測試與驗證
+全套 RT01–RT15 驗證套件涵蓋最小全流程、PR/404 路由、冪等分頁、後續 Issue、Release 門禁、Tag peel、10 種負向反例、誠實回報、斷線 reconcile、同主機競跑鎖、Tag 改指向警告、忽略事件 tombstone、防篡改、隔離性與突變檢驗：
+
+```bash
+# 全套隔離驗證
+node scripts/verify-release-tracking.mjs --out .runtime/release-tracking/recheck-02
+
+# 單案指定測試
+node scripts/verify-release-tracking.mjs --case RT14 --out .runtime/release-tracking/single-rt14
+```
+
+### 4. 停用方式
+- **Phase A 本機停用**：Phase A 僅運作於本機 loopback 與 fixture 目錄，無外部連線或常駐 daemon；停用時只需停止執行 CLI 或驗證 runner，產物與日誌保留於本機 `.runtime/` 供審計，不需額外清理遠端。
+- **Phase B 工作流停用**：若未來在 GitHub Actions 啟用此工作流，在 `.github/workflows/` 中停用（Disable workflow）或移除觸發條件即可；停用後不再處理 Tag 事件，已發出之 Issue/Release 紀錄一律保留，不刪除歷史證據。
+
+### 5. 故障復原步驟
+- **PENDING_RECONCILE (Exit Code 4)**：若 POST 投遞時發生網路逾時或連線中斷且 GET reconcile 未確認結果，狀態標為 `PENDING_RECONCILE`。現場保留 `delivery.json` 與 `requests.json`。復原方式：人工檢查目標 Issue/Release 是否已存在帶有該 `event_key` 之機器 Marker；確認後重新以同一 `plan.json` 執行 `apply`，系統將自動查得 Marker 並收斂為 `ALREADY_DELIVERED`。
+- **REVIEW_REQUIRED (Exit Code 3)**：若同名 Tag 遭 force-push 改指向新 commit SHA，系統追加異動通知留言後退出 `REVIEW_REQUIRED`。有效發布參照維持原 SHA；復原方式：由人工審查改指向原因與受影響範圍後，手動建立新 Tag 或確認更新。
+- **Ledger 損毀 (Exit Code 3)**：若 `state-dir/ledger.json` 格式損毀，系統 fail-closed 拒絕任何寫入。復原方式：人工檢查 `.tmp` 或備份復原 `ledger.json`，禁止直接清空重建以防遺失既有發布紀錄。
+
 ## 版本歷史
+
+### v0.6.2 — 2026-09-27｜增補發布追蹤工作流（Release Tracking）設定、操作、測試、停用與復原步驟
+
+- 增補跨專案版本發布與變更自動追蹤工作流（`scripts/release-tracking.mjs`）之設定、CLI 操作、測試驗證、停用方式與故障復原步驟（Phase A）。
 
 ### v0.6.1 — 2026-09-20｜增補 Issue／PR 自動觸發候選原則與跨 Agent 交接邊界
 

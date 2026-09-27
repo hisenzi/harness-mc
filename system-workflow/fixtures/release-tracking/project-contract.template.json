@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "contract_version": "1.0",
+  "project_id": "fixture/release-tracking",
+  "required_cases": [
+    "F-PASS-01"
+  ],
+  "cases": [
+    {
+      "id": "F-PASS-01",
+      "name": "Fixture baseline test",
+      "required": true,
+      "description": "Baseline verification case for the fixture repository"
+    }
+  ]
+}

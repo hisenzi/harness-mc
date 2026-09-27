@@ -1,0 +1,334 @@
+{
+  "schema_version": 1,
+  "contract_version": "1.3",
+  "issue_url": "https://github.com/hisenzi/notyet-harness/issues/2",
+  "description": "Fixed acceptance test contract for release-tracking Phase A",
+  "environment_requirements": {
+    "os": "darwin",
+    "node_version": ">=20.0.0",
+    "git": "git cli available",
+    "network": "loopback only, no external tokens or network needed",
+    "timezone": "UTC normalized"
+  },
+  "cases": [
+    {
+      "id": "RT01",
+      "name": "Minimal full delivery flow (existing Issue #101)",
+      "required": true,
+      "method": "plan -> apply -> GET verify",
+      "input": {
+        "routing": {
+          "mode": "existing",
+          "target": { "kind": "issue", "repo": "fixture/release-tracking", "number": 101 }
+        }
+      },
+      "expected": {
+        "comments_created": 1,
+        "issues_created": 0,
+        "releases_created": 0,
+        "cli_exit_code": 0,
+        "status": "DELIVERED",
+        "contains": ["v0.0.1-pilot", "fixture", "local", "F-PASS-01"]
+      },
+      "invariants": [
+        "target issue original title/body unchanged",
+        "input bytes unchanged"
+      ]
+    },
+    {
+      "id": "RT02",
+      "name": "Target entrypoint variations (PR #102 and 404 not found)",
+      "required": true,
+      "method": "PR target apply + 404 target apply",
+      "subcases": [
+        {
+          "id": "RT02-pr",
+          "expected": {
+            "pr_comments_created": 1,
+            "issues_created": 0,
+            "releases_created": 0,
+            "cli_exit_code": 0,
+            "status": "DELIVERED"
+          }
+        },
+        {
+          "id": "RT02-not-found",
+          "expected": {
+            "cli_exit_code": 3,
+            "status": "BLOCKED",
+            "writes_created": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "RT03",
+      "name": "Deduplication and paginated remote marker lookup",
+      "required": true,
+      "method": "duplicate apply with different event_id + apply with remote marker on page 2",
+      "expected": {
+        "total_comments": 1,
+        "cli_exit_code": 0,
+        "status": "ALREADY_DELIVERED"
+      },
+      "invariants": [
+        "existing comments not duplicated or overwritten"
+      ]
+    },
+    {
+      "id": "RT04",
+      "name": "Followup issue routing and validation",
+      "required": true,
+      "subcases": [
+        {
+          "id": "RT04-followup",
+          "expected": {
+            "issues_created": 1,
+            "comments_created": 0,
+            "releases_created": 0,
+            "cli_exit_code": 0,
+            "status": "DELIVERED",
+            "second_run_status": "ALREADY_DELIVERED"
+          }
+        },
+        {
+          "id": "RT04-blank-acceptance",
+          "expected": {
+            "cli_exit_code": 2,
+            "status": "INVALID_INPUT",
+            "writes_created": 0
+          }
+        },
+        {
+          "id": "RT04-dual-target",
+          "expected": {
+            "cli_exit_code": 2,
+            "status": "INVALID_INPUT",
+            "writes_created": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "RT05",
+      "name": "Release creation and gate on pass status",
+      "required": true,
+      "subcases": [
+        {
+          "id": "RT05-release",
+          "expected": {
+            "releases_created": 1,
+            "issues_created": 0,
+            "cli_exit_code": 0,
+            "status": "DELIVERED",
+            "second_run_status": "ALREADY_DELIVERED"
+          }
+        },
+        {
+          "id": "RT05-fail-release",
+          "expected": {
+            "cli_exit_code": 3,
+            "status": "BLOCKED",
+            "releases_created": 0
+          }
+        },
+        {
+          "id": "RT05-notrun-release",
+          "expected": {
+            "cli_exit_code": 3,
+            "status": "BLOCKED",
+            "releases_created": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "RT06",
+      "name": "Tag peel to commit SHA and SHA validation",
+      "required": true,
+      "subcases": [
+        {
+          "id": "RT06-lightweight",
+          "expected": { "cli_exit_code": 0, "status": "PLANNED" }
+        },
+        {
+          "id": "RT06-annotated",
+          "expected": { "cli_exit_code": 0, "status": "PLANNED" }
+        },
+        {
+          "id": "RT06-short-sha",
+          "expected": { "cli_exit_code": 2, "status": "INVALID_INPUT" }
+        },
+        {
+          "id": "RT06-object-sha",
+          "expected": { "cli_exit_code": 2, "status": "INVALID_INPUT" }
+        },
+        {
+          "id": "RT06-sha-mismatch",
+          "expected": { "cli_exit_code": 2, "status": "INVALID_INPUT" }
+        }
+      ]
+    },
+    {
+      "id": "RT07",
+      "name": "Evidence integrity and case contract negative variants",
+      "required": true,
+      "variants": [
+        "missing-file",
+        "hash-mismatch",
+        "escape-root",
+        "symlink-escape",
+        "missing-case",
+        "duplicate-case",
+        "unknown-case",
+        "unknown-status",
+        "pass-nonzero-exit",
+        "empty-evidence"
+      ],
+      "expected": {
+        "all_exit_code": 2,
+        "all_status": "INVALID_INPUT",
+        "writes_created": 0
+      }
+    },
+    {
+      "id": "RT08",
+      "name": "Honest reporting of unexecuted or failed cases",
+      "required": true,
+      "subcases": [
+        {
+          "id": "RT08-fail-report",
+          "expected": { "cli_exit_code": 0, "status": "DELIVERED", "body_contains": "未通過" }
+        },
+        {
+          "id": "RT08-notrun-report",
+          "expected": { "cli_exit_code": 0, "status": "DELIVERED", "body_contains": "未完成" }
+        },
+        {
+          "id": "RT08-blocked-report",
+          "expected": { "cli_exit_code": 0, "status": "DELIVERED", "body_contains": "已阻塞" }
+        },
+        {
+          "id": "RT08-false-exit0",
+          "expected": { "cli_exit_code": 2, "status": "INVALID_INPUT" }
+        }
+      ]
+    },
+    {
+      "id": "RT09",
+      "name": "Fault injection and uncertain delivery reconciliation",
+      "required": true,
+      "subcases": [
+        {
+          "id": "RT09-post-disconnect-reconcile",
+          "expected": { "cli_exit_code": 0, "status": "DELIVERED", "total_comments": 1 }
+        },
+        {
+          "id": "RT09-refused-pending-reconcile",
+          "expected": { "cli_exit_code": 4, "status": "PENDING_RECONCILE", "total_comments": 0 }
+        },
+        {
+          "id": "RT09-readback-corrupted",
+          "expected": { "cli_exit_code": 3, "status": "REMOTE_MISMATCH" }
+        }
+      ]
+    },
+    {
+      "id": "RT10",
+      "name": "Concurrent apply processes on same host with lock",
+      "required": true,
+      "expected": {
+        "total_comments": 1,
+        "one_delivered": true,
+        "one_lock_failed": true,
+        "retry_status": "ALREADY_DELIVERED"
+      }
+    },
+    {
+      "id": "RT11",
+      "name": "Tag repointing handling and review notification",
+      "required": true,
+      "subcases": [
+        {
+          "id": "RT11-existing-repoint",
+          "expected": {
+            "cli_exit_code": 3,
+            "status": "REVIEW_REQUIRED",
+            "notification_added": 1,
+            "valid_sha_retained": true
+          }
+        },
+        {
+          "id": "RT11-release-repoint",
+          "expected": {
+            "cli_exit_code": 3,
+            "status": "REVIEW_REQUIRED",
+            "release_notice_appended": true,
+            "valid_sha_retained": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "RT12",
+      "name": "Ignored events and deletion tombstone",
+      "required": true,
+      "subcases": [
+        "RT12-pr-merge",
+        "RT12-release-publish",
+        "RT12-branch-push",
+        "RT12-invalid-tag",
+        "RT12-tag-deleted"
+      ],
+      "expected": {
+        "all_exit_code": 0,
+        "all_status": "IGNORED",
+        "writes_created": 0,
+        "tombstone_created_on_delete": true
+      }
+    },
+    {
+      "id": "RT13",
+      "name": "Anti-tampering and ledger corruption handling",
+      "required": true,
+      "subcases": [
+        {
+          "id": "RT13-tamper-evidence",
+          "expected": { "cli_exit_code": 2, "status": "HASH_MISMATCH" }
+        },
+        {
+          "id": "RT13-tamper-target",
+          "expected": { "cli_exit_code": 3, "status": "CONFLICT" }
+        },
+        {
+          "id": "RT13-corrupt-ledger",
+          "expected": { "cli_exit_code": 3, "status": "LEDGER_CORRUPTED" }
+        }
+      ]
+    },
+    {
+      "id": "RT14",
+      "name": "Side-effect-free plan and network isolation",
+      "required": true,
+      "subcases": [
+        { "id": "RT14-plan-noop", "expected": { "api_calls": 0, "ledger_written": false } },
+        { "id": "RT14-unknown-routing", "expected": { "cli_exit_code": 2 } },
+        { "id": "RT14-cross-repo", "expected": { "cli_exit_code": 2 } },
+        { "id": "RT14-empty-dest", "expected": { "cli_exit_code": 3 } },
+        { "id": "RT14-non-loopback", "expected": { "cli_exit_code": 2, "api_calls": 0 } }
+      ]
+    },
+    {
+      "id": "RT15",
+      "name": "Runner credibility and mutation verification",
+      "required": true,
+      "expected": {
+        "full_run_passes": true,
+        "single_case_passes": true,
+        "unknown_case_fails": true,
+        "existing_out_fails": true,
+        "mutation_fails_assertion": true
+      }
+    }
+  ]
+}

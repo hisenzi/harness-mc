@@ -683,6 +683,68 @@
           "next_action": "Complete canonical A01/A14 verification and Git history/C1 remediation before any ready promotion."
         }
       ]
+    },
+    {
+      "id": "release-tracking",
+      "type": "cli",
+      "provider": "MorroWise Release Tracking Runtime",
+      "entrypoint": [
+        "node $COLLAB/harness-mc/scripts/release-tracking.mjs plan",
+        "node $COLLAB/harness-mc/scripts/release-tracking.mjs apply",
+        "$COLLAB/harness-mc/scripts/release-tracking.mjs",
+        "$COLLAB/harness-mc/scripts/lib/release-tracking.mjs"
+      ],
+      "owner_task": "cross-project-release-tracking",
+      "scope": "control_plane",
+      "source_of_truth": [
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#cross-project-release-tracking",
+        "$COLLAB/harness-mc/system-workflow/docs/specs/release-tracking.md",
+        "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md"
+      ],
+      "auth_boundary": "Local execution uses loopback API base or minimal-scope GITHUB_TOKEN; registry stores zero tokens or credentials.",
+      "read_write_boundary": {
+        "read": [
+          "event.json",
+          "contract.json",
+          "result.json",
+          "evidence files",
+          "remote issues/PRs/releases metadata via api-base"
+        ],
+        "write": [
+          "plan/plan.json and plan/message.md during plan phase",
+          "state/ledger.json and atomic state locks during apply phase",
+          "remote issue/PR comment or release body via api-base POST",
+          "delivery.json and requests.json audit records"
+        ],
+        "forbidden": [
+          "write outside specified out directory and state directory",
+          "mutate source code or contracts during tracking execution",
+          "make external network calls during plan phase",
+          "store secrets or auth tokens in plan or delivery outputs"
+        ]
+      },
+      "secret_policy": "No GitHub token or auth credential may be stored in registry, plan outputs, or delivery logs.",
+      "status": "ready",
+      "verifier": [
+        "node scripts/verify-release-tracking.mjs --out .runtime/release-tracking/verify-run"
+      ],
+      "next_action": {
+        "type": "activation_gate",
+        "task_id": "cross-project-release-tracking",
+        "description": "Phase A verification passed; await activation.json authorization for Phase B repository pilot."
+      },
+      "history": [
+        {
+          "date": "2026-09-27",
+          "event_type": "phase_a_verified",
+          "from_state": "prototype",
+          "to_state": "ready",
+          "reason": "Phase A 15-case verification (RT01–RT15) fully passed and independently verified by Codex; operator guide updated with 5 operational sections.",
+          "evidence_ref": "https://github.com/hisenzi/notyet-harness/issues/2#issuecomment-5856676882",
+          "actor_or_task": "cross-project-release-tracking",
+          "next_action": "Await Vincent's explicit activation.json authorization before executing Phase B GitHub Actions pilot."
+        }
+      ]
     }
   ]
 }

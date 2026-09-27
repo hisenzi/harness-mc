@@ -29,7 +29,7 @@
         {
           "path": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
           "relation": "canonical",
-          "fingerprint": "90278409551478bf15b82b9ae8805567c6d017ee73f7d9cf62630c81fb2afcf1"
+          "fingerprint": "694091cbcd8415ea2c3b31695b2635f7b8d30be0e0bf6091cdaf5b3d4ea9207c"
         }
       ],
       "member_globs": [],
@@ -49,7 +49,7 @@
       "architecture_summary": "登入後唯讀判定、必讀來源、當次授權與安全接手；ready 不代表已核准工作。",
       "human_summary": "登入後唯讀判定、必讀來源、當次授權與安全接手；ready 不代表已核准工作。",
       "human_content_ref": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
-      "summary_reviewed_source_fingerprint": "90278409551478bf15b82b9ae8805567c6d017ee73f7d9cf62630c81fb2afcf1",
+      "summary_reviewed_source_fingerprint": "694091cbcd8415ea2c3b31695b2635f7b8d30be0e0bf6091cdaf5b3d4ea9207c",
       "summary_reviewed_at": "2026-09-21",
       "summary_reviewed_by": "Codex; independent review: Codex /root/ci_review",
       "last_verified_at": "2026-09-21",
@@ -72,7 +72,7 @@
         {
           "path": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
           "relation": "canonical",
-          "fingerprint": "90278409551478bf15b82b9ae8805567c6d017ee73f7d9cf62630c81fb2afcf1"
+          "fingerprint": "694091cbcd8415ea2c3b31695b2635f7b8d30be0e0bf6091cdaf5b3d4ea9207c"
         }
       ],
       "member_globs": [],
@@ -92,7 +92,7 @@
       "architecture_summary": "一人協調、單檔單 writer、四種接手情境與独立驗收；workbook 仍為具名 opt-in。",
       "human_summary": "一人協調、單檔單 writer、四種接手情境與独立驗收；workbook 仍為具名 opt-in。",
       "human_content_ref": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
-      "summary_reviewed_source_fingerprint": "90278409551478bf15b82b9ae8805567c6d017ee73f7d9cf62630c81fb2afcf1",
+      "summary_reviewed_source_fingerprint": "694091cbcd8415ea2c3b31695b2635f7b8d30be0e0bf6091cdaf5b3d4ea9207c",
       "summary_reviewed_at": "2026-09-20",
       "summary_reviewed_by": "Codex; independent review: Codex /root/ci_review",
       "last_verified_at": "2026-09-20",
@@ -115,7 +115,7 @@
         {
           "path": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
           "relation": "canonical",
-          "fingerprint": "90278409551478bf15b82b9ae8805567c6d017ee73f7d9cf62630c81fb2afcf1"
+          "fingerprint": "694091cbcd8415ea2c3b31695b2635f7b8d30be0e0bf6091cdaf5b3d4ea9207c"
         }
       ],
       "member_globs": [],
@@ -135,7 +135,7 @@
       "architecture_summary": "從原需求到實作、驗收、no_change／blocked 及正式證據回寫；不另建追蹤器。",
       "human_summary": "從原需求到實作、驗收、no_change／blocked 及正式證據回寫；不另建追蹤器。",
       "human_content_ref": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
-      "summary_reviewed_source_fingerprint": "90278409551478bf15b82b9ae8805567c6d017ee73f7d9cf62630c81fb2afcf1",
+      "summary_reviewed_source_fingerprint": "694091cbcd8415ea2c3b31695b2635f7b8d30be0e0bf6091cdaf5b3d4ea9207c",
       "summary_reviewed_at": "2026-09-20",
       "summary_reviewed_by": "Codex; independent review: Codex /root/ci_review",
       "last_verified_at": "2026-09-20",
@@ -158,7 +158,7 @@
         {
           "path": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
           "relation": "canonical",
-          "fingerprint": "90278409551478bf15b82b9ae8805567c6d017ee73f7d9cf62630c81fb2afcf1"
+          "fingerprint": "694091cbcd8415ea2c3b31695b2635f7b8d30be0e0bf6091cdaf5b3d4ea9207c"
         }
       ],
       "member_globs": [],
@@ -175,17 +175,17 @@
       "fingerprint_policy": "full_content",
       "fingerprint_fields": [],
       "summary_impact": "human",
-      "architecture_summary": "本機 commit 與遠端交付分開驗證；CI／正式 Review 的操作、證據及故障恢復沿單一交付入口。",
-      "human_summary": "本機 commit 與遠端交付分開驗證；CI／正式 Review 的操作、證據及故障恢復沿單一交付入口。",
+      "architecture_summary": "本機 commit 與遠端交付分開驗證；CI／正式 Review 與發布追蹤沿單一交付入口。",
+      "human_summary": "本機 commit 與遠端交付分開驗證；CI／正式 Review 與發布追蹤沿單一交付入口。",
       "human_content_ref": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
-      "summary_reviewed_source_fingerprint": "90278409551478bf15b82b9ae8805567c6d017ee73f7d9cf62630c81fb2afcf1",
-      "summary_reviewed_at": "2026-09-20",
+      "summary_reviewed_source_fingerprint": "694091cbcd8415ea2c3b31695b2635f7b8d30be0e0bf6091cdaf5b3d4ea9207c",
+      "summary_reviewed_at": "2026-09-27",
       "summary_reviewed_by": "Codex; independent review: Codex /root/ci_review",
-      "last_verified_at": "2026-09-20",
+      "last_verified_at": "2026-09-27",
       "supersedes": [],
       "superseded_by": [],
       "chapter_id": "delivery",
-      "document_version": "v0.6.1"
+      "document_version": "v0.6.2"
     },
     {
       "id": "operator-guide-documentation",
@@ -201,7 +201,7 @@
         {
           "path": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
           "relation": "canonical",
-          "fingerprint": "90278409551478bf15b82b9ae8805567c6d017ee73f7d9cf62630c81fb2afcf1"
+          "fingerprint": "694091cbcd8415ea2c3b31695b2635f7b8d30be0e0bf6091cdaf5b3d4ea9207c"
         }
       ],
       "member_globs": [],
@@ -221,7 +221,7 @@
       "architecture_summary": "能力變更先做文件影響審查，再生成單一來源的已審查正文、導航與搜尋。",
       "human_summary": "能力變更先做文件影響審查，再生成單一來源的已審查正文、導航與搜尋。",
       "human_content_ref": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
-      "summary_reviewed_source_fingerprint": "90278409551478bf15b82b9ae8805567c6d017ee73f7d9cf62630c81fb2afcf1",
+      "summary_reviewed_source_fingerprint": "694091cbcd8415ea2c3b31695b2635f7b8d30be0e0bf6091cdaf5b3d4ea9207c",
       "summary_reviewed_at": "2026-09-20",
       "summary_reviewed_by": "Codex; independent review: Codex /root/ci_review",
       "last_verified_at": "2026-09-20",
@@ -244,7 +244,7 @@
         {
           "path": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
           "relation": "canonical",
-          "fingerprint": "90278409551478bf15b82b9ae8805567c6d017ee73f7d9cf62630c81fb2afcf1"
+          "fingerprint": "694091cbcd8415ea2c3b31695b2635f7b8d30be0e0bf6091cdaf5b3d4ea9207c"
         }
       ],
       "member_globs": [],
@@ -264,7 +264,7 @@
       "architecture_summary": "定位可重現斷點、分清文件／程式／權限問題，核准後最小修正與安全接續。",
       "human_summary": "定位可重現斷點、分清文件／程式／權限問題，核准後最小修正與安全接續。",
       "human_content_ref": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
-      "summary_reviewed_source_fingerprint": "90278409551478bf15b82b9ae8805567c6d017ee73f7d9cf62630c81fb2afcf1",
+      "summary_reviewed_source_fingerprint": "694091cbcd8415ea2c3b31695b2635f7b8d30be0e0bf6091cdaf5b3d4ea9207c",
       "summary_reviewed_at": "2026-09-20",
       "summary_reviewed_by": "Codex; independent review: Codex /root/ci_review",
       "last_verified_at": "2026-09-20",
@@ -453,7 +453,7 @@
         },
         {
           "path": "$COLLAB/notyet-harness/000_Agent/skills/review/SKILL.md",
-          "fingerprint": "e9f822c30d753bc32e8433c1144915fdf58eb2b887746f40c0c57ed4990eba03"
+          "fingerprint": "532a6902a73301f024029466eb9521e3242e7ad01dab20cabef55e4ba9919b04"
         },
         {
           "path": "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/closed-loop.md",
@@ -477,7 +477,7 @@
         },
         {
           "path": "$COLLAB/notyet-harness/000_Agent/skills/cc-push/SKILL.md",
-          "fingerprint": "42b944e3a87e0d36e9e14a5e5f119d97a23d50203040900a316e799a2b083207"
+          "fingerprint": "a00fbf6dcfb1d3b1624785c38da90cec0cbcbebd5af09639872dcf306ac604ce"
         },
         {
           "path": "$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json",
@@ -489,7 +489,7 @@
         }
       ],
       "document_fingerprints": {
-        "operator-guide-delivery": "21bc68c771301c95194983aa0097ce190af263bb404037d8d9fe24a979adfdb1"
+        "operator-guide-delivery": "2a1e5d321edcf8ae5e7f35a97c5eb8746e206840a0807e195e7969553f47c8e8"
       }
     },
     {
@@ -588,7 +588,7 @@
         "$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-task-lifecycle.md": "47d19a9f1ffa148efc4de42dfb5d756a39129dafe813d7511831b1f9b815dfb3",
         "$COLLAB/harness-mc/system-workflow/docs/task-write-command-map.md": "877a830051a6efb8891344ce7643b74d1a1e0562998389ee2153c5c43ce10e13",
         "$COLLAB/notyet-harness/000_Agent/skills/vincent-superpowers/03-execution/SKILL.md": "2d50dd755ecc3cc5e2e29db0a1414078b949dba112af63b46a9f744792b8041b",
-        "$COLLAB/notyet-harness/000_Agent/skills/review/SKILL.md": "e9f822c30d753bc32e8433c1144915fdf58eb2b887746f40c0c57ed4990eba03",
+        "$COLLAB/notyet-harness/000_Agent/skills/review/SKILL.md": "532a6902a73301f024029466eb9521e3242e7ad01dab20cabef55e4ba9919b04",
         "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/closed-loop.md": "9948b43738ec6813e02d8900374bda3a087fa97a78e89b841552baa6ee2b8afd",
         "$COLLAB/harness-mc/scripts/work-anchor-preflight.mjs": "5353c6444dbde9a41479834f7d9c10565379db1f074e799c472cacb228297072"
       },
@@ -596,14 +596,14 @@
         "operator-guide-execution": "e2f0935cb84f3e8ceb0f7193f0878b183815be345c1f85f47a49e229f327b8bd"
       },
       "decision": "no_impact",
-      "reason": "review skill 對齊 CORE 唯一正本；執行驗收契約與既有步驟未受影響。",
+      "reason": "review skill 升級至 v1.5（技能撰寫改用唯一入口 build-skill）；執行驗收契約與既有步驟未受影響。",
       "evidence_refs": [
         "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
         "$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/closed-loop.md"
       ],
       "author": "Codex /root",
       "reviewer": "Codex /root/ci_review",
-      "reviewed_at": "2026-09-21"
+      "reviewed_at": "2026-09-27"
     },
     {
       "mapping_id": "delivery",
@@ -614,17 +614,16 @@
         "$COLLAB/harness-mc/system-workflow/docs/task-write-command-map.md": "877a830051a6efb8891344ce7643b74d1a1e0562998389ee2153c5c43ce10e13"
       },
       "document_fingerprints": {
-        "operator-guide-delivery": "21bc68c771301c95194983aa0097ce190af263bb404037d8d9fe24a979adfdb1"
+        "operator-guide-delivery": "2a1e5d321edcf8ae5e7f35a97c5eb8746e206840a0807e195e7969553f47c8e8"
       },
       "decision": "update_required",
-      "reason": "增補 Issue／PR 自動觸發 Agent 接續候選原則、防循環過濾反例與跨 Agent 具名交接情境；標示待具名試行；既有 Git 政策來源不變。",
+      "reason": "增補跨專案版本發布與變更自動追蹤工作流（release-tracking）之設定、操作、測試、停用與復原步驟（v0.6.2）；既有 Git 與交付政策未改動。",
       "evidence_refs": [
-        "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
-        "$COLLAB/notyet-harness/100_Todo/plan/2026-08-26-morrowise-大體檢.md"
+        "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md"
       ],
       "author": "Antigravity /root",
       "reviewer": "Codex /root/ci_review",
-      "reviewed_at": "2026-09-20"
+      "reviewed_at": "2026-09-27"
     },
     {
       "mapping_id": "documentation",
@@ -672,7 +671,7 @@
     "approved_by": "Vincent: same repo / same public site decision; local candidate only, no deployment this run",
     "reviewed_by": "Codex /root/ci_review",
     "reviewed_at": "2026-09-21",
-    "source_fingerprint": "90278409551478bf15b82b9ae8805567c6d017ee73f7d9cf62630c81fb2afcf1",
+    "source_fingerprint": "694091cbcd8415ea2c3b31695b2635f7b8d30be0e0bf6091cdaf5b3d4ea9207c",
     "evidence_refs": [
       "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md"
     ],

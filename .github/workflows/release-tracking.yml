@@ -1,0 +1,221 @@
+name: Release tracking pilot
+
+# Install this thin workflow in the approved event repository. The implementation
+# remains in hisenzi/harness-mc at RELEASE_TRACKING_CORE_REF; no copied product logic.
+on:
+  push:
+    tags:
+      - 'v0.0.0-issue2-test-*'
+
+permissions: {}
+
+concurrency:
+  group: release-tracking-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  writer:
+    if: ${{ !endsWith(github.ref_name, '-readonly') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      issues: write
+      actions: read
+    steps:
+      - name: Check out the event commit
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          path: target
+      - name: Require an immutable common-core ref
+        id: core_pin
+        env:
+          CONFIGURED_CORE_REF: ${{ vars.RELEASE_TRACKING_CORE_REF }}
+        shell: bash
+        run: |
+          core_ref="$CONFIGURED_CORE_REF"
+          if [ -z "$core_ref" ] && [ "$GITHUB_REPOSITORY" = hisenzi/harness-mc ]; then
+            core_ref="$GITHUB_SHA"
+          fi
+          if ! [[ "$core_ref" =~ ^[0-9a-f]{40}$ ]]; then
+            echo '::error::Set RELEASE_TRACKING_CORE_REF to the published 40-character harness-mc commit SHA.'
+            exit 2
+          fi
+          printf 'sha=%s\n' "$core_ref" >> "$GITHUB_OUTPUT"
+      - name: Check out the pinned common core
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          repository: hisenzi/harness-mc
+          ref: ${{ steps.core_pin.outputs.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+          path: core
+      - name: Set up Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '24'
+      - name: Load the explicit activation
+        env:
+          ACTIVATION_JSON: ${{ vars.RELEASE_TRACKING_ACTIVATION_JSON }}
+        run: |
+          mkdir -p work
+          node --input-type=module -e 'import fs from "node:fs"; const a = JSON.parse(process.env.ACTIVATION_JSON || "null"); if (!a || a.status !== "authorized") throw new Error("An authorized release-tracking activation is required"); fs.writeFileSync("work/activation.json", JSON.stringify(a, null, 2) + "\n");'
+      - name: Capture the original immutable materials
+        if: github.run_attempt == 1
+        run: node core/scripts/release-tracking-actions.mjs capture --event "$GITHUB_EVENT_PATH" --activation work/activation.json --checkout target --out work/bundle
+      - name: Preserve the original bundle before delivery
+        if: github.run_attempt == 1 && success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-tracking-original-${{ github.run_id }}
+          path: work/bundle/
+          if-no-files-found: error
+          retention-days: 30
+          overwrite: false
+      - name: Download the first attempt's immutable bundle
+        if: github.run_attempt != 1
+        uses: actions/download-artifact@v4
+        with:
+          name: release-tracking-original-${{ github.run_id }}
+          path: work/original/
+          github-token: ${{ github.token }}
+          run-id: ${{ github.run_id }}
+      - name: Verify and relocate the original materials
+        if: github.run_attempt != 1
+        run: node core/scripts/release-tracking-actions.mjs restore --bundle work/original --event "$GITHUB_EVENT_PATH" --activation work/activation.json --checkout target --out work/bundle
+      - name: Apply through the common CLI with a fresh local ledger
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          node --input-type=module -e 'import fs from "node:fs"; if (fs.existsSync("work/state")) throw new Error("State directory must start absent"); fs.writeFileSync("work/empty-state.json", JSON.stringify({ state_existed: false, run_id: process.env.GITHUB_RUN_ID, attempt: process.env.GITHUB_RUN_ATTEMPT }) + "\n");'
+          set +e
+          node core/scripts/release-tracking.mjs apply --plan work/bundle/plan/plan.json --mode live --activation work/activation.json --state-dir work/state --out work/delivery >work/apply.stdout.log 2>work/apply.stderr.log
+          apply_exit=$?
+          set -e
+          printf '%s\n' "$apply_exit" > work/apply.exit
+          cat work/apply.stdout.log work/apply.stderr.log
+          exit "$apply_exit"
+      - name: Preserve attempt evidence even when the product exits nonzero
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-tracking-attempt-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            work/bundle/
+            work/bundle-verification/
+            work/delivery/
+            work/state/ledger.json
+            work/empty-state.json
+            work/apply.stdout.log
+            work/apply.stderr.log
+            work/apply.exit
+          if-no-files-found: warn
+          retention-days: 30
+          overwrite: false
+
+  readonly:
+    if: ${{ endsWith(github.ref_name, '-readonly') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      issues: read
+      actions: read
+    steps:
+      - name: Check out the event commit
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          path: target
+      - name: Require an immutable common-core ref
+        id: core_pin
+        env:
+          CONFIGURED_CORE_REF: ${{ vars.RELEASE_TRACKING_CORE_REF }}
+        shell: bash
+        run: |
+          core_ref="$CONFIGURED_CORE_REF"
+          if [ -z "$core_ref" ] && [ "$GITHUB_REPOSITORY" = hisenzi/harness-mc ]; then
+            core_ref="$GITHUB_SHA"
+          fi
+          if ! [[ "$core_ref" =~ ^[0-9a-f]{40}$ ]]; then
+            echo '::error::Set RELEASE_TRACKING_CORE_REF to the published 40-character harness-mc commit SHA.'
+            exit 2
+          fi
+          printf 'sha=%s\n' "$core_ref" >> "$GITHUB_OUTPUT"
+      - name: Check out the pinned common core
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          repository: hisenzi/harness-mc
+          ref: ${{ steps.core_pin.outputs.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+          path: core
+      - name: Set up Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '24'
+      - name: Load the explicit activation
+        env:
+          ACTIVATION_JSON: ${{ vars.RELEASE_TRACKING_ACTIVATION_JSON }}
+        run: |
+          mkdir -p work
+          node --input-type=module -e 'import fs from "node:fs"; const a = JSON.parse(process.env.ACTIVATION_JSON || "null"); if (!a || a.status !== "authorized") throw new Error("An authorized release-tracking activation is required"); fs.writeFileSync("work/activation.json", JSON.stringify(a, null, 2) + "\n");'
+      - name: Capture the original immutable materials
+        if: github.run_attempt == 1
+        run: node core/scripts/release-tracking-actions.mjs capture --event "$GITHUB_EVENT_PATH" --activation work/activation.json --checkout target --out work/bundle
+      - name: Preserve the original bundle before delivery
+        if: github.run_attempt == 1 && success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-tracking-original-${{ github.run_id }}
+          path: work/bundle/
+          if-no-files-found: error
+          retention-days: 30
+          overwrite: false
+      - name: Download the first attempt's immutable bundle
+        if: github.run_attempt != 1
+        uses: actions/download-artifact@v4
+        with:
+          name: release-tracking-original-${{ github.run_id }}
+          path: work/original/
+          github-token: ${{ github.token }}
+          run-id: ${{ github.run_id }}
+      - name: Verify and relocate the original materials
+        if: github.run_attempt != 1
+        run: node core/scripts/release-tracking-actions.mjs restore --bundle work/original --event "$GITHUB_EVENT_PATH" --activation work/activation.json --checkout target --out work/bundle
+      - name: Apply through the common CLI with a fresh local ledger
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          node --input-type=module -e 'import fs from "node:fs"; if (fs.existsSync("work/state")) throw new Error("State directory must start absent"); fs.writeFileSync("work/empty-state.json", JSON.stringify({ state_existed: false, run_id: process.env.GITHUB_RUN_ID, attempt: process.env.GITHUB_RUN_ATTEMPT }) + "\n");'
+          set +e
+          node core/scripts/release-tracking.mjs apply --plan work/bundle/plan/plan.json --mode live --activation work/activation.json --state-dir work/state --out work/delivery >work/apply.stdout.log 2>work/apply.stderr.log
+          apply_exit=$?
+          set -e
+          printf '%s\n' "$apply_exit" > work/apply.exit
+          cat work/apply.stdout.log work/apply.stderr.log
+          exit "$apply_exit"
+      - name: Preserve attempt evidence even when the product exits nonzero
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-tracking-attempt-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            work/bundle/
+            work/bundle-verification/
+            work/delivery/
+            work/state/ledger.json
+            work/empty-state.json
+            work/apply.stdout.log
+            work/apply.stderr.log
+            work/apply.exit
+          if-no-files-found: warn
+          retention-days: 30
+          overwrite: false

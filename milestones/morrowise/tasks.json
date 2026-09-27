@@ -4253,7 +4253,7 @@
           "05-governance"
         ],
         "writer": "Codex task 01a070ec-a18f-7931-b458-bb13b5fd6b68",
-      "independent_checker": "Avicenna /root/avicenna_independent_review; read-only",
+        "independent_checker": "Avicenna /root/avicenna_independent_review; read-only",
         "visibility": "local_only",
         "canonical_body": "$COLLAB/notyet-harness/000_Agent/docs/morrowise/OPERATOR-GUIDE.md",
         "scope_paths": [
@@ -5106,7 +5106,7 @@
           "每個 durable boundary 中斷後，fresh session 從首個未滿足 state 續跑。",
           "完整交付授權只在不變量不變或 safe non-overlapping fast-forward 時續用。",
           "Remote Closeout 未達 0/0、pending zero、scope residual zero、released、task_completed 時 fail-closed。",
-      "多 clone 覆蓋 dirty、behind、raw ahead 與 local_commit_pending_push、diverged、detached、no-upstream、worktree conflict 與錯誤 claim。",
+          "多 clone 覆蓋 dirty、behind、raw ahead 與 local_commit_pending_push、diverged、detached、no-upstream、worktree conflict 與錯誤 claim。",
           "未提供 source-bound real multi-session receipt 時，完整 verifier 與 P3 admission 均保持 blocked；receipt 不得要求固定硬體數量。"
         ],
         "test_level": [
@@ -5328,7 +5328,7 @@
       "done_condition": "建立不綁定 Codex、Claude Code 或特定硬體的安全憑證生命週期合約：憑證值只存在 Vincent 管理的受管加密密碼庫與各環境安全儲存；$COLLAB/harness-mc 僅保存規則與安全 metadata。完成時須以既有 capability registry 的延伸欄位、受信任本機 probe 產出的 environment-scoped 摘要、generated read model 與 verifier，呈現目前工作環境的安全資料時間；不得建立平行整合 registry、讀取或輸出任何憑證、Cookie、runtime auth 或私有設定。GitHub 帳號／repo 權限維持帳號層存取前置；JV-39 僅定義 GitHub SSH key、token、session 的遺失、汰換與撤銷 recovery，不建立裝置登錄、硬體白名單或 JV-37 C2 權限門檻。服務身分、CI 聯邦身分、人類帳號、環境 session、復原與 private runtime 必須各有最小權限、輪替／撤銷／失效規則、責任人與可重跑驗收；所有外部帳號、密碼庫、GitHub secrets、撤銷、輪替、排程、commit、push 與部署仍遵守 Vincent 明確核准。",
       "acceptance": [
         "A01｜新增 $COLLAB/harness-mc/system-workflow/docs/specs/morrowise-credential-lifecycle.md，固定 service_static、ci_federated、human_account、device_session、recovery、private_runtime 六類的用途、來源真相、最小權限、擁有者、使用者、輪替／撤銷、失效、復原與資料保留邊界。",
-    "A02｜安全真相分層固定：憑證值僅在 Vincent 管理的受管加密密碼庫與 OS／應用程式安全儲存；Repo、MC、task event、read model、dashboard、log 與 verifier 只能保存 capability_id、environment_id、credential_class、posture、connection_observed、observed_at、next_action 與 sanitized evidence reference。禁止寫入憑證值、vault 路徑、secret 名稱、Cookie、帳號、私有檔案路徑或可重放的 hash。",
+        "A02｜安全真相分層固定：憑證值僅在 Vincent 管理的受管加密密碼庫與 OS／應用程式安全儲存；Repo、MC、task event、read model、dashboard、log 與 verifier 只能保存 capability_id、environment_id、credential_class、posture、connection_observed、observed_at、next_action 與 sanitized evidence reference。禁止寫入憑證值、vault 路徑、secret 名稱、Cookie、帳號、私有檔案路徑或可重放的 hash。",
         "A03｜不新增平行整合 registry：擴充既有 $COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json 的安全契約欄位，將 generated credential-health read model 視為衍生資料；任何非 capability 的安全治理規則只住在 lifecycle spec，不另建含狀態的第二正本。",
         "A04｜不限裝置的安全啟用 runbook：同步 portable canonical Repo 與公開設定模板後，任何受支援環境由 Vincent 以本機安全儲存完成啟用；禁止跨環境複製 Cookie、OAuth session、runtime auth、cache 或私人設定。未安裝的本機能力一律以通用 not_applicable 表示，不預設特定機器集合，也不對任何單一機器建立例外。",
         "A05｜定義受信任本機 probe 與 MC 讀取邊界：probe 不輸出或回傳憑證內容，僅產生 environment-scoped 安全摘要；Agent 只讀取該摘要。read model 必須分開 posture、connection_observed 與 observed_at，資料過期或缺席時誠實顯示 unknown，不得由歷史裝置名稱產生 missing failure 或假綠燈。",
@@ -5782,16 +5782,46 @@
               "JV40-R19-A05"
             ],
             "results": [
-              { "id": "JV40-R18-A01", "status": "pass" },
-              { "id": "JV40-R18-A02", "status": "pass" },
-              { "id": "JV40-R18-A03", "status": "pass" },
-              { "id": "JV40-R18-A04", "status": "pass" },
-              { "id": "JV40-R18-A05", "status": "pass" },
-              { "id": "JV40-R19-A01", "status": "pass" },
-              { "id": "JV40-R19-A02", "status": "pass" },
-              { "id": "JV40-R19-A03", "status": "pass" },
-              { "id": "JV40-R19-A04", "status": "pass" },
-              { "id": "JV40-R19-A05", "status": "pass" }
+              {
+                "id": "JV40-R18-A01",
+                "status": "pass"
+              },
+              {
+                "id": "JV40-R18-A02",
+                "status": "pass"
+              },
+              {
+                "id": "JV40-R18-A03",
+                "status": "pass"
+              },
+              {
+                "id": "JV40-R18-A04",
+                "status": "pass"
+              },
+              {
+                "id": "JV40-R18-A05",
+                "status": "pass"
+              },
+              {
+                "id": "JV40-R19-A01",
+                "status": "pass"
+              },
+              {
+                "id": "JV40-R19-A02",
+                "status": "pass"
+              },
+              {
+                "id": "JV40-R19-A03",
+                "status": "pass"
+              },
+              {
+                "id": "JV40-R19-A04",
+                "status": "pass"
+              },
+              {
+                "id": "JV40-R19-A05",
+                "status": "pass"
+              }
             ],
             "exact_id_coverage": true,
             "all_passed": true,
@@ -9764,9 +9794,9 @@
           "pass_condition": "只有 current、完整且含真實 runtime evidence 的 JV-37 receipt 可通過；P3 結果可重跑、跨 Agent 一致並追到 remote truth。",
           "fail_condition": "缺 receipt、舊指紋、部分通過、fixture-only、單一 session、remote 非 0/0、pending／scope residual 非零或 task 未 terminal 仍被接受。",
           "verification": [
-        "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case real-multi-session-pilot",
-        "node scripts/verify-morrowise-phase3-jv37-admission.mjs --receipt <current-source-bound-jv37-receipt>",
-        "node scripts/verify-morrowise-phase3-e2e-admission.mjs",
+            "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case real-multi-session-pilot",
+            "node scripts/verify-morrowise-phase3-jv37-admission.mjs --receipt <current-source-bound-jv37-receipt>",
+            "node scripts/verify-morrowise-phase3-e2e-admission.mjs",
             "npm run test:architecture-subsystems"
           ]
         }
@@ -11595,22 +11625,46 @@
       "acceptance_receipt": {
         "matrix_ref": "milestones/morrowise/tasks.json#grouped-nested-milestone-support-v1.acceptance_matrix",
         "matrix_fingerprint": "sha256:a1fec4aea9816e56fd19b92d4e931acc0833a162bed8a3ba22c1e3da7d1fbf4c",
-        "required_ids": ["JV48-A01", "JV48-A02", "JV48-A03", "JV48-A04", "JV48-A05", "JV48-A06"],
+        "required_ids": [
+          "JV48-A01",
+          "JV48-A02",
+          "JV48-A03",
+          "JV48-A04",
+          "JV48-A05",
+          "JV48-A06"
+        ],
         "results": [
-          {"id": "JV48-A01", "status": "pass"},
-          {"id": "JV48-A02", "status": "pass"},
-          {"id": "JV48-A03", "status": "pass"},
-          {"id": "JV48-A04", "status": "pass"},
-          {"id": "JV48-A05", "status": "pass"},
-          {"id": "JV48-A06", "status": "pass"}
+          {
+            "id": "JV48-A01",
+            "status": "pass"
+          },
+          {
+            "id": "JV48-A02",
+            "status": "pass"
+          },
+          {
+            "id": "JV48-A03",
+            "status": "pass"
+          },
+          {
+            "id": "JV48-A04",
+            "status": "pass"
+          },
+          {
+            "id": "JV48-A05",
+            "status": "pass"
+          },
+          {
+            "id": "JV48-A06",
+            "status": "pass"
+          }
         ],
         "exact_id_coverage": true,
         "all_passed": true,
         "verified_at": "2026-08-03"
       },
       "note": "2026-08-03 JV-48 正式完成：A01-A06 全部 pass；共用 discovery、grouped project-init、generator、validator、work-anchor、task event與下游 read/closeout consumers在 clean clone回歸通過，production build exit 0。C1 3618404 已推送並通過 required GitHub Pages CI；canonical task.completed event 已 apply，closeout sync request 已以具體 exemption 終結；C2 generated read models 已重建，雙 repo 0/0 parity 成立，baseline exclusions 未吸收，scope-owned residual zero 成立。KJ 原素材與 kj-bilingual before／after metadata digest一致，live milestones/kj/260803-kj-mascot仍不存在，原資料未搬。"
-    }
-  ,
+    },
     {
       "id": "account-login-sync-start-v1",
       "order_label": "JV-45",
@@ -12857,60 +12911,109 @@
         {
           "id": "Q10-A01",
           "what": "Quick candidate bootstrap 在新專案尚未登錄時，先驗證後提交，不以未登錄拒絕自身。",
-          "preconditions": ["隔離 fixture", "完整有效 Quick input"],
-          "steps": ["執行合法新專案 Quick", "檢查成功 receipt 與四份正式產出"],
+          "preconditions": [
+            "隔離 fixture",
+            "完整有效 Quick input"
+          ],
+          "steps": [
+            "執行合法新專案 Quick",
+            "檢查成功 receipt 與四份正式產出"
+          ],
           "pass_condition": "receipt 為 created；README、project.json、tasks.json、topology record 同時存在。",
           "fail_condition": "需先手動登錄，或任一正式產出缺失。",
-          "verification": ["node scripts/verify-project-init-quick-v2.mjs"]
+          "verification": [
+            "node scripts/verify-project-init-quick-v2.mjs"
+          ]
         },
         {
           "id": "Q10-A02",
           "what": "Quick 拒絕或中斷時不留下半開案資料。",
-          "preconditions": ["隔離 fixture", "衝突與寫入失敗注入"],
-          "steps": ["依序執行衝突、admission、途中寫入失敗情境", "比對檔案樹與 registry digest"],
+          "preconditions": [
+            "隔離 fixture",
+            "衝突與寫入失敗注入"
+          ],
+          "steps": [
+            "依序執行衝突、admission、途中寫入失敗情境",
+            "比對檔案樹與 registry digest"
+          ],
           "pass_condition": "每個拒絕情境均無持久化副作用，或可由 transaction recovery 回復。",
           "fail_condition": "殘留 project folder、milestone、registry record 或 transaction。",
-          "verification": ["node scripts/verify-project-init-quick-v2.mjs"]
+          "verification": [
+            "node scripts/verify-project-init-quick-v2.mjs"
+          ]
         },
         {
           "id": "Q10-A03",
           "what": "Quick receipt 明確分離 target 與 global 狀態。",
-          "preconditions": ["合法 target", "global degraded fixture"],
-          "steps": ["執行 Quick", "解析 receipt"],
+          "preconditions": [
+            "合法 target",
+            "global degraded fixture"
+          ],
+          "steps": [
+            "執行 Quick",
+            "解析 receipt"
+          ],
           "pass_condition": "target_status 為 ready、global_status 為 degraded，且 outcome 為 created。",
           "fail_condition": "合法 target 因無關 global finding 顯示 rejected 或 blocked。",
-          "verification": ["node scripts/verify-project-init-quick-v2.mjs"]
+          "verification": [
+            "node scripts/verify-project-init-quick-v2.mjs"
+          ]
         },
         {
           "id": "Q10-A04",
           "what": "不安全 target 與併發 Quick 會安全拒絕。",
-          "preconditions": ["隔離 fixture"],
-          "steps": ["測試 path escape、symlink escape、重複 ID／folder 與兩個並發 Quick"],
+          "preconditions": [
+            "隔離 fixture"
+          ],
+          "steps": [
+            "測試 path escape、symlink escape、重複 ID／folder 與兩個並發 Quick"
+          ],
           "pass_condition": "不安全 target 均 rejected；併發最多一筆 created。",
           "fail_condition": "路徑逃逸、重複 registry／milestone 或兩筆成功。",
-          "verification": ["node scripts/verify-project-init-quick-v2.mjs"]
+          "verification": [
+            "node scripts/verify-project-init-quick-v2.mjs"
+          ]
         },
         {
           "id": "Q10-A05",
           "what": "Quick 正常路徑在 10 秒效能合約內。",
-          "preconditions": ["隔離 fixture", "固定有效 Quick input"],
-          "steps": ["連跑 20 次 Quick", "計算 p95 duration_ms"],
+          "preconditions": [
+            "隔離 fixture",
+            "固定有效 Quick input"
+          ],
+          "steps": [
+            "連跑 20 次 Quick",
+            "計算 p95 duration_ms"
+          ],
           "pass_condition": "p95 小於或等於 10,000 ms。",
           "fail_condition": "p95 超過門檻，或計時混入需求討論／後續同步。",
-          "verification": ["node scripts/verify-project-init-quick-v2.mjs --performance"]
+          "verification": [
+            "node scripts/verify-project-init-quick-v2.mjs --performance"
+          ]
         },
         {
           "id": "Q10-A06",
           "what": "Quick 不產生 Git、部署、同步或通知副作用。",
-          "preconditions": ["隔離 fixture", "外部命令攔截"],
-          "steps": ["執行成功與拒絕 Quick", "檢查命令記錄與外部狀態"],
+          "preconditions": [
+            "隔離 fixture",
+            "外部命令攔截"
+          ],
+          "steps": [
+            "執行成功與拒絕 Quick",
+            "檢查命令記錄與外部狀態"
+          ],
           "pass_condition": "外部命令記錄為空。",
           "fail_condition": "任何 Git、部署、MC rebuild、外部同步或通知被呼叫。",
-          "verification": ["node scripts/verify-project-init-quick-v2.mjs"]
+          "verification": [
+            "node scripts/verify-project-init-quick-v2.mjs"
+          ]
         }
       ],
       "jv32_route": {
-        "workflows": ["task-lifecycle", "closeout-commit-routing"],
+        "workflows": [
+          "task-lifecycle",
+          "closeout-commit-routing"
+        ],
         "decision_input": [
           "第 10 節模擬驗證發現現行 Quick 先寫入後 admission，且 target/global status 不清楚。",
           "Vincent 於 2026-08-26 核准以獨立 task 處理 Quick 10 秒優化。"
@@ -13064,7 +13167,13 @@
       },
       "hc_decision": {
         "task_scope": "morrowise/quick-init-ten-second-atomic-v1",
-        "hc_refs": ["#rightProblem", "#systemDynamics", "#risk", "#optimization", "#confirmationBias"],
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#risk",
+          "#optimization",
+          "#confirmationBias"
+        ],
         "hc_reasoning": "真正問題不是少一個開案表單，而是無關全域維護、bootstrap 準入與跨檔寫入混成同一阻擋訊號。以 candidate admission 分離目標安全與 global maintenance；以 transaction 與負向 fixture 防止半開案；以 10 秒 p95 合約限制流程膨脹。",
         "hc_confidence": 0.93,
         "evidence_refs": [
@@ -14632,6 +14741,375 @@
           }
         ]
       }
+    },
+    {
+      "id": "zeabur-development-operations",
+      "order_label": "MW-ZEABUR-01",
+      "title": "Zeabur 開發交付與伺服器維運",
+      "status": "todo",
+      "track": "runtime-delivery",
+      "priority": "high",
+      "summary": "Vincent已核准完整計畫與MorroWise歸屬；先盤點現有主機及服務，再建置獨立維運、服務備份、告警、清理建議與還原交接。工程及雲端操作未執行。",
+      "done_condition": "完成規格S0–S6與OP01–OP13真實驗收：現有主機所有持久資料來源均已盤點且有owner、備份契約與近期成功收據；代表性DB/檔案（主機實有類型）可隔離還原，Mac關機仍自然巡檢與備份，主機外故障告警實際收到，report-only清理不刪資料；任一應用停用不停止主機維護，新Agent只讀固定入口即可接手。未涵蓋服務或未實測項維持partial，不以文件或pilot成功關整案。",
+      "source_refs": [
+        "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md",
+        "$COLLAB/notyet-harness/000_Agent/decisions/ADR-004-jarvis-system-ownership.md",
+        "Vincent 2026-09-20 本工作階段：指定「歸MorroWise專案」，檢閱「Zeabur開發交付與伺服器維運」工作內容、頻率、接手資料及驗收後回覆「以上可以」。本次承接規格與todo工作項目，未視為實機啟用或Git授權。",
+        "https://github.com/hisenzi/notyet-harness/issues/4"
+      ],
+      "acceptance_matrix": [
+        {
+          "id": "OP01",
+          "what": "部署",
+          "preconditions": [
+            "已選具名service範圍、相符版本與必要存取；參照規格對應章節"
+          ],
+          "steps": [
+            "核host/service、SHA/image、HTTPS與內容"
+          ],
+          "pass_fail_condition": "同版且真內容可用；只有HTTP200或本機build不足",
+          "verification": "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md#11-驗收op01op13；保存操作、expected/actual與安全evidence refs，不以文件通過替代實跑"
+        },
+        {
+          "id": "OP02",
+          "what": "覆蓋",
+          "preconditions": [
+            "已選具名service範圍、相符版本與必要存取；參照規格對應章節"
+          ],
+          "steps": [
+            "對照live全部服務及Volume與catalog"
+          ],
+          "pass_fail_condition": "每個持久來源有方法、owner及成功收據或明確gap；新增未知服務不算已備份",
+          "verification": "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md#11-驗收op01op13；保存操作、expected/actual與安全evidence refs，不以文件通過替代實跑"
+        },
+        {
+          "id": "OP03",
+          "what": "原機不可用",
+          "preconditions": [
+            "已選具名service範圍、相符版本與必要存取；參照規格對應章節"
+          ],
+          "steps": [
+            "從站外取得重建指引、版本、mount／權限與secret references"
+          ],
+          "pass_fail_condition": "不靠聊天或原機即可找到必要資料／金鑰取得方式；缺一項不可稱可還原",
+          "verification": "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md#11-驗收op01op13；保存操作、expected/actual與安全evidence refs，不以文件通過替代實跑"
+        },
+        {
+          "id": "OP04",
+          "what": "一致性",
+          "preconditions": [
+            "已選具名service範圍、相符版本與必要存取；參照規格對應章節"
+          ],
+          "steps": [
+            "writer凍結capture／DB一致dump，核相符引用與恢復狀態"
+          ],
+          "pass_fail_condition": "dump失敗、活DB目錄複製、DB/uploads時點不符不能成功",
+          "verification": "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md#11-驗收op01op13；保存操作、expected/actual與安全evidence refs，不以文件通過替代實跑"
+        },
+        {
+          "id": "OP05",
+          "what": "真備份",
+          "preconditions": [
+            "已選具名service範圍、相符版本與必要存取；參照規格對應章節"
+          ],
+          "steps": [
+            "站外固定snapshot，核完整來源與退出碼"
+          ],
+          "pass_fail_condition": "缺檔、斷網、exit3不因有snapshot ID而成功",
+          "verification": "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md#11-驗收op01op13；保存操作、expected/actual與安全evidence refs，不以文件通過替代實跑"
+        },
+        {
+          "id": "OP06",
+          "what": "讀回",
+          "preconditions": [
+            "已選具名service範圍、相符版本與必要存取；參照規格對應章節"
+          ],
+          "steps": [
+            "結構check＋指定資料讀回核hash"
+          ],
+          "pass_fail_condition": "損毀能攔下；抽樣範圍明列，不冒稱全量",
+          "verification": "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md#11-驗收op01op13；保存操作、expected/actual與安全evidence refs，不以文件通過替代實跑"
+        },
+        {
+          "id": "OP07",
+          "what": "還原",
+          "preconditions": [
+            "已選具名service範圍、相符版本與必要存取；參照規格對應章節"
+          ],
+          "steps": [
+            "固定snapshot至空隔離目標，計時；包含主機實有代表DB／檔案類型"
+          ],
+          "pass_fail_condition": "資料、版本、權限與應用可用；不覆寫production；RTO只對受測scope",
+          "verification": "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md#11-驗收op01op13；保存操作、expected/actual與安全evidence refs，不以文件通過替代實跑"
+        },
+        {
+          "id": "OP08",
+          "what": "業務可用",
+          "preconditions": [
+            "已選具名service範圍、相符版本與必要存取；參照規格對應章節"
+          ],
+          "steps": [
+            "原服務核關鍵內容／日期／資料關聯"
+          ],
+          "pass_fail_condition": "解壓成功不等於服務可用；0052若納管須同原檔重現卡片，不因還原變fresh",
+          "verification": "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md#11-驗收op01op13；保存操作、expected/actual與安全evidence refs，不以文件通過替代實跑"
+        },
+        {
+          "id": "OP09",
+          "what": "自然排程",
+          "preconditions": [
+            "已選具名service範圍、相符版本與必要存取；參照規格對應章節"
+          ],
+          "steps": [
+            "Mac關機等待正式slot，核更新／備份收據"
+          ],
+          "pass_fail_condition": "自然與手動分列；RPO按capture_at；雷達服務停用仍有主機維護tick",
+          "verification": "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md#11-驗收op01op13；保存操作、expected/actual與安全evidence refs，不以文件通過替代實跑"
+        },
+        {
+          "id": "OP10",
+          "what": "外部告警",
+          "preconditions": [
+            "已選具名service範圍、相符版本與必要存取；參照規格對應章節"
+          ],
+          "steps": [
+            "獨立測試check演練失聯、陳舊receipt、失敗及恢復"
+          ],
+          "pass_fail_condition": "主機停工仍可送達指定收件人且去重；只有同機log不足",
+          "verification": "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md#11-驗收op01op13；保存操作、expected/actual與安全evidence refs，不以文件通過替代實跑"
+        },
+        {
+          "id": "OP11",
+          "what": "中斷",
+          "preconditions": [
+            "已選具名service範圍、相符版本與必要存取；參照規格對應章節"
+          ],
+          "steps": [
+            "隔離測第二writer、磁碟不足、中斷／pending及舊snapshot"
+          ],
+          "pass_fail_condition": "不競寫、不抬升last_success、不自動破鎖／重送歷史；原停用服務不被啟動",
+          "verification": "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md#11-驗收op01op13；保存操作、expected/actual與安全evidence refs，不以文件通過替代實跑"
+        },
+        {
+          "id": "OP12",
+          "what": "清理",
+          "preconditions": [
+            "已選具名service範圍、相符版本與必要存取；參照規格對應章節"
+          ],
+          "steps": [
+            "已引用／未知owner／無備份及合法候選的對照"
+          ],
+          "pass_fail_condition": "只產有據清單；檔案／Volume hash與數量不變；不執行刪除",
+          "verification": "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md#11-驗收op01op13；保存操作、expected/actual與安全evidence refs，不以文件通過替代實跑"
+        },
+        {
+          "id": "OP13",
+          "what": "接手",
+          "preconditions": [
+            "已選具名service範圍、相符版本與必要存取；參照規格對應章節"
+          ],
+          "steps": [
+            "新Agent只讀本入口、catalog、runbook、handoff與收據"
+          ],
+          "pass_fail_condition": "可找到下一步、命令、owner、驗收與失敗處理；需重問已知需求即finding",
+          "verification": "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md#11-驗收op01op13；保存操作、expected/actual與安全evidence refs，不以文件通過替代實跑"
+        }
+      ],
+      "execution_contract": {
+        "owner": "morrowise/zeabur-development-operations",
+        "source_of_truth": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#zeabur-development-operations",
+        "spec_ref": "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md",
+        "current_phase": "S0未開始",
+        "next_action": "唯讀盤點現有Zeabur主機、服務/Volume、既有備份、24h用量及必要references，選現有pilot；不等待0052。",
+        "inputs": [
+          "使用者提供的既購主機截圖基線",
+          "原服務規格、平台安全目錄/指標、備份收據與存取references"
+        ],
+        "outputs": [
+          "固定接手入口、服務catalog及各服務runbook",
+          "獨立雲端維運服務與固定job/報告/告警",
+          "各服務一致備份、站外收據、隔離還原与OP驗收證據"
+        ],
+        "planned_write_scope": [
+          "notyet-harness/schedule/services/zeabur-ops/（待建；實作前核具體範圍）",
+          "各被納管服務已核定的export/backup adapter與runbook",
+          "本spec與本task的階段/驗收收據"
+        ],
+        "stop_condition": "未知同檔owner或服務owner、必要存取/備份目的地/費用/還原目標未定時只停依賴步驟；不借此自動刪檔、升級、重灌、擴容、讀秘密或停止其他服務。",
+        "verifiers": [
+          "node scripts/validate-tasks.mjs --changed-only --project morrowise",
+          "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md#11-驗收OP01–OP13：依各項操作與拒絕案例保存真實收據；runtime尚未執行"
+        ],
+        "runtime_status": "not_run"
+      },
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md",
+          "Vincent 2026-09-20 本工作階段：指定「歸MorroWise專案」，檢閱「Zeabur開發交付與伺服器維運」工作內容、頻率、接手資料及驗收後回覆「以上可以」。本次承接規格與todo工作項目，未視為實機啟用或Git授權。"
+        ],
+        "decision_output": "新增一個MorroWise runtime-delivery工作錨點，應用功能仍由各專案負責。",
+        "execution_boundary": "本輪規格與todo登錄；不執行runtime、通知、備份、清理、Git或雲端變更。"
+      },
+      "hc_decision": {
+        "task_scope": "morrowise/zeabur-development-operations",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#constraints",
+          "#risk"
+        ],
+        "hc_reasoning": "目標是持續維護及無聊天接手，不能只寫雷達部署文件。共享維運與應用資料責任分開，以服務catalog及實際收據驗證；不綁0052、不另建Dashboard或任務平台。",
+        "hc_confidence": 0.86,
+        "evidence_refs": [
+          "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md",
+          "Vincent 2026-09-20 本工作階段：指定「歸MorroWise專案」，檢閱「Zeabur開發交付與伺服器維運」工作內容、頻率、接手資料及驗收後回覆「以上可以」。本次承接規格與todo工作項目，未視為實機啟用或Git授權。"
+        ],
+        "source_boundary": "HC是思考檢查，不是正本；任務狀態以本tasks.json，實際維運以版本化設定及真實收據為準。"
+      },
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "將跨服務Zeabur維護接成可觀測、可通知、可復原及可交接的MorroWise runtime-delivery閉環，各應用保有資料與功能正本。",
+        "evidence_plan": [
+          "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md",
+          "本task OP01–OP13的安全實測收據"
+        ],
+        "reviewed_at": "2026-09-20"
+      },
+      "architecture_decision": {
+        "decision": "deferred",
+        "evaluated_at": "2026-09-20",
+        "reason": "本輪僅規格及todo登錄；實作後依真實source/runtime/verifier證據收編既有runtime-delivery，不先宣稱雲端子系統已存在。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "todo",
+            "reason": "Vincent核准共享Zeabur完整開發交付與固定維護計畫，既有tasks沒有相同的跨服務雲端完成邊界。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/system-workflow/docs/specs/zeabur-development-operations.md",
+              "Vincent 2026-09-20 本工作階段：指定「歸MorroWise專案」，檢閱「Zeabur開發交付與伺服器維運」工作內容、頻率、接手資料及驗收後回覆「以上可以」。本次承接規格與todo工作項目，未視為實機啟用或Git授權。"
+            ],
+            "recorded_at": "2026-09-20",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/runtime-scheduler-v0",
+                "morrowise/notification-adapter-contract",
+                "morrowise/local-nongit-data-backup-spec",
+                "market-watchtower/mw-009"
+              ],
+              "scope_comparison": {
+                "problem": "本次解決整台Zeabur跨服務持續維護與接手；既有任務各為scheduler基礎、通知契約、本機備份或單一應用部署。",
+                "owner_source_of_truth": "共享主動維護歸MorroWise；各應用程式與資料仍屬原專案，未轉移JV-33或雷達正本。",
+                "inputs_outputs": "輸入實際主機/服務與各backup receipts；輸出catalog、獨立雲端巡檢、備份覆蓋/告警/清理建議與還原證據。",
+                "lifecycle_completion": "須自然雲端運作、實際送達、隔離還原與全部持久來源覆蓋；不同於已完成的本機runtime/通知契約或mw-009網站上線。"
+              },
+              "decision_reason": "同為維運相關但主機範圍、資料與實測終點不同；只新增一個工作錨點，不重開既有task。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-20",
+                "evidence_refs": [
+                  "Vincent 2026-09-20 本工作階段：指定「歸MorroWise專案」，檢閱「Zeabur開發交付與伺服器維運」工作內容、頻率、接手資料及驗收後回覆「以上可以」。本次承接規格與todo工作項目，未視為實機啟用或Git授權。"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "todo",
+            "to_status": "todo",
+            "reason": "Vincent 指定 task 建立後將 Issue 掛在 notyet-harness；已發佈並逐字讀回 Issue #4，本次僅回填協作入口，實作與驗收狀態不變。",
+            "evidence_refs": [
+              "https://github.com/hisenzi/notyet-harness/issues/4",
+              "Vincent 2026-09-20：寫完 task 後，寫 Issue；Issue 掛在 notyet-harness repo。"
+            ],
+            "recorded_at": "2026-09-20",
+            "semantic_intake": {
+              "outcome": "genuinely_new",
+              "compared_task_refs": [
+                "morrowise/runtime-scheduler-v0",
+                "morrowise/notification-adapter-contract",
+                "morrowise/local-nongit-data-backup-spec",
+                "market-watchtower/mw-009"
+              ],
+              "scope_comparison": {
+                "problem": "本次解決整台Zeabur跨服務持續維護與接手；既有任務各為scheduler基礎、通知契約、本機備份或單一應用部署。",
+                "owner_source_of_truth": "共享主動維護歸MorroWise；各應用程式與資料仍屬原專案，未轉移JV-33或雷達正本。",
+                "inputs_outputs": "輸入實際主機/服務與各backup receipts；輸出catalog、獨立雲端巡檢、備份覆蓋/告警/清理建議與還原證據。",
+                "lifecycle_completion": "須自然雲端運作、實際送達、隔離還原與全部持久來源覆蓋；不同於已完成的本機runtime/通知契約或mw-009網站上線。"
+              },
+              "decision_reason": "同為維運相關但主機範圍、資料與實測終點不同；只新增一個工作錨點，不重開既有task。 本 task 尚未納入 Git 基線，維持本次新工作登錄的 genuinely_new 分類；此次只追加已授權 Issue 入口，不改既定四維 scope。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-20",
+                "evidence_refs": [
+                  "Vincent 2026-09-20 本工作階段：指定「歸MorroWise專案」，檢閱「Zeabur開發交付與伺服器維運」工作內容、頻率、接手資料及驗收後回覆「以上可以」。本次承接規格與todo工作項目，未視為實機啟用或Git授權。"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "material-engine-pilot",
+      "title": "JV-52 素材引擎試辦：持續收件、增量處理、查找與驗收（Issue #3）",
+      "status": "completed",
+      "track": "system",
+      "order_label": "JV-52",
+      "priority": "high",
+      "completed_at": "2026-09-27",
+      "commits": [
+        "1177179"
+      ],
+      "summary": "material_engine.py v2.1 完成試辦：72 唯一資產、110 活躍位置、Swift Vision OCR + pypdf 擷取、來源身分與內容指紋分離、增量處理與方法升級沿用、原子寫入與損壞保護、正式驗收入口（F1-F3 & R1-R7 全數通過）。說明書入口（10a-10d）已更新。經 Codex 三輪獨立複驗與 CC 獨立複驗確認。",
+      "dependencies": [
+        "morrowise-second-brain-capture-gate"
+      ],
+      "done_condition": "material_engine.py 完成 Issue #3 十項工作與四項成效驗收（A1-A4），經獨立複驗全數通過，交付檔案 commit & push 至 main。",
+      "acceptance": [
+        "A1｜Agent 從一般工作描述找到相關來源，不需提供檔名或路徑。",
+        "A2｜找到的內容真正支持答案且適用範圍正確；推論與來源事實分開。",
+        "A3｜改名、移動、重複匯入後仍可取用，相同內容不無謂重做。",
+        "A4｜新資料沿既定流程完成，中斷後可續跑。"
+      ],
+      "source_refs": [
+        "https://github.com/hisenzi/notyet-harness/issues/3",
+        "$COLLAB/notyet-harness/000_Agent/scripts/material_engine.py",
+        "$COLLAB/notyet-harness/000_Agent/data/material_pilot_registry.json"
+      ],
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create-and-complete",
+            "from_status": null,
+            "to_status": "completed",
+            "reason": "Issue #3 從 2026-09-19 開始實作，經三輪 Codex 獨立複驗與 CC 獨立複驗，2026-09-27 全數通過、commit、push 並關閉 Issue。回補 canonical task 記錄。",
+            "evidence_refs": [
+              "https://github.com/hisenzi/notyet-harness/issues/3",
+              "https://github.com/hisenzi/notyet-harness/issues/3#issuecomment-5846793146",
+              "https://github.com/hisenzi/notyet-harness/issues/3#issuecomment-5853677817",
+              "$COLLAB/notyet-harness@1177179"
+            ],
+            "recorded_at": "2026-09-27"
+          }
+        ]
+      },
+      "note": "Issue #3 為工作與協作入口。正式 task 於結案時回補登錄。試辦通過後，歷史資料逐批處理依同一流程進行。"
     }
   ]
 }

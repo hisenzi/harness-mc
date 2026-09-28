@@ -572,7 +572,7 @@ canonical task 已有 acceptance_matrix 時，從當前來源解析完整 ID 集
 <!-- chapter:start delivery -->
 # 版本交付與接續：本機完成和送到遠端分開看
 
-文件版本：**v0.6.2** · 更新日期：2026-09-27 · 狀態：公開候選（未部署）
+文件版本：**v0.6.3** · 更新日期：2026-09-27 · 狀態：公開候選（未部署）
 
 > 文件識別碼：operator-guide-delivery；章節鍵：delivery
 > 內容 owner：Vincent／JV-36；能力 owner：JV-32 與原交付 task
@@ -735,7 +735,7 @@ node "$COLLAB/harness-mc/scripts/repo-coordination-runtime.mjs" local-c1-pending
 
 ## 版本與維護
 
-1. 文件 ID `operator-guide-delivery`、目前 v0.6.2；D-01–D-04 是本章維護／情境引用，不另配 task 編號。
+1. 文件 ID `operator-guide-delivery`、目前 v0.6.3；D-01–D-04 是本章維護／情境引用，不另配 task 編號。
 2. worktree-commit、cc-push 或 closeout contract 改動時，作者核對兩條路由、授權與 first unmet state；具名 reviewer 查實際 diff，記更新／no-impact。
 3. 新版本正文與歷史一起更新；指南證據回 JV-36，實際 Git／交付證據回原 task。本文不存其他專案的 commit 清單或 runtime 私人資料。
 
@@ -766,55 +766,68 @@ C2 只依原 task 的必要 closeout 契約，不因批次而自造；本地完�
 
 ## 發布追蹤工作流（Release Tracking）
 
-跨專案版本發布與變更自動追蹤工作流（`scripts/release-tracking.mjs`）提供將 Tag push、版本驗收契約及測試結果自動化整理並投遞至 GitHub Issue 留言、PR 留言或 GitHub Release 的標準化機制。目前處於 Phase A 本機試行與隔離驗證階段。
+共用核心位於 `$COLLAB/harness-mc/scripts/lib/release-tracking.mjs`，正式入口為 `scripts/release-tracking.mjs`。本機 RT01–RT15 是 Phase A 證據；live CLI 與 Actions adapter 已有實作，**Phase B 真實 GitHub 驗收仍為 NOT_RUN**，不可由本機綠燈推定已啟用或整案完成。canonical task 為 `$COLLAB/harness-mc/milestones/morrowise/tasks.json#cross-project-release-tracking`（`runtime-delivery`）；capability 為 prototype，catalog 的 `adapter_only` 表示 GitHub 外部寫入邊界。
 
 ### 1. 設定與前置契約
-- **專案契約 (Contract)**：專案根目錄必須具備 `contract.json`，聲明 `schema_version`、`required_cases`（如 `F-PASS-01`）與 `cases` 清單。
-- **測試結果 (Result)**：測試產出之 `result.json` 必須包含 `contract_sha256`、`source_commit`（40 位 commit SHA）及每案之狀態（`PASS`/`FAIL`/`NOT_RUN`/`BLOCKED`）與 `evidence` 檔案路徑與 SHA-256。
-- **事件輸入 (Event)**：`event.json` 記錄 Tag 事件、peel 出的 40 位 `commit_sha` 及 `routing` 規則（`existing` 留言於原 Issue/PR、`followup` 開立後續 Issue、`release` 建立 GitHub Release）。
 
-### 2. 操作指令
-所有命令工作目錄為 `$COLLAB/harness-mc`：
+- **Contract／Result**：由 CLI 的明確路徑提供，不要求放在專案根目錄。contract 聲明 required cases；result 必須帶 contract SHA-256、完整 source commit、每案的實際命令、exit code、耗時與 evidence 路徑及 hash。未執行者保留 `NOT_RUN`／`BLOCKED` 與原因。
+- **Event／Routing**：事件攜帶 Tag、完整 40 位 commit SHA 與 routing。fixture 支援 `existing`、`followup`、`release`；本輪 live 僅支援固定同 repo 的 `existing` Issue／PR 留言，禁止自动改走新 Issue 或 Release。
+- **啟用紀錄**：依 `$COLLAB/harness-mc/system-workflow/docs/specs/release-tracking.md` §5 填實際 activation；repo、精確 Tag 名稱、允許的完整 commit SHA、原入口、寫入種類、操作人及授權來源缺一不可。候選入口沿用 `hisenzi/notyet-harness#2`；候選尚不等於已啟用。credential 只由 job 環境注入，不能存入 activation、材料或日誌。
+
+### 2. 本機操作與驗證
+
+以下工作目錄為 `$COLLAB/harness-mc`；每次 `plan`、`apply`、verifier 都要使用**尚不存在**的輸出目錄，不覆蓋舊證據。plan 零 API、零 ledger 寫入，但會建立本機 plan 產物。
 
 ```bash
-# 1. Plan 階段：唯讀校驗與訊息渲染（零外部 API、無副作用）
 node scripts/release-tracking.mjs plan \
-  --event <path-to-event.json> \
-  --contract <path-to-contract.json> \
-  --result <path-to-result.json> \
-  --evidence-root <path-to-evidence-dir> \
-  --out <path-to-plan-dir>
-
-# 2. Apply 階段：原子鎖、防重複 Marker 查核、POST 投遞與 GET 回讀核對
+  --event <event.json> --contract <contract.json> --result <result.json> \
+  --evidence-root <evidence-root> --out <new-plan-dir>
 node scripts/release-tracking.mjs apply \
-  --plan <path-to-plan-dir/plan.json> \
-  --mode fixture \
-  --api-base <loopback-url> \
-  --state-dir <path-to-state-dir> \
-  --out <path-to-apply-dir>
+  --plan <new-plan-dir/plan.json> --mode fixture --api-base <loopback-url> \
+  --state-dir <state-dir> --out <new-apply-dir>
+
+# 每次重跑使用新的名稱，保留原本 recheck-02 等產物。
+RT_RUN_ID="$(date -u +%Y%m%dT%H%M%SZ)-$$"
+node scripts/verify-release-tracking.mjs --out ".runtime/release-tracking/$RT_RUN_ID-all"
+node scripts/verify-release-tracking.mjs --case RT14 --out ".runtime/release-tracking/$RT_RUN_ID-rt14"
 ```
 
-### 3. 測試與驗證
-全套 RT01–RT15 驗證套件涵蓋最小全流程、PR/404 路由、冪等分頁、後續 Issue、Release 門禁、Tag peel、10 種負向反例、誠實回報、斷線 reconcile、同主機競跑鎖、Tag 改指向警告、忽略事件 tombstone、防篡改、隔離性與突變檢驗：
+### 3. 真實 GitHub 啟用與驗收
+
+1. 先記錄已審查、已發布的 harness-mc **core 完整 SHA**，及要觸發事件的目標 repo **sourceSha**；兩者可能不同。來源 SHA 必須在建立測試 Tag 之前捕捉，驗收時與 event、checkout、result、留言逐一核對。不得用執行完才讀到的 HEAD 反填。
+2. 將薄 workflow `$COLLAB/harness-mc/.github/workflows/release-tracking.yml` 安裝至已核准的事件 repo 同路徑。設定 repository variables `RELEASE_TRACKING_CORE_REF`（完整 40 位 harness-mc commit SHA）及 `RELEASE_TRACKING_ACTIVATION_JSON`（§5 schema 的具體授權紀錄）。正式產品邏輯仍從固定 core SHA 讀取。
+3. 測試 Tag 只用 `v0.0.0-issue2-test-*` 前綴。writer job 為 `contents: read`、`actions: read`、`issues: write`；`-readonly` 結尾 Tag 走同實作但 `issues: read` 的 job，驗證真實寫入被拒。這些 Tag／SHA 必須先逐筆列入 activation，不擴大至整個 repo 任意版本。
+4. 首次執行由 `release-tracking-actions.mjs capture` 綁定原始 push 事件與 checkout SHA，執行 RT01–RT15，產生 **synthetic pipeline** contract/result，並標示 `fixture: true`。這證明追蹤管線，不是目標產品的功能驗收。原始 bundle 在投遞前以 `release-tracking-original-<run_id>` 保存；每次 attempt 另存輸出、exit code、HTTP 記錄、GET 回讀及 ledger。
+5. 重跑原 run 必須下載首次 bundle，以 `restore` 驗證 hash 並只搬移 material 路徑；不能重新跑測試或渲染新 body。每個 job 使用新的本地 ledger，靠遠端 marker 找回既有留言，預期 `ALREADY_DELIVERED` 且同一事件仍只有一則版本留言。
+6. 按 §5 驗證正常 Tag、原 run 重跑、同名 Tag 改指向、只讀 token 與停用後無新投遞。留下 run URL、sourceSha、固定 core SHA、原始與 attempt artifact、留言 URL、實際 GET body、exit code 及留言數。錯 body／錯 target 為 `CONFLICT`；權限不足 HTTP 403 為 `BLOCKED`。五項真實證據齊備、独立複核前，B 維持未完成。
+
+已完成授權設定的 live apply 入口如下；預設唯一 API origin 為 `https://api.github.com`，token 由 `GITHUB_TOKEN` 或 `GH_TOKEN` 環境注入，不在命令中填 token：
 
 ```bash
-# 全套隔離驗證
-node scripts/verify-release-tracking.mjs --out .runtime/release-tracking/recheck-02
-
-# 單案指定測試
-node scripts/verify-release-tracking.mjs --case RT14 --out .runtime/release-tracking/single-rt14
+node scripts/release-tracking.mjs apply \
+  --plan <immutable-plan-dir/plan.json> --mode live --activation <activation.json> \
+  --state-dir <new-state-dir> --out <new-live-apply-dir>
 ```
 
 ### 4. 停用方式
-- **Phase A 本機停用**：Phase A 僅運作於本機 loopback 與 fixture 目錄，無外部連線或常駐 daemon；停用時只需停止執行 CLI 或驗證 runner，產物與日誌保留於本機 `.runtime/` 供審計，不需額外清理遠端。
-- **Phase B 工作流停用**：若未來在 GitHub Actions 啟用此工作流，在 `.github/workflows/` 中停用（Disable workflow）或移除觸發條件即可；停用後不再處理 Tag 事件，已發出之 Issue/Release 紀錄一律保留，不刪除歷史證據。
+
+- fixture 無常駐服務；停止執行 CLI／runner 即可，保留 `.runtime/` 證據。
+- live 在已啟用 repo 的 Actions 頁面停用 `Release tracking pilot` workflow。按原 B 停用驗收，先記錄停用狀態與時間、觀察窗、run 清單及目標入口留言，再推送 activation 精確列入且從未投遞的 `-stopped` 測試 Tag；窗內核對沒有新 run／留言，舊紀錄仍在。完成此項後停止測試 Tag push，保留 activation、原始 bundle、attempt artifacts 與既有留言，不刪除歷史或有效版本紀錄。若仍有執行中的 job，先查其寫入／回讀狀態，再做個別處置。
 
 ### 5. 故障復原步驟
-- **PENDING_RECONCILE (Exit Code 4)**：若 POST 投遞時發生網路逾時或連線中斷且 GET reconcile 未確認結果，狀態標為 `PENDING_RECONCILE`。現場保留 `delivery.json` 與 `requests.json`。復原方式：人工檢查目標 Issue/Release 是否已存在帶有該 `event_key` 之機器 Marker；確認後重新以同一 `plan.json` 執行 `apply`，系統將自動查得 Marker 並收斂為 `ALREADY_DELIVERED`。
-- **REVIEW_REQUIRED (Exit Code 3)**：若同名 Tag 遭 force-push 改指向新 commit SHA，系統追加異動通知留言後退出 `REVIEW_REQUIRED`。有效發布參照維持原 SHA；復原方式：由人工審查改指向原因與受影響範圍後，手動建立新 Tag 或確認更新。
-- **Ledger 損毀 (Exit Code 3)**：若 `state-dir/ledger.json` 格式損毀，系統 fail-closed 拒絕任何寫入。復原方式：人工檢查 `.tmp` 或備份復原 `ledger.json`，禁止直接清空重建以防遺失既有發布紀錄。
+
+- **PENDING_RECONCILE（exit 4）**：POST 結果不明時同次最多再做兩次 GET，不盲目重送。保留 plan、bundle、`delivery.json`、`requests.json` 與已取得的 remote snapshot，先查目標 marker／內容。恢復時使用原材料及新的 out；Actions 用原 run 的 restore 路徑，已存在且完全一致才回 `ALREADY_DELIVERED`。
+- **CONFLICT（exit 3）**：GET body／target 與計畫不符，或同一 event key 的目的地／內容衝突；停止並核對原 plan 與遠端證據，不改 body 來掩蓋差異。
+- **BLOCKED（exit 3）**：401／403／404／422、activation 不合或未授權寫入；修正實際權限／設定並記錄原因，不轉換目的地。只讀 token 測試中的 403 是預期反例，job 應保持失敗。
+- **REVIEW_REQUIRED（exit 3）**：同名 Tag 改指向且變動已授權時，只追加一次含 old/new SHA 的通知，原版本留言與有效 SHA 保留。人工處理原因；重跑通知不得增殖。
+- **Ledger 損毀（exit 3）**：保留現場，核對遠端與備份後復原，禁止自動清空。Actions 每次新 ledger 是設計中的遠端防重驗證，不能拿來掩蓋既有本機 ledger 損毀。
 
 ## 版本歷史
+
+### v0.6.3 — 2026-09-27｜接上發布追蹤 live 介面與明確的 B 驗收邊界
+
+- 補 activation、固定 core／事件 SHA、原始 bundle 重跑、最小權限反例與復原方式；每次驗證使用新 out。
+- 保留 prototype 與 B NOT_RUN 的狀態，不以本機測試宣告真實 GitHub 已通過。
 
 ### v0.6.2 — 2026-09-27｜增補發布追蹤工作流（Release Tracking）設定、操作、測試、停用與復原步驟
 

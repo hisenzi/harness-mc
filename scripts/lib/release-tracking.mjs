@@ -257,7 +257,7 @@ export function validateProjectContractAndResult(contractObj, resultObj, evidenc
 }
 
 export function renderMessage({ event, result, projectContract, eventKey }) {
-  const isFixture = event.repo.includes("fixture");
+  const isFixture = event.fixture === true || result.environment?.fixture === true || event.repo.includes("fixture");
   const marker = formatMarker(eventKey, event.repo, event.tag, event.commit_sha);
 
   let statusSummary = "通過 (PASS)";
@@ -390,498 +390,230 @@ export function executePlan({ eventPath, contractPath, resultPath, evidenceRoot,
   return { exitCode: 0, status: "PLANNED", plan };
 }
 
-export async function executeApply({ planPath, mode, apiBase, stateDir, outDir }) {
-  if (fs.existsSync(outDir)) {
-    const err = new Error(`Output directory '${outDir}' already exists. Rejection to prevent overwrite.`);
-    err.code = "ERR_OUT_EXISTS";
-    err.exitCode = 2;
-    throw err;
-  }
+function deliveryError(message, status = 'BLOCKED', exitCode = 3) {
+  return Object.assign(new Error(message), { status, exitCode });
+}
 
-  // Validate apiBase loopback only
-  let parsedUrl;
-  try {
-    parsedUrl = new URL(apiBase);
-  } catch {
-    const err = new Error(`Invalid apiBase URL: '${apiBase}'`);
-    err.exitCode = 2;
-    throw err;
+export function validateActivation(activation, plan) {
+  if (activation?.schema_version !== 1 || activation.status !== 'authorized' ||
+      !activation.operator || !activation.authorization?.source ||
+      !Number.isFinite(Date.parse(activation.authorization?.approved_at))) {
+    throw deliveryError('Live delivery requires a recorded, authorized activation.');
   }
-
-  if (parsedUrl.hostname !== "127.0.0.1" && parsedUrl.hostname !== "localhost") {
-    const err = new Error(`Non-loopback apiBase rejected in Phase A: '${apiBase}'`);
-    err.exitCode = 2;
-    throw err;
+  const e = plan.event;
+  const allowed = activation.allowed_tags?.find(t => t.tag === e.tag);
+  if (activation.repo !== e.repo || !allowed?.commit_shas?.includes(e.commit_sha)) {
+    throw deliveryError('Event repo/tag/commit is outside the activation allowlist.');
   }
+  if (plan.action !== 'existing' || !activation.target ||
+      activation.target.repo !== e.repo ||
+      activation.target.kind !== plan.routing.target?.kind ||
+      activation.target.number !== plan.routing.target?.number ||
+      activation.target.repo !== plan.routing.target?.repo ||
+      !activation.allowed_write_types?.includes('issue_comment')) {
+    throw deliveryError('Live routing must match the fixed existing target in activation.');
+  }
+  return activation;
+}
 
+export async function executeApply({ planPath, mode = 'fixture', apiBase, activationPath, stateDir, outDir, env = process.env, fetchImpl = globalThis.fetch }) {
+  if (fs.existsSync(outDir)) throw deliveryError(`Output directory '${outDir}' already exists. Rejection to prevent overwrite.`, 'INVALID_INPUT', 2);
+  if (!['fixture', 'live'].includes(mode)) throw deliveryError(`Unknown apply mode '${mode}'.`, 'INVALID_INPUT', 2);
+  let base;
+  try { base = new URL(apiBase || (mode === 'live' ? 'https://api.github.com' : '')); }
+  catch { throw deliveryError('Invalid apiBase URL.', 'INVALID_INPUT', 2); }
+  if (base.username || base.password || base.search || base.hash || base.pathname !== '/') throw deliveryError('apiBase must be an origin without credentials or path.', 'INVALID_INPUT', 2);
+  if (mode === 'fixture' && (!['127.0.0.1', 'localhost'].includes(base.hostname) || !['http:', 'https:'].includes(base.protocol))) {
+    throw deliveryError('Non-loopback apiBase rejected in fixture mode.', 'INVALID_INPUT', 2);
+  }
+  if (mode === 'live' && base.origin !== 'https://api.github.com') throw deliveryError('Live API origin must be https://api.github.com.', 'INVALID_INPUT', 2);
+  const plan = JSON.parse(fs.readFileSync(planPath, 'utf8'));
+  let activation, token;
+  if (mode === 'live') {
+    if (!activationPath) throw deliveryError('Missing live activation file.');
+    activation = validateActivation(JSON.parse(fs.readFileSync(activationPath, 'utf8')), plan);
+    token = env.GITHUB_TOKEN || env.GH_TOKEN;
+    if (!token) throw deliveryError('Missing job token in GITHUB_TOKEN or GH_TOKEN environment.');
+  }
   fs.mkdirSync(stateDir, { recursive: true });
   fs.mkdirSync(outDir, { recursive: true });
-
-  const rawPlan = fs.readFileSync(planPath, "utf8");
-  const plan = JSON.parse(rawPlan);
-
-  // If ignored event
-  if (plan.action === "ignore") {
+  const save = (name, value) => fs.writeFileSync(path.join(outDir, name), JSON.stringify(value, null, 2));
+  if (plan.action === 'ignore') {
     if (plan.deleted) {
-      const tombstoneDir = path.join(stateDir, "tombstones");
-      fs.mkdirSync(tombstoneDir, { recursive: true });
-      const tombstonePath = path.join(tombstoneDir, `${plan.event.repo.replace(/\//g, "_")}_${plan.event.tag}.json`);
-      fs.writeFileSync(tombstonePath, JSON.stringify({
-        tag: plan.event.tag,
-        repo: plan.event.repo,
-        deleted_at: new Date().toISOString(),
-      }, null, 2), "utf8");
+      fs.mkdirSync(path.join(stateDir, 'tombstones'), { recursive: true });
+      const name = `${plan.event.repo}_${plan.event.tag}`.replace(/[^a-zA-Z0-9_.-]/g, '_');
+      fs.writeFileSync(path.join(stateDir, 'tombstones', `${name}.json`), JSON.stringify({ repo: plan.event.repo, tag: plan.event.tag, deleted_at: new Date().toISOString() }));
     }
-    const delivery = { status: "IGNORED", reason: plan.reason };
-    fs.writeFileSync(path.join(outDir, "delivery.json"), JSON.stringify(delivery, null, 2), "utf8");
-    return { exitCode: 0, status: "IGNORED" };
+    save('delivery.json', { status: 'IGNORED', reason: plan.reason });
+    return { exitCode: 0, status: 'IGNORED' };
   }
+  const materialBytes = {};
+  for (const key of ['event', 'contract', 'result']) {
+    const bytes = fs.readFileSync(plan.material_paths[key]);
+    if (computeSha256(bytes) !== plan[`${key}_sha256`]) throw deliveryError(`${key} material changed after plan! Hash mismatch.`, 'INVALID_INPUT', 2);
+    materialBytes[key] = bytes;
+  }
+  const messageText = fs.readFileSync(path.join(path.dirname(planPath), 'message.md'), 'utf8');
+  if (computeSha256(messageText) !== plan.message_sha256) throw deliveryError('Message markdown changed after plan! Hash mismatch.', 'INVALID_INPUT', 2);
+  const originalEvent = JSON.parse(materialBytes.event);
+  if (JSON.stringify(plan.event) !== JSON.stringify(originalEvent) ||
+      JSON.stringify(plan.routing) !== JSON.stringify(originalEvent.routing) ||
+      plan.action !== originalEvent.routing.mode ||
+      plan.event_key !== computeEventKey(originalEvent.repo, originalEvent.tag, originalEvent.commit_sha)) {
+    throw deliveryError('Plan identity does not match its hash-bound event.', 'INVALID_INPUT', 2);
+  }
+  validateEvent(originalEvent);
+  validateRouting(plan.routing, plan.event.repo);
+  const contract = JSON.parse(materialBytes.contract); contract._raw = materialBytes.contract.toString('utf8');
+  validateProjectContractAndResult(contract, JSON.parse(materialBytes.result), plan.material_paths.evidence_root, plan.event.commit_sha);
 
-  // Re-verify material hashes
-  const currentEventBytes = fs.readFileSync(plan.material_paths.event);
-  const currentContractBytes = fs.readFileSync(plan.material_paths.contract);
-  const currentResultBytes = fs.readFileSync(plan.material_paths.result);
-  const messagePath = path.join(path.dirname(planPath), "message.md");
-  const currentMessageBytes = fs.readFileSync(messagePath);
-
-  if (computeSha256(currentEventBytes) !== plan.event_sha256) {
-    const err = new Error("Event material changed after plan! Hash mismatch.");
-    err.exitCode = 2;
-    throw err;
-  }
-  if (computeSha256(currentContractBytes) !== plan.contract_sha256) {
-    const err = new Error("Contract material changed after plan! Hash mismatch.");
-    err.exitCode = 2;
-    throw err;
-  }
-  if (computeSha256(currentResultBytes) !== plan.result_sha256) {
-    const err = new Error("Result material changed after plan! Hash mismatch.");
-    err.exitCode = 2;
-    throw err;
-  }
-  if (computeSha256(currentMessageBytes) !== plan.message_sha256) {
-    const err = new Error("Message markdown changed after plan! Hash mismatch.");
-    err.exitCode = 2;
-    throw err;
-  }
-
-  const messageText = currentMessageBytes.toString("utf8");
-  const lockDir = path.join(stateDir, "locks");
-  fs.mkdirSync(lockDir, { recursive: true });
-  const repoSafe = plan.event.repo.replace(/[^a-zA-Z0-9_-]/g, "_");
-  const lockFile = path.join(lockDir, `${repoSafe}-${plan.event.tag}.lock`);
-
-  // Acquire lock using wx flag
-  let lockFd = null;
-  try {
-    lockFd = fs.openSync(lockFile, "wx");
-    fs.writeFileSync(lockFd, JSON.stringify({ pid: process.pid, time: Date.now() }), "utf8");
-  } catch (e) {
-    const err = new Error(`Lock acquisition failed for ${lockFile}: already held or contested.`);
-    err.exitCode = 3;
-    err.status = "LOCK_FAILED";
-    throw err;
-  }
-
-  const releaseLock = () => {
-    if (lockFd !== null) {
-      try {
-        fs.closeSync(lockFd);
-      } catch {}
-      try {
-        fs.unlinkSync(lockFile);
-      } catch {}
-      lockFd = null;
+  const lockDir = path.join(stateDir, 'locks'); fs.mkdirSync(lockDir, { recursive: true });
+  const lockFile = path.join(lockDir, `${plan.event.repo.replace(/[^a-zA-Z0-9_-]/g, '_')}-${plan.event.tag}.lock`);
+  let lockFd;
+  try { lockFd = fs.openSync(lockFile, 'wx'); fs.writeFileSync(lockFd, JSON.stringify({ pid: process.pid, time: Date.now() })); }
+  catch { throw deliveryError(`Lock acquisition failed for ${lockFile}: already held or contested.`, 'LOCK_FAILED'); }
+  const requests = [];
+  let before = null, after = null;
+  const repoPrefix = `/repos/${plan.event.repo}/`;
+  async function apiFetch(endpoint, options = {}) {
+    const url = new URL(endpoint, base);
+    if (url.origin !== base.origin || !url.pathname.startsWith(repoPrefix)) throw deliveryError('API request escaped the selected repo/origin.');
+    const log = { url: url.toString(), method: options.method || 'GET', ...(options.body ? { body: options.body } : {}) };
+    requests.push(log);
+    const headers = { Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', ...options.headers };
+    if (mode === 'live') headers.Authorization = `Bearer ${token}`;
+    try {
+      const res = await fetchImpl(url.toString(), { ...options, headers, redirect: 'manual', signal: AbortSignal.timeout(15000) });
+      log.status = res.status;
+      if (res.status >= 300 && res.status < 400) throw deliveryError('API redirect rejected.');
+      return res;
+    } catch (e) {
+      log.error = e.status ? e.message : 'network request failed';
+      throw e;
     }
-  };
-
-  const requestsLog = [];
-
-  async function apiFetch(pathname, options = {}) {
-    const targetUrl = new URL(pathname, apiBase).toString();
-    requestsLog.push({ url: targetUrl, method: options.method || "GET", body: options.body });
-    const res = await fetch(targetUrl, options);
-    return res;
   }
-
+  const listPath = plan.action === 'existing' ? `${repoPrefix}issues/${plan.routing.target.number}/comments` : plan.action === 'followup' ? `${repoPrefix}issues` : `${repoPrefix}releases`;
+  const collectionName = plan.action === 'existing' ? 'comments' : plan.action === 'followup' ? 'issues' : 'releases';
+  const snapshot = items => ({ [collectionName]: items });
+  function httpError(res) {
+    if ([401, 403, 404, 422].includes(res.status)) return deliveryError(`GitHub rejected request: HTTP ${res.status}.`);
+    return deliveryError(`API response uncertain: HTTP ${res.status}.`, 'PENDING_RECONCILE', 4);
+  }
+  async function listItems(maxPages = 1000) {
+    const items = [];
+    for (let page = 1; page <= maxPages; page++) {
+      const suffix = plan.action === 'followup' ? '&state=all' : '';
+      const res = await apiFetch(`${listPath}?page=${page}&per_page=30${suffix}`);
+      if (!res.ok) throw httpError(res);
+      const rows = await res.json();
+      if (!Array.isArray(rows)) throw deliveryError('Malformed API list response.', 'PENDING_RECONCILE', 4);
+      items.push(...rows);
+      if (rows.length < 30) return items;
+    }
+    throw deliveryError('Remote history exceeds this read budget; retry after inspection.', 'PENDING_RECONCILE', 4);
+  }
+  const itemPath = item => plan.action === 'existing' ? `${repoPrefix}issues/comments/${item.id}` : plan.action === 'followup' ? `${repoPrefix}issues/${item.number}` : `${repoPrefix}releases/${item.id}`;
+  function verifyTarget(item, effectiveCommit = plan.event.commit_sha) {
+    if (plan.action === 'existing') {
+      const expected = `${base.origin}${repoPrefix}issues/${plan.routing.target.number}`;
+      if ((mode === 'live' || item.issue_url) && item.issue_url !== expected) throw deliveryError('Remote item belongs to a different target.', 'CONFLICT');
+    } else if (plan.action === 'release' && (item.tag_name !== plan.event.tag || (item.target_commitish && item.target_commitish !== effectiveCommit))) {
+      throw deliveryError('Remote Release tag/commit does not match.', 'CONFLICT');
+    }
+  }
+  async function readItem(item, expectedBody, expectedMarker = null) {
+    const res = await apiFetch(itemPath(item));
+    if (!res.ok) throw httpError(res);
+    const actual = await res.json();
+    const observed = (after?.[collectionName] || before?.[collectionName] || []).filter(i => i.id !== actual.id);
+    after = { ...snapshot([...observed, actual]), readback_item: actual };
+    if (actual.id !== item.id || actual.body !== expectedBody) throw deliveryError('Read-back body or identity differs from the planned content.', 'CONFLICT');
+    verifyTarget(actual, expectedMarker?.commit_sha || plan.event.commit_sha);
+    if (expectedMarker) {
+      const marker = parseMarker(actual.body);
+      if (!marker || ['event_key', 'repo', 'tag', 'commit_sha'].some(k => marker[k] !== expectedMarker[k])) throw deliveryError('Read-back marker differs from event identity.', 'CONFLICT');
+    }
+    return actual;
+  }
+  // One write attempt; an ambiguous response gets at most two reads, including final GET.
+  async function writeAndRead(endpoint, method, payload, expectedBody, findItem, marker = null) {
+    let res, created;
+    try { res = await apiFetch(endpoint, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); }
+    catch (e) { if (e.status) throw e; }
+    if (res && !res.ok && [401, 403, 404, 422].includes(res.status)) throw httpError(res);
+    if (res?.ok) {
+      try { created = await res.json(); } catch { /* unreadable commit result requires reconcile */ }
+    }
+    if (!created) {
+      // A full page cannot prove absence within the two-read budget. Never issue another POST.
+      const items = await listItems(1);
+      after = snapshot(items);
+      created = findItem(items);
+      if (!created) throw deliveryError('Write outcome unknown; remote marker not confirmed. Do not resend blindly.', 'PENDING_RECONCILE', 4);
+    }
+    return readItem(created, expectedBody, marker);
+  }
   try {
-    // Check ledger for corruption or conflicts
-    const ledgerPath = path.join(stateDir, "ledger.json");
+    const ledgerPath = path.join(stateDir, 'ledger.json');
     let ledger = { deliveries: [] };
     if (fs.existsSync(ledgerPath)) {
-      try {
-        const content = fs.readFileSync(ledgerPath, "utf8");
-        ledger = JSON.parse(content);
-        if (!Array.isArray(ledger.deliveries)) {
-          throw new Error("ledger.deliveries must be an array");
-        }
-      } catch {
-        const err = new Error(`Ledger at ${ledgerPath} is corrupted! Fail-closed.`);
-        err.exitCode = 3;
-        err.status = "LEDGER_CORRUPTED";
-        throw err;
-      }
+      try { ledger = JSON.parse(fs.readFileSync(ledgerPath, 'utf8')); if (!Array.isArray(ledger.deliveries)) throw new Error(); }
+      catch { throw deliveryError(`Ledger at ${ledgerPath} is corrupted! Fail-closed.`, 'LEDGER_CORRUPTED'); }
     }
-
-    // Check if same event_key exists in ledger
-    const existingDelivery = ledger.deliveries.find(d => d.event_key === plan.event_key);
-    if (existingDelivery) {
-      // Check target conflict
-      const existingTarget = existingDelivery.target ?? null;
-      const planTarget = plan.routing.target ?? null;
-      if (existingDelivery.action !== plan.action || JSON.stringify(existingTarget) !== JSON.stringify(planTarget)) {
-        const err = new Error(`Conflict: event_key ${plan.event_key} already delivered to target ${JSON.stringify(existingTarget)}, cannot deliver to ${JSON.stringify(planTarget)}`);
-        err.exitCode = 3;
-        err.status = "CONFLICT";
-        throw err;
-      }
+    const existing = ledger.deliveries.find(d => d.event_key === plan.event_key);
+    if (existing && (existing.action !== plan.action || JSON.stringify(existing.target ?? null) !== JSON.stringify(plan.routing.target ?? null) || (existing.message_sha256 && existing.message_sha256 !== plan.message_sha256))) {
+      throw deliveryError('Same event key has a different target/action/content.', 'CONFLICT');
     }
-
-    // Check if tag exists with a different commit SHA (Repoint in ledger)
-    const repointDelivery = ledger.deliveries.find(
-      d => d.repo === plan.event.repo && d.tag === plan.event.tag && d.commit_sha !== plan.event.commit_sha
-    );
-
-    // Save remote before
-    let remoteBefore = null;
-    let remoteAfter = null;
-
-    // Check remote marker lookup
-    let markerFound = false;
-    let existingItem = null;
-    let remoteRepointFound = null;
-
-    if (plan.action === "existing") {
-      const { target } = plan.routing;
-      // Paginated lookup of comments
-      let page = 1;
-      const allComments = [];
-      while (true) {
-        let res;
-        try {
-          res = await apiFetch(`/repos/${target.repo}/issues/${target.number}/comments?page=${page}&per_page=30`);
-        } catch (netErr) {
-          const delivery = { status: "PENDING_RECONCILE", error: netErr.message };
-          fs.writeFileSync(path.join(outDir, "delivery.json"), JSON.stringify(delivery, null, 2), "utf8");
-          fs.writeFileSync(path.join(outDir, "requests.json"), JSON.stringify(requestsLog, null, 2), "utf8");
-          const err = new Error(`Network failure during pre-check: ${netErr.message}. PENDING_RECONCILE.`);
-          err.exitCode = 4;
-          err.status = "PENDING_RECONCILE";
-          throw err;
-        }
-        if (res.status === 404) {
-          const err = new Error(`Target ${target.kind} #${target.number} not found in repo ${target.repo}`);
-          err.exitCode = 3;
-          err.status = "BLOCKED";
-          throw err;
-        }
-        if (!res.ok) {
-          throw new Error(`API error ${res.status}: ${await res.text()}`);
-        }
-        const comments = await res.json();
-        if (!Array.isArray(comments) || comments.length === 0) break;
-        allComments.push(...comments);
-        if (comments.length < 30) break;
-        page++;
-      }
-      remoteBefore = { comments: allComments };
-
-      for (const item of allComments) {
-        const marker = parseMarker(item.body);
-        if (marker) {
-          if (marker.event_key === plan.event_key) {
-            markerFound = true;
-            existingItem = item;
-            break;
-          } else if (marker.repo === plan.event.repo && marker.tag === plan.event.tag && marker.commit_sha !== plan.event.commit_sha) {
-            remoteRepointFound = { marker, item };
-          }
-        }
-      }
-    } else if (plan.action === "followup") {
-      let page = 1;
-      const allIssues = [];
-      while (true) {
-        let res;
-        try {
-          res = await apiFetch(`/repos/${plan.event.repo}/issues?state=all&page=${page}&per_page=30`);
-        } catch (netErr) {
-          const delivery = { status: "PENDING_RECONCILE", error: netErr.message };
-          fs.writeFileSync(path.join(outDir, "delivery.json"), JSON.stringify(delivery, null, 2), "utf8");
-          fs.writeFileSync(path.join(outDir, "requests.json"), JSON.stringify(requestsLog, null, 2), "utf8");
-          const err = new Error(`Network failure during pre-check: ${netErr.message}. PENDING_RECONCILE.`);
-          err.exitCode = 4;
-          err.status = "PENDING_RECONCILE";
-          throw err;
-        }
-        if (!res.ok) break;
-        const issues = await res.json();
-        if (!Array.isArray(issues) || issues.length === 0) break;
-        allIssues.push(...issues);
-        if (issues.length < 30) break;
-        page++;
-      }
-      remoteBefore = { issues: allIssues };
-      for (const item of allIssues) {
-        const marker = parseMarker(item.body);
-        if (marker && marker.event_key === plan.event_key) {
-          markerFound = true;
-          existingItem = item;
-          break;
-        }
-      }
-    } else if (plan.action === "release") {
-      let res;
-      try {
-        res = await apiFetch(`/repos/${plan.event.repo}/releases`);
-      } catch (netErr) {
-        const delivery = { status: "PENDING_RECONCILE", error: netErr.message };
-        fs.writeFileSync(path.join(outDir, "delivery.json"), JSON.stringify(delivery, null, 2), "utf8");
-        fs.writeFileSync(path.join(outDir, "requests.json"), JSON.stringify(requestsLog, null, 2), "utf8");
-        const err = new Error(`Network failure during pre-check: ${netErr.message}. PENDING_RECONCILE.`);
-        err.exitCode = 4;
-        err.status = "PENDING_RECONCILE";
-        throw err;
-      }
-      let allReleases = [];
-      if (res.ok) {
-        allReleases = await res.json();
-      }
-      remoteBefore = { releases: allReleases };
-      for (const item of allReleases) {
-        const marker = parseMarker(item.body);
-        if (marker) {
-          if (marker.event_key === plan.event_key) {
-            markerFound = true;
-            existingItem = item;
-            break;
-          } else if (marker.repo === plan.event.repo && marker.tag === plan.event.tag && marker.commit_sha !== plan.event.commit_sha) {
-            remoteRepointFound = { marker, item };
-          }
-        }
-      }
+    const items = await listItems(); before = snapshot(items);
+    const findCurrent = rows => rows.find(i => parseMarker(i.body)?.event_key === plan.event_key);
+    const current = findCurrent(items);
+    const prior = items.find(i => { const m = parseMarker(i.body); return m?.repo === plan.event.repo && m.tag === plan.event.tag && m.commit_sha !== plan.event.commit_sha; });
+    const priorLedger = ledger.deliveries.find(d => d.repo === plan.event.repo && d.tag === plan.event.tag && d.commit_sha !== plan.event.commit_sha);
+    if (prior || priorLedger) {
+      if (!prior) throw deliveryError('Prior tag binding is no longer visible remotely.', 'CONFLICT');
+      if (mode === 'live' && !activation.allowed_write_types.includes('tag_repoint_notice')) throw deliveryError('Tag repoint notices are not authorized.');
+      const oldSha = parseMarker(prior.body).commit_sha;
+      const noticeMarker = `<!-- repoint-notification: ${plan.event.tag}-${plan.event.commit_sha} -->`;
+      const warning = `\n\n> [!WARNING]\n> **版本異動通知**：Tag \`${plan.event.tag}\` 參照由前次 SHA \`${oldSha}\` 改指向至新 SHA \`${plan.event.commit_sha}\`。異動時間：\`${plan.event.observed_at}\`。有效參照維持原紀錄，需人工審查。${noticeMarker}`;
+      let notice;
+      if (plan.action === 'existing') {
+        const found = items.find(i => i.body?.includes(noticeMarker));
+        notice = found ? await readItem(found, warning) : await writeAndRead(listPath, 'POST', { body: warning }, warning, rows => rows.find(i => i.body?.includes(noticeMarker)));
+        after = snapshot(found ? items.map(i => i.id === notice.id ? notice : i) : [...items, notice]);
+      } else if (plan.action === 'release') {
+        const expected = prior.body.includes(noticeMarker) ? prior.body : prior.body + warning;
+        notice = prior.body.includes(noticeMarker) ? await readItem(prior, expected, parseMarker(prior.body)) : await writeAndRead(itemPath(prior), 'PATCH', { body: expected }, expected, rows => rows.find(i => i.id === prior.id && i.body?.includes(noticeMarker)), parseMarker(prior.body));
+        after = snapshot(items.map(i => i.id === prior.id ? notice : i));
+      } else throw deliveryError('Tag repoint requires the previously recorded existing/Release destination.');
+      save('delivery.json', { status: 'REVIEW_REQUIRED', reason: 'Tag repointing detected', old_sha: oldSha, new_sha: plan.event.commit_sha, notification: notice });
+      throw deliveryError(`Tag repointing detected for ${plan.event.tag}. REVIEW_REQUIRED.`, 'REVIEW_REQUIRED');
     }
-
-    // Handle Tag Repointing
-    if (repointDelivery || remoteRepointFound) {
-      const oldSha = repointDelivery?.commit_sha || remoteRepointFound?.marker?.commit_sha;
-      const notificationText = `\n\n> [!WARNING]\n> **版本異動通知**：Tag \`${plan.event.tag}\` 參照由前次 SHA \`${oldSha}\` 改指向至新 SHA \`${plan.event.commit_sha}\`。異動時間：\`${new Date().toISOString()}\`。有效參照維持原紀錄，需人工審查。<!-- repoint-notification: ${plan.event.tag}-${plan.event.commit_sha} -->`;
-
-      // Check if notification already appended
-      let alreadyNotified = false;
-      if (plan.action === "existing") {
-        for (const c of remoteBefore?.comments || []) {
-          if (c.body && c.body.includes(`repoint-notification: ${plan.event.tag}-${plan.event.commit_sha}`)) {
-            alreadyNotified = true;
-            break;
-          }
-        }
-        if (!alreadyNotified) {
-          const { target } = plan.routing;
-          await apiFetch(`/repos/${target.repo}/issues/${target.number}/comments`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ body: notificationText }),
-          });
-        }
-      } else if (plan.action === "release") {
-        const rel = remoteRepointFound?.item || remoteBefore?.releases?.find(r => r.tag_name === plan.event.tag);
-        if (rel && !rel.body.includes(`repoint-notification: ${plan.event.tag}-${plan.event.commit_sha}`)) {
-          await apiFetch(`/repos/${plan.event.repo}/releases/${rel.id}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ body: rel.body + notificationText }),
-          });
-        }
-      }
-
-      const delivery = {
-        status: "REVIEW_REQUIRED",
-        reason: "Tag repointing detected",
-        old_sha: oldSha,
-        new_sha: plan.event.commit_sha,
-      };
-      fs.writeFileSync(path.join(outDir, "delivery.json"), JSON.stringify(delivery, null, 2), "utf8");
-      fs.writeFileSync(path.join(outDir, "requests.json"), JSON.stringify(requestsLog, null, 2), "utf8");
-      fs.writeFileSync(path.join(outDir, "remote-before.json"), JSON.stringify(remoteBefore, null, 2), "utf8");
-      fs.writeFileSync(path.join(outDir, "remote-after.json"), JSON.stringify(remoteBefore, null, 2), "utf8");
-
-      const err = new Error(`Tag repointing detected for tag ${plan.event.tag}. Old SHA: ${oldSha}, New SHA: ${plan.event.commit_sha}. REVIEW_REQUIRED.`);
-      err.exitCode = 3;
-      err.status = "REVIEW_REQUIRED";
-      throw err;
+    const marker = { event_key: plan.event_key, repo: plan.event.repo, tag: plan.event.tag, commit_sha: plan.event.commit_sha };
+    let actual, status;
+    if (current) {
+      actual = await readItem(current, messageText, marker); status = 'ALREADY_DELIVERED';
+      after = snapshot(items.map(i => i.id === actual.id ? actual : i));
+    } else {
+      if (existing) throw deliveryError('Ledger delivery is missing remotely; do not recreate it.', 'CONFLICT');
+      if (plan.action === 'release' && items.some(i => i.tag_name === plan.event.tag)) throw deliveryError('Existing Release has no verifiable tracking marker.');
+      const payload = plan.action === 'existing' ? { body: messageText } : plan.action === 'followup' ? { title: plan.routing.title, body: messageText } : { tag_name: plan.event.tag, target_commitish: plan.event.commit_sha, name: plan.event.tag, body: messageText };
+      actual = await writeAndRead(listPath, 'POST', payload, messageText, findCurrent, marker); status = 'DELIVERED';
+      after = { ...snapshot([...items, actual]), delivered_item: actual };
     }
-
-    // If marker already found remotely: ALREADY_DELIVERED
-    if (markerFound && existingItem) {
-      if (!existingDelivery) {
-        ledger.deliveries.push({
-          event_key: plan.event_key,
-          repo: plan.event.repo,
-          tag: plan.event.tag,
-          commit_sha: plan.event.commit_sha,
-          action: plan.action,
-          target: plan.routing.target || null,
-          delivered_at: new Date().toISOString(),
-          item_id: existingItem.id || existingItem.number,
-        });
-        const tmpLedgerPath = path.join(stateDir, "ledger.tmp.json");
-        fs.writeFileSync(tmpLedgerPath, JSON.stringify(ledger, null, 2), "utf8");
-        fs.renameSync(tmpLedgerPath, ledgerPath);
-      }
-      // Readback GET check
-      const delivery = {
-        status: "ALREADY_DELIVERED",
-        remote_item: existingItem,
-        event_key: plan.event_key,
-      };
-      fs.writeFileSync(path.join(outDir, "delivery.json"), JSON.stringify(delivery, null, 2), "utf8");
-      fs.writeFileSync(path.join(outDir, "requests.json"), JSON.stringify(requestsLog, null, 2), "utf8");
-      fs.writeFileSync(path.join(outDir, "remote-before.json"), JSON.stringify(remoteBefore, null, 2), "utf8");
-      fs.writeFileSync(path.join(outDir, "remote-after.json"), JSON.stringify(remoteBefore, null, 2), "utf8");
-      return { exitCode: 0, status: "ALREADY_DELIVERED" };
+    if (!existing) {
+      ledger.deliveries.push({ ...marker, action: plan.action, target: plan.routing.target || null, message_sha256: plan.message_sha256, delivered_at: new Date().toISOString(), item_id: actual.id || actual.number });
+      const temp = `${ledgerPath}.tmp`; fs.writeFileSync(temp, JSON.stringify(ledger, null, 2)); fs.renameSync(temp, ledgerPath);
     }
-
-    // Perform Delivery POST
-    let postResponse = null;
-    let postError = null;
-
-    try {
-      if (plan.action === "existing") {
-        const { target } = plan.routing;
-        postResponse = await apiFetch(`/repos/${target.repo}/issues/${target.number}/comments`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ body: messageText }),
-        });
-      } else if (plan.action === "followup") {
-        postResponse = await apiFetch(`/repos/${plan.event.repo}/issues`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title: plan.routing.title,
-            body: messageText,
-            work_key: plan.routing.work_key,
-          }),
-        });
-      } else if (plan.action === "release") {
-        postResponse = await apiFetch(`/repos/${plan.event.repo}/releases`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            tag_name: plan.event.tag,
-            target_commitish: plan.event.commit_sha,
-            name: plan.event.tag,
-            body: messageText,
-          }),
-        });
-      }
-    } catch (e) {
-      postError = e;
-    }
-
-    // Handle network timeout / failure: reconcile attempt
-    if (postError || !postResponse || !postResponse.ok) {
-      // Reconcile by querying marker
-      let reconciled = null;
-      try {
-        if (plan.action === "existing") {
-          const { target } = plan.routing;
-          const checkRes = await apiFetch(`/repos/${target.repo}/issues/${target.number}/comments?page=1&per_page=30`);
-          if (checkRes.ok) {
-            const comments = await checkRes.json();
-            reconciled = comments.find(c => {
-              const m = parseMarker(c.body);
-              return m && m.event_key === plan.event_key;
-            });
-          }
-        }
-      } catch {}
-
-      if (reconciled) {
-        // Reconcile succeeded!
-        postResponse = { ok: true, json: async () => reconciled };
-      } else {
-        // Reconcile failed: PENDING_RECONCILE
-        fs.writeFileSync(path.join(outDir, "requests.json"), JSON.stringify(requestsLog, null, 2), "utf8");
-        fs.writeFileSync(path.join(outDir, "remote-before.json"), JSON.stringify(remoteBefore, null, 2), "utf8");
-        const delivery = { status: "PENDING_RECONCILE", error: postError?.message || `HTTP ${postResponse?.status}` };
-        fs.writeFileSync(path.join(outDir, "delivery.json"), JSON.stringify(delivery, null, 2), "utf8");
-        const err = new Error(`Delivery uncertain: ${postError?.message || `HTTP ${postResponse?.status}`}. PENDING_RECONCILE.`);
-        err.exitCode = 4;
-        err.status = "PENDING_RECONCILE";
-        throw err;
-      }
-    }
-
-    const createdItem = await postResponse.json();
-
-    // GET Read-back verification
-    let readbackUrl = createdItem.url;
-    if (!readbackUrl) {
-      if (plan.action === "existing") {
-        readbackUrl = `/repos/${plan.routing.target.repo}/issues/comments/${createdItem.id}`;
-      } else if (plan.action === "followup") {
-        readbackUrl = `/repos/${plan.event.repo}/issues/${createdItem.number}`;
-      } else if (plan.action === "release") {
-        readbackUrl = `/repos/${plan.event.repo}/releases/${createdItem.id}`;
-      }
-    }
-
-    const readbackRes = await apiFetch(readbackUrl);
-    if (!readbackRes.ok) {
-      const delivery = { status: "REMOTE_MISMATCH", error: `Read-back GET failed with HTTP ${readbackRes.status}` };
-      fs.writeFileSync(path.join(outDir, "delivery.json"), JSON.stringify(delivery, null, 2), "utf8");
-      fs.writeFileSync(path.join(outDir, "requests.json"), JSON.stringify(requestsLog, null, 2), "utf8");
-      const err = new Error(`Read-back GET failed with HTTP ${readbackRes.status}`);
-      err.exitCode = 3;
-      err.status = "REMOTE_MISMATCH";
-      throw err;
-    }
-
-    const readbackItem = await readbackRes.json();
-    const readbackMarker = parseMarker(readbackItem.body);
-    if (!readbackMarker || readbackMarker.event_key !== plan.event_key) {
-      const delivery = { status: "REMOTE_MISMATCH", error: "Read-back verification failed: marker missing or event_key mismatch in remote body" };
-      fs.writeFileSync(path.join(outDir, "delivery.json"), JSON.stringify(delivery, null, 2), "utf8");
-      fs.writeFileSync(path.join(outDir, "requests.json"), JSON.stringify(requestsLog, null, 2), "utf8");
-      const err = new Error("Read-back verification failed: marker missing or event_key mismatch in remote body");
-      err.exitCode = 3;
-      err.status = "REMOTE_MISMATCH";
-      throw err;
-    }
-
-    // Atomic update ledger
-    ledger.deliveries.push({
-      event_key: plan.event_key,
-      repo: plan.event.repo,
-      tag: plan.event.tag,
-      commit_sha: plan.event.commit_sha,
-      action: plan.action,
-      target: plan.routing.target || null,
-      delivered_at: new Date().toISOString(),
-      item_id: createdItem.id || createdItem.number,
-    });
-
-    const tmpLedgerPath = path.join(stateDir, "ledger.tmp.json");
-    fs.writeFileSync(tmpLedgerPath, JSON.stringify(ledger, null, 2), "utf8");
-    fs.renameSync(tmpLedgerPath, ledgerPath);
-
-    remoteAfter = { delivered_item: readbackItem };
-
-    const delivery = {
-      status: "DELIVERED",
-      event_key: plan.event_key,
-      delivered_item: readbackItem,
-    };
-
-    fs.writeFileSync(path.join(outDir, "delivery.json"), JSON.stringify(delivery, null, 2), "utf8");
-    fs.writeFileSync(path.join(outDir, "requests.json"), JSON.stringify(requestsLog, null, 2), "utf8");
-    fs.writeFileSync(path.join(outDir, "remote-before.json"), JSON.stringify(remoteBefore, null, 2), "utf8");
-    fs.writeFileSync(path.join(outDir, "remote-after.json"), JSON.stringify(remoteAfter, null, 2), "utf8");
-
-    return { exitCode: 0, status: "DELIVERED" };
+    save('delivery.json', { status, event_key: plan.event_key, delivered_item: actual });
+    return { exitCode: 0, status };
+  } catch (e) {
+    const error = e.status ? e : deliveryError('Network or API decoding failed; remote state is uncertain.', 'PENDING_RECONCILE', 4);
+    if (error.status !== 'REVIEW_REQUIRED') save('delivery.json', { status: error.status, error: error.message });
+    throw error;
   } finally {
-    releaseLock();
+    save('requests.json', requests);
+    if (before) save('remote-before.json', before);
+    if (after) save('remote-after.json', after);
+    try { fs.closeSync(lockFd); } finally { fs.unlinkSync(lockFile); }
   }
 }

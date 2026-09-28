@@ -56,7 +56,7 @@ function getChangedSkillFiles({ repo, skillsDir }) {
   const relSkillsDir = path.relative(repo, skillsDir);
 
   try {
-    const tracked = runGit(repo, `diff --name-only HEAD -- ${quoteShell(relSkillsDir)}`);
+    const tracked = runGit(repo, `diff --name-only --diff-filter=d HEAD -- ${quoteShell(relSkillsDir)}`);
     for (const file of tracked.split("\n").filter(Boolean)) {
       if (isSkillFile(file)) changed.add(path.resolve(repo, file));
     }

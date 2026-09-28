@@ -6,6 +6,7 @@ import http from "node:http";
 import crypto from "node:crypto";
 import { execFileSync, spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { parseMarker } from "./lib/release-tracking.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -526,7 +527,7 @@ async function runAllTests(targetOutDir, targetCase = null) {
       const lastComment = comments[comments.length - 1];
 
       const bodyHasTag = !!(lastComment && lastComment.body.includes("v0.0.1-pilot"));
-      const bodyHasCommitA = !!(lastComment && lastComment.body.includes(commitA));
+      const bodyHasCommitA = !!(lastComment && lastComment.body.includes(`**完整 Commit SHA**：\`${commitA}\``));
       const bodyHasFixture = !!(lastComment && lastComment.body.includes("fixture"));
       const bodyHasCase = !!(lastComment && lastComment.body.includes("F-PASS-01"));
 
@@ -955,6 +956,8 @@ async function runAllTests(targetOutDir, targetCase = null) {
       const r1 = await runCliApply({ plan: path.join(p1, "plan.json"), apiBase, stateDir: path.join(s1, "state"), out: a1 });
       const msg1 = fs.readFileSync(path.join(p1, "message.md"), "utf8");
 
+      // Each RT08 variant has independent remote state (same original fixture event key).
+      mockServer.reset();
       // 2. NOT_RUN report
       const s2 = path.join(caseDir, "notrun");
       const b2 = createInputBundle(s2, {
@@ -977,6 +980,7 @@ async function runAllTests(targetOutDir, targetCase = null) {
       const r2 = await runCliApply({ plan: path.join(p2, "plan.json"), apiBase, stateDir: path.join(s2, "state"), out: a2 });
       const msg2 = fs.readFileSync(path.join(p2, "message.md"), "utf8");
 
+      mockServer.reset();
       // 3. BLOCKED report
       const s3 = path.join(caseDir, "blocked");
       const b3 = createInputBundle(s3, {
@@ -1187,6 +1191,13 @@ async function runAllTests(targetOutDir, targetCase = null) {
       const aRel2 = path.join(s2, "apply-2");
       await runCliPlan({ event: b2Repoint.eventPath, contract: b2Repoint.projectContractPath, result: b2Repoint.resultPath, evidenceRoot: b2Repoint.inputDir, out: pRel2 });
       const rRel2 = await runCliApply({ plan: path.join(pRel2, "plan.json"), apiBase, stateDir: stateRel, out: aRel2 });
+      const aRel3 = path.join(s2, "apply-3");
+      const rRel3 = await runCliApply({ plan: path.join(pRel2, "plan.json"), apiBase, stateDir: stateRel, out: aRel3 });
+      const dRel2 = JSON.parse(fs.readFileSync(path.join(aRel2, "delivery.json"), "utf8"));
+      const dRel3 = JSON.parse(fs.readFileSync(path.join(aRel3, "delivery.json"), "utf8"));
+      const release = [...mockServer.releases.values()].find(r => r.tag_name === "v0.0.2-pilot");
+      const releasePreserved = release?.target_commitish === commitA && parseMarker(release?.body)?.commit_sha === commitA;
+      const releaseNoticeOnce = (release?.body.match(/repoint-notification:/g) || []).length === 1;
 
       const d2 = fs.existsSync(path.join(a2, "delivery.json")) ? JSON.parse(fs.readFileSync(path.join(a2, "delivery.json"), "utf8")) : null;
 
@@ -1194,13 +1205,15 @@ async function runAllTests(targetOutDir, targetCase = null) {
         r2.exitCode === 3 &&
         d2?.status === "REVIEW_REQUIRED" &&
         r3.exitCode === 3 &&
-        rRel2.exitCode === 3;
+        rRel2.exitCode === 3 && rRel3.exitCode === 3 &&
+        dRel2.status === "REVIEW_REQUIRED" && dRel3.status === "REVIEW_REQUIRED" &&
+        releasePreserved && releaseNoticeOnce;
 
       caseResults.push({
         id: "RT11",
         status: pass ? "PASS" : "FAIL",
-        actual: { r2Exit: r2.exitCode, r2Status: d2?.status, r3Exit: r3.exitCode, rRel2Exit: rRel2.exitCode },
-        expected: { r2Exit: 3, r2Status: "REVIEW_REQUIRED", r3Exit: 3, rRel2Exit: 3 },
+        actual: { r2Exit: r2.exitCode, r2Status: d2?.status, r3Exit: r3.exitCode, rRel2Exit: rRel2.exitCode, releaseStatus: dRel2.status, releaseRepeatStatus: dRel3.status, releasePreserved, releaseNoticeOnce },
+        expected: { r2Exit: 3, r2Status: "REVIEW_REQUIRED", r3Exit: 3, rRel2Exit: 3, releaseStatus: "REVIEW_REQUIRED", releaseRepeatStatus: "REVIEW_REQUIRED", releasePreserved: true, releaseNoticeOnce: true },
         artifacts: [path.join("RT11", "existing", "apply-2", "delivery.json")],
       });
     }
@@ -1410,8 +1423,8 @@ async function runAllTests(targetOutDir, targetCase = null) {
       // Mutate renderMessage: inject erroneous 40-character SHA into rendered message body
       const mutatedLib = originalLib.replace(
         "export function renderMessage({ event, result, projectContract, eventKey }) {",
-        "export function renderMessage({ event, result, projectContract, eventKey }) {\n  event = { ...event, commit_sha: \"0000000000000000000000000000000000000000\" };"
-      );
+        "export function renderMessage({ event, result, projectContract, eventKey }) {\n  const mutationOriginalCommit = event.commit_sha;\n  event = { ...event, commit_sha: \"0000000000000000000000000000000000000000\" };"
+      ).replace("const marker = formatMarker(eventKey, event.repo, event.tag, event.commit_sha);", "const marker = formatMarker(eventKey, event.repo, event.tag, mutationOriginalCommit);");
       if (mutatedLib === originalLib) {
         throw new Error("Failed to mutate renderer in disposable copy");
       }

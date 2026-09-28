@@ -6,8 +6,11 @@ function printHelp() {
   console.log(`
 Usage:
   node scripts/release-tracking.mjs plan --event <path> --contract <path> --result <path> --evidence-root <path> --out <path>
-  node scripts/release-tracking.mjs apply --plan <path> [--mode fixture] --api-base <url> --state-dir <path> --out <path>
+  node scripts/release-tracking.mjs apply --plan <path> --mode fixture --api-base <loopback-url> --state-dir <path> --out <path>
 
+  node scripts/release-tracking.mjs apply --plan <path> --mode live --activation <path> --state-dir <path> --out <path>
+
+Live mode uses https://api.github.com and GITHUB_TOKEN/GH_TOKEN from the environment.
 Commands:
   plan      Validate inputs, determine routing, and render message without side effects.
   apply     Execute plan, perform atomic lock, marker check, API post, and readback.
@@ -77,8 +80,8 @@ async function main() {
       process.exit(err.exitCode || 2);
     }
   } else if (command === "apply") {
-    const { plan, mode = "fixture", "api-base": apiBase, "state-dir": stateDir, out } = options;
-    if (!plan || !apiBase || !stateDir || !out) {
+    const { plan, mode = "fixture", "api-base": apiBase, activation: activationPath, "state-dir": stateDir, out } = options;
+    if (!plan || (!apiBase && mode === "fixture") || !stateDir || !out) {
       console.error("Missing required arguments for apply command.");
       printHelp();
       process.exit(2);
@@ -89,6 +92,7 @@ async function main() {
         planPath: plan,
         mode,
         apiBase,
+        activationPath,
         stateDir,
         outDir: out,
       });
@@ -96,7 +100,7 @@ async function main() {
       process.exit(outcome.exitCode);
     } catch (err) {
       console.error(`Apply failed: ${err.message}`);
-      if (err.cause) console.error("Cause:", err.cause);
+
       process.exit(err.exitCode || 3);
     }
   } else {

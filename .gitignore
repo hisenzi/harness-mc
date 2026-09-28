@@ -20,3 +20,7 @@ next-env.d.ts
 
 # build info
 *.tsbuildinfo
+
+# Runtime and quick transaction state
+.runtime/
+*.quick-transaction.json

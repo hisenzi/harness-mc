@@ -15115,15 +15115,15 @@
       "id": "cross-project-release-tracking",
       "title": "建立跨專案版本發布與變更自動建立 GitHub Issue 之工作流機制（Issue #2）",
       "status": "in_progress",
-      "track": "delivery",
+      "track": "runtime-delivery",
       "priority": "high",
       "started_at": "2026-09-26",
-      "summary": "跨專案版本發布與變更自動追蹤工作流機制（scripts/release-tracking.mjs）：Phase A 本機全套 15 案驗收（RT01–RT15）全數通過且通過 Codex 獨立複驗；A2 操作手冊與復原規範已完備；Phase B 待 activation.json 明確授權試行 repo、Tag 與權限後啟動。",
-      "done_condition": "Phase A 15 案驗收全數通過且通過獨立複驗；OPERATOR-GUIDE.md 完備；A2 登錄 capability registry；Phase B 依 activation.json 試行驗證完成並由 Vincent 確認結案。",
+      "summary": "A2 修正與九項本機治理／文件檢查均 PASS，獨立文件審查完成；B 本機工程 11 項 transport、7 項 Actions 測試及 RT01–RT15 通過。真實 B01 已推送測試 Tag，但 GitHub 尚未登錄 workflow，觀察到 0 run／0 新留言，故 B01=BLOCKED；B02–B05=NOT_RUN。原 A1／A2／B 完成條件不變，維持 in_progress，不宣稱整案完成。",
+      "done_condition": "完整符合 Issue #2 既定 A1／A2／B：RT01–RT15 原契約全數通過且有同版獨立複驗；共用交接方法及 OPERATOR-GUIDE 操作、停用、復原完整，canonical task、capability registry、workflow catalog 與文件治理一致且驗證通過；在明定 repo／Tag／SHA／目標及外部寫入範圍內完成原 Phase B 真實觸發、重送去重、Tag 改指向、權限拒絕與停用驗收。逐案保留來源與 artifact，fixture 不代替 B；由 Vincent 確認 Issue 結案。",
       "acceptance": [
         "A1｜本機功能驗證：RT01–RT15 全數通過（含空目的地 BLOCKED exit 3、突變驗證 RT01 內容斷言失敗 exit 1、故障注入等）。",
-        "A2｜交接整合：OPERATOR-GUIDE.md 提供設定、操作、測試、停用與復原 5 大章節，登錄 capability registry 且驗證全綠。",
-        "B｜正式工作流：於授權試行 repo 實施真實 Tag 觸發、冪等分頁、改指向警示與停用驗證。"
+        "A2｜交接整合：沿用共用方法及唯一 OPERATOR-GUIDE；canonical task schema、capability owner、workflow catalog 與文件治理相符，原驗證器通過且獨立複驗有本人結果。",
+        "B｜正式工作流：依 Issue #2 原要求於具名且授權的 repo／Tag／SHA／入口完成真實觸發、跨 run 去重、改指向警示、真實權限拒絕與停用；未跑不以 A 的 mock 結果替代。"
       ],
       "source_refs": [
         "https://github.com/hisenzi/notyet-harness/issues/2",
@@ -15133,7 +15133,20 @@
         "$COLLAB/harness-mc/system-workflow/docs/specs/release-tracking.md",
         "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md"
       ],
-      "jv32_route": "JV-32/task-lifecycle",
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement",
+          "code-review",
+          "closeout-commit-routing"
+        ],
+        "decision_input": [
+          "https://github.com/hisenzi/notyet-harness/issues/2",
+          "Vincent 2026-09-27 本工作階段：「你來修，可以開始」，授權接續 Issue #2 的 A2 修正與 B 工程；本輪修正既有 task 與必要治理登錄，不含 commit、push 或外部寫入。"
+        ],
+        "decision_output": "修正既有 task 與必要登錄，保留原 A1／A2／B 完成邊界，不新增 task 或驗收 ID。",
+        "execution_boundary": "按既有 A2／B 授權接續；Git、外部寫入、runtime 與獨立驗收分別依原契約及真實證據判定。"
+      },
       "task_lifecycle": {
         "route": "JV-32/task-lifecycle",
         "history": [
@@ -15148,10 +15161,115 @@
               "https://github.com/hisenzi/notyet-harness/issues/2#issuecomment-5856676882"
             ],
             "recorded_at": "2026-09-27"
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "修正 runtime-delivery track、order_label、HC framing、JV-32 route、goal alignment，補本次語意修正四維 intake；保留既有 task 身分、歷史及 A1／A2／B。",
+            "evidence_refs": [
+              "https://github.com/hisenzi/notyet-harness/issues/2",
+              "Vincent 2026-09-27 本工作階段：「你來修，可以開始」，授權接續 Issue #2 的 A2 修正與 B 工程；本輪修正既有 task 與必要治理登錄，不含 commit、push 或外部寫入。",
+              "node scripts/validate-tasks.mjs --changed-only --project morrowise"
+            ],
+            "recorded_at": "2026-09-27",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/approved-work-handoff-feedback-v1",
+                "morrowise/morrowise-dev-workflow-catalog",
+                "morrowise/notification-adapter-contract"
+              ],
+              "scope_comparison": {
+                "problem": "本 task 處理 Tag 發布 evidence 投遞與歷史追蹤；Daily 交接、workflow catalog 與一般通知 transport 各有不同問題。",
+                "owner_source_of_truth": "沿用 morrowise/cross-project-release-tracking；不借其他 task 接管發布 domain，Issue 僅為需求與 evidence 入口。",
+                "inputs_outputs": "輸入發布契約、Tag/SHA、測試與 evidence；輸出 plan、單一投遞、GET 回讀及去重／異動紀錄，不新增 task writer。",
+                "lifecycle_completion": "原 A1／A2／B 全部實際驗收仍為完成條件；本輪修正既有 task schema 與登錄，維持 in_progress，不以 fixture 關案。"
+              },
+              "decision_reason": "與已存在 task 同一工作，故 amend 原 task；相比其他三個 task 的 owner、輸入輸出與完成終點不同，不借用或重建。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-27",
+                "evidence_refs": [
+                  "Vincent 2026-09-27 本工作階段：「你來修，可以開始」，授權接續 Issue #2 的 A2 修正與 B 工程；本輪修正既有 task 與必要治理登錄，不含 commit、push 或外部寫入。",
+                  "https://github.com/hisenzi/notyet-harness/issues/2"
+                ]
+              }
+            }
+          },
+          {
+            "operation": "amend",
+            "from_status": "in_progress",
+            "to_status": "in_progress",
+            "reason": "A2 九項檢查全數 PASS 且實際獨立文件審查完成。B 本機工程的 11 項 transport、7 項 Actions 測試及 RT01–RT15 已通過；凍結 core SHA 96e74d23b66e2b9ae5e0256d41f2f95c64aa192e、target A SHA be19e15c2c5d648fe1189fe4ffc45e2c568cb216。真實 B01 推送 v0.0.0-issue2-test-20260927t154734z-delivery 後，2026-09-27T15:54:45.563872Z 回讀 GitHub workflows=0、runs=0，且無新投遞留言：B01=BLOCKED，B02–B05=NOT_RUN，不能關案。新增 temporary remote branch 的診斷操作遭自動批准審查拒絕，已向 Vincent 提出一次具體授權請求，尚待回覆；此診斷 branch 未建立，main 未改動。",
+            "evidence_refs": [
+              "https://github.com/hisenzi/notyet-harness/issues/2",
+              "$COLLAB/harness-mc/.runtime/release-tracking/issue2-live-20260927T154734Z/repair-status.md",
+              "$COLLAB/harness-mc/.runtime/release-tracking/issue2-live-20260927T154734Z/snapshots.json",
+              "$COLLAB/harness-mc/.runtime/release-tracking/issue2-live-20260927T154734Z/B01-no-run.json",
+              "$COLLAB/harness-mc/.runtime/release-tracking/issue2-live-20260927T154734Z/local-verification/a2-results.json",
+              "$COLLAB/harness-mc/.runtime/release-tracking/issue2-live-20260927T154734Z/local-verification/a2-independent-review.txt",
+              "$COLLAB/harness-mc/.runtime/release-tracking/issue2-live-20260927T154734Z/local-verification/live-transport-tests.txt",
+              "$COLLAB/harness-mc/.runtime/release-tracking/issue2-live-20260927T154734Z/local-verification/actions-tests.txt",
+              "$COLLAB/harness-mc/.runtime/release-tracking/issue2-live-20260927T154734Z/local-verification/rt-regression.log"
+            ],
+            "recorded_at": "2026-09-27",
+            "semantic_intake": {
+              "outcome": "amend",
+              "compared_task_refs": [
+                "morrowise/approved-work-handoff-feedback-v1",
+                "morrowise/morrowise-dev-workflow-catalog",
+                "morrowise/notification-adapter-contract"
+              ],
+              "scope_comparison": {
+                "problem": "本 task 處理 Tag 發布 evidence 投遞與歷史追蹤；Daily 交接、workflow catalog 與一般通知 transport 各有不同問題。",
+                "owner_source_of_truth": "沿用 morrowise/cross-project-release-tracking；不借其他 task 接管發布 domain，Issue 僅為需求與 evidence 入口。",
+                "inputs_outputs": "輸入發布契約、Tag/SHA、測試與 evidence；輸出 plan、單一投遞、GET 回讀及去重／異動紀錄，不新增 task writer。",
+                "lifecycle_completion": "僅回寫同一任務的實際進展：A2 九項檢查 PASS；B 本機工程測試通過但 B01 真實觸發受阻，B02–B05 未跑。原 A1／A2／B 與 in_progress 不變，受阻不等於完成。"
+              },
+              "decision_reason": "沿原授權與既有 task amend 進展及證據，不新增 task、完成條件或外部操作權限；原 semantic intake 的 owner 與邊界維持不變。",
+              "approval": {
+                "status": "approved",
+                "approved_by": "Vincent",
+                "approved_at": "2026-09-27",
+                "evidence_refs": [
+                  "Vincent 2026-09-27 本工作階段：「你來修，可以開始」，授權接續 Issue #2 的 A2 修正與 B 工程；本輪修正既有 task 與必要治理登錄，不含 commit、push 或外部寫入。",
+                  "https://github.com/hisenzi/notyet-harness/issues/2"
+                ]
+              }
+            }
           }
         ]
       },
-      "goal_alignment": "建立安全、原子化、防重複且具可審計性之跨專案版本發布與變更自動追蹤機制，解耦本機完成與遠端交付，確保發布歷史具備真實依據與故障復原能力。"
+      "goal_alignment": {
+        "project_id": "morrowise",
+        "goal_ref": "$COLLAB/harness-mc/milestones/morrowise/project.json#/goals",
+        "goal_fingerprint": "sha256:f88fd1ecb0321797bf50103db423588f6dd9337fdf72d36d4c438ab2ad4480fe",
+        "contribution": "將版本 evidence、routing、delivery、readback 與故障恢復接入 MorroWise runtime-delivery；GitHub 為 adapter evidence，task 狀態仍由唯一 canonical task 擁有。",
+        "evidence_plan": [
+          "https://github.com/hisenzi/notyet-harness/issues/2",
+          "$COLLAB/harness-mc/system-workflow/fixtures/release-tracking/contract.json",
+          "$COLLAB/harness-mc/system-workflow/docs/specs/release-tracking.md"
+        ],
+        "reviewed_at": "2026-09-27"
+      },
+      "order_label": "MW-RELEASE-01",
+      "hc_decision": {
+        "task_scope": "morrowise/cross-project-release-tracking",
+        "hc_refs": [
+          "#rightProblem",
+          "#systemDynamics",
+          "#risk"
+        ],
+        "hc_reasoning": "已有專屬 task，應修正其治理欄位與成熟度，不新增工作追蹤器。發布內容、投遞成功、驗收與 task completion 分開，B 必須有真實 GitHub 證據。",
+        "hc_confidence": 0.95,
+        "evidence_refs": [
+          "https://github.com/hisenzi/notyet-harness/issues/2",
+          "Vincent 2026-09-27 本工作階段：「你來修，可以開始」，授權接續 Issue #2 的 A2 修正與 B 工程；本輪修正既有 task 與必要治理登錄，不含 commit、push 或外部寫入。"
+        ],
+        "source_boundary": "HC 只作思考檢查，不是正本；task 狀態由本 tasks.json 擁有，發布驗收依固定契約與實際 artifact。"
+      }
     }
   ]
 }

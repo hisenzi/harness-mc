@@ -701,20 +701,19 @@
         "$COLLAB/harness-mc/system-workflow/docs/specs/release-tracking.md",
         "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md"
       ],
-      "auth_boundary": "Local execution uses loopback API base or minimal-scope GITHUB_TOKEN; registry stores zero tokens or credentials.",
+      "auth_boundary": "Phase A is loopback fixture only. Phase B transport and real GitHub execution require the original activation scope and separate runtime evidence; authorization is not inferred from capability status. Registry stores references only.",
       "read_write_boundary": {
         "read": [
-          "event.json",
-          "contract.json",
-          "result.json",
-          "evidence files",
-          "remote issues/PRs/releases metadata via api-base"
+          "event.json, contract.json, result.json and evidence files",
+          "the specified local Git fixture and loopback mock API",
+          "Phase B: the explicitly bound GitHub repository/target within the original activation through the implemented live transport; real runtime acceptance remains NOT_RUN"
         ],
         "write": [
-          "plan/plan.json and plan/message.md during plan phase",
-          "state/ledger.json and atomic state locks during apply phase",
-          "remote issue/PR comment or release body via api-base POST",
-          "delivery.json and requests.json audit records"
+          "plan/plan.json and plan/message.md in the explicit output directory",
+          "state/ledger.json and atomic locks in the explicit state directory",
+          "Phase A: loopback mock comments or release records",
+          "Phase B: fixed same-repo existing Issue/PR comments and authorized tag-repoint notices only; no live follow-up Issue or Release creation; not validated or activated by this registry entry",
+          "delivery.json, requests.json and readback audit records"
         ],
         "forbidden": [
           "write outside specified out directory and state directory",
@@ -724,14 +723,16 @@
         ]
       },
       "secret_policy": "No GitHub token or auth credential may be stored in registry, plan outputs, or delivery logs.",
-      "status": "ready",
+      "status": "prototype",
       "verifier": [
-        "node scripts/verify-release-tracking.mjs --out .runtime/release-tracking/verify-run"
+        "TZ=UTC node scripts/verify-release-tracking.mjs --out <new-output-directory>",
+        "npm run test:capability-registry",
+        "node scripts/validate-tasks.mjs --changed-only --project morrowise"
       ],
       "next_action": {
-        "type": "activation_gate",
+        "type": "implementation_and_verification",
         "task_id": "cross-project-release-tracking",
-        "description": "Phase A verification passed; await activation.json authorization for Phase B repository pilot."
+        "description": "Finish authorized A2 corrections and Phase B engineering, then verify the original live cases against concrete repo/Tag/SHA/target and valid write scope. Phase B is NOT_RUN until real evidence exists."
       },
       "history": [
         {
@@ -743,6 +744,16 @@
           "evidence_ref": "https://github.com/hisenzi/notyet-harness/issues/2#issuecomment-5856676882",
           "actor_or_task": "cross-project-release-tracking",
           "next_action": "Await Vincent's explicit activation.json authorization before executing Phase B GitHub Actions pilot."
+        },
+        {
+          "date": "2026-09-27",
+          "event_type": "acceptance_boundary_correction",
+          "from_state": "ready",
+          "to_state": "prototype",
+          "reason": "The prior ready label overstated Phase A evidence. Correct current maturity to prototype, retain the historical record, and bind the existing canonical task without claiming Phase B or whole-Issue acceptance.",
+          "evidence_ref": "https://github.com/hisenzi/notyet-harness/issues/2",
+          "actor_or_task": "cross-project-release-tracking",
+          "next_action": "Complete A2 validation and Phase B implementation/runtime verification under the original scope; task remains in_progress until original criteria pass."
         }
       ]
     }

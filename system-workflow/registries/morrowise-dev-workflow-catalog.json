@@ -484,6 +484,25 @@
         "ordering_invariant": "c1_push_before_canonical_apply_and_c2_push_after_dashboard_generation",
         "terminal_state": "task_completed"
       }
+    },
+    {
+      "id": "release-tracking",
+      "phase": "delivery",
+      "source_doc": "$COLLAB/harness-mc/system-workflow/docs/specs/release-tracking.md",
+      "source_skill": "$COLLAB/notyet-harness/000_Agent/skills/manage-github-issue/SKILL.md",
+      "trigger": "An explicitly bound tag_push event and fixed project contract/result/evidence are ready for version tracking.",
+      "inputs": "Original Issue #2 contract; normalized repo/tag/full SHA event; explicit routing target; contract/result/evidence hashes; concrete Phase B activation and external-write scope.",
+      "process": "Use the shared CLI/core to validate and render a plan, then apply with bounded concurrency, marker deduplication, immutable SHA binding and POST/GET readback. Keep Phase A loopback and Phase B real GitHub evidence separate.",
+      "outputs": "Version report or explicit blocked/ignored/conflict/review-required outcome, delivery ledger, before/after readback, and actual case artifacts.",
+      "writes_to": "Explicit local output/state directories. Phase A fixture exercises existing/followup/release routes. Phase B live writes only fixed same-repo Issue/PR comments and authorized tag-repoint notices; follow-up Issue and Release creation are not live routes. This adapter never writes canonical tasks.json.",
+      "external_effect": "none in Phase A; the implemented live CLI uses GitHub API delivery only after concrete activation checks; real Phase B acceptance remains NOT_RUN",
+      "approval_policy": "Vincent approved continuing Issue #2 A2/B work; the catalog grants no external authorization. Live invocation remains inside the original concrete repo/Tag/SHA/target and write scope; reuse existing approval while scope is unchanged.",
+      "morrowise_stage": "runtime_delivery_adapter",
+      "close_rule": "Complete only when original A1, A2 and B evidence is verified; adapter delivery never closes the canonical task or Issue automatically.",
+      "verifier_ref": "TZ=UTC node scripts/verify-release-tracking.mjs --out <new-output-directory>; node scripts/verify-morrowise-dev-workflow-catalog.mjs; Issue #2 original Phase B real-runtime verification",
+      "status": "adapter_only",
+      "owner_task": "cross-project-release-tracking",
+      "notes": "External tracker semantics remain adapter_only under the existing catalog contract. Execution maturity is prototype; Phase B NOT_RUN. Capability registry release-tracking and the same canonical task own readiness and next action; local checks cannot establish real GitHub acceptance."
     }
   ],
   "exclusions": [

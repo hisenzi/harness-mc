@@ -171,6 +171,32 @@
       "done_condition": "案例詳情頁底部導入模組化 CaseFeedbackBanner 組件；CaseInteractions 燈箱補齊左右切換箭頭、照片計數器、鍵盤與手勢導覽；修正首頁 What We Do 卡片重疊、Modular Features 6 影片網格與 Showcase CTA 按鈕；修復 Equipment Advantages 深底對比度；dev 伺服器加入 ENOENT 容錯；npm test 75/75 與 npm run build 375 頁完整建置零錯誤通過。",
       "completed_at": "2026-09-15",
       "summary": "2026-09-15：完成案例頁模組化回饋橫幅、燈箱雙向切換導覽、首頁排版遮擋修復與深底文字對比優化（GitHub Issue #4）。全站 186 個案例頁結尾統一引用 CaseFeedbackBanner；相片燈箱支援左右箭頭、1 of N 計數器、鍵盤左右鍵與手機滑動手勢；修正 What We Do 卡片負 margin 遮擋；Modular Features 重構為 6 影片卡片並新增 Explore All Showcase 按鈕；修復 Equipment Advantages 深底文字與圖示顏色；npm test 75/75 全數通過，全站 375 頁 build 零錯誤。"
+    },
+    {
+      "id": "mmen-11-mobile-header-floating-parity",
+      "title": "手機版導覽列 Layout 精確度對齊（30px 邊距、Logo 與漢堡間距）與浮動 Go To Top 按鈕樣式還原",
+      "status": "completed",
+      "track": "formal",
+      "order_label": "MMEN-11",
+      "dependencies": [
+        "mmen-01-core-scaffold"
+      ],
+      "done_condition": "手機版導覽列左右對稱 30px 邊距、Logo 寬度還原 150px、漢堡選單點擊區塊 36x36px 置中且與語言鈕間距 24px；右下角 Go to Top 按鈕還原 36x36px、3px 圓角與細線銳角 SVG Chevron 圖標；npm test 75/75 與 npm run build 375 頁完整建置零錯誤通過。",
+      "completed_at": "2026-09-15",
+      "summary": "2026-09-15：完成手機版導覽列 Layout 精準對齊與浮動 Go To Top 按鈕樣式還原（GitHub Issue #5）。手機版導覽列左右邊距統一訂為 30px 對稱佈局，Logo 寬度還原 150px，漢堡選單改為 36x36px 置中 tap target 並維持 24px 間距；浮動 Go To Top 替換為 36x36px、3px 圓角與細線銳角 SVG 倒 V 箭頭，移除過重陰影與縮放動效；npm test 75/75 通過，npm run build 375 頁編譯零錯誤。"
+    },
+    {
+      "id": "mmen-12-cases-english-company-names",
+      "title": "成功案例庫 67 篇中文公司名稱英文化與 CAS 密碼學雜湊同步",
+      "status": "completed",
+      "track": "formal",
+      "order_label": "MMEN-12",
+      "dependencies": [
+        "mmen-01-core-scaffold"
+      ],
+      "done_condition": "依據 .ignore/官網-成功案例 分類紀錄.xlsx 盤點之官方英文公司名，完成 67 篇含有中文公司名稱之案例標題、內文與圖片 alt 替換；保持既有 slug 不變，更新 CAS proposalHash、contentHash 與 revisionInputs 雜湊鏈；npm test 全數通過，npm run build 376 頁全站靜態建置零錯誤通過。",
+      "completed_at": "2026-09-24",
+      "summary": "2026-09-24：完成成功案例庫 67 篇中文公司名稱英文化（GitHub Issue #7）。依據官方 Excel 分類紀錄與審定名單，將 67 篇案例標題、摘要、內文及照片 alt 中的中文公司名稱全面替換為官方英文名稱，保持 URL slug 絕對不可變，全站 186 篇案例標題達成 100% 純淨英文化；更新 CAS 雜湊鏈並保留歷史修訂版次；npm test 82/82 全數通過，npm run build 376 頁完整靜態編譯零錯誤。"
     }
   ]
 }

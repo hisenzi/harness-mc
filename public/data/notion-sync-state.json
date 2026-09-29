@@ -1,6 +1,6 @@
 {
   "schema_version": "notion-sync-state.v0",
-  "generated_at": "2026-08-17T15:11:42.423Z",
+  "generated_at": "2026-09-29T16:02:03.400Z",
   "read_only": true,
   "source": "$COLLAB/harness-mc/system-workflow/registries/morrowise-notion-sync-state.json",
   "generator": "$COLLAB/harness-mc/scripts/generate-notion-sync-state.mjs",

@@ -72,11 +72,13 @@
   "project_domains": {
     "adobe-creative-pipeline": "notyet",
     "agnostic-scheduler": "Harness",
+    "classic-fontcards-120": "Thinking-Gym",
     "design-hc": "notyet",
     "digital-ops-sub": "公司",
     "dual-blade": "Harness",
     "english-for-future-work": "Life-Focus",
     "exam-prep-6yr": "KJ",
+    "fj-en-website": "FJSH",
     "fontcard-120": "notyet",
     "harness-mc": "Harness",
     "hc-validation": "Harness",
@@ -85,9 +87,11 @@
     "indiebooks": "notyet",
     "kids-reward": "Thinking-Gym",
     "kj-bilingual": "KJ",
+    "kj-glory-lion": "KJ",
     "leo-real-estate-ai": "臨時",
     "mapelon-2": "Roger",
     "market-watchtower": "Life-Focus",
+    "maxmodel-en-hiblocks": "Maxmodel",
     "maxmodel-notion": "Maxmodel",
     "morrowise": "Harness",
     "notion-finance": "Life-Focus",
@@ -100,10 +104,12 @@
     "search-ops-agent": "公司",
     "self-learning": "Life-Focus",
     "skill-dashboard": "Harness",
+    "supaquiz": "Thinking-Gym",
     "survival-report": "notyet",
     "taiwan-art": "notyet",
     "thinking-gym": "Thinking-Gym",
     "travel-finance-dashboard": "Life-Focus",
+    "tsmc-ai": "臨時",
     "visual-template-system": "notyet",
     "wealth-system": "Life-Focus",
     "web-reminder-pwa": "notyet",
@@ -133,6 +139,7 @@
   ],
   "provisional_project_domains": {
     "fj-116-admissions": "FJSH",
+    "hiblocks-builder": "notyet",
     "td-morrowise-surface": "Harness"
   }
 }

@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "release_state": "local_candidate",
+  "source_commit": null,
+  "source_ref": "$COLLAB/harness-mc/docs/morrowise/OPERATOR-GUIDE.md",
+  "body_fingerprint": "7a01f62375e652c5f0e12628fca99ae2cef1e01f3d481990b479ef1d5277f0d4",
+  "registry_fingerprint": "72836a6f73e1049525a6f357a72a53f27b4f2cd796b424c7fa97a36338dd4f18",
+  "bundle_fingerprint": "6ebfac85c6fdcf97fde906805b8ebb7e77ecfc22ae9112411c0ea1ba64ed799d",
+  "navigation_fingerprint": "909c6b0499e7bbabcd855f65337df231d2105a506ab110bafbebeb22441902dd",
+  "visibility_fingerprint": "eb8f2a8bd0c167405dd33ba78b22dbfa3d965fc43cadef6c9160d779e24b248a",
+  "source_review_fingerprint": "1d68527eea697f3cde26114bfaa902db14f51adc9311f1c9c73f8cc89753807e",
+  "generator_version": "morrowise-public-release-v1",
+  "reviewed_at": "2026-09-27",
+  "freshness_basis": "reviewed_source_revision_not_live_upstream",
+  "chapter_versions": {
+    "operator-guide-entry": "v0.4.1",
+    "operator-guide-collaboration": "v0.5.1",
+    "operator-guide-execution": "v0.4.0",
+    "operator-guide-delivery": "v0.6.3",
+    "operator-guide-documentation": "v0.5.2",
+    "operator-guide-troubleshooting": "v0.4.1"
+  }
+}

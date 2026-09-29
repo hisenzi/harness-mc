@@ -186,6 +186,13 @@ function applyTaskEventsUnlocked(options = {}) {
       continue;
     }
 
+    const coordinationRejection = coordinationRejectionReason(task, event, { ...options, root });
+    if (coordinationRejection) {
+      seenEventIds.add(eventId);
+      rejectEvent({ source, fileName, event, reason: coordinationRejection, rejectedDir, report });
+      continue;
+    }
+
     if (usesCanonicalTaskLifecycle(event.project) && ['task.completed', 'task.reopened', 'task.blocked'].includes(event.type)) {
       // The existing reviewed JV-32/local-handoff writer owns lifecycle changes.
       // A proven completion event may acknowledge an already canonical result.
@@ -198,13 +205,6 @@ function applyTaskEventsUnlocked(options = {}) {
         rejectEvent({source, fileName, event, reason:'canonical_lifecycle_requires_reviewed_intake', rejectedDir, report});
         continue;
       }
-    }
-
-    const coordinationRejection = coordinationRejectionReason(task, event, { ...options, root });
-    if (coordinationRejection) {
-      seenEventIds.add(eventId);
-      rejectEvent({ source, fileName, event, reason: coordinationRejection, rejectedDir, report });
-      continue;
     }
 
     const projectionBefore = structuredClone(projectTasks.state.tasks[task.id] ?? null);

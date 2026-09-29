@@ -180,6 +180,50 @@ assert.throws(
 );
 fs.rmdirSync(lockDir);
 
+// Coordination is judged before the canonical lifecycle handoff. A completion
+// without an active claim on a coordination-required task must report
+// claim_missing, not the generic reviewed-intake rejection; a task without a
+// coordination requirement keeps the generic reason.
+const precedenceRoot = fs.mkdtempSync(path.join(os.tmpdir(), "apply-task-events-precedence-"));
+const precedenceProjectDir = path.join(precedenceRoot, "milestones", "morrowise");
+const precedencePendingDir = path.join(precedenceRoot, "task-events", "pending");
+fs.mkdirSync(precedenceProjectDir, { recursive: true });
+fs.mkdirSync(precedencePendingDir, { recursive: true });
+writeJson(path.join(precedenceProjectDir, "tasks.json"), {
+  tasks: [
+    { id: "coord-required", title: "Coordination required", status: "todo", repo_coordination_required: true },
+    { id: "coord-free", title: "No coordination requirement", status: "todo" },
+  ],
+});
+const precedenceBase = { repo: "harness-mc", project: "morrowise", actor: "codex", session_id: "session-precedence" };
+writeJson(path.join(precedencePendingDir, "001-required.json"), {
+  ...precedenceBase,
+  event_id: "evt-precedence-required",
+  task_id: "coord-required",
+  type: "task.completed",
+  commit: "req1111",
+  summary: "Completion without a claim on a coordination-required task",
+  created_at: "2026-09-29T09:00:00Z",
+});
+writeJson(path.join(precedencePendingDir, "002-free.json"), {
+  ...precedenceBase,
+  event_id: "evt-precedence-free",
+  task_id: "coord-free",
+  type: "task.completed",
+  commit: "fre2222",
+  summary: "Completion without a claim on a task with no coordination requirement",
+  created_at: "2026-09-29T09:01:00Z",
+});
+const precedenceReport = applyTaskEvents({
+  root: precedenceRoot,
+  runGenerateData: false,
+  writeLatestReport: false,
+  coordinationProofVerifier: () => ({ decision: "READY" }),
+});
+assert.deepEqual(precedenceReport.applied, []);
+assert.equal(precedenceReport.rejected.find((item) => item.event_id === "evt-precedence-required").reason, "claim_missing");
+assert.equal(precedenceReport.rejected.find((item) => item.event_id === "evt-precedence-free").reason, "canonical_lifecycle_requires_reviewed_intake");
+
 const preservedReportPath = path.join(selectiveRoot, "task-events", "latest-report.json");
 const preservedReport = '{\n  "owner": "another-session"\n}\n';
 fs.writeFileSync(preservedReportPath, preservedReport);

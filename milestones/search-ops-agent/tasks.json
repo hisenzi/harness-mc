@@ -130,6 +130,66 @@
         "列出仍需補的 API 串接、權限流程、crawler 與報表模板"
       ],
       "note": "前置任務 p1-1 到 p1-4 完成後執行"
+    },
+    {
+      "id": "p2-1",
+      "title": "GA4 數據追蹤環境自動化配置、Agent 事件打點與 Google MCP 分析整合",
+      "status": "in_progress",
+      "track": "analytics-ops",
+      "done_condition": "已完成 GA4 環境自動建置腳本（setup_ga_environment.py）、Measurement Protocol 事件發送腳本（send_ga_event.py）與安全防護規則；具備 GA4 Admin/Data API 與 Google Analytics MCP 串接契約，能自動生成 .env.analytics 並支援即時報表事件打點驗證。",
+      "evidence_refs": [
+        "$COLLAB/harness-mc/milestones/search-ops-agent/ga4-agent-integration-spec.md",
+        "$COLLAB/maxmodel-en-hiblocks/scripts/analytics/setup_ga_environment.py",
+        "$COLLAB/maxmodel-en-hiblocks/scripts/analytics/send_ga_event.py",
+        "https://github.com/googleanalytics/google-analytics-mcp",
+        "https://developers.google.com/analytics/devguides/config/admin/v1",
+        "https://developers.google.com/analytics/devguides/collection/protocol/ga4"
+      ],
+      "acceptance": [
+        "專案 .gitignore 已加入金鑰與 .env.analytics 過濾規則，0 機密外洩風險",
+        "setup_ga_environment.py 可透過服務帳戶或 OAuth 憑證建立 GA4 Property、Web Stream 與 API Secret",
+        "send_ga_event.py 支援 Google debug 驗證端點與 live 正式打點，即時報表可即時呈現",
+        "定義 Google Analytics MCP 設定契約，支援自然語言查詢報表與即時數據",
+        "以 hisenzi.com@gmail.com 為管理者主體進行落地測試"
+      ],
+      "note": "2026-09-15：已建立規格文件 ga4-agent-integration-spec.md、自動化建置腳本 setup_ga_environment.py 與事件發送驗證腳本 send_ga_event.py；待放置 ga-credentials.json 金鑰後執行正式環境建置與即時打點。",
+      "jv32_route": {
+        "workflows": [
+          "task-lifecycle",
+          "implement"
+        ]
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "create",
+            "from_status": null,
+            "to_status": "in_progress",
+            "reason": "task note 記載 GA4 整合規格與兩支自動化腳本已於 2026-09-15 建立；本紀錄補登 canonical lifecycle，狀態為 in_progress，待放置服務帳戶憑證後才能做正式環境建置與即時打點驗證。",
+            "evidence_refs": [
+              "$COLLAB/harness-mc/milestones/search-ops-agent/ga4-agent-integration-spec.md",
+              "$COLLAB/maxmodel-en-hiblocks/scripts/analytics/setup_ga_environment.py",
+              "$COLLAB/maxmodel-en-hiblocks/scripts/analytics/send_ga_event.py"
+            ],
+            "recorded_at": "2026-09-29"
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "search-ops-agent",
+        "goal_ref": "$COLLAB/harness-mc/milestones/search-ops-agent/project.json#/goals",
+        "goal_fingerprint": "sha256:680850264090e951aa1eb80b3af369c918ed8d59ed8a5aedb3ddc1c13ff09190",
+        "contribution": "為 analytics-ops 軌補上進站後的量測層：GA4 環境自動建置、Agent 伺服端事件打點與 Google Analytics MCP 唯讀查詢，讓月維護迴路除了 GSC 訊號外，也能用流量與轉換事件驗證修正後的成效變化並排定下月優先級（對應 goals 第 2、3 項）；只建置量測與查詢能力，不承諾排名或轉換結果，也不取代 GSC 訊號（goals 第 1 項）。",
+        "evidence_plan": [
+          "專案 .gitignore 含金鑰與 .env.analytics 過濾規則，git status 無金鑰洩漏（規格 AC-1）",
+          "setup_ga_environment.py 在提供憑證後獨立執行，回傳 Property ID、Stream ID、Measurement ID 與 API Secret 並寫入 .env.analytics（AC-2）",
+          "send_ga_event.py 通過 Google debug 端點校驗，--live 送出後 GA4 即時報表可觀察到事件（AC-3）",
+          "Google Analytics MCP 設定契約完備，Agent 可查詢指定期間的流量與事件統計（AC-4）",
+          "以任務 acceptance 指定的管理者主體完成落地測試"
+        ],
+        "reviewed_at": "2026-09-29"
+      }
     }
   ]
 }

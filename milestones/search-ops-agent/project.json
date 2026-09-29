@@ -10,6 +10,7 @@
     "discovery": "服務定位與客戶假設",
     "service-mvp": "第一次健檢 MVP",
     "ops-loop": "月維護迴路設計",
+    "analytics-ops": "GA4 數據追蹤、事件打點與 MCP 整合",
     "validation": "試點驗證與產品化判斷"
   },
   "goals": [
@@ -146,7 +147,10 @@
       "https://developers.google.com/webmaster-tools/v1/searchanalytics/query",
       "https://developers.google.com/webmaster-tools/v1/urlInspection.index/inspect",
       "https://developers.google.com/search/apis/indexing-api/v3/quickstart",
-      "https://developers.google.com/speed/docs/insights/v5/get-started"
+      "https://developers.google.com/speed/docs/insights/v5/get-started",
+      "https://developers.google.com/analytics/devguides/config/admin/v1",
+      "https://developers.google.com/analytics/devguides/collection/protocol/ga4",
+      "https://github.com/googleanalytics/google-analytics-mcp"
     ],
     "next_required_input": "選一個試點網站，提供 GSC 權限或匯出檔、sitemap URL、可修改範圍與希望先驗證的服務方案。",
     "boundary": "Search Ops Agent 診斷與維護搜尋可讀性、索引健康和任務迴路；不承諾 Google 收錄、排名或流量保證。"

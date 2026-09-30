@@ -169,11 +169,83 @@
     {
       "id": "prod-db",
       "title": "正式版資料庫建立（Schema / 權限 / 多租戶家庭隔離）",
-      "status": "todo",
+      "status": "done",
       "track": "deploy",
       "depends_on": ["prod-d1"],
       "done_condition": "在選定資料庫建立正式 Schema，落實家庭多租戶資料隔離與帳本不可篡改性",
-      "note": "2026-09-24：改回 todo。先前 done 標記缺乏可驗證的 Neon provisioning 證據（本機 repo 於 a7ae63d 仍為純 HTML/JS 原型，見 Issue #2 複驗）；正式 Neon Schema 建置與多租戶隔離待正式版階段實作與驗收。"
+      "completed_at": "2026-09-30T14:28:00+08:00",
+      "commits": ["0842971", "9d4524b"],
+      "summary": "Neon 專案 kids-reward（分支 production、資料庫 neondb）已建立並承接正式站資料：Vincent 於 2026-09-30 提供的 Neon Console 截圖顯示 families 表有一筆由註冊流程寫入的資料（login_code 格式與 register 路由產法一致）。repo 內 Drizzle 遷移 0000–0003 已提交，含 (family_id, child_id) 複合外鍵與 history 表 append-only 觸發器（drizzle/0003_medical_warpath.sql）；commit 9d4524b 訊息記載已驗證 Neon production invariants（交付 Agent 自述，本次未獨立複驗）。",
+      "note": "2026-09-24 曾因缺乏可驗證的 Neon provisioning 證據改回 todo；2026-09-30 取得 Neon 端證據後，依 Vincent 指示改為 done。線上實測的跨家庭讀寫隔離、append-only 觸發器在 Neon 生效、備份與還原驗證尚未執行，歸 d-verify。",
+      "jv32_route": {
+        "workflows": ["task-lifecycle", "verification-before-completion", "closeout-commit-routing"],
+        "execution_boundary": "只把 MC 狀態對齊已存在的正式環境事實；不建置或變更任何資料庫、不部署、不改應用程式碼，也不讀取連線字串或環境變數的值。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "complete",
+            "from_status": "todo",
+            "to_status": "done",
+            "reason": "2026-09-24 改回 todo 的原因是缺乏可驗證的 Neon provisioning 證據；2026-09-30 Vincent 提供 Neon Console 截圖（專案 kids-reward、分支 production，families 表有一筆經註冊流程寫入的資料）並指示 MC 對齊實況，故補登完成。線上跨家庭隔離、append-only 觸發器在 Neon 的實效與備份還原驗證尚未執行，歸 d-verify。",
+            "evidence_refs": [
+              "Neon Console 截圖（Vincent，2026-09-30）：kids-reward／production／neondb，families 表 1 筆，login_code 格式與 register 路由產法一致",
+              "$COLLAB/kids-reward/drizzle/0003_medical_warpath.sql",
+              "kids-reward commit 9d4524b 訊息：Neon production invariants（交付 Agent 自述，本次未獨立複驗）"
+            ],
+            "recorded_at": "2026-09-30"
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "kids-reward",
+        "goal_ref": "$COLLAB/harness-mc/milestones/kids-reward/project.json#/goals",
+        "goal_fingerprint": "sha256:1f27166de7ca7ac8e39a95dc8c8ec4b1fba61beb98048165d66b7ed9d91e723a",
+        "contribution": "承接 goals 第 1 項（家長帳號與孩子帳密、資料跨裝置同步，Neon PostgreSQL）：正式站的家庭資料寫入 Neon production 分支，並以 family_id 隔離。只記錄資料庫已建立並承接資料；跨裝置同步、跨家庭隔離與帳本不可篡改的線上驗收仍歸 d-verify，不在此宣稱。",
+        "evidence_plan": [
+          "Neon Console 可見 production 分支 families 表有經註冊流程寫入的資料",
+          "repo 遷移 0000–0003 含 (family_id, child_id) 複合外鍵與 history append-only 觸發器，靜態檢查測試通過",
+          "d-verify 在 Neon 上實測跨家庭讀寫隔離，以及 history 不可 UPDATE／DELETE",
+          "d-verify 驗證備份與還原（Neon 還原窗口依方案而異）"
+        ],
+        "reviewed_at": "2026-09-30"
+      },
+      "test_contract": {
+        "applicability": "exempt",
+        "behavior_cases": [
+          "Neon production 分支存在，且已有經註冊流程寫入的 families 資料。",
+          "repo 遷移含 (family_id, child_id) 複合外鍵、帳本唯一約束與 history append-only 觸發器。"
+        ],
+        "test_level": ["runtime_state_inspection", "static_migration_check"],
+        "fixture_refs": [
+          "$COLLAB/kids-reward/drizzle/0003_medical_warpath.sql",
+          "$COLLAB/kids-reward/tests/database-invariants.test.mjs"
+        ],
+        "evidence_refs": [
+          "Neon Console 截圖（Vincent，2026-09-30）",
+          "NODE_ENV=test node --test tests/database-invariants.test.mjs -> 4 pass, 0 fail（2026-09-30，kids-reward 745daf5 工作樹）"
+        ],
+        "runtime_evidence_required": true,
+        "tdd_exemption_reason": "資料庫佈建屬基礎設施狀態，沒有可先紅後綠的行為；以正式環境實際狀態與 repo 遷移內容核對。",
+        "alternative_verification_commands": [
+          "Neon Console → kids-reward → production → Tables：確認 families 表與資料列",
+          "cd \"$COLLAB/kids-reward\" && NODE_ENV=test node --test tests/database-invariants.test.mjs"
+        ]
+      },
+      "completion_evidence": {
+        "regression_evidence": [
+          "NODE_ENV=test node --test tests/database-invariants.test.mjs -> 4 pass, 0 fail；執行前後 .data/local-store.json 雜湊不變"
+        ],
+        "verifier_refs": [
+          "$COLLAB/kids-reward/tests/database-invariants.test.mjs",
+          "$COLLAB/kids-reward/drizzle/0003_medical_warpath.sql"
+        ],
+        "fixture_runtime_boundary": "驗收對象是 Neon production 分支的實際狀態與 repo 遷移內容；不宣稱線上跨家庭隔離、觸發器在 Neon 生效或備份還原已驗證（歸 d-verify）。靜態測試只檢查遷移檔內容，不連資料庫。",
+        "runtime_evidence": [
+          "Neon Console 截圖（Vincent 提供，2026-09-30）：kids-reward／production／neondb 的 families 表 1 筆，建立時間顯示 2026-09-29 04:23:16（時區未標明）"
+        ]
+      }
     },
     {
       "id": "prod-auth",
@@ -186,10 +258,90 @@
     {
       "id": "prod-zeabur",
       "title": "Zeabur 網站與後端部署 + 環境變數配置",
-      "status": "todo",
+      "status": "done",
       "track": "deploy",
       "depends_on": ["prod-db", "prod-auth"],
-      "done_condition": "Zeabur 部署上線，正確連接雲端資料庫，前後台正常運作"
+      "done_condition": "Zeabur 部署上線，正確連接雲端資料庫，前後台正常運作",
+      "completed_at": "2026-09-30T14:28:00+08:00",
+      "commits": ["745daf5"],
+      "summary": "Zeabur 服務 kids-reward（production）已部署上線：GitHub deployment 紀錄最新為 745daf5，2026-09-29 04:19 UTC 狀態 success，網址 https://kids-reward.zeabur.app（首筆 production 部署紀錄 2026-09-28 12:58 UTC，共 5 筆）。2026-09-30 以 GET 確認 /、/login、/register 回 200，未登入的 /api/auth/me 回 401。Zeabur 該服務的環境變數存在 DATABASE_URL（只確認鍵存在，未讀值）；Neon 專案 kids-reward 的 production 分支已有經註冊流程寫入的家庭資料（Vincent 提供 Neon Console 截圖），兩者互相印證正式站已連 Neon。",
+      "note": "2026-09-30 依 Vincent 指示，以『已部署且已連 Neon』認定本任務完成；前後台完整流程與跨家庭隔離的線上驗收歸 d-verify。未驗證：SESSION_SECRET 是否已設定。depends_on 的 prod-auth 於 MC 仍為 todo，但程式已含家長與孩子登入並隨 745daf5 上線；prod-auth 的範圍待 kids-reward Issue #8（SupaThinking 接入）決策後重新定義。",
+      "jv32_route": {
+        "workflows": ["task-lifecycle", "verification-before-completion", "closeout-commit-routing"],
+        "execution_boundary": "只把 MC 狀態對齊已存在的正式環境事實；不部署、不改 Zeabur 設定或環境變數、不讀取變數的值，也不在正式站註冊或登入。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "complete",
+            "from_status": "todo",
+            "to_status": "done",
+            "reason": "MC 落後實況：Zeabur 已部署 745daf5，且正式站已連 Neon（服務環境變數存在 DATABASE_URL 鍵；Neon production 有經註冊流程寫入的資料）。2026-09-30 依 Vincent 指示補登完成；前後台完整流程與跨家庭隔離的線上驗收歸 d-verify，SESSION_SECRET 是否設定未驗證。",
+            "evidence_refs": [
+              "GitHub deployment 6726570997（hisenzi/kids-reward，sha 745daf5，environment production，狀態 success，2026-09-29T04:19Z，網址 https://kids-reward.zeabur.app）",
+              "GET https://kids-reward.zeabur.app 的 /、/login、/register 回 200；/api/auth/me 回 401（2026-09-30）",
+              "Zeabur 服務 kids-reward 的環境變數存在 DATABASE_URL 鍵（2026-09-30，僅確認鍵存在，值未讀取）",
+              "Neon Console 截圖（Vincent，2026-09-30）：production 分支 families 表有經註冊流程寫入的資料"
+            ],
+            "recorded_at": "2026-09-30"
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "kids-reward",
+        "goal_ref": "$COLLAB/harness-mc/milestones/kids-reward/project.json#/goals",
+        "goal_fingerprint": "sha256:1f27166de7ca7ac8e39a95dc8c8ec4b1fba61beb98048165d66b7ed9d91e723a",
+        "contribution": "承接 goals 第 1 項（孩子用自己的裝置登入提交、資料跨裝置同步）的上線載體：家長與孩子從各自裝置連到同一個正式站並寫入 Neon。只記錄部署與連線已成立；前後台完整流程、跨家庭隔離與備份的線上驗收仍歸 d-verify，不在此宣稱。",
+        "evidence_plan": [
+          "GitHub deployment 紀錄顯示最新 production 部署為 main 最新 commit 且狀態 success",
+          "正式站頁面可開啟，未登入的 API 回 401",
+          "Zeabur 服務環境變數含 DATABASE_URL 鍵",
+          "d-verify 在正式站實測小孩獨立登入與提案、家長審核、帳本與跨裝置同步"
+        ],
+        "reviewed_at": "2026-09-30"
+      },
+      "test_contract": {
+        "applicability": "exempt",
+        "behavior_cases": [
+          "Zeabur production 部署 kids-reward main 最新 commit 且狀態 success，網址可開啟。",
+          "未登入的 /api/auth/me 回 401，/、/login、/register 回 200。",
+          "Zeabur 服務環境變數含 DATABASE_URL 鍵（不讀值）。"
+        ],
+        "test_level": ["deployment_record_inspection", "runtime_probe_http_get", "dashboard_state_inspection"],
+        "fixture_refs": [
+          "https://kids-reward.zeabur.app",
+          "gh api repos/hisenzi/kids-reward/deployments"
+        ],
+        "evidence_refs": [
+          "GitHub deployment 6726570997：sha 745daf5、production、success",
+          "GET /、/login、/register = 200；GET /api/auth/me = 401（2026-09-30）",
+          "Zeabur 服務環境變數含 DATABASE_URL 鍵（2026-09-30，值未讀取）"
+        ],
+        "runtime_evidence_required": true,
+        "tdd_exemption_reason": "部署與環境設定屬基礎設施狀態，沒有可先紅後綠的行為；以正式環境實際狀態與唯讀探測核對。",
+        "alternative_verification_commands": [
+          "gh api repos/hisenzi/kids-reward/deployments --jq '.[0] | {sha, environment}'",
+          "curl -sS -o /dev/null -w '%{http_code}' https://kids-reward.zeabur.app/login",
+          "curl -sS https://kids-reward.zeabur.app/api/auth/me"
+        ]
+      },
+      "completion_evidence": {
+        "regression_evidence": [
+          "GET /、/login、/register = 200；GET /api/auth/me = 401 {authenticated:false}（2026-09-30）",
+          "kids-reward main == origin/main == 745daf5，且等於最新 production deployment 的 sha"
+        ],
+        "verifier_refs": [
+          "gh api repos/hisenzi/kids-reward/deployments",
+          "https://kids-reward.zeabur.app"
+        ],
+        "fixture_runtime_boundary": "驗收對象是 Zeabur production 的實際狀態；未驗證：SESSION_SECRET 是否已設定、登入後的前後台流程、跨家庭隔離與備份（歸 d-verify）。未在正式站送出任何註冊或登入請求。",
+        "runtime_evidence": [
+          "GitHub deployment 6726570997 狀態 success，environment_url https://kids-reward.zeabur.app",
+          "Zeabur 服務 kids-reward 的環境變數存在 DATABASE_URL 鍵（2026-09-30，僅確認鍵存在）",
+          "Neon Console 截圖（Vincent，2026-09-30）：production 分支已有經註冊流程寫入的家庭資料"
+        ]
+      }
     },
     {
       "id": "d-verify",

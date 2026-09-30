@@ -2,8 +2,8 @@
   "registry_id": "morrowise-project-topology.v1",
   "task_id": "project-topology-architecture-atlas",
   "status": "formal_registry",
-  "updated_at": "2026-09-23",
-  "inventory_as_of": "2026-09-23",
+  "updated_at": "2026-09-30",
+  "inventory_as_of": "2026-09-30",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json",
   "schema_ref": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-project-topology.schema.json",
   "verifier_ref": "npm run test:project-topology",
@@ -876,18 +876,21 @@
     },
     {
       "id": "supaquiz",
-      "path_label": "$COLLAB/SupaQuiz",
+      "path_label": "$COLLAB/SupaQuiz.supathinking.com",
       "classification": "canonical_project",
       "migration_state": "inventory_only",
-      "project_home_ref": "$COLLAB/SupaQuiz",
-      "topology_profile": "non-git-project",
-      "document_ref": "$COLLAB/SupaQuiz/README.md",
-      "repo_ref": null,
+      "project_home_ref": "$COLLAB/SupaQuiz.supathinking.com",
+      "topology_profile": "git-repository",
+      "document_ref": "$COLLAB/SupaQuiz.supathinking.com/README.md",
+      "repo_ref": "$COLLAB/SupaQuiz.supathinking.com",
       "evidence": [
-        "$COLLAB/SupaQuiz"
+        "$COLLAB/SupaQuiz.supathinking.com",
+        "$COLLAB/SupaQuiz.supathinking.com/README.md",
+        "$COLLAB/harness-mc/milestones/supaquiz/project.json",
+        "$COLLAB/SupaQuiz.supathinking.com/docs/github-repository.json"
       ],
-      "last_verified_at": "2026-09-23",
-      "notes": "Quick project opening registered this canonical local home; Git, deployment, and external sync remain separate MVP actions."
+      "last_verified_at": "2026-09-30",
+      "notes": "Quick project opening registered this canonical local home; Git, deployment, and external sync remain separate MVP actions. Vincent confirmed the folder rename from $COLLAB/SupaQuiz to $COLLAB/SupaQuiz.supathinking.com on 2026-09-30. The new directory already existed before this correction; no physical file movement is performed. Stable project ID remains supaquiz. A private GitHub repository was created and read back on 2026-09-30; verified identity and URL are recorded in the milestone project.json and docs/github-repository.json. Local Git was initialized on main for the authorized documentation commit on 2026-09-30; push and deployment were not performed."
     },
     {
       "id": "fj-en-website",
@@ -918,6 +921,21 @@
       ],
       "last_verified_at": "2026-09-23",
       "notes": "Quick project opening registered this canonical local home; Git, deployment, and external sync remain separate MVP actions."
+    },
+    {
+      "id": "supathinking",
+      "path_label": "$COLLAB/supathinking.com",
+      "classification": "canonical_project",
+      "migration_state": "inventory_only",
+      "project_home_ref": "$COLLAB/supathinking.com",
+      "topology_profile": "git-repository",
+      "document_ref": "$COLLAB/supathinking.com/README.md",
+      "repo_ref": "$COLLAB/supathinking.com",
+      "evidence": [
+        "$COLLAB/supathinking.com"
+      ],
+      "last_verified_at": "2026-09-30",
+      "notes": "Quick project opening registered this canonical local home; Git, deployment, and external sync remain separate MVP actions. Local Git was initialized on main for the authorized documentation commit on 2026-09-30; push and deployment were not performed."
     }
   ]
 }

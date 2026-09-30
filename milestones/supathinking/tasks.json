@@ -1,0 +1,79 @@
+{
+  "project": "supathinking",
+  "tasks": [
+    {
+      "id": "quick-open",
+      "title": "完成快速開案流程",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPATHINKING-MVP-01",
+      "dependencies": [],
+      "done_condition": "README.md、最小 project.json、MVP tasks、formalize checkpoint、專案拓樸與局部驗證均完成，且 tasks 已可在 MC 查看"
+    },
+    {
+      "id": "platform-spec-issues",
+      "title": "建立平台規格正本與跨產品 Issue 引用",
+      "status": "completed",
+      "track": "mvp",
+      "order_label": "SUPATHINKING-MVP-02",
+      "dependencies": [],
+      "done_condition": "平台主 Issue 記錄已確認與待決規則，官網、會員中心及四產品接入 Issue 均引用同一正本；逐一回讀確認。",
+      "completed_at": "2026-09-30",
+      "summary": "已建立並回讀平台規格正本、官網與會員中心 Issue，以及英文、字卡、親子獎勵與 SupaQuiz 四個產品接入 Issue；各產品共用規則均引用平台 Issue #1。功能實作與 P-01～P-10 驗收仍未開始。",
+      "external_refs": {
+        "platform_spec": "https://github.com/hisenzi/supathinking.com/issues/1",
+        "marketing_website": "https://github.com/hisenzi/supathinking.com/issues/2",
+        "account_subscription": "https://github.com/hisenzi/supathinking.com/issues/3",
+        "english_integration": "https://github.com/hisenzi/en.supathinking.com/issues/1",
+        "fontcards_integration": "https://github.com/hisenzi/classic-fontcards-120/issues/8",
+        "kids_reward_integration": "https://github.com/hisenzi/kids-reward/issues/8",
+        "supaquiz_integration": "https://github.com/hisenzi/SupaQuiz.supathinking.com/issues/1"
+      }
+    },
+    {
+      "id": "marketing-website",
+      "title": "建立品牌行銷官網",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPATHINKING-MVP-03",
+      "dependencies": [],
+      "done_condition": "品牌、產品介紹與兩種方案入口完成可操作預覽，價格由定案的單一來源提供；完成官網 Issue 的驗收。"
+    },
+    {
+      "id": "account-subscription",
+      "title": "建立共用會員與訂閱中心",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPATHINKING-MVP-04",
+      "dependencies": [],
+      "done_condition": "商規及供應商定案後，帳號、單品與全訂權益、付款及到期流程通過平台 Issue 的正向與拒絕存取測試。"
+    },
+    {
+      "id": "first-product-integration",
+      "title": "完成首個產品接入驗證",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPATHINKING-MVP-05",
+      "dependencies": [],
+      "done_condition": "選定首個產品後，同一帳號可進入產品，單品與全訂權益由伺服器執行，產品原有功能與資料隔離通過測試。"
+    },
+    {
+      "id": "remaining-product-integrations",
+      "title": "完成其餘產品接入與新產品開通驗證",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPATHINKING-MVP-06",
+      "dependencies": [],
+      "done_condition": "四產品依各自 Issue 完成接入，測試新產品正式上架後既有有效全訂會員自動可用；功能與線上證據分別記錄。"
+    },
+    {
+      "id": "formalize",
+      "title": "依 MVP 測試結果啟動正式補完",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPATHINKING-MVP-07",
+      "dependencies": [],
+      "done_condition": "已依 MVP 測試結果與最終目標補齊正式專案內容，並建立內容明確且各有驗收標準的正式 tasks"
+    }
+  ]
+}

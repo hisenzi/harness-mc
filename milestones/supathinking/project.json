@@ -1,0 +1,14 @@
+{
+  "name": "SupaThinking 品牌與共用會員平台",
+  "description": "以共用帳號、單品與全訂方案支援 SupaThinking 多產品品牌。",
+  "status": "active",
+  "created": "2026-09-30",
+  "project_code": "SUPATHINKING",
+  "project_folder": "$COLLAB/supathinking.com",
+  "why_opened": "四個產品需要統一會員與訂閱規則，避免各自建立帳號、金流與權限解讀。",
+  "mvp_goal": "建立平台規格正本與接入 Issue，再驗證官網、會員中心及首個產品的共用帳號與訂閱流程。",
+  "final_goal": "多個獨立產品共用 SupaThinking 帳號與訂閱，正式上架的新產品自動納入有效全訂權益。",
+  "tracks": {
+    "mvp": "MVP"
+  }
+}

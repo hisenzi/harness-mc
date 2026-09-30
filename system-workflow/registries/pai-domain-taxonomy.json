@@ -105,6 +105,7 @@
     "self-learning": "Life-Focus",
     "skill-dashboard": "Harness",
     "supaquiz": "Thinking-Gym",
+    "supathinking": "Thinking-Gym",
     "survival-report": "notyet",
     "taiwan-art": "notyet",
     "thinking-gym": "Thinking-Gym",
@@ -135,6 +136,12 @@
       "event": "provisional_project_domain_added",
       "reason": "Classify the active in-flight FJSH-116 admissions milestone under the existing FJSH PAI domain; promote it when the milestone is committed.",
       "task": "fj-116-admissions/FJ116-P0-02"
+    },
+    {
+      "date": "2026-09-30",
+      "event": "project_domain_added",
+      "reason": "Classify the SupaThinking shared brand, membership, and product subscription platform with its existing Thinking-Gym product family.",
+      "task": "supathinking/platform-spec-issues"
     }
   ],
   "provisional_project_domains": {

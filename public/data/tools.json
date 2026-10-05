@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-29T16:02:03.378Z",
+  "generatedAt": "2026-10-05T00:45:09.758Z",
   "sourceStatus": {
     "skills": "scanned",
     "scripts": {
@@ -68,12 +68,12 @@
       "id": "capture-course-materials",
       "name": "capture-course-materials",
       "description": "當 Vincent 說「收錄這堂課」「把課程頁存下來」「包括圖片」「記錄成 HTML」「保存登入後課程內容」或要求把可存取的圖文單元做成可驗證來源包時使用。保存 HTML、文章圖片與來源 manifest；只抓字幕改用 capture-course-subtitles，只做第二大腦整理則接 morrowise-second-brain-capture。",
-      "version": "1.1",
+      "version": "1.4",
       "category": "MorroWise",
       "groups": [
         "MorroWise"
       ],
-      "lastModified": "2026-09-29T15:55:28.432Z",
+      "lastModified": "2026-09-29T16:55:55.941Z",
       "changelog": []
     },
     {

@@ -1,0 +1,23 @@
+{
+  "schema_version": "pulse-proposal.v0",
+  "proposal_id": "pulse-npm-test-morrowise-documentation-sync",
+  "created_at": "2026-09-13T00:49:52.211Z",
+  "last_seen_at": "2026-09-14T00:49:37.126Z",
+  "occurrences": 2,
+  "severity": "red",
+  "triage_refs": [
+    "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/judgment-externalization-matrix.md#S4"
+  ],
+  "step_id": "npm:test:morrowise-documentation-sync",
+  "failure_excerpt": "documentation_impact_blocked:execution:invalid_or_stale_review,documentation:invalid_or_stale_review,troubleshooting:invalid_or_stale_review",
+  "evidence_ref": "$COLLAB/harness-mc/public/data/system-pulse.json",
+  "suggested_action": "依 pulse next_action 修 npm:test:kj-handoff-live-sync；修復後重跑 system-pulse 驗證。",
+  "status": "resolved",
+  "ttl_days": 7,
+  "source_boundary": "proposal 檔是 queue/evidence，非 task 正本；Vincent 裁決後才進 tasks.json（approval-policy: direction agreement is not operation approval）",
+  "resolved": {
+    "at": "2026-09-15T00:50:23.264Z",
+    "reason": "step_recovered",
+    "evidence_ref": "$COLLAB/harness-mc/public/data/system-pulse.json"
+  }
+}

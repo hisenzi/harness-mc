@@ -1,0 +1,21 @@
+{
+  "name": "supascrum",
+  "description": "以 Scrum 為基礎，建立人負責產品決策、AI Agent 負責規劃、執行與驗證的協作產品。",
+  "status": "active",
+  "created": "2026-10-09",
+  "project_code": "SUPASCRUM",
+  "project_folder": "$COLLAB/supascrum",
+  "why_opened": "將已討論的人與 Agent 責任分工、三個 Scrum 工作產物及交接流程，整理成可實作、可驗證的產品。",
+  "mvp_goal": "先確認協作契約，再以一個固定小型案例跑通產品待辦、Sprint 計畫、Agent 執行與驗證、人工檢視及回顧的完整循環。",
+  "final_goal": "建立可重複使用的人機 Scrum 協作產品，讓產品決策、Agent 分工、工作產物與完成證據清楚且可追溯。",
+  "tracks": {
+    "mvp": "MVP"
+  },
+  "repo_ref": "hisenzi/supascrum",
+  "repo_creation": {
+    "create_repo": true,
+    "approval_ref": "supascrum-20261009-chat-repo-create",
+    "visibility": "private"
+  },
+  "issue_url": "https://github.com/hisenzi/supascrum/issues/1"
+}

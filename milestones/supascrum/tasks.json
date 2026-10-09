@@ -1,0 +1,50 @@
+{
+  "project": "supascrum",
+  "tasks": [
+    {
+      "id": "quick-open",
+      "title": "完成快速開案流程",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPASCRUM-MVP-01",
+      "dependencies": [],
+      "done_condition": "README.md、最小 project.json、MVP tasks、formalize checkpoint、專案拓樸與局部驗證均完成，且 tasks 已可在 MC 查看"
+    },
+    {
+      "id": "confirm-collaboration-contract",
+      "title": "確認人與 Agent 的協作範圍及完成定義",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPASCRUM-MVP-02",
+      "dependencies": [],
+      "done_condition": "已確認使用情境、首版操作入口、Agent 執行環境、人類決策點、三個 Scrum 工作產物的維護責任及 Definition of Done；未決項目有明確結論。"
+    },
+    {
+      "id": "build-minimal-scrum-loop",
+      "title": "實作最小人機 Scrum 協作循環",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPASCRUM-MVP-03",
+      "dependencies": [],
+      "done_condition": "在前項契約確認後，以固定小型案例完成需求整理、Sprint 規劃、Agent 執行與驗證、人工檢視及回顧；三個工作產物與驗證證據可追溯。"
+    },
+    {
+      "id": "verify-human-agent-handoff",
+      "title": "驗證人類決策與 Agent 交接",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPASCRUM-MVP-04",
+      "dependencies": [],
+      "done_condition": "以成功案例及需求歧義、缺少驗證證據、超出授權三種反例檢查流程；無證據不標完成，需人決策時有明確交接，發布授權與 Review 分離。"
+    },
+    {
+      "id": "formalize",
+      "title": "依 MVP 測試結果啟動正式補完",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPASCRUM-MVP-05",
+      "dependencies": [],
+      "done_condition": "已依 MVP 測試結果與最終目標補齊正式專案內容，並建立內容明確且各有驗收標準的正式 tasks"
+    }
+  ]
+}

@@ -143,10 +143,98 @@
     {
       "id": "p3-3",
       "title": "使用規則說明頁",
-      "status": "todo",
+      "status": "done",
       "track": "phase-3",
       "depends_on": ["proto-core"],
-      "done_condition": "含基本規則、願望定價說明、閱讀加成規則、教學加倍、得分項目說明"
+      "done_condition": "含基本規則、願望定價說明、閱讀加成規則、教學加倍、得分項目說明",
+      "completed_at": "2026-10-18T01:16:00+08:00",
+      "commits": ["dd6e163", "96d990f"],
+      "summary": "完成 /rules 使用規則與換算說明頁重構並隨 96d990f 部署至正式站：置頂『親子約定核心價值』、採用響應式 4 欄 Segmented Control 章節導覽（❤️ 核心精神、🎁 雙軌願望、✓ 得點申報、🛡️ 點數存摺），支援首頁三張核心卡片互動彈窗與 hash 深層錨點平滑滾動。",
+      "jv32_route": {
+        "workflows": ["task-lifecycle", "verification-before-completion", "closeout-commit-routing"],
+        "execution_boundary": "驗證 kids-reward 規則說明頁與 GoHenry UI 改版（#11, #12），合併至 main 並確認 Zeabur 正式站 /rules 上線後，同步更新 MC p3-3 狀態。"
+      },
+      "task_lifecycle": {
+        "route": "JV-32/task-lifecycle",
+        "history": [
+          {
+            "operation": "complete",
+            "from_status": "todo",
+            "to_status": "done",
+            "reason": "使用規則說明頁（src/app/rules/page.tsx）與首頁卡片互動導覽已完成實作、通過 54/54 自動化測試與 anti-ai-flavor 檢查，並隨 commit 96d990f 部署至 Zeabur 正式站驗證通過。",
+            "evidence_refs": [
+              "$COLLAB/kids-reward/src/app/rules/page.tsx",
+              "$COLLAB/kids-reward/src/app/page.tsx",
+              "$COLLAB/kids-reward/tests/ui-claims-navigation.test.mjs",
+              "https://github.com/hisenzi/kids-reward/issues/11#issuecomment-6237406052",
+              "https://github.com/hisenzi/kids-reward/issues/12#issuecomment-6237406806"
+            ],
+            "recorded_at": "2026-10-18"
+          }
+        ]
+      },
+      "goal_alignment": {
+        "project_id": "kids-reward",
+        "goal_ref": "$COLLAB/harness-mc/milestones/kids-reward/project.json#/goals",
+        "goal_fingerprint": "sha256:1f27166de7ca7ac8e39a95dc8c8ec4b1fba61beb98048165d66b7ed9d91e723a",
+        "contribution": "承接 goals 雙軌願望定價、雙向審核與不可篡改帳本的使用者說明入口：讓家長與孩子透過 /rules 與首頁互動卡片清楚理解核心價值、雙軌換算公式（1 點=NT$5、70/30 折抵 vs 體驗約定免自付）、得點申報日期守衛與存摺歷史快照規則。",
+        "evidence_plan": [
+          "src/app/rules/page.tsx 完整呈現核心精神、雙軌願望換算範例、得點申報三道防護與點數存摺不可篡改規則",
+          "NODE_ENV=test npm test (54/54 pass)、npm run verify:anti-ai-flavor 與 npm run build (21/21 pages) 通過",
+          "Zeabur production 部署 96d990f 成功，GET https://kids-reward.zeabur.app/rules 回 200 且包含新版章節內容"
+        ],
+        "reviewed_at": "2026-10-18"
+      },
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "首頁保留雙軌願望、不可篡改、使用說明三張核心卡片並支援點擊彈窗與跳轉 /rules 章節錨點。",
+          "/rules 具備 4 欄章節導覽（核心精神、雙軌願望、得點申報、點數存摺）與完整規則說明。",
+          "全站符合去 AI 味規範、繁中字體堆疊與 >= 44px 觸控高度。"
+        ],
+        "test_level": ["unit", "integration", "runtime_probe_http_get"],
+        "fixture_refs": [
+          "$COLLAB/kids-reward/src/app/rules/page.tsx",
+          "$COLLAB/kids-reward/tests/ui-claims-navigation.test.mjs",
+          "$COLLAB/kids-reward/scripts/verify-ui-ai-flavor.mjs"
+        ],
+        "evidence_refs": [
+          "NODE_ENV=test npm test -> 54 pass, 0 fail（kids-reward 96d990f）",
+          "npm run verify:anti-ai-flavor -> ALL CHECKS PASSED",
+          "GitHub deployment 7143039127（sha 96d990f，production，success）與 GET https://kids-reward.zeabur.app/rules = 200"
+        ],
+        "runtime_evidence_required": true,
+        "red_command": "cd \"$COLLAB/kids-reward\" && NODE_ENV=test node --test tests/ui-claims-navigation.test.mjs",
+        "expected_red_reason": "改版前（745daf5）尚未導入 GoHenry UK 設計系統、孩子登入直達 /app/claims 與 >= 44px 觸控高度規則，ui-claims-navigation.test.mjs 斷言失敗。",
+        "green_command": "cd \"$COLLAB/kids-reward\" && NODE_ENV=test node --test tests/ui-claims-navigation.test.mjs && npm run verify:anti-ai-flavor",
+        "full_regression_commands": [
+          "cd \"$COLLAB/kids-reward\" && NODE_ENV=test npm test",
+          "cd \"$COLLAB/kids-reward\" && npm run verify:anti-ai-flavor",
+          "cd \"$COLLAB/kids-reward\" && npm run build"
+        ]
+      },
+      "completion_evidence": {
+        "red_evidence": [
+          "改版前（745daf5）執行 tests/ui-claims-navigation.test.mjs，GoHenry 設計系統與孩子登入導向 /app/claims 檢查失敗"
+        ],
+        "green_evidence": [
+          "commit dd6e163 與 96d990f 導入後，NODE_ENV=test node --test tests/ui-claims-navigation.test.mjs 6/6 通過，verify:anti-ai-flavor ALL CHECKS PASSED"
+        ],
+        "regression_evidence": [
+          "NODE_ENV=test npm test -> 54 pass, 0 fail",
+          "npm run verify:anti-ai-flavor -> ALL CHECKS PASSED",
+          "npm run build -> 21/21 static/dynamic routes compiled"
+        ],
+        "verifier_refs": [
+          "$COLLAB/kids-reward/tests/ui-claims-navigation.test.mjs",
+          "$COLLAB/kids-reward/scripts/verify-ui-ai-flavor.mjs"
+        ],
+        "fixture_runtime_boundary": "單元與靜態檢查驗證原始碼結構與換算邏輯；線上探測驗證 Zeabur production (96d990f) 的 / 與 /rules 實際回應 200 並輸出新版章節內容。",
+        "runtime_evidence": [
+          "GitHub deployment 7143039127（sha 96d990f，environment production，state success）",
+          "GET https://kids-reward.zeabur.app/rules 回 200，HTML 含『親子約定核心價值』、『核心精神』、『雙軌願望模式』"
+        ]
+      }
     },
     {
       "id": "prod-d1",

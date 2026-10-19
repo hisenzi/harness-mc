@@ -1,0 +1,50 @@
+{
+  "project": "rebag-map",
+  "tasks": [
+    {
+      "id": "quick-open",
+      "title": "完成快速開案流程",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "RBM-MVP-01",
+      "dependencies": [],
+      "done_condition": "README.md、最小 project.json、MVP tasks、formalize checkpoint、專案拓樸與局部驗證均完成，且 tasks 已可在 MC 查看"
+    },
+    {
+      "id": "fetch-rebag-data",
+      "title": "建立環境部二手袋即時抓取與 GeoJSON 轉換腳本",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "RBM-MVP-02",
+      "dependencies": [],
+      "done_condition": "產出可自動抓取環境部 1,210 點資料並轉為標準 WGS84 GeoJSON 的腳本與資料檔，經緯度與各類別欄位驗證完整無誤"
+    },
+    {
+      "id": "setup-rebag-map-ui",
+      "title": "移植 indiebooks 圖模組並建立 rebag-map 前端介面",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "RBM-MVP-03",
+      "dependencies": [],
+      "done_condition": "完成 Leaflet 與 MarkerCluster 整合，成功於地圖渲染全台 1,210 個循環箱與供需據點，並能點擊彈出側邊欄詳細資訊"
+    },
+    {
+      "id": "filter-and-navigation",
+      "title": "實作分類篩選（紙袋/環保袋/循環箱）與導航深連結",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "RBM-MVP-04",
+      "dependencies": [],
+      "done_condition": "完成依袋型、供需類型與縣市區域之篩選功能，並支援點位深連結與一鍵開啟 Google Maps 導航"
+    },
+    {
+      "id": "formalize",
+      "title": "依 MVP 測試結果啟動正式補完",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "RBM-MVP-05",
+      "dependencies": [],
+      "done_condition": "已依 MVP 測試結果與最終目標補齊正式專案內容，並建立內容明確且各有驗收標準的正式 tasks"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "SupaLink 品牌短網址與數據追蹤",
+  "description": "建立可追蹤點擊數據、可更換目的網址且保留固定短址的自架短網址服務。",
+  "status": "active",
+  "created": "2026-10-11",
+  "project_code": "SUPALINK",
+  "project_folder": "$COLLAB/go.supathinking.com",
+  "why_opened": "Vincent 希望擁有類似 lihi 的短網址與數據追蹤能力，並能在目的網址改變時保留已分享的短址。本次指定以 $COLLAB/go.supathinking.com 開案，先確認可行性，再決定是否購買更短網域。",
+  "mvp_goal": "以 Shlink 為候選方案，在測試環境驗證建立短網址、固定短址修改目的網址與點擊統計，留下可重現證據及資源需求。go.supathinking.com 為目前專案名稱與預定入口，不代表 DNS、HTTPS 或公開服務已設定。",
+  "final_goal": "提供自主管理的 SupaLink 短網址服務，讓固定入口可持續更新目的網址並查看點擊成效。是否採用 Shlink、正式部署與購買更短網域，依 MVP 結果再決定；本次僅完成 Quick 開案，不含功能實作、Git 或 GitHub 建立、部署、DNS 變更與外部同步。",
+  "tracks": {
+    "mvp": "MVP"
+  }
+}

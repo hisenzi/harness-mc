@@ -1,0 +1,14 @@
+{
+  "name": "環境部二手袋循環地圖（袋袋箱傳）",
+  "description": "以輕量 Leaflet 圖模組呈現全台環境部二手紙袋與循環箱據點",
+  "status": "active",
+  "created": "2026-10-18",
+  "project_code": "RBM",
+  "project_folder": "$COLLAB/rebag-map",
+  "why_opened": "環境部「袋袋箱傳」官方 TGOS 地圖缺乏群集聚合與行動端流暢體驗，透過移植 indiebooks 既有圖模組打造高效流暢的 1,210 點循環地圖",
+  "mvp_goal": "完成環境部 1,210 筆即時資料轉換 GeoJSON 管道，並成功以 Leaflet + MarkerCluster 渲染全台地圖與分類篩選",
+  "final_goal": "打造定時自動更新、支援縣市/鄉鎮/袋型篩選、具備一鍵導航與社群分享的全台二手袋循環資訊站",
+  "tracks": {
+    "mvp": "MVP"
+  }
+}

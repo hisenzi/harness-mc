@@ -1,0 +1,59 @@
+{
+  "project": "supalink",
+  "tasks": [
+    {
+      "id": "quick-open",
+      "title": "完成快速開案流程",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPALINK-MVP-01",
+      "dependencies": [],
+      "done_condition": "README.md、最小 project.json、MVP tasks、formalize checkpoint、專案拓樸與局部驗證均完成，且 tasks 已可在 MC 查看"
+    },
+    {
+      "id": "validate-technical-approach",
+      "title": "驗證短網址服務的技術方案與執行環境",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPALINK-MVP-02",
+      "dependencies": [],
+      "done_condition": "以 Shlink 為候選，確認授權、主機與資料庫需求、管理方式及資料備份方式；留下實際本機測試結果或明確阻礙，區分文件宣稱與已驗證能力，提出是否採用的結論。"
+    },
+    {
+      "id": "verify-mutable-short-links",
+      "title": "驗證建立短網址與保留短址更換目的網址",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPALINK-MVP-03",
+      "dependencies": [],
+      "done_condition": "在測試環境建立短網址並確認導向目的網址 A；將目的網址改為 B 後，同一短網址可導向 B，留下轉址狀態碼與快取行為的實測證據。測試不依賴購買新網域。"
+    },
+    {
+      "id": "verify-click-analytics",
+      "title": "驗證短網址點擊統計與數據限制",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPALINK-MVP-04",
+      "dependencies": [],
+      "done_condition": "使用可重現的測試流量，核對單一短網址的點擊次數與時間紀錄，確認更換目的網址後仍可查閱既有紀錄；記錄來源、地區、裝置與機器人辨識的支援情況及限制，並明確區分點擊與填表或成交事件。"
+    },
+    {
+      "id": "assess-mvp-feasibility",
+      "title": "彙整 MVP 可行性與網域決策依據",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPALINK-MVP-05",
+      "dependencies": [],
+      "done_condition": "依前三項實測結果整理功能通過或未通過項目、主機及維護成本、尚存限制與部署建議，供 Vincent 決定是否正式建構及另購更短網域；不得把開案或文件調查視為服務已上線。"
+    },
+    {
+      "id": "formalize",
+      "title": "依 MVP 測試結果啟動正式補完",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPALINK-MVP-06",
+      "dependencies": [],
+      "done_condition": "已依 MVP 測試結果與最終目標補齊正式專案內容，並建立內容明確且各有驗收標準的正式 tasks"
+    }
+  ]
+}

@@ -2,8 +2,8 @@
   "registry_id": "morrowise-project-topology.v1",
   "task_id": "project-topology-architecture-atlas",
   "status": "formal_registry",
-  "updated_at": "2026-10-09",
-  "inventory_as_of": "2026-10-09",
+  "updated_at": "2026-10-18",
+  "inventory_as_of": "2026-10-18",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json",
   "schema_ref": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-project-topology.schema.json",
   "verifier_ref": "npm run test:project-topology",
@@ -951,6 +951,36 @@
       ],
       "last_verified_at": "2026-10-09",
       "notes": "Quick opening completed. Vincent explicitly authorized creation of the private hisenzi/supascrum repository and Issue #1; local Git origin is configured and the initial local documentation commit is complete. Product implementation, push, deployment and sync are not performed."
+    },
+    {
+      "id": "supalink",
+      "path_label": "$COLLAB/go.supathinking.com",
+      "classification": "canonical_project",
+      "migration_state": "inventory_only",
+      "project_home_ref": "$COLLAB/go.supathinking.com",
+      "topology_profile": "non-git-project",
+      "document_ref": "$COLLAB/go.supathinking.com/README.md",
+      "repo_ref": null,
+      "evidence": [
+        "$COLLAB/go.supathinking.com"
+      ],
+      "last_verified_at": "2026-10-11",
+      "notes": "Quick project opening registered this canonical local home; Git, deployment, and external sync remain separate MVP actions."
+    },
+    {
+      "id": "rebag-map",
+      "path_label": "$COLLAB/rebag-map",
+      "classification": "canonical_project",
+      "migration_state": "inventory_only",
+      "project_home_ref": "$COLLAB/rebag-map",
+      "topology_profile": "non-git-project",
+      "document_ref": "$COLLAB/rebag-map/README.md",
+      "repo_ref": null,
+      "evidence": [
+        "$COLLAB/rebag-map"
+      ],
+      "last_verified_at": "2026-10-18",
+      "notes": "Quick project opening registered this canonical local home; Git, deployment, and external sync remain separate MVP actions."
     }
   ]
 }

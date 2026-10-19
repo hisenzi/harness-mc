@@ -98,13 +98,16 @@
     "notyet-md": "notyet",
     "notyet-scope": "notyet",
     "organizing-photos": "Life-Focus",
+    "rebag-map": "notyet",
     "rrrealll-ocr": "臨時",
     "rrrealll-v2-transition": "臨時",
     "school-static-assets": "公司",
     "search-ops-agent": "公司",
     "self-learning": "Life-Focus",
     "skill-dashboard": "Harness",
+    "supalink": "Thinking-Gym",
     "supaquiz": "Thinking-Gym",
+    "supascrum": "Thinking-Gym",
     "supathinking": "Thinking-Gym",
     "survival-report": "notyet",
     "taiwan-art": "notyet",
@@ -142,6 +145,12 @@
       "event": "project_domain_added",
       "reason": "Classify the SupaThinking shared brand, membership, and product subscription platform with its existing Thinking-Gym product family.",
       "task": "supathinking/platform-spec-issues"
+    },
+    {
+      "date": "2026-10-19",
+      "event": "project_domains_added",
+      "reason": "Classify SupaLink under Thinking-Gym and rebag-map under notyet PAI domains.",
+      "task": "harness-mc/register-supalink-and-rebag-map"
     }
   ],
   "provisional_project_domains": {

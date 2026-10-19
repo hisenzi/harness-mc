@@ -1,22 +1,22 @@
 {
   "schema_version": "pulse-proposal.v0",
   "proposal_id": "pulse-prebuild",
-  "created_at": "2026-09-16T00:47:20.665Z",
-  "last_seen_at": "2026-09-29T00:52:04.479Z",
-  "occurrences": 14,
+  "created_at": "2026-10-10T02:09:26.879Z",
+  "last_seen_at": "2026-10-19T00:47:36.844Z",
+  "occurrences": 10,
   "severity": "red",
   "triage_refs": [
     "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/judgment-externalization-matrix.md#S4"
   ],
   "step_id": "prebuild",
-  "failure_excerpt": "ERROR milestones/search-ops-agent/tasks.json task=p2-1 container=tasks: task_lifecycle is required for changed or new canonical task mutations | ERROR milestones/search-ops-agent/tasks.json task=p2-1 container=tasks: goal_alignment is required for new or semantically changed canonical tasks | Task v",
+  "failure_excerpt": "ERROR milestones/search-ops-agent/tasks.json task=p2-1 container=tasks: completed task lifecycle mutations require test_contract | ERROR milestones/search-ops-agent/tasks.json task=p2-1 container=tasks: completed task lifecycle mutations require completion_evidence | Task validation failed — 3 chang",
   "evidence_ref": "$COLLAB/harness-mc/public/data/system-pulse.json",
   "suggested_action": "依 pulse next_action 修 prebuild；修復後重跑 system-pulse 驗證。",
   "status": "resolved",
   "ttl_days": 7,
   "source_boundary": "proposal 檔是 queue/evidence，非 task 正本；Vincent 裁決後才進 tasks.json（approval-policy: direction agreement is not operation approval）",
   "resolved": {
-    "at": "2026-09-30T00:49:49.820Z",
+    "at": "2026-10-19T03:25:07.957Z",
     "reason": "step_recovered",
     "evidence_ref": "$COLLAB/harness-mc/public/data/system-pulse.json"
   }

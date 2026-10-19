@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-05T00:45:09.758Z",
+  "generatedAt": "2026-10-19T03:21:20.076Z",
   "sourceStatus": {
     "skills": "scanned",
     "scripts": {
@@ -9,7 +9,7 @@
     "hooks": "scanned"
   },
   "summary": {
-    "totalSkills": 54,
+    "totalSkills": 55,
     "totalScripts": 194,
     "totalHooks": 3
   },
@@ -219,6 +219,16 @@
       "changelog": []
     },
     {
+      "id": "ga4-looker-analytics",
+      "name": "ga4-looker-analytics",
+      "description": "當 Vincent 說「接 GA4」、「做網站追蹤」、「GA 實作」、「埋追蹤碼」、「GA 儀表板」、「Looker Studio 報表」、「產 UTM 連結」、「網站數據分析」時使用。從追蹤架構定義、本機離線驗證、Chrome 自動化配置 GA4（資源/自訂維度/關鍵事件/資料保留）、正式站驗證、Cloudflare 快取防呆，到 Looker Studio 免登入儀表板交付的完整標準化 pip",
+      "version": "1.1",
+      "category": "一般工具",
+      "groups": [],
+      "lastModified": "2026-10-15T11:47:35.890Z",
+      "changelog": []
+    },
+    {
       "id": "git-worktree",
       "name": "git-worktree",
       "description": "Use when Vincent explicitly requests a branch/worktree plan, parallel worktree execution, or cleanup of an approved linked worktree",
@@ -291,13 +301,13 @@
     {
       "id": "manage-github-issue",
       "name": "manage-github-issue",
-      "description": "Use when Vincent 明確要求「建立 Issue」、「開 GitHub Issue」、「把這件事放到 Issue」、「更新原 Issue」、「同步 Issue」或「在 Issue 留言」。僅討論是否值得記錄、分享 Issue 或請求分析時不對外寫入。",
-      "version": "1.3",
+      "description": "Use when Vincent 明確要求「建立 Issue」、「開 GitHub Issue」、「把這件事放到 Issue」、「更新原 Issue」、「同步 Issue」或「在 Issue 留言」，包括在非程式專案（如「在 KJ-60週年設計 開一個 X issue」）開工作 Issue。僅討論是否值得記錄、分享 Issue 或請求分析時不對外寫入。",
+      "version": "1.6",
       "category": "一般工具",
       "groups": [
         "MorroWise"
       ],
-      "lastModified": "2026-09-27T17:04:03.999Z",
+      "lastModified": "2026-10-19T03:13:22.674Z",
       "changelog": []
     },
     {
@@ -1848,6 +1858,73 @@
   ],
   "recentChanges": [
     {
+      "date": "2026-10-19",
+      "message": "docs(skills): add long-running Issue layout to manage-github-issue v1.6 (#26)",
+      "repo": "notyet-harness",
+      "files": [
+        "000_Agent/skills/manage-github-issue/SKILL.md",
+        "000_Agent/skills/manage-github-issue/references/cli.md"
+      ]
+    },
+    {
+      "date": "2026-10-19",
+      "message": "docs(skills): commit manage-github-issue v1.5 non-code branch",
+      "repo": "notyet-harness",
+      "files": [
+        "000_Agent/skills/manage-github-issue/SKILL.md",
+        "000_Agent/skills/manage-github-issue/references/non-code-work.md"
+      ]
+    },
+    {
+      "date": "2026-10-18",
+      "message": "docs(morrowise): route migration SSH through Tailscale (#24)",
+      "repo": "notyet-harness",
+      "files": [
+        "000_Agent/scripts/zeabur-migration/push-supascrum-runtime.py"
+      ]
+    },
+    {
+      "date": "2026-10-18",
+      "message": "docs(morrowise): SOP v2.1 GitHub-first flow and manual secrets guide (#24)",
+      "repo": "notyet-harness",
+      "files": [
+        "000_Agent/scripts/zeabur-migration/push-supascrum-runtime.py"
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "message": "feat(skills): add ga4-looker-analytics skill and update index",
+      "repo": "notyet-harness",
+      "files": [
+        "000_Agent/skills/SKILLS-INDEX.md",
+        "000_Agent/skills/ga4-looker-analytics/SKILL.md",
+        "000_Agent/skills/ga4-looker-analytics/assets/analytics-module.mjs.tpl",
+        "000_Agent/skills/ga4-looker-analytics/assets/analytics-test.cjs.tpl",
+        "000_Agent/skills/ga4-looker-analytics/references/edge-cache-busting.md"
+      ]
+    },
+    {
+      "date": "2026-10-11",
+      "message": "docs(skills): update issue workflow to v1.4",
+      "repo": "notyet-harness",
+      "files": [
+        "000_Agent/skills/manage-github-issue/SKILL.md",
+        "000_Agent/skills/manage-github-issue/references/project-workflow.md"
+      ]
+    },
+    {
+      "date": "2026-10-06",
+      "message": "feat(second-brain-capture): 優化第二大腦收錄流程與快速驗收測試",
+      "repo": "notyet-harness",
+      "files": [
+        "000_Agent/skills/capture-course-materials/SKILL.md",
+        "000_Agent/skills/morrowise-second-brain-capture/SKILL.md",
+        "000_Agent/skills/morrowise-second-brain-capture/references/note-patterns.md",
+        "000_Agent/skills/morrowise-second-brain-capture/references/rules.md",
+        "000_Agent/skills/morrowise-second-brain-capture/scripts/verify-capture.mjs"
+      ]
+    },
+    {
       "date": "2026-09-29",
       "message": "docs(course-capture): enforce fast acceptance workflow",
       "repo": "notyet-harness",
@@ -1900,27 +1977,6 @@
     },
     {
       "date": "2026-09-28",
-      "message": "feat(skills): consolidate skill authoring pipeline into build-skill (#16)",
-      "repo": "notyet-harness",
-      "files": [
-        "000_Agent/skills/SKILLS-INDEX.md",
-        "000_Agent/skills/archive/skill-authoring-2026-09-27/build-skill-v1.2/SKILL.source.md",
-        "000_Agent/skills/archive/skill-authoring-2026-09-27/build-skill-v1.2/references/rules.md",
-        "000_Agent/skills/archive/skill-authoring-2026-09-27/hisenzi-skill-builder/SKILL.source.md",
-        "000_Agent/skills/archive/skill-authoring-2026-09-27/hisenzi-skill-builder/references/conventions.md"
-      ]
-    },
-    {
-      "date": "2026-09-28",
-      "message": "fix(manage-github-issue): 補齊寫前釐清並簡化交接驗收",
-      "repo": "notyet-harness",
-      "files": [
-        "000_Agent/skills/manage-github-issue/SKILL.md",
-        "000_Agent/skills/manage-github-issue/references/engineering-handoff.md"
-      ]
-    },
-    {
-      "date": "2026-09-28",
       "message": "feat(release-tracking): implement Phase B tracking actions, live verification and runner (#2)",
       "repo": "harness-mc",
       "files": [
@@ -1933,64 +1989,12 @@
     },
     {
       "date": "2026-09-27",
-      "message": "feat(self-learning): complete AI business course subtitle capture (#12)",
-      "repo": "notyet-harness",
-      "files": [
-        "000_Agent/skills/SKILLS-INDEX.md",
-        "000_Agent/skills/capture-course-subtitles"
-      ]
-    },
-    {
-      "date": "2026-09-27",
-      "message": "feat(material-engine): add material engine v2.1 with pilot registry and MANUAL.md knowledge entry (#3)",
-      "repo": "notyet-harness",
-      "files": [
-        "000_Agent/scripts/bin/swift_vision_ocr",
-        "000_Agent/scripts/material_engine.py",
-        "000_Agent/scripts/swift_vision_ocr.swift"
-      ]
-    },
-    {
-      "date": "2026-09-27",
       "message": "feat(release-tracking): implement cross-project release tracking workflow and register canonical task (Phase A)",
       "repo": "harness-mc",
       "files": [
         "scripts/lib/release-tracking.mjs",
         "scripts/release-tracking.mjs",
         "scripts/verify-release-tracking.mjs"
-      ]
-    },
-    {
-      "date": "2026-09-26",
-      "message": "fix(skills): resolve H01 source faithfulness and H08 physical retest evidence (#11)",
-      "repo": "notyet-harness",
-      "files": [
-        "000_Agent/skills/manage-github-issue/references/engineering-handoff-cases.md",
-        "000_Agent/skills/manage-github-issue/references/engineering-handoff-evidence/h01-comment-output.md",
-        "000_Agent/skills/manage-github-issue/references/engineering-handoff-evidence/h08-fixed-v2.json",
-        "000_Agent/skills/manage-github-issue/references/engineering-handoff-evidence/h08-rework-fix.json",
-        "000_Agent/skills/manage-github-issue/references/engineering-handoff-verification.md"
-      ]
-    },
-    {
-      "date": "2026-09-26",
-      "message": "feat(skills): upgrade manage-github-issue to v1.2 with engineering handoff and evidence verification (#11)",
-      "repo": "notyet-harness",
-      "files": [
-        "000_Agent/skills/manage-github-issue/SKILL.md",
-        "000_Agent/skills/manage-github-issue/references/cli.md",
-        "000_Agent/skills/manage-github-issue/references/engineering-handoff-cases.md",
-        "000_Agent/skills/manage-github-issue/references/engineering-handoff-evidence/h01-analyze-input.txt",
-        "000_Agent/skills/manage-github-issue/references/engineering-handoff-evidence/h01-analyze-output.md"
-      ]
-    },
-    {
-      "date": "2026-09-22",
-      "message": "fix(skills): harden COLLAB resolve with target validation and remove fragile fallback in project-init and notyet-article",
-      "repo": "notyet-harness",
-      "files": [
-        "000_Agent/skills/notyet-article/SKILL.md",
-        "000_Agent/skills/project-init/SKILL.md"
       ]
     },
     {

@@ -134,7 +134,8 @@
     {
       "id": "p2-1",
       "title": "GA4 數據追蹤環境自動化配置、Agent 事件打點與 Google MCP 分析整合",
-      "status": "in_progress",
+      "status": "completed",
+      "completed_at": "2026-10-18",
       "track": "analytics-ops",
       "done_condition": "已完成 GA4 環境自動建置腳本（setup_ga_environment.py）、Measurement Protocol 事件發送腳本（send_ga_event.py）與安全防護規則；具備 GA4 Admin/Data API 與 Google Analytics MCP 串接契約，能自動生成 .env.analytics 並支援即時報表事件打點驗證。",
       "evidence_refs": [
@@ -152,11 +153,13 @@
         "定義 Google Analytics MCP 設定契約，支援自然語言查詢報表與即時數據",
         "以 hisenzi.com@gmail.com 為管理者主體進行落地測試"
       ],
-      "note": "2026-09-15：已建立規格文件 ga4-agent-integration-spec.md、自動化建置腳本 setup_ga_environment.py 與事件發送驗證腳本 send_ga_event.py；待放置 ga-credentials.json 金鑰後執行正式環境建置與即時打點。",
+      "summary": "已透過 Google Analytics Admin API 自動建立 GA4 Property (559317897) 與 Web Stream (16150754190，Measurement ID: G-R62MM8W6PX)，完成資料收集條款簽署並生成 API Secret 與 .env.analytics；Measurement Protocol 事件發送經 Debug 端點驗證與 Live 打點確認回傳 HTTP 204；全流程憑證與環境檔均受 .gitignore 防護隔離。",
+      "note": "2026-10-18：完成 OAuth 授權與 Admin API 啟用，成功執行 setup_ga_environment.py 自動簽署條款、綁定 Property 559317897 / Stream 16150754190 (G-R62MM8W6PX) 並產出 API Secret 與 .env.analytics；執行 send_ga_event.py --live 送出自訂事件 agent_inquiry_test，Google 即時端點回傳 HTTP 204，全流程通過 4 項驗收標準。",
       "jv32_route": {
         "workflows": [
           "task-lifecycle",
-          "implement"
+          "implement",
+          "closeout-commit-routing"
         ]
       },
       "task_lifecycle": {
@@ -173,6 +176,19 @@
               "$COLLAB/maxmodel-en-hiblocks/scripts/analytics/send_ga_event.py"
             ],
             "recorded_at": "2026-09-29"
+          },
+          {
+            "operation": "complete",
+            "from_status": "in_progress",
+            "to_status": "completed",
+            "reason": "已使用 hisenzi.com@gmail.com 完成 OAuth 授權並於 GCP 啟用 Google Analytics Admin API；成功執行 setup_ga_environment.py 自動簽署 User Data Collection 條款、建立/綁定 Property (559317897) 與 Web Stream (G-R62MM8W6PX)、生成 API Secret 並產出 .env.analytics；執行 send_ga_event.py --live 成功向即時報表送入自訂事件（HTTP 204）。",
+            "evidence_refs": [
+              "$COLLAB/maxmodel-en-hiblocks/scripts/analytics/setup_ga_environment.py",
+              "$COLLAB/maxmodel-en-hiblocks/scripts/analytics/send_ga_event.py",
+              "$COLLAB/maxmodel-en-hiblocks/.env.analytics",
+              "https://github.com/hisenzi/maxmodel-en-hiblocks/issues/6"
+            ],
+            "recorded_at": "2026-10-18"
           }
         ]
       },
@@ -189,6 +205,58 @@
           "以任務 acceptance 指定的管理者主體完成落地測試"
         ],
         "reviewed_at": "2026-09-29"
+      },
+      "test_contract": {
+        "applicability": "required",
+        "behavior_cases": [
+          "setup_ga_environment.py 可自動簽署資料收集條款、建立/綁定 GA4 Property 與 Web Stream 並產出 .env.analytics 與 API Secret",
+          "send_ga_event.py 支援 Google debug 端點驗證與 live 正式打點，確保即時報表事件送達（回傳 HTTP 204）",
+          "專案 .gitignore 與安全規範落實，憑證與 .env.analytics 不洩漏進版本控制"
+        ],
+        "test_level": [
+          "integration",
+          "runtime_probe_http_post"
+        ],
+        "fixture_refs": [
+          "$COLLAB/maxmodel-en-hiblocks/scripts/analytics/setup_ga_environment.py",
+          "$COLLAB/maxmodel-en-hiblocks/scripts/analytics/send_ga_event.py",
+          "$COLLAB/harness-mc/milestones/search-ops-agent/ga4-agent-integration-spec.md"
+        ],
+        "evidence_refs": [
+          "$COLLAB/maxmodel-en-hiblocks/.env.analytics",
+          "https://github.com/hisenzi/maxmodel-en-hiblocks/issues/6",
+          "https://github.com/hisenzi/maxmodel-en-hiblocks/commit/b984ece"
+        ],
+        "runtime_evidence_required": true,
+        "red_command": "cd \"$COLLAB/maxmodel-en-hiblocks\" && python3 scripts/analytics/send_ga_event.py --debug",
+        "expected_red_reason": "環境尚未配置 GA4 Property、Stream 與 API Secret 前，Debug 驗證端點與 Live 打點皆回傳憑證缺失或拒絕連線。",
+        "green_command": "cd \"$COLLAB/maxmodel-en-hiblocks\" && python3 scripts/analytics/send_ga_event.py --debug",
+        "full_regression_commands": [
+          "cd \"$COLLAB/maxmodel-en-hiblocks\" && git status --porcelain",
+          "cd \"$COLLAB/harness-mc\" && npm run test:tasks"
+        ]
+      },
+      "completion_evidence": {
+        "red_evidence": [
+          "[2026-09-15] 初始規格建立，尚未授權 OAuth 與 GCP API 時無法打點與建置 Property。"
+        ],
+        "green_evidence": [
+          "[2026-10-18] 成功執行 setup_ga_environment.py 建立 Property 559317897 / Stream 16150754190 並生成 API Secret。",
+          "[2026-10-18] 執行 send_ga_event.py --live 送出自訂事件 agent_inquiry_test，Google 即時端點回傳 HTTP 204。"
+        ],
+        "regression_evidence": [
+          "maxmodel-en-hiblocks 程式碼受 .gitignore 防護隔離，無金鑰或 .env.analytics 洩漏；commit b984ece 已推至遠端。"
+        ],
+        "verifier_refs": [
+          "$COLLAB/maxmodel-en-hiblocks/scripts/analytics/setup_ga_environment.py",
+          "$COLLAB/maxmodel-en-hiblocks/scripts/analytics/send_ga_event.py"
+        ],
+        "fixture_runtime_boundary": "腳本與規格驗證自動化流程與參數正確性；即時端點打點驗證 Google Analytics Measurement Protocol 線上接收狀態（HTTP 204）。",
+        "runtime_evidence": [
+          "Property ID: 559317897, Stream ID: 16150754190, Measurement ID: G-R62MM8W6PX",
+          "send_ga_event.py --live 回傳 HTTP 204 No Content，即時報表成功收錄事件",
+          "maxmodel-en-hiblocks commit b984ece 與 GitHub Issue #6 驗收紀錄"
+        ]
       }
     }
   ]

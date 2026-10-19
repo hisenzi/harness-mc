@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from "node:fs";
+import {inspectSessionHandoff, verifySessionCommit} from "./lib/session-handoff.mjs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { writeTaskEvent } from "./task-event-outbox.mjs";
@@ -30,7 +31,14 @@ const options = parseArgs(process.argv.slice(2));
 let result;
 if(options.workbookPath && options.command!=='workbook-inspect') throw new Error('workbook_cli_is_read_only_use_trusted_session_adapter');
 
-if (options.command === 'workbook-inspect') {
+if (options.command === 'session-inspect' || options.command === 'session-verify') {
+  requireOption(options.repoPath, '--repo <path>');
+  const packet = readJson(options.inputPath);
+  if (options.command === 'session-verify') requireOption(options.sessionId, '--session <id>');
+  result = options.command === 'session-inspect'
+    ? inspectSessionHandoff({repoPath: options.repoPath, packet})
+    : verifySessionCommit({repoPath: options.repoPath, packet, sessionId: options.sessionId});
+} else if (options.command === 'workbook-inspect') {
   requireOption(options.workbookPath, '--workbook <path>');
   const workbook=loadWorkbook(options.workbookPath);
   result={version:1,read_only:true,workbook:workbook.home,gate:evaluateWorkbookGate({contract:workbook.contract,event:'implement'}),repositories:workbook.contract.repos.map(repo=>({repo_id:repo.repo_id,...inspectWorkbookRepo({workbook,repoId:repo.repo_id,sessionId:options.sessionId})}))};

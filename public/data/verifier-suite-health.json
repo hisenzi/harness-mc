@@ -1,6 +1,6 @@
 {
   "schema_version": "verifier-suite-health.v0",
-  "generated_at": "2026-10-19T03:21:38.233Z",
+  "generated_at": "2026-10-24T00:58:05.415Z",
   "read_only": true,
   "source": {
     "package_scripts": "$COLLAB/harness-mc/package.json#scripts",
@@ -37,13 +37,13 @@
   },
   "summary": {
     "total": 77,
-    "passed": 71,
-    "failed": 6,
+    "passed": 64,
+    "failed": 13,
     "skipped": 1,
     "skipped_scripts": [
       "test:verifier-suite-health"
     ],
-    "duration_ms": 163750
+    "duration_ms": 2965620
   },
   "verifiers": [
     {
@@ -51,378 +51,378 @@
       "command": "node scripts/verify-action-priority-read-model.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 43,
+      "duration_ms": 88,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:apply-task-events",
       "command": "node scripts/verify-apply-task-events.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 168,
+      "duration_ms": 314,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:architecture-atlas",
       "command": "node scripts/verify-morrowise-architecture-atlas.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 25,
+      "duration_ms": 48,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:architecture-subsystems",
       "command": "node scripts/verify-architecture-subsystems.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 45,
+      "duration_ms": 84,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:capability-drift",
       "command": "node scripts/verify-capability-drift.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 45,
+      "duration_ms": 60,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:capability-registry",
       "command": "node scripts/verify-morrowise-capability-registry.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 33,
+      "duration_ms": 55,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:capability-runtime-status",
       "command": "node scripts/verify-capability-runtime-status.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 27,
+      "duration_ms": 48,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:closeout-residual-ledger",
       "command": "node scripts/verify-closeout-residual-ledger.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 26,
+      "duration_ms": 47,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:commit-attention",
       "command": "node scripts/verify-commit-attention.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 39,
+      "duration_ms": 73,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:commit-cleanup-plan",
       "command": "node scripts/verify-morrowise-commit-cleanup-plan.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 27,
+      "duration_ms": 52,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:commit-planning-gate",
       "command": "node scripts/verify-morrowise-commit-planning-gate.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 29,
+      "duration_ms": 53,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:config-sync-state",
       "command": "node scripts/verify-config-sync-state.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 28,
+      "duration_ms": 58,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:direct-main-workflow",
       "command": "node scripts/verify-direct-main-workflow-policy.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 116,
+      "duration_ms": 207,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:future-practice-domain-tracking",
       "command": "node scripts/verify-future-practice-domain-tracking.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 1485,
+      "duration_ms": 2215,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:git-isolation-approval",
       "command": "node scripts/verify-explicit-git-isolation-approval.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 32,
+      "duration_ms": 43,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:grouped-nested-milestones",
       "command": "node scripts/verify-grouped-nested-milestones.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 985,
+      "duration_ms": 1211,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:hc-framing-gate",
       "command": "node scripts/verify-hc-framing-gate.mjs",
-      "status": "pass",
-      "exit_code": 0,
-      "duration_ms": 8895,
-      "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "status": "fail",
+      "exit_code": 1,
+      "duration_ms": 977052,
+      "failure_excerpt": "error: spawnSync /bin/sh ETIMEDOUT\nHC framing gate verification passed",
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:kj-handoff-live-sync",
       "command": "node scripts/verify-kj-handoff-live-sync.mjs",
       "status": "fail",
       "exit_code": 1,
-      "duration_ms": 64,
-      "failure_excerpt": "    at genericNodeError (node:internal/errors:985:15)\n    at wrappedFn (node:internal/errors:539:14)\n    at checkExecSyncError (node:child_process:925:11)\n    at execFileSync (node:child_process:961:15)\n    at file://$HOME/Downloads/Claude_%E5%8D%94%E4%BD%9C/harness-mc/scripts/verify-kj-handoff-live-sync.mjs:30:21\n    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:671:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  status: 1,\n  signal: null,\n  output: [\n    null,\n    'KJ live snapshot validation failed:\\n- snapshot 過期：超過 14 天\\n',\n    ''\n  ],\n  pid: 48170,\n  stdout: 'KJ live snapshot validation failed:\\n- snapshot 過期：超過 14 天\\n',\n  stderr: ''\n}\nNode.js v24.11.1",
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "duration_ms": 163,
+      "failure_excerpt": "    at genericNodeError (node:internal/errors:985:15)\n    at wrappedFn (node:internal/errors:539:14)\n    at checkExecSyncError (node:child_process:925:11)\n    at execFileSync (node:child_process:961:15)\n    at file://$HOME/Downloads/Claude_%E5%8D%94%E4%BD%9C/harness-mc/scripts/verify-kj-handoff-live-sync.mjs:30:21\n    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:671:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  status: 1,\n  signal: null,\n  output: [\n    null,\n    'KJ live snapshot validation failed:\\n- snapshot 過期：超過 14 天\\n',\n    ''\n  ],\n  pid: 12038,\n  stdout: 'KJ live snapshot validation failed:\\n- snapshot 過期：超過 14 天\\n',\n  stderr: ''\n}\nNode.js v24.11.1",
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:kj-mirror-reconcile",
       "command": "node scripts/verify-kj-mirror-reconcile.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 27,
+      "duration_ms": 59,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:kj-notion-read-model",
       "command": "node scripts/verify-kj-notion-read-model.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 24,
+      "duration_ms": 50,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:live-system-admission",
       "command": "node scripts/verify-morrowise-live-system-admission.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 30,
+      "duration_ms": 139,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:local-c1-runtime",
       "command": "node scripts/verify-local-c1-runtime.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 1319,
+      "duration_ms": 2871,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-approval",
       "command": "node scripts/verify-morrowise-approval-policy.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 25,
+      "duration_ms": 47,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-auditor",
       "command": "node scripts/verify-morrowise-auditor-schema.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 31,
+      "duration_ms": 57,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-auditor-generator",
       "command": "node scripts/verify-generate-morrowise-auditor.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 66,
+      "duration_ms": 114,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-auditor-isolated",
       "command": "node scripts/verify-morrowise-auditor-isolated.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 1639,
+      "duration_ms": 2494,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-console",
       "command": "node scripts/verify-morrowise-control-console.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 24,
+      "duration_ms": 40,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-documentation",
       "command": "node scripts/verify-morrowise-document-sources.mjs && node scripts/verify-morrowise-documentation-impact.mjs --self-test && node scripts/verify-morrowise-documentation-sync.mjs && node scripts/verify-morrowise-docs-surface.mjs",
-      "status": "pass",
-      "exit_code": 0,
-      "duration_ms": 2609,
-      "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "status": "fail",
+      "exit_code": 2,
+      "duration_ms": 2519,
+      "failure_excerpt": "PASS updated claim without changed corresponding chapter is rejected\nPASS unknown document mapping is rejected\nPASS duplicate mapping is rejected\nPASS missing source is fail closed\nPASS changed source plus corresponding revised guide passes\nPASS outdated chapter review is rejected\nPASS unsafe source reference is rejected without reading it\nPASS removing the mappings cannot disable the gate\nPASS an unknown capability is rejected\nPASS unmapped documents are rejected\nPASS duplicate review is rejected\nPASS extra review fingerprints are rejected\nPASS symlink source is rejected\nPASS refreshing the mapping baseline cannot erase a committed source change\nPASS first independently reviewed update forms an accepted baseline\nPASS second update cannot reuse the previous approved chapter and claim updated\nPASS second update can legitimately have independent no-impact evidence\nPASS second update with newly revised corresponding chapter is accepted\nPASS returning capability to initial behavior does not bypass a later approved baseline\nDocumentation impact tests: 25/25",
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-documentation-impact",
       "command": "node scripts/verify-morrowise-documentation-impact.mjs",
-      "status": "pass",
-      "exit_code": 0,
-      "duration_ms": 77,
-      "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "status": "fail",
+      "exit_code": 2,
+      "duration_ms": 164,
+      "failure_excerpt": "      },\n      \"review_state\": \"update_required\"\n    },\n    {\n      \"id\": \"troubleshooting\",\n      \"changed_sources\": [],\n      \"changed_documents\": [],\n      \"source_fingerprints\": {\n        \"$COLLAB/notyet-harness/000_Agent/skills/systematic-debugging/SKILL.md\": \"4999cb851360485eca5074e727bbdd62ef20549c5d5b01216fcbf5831badb473\",\n        \"$COLLAB/notyet-harness/000_Agent/skills/write-temporary-doc/references/closed-loop.md\": \"9948b43738ec6813e02d8900374bda3a087fa97a78e89b841552baa6ee2b8afd\",\n        \"$COLLAB/harness-mc/system-workflow/registries/morrowise-dev-workflow-catalog.json\": \"f7474b8b8e479d2aaf8e266bb795cda3ca31bc1454b4a91ce63f48f45edc1381\",\n        \"$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-adapter-contract.json\": \"8def41a8ce01928bc355f0e5bc9a460cef83ff05a74e811865d7e0f9b5c2cf82\"\n      },\n      \"document_fingerprints\": {\n        \"operator-guide-troubleshooting\": \"25bbd0200b60fbe8df1e6af0e913edde855452aad8416f13341a44f0cab0d1d1\"\n      },\n      \"review_state\": \"no_impact\"\n    }\n  ]\n}",
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-documentation-sync",
       "command": "node scripts/verify-morrowise-documentation-sync.mjs",
-      "status": "pass",
-      "exit_code": 0,
-      "duration_ms": 95,
-      "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "status": "fail",
+      "exit_code": 2,
+      "duration_ms": 222,
+      "failure_excerpt": "documentation_impact_blocked:delivery:invalid_or_stale_review",
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-live-dashboard",
       "command": "node scripts/verify-morrowise-live-dashboard-data.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 34,
+      "duration_ms": 73,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-live-decision",
       "command": "node scripts/verify-morrowise-live-decision-loop.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 42,
+      "duration_ms": 90,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-live-loop",
       "command": "node scripts/verify-morrowise-live-dashboard-loop.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 5220,
+      "duration_ms": 8013,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-loop",
       "command": "node scripts/verify-morrowise-proactive-loop.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 65,
+      "duration_ms": 133,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-notifier-source",
       "command": "node scripts/verify-morrowise-notifier-source.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 1731,
+      "duration_ms": 2557,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-product-promotions",
       "command": "node scripts/verify-morrowise-product-promotions.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 24,
+      "duration_ms": 28,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-read-model-card",
       "command": "node scripts/verify-morrowise-read-model-card.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 26,
+      "duration_ms": 28,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-recommendations",
       "command": "node scripts/verify-morrowise-recommendations.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 25,
+      "duration_ms": 28,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-runner",
       "command": "node scripts/verify-morrowise-action-runner.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 44,
+      "duration_ms": 34,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-schema",
       "command": "node scripts/verify-morrowise-system-schema.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 36,
+      "duration_ms": 27,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-system-json",
       "command": "node scripts/verify-morrowise-system-json.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 47,
+      "duration_ms": 39,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-triggers",
       "command": "node scripts/verify-morrowise-trigger-rules.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 30,
+      "duration_ms": 27,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:morrowise-wiring",
@@ -431,319 +431,319 @@
       "exit_code": 0,
       "duration_ms": 38,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:notification-adapter-contract",
       "command": "node scripts/verify-morrowise-notification-adapter-contract.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 412,
+      "duration_ms": 354,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:notification-outbox",
       "command": "node scripts/verify-notification-outbox-contract.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 165,
+      "duration_ms": 71,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:notion-sync-state",
       "command": "node scripts/verify-notion-sync-state.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 28,
+      "duration_ms": 31,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:pai-domain-taxonomy",
       "command": "node scripts/verify-pai-domain-taxonomy.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 39,
+      "duration_ms": 33,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:phase3-jv37-admission",
       "command": "node scripts/verify-morrowise-phase3-jv37-admission.mjs --case jv37-admission-fixtures",
       "status": "fail",
       "exit_code": 1,
-      "duration_ms": 1901,
+      "duration_ms": 2494,
       "failure_excerpt": "    ^\nAssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n+ []\n- [\n-   'task.completed'\n- ]\n    at verifySourceBoundFixtureSeam (file://$HOME/Downloads/Claude_%E5%8D%94%E4%BD%9C/harness-mc/scripts/verify-morrowise-phase3-jv37-admission.mjs:224:10)\n    at file://$HOME/Downloads/Claude_%E5%8D%94%E4%BD%9C/harness-mc/scripts/verify-morrowise-phase3-jv37-admission.mjs:42:3\n    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:671:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: [],\n  expected: [ 'task.completed' ],\n  operator: 'deepStrictEqual',\n  diff: 'simple'\n}\nNode.js v24.11.1",
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:project-filters",
       "command": "node --test app/projects/projectFilters.test.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 61,
+      "duration_ms": 122,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:project-init-admission",
       "command": "node scripts/verify-project-init-admission.mjs",
-      "status": "pass",
-      "exit_code": 0,
-      "duration_ms": 1502,
-      "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "status": "fail",
+      "exit_code": 1,
+      "duration_ms": 657134,
+      "failure_excerpt": "error: spawnSync /bin/sh ETIMEDOUT\nproject-init topology admission and repo receipt verification OK — JV43-A11=pass JV43-A13=pass JV37-A18=pass JV37-A19=pass",
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:project-init-v1",
       "command": "node scripts/verify-project-init-v1.mjs && node scripts/verify-morrowise-operating-map.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 265,
+      "duration_ms": 197,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:project-local-worktree",
       "command": "node scripts/verify-project-local-worktree.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 35,
+      "duration_ms": 40,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:project-topology",
       "command": "node scripts/verify-morrowise-project-topology.mjs",
-      "status": "pass",
-      "exit_code": 0,
-      "duration_ms": 64,
-      "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "status": "fail",
+      "exit_code": 1,
+      "duration_ms": 43,
+      "failure_excerpt": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\nAssertionError [ERR_ASSERTION]: record ref must remain $COLLAB-relative: greenpeace\n    at file://$HOME/Downloads/Claude_%E5%8D%94%E4%BD%9C/harness-mc/scripts/verify-morrowise-project-topology.mjs:70:12\n    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:671:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: 'https://github.com/hisenzi/greenpeace',\n  expected: /^\\$COLLAB\\//,\n  operator: 'match',\n  diff: 'simple'\n}\nNode.js v24.11.1",
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:project-topology-maintenance",
       "command": "node scripts/verify-project-topology-maintenance.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 186,
+      "duration_ms": 305,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:project-write-admission",
       "command": "node scripts/verify-project-write-admission.mjs",
       "status": "fail",
       "exit_code": 1,
-      "duration_ms": 73,
+      "duration_ms": 175,
       "failure_excerpt": "    triggerUncaughtException(\n    ^\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n+ 'degraded'\n- 'ready'\n    at file://$HOME/Downloads/Claude_%E5%8D%94%E4%BD%9C/harness-mc/scripts/verify-project-write-admission.mjs:32:10\n    at withFixture (file://$HOME/Downloads/Claude_%E5%8D%94%E4%BD%9C/harness-mc/scripts/verify-project-write-admission.mjs:125:5)\n    at file://$HOME/Downloads/Claude_%E5%8D%94%E4%BD%9C/harness-mc/scripts/verify-project-write-admission.mjs:27:1\n    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:671:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: 'degraded',\n  expected: 'ready',\n  operator: 'strictEqual',\n  diff: 'simple'\n}\nNode.js v24.11.1",
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:pulse-proposals",
       "command": "node scripts/verify-pulse-proposal-queue.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 39,
+      "duration_ms": 115,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:reality-tax-gate",
       "command": "node scripts/verify-morrowise-reality-tax-gate.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 29,
+      "duration_ms": 108,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:repo-coordination-runtime",
       "command": "node scripts/verify-multi-machine-repo-coordination-gate.mjs --case all-local",
       "status": "fail",
       "exit_code": 1,
-      "duration_ms": 3237,
-      "failure_excerpt": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n+ []\n- [\n-   'task.completed'\n- ]\n    at applyCanonicalCompletionEvent (file://$HOME/Downloads/Claude_%E5%8D%94%E4%BD%9C/harness-mc/scripts/verify-multi-machine-repo-coordination-gate.mjs:914:10)\n    at completeConcurrentDeliveryCloseout (file://$HOME/Downloads/Claude_%E5%8D%94%E4%BD%9C/harness-mc/scripts/verify-multi-machine-repo-coordination-gate.mjs:968:3)\n    at verifyConcurrentDeliverySingleIntegrator (file://$HOME/Downloads/Claude_%E5%8D%94%E4%BD%9C/harness-mc/scripts/verify-multi-machine-repo-coordination-gate.mjs:192:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file://$HOME/Downloads/Claude_%E5%8D%94%E4%BD%9C/harness-mc/scripts/verify-multi-machine-repo-coordination-gate.mjs:56:3 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: [],\n  expected: [ 'task.completed' ],\n  operator: 'deepStrictEqual',\n  diff: 'simple'\n}\nNode.js v24.11.1\nPASS device-free-identity-contract",
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "duration_ms": 8996,
+      "failure_excerpt": "    ^\nAssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n+ []\n- [\n-   'task.completed'\n- ]\n    at applyCanonicalCompletionEvent (file://$HOME/Downloads/Claude_%E5%8D%94%E4%BD%9C/harness-mc/scripts/verify-multi-machine-repo-coordination-gate.mjs:914:10)\n    at completeConcurrentDeliveryCloseout (file://$HOME/Downloads/Claude_%E5%8D%94%E4%BD%9C/harness-mc/scripts/verify-multi-machine-repo-coordination-gate.mjs:968:3)\n    at verifyConcurrentDeliverySingleIntegrator (file://$HOME/Downloads/Claude_%E5%8D%94%E4%BD%9C/harness-mc/scripts/verify-multi-machine-repo-coordination-gate.mjs:192:3)\n    at async file://$HOME/Downloads/Claude_%E5%8D%94%E4%BD%9C/harness-mc/scripts/verify-multi-machine-repo-coordination-gate.mjs:56:3 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: [],\n  expected: [ 'task.completed' ],\n  operator: 'deepStrictEqual',\n  diff: 'simple'\n}\nNode.js v24.11.1\nPASS device-free-identity-contract",
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:required-publish-flow",
       "command": "node scripts/verify-required-publish-flow.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 90,
+      "duration_ms": 130,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:schedule-health",
       "command": "node scripts/verify-schedule-health.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 29,
+      "duration_ms": 43,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:schedule-liveness",
       "command": "node scripts/verify-schedule-liveness.mjs",
       "status": "fail",
       "exit_code": 1,
-      "duration_ms": 49,
-      "failure_excerpt": "FAIL: system-pulse=no_success_recorded\nThe schedule has not actually run. Check: launchctl list | grep com.hisenzi.schedule\n✔ commit-attention-sweep   cron=\"10 22 * * *\" due=2026-10-18T14:10:00Z last_success=2026-10-18T14:30:00Z → live\n… kids-reward-backup       cron=\"30 9 * * 1\" due=never last_success=2026-10-19T01:30:15Z → unknown_cadence\n✔ mc-sentinel              cron=\"30 8 * * *\" due=2026-10-19T00:30:00Z last_success=2026-10-19T00:33:37Z → live\n✘ system-pulse             cron=\"45 8 * * *\" due=2026-10-19T00:45:00Z last_success=never → no_success_recorded\nschedule liveness: 2/4 live, 1 failing, 1 unknown cadence (grace 120m)",
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "duration_ms": 79,
+      "failure_excerpt": "FAIL: system-pulse=no_success_recorded\nThe schedule has not actually run. Check: launchctl list | grep com.hisenzi.schedule\n✔ commit-attention-sweep   cron=\"10 22 * * *\" due=2026-10-23T14:10:00Z last_success=2026-10-23T14:10:03Z → live\n… kids-reward-backup       cron=\"30 9 * * 1\" due=never last_success=2026-10-19T01:30:15Z → unknown_cadence\n✔ mc-sentinel              cron=\"30 8 * * *\" due=2026-10-24T00:30:00Z last_success=2026-10-24T00:42:59Z → live\n✘ system-pulse             cron=\"45 8 * * *\" due=2026-10-24T00:45:00Z last_success=never → no_success_recorded\nschedule liveness: 2/4 live, 1 failing, 1 unknown cadence (grace 120m)",
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:skill-version-backfill",
       "command": "node scripts/verify-skill-version-backfill.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 27,
+      "duration_ms": 40,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:skills",
       "command": "node scripts/verify-validate-skills.mjs && node scripts/validate-skills.mjs --changed-only",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 79,
+      "duration_ms": 119,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:sync-event-queue",
       "command": "node scripts/verify-sync-event-queue.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 26,
+      "duration_ms": 40,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:sync-notion-course-ids",
       "command": "node scripts/verify-sync-notion-course-ids.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 48,
+      "duration_ms": 70,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:system-pulse",
       "command": "node scripts/verify-system-pulse.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 53,
+      "duration_ms": 79,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:task-event-dashboard",
       "command": "node scripts/verify-task-event-dashboard-data.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 28,
+      "duration_ms": 39,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:task-event-outbox",
       "command": "node scripts/verify-task-event-outbox.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 32,
+      "duration_ms": 47,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:task-state",
       "command": "node scripts/verify-task-state-merge.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 24,
+      "duration_ms": 38,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:tasks",
       "command": "node scripts/verify-validate-tasks.mjs && node scripts/validate-tasks.mjs --changed-only",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 6454,
+      "duration_ms": 9490,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:tools-data",
       "command": "node scripts/verify-generate-tools-data.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 66,
+      "duration_ms": 97,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:trusted-heartbeat",
       "command": "node scripts/verify-trusted-heartbeat-runtime.mjs",
       "status": "fail",
       "exit_code": 1,
-      "duration_ms": 53,
+      "duration_ms": 81,
       "failure_excerpt": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\nAssertionError [ERR_ASSERTION]: Real environment must have exactly 3 tasks declared\n4 !== 3\n    at file://$HOME/Downloads/Claude_%E5%8D%94%E4%BD%9C/harness-mc/scripts/verify-trusted-heartbeat-runtime.mjs:374:8\n    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:671:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: 4,\n  expected: 3,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\nNode.js v24.11.1\n=== Running Trusted Heartbeat Verification Suite ===\n✔ Suite 1: Synthetic negative and positive edge cases PASSED\n=== Checking Real Environment Safe Probe ===",
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:visual-sync-coverage",
       "command": "node scripts/verify-visual-sync-coverage.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 30,
+      "duration_ms": 46,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:work-anchor-preflight",
       "command": "node scripts/verify-work-anchor-preflight.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 2688,
+      "duration_ms": 4808,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:workbook-flow",
       "command": "node scripts/verify-workbook-flow.mjs",
-      "status": "pass",
-      "exit_code": 0,
-      "duration_ms": 119475,
-      "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "status": "fail",
+      "exit_code": 1,
+      "duration_ms": 1277115,
+      "failure_excerpt": "error: spawnSync /bin/sh ETIMEDOUT\nPASS runtime observation protocol: real invocation binding, artifact bytes, exact checks, replay/environment/fixture/stale/failed/copied-report rejection (isolated fixture only)\nPASS original requirement binding: valid source, exact IDs, drift, duplicate markers, pending live rejection, copied receipt rejection, external source and symlink\nPASS session source: real reader shape, human-only provenance, brand, scope/action/operation, watermark and contract revocation\nPASS workbook preflight: source routing, fixed registered sources, exact scope, owned real acceptance, source/claim drift, cancelled UUID, original matrix, HC, dependencies and weekly core\nPASS workbook contract, trusted approval boundary, unique home, exact evidence, source drift\nPASS local owner, overlap, foreign index, repeat, source race, crash recovery, handoff",
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:worktree-commit-race",
       "command": "node scripts/verify-worktree-commit-race-governance.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 172,
+      "duration_ms": 444,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     },
     {
       "script": "test:worktree-status",
       "command": "node scripts/generate-worktree-status.mjs",
       "status": "pass",
       "exit_code": 0,
-      "duration_ms": 851,
+      "duration_ms": 835,
       "failure_excerpt": null,
-      "last_run_at": "2026-10-19T03:21:38.233Z"
+      "last_run_at": "2026-10-24T00:58:05.415Z"
     }
   ],
   "next_action": {
     "type": "fix_failed_verifier",
-    "target": "test:kj-handoff-live-sync",
-    "label": "Run test:kj-handoff-live-sync, inspect sanitized failure_excerpt, then fix the owning verifier or source contract."
+    "target": "test:hc-framing-gate",
+    "label": "Run test:hc-framing-gate, inspect sanitized failure_excerpt, then fix the owning verifier or source contract."
   },
   "verifier_ref": "npm run test:verifier-suite-health"
 }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-19T03:21:20.076Z",
+  "generatedAt": "2026-10-24T00:57:44.835Z",
   "sourceStatus": {
     "skills": "scanned",
     "scripts": {
@@ -126,12 +126,12 @@
       "id": "cc-push",
       "name": "cc-push",
       "description": "Use when Vincent says \"cc-push\", \"一起 push\", \"batch push\", \"多個 session 都 commit 完了\", \"檢查哪些可以 push\", \"最後統一 push\", or wants a final push after cc-log/worktree-commit across one or more repos.",
-      "version": "2.3",
+      "version": "2.4",
       "category": "一般工具",
       "groups": [
         "MorroWise"
       ],
-      "lastModified": "2026-09-09T15:24:36.140Z",
+      "lastModified": "2026-10-19T16:42:27.357Z",
       "changelog": []
     },
     {
@@ -302,12 +302,12 @@
       "id": "manage-github-issue",
       "name": "manage-github-issue",
       "description": "Use when Vincent 明確要求「建立 Issue」、「開 GitHub Issue」、「把這件事放到 Issue」、「更新原 Issue」、「同步 Issue」或「在 Issue 留言」，包括在非程式專案（如「在 KJ-60週年設計 開一個 X issue」）開工作 Issue。僅討論是否值得記錄、分享 Issue 或請求分析時不對外寫入。",
-      "version": "1.6",
+      "version": "1.7",
       "category": "一般工具",
       "groups": [
         "MorroWise"
       ],
-      "lastModified": "2026-10-19T03:13:22.674Z",
+      "lastModified": "2026-10-19T04:03:53.102Z",
       "changelog": []
     },
     {
@@ -1858,90 +1858,104 @@
   ],
   "recentChanges": [
     {
-      "date": "2026-10-19",
-      "message": "docs(skills): add long-running Issue layout to manage-github-issue v1.6 (#26)",
+      "date": "2026-10-22",
+      "message": "feat(mig): add nsg-system migration configuration and Caddy proxy (#24)",
       "repo": "notyet-harness",
       "files": [
-        "000_Agent/skills/manage-github-issue/SKILL.md",
-        "000_Agent/skills/manage-github-issue/references/cli.md"
+        "000_Agent/scripts/zeabur-migration/caddy/sites/nsg-system.caddy",
+        "000_Agent/scripts/zeabur-migration/mig/services/nsg-system/Caddyfile",
+        "000_Agent/scripts/zeabur-migration/mig/services/nsg-system/compose.yaml",
+        "000_Agent/scripts/zeabur-migration/mig/services/nsg-system/service.json"
       ]
     },
     {
-      "date": "2026-10-19",
-      "message": "docs(skills): commit manage-github-issue v1.5 non-code branch",
+      "date": "2026-10-22",
+      "message": "feat(zeabur-migration): serve static sites from pinned, hardened Caddy containers (#24)",
       "repo": "notyet-harness",
       "files": [
-        "000_Agent/skills/manage-github-issue/SKILL.md",
-        "000_Agent/skills/manage-github-issue/references/non-code-work.md"
+        "000_Agent/scripts/zeabur-migration/caddy/sites/fj-en-website.caddy",
+        "000_Agent/scripts/zeabur-migration/caddy/templates/container-compose.yaml.tmpl",
+        "000_Agent/scripts/zeabur-migration/caddy/templates/container-fallback.Caddyfile.tmpl",
+        "000_Agent/scripts/zeabur-migration/caddy/templates/container-notfound-page.Caddyfile.tmpl",
+        "000_Agent/scripts/zeabur-migration/caddy/templates/fallback.caddy.tmpl"
       ]
     },
     {
-      "date": "2026-10-18",
-      "message": "docs(morrowise): route migration SSH through Tailscale (#24)",
+      "date": "2026-10-22",
+      "message": "feat(mig): check that a static site's container is running before deploying (#24)",
       "repo": "notyet-harness",
       "files": [
-        "000_Agent/scripts/zeabur-migration/push-supascrum-runtime.py"
+        "000_Agent/scripts/zeabur-migration/mig/miglib/pipeline.py",
+        "000_Agent/scripts/zeabur-migration/mig/tests/test_cli_static.py"
       ]
     },
     {
-      "date": "2026-10-18",
-      "message": "docs(morrowise): SOP v2.1 GitHub-first flow and manual secrets guide (#24)",
+      "date": "2026-10-22",
+      "message": "chore(mig): serve fj-en-website as production after the cut (#24)",
       "repo": "notyet-harness",
       "files": [
-        "000_Agent/scripts/zeabur-migration/push-supascrum-runtime.py"
+        "000_Agent/scripts/zeabur-migration/caddy/sites/fj-en-website.caddy",
+        "000_Agent/scripts/zeabur-migration/mig/services/fj-en-website/service.json"
       ]
     },
     {
-      "date": "2026-10-15",
-      "message": "feat(skills): add ga4-looker-analytics skill and update index",
+      "date": "2026-10-21",
+      "message": "feat(morrows): deploy Portainer CE SupaScrum card console, Dockge & containerized static site (#25)",
       "repo": "notyet-harness",
       "files": [
-        "000_Agent/skills/SKILLS-INDEX.md",
-        "000_Agent/skills/ga4-looker-analytics/SKILL.md",
-        "000_Agent/skills/ga4-looker-analytics/assets/analytics-module.mjs.tpl",
-        "000_Agent/skills/ga4-looker-analytics/assets/analytics-test.cjs.tpl",
-        "000_Agent/skills/ga4-looker-analytics/references/edge-cache-busting.md"
+        "000_Agent/scripts/zeabur-migration/caddy/sites/rrrealll-v2-transition.caddy",
+        "000_Agent/scripts/zeabur-migration/consoles/dockge/compose.yaml",
+        "000_Agent/scripts/zeabur-migration/consoles/portainer/compose.yaml",
+        "000_Agent/scripts/zeabur-migration/consoles/portainer/supascrum-theme.css",
+        "000_Agent/scripts/zeabur-migration/mig/services/rrrealll-v2-transition/Caddyfile"
       ]
     },
     {
-      "date": "2026-10-11",
-      "message": "docs(skills): update issue workflow to v1.4",
+      "date": "2026-10-21",
+      "message": "feat(mig): add fj-en-website as the first plain HTML service (#24)",
       "repo": "notyet-harness",
       "files": [
-        "000_Agent/skills/manage-github-issue/SKILL.md",
-        "000_Agent/skills/manage-github-issue/references/project-workflow.md"
+        "000_Agent/scripts/zeabur-migration/caddy/sites/fj-en-website.caddy",
+        "000_Agent/scripts/zeabur-migration/mig/services/fj-en-website/service.json"
       ]
     },
     {
-      "date": "2026-10-06",
-      "message": "feat(second-brain-capture): 優化第二大腦收錄流程與快速驗收測試",
+      "date": "2026-10-21",
+      "message": "fix(zeabur-migration): fold trailing whitespace in static-compare HTML (#24)",
       "repo": "notyet-harness",
       "files": [
-        "000_Agent/skills/capture-course-materials/SKILL.md",
-        "000_Agent/skills/morrowise-second-brain-capture/SKILL.md",
-        "000_Agent/skills/morrowise-second-brain-capture/references/note-patterns.md",
-        "000_Agent/skills/morrowise-second-brain-capture/references/rules.md",
-        "000_Agent/skills/morrowise-second-brain-capture/scripts/verify-capture.mjs"
+        "000_Agent/scripts/zeabur-migration/static-compare.py",
+        "000_Agent/scripts/zeabur-migration/tests/test_static_compare.py"
       ]
     },
     {
-      "date": "2026-09-29",
-      "message": "docs(course-capture): enforce fast acceptance workflow",
+      "date": "2026-10-21",
+      "message": "feat(zeabur-migration): Caddy templates and static-compare probes and parity (#24)",
       "repo": "notyet-harness",
       "files": [
-        "000_Agent/skills/capture-course-materials/SKILL.md"
+        "000_Agent/scripts/zeabur-migration/caddy/templates/fallback.caddy.tmpl",
+        "000_Agent/scripts/zeabur-migration/caddy/templates/notfound-page.caddy.tmpl",
+        "000_Agent/scripts/zeabur-migration/static-compare.py",
+        "000_Agent/scripts/zeabur-migration/tests/test_static_compare.py"
       ]
     },
     {
-      "date": "2026-09-29",
-      "message": "feat(course-capture): add verifiable course archive workflow",
+      "date": "2026-10-21",
+      "message": "feat(mig): add a static-files kit for plain HTML sites (#24)",
       "repo": "notyet-harness",
       "files": [
-        "000_Agent/skills/SKILLS-INDEX.md",
-        "000_Agent/skills/capture-course-materials/SKILL.md",
-        "000_Agent/skills/capture-course-materials/references/source-package.md",
-        "000_Agent/skills/capture-course-materials/scripts/verify-source-package.mjs",
-        "000_Agent/skills/capture-course-materials/tests/verify-source-package.test.mjs"
+        "000_Agent/scripts/zeabur-migration/mig/kits/static-files/Dockerfile",
+        "000_Agent/scripts/zeabur-migration/mig/miglib/pipeline.py",
+        "000_Agent/scripts/zeabur-migration/mig/tests/test_cli_static.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "message": "chore(mig): serve rrrealll as production after the cut (#24)",
+      "repo": "notyet-harness",
+      "files": [
+        "000_Agent/scripts/zeabur-migration/caddy/sites/rrrealll-v2-transition.caddy",
+        "000_Agent/scripts/zeabur-migration/mig/services/rrrealll-v2-transition/service.json"
       ]
     },
     {
@@ -1961,18 +1975,6 @@
         "scripts/lib/morrowise-public-release.mjs",
         "scripts/prepare-morrowise-public-release.mjs",
         "scripts/verify-morrowise-public-release.mjs"
-      ]
-    },
-    {
-      "date": "2026-09-28",
-      "message": "feat(skills): add shared Neon agent guidance",
-      "repo": "notyet-harness",
-      "files": [
-        "000_Agent/skills/SKILLS-INDEX.md",
-        "000_Agent/skills/neon-skill/LICENSE",
-        "000_Agent/skills/neon-skill/SKILL.md",
-        "000_Agent/skills/neon-skill/SOURCE.md",
-        "000_Agent/skills/neon-skill/neon-postgres/SKILL.md"
       ]
     },
     {

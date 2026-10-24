@@ -2,7 +2,7 @@
   "registry_id": "morrowise-project-topology.v1",
   "task_id": "project-topology-architecture-atlas",
   "status": "formal_registry",
-  "updated_at": "2026-10-18",
+  "updated_at": "2026-10-22",
   "inventory_as_of": "2026-10-18",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json",
   "schema_ref": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-project-topology.schema.json",
@@ -981,6 +981,21 @@
       ],
       "last_verified_at": "2026-10-18",
       "notes": "Quick project opening registered this canonical local home; Git, deployment, and external sync remain separate MVP actions."
+    },
+    {
+      "id": "greenpeace",
+      "path_label": "$COLLAB/greenpeace",
+      "classification": "canonical_project",
+      "migration_state": "inventory_only",
+      "project_home_ref": "$COLLAB/greenpeace",
+      "topology_profile": "git-repository",
+      "document_ref": "$COLLAB/greenpeace/README.md",
+      "repo_ref": "$COLLAB/greenpeace",
+      "evidence": [
+        "$COLLAB/greenpeace"
+      ],
+      "last_verified_at": "2026-10-22",
+      "notes": "Vincent explicitly requested repository creation and an Issue on 2026-10-22 (https://github.com/hisenzi/greenpeace, issue #1), naming this existing empty local folder. Private repository bootstrap only; CMS implementation and deployment are pending."
     }
   ]
 }

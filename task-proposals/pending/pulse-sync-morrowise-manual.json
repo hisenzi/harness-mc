@@ -2,8 +2,8 @@
   "schema_version": "pulse-proposal.v0",
   "proposal_id": "pulse-sync-morrowise-manual",
   "created_at": "2026-09-30T00:49:49.820Z",
-  "last_seen_at": "2026-10-19T00:47:36.844Z",
-  "occurrences": 20,
+  "last_seen_at": "2026-10-24T01:50:40.703Z",
+  "occurrences": 25,
   "severity": "auto_fixable",
   "triage_refs": [
     "$COLLAB/harness-mc/system-workflow/registries/morrowise-approval-policy.json#allowed"

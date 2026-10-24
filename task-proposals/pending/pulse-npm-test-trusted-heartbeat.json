@@ -2,8 +2,8 @@
   "schema_version": "pulse-proposal.v0",
   "proposal_id": "pulse-npm-test-trusted-heartbeat",
   "created_at": "2026-10-01T01:08:03.803Z",
-  "last_seen_at": "2026-10-19T00:47:36.844Z",
-  "occurrences": 19,
+  "last_seen_at": "2026-10-24T01:50:40.703Z",
+  "occurrences": 24,
   "severity": "red",
   "triage_refs": [
     "$COLLAB/notyet-harness/000_Agent/docs/morrowise/harness/judgment-externalization-matrix.md#S4"

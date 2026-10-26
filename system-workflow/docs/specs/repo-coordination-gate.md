@@ -1,6 +1,8 @@
 # Repo Coordination Gate
 
-> 工作本 v1 預備 opt-in 路徑：`$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-workbook-flow.md`。目前預設不變；具名啟用後，該來源的開工、驗收、commit 與延後登錄依此契約；原 canonical／remote 完成條件保留。
+> 2026-10-26 起 milestones 凍結（hisenzi/notyet-harness#33）：一般工作的 closeout 不寫 task event、不 apply、不建立 C2；完成證據回原 GitHub Issue，見〈Ordinary closeout〉。下方 C1/C2 task closeout 只保留為 JV-37 歷史與既有 verifier 的參照。
+>
+> 工作本 v1 預備 opt-in 路徑：`$COLLAB/harness-mc/system-workflow/docs/specs/morrowise-workbook-flow.md`。目前預設不變；具名啟用後，該來源的開工、驗收、commit 與延後登錄依此契約；中央 task 回寫同樣已停用。
 
 > Task: `multi-machine-repo-coordination-gate` (`JV-37`)
 > Contract: `MW-GIT-AUTH-01`
@@ -23,7 +25,7 @@ The user-facing result has only two states:
 - `$COLLAB/notyet-harness/000_Agent/CORE.md` is the mandatory startup pointer.
 - `$COLLAB/AGENTS.md` and `$COLLAB/CLAUDE.md` route supported Agent runtimes to CORE.
 - This document is the human-readable coordination contract.
-- `$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate` owns task state and acceptance.
+- `$COLLAB/harness-mc/milestones/morrowise/tasks.json#multi-machine-repo-coordination-gate` holds the frozen JV-37 task state and acceptance (read-only since 2026-10-26).
 - `$COLLAB/harness-mc/scripts/repo-coordination-runtime.mjs` is the executable Repo Ready／continuation driver.
 - `$COLLAB/notyet-harness/000_Agent/skills/multi-machine-repo-coordination/SKILL.md` is the thin Agent entrypoint.
 - Local JV37-E2E-01..05 passing is not full acceptance. JV-37 stays incomplete until the source-bound JV37-E2E-06 real multi-session pilot passes.
@@ -195,8 +197,21 @@ or a remote race is never relaxed.
 For a task whose agreed done condition is local work it may be reported as locally
 verified and queued for batch push. It is never `remote_synced`, `fully synced`,
 or a substitute for the Remote Closeout conditions below. Work that claims remote
-completion is not complete at `committed_local`, on an approved isolation branch,
-or with a pending governance event.
+completion is not complete at `committed_local` or on an approved isolation branch.
+
+### Ordinary closeout (since 2026-10-26)
+
+`$COLLAB/harness-mc/milestones/` is frozen. For every repo, including
+`harness-mc`, ordinary closeout is:
+
+```text
+C1 commit -> 正常 push -> fetch and verify origin/main contains C1, parity 0/0 -> required CI/deploy terminal -> evidence to the original Issue -> read-only residual check
+```
+
+No task event, canonical apply, MC dashboard refresh or C2 closeout commit is
+part of it. Posting the evidence comment follows the session's authorization
+and `manage-github-issue`; without it, hand the drafted comment to Vincent. The
+Issue is closed only after Vincent confirms.
 
 ### Nightly batch delivery
 
@@ -209,11 +224,16 @@ or scope absorption, and does not prevent another independently authorized,
 ready repository from a normal `git push origin main`.
 
 After each successful push, fetch and prove that `origin/main` contains the
-audited chain and parity is `0/0`. Run C2 only when the original task's canonical
-closeout contract requires canonical/task-state mutations; ordinary product or
-documentation delivery does not invent a C2 merely because it is in the batch.
+audited chain and parity is `0/0`. Do not run C2: milestones are frozen.
 
-### Air Traffic Controller Full-delivery Continuation
+### Retired: C1/C2 task closeout (frozen JV-37 history)
+
+Not used for ordinary work since 2026-10-26. It stays only so the frozen JV-37
+task and the existing verifiers keep a readable reference; the verifier
+assertions on this text are removed together with step 3 of
+hisenzi/notyet-harness#33.
+
+#### Air Traffic Controller Full-delivery Continuation
 
 When Vincent says 「確認完整交付」 for the displayed exact C1/C2 plan, the
 Air Traffic Controller carries one finite authorization（一次授權）through
@@ -292,9 +312,12 @@ JV-37 A03 remains the only repo scope/classification contract.
 - No worktree/branch workaround for dirty ownership or concurrency.
 - No heartbeat commit or branch as a second state system.
 - No global blocking caused by an unrelated repo.
-- No completion while work is only local, only on a branch, deploy-pending, or event-pending.
+- No remote-completion claim while work is only local, only on a branch, or deploy-pending.
 
 ## Current Enforcement
+
+Since 2026-10-26 ordinary work does not use the task-event reducer or remote
+claims below; this section describes the frozen JV-37 runtime only.
 
 The JV-37 runtime uses a hidden remote coordination ref and normal Git push as
 the compare-and-swap claim boundary. The durable

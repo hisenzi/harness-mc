@@ -399,7 +399,7 @@ async function verifyRemoteTerminalCloseout() {
   assert.equal(inspectC2CloseoutTree({ repoPath: repo, prepared, c1Sha, c2Sha: revParse(repo, "HEAD") }).reason, "c2_release_event_missing");
   applyPreparedReleaseEvent(repo, claim, prepared);
   fs.writeFileSync(path.join(repo, "c2.txt"), "C2\n");
-  git(repo, ["add", "c2.txt", "milestones/morrowise/state.json", "task-events/applied", "sync-events/synced"]);
+  git(repo, ["add", "c2.txt", "milestones/morrowise/tasks.json", "milestones/morrowise/state.json", "task-events/applied", "sync-events/synced"]);
   git(repo, ["commit", "-m", "test: C2"]);
   const c2Sha = revParse(repo, "HEAD");
   assert.equal(finalizeRemoteCloseout({ repoPath: repo, prepared: { ...prepared, sha: c1Sha }, c1Sha, c2Sha }).reason, "release_proof_invalid");
@@ -906,12 +906,22 @@ function applyPreparedReleaseEvent(repo, claim, prepared) {
 }
 
 function applyCanonicalCompletionEvent(repo, claim, canonical) {
-  writeOverlay(repo, claim, "remote_synced", "todo");
+  markDefinitionCompleted(repo, "jv37");
+  writeOverlay(repo, claim, "remote_synced", "completed");
   const event = coordinationEvent("task.completed", claim, canonical, { commit: claim.base_sha });
   event.session_id = canonical.record.transition_history.at(-1).performed_by_session_id;
   writeTaskEvent({ root: repo, ...event });
   const report = applyTaskEvents({ root: repo, runGenerateData: false });
   assert.deepEqual(report.applied.map((item) => item.type), ["task.completed"]);
+}
+
+// Since 5692b97 a canonical-lifecycle task.completed event only acknowledges a result the
+// reviewed intake already wrote (definition and state status), so the fixture records it first.
+function markDefinitionCompleted(repo, taskId) {
+  const tasksPath = path.join(repo, "milestones", "morrowise", "tasks.json");
+  const definitions = JSON.parse(fs.readFileSync(tasksPath, "utf8"));
+  definitions.tasks = definitions.tasks.map((task) => (task.id === taskId ? { ...task, status: "completed" } : task));
+  writeJson(tasksPath, definitions);
 }
 
 function resolveFixtureSyncEvents(repo, sessionId) {

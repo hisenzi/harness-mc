@@ -199,9 +199,15 @@ function verifySourceBoundFixtureSeam({ jv37, p3, fingerprint }) {
     evidence: authorization,
   });
   assert.equal(canonical.decision, "READY", canonical.reason);
+  // Since 5692b97 a canonical-lifecycle task.completed event only acknowledges a result the
+  // reviewed intake already wrote (definition and state status), so the fixture records it first.
   writeJson(path.join(owner, "milestones", "morrowise", "state.json"), {
-    tasks: { [jv37.id]: { status: "todo", coordination: { active_claim: { ...claim, state: "remote_synced" } } } },
+    tasks: { [jv37.id]: { status: "completed", coordination: { active_claim: { ...claim, state: "remote_synced" } } } },
   });
+  const ownerTasksPath = path.join(owner, "milestones", "morrowise", "tasks.json");
+  const ownerTasks = JSON.parse(fs.readFileSync(ownerTasksPath, "utf8"));
+  ownerTasks.tasks = ownerTasks.tasks.map((task) => (task.id === jv37.id ? { ...task, status: "completed" } : task));
+  writeJson(ownerTasksPath, ownerTasks);
   const completedEvent = {
     type: "task.completed",
     repo: "harness-mc",

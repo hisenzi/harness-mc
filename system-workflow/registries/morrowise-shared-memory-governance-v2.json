@@ -660,6 +660,20 @@
       "writing-plans",
       "writing-skills",
       "xiao-wei-mood"
+    ],
+    "retired": [
+      {
+        "name": "hisenzi-skill-builder",
+        "superseded_by": "build-skill",
+        "retired_at": "2026-09-28",
+        "evidence_ref": "hisenzi/notyet-harness@e1d71e95a784959ac082945acfc2aa6a743ae0aa (notyet-harness#16)"
+      },
+      {
+        "name": "writing-skills",
+        "superseded_by": "build-skill",
+        "retired_at": "2026-09-28",
+        "evidence_ref": "hisenzi/notyet-harness@e1d71e95a784959ac082945acfc2aa6a743ae0aa (notyet-harness#16)"
+      }
     ]
   },
   "skill_candidates": [
@@ -802,7 +816,12 @@
         "outcome": "candidate_flow",
         "expected_markers": ["Shared memory","Vincent 明確核准"],
         "forbidden_markers": ["CC **唯讀**"],
-        "verified_at": "2026-08-12"
+        "verified_at": "2026-08-12",
+        "removed": {
+          "by": "hisenzi/notyet-harness@e1d71e95a784959ac082945acfc2aa6a743ae0aa (notyet-harness#16)",
+          "rule_moved_to": "$COLLAB/notyet-harness/000_Agent/skills/build-skill/SKILL.md",
+          "noted_at": "2026-10-26"
+        }
       }
     },
     {
@@ -1294,7 +1313,8 @@
       "path": "$COLLAB/notyet-harness/000_Agent/memory/MEMORY.md",
       "lines": 46,
       "bytes": 3453,
-      "sha256": "065abf8de83676467fdeae350ea324f7d555fbdff44afc28d844d6d0f8e1cf36"
+      "sha256": "065abf8de83676467fdeae350ea324f7d555fbdff44afc28d844d6d0f8e1cf36",
+      "git_ref": "2f338c71c96fd4a455bc24e14e5abc9057ba9815"
     },
     "historical_snapshot": {
       "path": "$COLLAB/notyet-harness/000_Agent/memory/archive/MEMORY-pre-jv49-2026-08-12.md",

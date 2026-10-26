@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
@@ -204,13 +205,40 @@ function verifySkillInventory(value) {
     .sort();
   const currentNames = new Set(names);
   assert.equal(value.skills_snapshot.count, value.skills_snapshot.names.length);
-  for (const baselineName of value.skills_snapshot.names) {
-    assert.ok(currentNames.has(baselineName), `R1 baseline skill disappeared: ${baselineName}`);
+  const retired = retiredSkills(value);
+  assertBaselineSkills(value.skills_snapshot.names, currentNames, retired);
+  // In memory only: dropping a baseline skill without a retirement record must fail.
+  const unrecorded = value.skills_snapshot.names.find((name) => currentNames.has(name) && !retired.has(name));
+  if (unrecorded) {
+    const withoutOne = new Set(currentNames);
+    withoutOne.delete(unrecorded);
+    assert.throws(
+      () => assertBaselineSkills(value.skills_snapshot.names, withoutOne, retired),
+      /R1 baseline skill disappeared/,
+      "an unrecorded baseline skill removal must be rejected",
+    );
   }
   const maxmodel = value.skill_candidates.find((item) => item.id === "maxmodel-case-page");
   assert.ok(maxmodel, "maxmodel-case-page must be classified explicitly");
   assert.equal(maxmodel.classification, "retain");
   assert.equal(maxmodel.owns_domain_rule, "Max One source-copy conditional branch");
+}
+
+function retiredSkills(value) {
+  return new Map((value.skills_snapshot.retired || []).map((item) => [item.name, item]));
+}
+
+function assertBaselineSkills(baselineNames, currentNames, retired) {
+  for (const baselineName of baselineNames) {
+    if (currentNames.has(baselineName)) continue;
+    const record = retired.get(baselineName);
+    assert.ok(record, `R1 baseline skill disappeared: ${baselineName}`);
+    assert.ok(
+      record.superseded_by && currentNames.has(record.superseded_by),
+      `retired skill ${baselineName} must name an existing successor`,
+    );
+    assert.ok(record.evidence_ref, `retired skill ${baselineName} needs evidence`);
+  }
 }
 
 function verifyIngressInventory(value) {
@@ -336,17 +364,16 @@ function verifyR1Completion(value) {
     "write boundary must be at R1 or a later completed JV-49 phase",
   );
 
+  // after_fingerprint is the R1 receipt: check it against its Git snapshot, and the live L1
+  // only against content rules, so later Vincent-approved L1 edits do not fail R1.
+  verifyR1Snapshot(value.after_fingerprint.shared_memory);
   const memoryText = fs.readFileSync(sharedMemoryPath, "utf8");
-  assert.equal(countLines(memoryText), value.after_fingerprint.shared_memory.lines);
-  assert.equal(Buffer.byteLength(memoryText), value.after_fingerprint.shared_memory.bytes);
-  assert.equal(sha256(memoryText), value.after_fingerprint.shared_memory.sha256);
-  assert.ok(countLines(memoryText) <= value.l1_content_budget.target_max_lines, "shared L1 exceeds target budget");
-  assert.match(memoryText, /maxmodel-case-page\/SKILL\.md/);
-  assert.match(memoryText, /milestones\/\*\/tasks\.json/);
-  assert.match(memoryText, /memory\/daily\/YYYY-MM-DD\.md/);
-  assert.match(memoryText, /Vincent.*核准|核准.*Vincent/);
-  for (const staleDetail of ["22/28 done", "23/31 done", "Token 401", "目前 2.22", "8/11 done"]) {
-    assert.ok(!memoryText.includes(staleDetail), `volatile L1 detail remains: ${staleDetail}`);
+  assertLiveL1(memoryText, value.l1_content_budget);
+  for (const broken of [
+    memoryText.replaceAll("milestones/*/tasks.json", "milestones/tasks"),
+    memoryText + "\n".repeat(value.l1_content_budget.target_max_lines),
+  ]) {
+    assert.throws(() => assertLiveL1(broken, value.l1_content_budget), "a broken live L1 must be rejected");
   }
 
   const architectureText = fs.readFileSync(architecturePath, "utf8");
@@ -374,6 +401,27 @@ function verifyR1Completion(value) {
       assert.ok(fs.existsSync(dailyPath), `daily comparison target missing: ${item.daily_ref}`);
       assert.equal(sha256(fs.readFileSync(dailyPath)), item.daily_sha256, `daily log changed: ${item.daily_ref}`);
     }
+  }
+}
+
+function verifyR1Snapshot(fingerprint) {
+  assert.match(fingerprint.git_ref || "", /^[0-9a-f]{40}$/, "R1 after_fingerprint needs the notyet-harness commit holding the snapshot");
+  const memoryRef = path.relative(notyetRoot, sharedMemoryPath).split(path.sep).join("/");
+  const result = spawnSync("git", ["-C", notyetRoot, "show", `${fingerprint.git_ref}:${memoryRef}`]);
+  assert.equal(result.status, 0, `R1 snapshot is not readable from Git: ${fingerprint.git_ref}`);
+  assert.equal(countLines(result.stdout.toString("utf8")), fingerprint.lines);
+  assert.equal(result.stdout.length, fingerprint.bytes);
+  assert.equal(sha256(result.stdout), fingerprint.sha256, "R1 receipt does not match its Git snapshot");
+}
+
+function assertLiveL1(memoryText, budget) {
+  assert.ok(countLines(memoryText) <= budget.target_max_lines, "shared L1 exceeds target budget");
+  assert.match(memoryText, /maxmodel-case-page\/SKILL\.md/);
+  assert.match(memoryText, /milestones\/\*\/tasks\.json/);
+  assert.match(memoryText, /memory\/daily\/YYYY-MM-DD\.md/);
+  assert.match(memoryText, /Vincent.*核准|核准.*Vincent/);
+  for (const staleDetail of ["22/28 done", "23/31 done", "Token 401", "目前 2.22", "8/11 done"]) {
+    assert.ok(!memoryText.includes(staleDetail), `volatile L1 detail remains: ${staleDetail}`);
   }
 }
 
@@ -410,6 +458,7 @@ function verifyR2Completion(value) {
     assert.ok(item.source_ref && item.recovery_path && item.verified_at);
   }
 
+  const retired = retiredSkills(value);
   for (const ingress of value.memory_ingress_inventory) {
     const resolution = ingress.resolution;
     assert.equal(resolution?.status, "verified", `memory ingress is unresolved: ${ingress.source_ref}`);
@@ -417,6 +466,27 @@ function verifyR2Completion(value) {
       ["candidate_flow", "daily_only_no_promotion", "removed_automatic_memory_write"].includes(resolution.outcome),
       `memory ingress outcome is invalid: ${ingress.source_ref}`,
     );
+    // A retired skill's ingress is carried by its successor, which keeps its own ingress entry.
+    const retiredSkill = [...retired.keys()].find((name) =>
+      ingress.source_ref.startsWith(`$COLLAB/notyet-harness/000_Agent/skills/${name}/`));
+    if (retiredSkill) {
+      const successor = `$COLLAB/notyet-harness/000_Agent/skills/${retired.get(retiredSkill).superseded_by}/SKILL.md`;
+      assert.ok(
+        value.memory_ingress_inventory.some((item) => item.source_ref === successor),
+        `retired skill ${retiredSkill} has no successor ingress entry`,
+      );
+      continue;
+    }
+    // A removed reference file is accepted only when its rule moved to another checked ingress.
+    if (resolution.removed) {
+      assert.equal(fs.existsSync(resolvePortable(ingress.source_ref)), false, `removed memory ingress still exists: ${ingress.source_ref}`);
+      assert.ok(resolution.removed.by, `removed memory ingress needs evidence: ${ingress.source_ref}`);
+      assert.ok(
+        value.memory_ingress_inventory.some((item) => item.source_ref === resolution.removed.rule_moved_to && !item.resolution?.removed),
+        `removed memory ingress has no successor entry: ${ingress.source_ref}`,
+      );
+      continue;
+    }
     const sourcePath = resolvePortable(ingress.source_ref);
     assert.ok(fs.existsSync(sourcePath), `memory ingress source missing: ${ingress.source_ref}`);
     const sourceText = fs.readFileSync(sourcePath, "utf8");

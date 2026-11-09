@@ -995,12 +995,12 @@ class CleanupAcceptance(unittest.TestCase):
         self.assertTrue(duplicate["duplicate"])
         self.assertEqual(duplicate["report_count"], 1)
         self.assertFalse(duplicate["notify"])
-        late = MODULE.scheduled_report(self.root, self.state_dir, snapshot=self.snapshot, now=NOW + 28 * DAY)
+        late = MODULE.scheduled_report(self.root, self.state_dir, snapshot={**self.snapshot, "captured_at": NOW + 28 * DAY}, now=NOW + 28 * DAY)
         self.assertFalse(late["duplicate"])
         self.assertNotEqual(late["slot"], first["slot"])
         self.assertEqual(late["missed_slots"], 3)
         self.assertEqual(late["report_count"], 2)
-        third = MODULE.scheduled_report(self.root, self.state_dir, snapshot=self.snapshot, now=NOW + 35 * DAY)
+        third = MODULE.scheduled_report(self.root, self.state_dir, snapshot={**self.snapshot, "captured_at": NOW + 35 * DAY}, now=NOW + 35 * DAY)
         self.assertEqual(third["report_count"], 3)
         self.assertEqual(tree_image(self.ws), before)
         for result in (first, late, third):
@@ -1008,6 +1008,124 @@ class CleanupAcceptance(unittest.TestCase):
                 self.assertNotIn(entry["state"], ("approved", "quarantined", "restored"))
         self.assertTrue(self.path.exists())
         self.assertTrue(self.result.exists())
+
+
+    def report(self, now=NOW, **kwargs):
+        return MODULE.scheduled_report(self.root, self.state_dir,
+            snapshot={**self.snapshot, "captured_at": now}, now=now, **kwargs)
+
+    def legacy_report(self):
+        prior = self.report()
+        prior.pop("report_root_binding", None)
+        prior["root_identity"]["dev"] += 3
+        MODULE._write_json(self.state_dir / "report-index.json", prior)
+        binding = self.state_dir / "report-root-binding.json"
+        if binding.exists():
+            binding.unlink()  # disposable fixture only
+        return prior
+
+    def test_12_legacy_mismatch_needs_exact_explicit_report_authority(self):
+        prior = self.legacy_report()
+        before = tree_image(self.root)
+        for digest_value, authority in ((None, None), ("0" * 64, "synthetic-human"), (MODULE._digest(prior), None)):
+            with self.assertRaises(MODULE.CleanupError):
+                self.report(NOW + 7 * DAY, accept_legacy_index=digest_value, authority_ref=authority)
+        self.assertEqual(before, tree_image(self.root))
+        accepted = self.report(NOW + 7 * DAY, accept_legacy_index=MODULE._digest(prior), authority_ref="synthetic-human")
+        self.assertEqual(accepted["report_count"], 2)
+        receipt = MODULE._read_json(self.state_dir / "report-root-binding.json")
+        self.assertEqual(receipt["legacy_index_digest"], MODULE._digest(prior))
+        self.assertEqual(receipt["authority_ref"], "synthetic-human")
+        self.assertEqual(receipt["scope"], "report_only")
+        self.assertEqual(stat.S_IMODE((self.state_dir / "report-root-binding.json").stat().st_mode), 0o600)
+
+    def test_12_reboot_device_number_change_uses_stable_binding(self):
+        first = self.report()
+        prior = copy.deepcopy(first)
+        prior["root_identity"]["dev"] += 9
+        MODULE._write_json(self.state_dir / "report-index.json", prior)
+        before = tree_image(self.ws)
+        result = self.report(NOW + 7 * DAY)
+        self.assertEqual(result["report_root_binding"], first["report_root_binding"])
+        self.assertEqual(result["root_identity"], self.root_identity)
+        self.assertEqual(tree_image(self.ws), before)
+
+    def test_12_changed_volume_inode_birth_or_state_fails_even_with_approval(self):
+        first = self.report()
+        before = tree_image(self.root)
+        for key in ("volume", "root_inode", "root_birth_ns", "state_inode", "state_birth_ns"):
+            changed = copy.deepcopy(first["report_root_binding"])
+            changed[key] = "replaced"
+            with mock.patch.object(MODULE, "_report_root_binding", return_value=changed):
+                with self.assertRaisesRegex(MODULE.CleanupError, "report_root_binding_changed"):
+                    self.report(NOW + 7 * DAY, accept_legacy_index=MODULE._digest(first), authority_ref="synthetic-human")
+        self.assertEqual(before, tree_image(self.root))
+
+    def test_12_binding_symlink_is_rejected_without_reading_target(self):
+        self.report()
+        binding = self.state_dir / "report-root-binding.json"
+        binding.unlink()
+        outside = self.base / "outside.json"
+        outside.write_text("{}")
+        binding.symlink_to(outside)
+        before = tree_image(self.root)
+        with self.assertRaises((MODULE.CleanupError, OSError)):
+            self.report(NOW + 7 * DAY)
+        self.assertEqual(before, tree_image(self.root))
+        self.assertEqual(outside.read_text(), "{}")
+
+    def test_12_stale_missing_future_or_complete_snapshot_fails_without_state_write(self):
+        for snap in (None, {**self.snapshot, "captured_at": NOW - 301},
+                     {**self.snapshot, "captured_at": NOW + 1},
+                     {**self.snapshot, "coverage": "complete"}):
+            with self.assertRaises(MODULE.CleanupError):
+                MODULE.scheduled_report(self.root, self.state_dir, snapshot=snap, now=NOW)
+        self.assertFalse(self.state_dir.exists())
+
+    def test_12_unlocatable_thread_remains_unknown_in_partial_report(self):
+        self.snapshot["threads"].append({"cwd": None, "active": None, "pinned": True, "last_activity_at": None})
+        report = self.report()
+        self.assertEqual(report["unlocatable_threads"], 1)
+        self.assertEqual(report["scan"]["snapshot_coverage"], "partial")
+        self.assertEqual(report["scan"]["summary"]["eligible_files"], 0)
+
+    def test_12_large_report_remains_readable_without_raising_mutation_input_limit(self):
+        self.report()
+        index = self.state_dir / "report-index.json"
+        # Valid JSON with trailing whitespace models a report crossing 100 MiB.
+        with index.open("ab") as stream:
+            block = b" " * (1024 * 1024)
+            for _ in range(101):
+                stream.write(block)
+        with self.assertRaisesRegex(MODULE.CleanupError, "unsafe_json_file"):
+            MODULE._read_json(index)  # ordinary evidence limit remains strict
+        before = tree_image(self.ws)
+        duplicate = self.report(NOW + 1)
+        self.assertTrue(duplicate["duplicate"])
+        self.assertEqual(duplicate["report_count"], 1)
+        self.assertEqual(tree_image(self.ws), before)
+
+    def test_12_native_volume_provider_failure_preserves_report(self):
+        self.report()
+        before = tree_image(self.root)
+        with mock.patch.object(MODULE, "_report_root_binding", side_effect=MODULE.CleanupError("volume_uuid_unavailable")):
+            with self.assertRaisesRegex(MODULE.CleanupError, "volume_uuid_unavailable"):
+                self.report(NOW + 7 * DAY)
+        self.assertEqual(before, tree_image(self.root))
+
+    def test_12_review_items_are_metadata_only_not_cleanup_authority(self):
+        before = tree_image(self.ws)
+        first = self.report()
+        review = first["review"]
+        self.assertEqual(review["file_count"], 1)
+        self.assertEqual(review["items"][0]["path"], self.rel)
+        self.assertEqual(review["items"][0]["status"], "needs_evidence_and_user_decision")
+        self.assertEqual(first["scan"]["summary"]["eligible_files"], 0)
+        self.assertTrue(first["notify"])
+        second = self.report(NOW + 7 * DAY)
+        self.assertFalse(second["notify"])
+        self.assertEqual(tree_image(self.ws), before)
+        self.assertNotIn("approval", review)
 
     def test_11_old_deliverable_link_survives_other_file_round_trip(self):
         old_link = str(self.result.resolve())

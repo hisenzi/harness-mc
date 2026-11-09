@@ -25,6 +25,7 @@ import uuid
 
 DAY = 86400
 STATE_NAME = '.workspace-cleanup'
+REPORT_MAX_BYTES = 512 * 1024 * 1024
 POLICY = {
     'version': 1, 'candidate_days': 30, 'empty_workspace_report_days': 90,
     'quarantine_minimum_days': 30, 'approval_max_seconds': DAY,
@@ -497,7 +498,7 @@ def _write_json(path, value):
         os.close(parent_fd)
 
 
-def _read_json(path):
+def _read_json(path, *, max_bytes=100 * 1024 * 1024):
     path = Path(path)
     parent_fd = _open_directory(path.parent)
     try:
@@ -506,7 +507,7 @@ def _read_json(path):
         os.close(parent_fd)
     with os.fdopen(fd, 'r', encoding='utf-8') as stream:
         st = os.fstat(stream.fileno())
-        if not stat.S_ISREG(st.st_mode) or st.st_nlink != 1 or st.st_size > 100 * 1024 * 1024:
+        if not stat.S_ISREG(st.st_mode) or st.st_nlink != 1 or st.st_size > max_bytes:
             raise CleanupError('unsafe_json_file')
         return json.load(stream)
 
@@ -724,15 +725,115 @@ def _slot(now):
     return sunday.timestamp()
 
 
-def scheduled_report(root, state_dir, snapshot=None, now=None):
+def _report_root_binding(root, state):
+    """Persistent report identity; transient device ids still guard each run/mutation."""
+    root_fd = _open_directory(root)
+    state_fd = _open_directory(state)
+    try:
+        rst, sst = os.fstat(root_fd), os.fstat(state_fd)
+        if rst.st_dev != sst.st_dev or sst.st_uid != os.getuid() or stat.S_IMODE(sst.st_mode) != 0o700:
+            raise CleanupError('state_directory_not_private_or_same_device')
+        if platform.system() == 'Darwin':
+            # Apple sys/attr.h: ATTR_VOL_INFO | ATTR_VOL_UUID. Descriptor lookup
+            # avoids DiskArbitration and never follows a root-path symlink.
+            class AttrList(ctypes.Structure):
+                _fields_ = [('count', ctypes.c_ushort), ('reserved', ctypes.c_ushort)] + [
+                    (key, ctypes.c_uint32) for key in ('common', 'volume', 'dir', 'file', 'fork')]
+            attrs = AttrList(5, 0, 0, 0x80040000, 0, 0, 0)
+            buffer = ctypes.create_string_buffer(20)
+            library = ctypes.CDLL(None, use_errno=True)
+            function = library.fgetattrlist
+            function.argtypes = [ctypes.c_int, ctypes.POINTER(AttrList), ctypes.c_void_p,
+                                 ctypes.c_size_t, ctypes.c_ulong]
+            function.restype = ctypes.c_int
+            if function(root_fd, ctypes.byref(attrs), buffer, len(buffer), 0) != 0:
+                raise CleanupError('volume_uuid_unavailable')
+            if int.from_bytes(buffer.raw[:4], sys.byteorder) != 20 or not any(buffer.raw[4:20]):
+                raise CleanupError('volume_uuid_invalid')
+            volume = {'kind': 'darwin_volume_uuid', 'value': str(uuid.UUID(bytes=buffer.raw[4:20]))}
+            births = [getattr(st, 'st_birthtime', None) for st in (rst, sst)]
+            if any(value is None or not math.isfinite(value) or value <= 0 for value in births):
+                raise CleanupError('directory_birthtime_unavailable')
+            birth_ns = [round(value * 1e9) for value in births]
+        else:
+            # No portable stable volume provider: retain fail-closed dev binding.
+            volume, birth_ns = {'kind': 'strict_device', 'value': rst.st_dev}, [None, None]
+        return {'schema_version': 1, 'root_path': str(root), 'volume': volume,
+                'root_inode': rst.st_ino, 'root_birth_ns': birth_ns[0],
+                'state_inode': sst.st_ino, 'state_birth_ns': birth_ns[1]}
+    finally:
+        os.close(state_fd)
+        os.close(root_fd)
+
+
+def _review_items(report):
+    items, groups = [], {}
+    for row in report['files']:
+        if row['state'] != 'unknown' or not row['time_filter_30d'] or not row['workspace']:
+            continue
+        item = {key: row[key] for key in ('path', 'workspace', 'category', 'size')}
+        item.update(status='needs_evidence_and_user_decision',
+                    mtime_ns=row['fingerprint']['mtime_ns'])
+        items.append(item)
+        key = row['workspace'] + '/' + ('work' if row['category'] == 'work' else '[cache]')
+        group = groups.setdefault(key, {'path_group': key, 'files': 0, 'logical_bytes': 0})
+        group['files'] += 1
+        group['logical_bytes'] += row['size']
+    return {'status': 'review_only', 'file_count': len(items),
+            'logical_bytes': sum(item['size'] for item in items),
+            'missing_evidence': ['complete_references', 'purpose_and_rebuild_or_retained_copy',
+                                 'all_task_and_process_activity', 'explicit_item_approval'],
+            'items': items, 'groups': sorted(groups.values(), key=lambda group: (-group['logical_bytes'], group['path_group'])),
+            'signature': _digest(items), 'cleanup_authorized': False}
+
+
+def scheduled_report(root, state_dir, snapshot=None, now=None, *, accept_legacy_index=None, authority_ref=None):
     now = _now(now)
+    snapshot = _snapshot(snapshot, now)
+    captured = snapshot.get('captured_at')
+    if captured is None or not 0 <= now - _now(captured) <= POLICY['fresh_evidence_seconds']:
+        raise CleanupError('task_snapshot_stale_or_missing')
+    if snapshot.get('coverage') != 'partial':
+        raise CleanupError('report_snapshot_must_be_partial')
+    for thread in snapshot['threads']:
+        if not isinstance(thread, dict) or (thread.get('cwd') is not None and not isinstance(thread['cwd'], str)):
+            raise CleanupError('invalid_thread_record')
+        if any(thread.get(key) is not None and type(thread[key]) is not bool for key in ('active', 'pinned')):
+            raise CleanupError('invalid_thread_status')
     root, identity = _root(root)
     state = _state(root, state_dir)
     with _lock(state) as state_fd:
+        binding = _report_root_binding(root, state)
+        binding_path = state / 'report-root-binding.json'
+        receipt = _read_json(binding_path) if os.path.lexists(binding_path) else None
         index_path = state / 'report-index.json'
-        previous = _read_json(index_path) if index_path.exists() else None
-        if previous and previous.get('root_identity') != identity:
+        previous = _read_json(index_path, max_bytes=REPORT_MAX_BYTES) if os.path.lexists(index_path) else None
+        if receipt and (receipt.get('binding') != binding or receipt.get('scope') != 'report_only'):
             raise CleanupError('report_root_binding_changed')
+        if previous and previous.get('report_root_binding'):
+            if not receipt or previous['report_root_binding'] != binding:
+                raise CleanupError('report_root_binding_changed')
+        elif previous:
+            prior_identity = previous.get('root_identity', {})
+            legacy_digest = _digest(previous)
+            if prior_identity.get('ino') != identity['ino']:
+                raise CleanupError('report_root_binding_changed')
+            # A legacy index has no durable volume evidence. Only an exact,
+            # explicit operator acknowledgement may establish the first binding.
+            if receipt:
+                if receipt.get('legacy_index_digest') != legacy_digest:
+                    raise CleanupError('legacy_report_digest_changed')
+            elif accept_legacy_index != legacy_digest or not isinstance(authority_ref, str) or not authority_ref.strip():
+                raise CleanupError('legacy_report_binding_requires_explicit_acceptance')
+            if binding['volume']['kind'] == 'strict_device' and prior_identity != identity:
+                raise CleanupError('stable_volume_provider_unavailable')
+        if not receipt:
+            receipt = {'schema_version': 1, 'scope': 'report_only', 'binding': binding,
+                       'accepted_at': now, 'observed_root_identity': identity,
+                       'legacy_root_identity': previous.get('root_identity') if previous else None,
+                       'legacy_index_digest': _digest(previous) if previous else None,
+                       'authority_ref': authority_ref if previous else 'initial_readonly_report',
+                       'policy_hash': POLICY_HASH}
         slot = _slot(now)
         if previous and slot <= previous['slot']:
             return {**previous, 'duplicate': True, 'notify': False}
@@ -760,13 +861,25 @@ def scheduled_report(root, state_dir, snapshot=None, now=None):
         growth = report['summary']['logical_bytes'] - previous_bytes
         signature = _digest({'errors': report['errors'], 'eligible': report['summary']['eligible_files']})
         missed = max(0, int((slot - previous['slot']) // (7 * DAY)) - 1) if previous else 0
-        result = {'schema_version': 1, 'root_identity': identity, 'slot': slot,
+        review = _review_items(report)
+        new_review = bool(review['items']) and (not previous or previous.get('review', {}).get('signature') != review['signature'])
+        result = {'schema_version': 2, 'root_identity': identity, 'report_root_binding': binding, 'slot': slot,
                   'generated_at': now, 'duplicate': False, 'missed_slots': missed,
                   'report_count': (previous['report_count'] if previous else 0) + 1,
                   'signature': signature, 'growth_bytes': growth,
-                  'notify': (bool(report['errors']) and (not previous or previous['signature'] != signature)) or growth >= POLICY['growth_alert_bytes'],
-                  'mode': 'readonly', 'storage': storage, 'scan': report}
+                  'notify': new_review or (bool(report['errors']) and (not previous or previous['signature'] != signature)) or growth >= POLICY['growth_alert_bytes'],
+                  'mode': 'readonly', 'storage': storage, 'scan': report, 'review': review,
+                  'growth_basis': 'since_previous_report', 'weekly_growth_known': bool(previous and missed == 0),
+                  'snapshot_captured_at': snapshot['captured_at'],
+                  'unlocatable_threads': sum(not thread.get('cwd') for thread in snapshot['threads'])}
+        if len(_json_bytes(result)) + 1 > REPORT_MAX_BYTES:
+            raise CleanupError('report_size_limit_exceeded')
         report_path = state / f'report-{int(slot)}.json'
+        _assert_root(root, identity)
+        if _report_root_binding(root, state) != binding or _identity(os.fstat(state_fd)) != _identity(state.lstat()):
+            raise CleanupError('report_root_binding_changed')
+        if not os.path.lexists(binding_path):
+            _write_json(binding_path, receipt)
         _write_json(report_path, result)
         _write_json(index_path, result)
         return result
@@ -783,9 +896,13 @@ def main(argv=None):
     parser.add_argument('--approval', type=Path)
     parser.add_argument('--batch-id')
     parser.add_argument('--output', type=Path, help='scan/prepare JSON output only; use an explicitly approved path outside scanned user data')
+    parser.add_argument('--accept-legacy-index', help='explicit report-only migration: exact canonical index SHA-256')
+    parser.add_argument('--authority-ref', help='human instruction reference for legacy report binding')
     parser.add_argument('--summary', action='store_true', help='omit per-file scan rows on stdout')
     args = parser.parse_args(argv)
     try:
+        if (args.accept_legacy_index or args.authority_ref) and args.action != 'report':
+            raise CleanupError('report_binding_flags_only_for_report')
         if args.output and args.action not in ('scan', 'prepare'):
             raise CleanupError('output_flag_only_for_readonly_commands')
         if args.action == 'policy':
@@ -803,7 +920,7 @@ def main(argv=None):
             elif args.action == 'quarantine': result = quarantine(root, state, _read_json(args.manifest), _read_json(args.approval), _read_json(args.evidence), snapshot=snapshot)
             elif args.action == 'restore': result = restore(root, state, args.batch_id, _read_json(args.approval))
             elif args.action == 'recover': result = recover(root, state, args.batch_id)
-            else: result = scheduled_report(root, state, snapshot=snapshot)
+            else: result = scheduled_report(root, state, snapshot=snapshot, accept_legacy_index=args.accept_legacy_index, authority_ref=args.authority_ref)
         if args.output:
             if args.action not in ('scan', 'prepare'):
                 raise CleanupError('output_flag_only_for_readonly_commands')
@@ -813,6 +930,8 @@ def main(argv=None):
                 stream.write('\n')
         if args.summary:
             result = dict(result)
+            if 'review' in result:
+                result['review'] = {k: v for k, v in result['review'].items() if k != 'items'}
             if 'scan' in result:
                 result['scan'] = {k: v for k, v in result['scan'].items() if k not in ('files', 'workspaces')}
             else:

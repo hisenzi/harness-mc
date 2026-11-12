@@ -1,7 +1,7 @@
 {
   "registry_id": "morrowise-api-cli-mcp-capability-registry.v0",
   "task_id": "api-cli-mcp-capability-registry-v0",
-  "updated_at": "2026-09-06",
+  "updated_at": "2026-11-12",
   "status": "formal_registry",
   "purpose": "Track API / CLI / MCP capabilities as verifiable MorroWise system components with update history, boundaries, owner tasks, and next actions.",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
@@ -314,13 +314,15 @@
       "entrypoint": [
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-adapter-contract.json",
         "$COLLAB/notyet-harness/schedule/lib/notify.sh",
-        "$COLLAB/notyet-harness/schedule/.env.example"
+        "$COLLAB/notyet-harness/schedule/.env.example",
+        "$COLLAB/notyet-harness/schedule/lib/notify_once.py"
       ],
       "owner_task": "notification-adapter-contract",
       "scope": "runtime_delivery",
       "source_of_truth": [
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-adapter-contract.json",
-        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#notification-adapter-contract"
+        "$COLLAB/harness-mc/milestones/morrowise/tasks.json#notification-adapter-contract",
+        "$COLLAB/notyet-harness/schedule/codex-notifications.md"
       ],
       "auth_boundary": "All token and destination values remain in $COLLAB/notyet-harness/schedule/.env only; registry stores env names and adapter boundaries, never values.",
       "read_write_boundary": {
@@ -345,12 +347,14 @@
       "status": "ready",
       "verifier": [
         "npm run test:notification-adapter-contract",
-        "npm run test:capability-registry"
+        "npm run test:capability-registry",
+        "python3 -B \"$COLLAB/notyet-harness/schedule/test/notify_once_test.py\""
       ],
       "next_action": {
-        "type": "task",
-        "task_id": "reality-tax-daily-review-task",
-        "description": "Use the delivery contract when wiring the daily review schedule; unconfigured adapters must stay degraded or skipped, not live."
+        "type": "issue",
+        "task_id": "notification-adapter-contract",
+        "url": "https://github.com/hisenzi/notyet-harness/issues/37",
+        "description": "Verify the 2026-11-15 Codex automation 60 Search Console result delivery, then continue the remaining unified notification work in notyet-harness#37."
       },
       "history": [
         {
@@ -372,6 +376,16 @@
           "evidence_ref": "$COLLAB/harness-mc/milestones/morrowise/tasks.json#telegram-credentials and #watchtower-alert-delivery",
           "actor_or_task": "telegram-credentials",
           "next_action": "Treat Telegram as a verified local mainline only on machines with schedule/.env configured; other machines remain degraded or fallback-only until reconfigured."
+        },
+        {
+          "date": "2026-11-12",
+          "event_type": "codex_once_pilot_verified",
+          "from_state": "ready",
+          "to_state": "ready",
+          "reason": "Added an opt-in result handoff for explicitly approved Codex schedules through notify_once.py and the existing Telegram adapter. Twelve offline CLI cases passed. A live test returned provider_accepted with message ID 178; repeating the same event returned the saved receipt without another send. Automation 60 has the fixed 2026-11-15 event ID. Its natural scheduled execution is pending.",
+          "evidence_ref": "https://github.com/hisenzi/notyet-harness/issues/37; $COLLAB/notyet-harness/schedule/runs/notify-once/codex-60-telegram-test-20261112.json",
+          "actor_or_task": "notyet-harness#37",
+          "next_action": "Observe the configured one-time scheduled run. The local wrapper does not observe app shutdown or a scheduled task that never starts."
         }
       ]
     },

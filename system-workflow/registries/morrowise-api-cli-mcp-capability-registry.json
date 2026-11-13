@@ -1,7 +1,7 @@
 {
   "registry_id": "morrowise-api-cli-mcp-capability-registry.v0",
   "task_id": "api-cli-mcp-capability-registry-v0",
-  "updated_at": "2026-11-12",
+  "updated_at": "2026-11-13",
   "status": "formal_registry",
   "purpose": "Track API / CLI / MCP capabilities as verifiable MorroWise system components with update history, boundaries, owner tasks, and next actions.",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-api-cli-mcp-capability-registry.json",
@@ -315,14 +315,16 @@
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-adapter-contract.json",
         "$COLLAB/notyet-harness/schedule/lib/notify.sh",
         "$COLLAB/notyet-harness/schedule/.env.example",
-        "$COLLAB/notyet-harness/schedule/lib/notify_once.py"
+        "$COLLAB/notyet-harness/schedule/lib/notify_once.py",
+        "$COLLAB/harness-mc/scripts/system-pulse-notification.mjs"
       ],
       "owner_task": "notification-adapter-contract",
       "scope": "runtime_delivery",
       "source_of_truth": [
         "$COLLAB/harness-mc/system-workflow/registries/morrowise-notification-adapter-contract.json",
         "$COLLAB/harness-mc/milestones/morrowise/tasks.json#notification-adapter-contract",
-        "$COLLAB/notyet-harness/schedule/codex-notifications.md"
+        "$COLLAB/notyet-harness/schedule/codex-notifications.md",
+        "$COLLAB/notyet-harness/schedule/system-pulse-notifications.md"
       ],
       "auth_boundary": "All token and destination values remain in $COLLAB/notyet-harness/schedule/.env only; registry stores env names and adapter boundaries, never values.",
       "read_write_boundary": {
@@ -348,7 +350,8 @@
       "verifier": [
         "npm run test:notification-adapter-contract",
         "npm run test:capability-registry",
-        "python3 -B \"$COLLAB/notyet-harness/schedule/test/notify_once_test.py\""
+        "python3 -B \"$COLLAB/notyet-harness/schedule/test/notify_once_test.py\"",
+        "npm run test:system-pulse"
       ],
       "next_action": {
         "type": "issue",
@@ -386,6 +389,16 @@
           "evidence_ref": "https://github.com/hisenzi/notyet-harness/issues/37; $COLLAB/notyet-harness/schedule/runs/notify-once/codex-60-telegram-test-20261112.json",
           "actor_or_task": "notyet-harness#37",
           "next_action": "Observe the configured one-time scheduled run. The local wrapper does not observe app shutdown or a scheduled task that never starts."
+        },
+        {
+          "date": "2026-11-13",
+          "event_type": "system_pulse_change_only_policy",
+          "from_state": "ready",
+          "to_state": "ready",
+          "reason": "Vincent approved retaining daily health checks while notifying only new failed step IDs or measurable worsening. Persistent failures, recovery, and proposal occurrence escalation are silent. A local baseline and reserved attempt prevent unchanged failures or unknown delivery from being resent. Local implementation; natural execution remains pending.",
+          "evidence_ref": "https://github.com/hisenzi/notyet-harness/issues/39; $COLLAB/notyet-harness/schedule/system-pulse-notifications.md",
+          "actor_or_task": "notyet-harness#37 / #39",
+          "next_action": "Verify the next natural system-pulse execution; retain the separate SupaScrum and 2026-11-15 Search Console checks."
         }
       ]
     },

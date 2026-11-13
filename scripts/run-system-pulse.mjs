@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { generateTaskEventPipelineData } from "./generate-task-event-data.mjs";
 import { processPulseProposals } from "./pulse-proposal-queue.mjs";
+import { finalizePulseNotification, readPulseReport } from "./system-pulse-notification.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -56,6 +57,8 @@ if (dryRun) {
   process.exit(0);
 }
 
+// Capture the legacy seed before prebuild can refresh generated read models.
+const previousReport = readPulseReport(outPath);
 const startedAt = new Date().toISOString();
 const results = [];
 let failed = false;
@@ -97,7 +100,8 @@ const report = {
       "write generated system-pulse read model",
       "write task-event read model",
       "apply task events only when SYSTEM_PULSE_APPLY_TASK_EVENTS=1",
-      "send failure notification through schedule notification adapter",
+      "notify only new failures or worsening through schedule notification adapter",
+      "persist local notification comparison state before transport",
     ],
     forbidden: [
       "read schedule/.env directly",
@@ -124,19 +128,21 @@ report.proposals = {
   read_model: "$COLLAB/harness-mc/public/data/pulse-proposals.json",
 };
 
-if (status === "degraded") {
-  report.notification = notifyFailure(report, proposalResult);
-}
+report.notification = finalizePulseNotification({
+  report,
+  previousReport,
+  reportPath: outPath,
+  statePath: path.join(root, ".runtime", "system-pulse-notification.json"),
+  send: (decision) => notifyFailure(report, decision),
+});
 
-fs.mkdirSync(path.dirname(outPath), { recursive: true });
-fs.writeFileSync(outPath, `${JSON.stringify(report, null, 2)}\n`);
 writeLocalHeartbeat(finishedAt);
 console.log(`System pulse ${status}: ${report.summary.passed}/${report.summary.total} steps passed`);
 console.log(
   `Proposals: +${report.proposals.created} created, ${report.proposals.pending_decision} pending (oldest ${report.proposals.oldest_pending_days}d)`,
 );
 if (report.notification) {
-  console.log(`Notification: ${report.notification.status}`);
+  console.log(`Notification: ${report.notification.status} (${report.notification.reason})`);
 }
 
 process.exit(status === "healthy" ? 0 : 1);
@@ -273,19 +279,17 @@ function writeLocalHeartbeat(nowIso) {
   }
 }
 
-function notifyFailure(report, proposalResult) {
+function notifyFailure(report, decision) {
   const lines = [
     "[MorroWise system-pulse] degraded",
     `failed=${report.summary.failed}/${report.summary.total}`,
-    `next=${report.next_action.target || "none"}`,
+    `new=${decision.new_failures.join(", ") || "none"}`,
+    `worsened=${decision.worsened.join(", ") || "none"}`,
   ];
   if (report.proposals) {
     lines.push(`proposals: +${report.proposals.created} new, ${report.proposals.pending_decision} pending decision`);
   }
-  if (proposalResult?.pushMessage) {
-    lines.push(proposalResult.pushMessage);
-  }
-  lines.push("read $COLLAB/harness-mc/public/data/system-pulse.json");
+  lines.push("https://github.com/hisenzi/notyet-harness/issues/39");
   const message = lines.join("\n");
 
   if (!fs.existsSync(notifyPath)) {

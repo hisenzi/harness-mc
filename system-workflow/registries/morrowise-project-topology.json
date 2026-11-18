@@ -2,8 +2,8 @@
   "registry_id": "morrowise-project-topology.v1",
   "task_id": "project-topology-architecture-atlas",
   "status": "formal_registry",
-  "updated_at": "2026-10-22",
-  "inventory_as_of": "2026-10-18",
+  "updated_at": "2026-11-15",
+  "inventory_as_of": "2026-11-15",
   "source_of_truth": "$COLLAB/harness-mc/system-workflow/registries/morrowise-project-topology.json",
   "schema_ref": "$COLLAB/harness-mc/system-workflow/schemas/morrowise-project-topology.schema.json",
   "verifier_ref": "npm run test:project-topology",
@@ -996,6 +996,36 @@
       ],
       "last_verified_at": "2026-10-22",
       "notes": "Vincent explicitly requested repository creation and an Issue on 2026-10-22 (https://github.com/hisenzi/greenpeace, issue #1), naming this existing empty local folder. Private repository bootstrap only; CMS implementation and deployment are pending."
+    },
+    {
+      "id": "ai-members",
+      "path_label": "$COLLAB/ai-members",
+      "classification": "canonical_project",
+      "migration_state": "inventory_only",
+      "project_home_ref": "$COLLAB/ai-members",
+      "topology_profile": "git-repository",
+      "document_ref": "$COLLAB/ai-members/README.md",
+      "repo_ref": "$COLLAB/ai-members",
+      "evidence": [
+        "$COLLAB/ai-members"
+      ],
+      "last_verified_at": "2026-10-25",
+      "notes": "Vincent explicitly authorized standalone hisenzi/ai-members repository and upload of existing folder contents on 2026-10-25; no relocation."
+    },
+    {
+      "id": "supatw",
+      "path_label": "$COLLAB/supatw",
+      "classification": "canonical_project",
+      "migration_state": "inventory_only",
+      "project_home_ref": "$COLLAB/supatw",
+      "topology_profile": "non-git-project",
+      "document_ref": "$COLLAB/supatw/README.md",
+      "repo_ref": null,
+      "evidence": [
+        "$COLLAB/supatw"
+      ],
+      "last_verified_at": "2026-11-15",
+      "notes": "Quick project opening registered this canonical local home; Git, deployment, and external sync remain separate MVP actions."
     }
   ]
 }

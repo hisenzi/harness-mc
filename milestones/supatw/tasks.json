@@ -1,0 +1,32 @@
+{
+  "project": "supatw",
+  "tasks": [
+    {
+      "id": "quick-open",
+      "title": "完成快速開案流程",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPATW-MVP-01",
+      "dependencies": [],
+      "done_condition": "README.md、最小 project.json、MVP tasks、formalize checkpoint、專案拓樸與局部驗證均完成，且 tasks 已可在 MC 查看"
+    },
+    {
+      "id": "peaks-mvp",
+      "title": "SupaTW Peaks 首版；工作與驗收正本為 hisenzi/supatw 的原 GitHub Issue",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPATW-MVP-02",
+      "dependencies": [],
+      "done_condition": "依原 GitHub Issue 完成 100 座百岳探索、搜尋篩選、內容與來源、單山分享及目前瀏覽器的想去／已登紀錄與進度，通過驗收並由 Vincent 確認；本相容檔不追蹤進度。"
+    },
+    {
+      "id": "formalize",
+      "title": "依 MVP 測試結果啟動正式補完",
+      "status": "todo",
+      "track": "mvp",
+      "order_label": "SUPATW-MVP-03",
+      "dependencies": [],
+      "done_condition": "已依 MVP 測試結果與最終目標補齊正式專案內容，並建立內容明確且各有驗收標準的正式 tasks"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "SupaTW",
+  "description": "以主題地圖認識台灣的自然、文化與循環生活；第一個新作品為 SupaTW Peaks 台灣百岳互動地圖。",
+  "status": "active",
+  "created": "2026-11-15",
+  "project_code": "SUPATW",
+  "project_folder": "$COLLAB/supatw",
+  "why_opened": "由百岳曆得到靈感，透過山岳形象、地圖與故事讓台灣被認識；以 SupaTW 串起 SupaTW Peaks、Indiebooks 與 Rebag Map 的系列關係，各產品保留自己的資料與工作入口。",
+  "mvp_goal": "SupaTW Peaks 以認識山岳為主、個人收藏與登頂紀錄為輔；提供經查核的 100 座百岳地圖、搜尋篩選、山岳介紹與來源、分享連結，以及目前瀏覽器的想去／已登標記與進度。需求、進度與驗收以 hisenzi/supatw 的原 GitHub Issue 為正本。",
+  "final_goal": "建立可累積的台灣主題探索系列；各產品獨立維護內容與資料，在實際需要支持下逐步共用地圖能力，延伸自然、文化與循環生活的探索體驗。",
+  "tracks": {
+    "mvp": "MVP"
+  }
+}

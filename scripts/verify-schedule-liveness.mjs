@@ -24,6 +24,15 @@ const tasks = fs.readdirSync(path.join(root, "tasks"))
     };
   });
 
+// system-pulse exits 1 on purpose when degraded, after writing its report, so a
+// failed header alone cannot tell "ran and found problems" from "crashed".
+// This line is only printed once the whole run has finished.
+const PULSE_COMPLETED_LINE = /^System pulse (?:healthy|degraded): \d+\/\d+ steps passed$/m;
+
+function ranToCompletion(id, header, text) {
+  return header.status === "success" || (id === "system-pulse" && PULSE_COMPLETED_LINE.test(text));
+}
+
 function lastSuccessAt(id) {
   const dir = path.join(root, "runs");
   if (!fs.existsSync(dir)) return null;
@@ -31,8 +40,12 @@ function lastSuccessAt(id) {
   for (const file of fs.readdirSync(dir)) {
     if (!file.endsWith(".log") || !file.startsWith(`${id}-`)) continue;
     let header;
-    try { header = JSON.parse(fs.readFileSync(path.join(dir, file), "utf8").split("\n", 1)[0]); } catch { continue; }
-    if (header?.task_id !== id || header.status !== "success") continue;
+    let text;
+    try {
+      text = fs.readFileSync(path.join(dir, file), "utf8");
+      header = JSON.parse(text.split("\n", 1)[0]);
+    } catch { continue; }
+    if (header?.task_id !== id || !ranToCompletion(id, header, text)) continue;
     const at = Date.parse(header.finished_at ?? header.started_at ?? "");
     if (Number.isFinite(at) && (best === null || at > best)) best = at;
   }

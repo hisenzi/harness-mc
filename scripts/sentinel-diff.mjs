@@ -23,8 +23,11 @@ const SINCE = sinceIdx >= 0 ? args[sinceIdx + 1] : "24 hours ago";
 const DONE = new Set(["done", "completed", "fixed"]);
 const norm = (s) => String(s || "").toLowerCase().replace("-", "_");
 
+// execSync 預設上限 1 MiB；milestones/morrowise/tasks.json 已超過，不放大 git show 會失敗。
+const GIT_MAX_BUFFER = 64 * 1024 * 1024;
+
 function git(cmd) {
-  return execSync(`git ${cmd}`, { cwd: root, encoding: "utf-8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+  return execSync(`git ${cmd}`, { cwd: root, encoding: "utf-8", stdio: ["ignore", "pipe", "ignore"], maxBuffer: GIT_MAX_BUFFER }).trim();
 }
 
 // 與 generate-data.mjs 相同的多格式 parser
@@ -45,6 +48,15 @@ function parseTasks(raw) {
 
 function readJSON(text) {
   try { return JSON.parse(text.replace(/^﻿/, "")); } catch { return null; }
+}
+
+// 基線裡確實沒有這個專案 → 空 Map（全部視為新增）；其他失敗一律丟出，不可當成基線不存在。
+function readBaselineTasks(baseRev, relativeDir) {
+  const file = `${relativeDir}/tasks.json`;
+  if (git(`ls-tree --name-only ${baseRev} -- ${file}`) === "") return new Map();
+  const parsed = readJSON(git(`show ${baseRev}:${file}`));
+  if (!parsed) throw new Error("基線 tasks.json 不是合法 JSON");
+  return parseTasks(parsed);
 }
 
 function projectName(project) {
@@ -70,6 +82,7 @@ const result = {
   events: [],
   stale: [],
   blocked_now: [],
+  system_warnings: [],
   error: null,
 };
 
@@ -89,16 +102,20 @@ try {
     if (!curRaw) continue;
     const cur = parseTasks(curRaw);
 
-    let base = new Map();
+    // base = null：基線無法判定，只保留現況與 stale，不計變化事件
+    let base = null;
     try {
-      base = parseTasks(readJSON(git(`show ${baseRev}:${project.relativeDir}/tasks.json`)) || {});
-    } catch { /* 基線時專案不存在 → 全部視為新 */ }
+      base = readBaselineTasks(baseRev, project.relativeDir);
+    } catch (e) {
+      result.system_warnings.push(`${name} 基線讀取失敗（${e?.code || e?.message || e}），今日不計變化`);
+    }
 
     for (const [id, t] of cur) {
-      const b = base.get(id);
+      const b = base?.get(id);
       const ev = { project: dir, projectName: name, taskId: id, title: t.title, from: b?.status ?? null, to: t.status };
 
       if (t.status === "blocked") result.blocked_now.push({ project: dir, projectName: name, taskId: id, title: t.title, note: t.note });
+      if (!base) continue;
 
       if (!b) {
         if (DONE.has(t.status)) { result.events.push({ type: "done_added", ...ev }); result.summary.done_added++; }
@@ -140,15 +157,6 @@ try {
   if (s.stale_projects) parts.push(`${s.stale_projects} stale`);
   result.brief = parts.length ? `今日：${parts.join(" · ")}` : "今日：無變化";
 
-  // JV-12：雙機同步斷線警報進早報（資料源 config-sync-state 的 peer_sync_heartbeat 規則）
-  result.system_warnings = [];
-  try {
-    const configSync = JSON.parse(fs.readFileSync(path.join(root, "public", "data", "config-sync-state.json"), "utf-8"));
-    const peer = (configSync.checks || []).find((check) => check.id === "peer_sync_heartbeat");
-    if (peer?.status === "amber") result.system_warnings.push(`雙機同步：${peer.next_action.label}`);
-  } catch {
-    // config-sync-state 未生成時不阻斷哨兵
-  }
   if (result.system_warnings.length) result.brief += `｜⚠ ${result.system_warnings.join("；")}`;
 } catch (e) {
   result.error = String(e?.message || e);
@@ -178,7 +186,7 @@ if (BRIEF) {
 }
 
 if (PUSH && !result.error) {
-  const hasNews = result.events.length > 0 || result.stale.length > 0;
+  const hasNews = result.events.length > 0 || result.stale.length > 0 || result.system_warnings.length > 0;
   const today = result.generated_at.slice(0, 10);
   const markPath = path.join(scheduleRunsDir, "sentinel-pushed.log");
   const already = fs.existsSync(markPath) && fs.readFileSync(markPath, "utf-8").includes(today);
